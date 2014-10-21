@@ -914,7 +914,7 @@ void Creature::Regenerate(Powers power)
         case POWER_MANA:
         {
             // Combat and any controlled creature
-            if (IsInCombat() || GetCharmerOrOwnerGUID())
+            if (IsInCombat() || !GetCharmerOrOwnerGUID().IsEmpty())
             {
                 if (!IsUnderLastManaUseEffect())
                 {
@@ -2328,7 +2328,7 @@ void Creature::SendAIReaction(AiReaction reactionType)
 {
     WorldPacket data(SMSG_AI_REACTION, 12);
 
-    data << uint64(GetGUID());
+    data << GetGUID();
     data << uint32(reactionType);
 
     ((WorldObject*)this)->SendMessageToSet(&data, true);

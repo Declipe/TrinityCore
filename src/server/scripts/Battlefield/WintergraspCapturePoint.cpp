@@ -17,7 +17,7 @@ WintergraspCapturePoint::~WintergraspCapturePoint()
 
 void WintergraspCapturePoint::prepareDelete()
 {
-    if (m_capturePointGUID)
+    if (!m_capturePointGUID.IsEmpty())
     {
         if (GameObject* capturePoint = m_Bf->GetGameObject(m_capturePointGUID))
         {
