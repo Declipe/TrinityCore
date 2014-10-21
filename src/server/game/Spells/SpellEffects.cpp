@@ -2487,8 +2487,7 @@ void Spell::EffectUntrainTalents()
     if (!unitTarget || m_caster->GetTypeId() == TYPEID_PLAYER)
         return;
 
-    if (ObjectGuid guid = m_caster->GetGUID()) // the trainer is the caster
-        unitTarget->ToPlayer()->SendTalentWipeConfirm(guid);
+    unitTarget->ToPlayer()->SendTalentWipeConfirm(m_caster->GetGUID());
 }
 
 void Spell::EffectTeleUnitsFaceCaster()
@@ -4034,7 +4033,8 @@ void Spell::EffectSummonObject()
     uint32 go_id = effectInfo->MiscValue;
     uint8 slot = effectInfo->Effect - SPELL_EFFECT_SUMMON_OBJECT_SLOT1;
 
-    if (ObjectGuid guid = unitCaster->m_ObjectSlot[slot])
+    ObjectGuid guid = unitCaster->m_ObjectSlot[slot];
+    if (!guid.IsEmpty())
     {
         if (GameObject* obj = unitCaster->GetMap()->GetGameObject(guid))
         {

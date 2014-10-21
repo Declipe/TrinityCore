@@ -1471,7 +1471,8 @@ void WorldSession::HandleCharCustomizeCallback(std::shared_ptr<CharacterCustomiz
     }
 
     // character with this name already exist
-    if (ObjectGuid newGuid = sCharacterCache->GetCharacterGuidByName(customizeInfo->Name))
+    ObjectGuid newGuid = sCharacterCache->GetCharacterGuidByName(customizeInfo->Name);
+    if (!newGuid.IsEmpty())
     {
         if (newGuid != customizeInfo->Guid)
         {
