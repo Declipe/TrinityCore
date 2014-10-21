@@ -228,9 +228,9 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         bool CanGeneratePickPocketLoot() const;
         ObjectGuid GetLootRecipientGUID() const { return m_lootRecipient; }
         Player* GetLootRecipient() const;
-        ObjectGuid::LowType GetLootRecipientGroupGUID() const { return m_lootRecipientGroup; }
+        ObjectGuid GetLootRecipientGroupGUID() const { return m_lootRecipientGroup; }
         Group* GetLootRecipientGroup() const;
-        bool hasLootRecipient() const { return !m_lootRecipient.IsEmpty() || m_lootRecipientGroup; }
+        bool hasLootRecipient() const { return !m_lootRecipient.IsEmpty() || !m_lootRecipientGroup.IsEmpty(); }
         bool isTappedBy(Player const* player) const;                          // return true if the creature is tapped by the player or a member of his party.
 
         void SetLootRecipient (Unit* unit, bool withGroup = true);
@@ -291,7 +291,7 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         }
 
         uint32 m_groupLootTimer;                            // (msecs)timer used for group loot
-        ObjectGuid::LowType lootingGroupLowGUID;                         // used to find group which is looting corpse
+        ObjectGuid lootingGroupLowGUID;                     // used to find group which is looting corpse
 
         void SendZoneUnderAttackMessage(Player* attacker);
 
@@ -398,7 +398,7 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         static float _GetHealthMod(int32 Rank);
 
         ObjectGuid m_lootRecipient;
-        ObjectGuid::LowType m_lootRecipientGroup;
+        ObjectGuid m_lootRecipientGroup;
 
         /// Timers
         time_t _pickpocketLootRestore;

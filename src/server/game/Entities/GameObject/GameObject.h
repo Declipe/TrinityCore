@@ -225,9 +225,9 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         void SetLootRecipient(Creature* creature);
         void SetLootRecipient(Map* map);
         bool IsLootAllowedFor(Player const* player) const;
-        bool HasLootRecipient() const { return !m_lootRecipient.IsEmpty() || m_lootRecipientGroup; }
+        bool HasLootRecipient() const { return !m_lootRecipient.IsEmpty() || !m_lootRecipientGroup.IsEmpty(); }
         uint32 m_groupLootTimer;                            // (msecs)timer used for group loot
-        ObjectGuid::LowType lootingGroupLowGUID;                         // used to find group which is looting
+        ObjectGuid lootingGroupLowGUID;                     // used to find group which is looting
 
         GameObject* GetLinkedTrap();
         void SetLinkedTrap(GameObject* linkedTrap) { m_linkedTrap = linkedTrap->GetGUID(); }
@@ -353,7 +353,7 @@ class TC_GAME_API GameObject : public WorldObject, public GridObject<GameObject>
         Position m_stationaryPosition;
 
         ObjectGuid m_lootRecipient;
-        ObjectGuid::LowType m_lootRecipientGroup;
+        ObjectGuid m_lootRecipientGroup;
         uint16 m_LootMode;                                  // bitmask, default LOOT_MODE_DEFAULT, determines what loot will be lootable
         uint32 m_lootGenerationTime;
 

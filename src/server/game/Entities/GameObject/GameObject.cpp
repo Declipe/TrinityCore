@@ -137,9 +137,7 @@ GameObject::GameObject() : WorldObject(false), MapObject(),
 
     m_spawnId = 0;
 
-    m_lootRecipientGroup = 0;
     m_groupLootTimer = 0;
-    lootingGroupLowGUID = 0;
     m_lootGenerationTime = 0;
 
     ResetLootMode(); // restore default loot mode
@@ -767,13 +765,14 @@ void GameObject::Update(uint32 diff)
                     {
                         if (m_groupLootTimer <= diff)
                         {
-                            Group* group = sGroupMgr->GetGroupByGUID(lootingGroupLowGUID);
-                            if (group)
+                            if (Group* group = sGroupMgr->GetGroupByGUID(lootingGroupLowGUID))
                                 group->EndRoll(&loot, GetMap());
+
                             m_groupLootTimer = 0;
-                            lootingGroupLowGUID = 0;
+                            lootingGroupLowGUID.Clear();
                         }
-                        else m_groupLootTimer -= diff;
+                        else
+                            m_groupLootTimer -= diff;
                     }
 
                     // Non-consumable chest was partially looted and restock time passed, restock all loot now
@@ -2694,7 +2693,7 @@ void GameObject::SetLootRecipient(Creature* creature)
     if (!creature)
     {
         m_lootRecipient.Clear();
-        m_lootRecipientGroup = 0;
+        m_lootRecipientGroup = ObjectGuid::Empty;
         ResetAllowedLooters();
         return;
     }
@@ -2722,7 +2721,7 @@ void GameObject::SetLootRecipient(Map* map)
             if (memberGroup && !group)
             {
                 group = memberGroup;
-                m_lootRecipientGroup = group->GetGUID().GetCounter();
+                m_lootRecipientGroup = group->GetGUID();
             }
 
             if (memberGroup == group)

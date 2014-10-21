@@ -253,7 +253,7 @@ bool ForcedDespawnDelayEvent::Execute(uint64 /*e_time*/, uint32 /*p_time*/)
     return true;
 }
 
-Creature::Creature(bool isWorldObject): Unit(isWorldObject), MapObject(), m_groupLootTimer(0), lootingGroupLowGUID(0), m_PlayerDamageReq(0), m_lootRecipient(), m_lootRecipientGroup(0), _pickpocketLootRestore(0),
+Creature::Creature(bool isWorldObject) : Unit(isWorldObject), MapObject(), m_groupLootTimer(0), m_PlayerDamageReq(0), _pickpocketLootRestore(0),
     m_corpseRemoveTime(0), m_respawnTime(0), m_respawnDelay(300), m_corpseDelay(60), m_ignoreCorpseDecayRatio(false), m_wanderDistance(0.0f),
     m_boundaryCheckTime(2500), m_combatPulseTime(0), m_combatPulseDelay(0), m_reactState(REACT_AGGRESSIVE),
     m_defaultMovementType(IDLE_MOTION_TYPE), m_spawnId(0), m_equipmentId(0), m_originalEquipmentId(0),
@@ -749,17 +749,17 @@ void Creature::Update(uint32 diff)
             if (IsEngaged())
                 Unit::AIUpdateTick(diff);
 
-            if (m_groupLootTimer && lootingGroupLowGUID)
+            if (m_groupLootTimer && !lootingGroupLowGUID.IsEmpty())
             {
                 if (m_groupLootTimer <= diff)
                 {
-                    Group* group = sGroupMgr->GetGroupByGUID(lootingGroupLowGUID);
-                    if (group)
+                    if (Group* group = sGroupMgr->GetGroupByGUID(lootingGroupLowGUID))
                         group->EndRoll(&loot, GetMap());
                     m_groupLootTimer = 0;
-                    lootingGroupLowGUID = 0;
+                    lootingGroupLowGUID.Clear();
                 }
-                else m_groupLootTimer -= diff;
+                else
+                    m_groupLootTimer -= diff;
             }
             else if (m_corpseRemoveTime <= GameTime::GetGameTime())
             {
@@ -1263,8 +1263,9 @@ Player* Creature::GetLootRecipient() const
 
 Group* Creature::GetLootRecipientGroup() const
 {
-    if (!m_lootRecipientGroup)
+    if (m_lootRecipientGroup.IsEmpty())
         return nullptr;
+
     return sGroupMgr->GetGroupByGUID(m_lootRecipientGroup);
 }
 
@@ -1277,7 +1278,7 @@ void Creature::SetLootRecipient(Unit* unit, bool withGroup)
     if (!unit)
     {
         m_lootRecipient.Clear();
-        m_lootRecipientGroup = 0;
+        m_lootRecipientGroup.Clear();
         RemoveDynamicFlag(UNIT_DYNFLAG_LOOTABLE|UNIT_DYNFLAG_TAPPED);
         ResetAllowedLooters();
         return;
@@ -1297,7 +1298,7 @@ void Creature::SetLootRecipient(Unit* unit, bool withGroup)
     {
         if (Group* group = player->GetGroup())
         {
-            m_lootRecipientGroup = group->GetLowGUID();
+            m_lootRecipientGroup = group->GetGUID();
 
             if (map && map->IsDungeon() && (isWorldBoss() || IsDungeonBoss()))
             {
@@ -1317,7 +1318,7 @@ void Creature::SetLootRecipient(Unit* unit, bool withGroup)
         }
     }
     else
-        m_lootRecipientGroup = 0;
+        m_lootRecipientGroup = ObjectGuid::Empty;
 
     SetDynamicFlag(UNIT_DYNFLAG_TAPPED);
 }
