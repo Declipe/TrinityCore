@@ -50,7 +50,6 @@
 #include "Realm.h"
 #include "ReputationMgr.h"
 #include "ScriptMgr.h"
-#include "ServerMotd.h"
 #include "SocialMgr.h"
 #include "StringConvert.h"
 #include "SystemPackets.h"
@@ -768,9 +767,13 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder const& holder)
 
     // Send MOTD
     {
-        SendPacket(Motd::GetMotdPacket());
+        WorldPackets::System::MOTD motd;
+        motd.Text = &sWorld->GetMotd();
+        SendPacket(motd.Write());
+    }
 
-        // send server info
+    // send server info
+    {
         if (sWorld->getIntConfig(CONFIG_ENABLE_SINFO_LOGIN) == 1)
             chH.PSendSysMessage(GitRevision::GetFullVersion());
     }
