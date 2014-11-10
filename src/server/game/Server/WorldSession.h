@@ -230,6 +230,7 @@ namespace WorldPackets
     namespace Query
     {
         class QueryCreature;
+        class QueryPlayerName;
         class QueryGameObject;
         class QueryCorpseLocationFromClient;
         class QueryCorpseTransport;
@@ -813,7 +814,7 @@ class TC_GAME_API WorldSession
         void HandleGameObjectUseOpcode(WorldPacket& recPacket);
         void HandleGameobjectReportUse(WorldPacket& recvPacket);
 
-        void HandleNameQueryOpcode(WorldPacket& recvPacket);
+        void HandleNameQueryOpcode(WorldPackets::Query::QueryPlayerName& queryPlayerName);
 
         void HandleQueryTimeOpcode(WorldPacket& recvPacket);
 
