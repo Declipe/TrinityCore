@@ -233,6 +233,7 @@ namespace WorldPackets
     namespace Movement
     {
         class ClientPlayerMovement;
+        class WorldPortResponse;
     }
 
     namespace NPC
@@ -792,7 +793,7 @@ class TC_GAME_API WorldSession
 
         void HandleGameObjectQueryOpcode(WorldPackets::Query::QueryGameObject& query);
 
-        void HandleMoveWorldportAckOpcode(WorldPacket& recvPacket);
+        void HandleMoveWorldportAckOpcode(WorldPackets::Movement::WorldPortResponse& packet);
         void HandleMoveWorldportAck();                // for server-side calls
 
         // Validates that correct unit is moved, coords are in valid range and movement flags
