@@ -79,7 +79,6 @@ enum LocaleConstant : uint8
 #define DEFAULT_LOCALE LOCALE_enUS
 
 #define MAX_LOCALES 14
-#define MAX_ACCOUNT_TUTORIAL_VALUES 8
 
 TC_COMMON_API extern char const* localeNames[TOTAL_LOCALES];
 

@@ -1213,6 +1213,11 @@ public:
     bool HasItemCount(uint32 item, uint32 count = 1, bool inBankAlso = false) const;
     bool HasItemFitToSpellRequirements(SpellInfo const* spellInfo, Item const* ignoreItem = nullptr) const;
     bool CanNoReagentCast(SpellInfo const* spellInfo) const;
+    void SetNoRegentCostMask(flag96 mask)
+    {
+        for (uint8 i = 0; i < 3; ++i)
+            SetUInt32Value(PLAYER_NO_REAGENT_COST_1 + i, mask[i]);
+    }
     bool HasItemOrGemWithIdEquipped(uint32 item, uint32 count, uint8 except_slot = NULL_SLOT) const;
     bool HasItemWithLimitCategoryEquipped(uint32 limitCategory, uint32 count, uint8 except_slot = NULL_SLOT) const;
     bool HasGemWithLimitCategoryEquipped(uint32 limitCategory, uint32 count, uint8 except_slot = NULL_SLOT) const;
@@ -2213,6 +2218,7 @@ public:
 
     void SetHomebind(WorldLocation const& loc, uint32 areaId);
     void SendBindPointUpdate();
+    void SendPlayerBound(ObjectGuid const& binderGuid, uint32 areaId) const;
 
     // Homebind coordinates
     uint32 m_homebindMapId;
