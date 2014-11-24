@@ -62,6 +62,15 @@ enum SpecialRewardTypes
 
 #define MAX_VENDOR_ITEMS 150                                // Limitation in 3.x.x item count in SMSG_LIST_INVENTORY
 
+enum class VendorInventoryReason : uint8
+{
+    Empty       = 0,
+    DontLikeYou = 1,
+    TooFar      = 2,
+    Dead        = 3,
+    YouAreDead  = 4
+};
+
 //used for handling non-repeatable random texts
 typedef std::vector<uint8> CreatureTextRepeatIds;
 typedef std::unordered_map<uint8, CreatureTextRepeatIds> CreatureTextRepeatGroup;
