@@ -1016,7 +1016,7 @@ public:
     {
         TC_LOG_INFO("misc", "Re-Loading Graveyard-zone links...");
         sObjectMgr->LoadGraveyardZones();
-        handler->SendGlobalGMSysMessage("DB table `game_graveyard_zone` reloaded.");
+        handler->SendGlobalGMSysMessage("DB table `graveyard_zone` reloaded.");
 
         return true;
     }
