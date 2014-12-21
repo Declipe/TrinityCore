@@ -84,7 +84,7 @@ AuctionHouseObject* AuctionHouseMgr::GetAuctionHouse(uint8 houseId)
 
 uint32 AuctionHouseMgr::GetAuctionDeposit(AuctionHouseEntry const* entry, uint32 time, Item* pItem, uint32 count)
 {
-    uint32 MSV = pItem->GetTemplate()->SellPrice;
+    uint32 MSV = pItem->GetTemplate()->GetSellPrice();
 
     if (MSV <= 0)
         return float(AH_MINIMUM_DEPOSIT) * sWorld->getRate(RATE_AUCTION_DEPOSIT);
@@ -152,7 +152,8 @@ void AuctionHouseMgr::SendAuctionWonMail(AuctionEntry* auction, CharacterDatabas
         uint32 ownerAccId = sCharacterCache->GetCharacterAccountIdByGuid(ownerGuid);
 
         sLog->OutCommand(bidderAccId, "GM {} (Account: {}) won item in auction: {} (Entry: {} Count: {}) and pay money: {}. Original owner {} (Account: {})",
-            bidderName, bidderAccId, pItem->GetTemplate()->Name1, pItem->GetEntry(), pItem->GetCount(), auction->bid, ownerName, ownerAccId);
+            bidderName, bidderAccId, pItem->GetNameForLocaleIdx(sWorld->GetDefaultDbcLocale()),
+            pItem->GetEntry(), pItem->GetCount(), auction->bid, ownerName, ownerAccId);
     }
 
     // receiver exist

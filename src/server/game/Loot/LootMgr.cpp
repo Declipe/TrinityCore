@@ -350,7 +350,7 @@ bool LootStoreItem::Roll(bool rate) const
 
     ItemTemplate const* pProto = sObjectMgr->GetItemTemplate(itemid);
 
-    float qualityModifier = pProto && rate ? sWorld->getRate(qualityToRate[pProto->Quality]) : 1.0f;
+    float qualityModifier = pProto && rate ? sWorld->getRate(qualityToRate[pProto->GetQuality()]) : 1.0f;
 
     return roll_chance_f(chance * qualityModifier);
 }
