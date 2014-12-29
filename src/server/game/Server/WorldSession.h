@@ -313,6 +313,7 @@ namespace WorldPackets
         class QuestGiverStatusQuery;
         class QuestGiverStatusMultipleQuery;
         class QueryQuestInfo;
+        class QuestGiverRequestReward;
     }
 
     namespace Spells
@@ -1011,7 +1012,7 @@ class TC_GAME_API WorldSession
         void HandleQuestgiverAcceptQuestOpcode(WorldPacket& recvPacket);
         void HandleQuestgiverQueryQuestOpcode(WorldPacket& recvPacket);
         void HandleQuestgiverChooseRewardOpcode(WorldPacket& recvPacket);
-        void HandleQuestgiverRequestRewardOpcode(WorldPacket& recvPacket);
+        void HandleQuestgiverRequestRewardOpcode(WorldPackets::Quest::QuestGiverRequestReward& packet);
         void HandleQuestQueryOpcode(WorldPackets::Quest::QueryQuestInfo& query);
         void HandleQuestgiverCancel(WorldPacket& recvData);
         void HandleQuestLogSwapQuest(WorldPacket& recvData);
