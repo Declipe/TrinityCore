@@ -230,6 +230,11 @@ namespace WorldPackets
         class LFGLeave;
     }
 
+    namespace Loot
+    {
+        class LootUnit;
+    }
+
     namespace Mail
     {
         class MailCreateTextItem;
@@ -775,7 +780,7 @@ class TC_GAME_API WorldSession
         void HandleRepopRequest(WorldPackets::Misc::RepopRequest& packet);
         void HandleAutostoreLootItemOpcode(WorldPacket& recvPacket);
         void HandleLootMoneyOpcode(WorldPacket& recvPacket);
-        void HandleLootOpcode(WorldPacket& recvPacket);
+        void HandleLootOpcode(WorldPackets::Loot::LootUnit& packet);
         void HandleLootReleaseOpcode(WorldPacket& recvPacket);
         void HandleLootMasterGiveOpcode(WorldPacket& recvPacket);
         void HandleWhoOpcode(WorldPacket& recvPacket);
