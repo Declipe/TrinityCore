@@ -80,6 +80,11 @@ class RBACData;
 
 namespace WorldPackets
 {
+    namespace AreaTrigger
+    {
+        class AreaTrigger;
+    }
+
     namespace Bank
     {
         class AutoBankItem;
@@ -818,7 +823,7 @@ class TC_GAME_API WorldSession
         void HandleSetAmmoOpcode(WorldPacket& recvPacket);
         void HandleItemNameQueryOpcode(WorldPacket& recvPacket);
 
-        void HandleAreaTriggerOpcode(WorldPacket& recvPacket);
+        void HandleAreaTriggerOpcode(WorldPackets::AreaTrigger::AreaTrigger& packet);
 
         void HandleSetFactionAtWar(WorldPacket& recvData);
         void HandleSetFactionCheat(WorldPacket& recvData);
