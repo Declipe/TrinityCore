@@ -70,6 +70,7 @@
 #include "Log.h"
 #include "LootItemStorage.h"
 #include "LootMgr.h"
+#include "LootPackets.h"
 #include "Mail.h"
 #include "MailPackets.h"
 #include "MapManager.h"
@@ -8767,15 +8768,6 @@ void Player::SendLoot(ObjectGuid guid, LootType loot_type)
         }
     }
 
-    // LOOT_INSIGNIA and LOOT_FISHINGHOLE unsupported by client
-    switch (loot_type)
-    {
-    case LOOT_INSIGNIA:    loot_type = LOOT_SKINNING; break;
-    case LOOT_FISHINGHOLE: loot_type = LOOT_FISHING; break;
-    case LOOT_FISHING_JUNK: loot_type = LOOT_FISHING; break;
-    default: break;
-    }
-
     // need know merged fishing/corpse loot type for achievements
     loot->loot_type = loot_type;
 
@@ -8783,11 +8775,11 @@ void Player::SendLoot(ObjectGuid guid, LootType loot_type)
     {
         SetLootGUID(guid);
 
-        WorldPacket data(SMSG_LOOT_RESPONSE, (9 + 50));           // we guess size
-        data << guid;
-        data << uint8(loot_type);
-        data << LootView(*loot, this, permission);
-        SendDirectMessage(&data);
+        WorldPackets::Loot::LootResponse packet;
+        packet.Owner = guid;
+        packet.AcquireReason = loot->loot_type;
+        loot->BuildLootResponse(packet, this, permission);
+        SendDirectMessage(packet.Write());
 
         // add 'this' player as one of the players that are looting 'loot'
         loot->AddLooter(GetGUID());
@@ -8799,13 +8791,12 @@ void Player::SendLoot(ObjectGuid guid, LootType loot_type)
         SendLootError(GetLootGUID(), LOOT_ERROR_DIDNT_KILL);
 }
 
-void Player::SendLootError(ObjectGuid guid, LootError error) const
+void Player::SendLootError(ObjectGuid const& owner, LootError error) const
 {
-    WorldPacket data(SMSG_LOOT_RESPONSE, 10);
-    data << guid;
-    data << uint8(LOOT_NONE);
-    data << uint8(error);
-    SendDirectMessage(&data);
+    WorldPackets::Loot::LootResponse lootResponse;
+    lootResponse.Owner = owner;
+    lootResponse.FailureReason = error;
+    SendDirectMessage(lootResponse.Write());
 }
 
 void Player::SendNotifyLootMoneyRemoved() const
@@ -8814,11 +8805,11 @@ void Player::SendNotifyLootMoneyRemoved() const
     SendDirectMessage(&data);
 }
 
-void Player::SendNotifyLootItemRemoved(uint8 lootSlot) const
+void Player::SendNotifyLootItemRemoved(uint8 lootListId) const
 {
-    WorldPacket data(SMSG_LOOT_REMOVED, 1);
-    data << uint8(lootSlot);
-    SendDirectMessage(&data);
+    WorldPackets::Loot::LootRemoved packet;
+    packet.LootListID = lootListId;
+    SendDirectMessage(packet.Write());
 }
 
 void Player::SendUpdateWorldState(uint32 variable, uint32 value) const
@@ -25126,7 +25117,7 @@ void Player::StoreLootItem(uint8 lootSlot, Loot* loot)
 
         SendNewItem(newitem, uint32(item->count), false, false, true);
         UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, item->itemid, item->count);
-        UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_TYPE, loot->loot_type, item->count);
+        UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_TYPE, GetLootTypeForClient(loot->loot_type), item->count);
         UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_EPIC_ITEM, item->itemid, item->count);
 
         // LootItem is being removed (looted) from the container, delete it from the DB.
