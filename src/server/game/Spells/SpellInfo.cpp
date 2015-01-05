@@ -3617,16 +3617,16 @@ bool _isPositiveEffectImpl(SpellInfo const* spellInfo, SpellEffectInfo const& ef
         {
             switch (otherEffect.ApplyAuraName)
             {
-            case SPELL_AURA_MOD_STEALTH:
-            case SPELL_AURA_MOD_UNATTACKABLE:
-                return true;
-            case SPELL_AURA_SCHOOL_HEAL_ABSORB:
-            case SPELL_AURA_EMPATHY:
-            case SPELL_AURA_MOD_DAMAGE_FROM_CASTER:
-            case SPELL_AURA_PREVENTS_FLEEING:
-                return false;
-            default:
-                break;
+                case SPELL_AURA_MOD_STEALTH:
+                case SPELL_AURA_MOD_UNATTACKABLE:
+                    return true;
+                case SPELL_AURA_SCHOOL_HEAL_ABSORB:
+                case SPELL_AURA_EMPATHY:
+                case SPELL_AURA_MOD_SPELL_DAMAGE_FROM_CASTER:
+                case SPELL_AURA_PREVENTS_FLEEING:
+                    return false;
+                default:
+                    break;
             }
         }
     }
