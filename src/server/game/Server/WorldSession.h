@@ -250,6 +250,8 @@ namespace WorldPackets
     {
         class LootUnit;
         class LootItem;
+        class LootRelease;
+        class LootMoney;
     }
 
     namespace Mail
@@ -801,9 +803,9 @@ class TC_GAME_API WorldSession
 
         void HandleRepopRequest(WorldPackets::Misc::RepopRequest& packet);
         void HandleAutostoreLootItemOpcode(WorldPackets::Loot::LootItem& packet);
-        void HandleLootMoneyOpcode(WorldPacket& recvPacket);
+        void HandleLootMoneyOpcode(WorldPackets::Loot::LootMoney& packet);
         void HandleLootOpcode(WorldPackets::Loot::LootUnit& packet);
-        void HandleLootReleaseOpcode(WorldPacket& recvPacket);
+        void HandleLootReleaseOpcode(WorldPackets::Loot::LootRelease& packet);
         void HandleLootMasterGiveOpcode(WorldPacket& recvPacket);
         void HandleWhoOpcode(WorldPacket& recvPacket);
         void HandleLogoutRequestOpcode(WorldPackets::Character::LogoutRequest& logoutRequest);
