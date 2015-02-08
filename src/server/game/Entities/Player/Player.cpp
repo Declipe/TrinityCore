@@ -18360,8 +18360,8 @@ void Player::_LoadInventory(PreparedQueryResult result, uint32 timeDiff)
             Field* fields = result->Fetch();
             if (Item* item = _LoadItem(trans, zoneId, timeDiff, fields))
             {
-                ObjectGuid bagGuid = fields[11].GetUInt32() ? ObjectGuid::Create<HighGuid::Item>(fields[11].GetUInt32()) : ObjectGuid::Empty;
-                uint8 slot = fields[12].GetUInt8();
+                ObjectGuid bagGuid = fields[13].GetUInt32() ? ObjectGuid::Create<HighGuid::Item>(fields[13].GetUInt32()) : ObjectGuid::Empty;
+                uint8 slot = fields[14].GetUInt8();
 
                 InventoryResult err = EQUIP_ERR_OK;
                 // Item is not in bag
@@ -18470,8 +18470,8 @@ void Player::_LoadInventory(PreparedQueryResult result, uint32 timeDiff)
 Item* Player::_LoadItem(CharacterDatabaseTransaction trans, uint32 zoneId, uint32 timeDiff, Field* fields)
 {
     Item* item = nullptr;
-    ObjectGuid::LowType itemGuid = fields[13].GetUInt32();
-    uint32 itemEntry = fields[14].GetUInt32();
+    ObjectGuid::LowType itemGuid = fields[0].GetUInt32();
+    uint32 itemEntry = fields[1].GetUInt32();
     if (ItemTemplate const* proto = sObjectMgr->GetItemTemplate(itemEntry))
     {
         bool remove = false;
@@ -18600,8 +18600,8 @@ Item* Player::_LoadItem(CharacterDatabaseTransaction trans, uint32 zoneId, uint3
 // load mailed item which should receive current player
 Item* Player::_LoadMailedItem(ObjectGuid const& playerGuid, Player* player, uint32 mailId, Mail* mail, Field* fields)
 {
-    ObjectGuid::LowType itemGuid = fields[11].GetUInt32();
-    uint32 itemEntry = fields[12].GetUInt32();
+    ObjectGuid::LowType itemGuid = fields[0].GetUInt32();
+    uint32 itemEntry = fields[1].GetUInt32();
 
     ItemTemplate const* proto = sObjectMgr->GetItemTemplate(itemEntry);
     if (!proto)

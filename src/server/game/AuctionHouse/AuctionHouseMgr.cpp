@@ -343,18 +343,18 @@ void AuctionHouseMgr::LoadAuctionItems()
     {
         Field* fields = result->Fetch();
 
-        ObjectGuid::LowType item_guid = fields[11].GetUInt32();
-        uint32 itemEntry    = fields[12].GetUInt32();
+        ObjectGuid::LowType itemGuid = fields[0].GetUInt32();
+        uint32 itemEntry = fields[1].GetUInt32();
 
         ItemTemplate const* proto = sObjectMgr->GetItemTemplate(itemEntry);
         if (!proto)
         {
-            TC_LOG_ERROR("misc", "AuctionHouseMgr::LoadAuctionItems: Unknown item (GUID: {} item entry: #{}) in auction, skipped.", item_guid, itemEntry);
+            TC_LOG_ERROR("misc", "AuctionHouseMgr::LoadAuctionItems: Unknown item (GUID: {} item entry: #{}) in auction, skipped.", itemGuid, itemEntry);
             continue;
         }
 
         Item* item = NewItemOrBag(proto);
-        if (!item->LoadFromDB(item_guid, ObjectGuid::Empty, fields, itemEntry))
+        if (!item->LoadFromDB(itemGuid, ObjectGuid::Empty, fields, itemEntry))
         {
             delete item;
             continue;
