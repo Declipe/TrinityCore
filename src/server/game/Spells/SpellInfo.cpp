@@ -1128,8 +1128,10 @@ bool SpellInfo::IsStackableWithRanks() const
 {
     if (IsPassive())
         return false;
+
     if (PowerType != POWER_MANA && PowerType != POWER_HEALTH)
         return false;
+
     if (IsProfessionOrRiding())
         return false;
 
