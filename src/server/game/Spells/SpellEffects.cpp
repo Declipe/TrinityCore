@@ -56,6 +56,7 @@
 #include "SpellAuras.h"
 #include "SpellHistory.h"
 #include "SpellMgr.h"
+#include "SpellPackets.h"
 #include "TemporarySummon.h"
 #include "Totem.h"
 #include "UpdateMask.h"
@@ -4216,9 +4217,9 @@ void Spell::EffectForceDeselect()
     Cell::VisitWorldObjects(unitCaster, notifierBreak, dist);
 
     // and selection
-    data.Initialize(SMSG_CLEAR_TARGET, 8);
-    data << unitCaster->GetGUID();
-    Trinity::MessageDistDelivererToHostile notifierClear(unitCaster, &data, dist);
+    WorldPackets::Spells::ClearTarget clearTarget;
+    clearTarget.Guid = unitCaster->GetGUID();
+    Trinity::MessageDistDelivererToHostile notifierClear(unitCaster, clearTarget.Write(), dist);
     Cell::VisitWorldObjects(unitCaster, notifierClear, dist);
 
     // we should also force pets to remove us from current target
