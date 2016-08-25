@@ -31,6 +31,25 @@
 4 - Infinite Corruptor (Heroic only)
 */
 
+enum Events
+{
+    EVENT_GUARDIAN_TICK = 1
+};
+
+enum Entries
+{
+    GO_MALGANIS_GATE_2  = 187723,
+    GO_EXIT_GATE        = 191788
+};
+
+enum Misc
+{
+    NUM_PLAGUE_CRATES   =  5,
+    NUM_SCOURGE_WAVES   = 10,
+    WAVE_MEATHOOK       =  5,
+    WAVE_SALRAMM        = 10
+};
+
 Position const ChromieSummonPos[] =
 {
     { 1813.298f, 1283.578f, 142.3258f, 3.878161f },
@@ -51,135 +70,111 @@ DoorData const doorData[] =
 class instance_culling_of_stratholme : public InstanceMapScript
 {
     public:
-        instance_culling_of_stratholme() : InstanceMapScript(CoSScriptName, 595) { }
+        instance_culling_of_stratholme() : InstanceMapScript("instance_culling_of_stratholme", 595) { }
 
         struct instance_culling_of_stratholme_InstanceMapScript : public InstanceScript
         {
-            instance_culling_of_stratholme_InstanceMapScript(Map* map) : InstanceScript(map)
+            instance_culling_of_stratholme_InstanceMapScript(Map* map) : InstanceScript(map), _currentState(NOT_DETERMINED), _crateCount(0), _infiniteGuardianTimeout(0)
             {
-                SetHeaders(DataHeader);
-                SetBossNumber(EncounterCount);
+                SetHeaders("CS");
+                SetBossNumber(NUM_BOSS_ENCOUNTERS);
                 LoadDoorData(doorData);
-
-                _crateCount        = 0;
-                _eventTimer        = 0;
-                _infiniteCouterState = NOT_STARTED;
             }
 
             void FillInitialWorldStates(WorldPacket& data) override
             {
-                data << uint32(WORLDSTATE_SHOW_CRATES) << uint32(1);
-                data << uint32(WORLDSTATE_CRATES_REVEALED) << uint32(_crateCount);
+                std::cout << "FillInitialWorldStates" << std::endl;
+                if (_currentState & (CRATES_IN_PROGRESS | CRATES_DONE))
+                {
+                    data << uint32(WORLDSTATE_SHOW_CRATES) << uint32(1);
+                    data << uint32(WORLDSTATE_CRATES_REVEALED) << uint32(_crateCount);
+                }
+                else
+                {
+                    data << uint32(WORLDSTATE_SHOW_CRATES) << uint32(0);
+                    data << uint32(WORLDSTATE_CRATES_REVEALED) << uint32(_currentState == JUST_STARTED ? 0 : NUM_PLAGUE_CRATES);
+                }
+
                 data << uint32(WORLDSTATE_WAVE_COUNT) << uint32(0);
-                data << uint32(WORLDSTATE_TIME_GUARDIAN) << uint32(25);
-                data << uint32(WORLDSTATE_TIME_GUARDIAN_SHOW) << uint32(0);
-            }
 
-            void OnCreatureCreate(Creature* creature) override
-            {
-                switch (creature->GetEntry())
+                if (_infiniteGuardianTimeout)
                 {
-                    case NPC_CHROMIE:
-                        _chromieGUID = creature->GetGUID();
-                        break;
-                    case NPC_ARTHAS:
-                        _arthasGUID = creature->GetGUID();
-                        break;
-                    case NPC_MEATHOOK:
-                        _meathookGUID = creature->GetGUID();
-                        break;
-                    case NPC_SALRAMM:
-                        _salrammGUID = creature->GetGUID();
-                        break;
-                    case NPC_EPOCH:
-                        _epochGUID = creature->GetGUID();
-                        break;
-                    case NPC_MAL_GANIS:
-                        _malGanisGUID = creature->GetGUID();
-                        break;
-                    case NPC_INFINITE:
-                        _infiniteGUID = creature->GetGUID();
-                        DoUpdateWorldState(WORLDSTATE_TIME_GUARDIAN_SHOW, 1);
-                        break;
-                    case NPC_GENERIC_BUNNY:
-                        _genericBunnyGUID = creature->GetGUID();
-                        break;
-                    default:
-                        break;
+                    data << uint32(WORLDSTATE_TIME_GUARDIAN_SHOW) << uint32(1);
+                    data << uint32(WORLDSTATE_TIME_GUARDIAN) << uint32((_infiniteGuardianTimeout-time(NULL)+MINUTE-1) / MINUTE);
+                }
+                else
+                {
+                    data << uint32(WORLDSTATE_TIME_GUARDIAN_SHOW) << uint32(0);
+                    data << uint32(WORLDSTATE_TIME_GUARDIAN) << uint32(0);
                 }
             }
 
-            void OnGameObjectCreate(GameObject* go) override
+            void WriteSaveDataMore(std::ostringstream& data) override
             {
-                switch (go->GetEntry())
-                {
-                    case GO_SHKAF_GATE:
-                        _shkafGateGUID = go->GetGUID();
-                        break;
-                    case GO_MALGANIS_GATE_1:
-                        _malGanisGate1GUID = go->GetGUID();
-                        break;
-                    case GO_MALGANIS_GATE_2:
-                        _malGanisGate2GUID = go->GetGUID();
-                        AddDoor(go, true);
-                        break;
-                    case GO_EXIT_GATE:
-                        _exitGateGUID = go->GetGUID();
-                        AddDoor(go, true);
-                        break;
-                    case GO_MALGANIS_CHEST_N:
-                    case GO_MALGANIS_CHEST_H:
-                        _malGanisChestGUID = go->GetGUID();
-                        break;
-                    default:
-                        break;
-                }
+                data << _currentState << ' ' << _infiniteGuardianTimeout;
             }
 
-            void OnGameObjectRemove(GameObject* go) override
+            void ReadSaveDataMore(std::istringstream& data) override
             {
-                switch (go->GetEntry())
+                // read current instance progress from save data, then regress to the previous stable state
+                uint32 state = NOT_DETERMINED, loadState;
+                time_t infiniteGuardianTime = 0;
+                data >> state;
+                data >> infiniteGuardianTime; // UNIX timestamp
+                switch(state)
                 {
-                    case GO_MALGANIS_GATE_2:
-                    case GO_EXIT_GATE:
-                        AddDoor(go, false);
-                        break;
+                    case NOT_DETERMINED:
+                    case JUST_STARTED:
                     default:
+                        loadState = JUST_STARTED;
+                        break;
+                    case CRATES_IN_PROGRESS:
+                        loadState = CRATES_IN_PROGRESS;
+                        break;
+                    case CRATES_DONE:
+                        loadState = CRATES_DONE;
+                        break;
+                    case PURGE_PENDING:
+                    case WAVES_IN_PROGRESS:
+                        loadState = PURGE_PENDING;
+                        break;
+                    case WAVES_DONE:
+                    case TOWN_HALL:
+                        loadState = WAVES_DONE;
+                        break;
+                    case TOWN_HALL_COMPLETE:
+                    case GAUNTLET_TRANSITION:
+                    case GAUNTLET_PENDING:
+                    case GAUNTLET_IN_PROGRESS:
+                        loadState = GAUNTLET_PENDING;
+                        break;
+                    case GAUNTLET_COMPLETE:
+                    case MALGANIS_IN_PROGRESS:
+                        loadState = GAUNTLET_COMPLETE;
                         break;
                 }
+
+                SetInstanceProgress(ProgressStates(loadState));
+                
+                if (infiniteGuardianTime)
+                {
+                    _infiniteGuardianTimeout = infiniteGuardianTime;
+                    events.ScheduleEvent(EVENT_GUARDIAN_TICK, Seconds(0));
+                }
+
+                time_t timediff = (infiniteGuardianTime - time(NULL));
+                std::cout << "Loaded with state " << (uint32)loadState << " and guardian timeout at " << timediff/MINUTE << " minutes " << timediff%MINUTE << " seconds  from now." << std::endl;
             }
 
             void SetData(uint32 type, uint32 data) override
             {
                 switch (type)
                 {
-                    case DATA_CRATE_COUNT:
-                        _crateCount = data;
-                        if (_crateCount == 5)
-                        {
-                            if (Creature* bunny = instance->GetCreature(_genericBunnyGUID))
-                                bunny->CastSpell(bunny, SPELL_CRATES_CREDIT, true);
-
-                            // Summon Chromie and global whisper
-                            if (Creature* chromie = instance->SummonCreature(NPC_CHROMIE_2, ChromieSummonPos[0]))
-                                if (!instance->GetPlayers().isEmpty())
-                                    chromie->AI()->Talk(SAY_CRATES_COMPLETED);
-                        }
+                    case DATA_CRATE_REVEALED:
+                        ++_crateCount;
                         DoUpdateWorldState(WORLDSTATE_CRATES_REVEALED, _crateCount);
-                        break;
-                    case DATA_INFINITE_COUNTER:
-                        _infiniteCouterState = data;
-                        if (data == IN_PROGRESS)
-                        {
-                            if (!_infiniteGUID)
-                            {
-                                _eventTimer = 25;
-                                instance->SummonCreature(NPC_INFINITE, InfiniteCorruptorPos);
-                                instance->SummonCreature(NPC_TIME_RIFT, TimeRiftPos);
-                                instance->SummonCreature(NPC_GUARDIAN_OF_TIME, GuardianOfTimePos);
-                                events.ScheduleEvent(EVENT_INFINITE_TIMER, 1);
-                            }
-                        }
+                        if (_crateCount == NUM_PLAGUE_CRATES)
+                            SetInstanceProgress(CRATES_DONE);
                         break;
                     default:
                         break;
@@ -191,150 +186,92 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 if (!InstanceScript::SetBossState(type, state))
                     return false;
 
-                switch (type)
-                {
-                    case DATA_INFINITE:
-                        if (state == DONE)
-                        {
-                            DoUpdateWorldState(WORLDSTATE_TIME_GUARDIAN_SHOW, 0);
-                            DoUpdateWorldState(WORLDSTATE_TIME_GUARDIAN, 0);
-                        }
-                        break;
-                    case DATA_MAL_GANIS:
-                        if (state == DONE)
-                        {
-                            if (GameObject* go = instance->GetGameObject(_malGanisChestGUID))
-                                go->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
-                            instance->SummonCreature(NPC_CHROMIE_3, ChromieSummonPos[1]);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-
                 return true;
             }
 
-            uint32 GetData(uint32 type) const override
+            void SetInstanceProgress(ProgressStates state)
             {
-                switch (type)
-                {
-                    case DATA_CRATE_COUNT:
-                        return _crateCount;
-                    case DATA_INFINITE_COUNTER:
-                        return _infiniteCouterState;
-                    default:
-                        break;
-                }
-                return 0;
-            }
-
-            ObjectGuid GetGuidData(uint32 identifier) const override
-            {
-                switch (identifier)
-                {
-                    case DATA_ARTHAS:
-                        return _arthasGUID;
-                    case DATA_MEATHOOK:
-                        return _meathookGUID;
-                    case DATA_SALRAMM:
-                        return _salrammGUID;
-                    case DATA_EPOCH:
-                        return _epochGUID;
-                    case DATA_MAL_GANIS:
-                        return _malGanisGUID;
-                    case DATA_INFINITE:
-                        return _infiniteGUID;
-                    case DATA_SHKAF_GATE:
-                        return _shkafGateGUID;
-                    case DATA_MAL_GANIS_GATE_1:
-                        return _malGanisGate1GUID;
-                    case DATA_MAL_GANIS_GATE_2:
-                        return _malGanisGate2GUID;
-                    case DATA_EXIT_GATE:
-                        return _exitGateGUID;
-                    case DATA_MAL_GANIS_CHEST:
-                        return _malGanisChestGUID;
-                    default:
-                        break;
-                }
-                return ObjectGuid::Empty;
+                ProgressStates oldState = _currentState;
+                _currentState = state;
+                if (oldState)
+                    for (ObjectGuid const& guid : _myCreatures[oldState])
+                        if (Creature* creature = instance->GetCreature(guid))
+                            creature->AI()->DoAction(-ACTION_CHECK_DESPAWN);
             }
 
             void Update(uint32 diff) override
             {
+                if (!_infiniteGuardianTimeout && GetBossState(DATA_INFINITE_CORRUPTOR) != FAIL)
+                {
+                    std::cout << "setting up guardian" << std::endl;
+                    _infiniteGuardianTimeout = time(NULL) + 10 * MINUTE;
+                    DoUpdateWorldState(WORLDSTATE_TIME_GUARDIAN_SHOW, 1);
+                    events.ScheduleEvent(EVENT_GUARDIAN_TICK, Seconds(0));
+                }
                 events.Update(diff);
 
                 while (uint32 eventId = events.ExecuteEvent())
                 {
                     switch (eventId)
                     {
-                        case EVENT_INFINITE_TIMER:
-                            DoUpdateWorldState(WORLDSTATE_TIME_GUARDIAN, _eventTimer);
-
-                            switch (_eventTimer)
+                        case EVENT_GUARDIAN_TICK:
+                        {
+                            std::cout << "Guardian ticking." << std::endl;
+                            time_t secondsToGuardianDeath = _infiniteGuardianTimeout - time(NULL);
+                            std::cout << secondsToGuardianDeath << std::endl;
+                            if (secondsToGuardianDeath <= 0)
                             {
-                                case 25:
-                                    if (instance->HavePlayers())
-                                        if (Creature* chromie = instance->GetCreature(_chromieGUID))
-                                            chromie->AI()->Talk(SAY_INFINITE_START);
-                                    break;
-                                case 5:
-                                    if (instance->HavePlayers())
-                                        if (Creature* chromie = instance->GetCreature(_chromieGUID))
-                                            chromie->AI()->Talk(SAY_INFINITE);
-                                    break;
-                                case 0:
-                                    if (instance->HavePlayers())
-                                        if (Creature* chromie = instance->GetCreature(_chromieGUID))
-                                            chromie->AI()->Talk(SAY_INFINITE_FAIL);
-
-                                    if (Creature* infinite = instance->GetCreature(_infiniteGUID))
-                                    {
-                                        if (Creature* guardian = infinite->FindNearestCreature(NPC_GUARDIAN_OF_TIME, 100.0f))
-                                            infinite->Kill(guardian);
-
-                                        if (Creature* rift = infinite->FindNearestCreature(NPC_TIME_RIFT, 100.0f))
-                                        {
-                                            infinite->GetMotionMaster()->MovePoint(0, rift->GetPositionX(), rift->GetPositionY(), rift->GetPositionZ());
-                                            rift->DespawnOrUnsummon(3000);
-                                        }
-
-                                        infinite->DespawnOrUnsummon(3000);
-                                        infinite->AI()->Talk(SAY_FAIL_EVENT);
-                                    }
-                                    DoUpdateWorldState(WORLDSTATE_TIME_GUARDIAN_SHOW, 0);
-                                    return;
-                                default:
-                                    break;
+                                _infiniteGuardianTimeout = 0;
+                                DoUpdateWorldState(WORLDSTATE_TIME_GUARDIAN_SHOW, 0);
+                                DoUpdateWorldState(WORLDSTATE_TIME_GUARDIAN, 0);
+                                SetBossState(DATA_INFINITE_CORRUPTOR, FAIL);
                             }
-                            events.ScheduleEvent(EVENT_INFINITE_TIMER, 60000);
-                            --_eventTimer;
+                            else
+                            {
+                                DoUpdateWorldState(WORLDSTATE_TIME_GUARDIAN, (secondsToGuardianDeath + (MINUTE - 1)) / MINUTE);
+                                events.Repeat(Seconds((secondsToGuardianDeath % MINUTE) + 1));
+                            }
                             break;
+                        }
                         default:
                             break;
                     }
                 }
             }
 
-        private:
-            ObjectGuid _chromieGUID;
-            ObjectGuid _arthasGUID;
-            ObjectGuid _meathookGUID;
-            ObjectGuid _salrammGUID;
-            ObjectGuid _epochGUID;
-            ObjectGuid _malGanisGUID;
-            ObjectGuid _infiniteGUID;
-            ObjectGuid _shkafGateGUID;
-            ObjectGuid _malGanisGate1GUID;
-            ObjectGuid _malGanisGate2GUID;
-            ObjectGuid _exitGateGUID;
-            ObjectGuid _malGanisChestGUID;
-            ObjectGuid _genericBunnyGUID;
+            void CreatureAIHello(ObjectGuid const& me, ProgressStates myStates)
+            {
+                if (Creature* c = instance->GetCreature(me))
+                    std::cout << "Hello: " << c->GetName() << std::endl;
+                
+                ProgressStates curState = JUST_STARTED;
+                while (curState <= COMPLETE)
+                {
+                    if (myStates & curState)
+                        _myCreatures[curState].insert(me);
+                    curState = ProgressStates(curState << 1);
+                }
+            }
 
+            void CreatureAIGoodbye(ObjectGuid const& me, ProgressStates myStates)
+            {
+                if (Creature* c = instance->GetCreature(me))
+                    std::cout << "Goodbye: " << c->GetName() << std::endl;
+                
+                ProgressStates curState = JUST_STARTED;
+                while (curState <= COMPLETE)
+                {
+                    if (myStates & curState)
+                        _myCreatures[curState].erase(me);
+                    curState = ProgressStates(curState << 1);
+                }
+            }
+
+        private:
+            ProgressStates _currentState;
             uint32 _crateCount;
-            uint32 _eventTimer;
-            uint32 _infiniteCouterState;
+            time_t _infiniteGuardianTimeout;
+            std::map<ProgressStates, std::set<ObjectGuid>> _myCreatures;
 
             EventMap events;
         };
@@ -344,6 +281,16 @@ class instance_culling_of_stratholme : public InstanceMapScript
             return new instance_culling_of_stratholme_InstanceMapScript(map);
         }
 };
+
+void StratholmeAIHello(InstanceScript* instance, ObjectGuid const& me, ProgressStates myStates)
+{
+    reinterpret_cast<instance_culling_of_stratholme::instance_culling_of_stratholme_InstanceMapScript*>(instance)->CreatureAIHello(me, myStates);
+
+}
+void StratholmeAIGoodbye(InstanceScript* instance, ObjectGuid const& me, ProgressStates myStates)
+{
+    reinterpret_cast<instance_culling_of_stratholme::instance_culling_of_stratholme_InstanceMapScript*>(instance)->CreatureAIGoodbye(me, myStates);
+}
 
 void AddSC_instance_culling_of_stratholme()
 {

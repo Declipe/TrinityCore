@@ -40,6 +40,12 @@ enum Events
     EVENT_VOID_STRIKE
 };
 
+enum Entries
+{
+    NPC_TIME_RIFT = 28409,
+    NPC_GUARDIAN_OF_TIME = 32281
+};
+
 class boss_infinite_corruptor : public CreatureScript
 {
     public:
@@ -47,7 +53,7 @@ class boss_infinite_corruptor : public CreatureScript
 
         struct boss_infinite_corruptorAI : public BossAI
         {
-            boss_infinite_corruptorAI(Creature* creature) : BossAI(creature, DATA_INFINITE) { }
+            boss_infinite_corruptorAI(Creature* creature) : BossAI(creature, DATA_INFINITE_CORRUPTOR) { }
 
             void Reset() override
             {

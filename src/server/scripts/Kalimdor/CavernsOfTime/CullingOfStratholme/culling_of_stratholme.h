@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -18,86 +18,102 @@
 #ifndef DEF_CULLING_OF_STRATHOLME_H
 #define DEF_CULLING_OF_STRATHOLME_H
 
-#define DataHeader "CS"
-#define CoSScriptName "instance_culling_of_stratholme"
-uint32 const EncounterCount = 5;
+#include "Creature.h"
 
-enum CSDataTypes
+// Note: These are bitmask values to allow combining (spawn state masks on template AI), but only a single bit will ever be true in instance script
+enum ProgressStates
 {
-    DATA_ARTHAS,
+    NOT_DETERMINED          = 0x0000, // set upon initial load
+    JUST_STARTED            = 0x0001, // dungeon just started, crate count not visible yet; pending chromie interaction
+    CRATES_IN_PROGRESS      = 0x0002, // freshly started dungeon, players are revealing scourge crates
+    CRATES_DONE             = 0x0004, // all crates revealed, chromie spawns at Stratholme entrance; waiting for player input to begin first RP event
+    PURGE_PENDING           = 0x0008, // RP event done, pending player input to start wave event
+    WAVES_IN_PROGRESS       = 0x0010, // first section is underway, players are battling waves
+    WAVES_DONE              = 0x0020, // wave section completed; pending player input to begin Town Hall section
+    TOWN_HALL               = 0x0040, // now escorting Arthas through Stratholme Town Hall
+    TOWN_HALL_COMPLETE      = 0x0080, // Town Hall event complete, third boss defeated; pending player input to begin gauntlet transition
+    GAUNTLET_TRANSITION     = 0x0100, // Arthas is leading players through the secret passage from Town Hall to the gauntlet
+    GAUNTLET_PENDING        = 0x0200, // Pending player input to begin escorting Arthas through the final gauntlet section
+    GAUNTLET_IN_PROGRESS    = 0x0400, // Arthas is being escorted through the gauntlet section
+    GAUNTLET_COMPLETE       = 0x0800, // Arthas has reached the end of the gauntlet section; player input pending to begin Mal'ganis encounter
+    MALGANIS_IN_PROGRESS    = 0x1000, // Arthas has moved into the final square and Mal'ganis encounter begins
+    COMPLETE                = 0x2000 // Mal'ganis encounter is completed; dungeon over
+};
+
+enum Data
+{
     DATA_MEATHOOK,
     DATA_SALRAMM,
     DATA_EPOCH,
     DATA_MAL_GANIS,
-    DATA_INFINITE,
-    DATA_CRATE_COUNT,
-    DATA_SHKAF_GATE,
-    DATA_MAL_GANIS_GATE_1,
-    DATA_MAL_GANIS_GATE_2,
-    DATA_EXIT_GATE,
-    DATA_MAL_GANIS_CHEST,
-    DATA_INFINITE_COUNTER
+    DATA_INFINITE_CORRUPTOR,
+    NUM_BOSS_ENCOUNTERS,
+
+    DATA_INSTANCE_PROGRESS = NUM_BOSS_ENCOUNTERS, // GET only
+    DATA_CRATE_REVEALED,
+    DATA_ARTHAS
 };
 
-enum CSCreatureIds
+// these are understood by all creatures using the instance AI; they are passed as negative values to avoid conflicts with creature script specific actions
+enum InstanceActions
 {
-    NPC_MEATHOOK         = 26529,
-    NPC_SALRAMM          = 26530,
-    NPC_EPOCH            = 26532,
-    NPC_MAL_GANIS        = 26533,
-    NPC_INFINITE         = 32273,
-    NPC_ARTHAS           = 26499,
-    NPC_JAINA            = 26497,
-    NPC_UTHER            = 26528,
-    NPC_CHROMIE          = 26527,
-    NPC_CHROMIE_2        = 27915,
-    NPC_CHROMIE_3        = 30997,
-    NPC_GENERIC_BUNNY    = 28960,
-
-    NPC_TIME_RIFT        = 28409,
-    NPC_GUARDIAN_OF_TIME = 32281
+    ACTION_CHECK_DESPAWN = 1
 };
 
-enum CSGameObjectIds
+enum InstanceMisc
 {
-    GO_SHKAF_GATE       = 188686,
-    GO_MALGANIS_GATE_1  = 187711,
-    GO_MALGANIS_GATE_2  = 187723,
-    GO_EXIT_GATE        = 191788,
-    GO_MALGANIS_CHEST_N = 190663,
-    GO_MALGANIS_CHEST_H = 193597,
-    GO_SUSPICIOUS_CRATE = 190094,
-    GO_PLAGUED_CRATE    = 190095
+    WORLDSTATE_SHOW_CRATES = 3479,
+    WORLDSTATE_CRATES_REVEALED = 3480,
+    WORLDSTATE_WAVE_COUNT = 3504,
+    WORLDSTATE_TIME_GUARDIAN = 3931,
+    WORLDSTATE_TIME_GUARDIAN_SHOW = 3932
 };
 
-enum CSWorldStatesCoT
+// These methods are implemented in instance_culling_of_stratholme.cpp so they can access internals of the instance script
+void StratholmeAIHello(InstanceScript* /*instance*/, ObjectGuid const& /*me*/, ProgressStates /*myStates*/);
+void StratholmeAIGoodbye(InstanceScript* /*instance*/, ObjectGuid const& /*me*/, ProgressStates /*myStates*/);
+
+// Note: instance script is not nullptr checked in this AI - ONLY use this with GetInstanceAI in script AI getter!
+template <class T>
+class StratholmeNPCAIWrapper : public T
 {
-    WORLDSTATE_SHOW_CRATES          = 3479,
-    WORLDSTATE_CRATES_REVEALED      = 3480,
-    WORLDSTATE_WAVE_COUNT           = 3504,
-    WORLDSTATE_TIME_GUARDIAN        = 3931,
-    WORLDSTATE_TIME_GUARDIAN_SHOW   = 3932
-};
+    public:
+        StratholmeNPCAIWrapper(Creature* creature, ProgressStates stateMask) : T(creature), instance(creature->GetInstanceScript()), _statesMask(stateMask)
+        {
+            StratholmeAIHello(instance, me->GetGUID(), _statesMask);
+        }
+        ~StratholmeNPCAIWrapper()
+        {
+            StratholmeAIGoodbye(instance, me->GetGUID(), _statesMask);
+        }
 
-enum CSCrateSpells
-{
-    SPELL_CRATES_CREDIT     = 58109
-};
+        void CheckDespawn()
+        {
+            std::cout << "check despawn " << me->GetName() << std::endl;
+            if (!(_statesMask & instance->GetData(DATA_INSTANCE_PROGRESS)))
+                me->DespawnOrUnsummon(0);
+        }
 
-enum CSTexts
-{
-    SAY_CRATES_COMPLETED    = 0,
-    // Chromie
-    SAY_INFINITE_START      = 0, // On Infinite Corruptor event start
-    SAY_INFINITE            = 1, // On Infinite Corruptor event at 5 minutes
-    SAY_INFINITE_FAIL       = 2, // On Infinite Corruptor event fail
-    // Infinite Corruptor
-    SAY_FAIL_EVENT          = 2 // On Infinite Corruptor event fail
-};
+        virtual void _DoAction(int32 /*action*/) = 0;
+        void DoAction(int32 action) override // DO NOT OVERRIDE THIS in inheriting AI - use _DoAction to handle your own actions if needed
+        {
+            switch (action)
+            {
+                case -ACTION_CHECK_DESPAWN:
+                    CheckDespawn();
+                    break;
+                default:
+                    _DoAction(action);
+            }
+        }
 
-enum CSInstanceEvents
-{
-    EVENT_INFINITE_TIMER    = 1
-};
+        bool CanRespawn() override
+        {
+            return (_statesMask & instance->GetData(DATA_INSTANCE_PROGRESS)) ? true : false;
+        }
 
+    private:
+        InstanceScript* const instance;
+        ProgressStates const _statesMask;
+};
 #endif
