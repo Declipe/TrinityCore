@@ -53,7 +53,7 @@ class npc_arthas : public CreatureScript
 
 };
 
-enum ChromieGossips
+enum Chromie1Gossip
 {
     // offsets from GOSSIP_ACTION_INFO_DEF
     GOSSIP_OFFSET_EXPLAIN = 0,
@@ -62,6 +62,7 @@ enum ChromieGossips
     GOSSIP_OFFSET_EXPLAIN_1,
     GOSSIP_OFFSET_EXPLAIN_2,
     GOSSIP_OFFSET_SKIP_1,
+    GOSSIP_OFFSET_GM_INITIAL,
 
     GOSSIP_MENU_INITIAL         =  9586,
     GOSSIP_TEXT_INITIAL         = 12939,
@@ -87,7 +88,7 @@ enum ChromieGossips
     GOSSIP_OPTION_SKIP_1        =     0
 };
 
-enum ChromieMisc
+enum Chromie1Misc
 {
     ITEM_ARCANE_DISRUPTOR       = 37888,
     QUEST_DISPELLING_ILLUSIONS  = 13149,
@@ -119,6 +120,10 @@ class npc_chromie_start : public CreatureScript
 
             if (InstanceScript* instance = creature->GetInstanceScript())
             {
+                if (player->CanBeGameMaster()) // GM instance state override menu
+                    for (uint32 state = 1; state <= COMPLETE; state = state << 1)
+                        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, Trinity::StringFormat("[GM] Set instance progress 0x%X", state), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL + state);
+
                 uint32 state = instance->GetData(DATA_INSTANCE_PROGRESS);
                 if (state <= CRATES_IN_PROGRESS)
                 {
@@ -153,6 +158,7 @@ class npc_chromie_start : public CreatureScript
                     AdvanceDungeonFar(creature);
                     // intentional missing break
                 case GOSSIP_OFFSET_TELEPORT:
+                    player->CLOSE_GOSSIP_MENU();
                     creature->CastSpell(player, SPELL_TELEPORT_PLAYER);
                     break;
                 case GOSSIP_OFFSET_EXPLAIN_1:
@@ -165,6 +171,13 @@ class npc_chromie_start : public CreatureScript
                     if (!player->HasItemCount(ITEM_ARCANE_DISRUPTOR))
                         player->AddItem(ITEM_ARCANE_DISRUPTOR, 1); // @todo figure out spell
                     break;
+                default: // handle GM instance commands
+                    player->CLOSE_GOSSIP_MENU();
+                    if (!player->CanBeGameMaster())
+                        break;
+                    if (InstanceScript* instance = creature->GetInstanceScript())
+                        instance->SetData(DATA_GM_OVERRIDE, action - GOSSIP_ACTION_INFO_DEF - GOSSIP_OFFSET_GM_INITIAL);
+                    break;
             }
             return false;
         }
@@ -174,6 +187,100 @@ class npc_chromie_start : public CreatureScript
             if (quest->GetQuestId() == QUEST_DISPELLING_ILLUSIONS)
                 AdvanceDungeon(creature);
             return true;
+        }
+};
+
+enum Chromie2Gossip
+{
+    // offsets from GOSSIP_ACTION_INFO_DEF
+    GOSSIP_OFFSET_STEP1 = 0,
+    GOSSIP_OFFSET_STEP2,
+    GOSSIP_OFFSET_STEP3,
+
+    GOSSIP_MENU_STEP1   =  9610,
+    GOSSIP_TEXT_STEP1   = 12992,
+    GOSSIP_OPTION_STEP1 =     0,
+
+    GOSSIP_MENU_STEP2   =  9611,
+    GOSSIP_TEXT_STEP2   = 12993,
+    GOSSIP_OPTION_STEP2 =     0,
+
+    GOSSIP_MENU_STEP3   =  9612,
+    GOSSIP_TEXT_STEP3   = 12994,
+    GOSSIP_OPTION_STEP3 =     0,
+    
+    GOSSIP_MENU_STEP4   =  9613,
+    GOSSIP_TEXT_STEP4   = 12995
+};
+enum Chromie2Misc
+{
+    WHISPER_CRATES_DONE = 0
+};
+class npc_chromie_middle : public CreatureScript
+{
+    public:
+        npc_chromie_middle() : CreatureScript("npc_chromie_middle") { }
+
+        void AdvanceDungeon(Creature* creature)
+        {
+            if (InstanceScript* instance = creature->GetInstanceScript())
+                if (instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE)
+                    instance->SetData(DATA_UTHER_START, 1);
+        }
+
+        bool OnGossipHello(Player* player, Creature* creature) override
+        {
+            if (creature->IsQuestGiver())
+                player->PrepareQuestMenu(creature->GetGUID());
+
+            if (InstanceScript* instance = creature->GetInstanceScript())
+                if (instance->GetData(DATA_INSTANCE_PROGRESS))
+                    player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_STEP1, GOSSIP_OPTION_STEP1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP1);
+            player->SEND_GOSSIP_MENU(GOSSIP_TEXT_STEP1, creature->GetGUID());
+            return true;
+        }
+
+        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
+        {
+            player->PlayerTalkClass->ClearMenus();
+            switch (action - GOSSIP_ACTION_INFO_DEF)
+            {
+                case GOSSIP_OFFSET_STEP1:
+                    player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_STEP2, GOSSIP_OPTION_STEP2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP2);
+                    player->SEND_GOSSIP_MENU(GOSSIP_TEXT_STEP2, creature->GetGUID());
+                    break;
+                case GOSSIP_OFFSET_STEP2:
+                    player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_STEP3, GOSSIP_OPTION_STEP3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP3);
+                    player->SEND_GOSSIP_MENU(GOSSIP_TEXT_STEP3, creature->GetGUID());
+                    break;
+                case GOSSIP_OFFSET_STEP3:
+                    player->SEND_GOSSIP_MENU(GOSSIP_TEXT_STEP4, creature->GetGUID());
+                    AdvanceDungeon(creature);
+                    break;
+
+            }
+            return false;
+        }
+
+        bool OnQuestAccept(Player* /*player*/, Creature* creature, Quest const* quest) override
+        {
+            return true;
+        }
+
+        struct npc_chromie_middleAI : public StratholmeNPCAIWrapper<NullCreatureAI>
+        {
+            npc_chromie_middleAI(Creature* creature) : StratholmeNPCAIWrapper<NullCreatureAI>(creature, ProgressStates(ALL & ~(JUST_STARTED | CRATES_IN_PROGRESS))) { }
+
+            void JustRespawned() override
+            {
+                if (instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE)
+                    Talk(WHISPER_CRATES_DONE);
+            }
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return GetInstanceAI<npc_chromie_middleAI>(creature);
         }
 };
 
@@ -209,7 +316,6 @@ class npc_crate_helper : public CreatureScript
                     }
                 }
             }
-            void _DoAction(int32 /*action*/) override { }
 
             uint32 GetData(uint32 data) const override
             {
@@ -232,5 +338,6 @@ void AddSC_culling_of_stratholme()
 {
     new npc_arthas();
     new npc_chromie_start();
+    new npc_chromie_middle();
     new npc_crate_helper();
 }

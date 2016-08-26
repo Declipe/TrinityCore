@@ -37,7 +37,9 @@ enum ProgressStates
     GAUNTLET_IN_PROGRESS    = 0x0800, // Arthas is being escorted through the gauntlet section
     GAUNTLET_COMPLETE       = 0x1000, // Arthas has reached the end of the gauntlet section; player input pending to begin Mal'ganis encounter
     MALGANIS_IN_PROGRESS    = 0x2000, // Arthas has moved into the final square and Mal'ganis encounter begins
-    COMPLETE                = 0x4000 // Mal'ganis encounter is completed; dungeon over
+    COMPLETE                = 0x4000, // Mal'ganis encounter is completed; dungeon over
+
+    ALL                     = 0x7FFF
 };
 
 enum Data
@@ -50,9 +52,11 @@ enum Data
     NUM_BOSS_ENCOUNTERS,
 
     DATA_INSTANCE_PROGRESS = NUM_BOSS_ENCOUNTERS, // GET only
-    DATA_CRATES_START,     // sent by chromie creature script to initiate crate phase
+    DATA_GM_OVERRIDE,      // sent by chromie #1 in response to GM instance control commands
+    DATA_CRATES_START,     // sent by chromie #1 creature script to initiate crate phase
     DATA_CRATE_REVEALED,   // sent by crate helper AI to trigger re-check of crate status
-    DATA_SKIP_TO_PURGE,    // sent by chromie creature script to skip straight to start of purge
+    DATA_UTHER_START,      // sent by chromie #2 creature script to initiate uther RP sequence
+    DATA_SKIP_TO_PURGE,    // sent by chromie #1 creature script to skip straight to start of purge
 
     // old stuff below this, need to figure out if needed
     DATA_ARTHAS
@@ -78,11 +82,11 @@ void StratholmeAIHello(InstanceScript* /*instance*/, ObjectGuid const& /*me*/, P
 void StratholmeAIGoodbye(InstanceScript* /*instance*/, ObjectGuid const& /*me*/, ProgressStates /*myStates*/);
 
 // Note: instance script is not nullptr checked in this AI - ONLY use this with GetInstanceAI in script AI getter!
-template <class T>
-class StratholmeNPCAIWrapper : public T
+template <class ParentAI>
+class StratholmeNPCAIWrapper : public ParentAI
 {
     public:
-        StratholmeNPCAIWrapper(Creature* creature, ProgressStates stateMask) : T(creature), instance(creature->GetInstanceScript()), _statesMask(stateMask)
+        StratholmeNPCAIWrapper(Creature* creature, ProgressStates stateMask) : ParentAI(creature), instance(creature->GetInstanceScript()), _statesMask(stateMask)
         {
             StratholmeAIHello(instance, me->GetGUID(), _statesMask);
             CheckDespawn();
@@ -94,13 +98,12 @@ class StratholmeNPCAIWrapper : public T
 
         void CheckDespawn()
         {
-            std::cout << "check despawn " << me->GetName() << std::endl;
             if (!(_statesMask & instance->GetData(DATA_INSTANCE_PROGRESS)))
                 me->DespawnOrUnsummon(0, Seconds(1));
         }
 
-        virtual void _DoAction(int32 /*action*/) = 0;
-        void DoAction(int32 action) override // DO NOT OVERRIDE THIS in inheriting AI - use _DoAction to handle your own actions if needed
+        virtual void _DoAction(int32 /*action*/) { }
+        void DoAction(int32 action) final override
         {
             switch (action)
             {
@@ -116,9 +119,9 @@ class StratholmeNPCAIWrapper : public T
         {
             return (_statesMask & instance->GetData(DATA_INSTANCE_PROGRESS)) ? true : false;
         }
-
-    private:
+    protected:
         InstanceScript* const instance;
+    private:
         ProgressStates const _statesMask;
 };
 #endif

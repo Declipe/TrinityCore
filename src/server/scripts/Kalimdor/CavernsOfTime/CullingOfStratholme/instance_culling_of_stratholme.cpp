@@ -38,9 +38,11 @@ enum Events
 
 enum Entries
 {
-    NPC_CRATE_HELPER    =  27827,
-    GO_MALGANIS_GATE_2  = 187723,
-    GO_EXIT_GATE        = 191788
+    NPC_GENERIC_BUNNY           =  28960,
+    NPC_CRATE_HELPER            =  27827,
+    GO_MALGANIS_GATE_2          = 187723,
+    GO_EXIT_GATE                = 191788,
+    SPELL_CRATES_KILL_CREDIT    =  58109
 };
 
 enum Misc
@@ -81,35 +83,15 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 SetBossNumber(NUM_BOSS_ENCOUNTERS);
                 LoadDoorData(doorData);
 
+                _currentWorldStates[WORLDSTATE_SHOW_CRATES] = _currentWorldStates[WORLDSTATE_CRATES_REVEALED] = _currentWorldStates[WORLDSTATE_WAVE_COUNT] = _currentWorldStates[WORLDSTATE_TIME_GUARDIAN_SHOW] = _currentWorldStates[WORLDSTATE_TIME_GUARDIAN] = 0;
+                _sentWorldStates = _currentWorldStates;
                 _plagueCrates.reserve(NUM_PLAGUE_CRATES);
             }
 
             void FillInitialWorldStates(WorldPacket& data) override
             {
-                std::cout << "FillInitialWorldStates" << std::endl;
-                if (_currentState & (CRATES_IN_PROGRESS | CRATES_DONE))
-                {
-                    data << uint32(WORLDSTATE_SHOW_CRATES) << uint32(1);
-                    data << uint32(WORLDSTATE_CRATES_REVEALED) << uint32(missingPlagueCrates());
-                }
-                else
-                {
-                    data << uint32(WORLDSTATE_SHOW_CRATES) << uint32(0);
-                    data << uint32(WORLDSTATE_CRATES_REVEALED) << uint32(_currentState == JUST_STARTED ? 0 : NUM_PLAGUE_CRATES);
-                }
-
-                data << uint32(WORLDSTATE_WAVE_COUNT) << uint32(0);
-
-                if (_infiniteGuardianTimeout)
-                {
-                    data << uint32(WORLDSTATE_TIME_GUARDIAN_SHOW) << uint32(1);
-                    data << uint32(WORLDSTATE_TIME_GUARDIAN) << uint32((_infiniteGuardianTimeout-time(NULL)+MINUTE-1) / MINUTE);
-                }
-                else
-                {
-                    data << uint32(WORLDSTATE_TIME_GUARDIAN_SHOW) << uint32(0);
-                    data << uint32(WORLDSTATE_TIME_GUARDIAN) << uint32(0);
-                }
+                for (WorldStateMap::const_iterator it = _sentWorldStates.begin(); it != _sentWorldStates.end(); ++it)
+                    data << uint32(it->first) << uint32(it->second);
             }
 
             void WriteSaveDataMore(std::ostringstream& data) override
@@ -173,19 +155,27 @@ class instance_culling_of_stratholme : public InstanceMapScript
             {
                 switch (type)
                 {
+                    case DATA_GM_OVERRIDE:
+                        SetInstanceProgress(ProgressStates(data));
+                        break;
                     case DATA_CRATES_START:
                         if (_currentState == JUST_STARTED)
                             SetInstanceProgress(CRATES_IN_PROGRESS);
                         break;
                     case DATA_CRATE_REVEALED:
                         if (uint32 missingCrates = missingPlagueCrates())
-                            DoUpdateWorldState(WORLDSTATE_CRATES_REVEALED, NUM_PLAGUE_CRATES - missingCrates);
+                            SetWorldState(WORLDSTATE_CRATES_REVEALED, NUM_PLAGUE_CRATES - missingCrates);
                         else
                             SetInstanceProgress(CRATES_DONE);
+                        break;
+                    case DATA_UTHER_START:
+                        if (_currentState == CRATES_DONE)
+                            SetInstanceProgress(UTHER_TALK);
                         break;
                     case DATA_SKIP_TO_PURGE:
                         if (_currentState <= CRATES_DONE)
                             SetInstanceProgress(PURGE_PENDING);
+                        break;
                     default:
                         break;
                 }
@@ -208,7 +198,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
 
             void SetInstanceProgress(ProgressStates state)
             {
-                std::cout << "Instance progress is now " << (uint32)state << std::endl;
+                std::cout << "Instance progress is now " << Trinity::StringFormat("0x%X",(uint32)state) << std::endl;
                 ProgressStates oldState = _currentState;
                 _currentState = state;
                 if (oldState)
@@ -216,14 +206,42 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         if (Creature* creature = instance->GetCreature(guid))
                             creature->AI()->DoAction(-ACTION_CHECK_DESPAWN);
 
+                /* World state handling */
+                // Plague crates
+                if (state == CRATES_IN_PROGRESS)
+                {
+                    SetWorldState(WORLDSTATE_SHOW_CRATES, 1, false);
+                    SetWorldState(WORLDSTATE_CRATES_REVEALED, 0, false);
+                }
+                else if (state == CRATES_DONE)
+                {
+                    SetWorldState(WORLDSTATE_SHOW_CRATES, 1, false);
+                    SetWorldState(WORLDSTATE_CRATES_REVEALED, NUM_PLAGUE_CRATES, false);
+                }
+                else
+                {
+                    SetWorldState(WORLDSTATE_SHOW_CRATES, 0, false);
+                    SetWorldState(WORLDSTATE_CRATES_REVEALED, state == JUST_STARTED ? 0 : NUM_PLAGUE_CRATES, false);
+                }
+                // Scourge wave management
+                if (state == WAVES_IN_PROGRESS)
+                    SetWorldState(WORLDSTATE_WAVE_COUNT, 5, false); // @todo
+                else if (state == WAVES_DONE)
+                    SetWorldState(WORLDSTATE_WAVE_COUNT, NUM_SCOURGE_WAVES, false);
+                else
+                    SetWorldState(WORLDSTATE_WAVE_COUNT, 0, false);
+
+                PropagateWorldStateUpdate();
+
                 switch (state)
                 {
                     case CRATES_IN_PROGRESS:
-                        DoUpdateWorldState(WORLDSTATE_SHOW_CRATES, 1);
-                        DoUpdateWorldState(WORLDSTATE_CRATES_REVEALED, missingPlagueCrates());
                         break;
                     case CRATES_DONE:
-                        DoUpdateWorldState(WORLDSTATE_CRATES_REVEALED, NUM_PLAGUE_CRATES);
+                        if (Creature* bunny = instance->GetCreature(_genericBunnyGUID))
+                            bunny->CastSpell(nullptr, SPELL_CRATES_KILL_CREDIT, TRIGGERED_FULL_MASK);
+                        break;
+                    case UTHER_TALK:
                         break;
                 }
             }
@@ -233,7 +251,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 if (!_infiniteGuardianTimeout && GetBossState(DATA_INFINITE_CORRUPTOR) != FAIL)
                 {
                     _infiniteGuardianTimeout = time(NULL) + 10 * MINUTE;
-                    DoUpdateWorldState(WORLDSTATE_TIME_GUARDIAN_SHOW, 1);
+                    SetWorldState(WORLDSTATE_TIME_GUARDIAN_SHOW, 1);
                     events.ScheduleEvent(EVENT_GUARDIAN_TICK, Seconds(0));
                 }
                 events.Update(diff);
@@ -245,17 +263,16 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         case EVENT_GUARDIAN_TICK:
                         {
                             time_t secondsToGuardianDeath = _infiniteGuardianTimeout - time(NULL);
-                            std::cout << secondsToGuardianDeath << std::endl;
                             if (secondsToGuardianDeath <= 0)
                             {
                                 _infiniteGuardianTimeout = 0;
-                                DoUpdateWorldState(WORLDSTATE_TIME_GUARDIAN_SHOW, 0);
-                                DoUpdateWorldState(WORLDSTATE_TIME_GUARDIAN, 0);
+                                SetWorldState(WORLDSTATE_TIME_GUARDIAN_SHOW, 0, false);
+                                SetWorldState(WORLDSTATE_TIME_GUARDIAN, 0);
                                 SetBossState(DATA_INFINITE_CORRUPTOR, FAIL);
                             }
                             else
                             {
-                                DoUpdateWorldState(WORLDSTATE_TIME_GUARDIAN, (secondsToGuardianDeath + (MINUTE - 1)) / MINUTE);
+                                SetWorldState(WORLDSTATE_TIME_GUARDIAN, (secondsToGuardianDeath + (MINUTE - 1)) / MINUTE);
                                 events.Repeat(Seconds((secondsToGuardianDeath % MINUTE) + 1));
                             }
                             break;
@@ -270,6 +287,9 @@ class instance_culling_of_stratholme : public InstanceMapScript
             {
                 switch (creature->GetEntry())
                 {
+                    case NPC_GENERIC_BUNNY:
+                        _genericBunnyGUID = creature->GetGUID();
+                        break;
                     case NPC_CRATE_HELPER:
                         _plagueCrates.push_back(creature->GetGUID());
                         break;
@@ -280,38 +300,50 @@ class instance_culling_of_stratholme : public InstanceMapScript
 
             void CreatureAIHello(ObjectGuid const& me, ProgressStates myStates)
             {
-                if (Creature* c = instance->GetCreature(me))
-                    std::cout << "Hello: " << c->GetName() << std::endl;
-                
-                ProgressStates curState = JUST_STARTED;
-                while (curState <= COMPLETE)
-                {
+                for (ProgressStates curState = JUST_STARTED; curState <= COMPLETE; curState = ProgressStates(curState << 1))
                     if (myStates & curState)
                         _myCreatures[curState].insert(me);
-                    curState = ProgressStates(curState << 1);
-                }
             }
 
             void CreatureAIGoodbye(ObjectGuid const& me, ProgressStates myStates)
             {
-                if (Creature* c = instance->GetCreature(me))
-                    std::cout << "Goodbye: " << c->GetName() << std::endl;
-                
-                ProgressStates curState = JUST_STARTED;
-                while (curState <= COMPLETE)
-                {
+                for (ProgressStates curState = JUST_STARTED; curState <= COMPLETE; curState = ProgressStates(curState << 1))
                     if (myStates & curState)
                         _myCreatures[curState].erase(me);
-                    curState = ProgressStates(curState << 1);
+            }
+
+            void SetWorldState(InstanceMisc state, uint32 value, bool immediate = true)
+            {
+                std::cout << "SetWorldState " << state << " " << value << std::endl;
+                _currentWorldStates[state] = value;
+                if (immediate)
+                    PropagateWorldStateUpdate();
+            }
+            void PropagateWorldStateUpdate()
+            {
+                std::cout << "Propagate world states" << std::endl;
+                for (WorldStateMap::const_iterator it = _currentWorldStates.begin(); it != _currentWorldStates.end(); ++it)
+                {
+                    uint32& sent = _sentWorldStates[it->first];
+                    if (sent != it->second)
+                    {
+                        std::cout << "Sending world state " << it->first << " (" << it->second << ")" << std::endl;
+                        DoUpdateWorldState(it->first, it->second);
+                        sent = it->second;
+                    }
                 }
             }
 
         private:
             EventMap events;
             ProgressStates _currentState;
+            typedef std::map<InstanceMisc,uint32> WorldStateMap;
+            WorldStateMap _sentWorldStates;
+            WorldStateMap _currentWorldStates;
             time_t _infiniteGuardianTimeout;
             std::map<ProgressStates, std::set<ObjectGuid>> _myCreatures;
 
+            ObjectGuid _genericBunnyGUID;
             std::vector<ObjectGuid> _plagueCrates;
             uint32 missingPlagueCrates() const
             {
