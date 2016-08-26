@@ -38,6 +38,7 @@ enum Events
 
 enum Entries
 {
+    NPC_CRATE_HELPER    =  27827,
     GO_MALGANIS_GATE_2  = 187723,
     GO_EXIT_GATE        = 191788
 };
@@ -74,11 +75,13 @@ class instance_culling_of_stratholme : public InstanceMapScript
 
         struct instance_culling_of_stratholme_InstanceMapScript : public InstanceScript
         {
-            instance_culling_of_stratholme_InstanceMapScript(Map* map) : InstanceScript(map), _currentState(NOT_DETERMINED), _crateCount(0), _infiniteGuardianTimeout(0)
+            instance_culling_of_stratholme_InstanceMapScript(Map* map) : InstanceScript(map), _currentState(JUST_STARTED), _infiniteGuardianTimeout(0)
             {
                 SetHeaders("CS");
                 SetBossNumber(NUM_BOSS_ENCOUNTERS);
                 LoadDoorData(doorData);
+
+                _plagueCrates.reserve(NUM_PLAGUE_CRATES);
             }
 
             void FillInitialWorldStates(WorldPacket& data) override
@@ -87,7 +90,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 if (_currentState & (CRATES_IN_PROGRESS | CRATES_DONE))
                 {
                     data << uint32(WORLDSTATE_SHOW_CRATES) << uint32(1);
-                    data << uint32(WORLDSTATE_CRATES_REVEALED) << uint32(_crateCount);
+                    data << uint32(WORLDSTATE_CRATES_REVEALED) << uint32(missingPlagueCrates());
                 }
                 else
                 {
@@ -117,13 +120,12 @@ class instance_culling_of_stratholme : public InstanceMapScript
             void ReadSaveDataMore(std::istringstream& data) override
             {
                 // read current instance progress from save data, then regress to the previous stable state
-                uint32 state = NOT_DETERMINED, loadState;
+                uint32 state = JUST_STARTED, loadState;
                 time_t infiniteGuardianTime = 0;
                 data >> state;
                 data >> infiniteGuardianTime; // UNIX timestamp
                 switch(state)
                 {
-                    case NOT_DETERMINED:
                     case JUST_STARTED:
                     default:
                         loadState = JUST_STARTED;
@@ -134,6 +136,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     case CRATES_DONE:
                         loadState = CRATES_DONE;
                         break;
+                    case UTHER_TALK:
                     case PURGE_PENDING:
                     case WAVES_IN_PROGRESS:
                         loadState = PURGE_PENDING;
@@ -170,15 +173,29 @@ class instance_culling_of_stratholme : public InstanceMapScript
             {
                 switch (type)
                 {
+                    case DATA_CRATES_START:
+                        if (_currentState == JUST_STARTED)
+                            SetInstanceProgress(CRATES_IN_PROGRESS);
+                        break;
                     case DATA_CRATE_REVEALED:
-                        ++_crateCount;
-                        DoUpdateWorldState(WORLDSTATE_CRATES_REVEALED, _crateCount);
-                        if (_crateCount == NUM_PLAGUE_CRATES)
+                        if (uint32 missingCrates = missingPlagueCrates())
+                            DoUpdateWorldState(WORLDSTATE_CRATES_REVEALED, NUM_PLAGUE_CRATES - missingCrates);
+                        else
                             SetInstanceProgress(CRATES_DONE);
                         break;
+                    case DATA_SKIP_TO_PURGE:
+                        if (_currentState <= CRATES_DONE)
+                            SetInstanceProgress(PURGE_PENDING);
                     default:
                         break;
                 }
+            }
+
+            uint32 GetData(uint32 type) const override
+            {
+                if (type == DATA_INSTANCE_PROGRESS)
+                    return _currentState;
+                return 0;
             }
 
             bool SetBossState(uint32 type, EncounterState state) override
@@ -191,19 +208,30 @@ class instance_culling_of_stratholme : public InstanceMapScript
 
             void SetInstanceProgress(ProgressStates state)
             {
+                std::cout << "Instance progress is now " << (uint32)state << std::endl;
                 ProgressStates oldState = _currentState;
                 _currentState = state;
                 if (oldState)
                     for (ObjectGuid const& guid : _myCreatures[oldState])
                         if (Creature* creature = instance->GetCreature(guid))
                             creature->AI()->DoAction(-ACTION_CHECK_DESPAWN);
+
+                switch (state)
+                {
+                    case CRATES_IN_PROGRESS:
+                        DoUpdateWorldState(WORLDSTATE_SHOW_CRATES, 1);
+                        DoUpdateWorldState(WORLDSTATE_CRATES_REVEALED, missingPlagueCrates());
+                        break;
+                    case CRATES_DONE:
+                        DoUpdateWorldState(WORLDSTATE_CRATES_REVEALED, NUM_PLAGUE_CRATES);
+                        break;
+                }
             }
 
             void Update(uint32 diff) override
             {
                 if (!_infiniteGuardianTimeout && GetBossState(DATA_INFINITE_CORRUPTOR) != FAIL)
                 {
-                    std::cout << "setting up guardian" << std::endl;
                     _infiniteGuardianTimeout = time(NULL) + 10 * MINUTE;
                     DoUpdateWorldState(WORLDSTATE_TIME_GUARDIAN_SHOW, 1);
                     events.ScheduleEvent(EVENT_GUARDIAN_TICK, Seconds(0));
@@ -216,7 +244,6 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     {
                         case EVENT_GUARDIAN_TICK:
                         {
-                            std::cout << "Guardian ticking." << std::endl;
                             time_t secondsToGuardianDeath = _infiniteGuardianTimeout - time(NULL);
                             std::cout << secondsToGuardianDeath << std::endl;
                             if (secondsToGuardianDeath <= 0)
@@ -236,6 +263,18 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         default:
                             break;
                     }
+                }
+            }
+
+            void OnCreatureCreate(Creature* creature) override
+            {
+                switch (creature->GetEntry())
+                {
+                    case NPC_CRATE_HELPER:
+                        _plagueCrates.push_back(creature->GetGUID());
+                        break;
+                    default:
+                        break;
                 }
             }
 
@@ -268,12 +307,21 @@ class instance_culling_of_stratholme : public InstanceMapScript
             }
 
         private:
+            EventMap events;
             ProgressStates _currentState;
-            uint32 _crateCount;
             time_t _infiniteGuardianTimeout;
             std::map<ProgressStates, std::set<ObjectGuid>> _myCreatures;
 
-            EventMap events;
+            std::vector<ObjectGuid> _plagueCrates;
+            uint32 missingPlagueCrates() const
+            {
+                uint32 num = 0;
+                for (ObjectGuid crateHelperGUID : _plagueCrates)
+                    if (Creature* crateHelper = instance->GetCreature(crateHelperGUID))
+                        if (crateHelper->IsAlive() && !crateHelper->AI()->GetData(DATA_CRATE_REVEALED))
+                            ++num;
+                return num;
+            }
         };
 
         InstanceScript* GetInstanceScript(InstanceMap* map) const override

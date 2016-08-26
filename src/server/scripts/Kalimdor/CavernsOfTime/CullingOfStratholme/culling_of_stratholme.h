@@ -23,21 +23,21 @@
 // Note: These are bitmask values to allow combining (spawn state masks on template AI), but only a single bit will ever be true in instance script
 enum ProgressStates
 {
-    NOT_DETERMINED          = 0x0000, // set upon initial load
     JUST_STARTED            = 0x0001, // dungeon just started, crate count not visible yet; pending chromie interaction
     CRATES_IN_PROGRESS      = 0x0002, // freshly started dungeon, players are revealing scourge crates
     CRATES_DONE             = 0x0004, // all crates revealed, chromie spawns at Stratholme entrance; waiting for player input to begin first RP event
-    PURGE_PENDING           = 0x0008, // RP event done, pending player input to start wave event
-    WAVES_IN_PROGRESS       = 0x0010, // first section is underway, players are battling waves
-    WAVES_DONE              = 0x0020, // wave section completed; pending player input to begin Town Hall section
-    TOWN_HALL               = 0x0040, // now escorting Arthas through Stratholme Town Hall
-    TOWN_HALL_COMPLETE      = 0x0080, // Town Hall event complete, third boss defeated; pending player input to begin gauntlet transition
-    GAUNTLET_TRANSITION     = 0x0100, // Arthas is leading players through the secret passage from Town Hall to the gauntlet
-    GAUNTLET_PENDING        = 0x0200, // Pending player input to begin escorting Arthas through the final gauntlet section
-    GAUNTLET_IN_PROGRESS    = 0x0400, // Arthas is being escorted through the gauntlet section
-    GAUNTLET_COMPLETE       = 0x0800, // Arthas has reached the end of the gauntlet section; player input pending to begin Mal'ganis encounter
-    MALGANIS_IN_PROGRESS    = 0x1000, // Arthas has moved into the final square and Mal'ganis encounter begins
-    COMPLETE                = 0x2000 // Mal'ganis encounter is completed; dungeon over
+    UTHER_TALK              = 0x0008, // RP event in progress, Uther+Arthas talking
+    PURGE_PENDING           = 0x0010, // RP event done, pending player input to start wave event
+    WAVES_IN_PROGRESS       = 0x0020, // first section is underway, players are battling waves
+    WAVES_DONE              = 0x0040, // wave section completed; pending player input to begin Town Hall section
+    TOWN_HALL               = 0x0080, // now escorting Arthas through Stratholme Town Hall
+    TOWN_HALL_COMPLETE      = 0x0100, // Town Hall event complete, third boss defeated; pending player input to begin gauntlet transition
+    GAUNTLET_TRANSITION     = 0x0200, // Arthas is leading players through the secret passage from Town Hall to the gauntlet
+    GAUNTLET_PENDING        = 0x0400, // Pending player input to begin escorting Arthas through the final gauntlet section
+    GAUNTLET_IN_PROGRESS    = 0x0800, // Arthas is being escorted through the gauntlet section
+    GAUNTLET_COMPLETE       = 0x1000, // Arthas has reached the end of the gauntlet section; player input pending to begin Mal'ganis encounter
+    MALGANIS_IN_PROGRESS    = 0x2000, // Arthas has moved into the final square and Mal'ganis encounter begins
+    COMPLETE                = 0x4000 // Mal'ganis encounter is completed; dungeon over
 };
 
 enum Data
@@ -50,7 +50,11 @@ enum Data
     NUM_BOSS_ENCOUNTERS,
 
     DATA_INSTANCE_PROGRESS = NUM_BOSS_ENCOUNTERS, // GET only
-    DATA_CRATE_REVEALED,
+    DATA_CRATES_START,     // sent by chromie creature script to initiate crate phase
+    DATA_CRATE_REVEALED,   // sent by crate helper AI to trigger re-check of crate status
+    DATA_SKIP_TO_PURGE,    // sent by chromie creature script to skip straight to start of purge
+
+    // old stuff below this, need to figure out if needed
     DATA_ARTHAS
 };
 
@@ -81,6 +85,7 @@ class StratholmeNPCAIWrapper : public T
         StratholmeNPCAIWrapper(Creature* creature, ProgressStates stateMask) : T(creature), instance(creature->GetInstanceScript()), _statesMask(stateMask)
         {
             StratholmeAIHello(instance, me->GetGUID(), _statesMask);
+            CheckDespawn();
         }
         ~StratholmeNPCAIWrapper()
         {
@@ -91,7 +96,7 @@ class StratholmeNPCAIWrapper : public T
         {
             std::cout << "check despawn " << me->GetName() << std::endl;
             if (!(_statesMask & instance->GetData(DATA_INSTANCE_PROGRESS)))
-                me->DespawnOrUnsummon(0);
+                me->DespawnOrUnsummon(0, Seconds(1));
         }
 
         virtual void _DoAction(int32 /*action*/) = 0;
