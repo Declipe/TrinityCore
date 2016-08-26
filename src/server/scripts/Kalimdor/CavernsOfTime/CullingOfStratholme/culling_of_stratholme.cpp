@@ -24,35 +24,6 @@
 #include "Player.h"
 #include "SpellInfo.h"
 
-class npc_arthas : public CreatureScript
-{
-    public:
-        npc_arthas() : CreatureScript("npc_arthas") { }
-
-        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
-        {
-            return true;
-        }
-
-        bool OnGossipHello(Player* player, Creature* creature) override
-        {
-            return false;
-        }
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return GetInstanceAI<npc_arthasAI>(creature);
-        }
-
-        struct npc_arthasAI : public ScriptedAI
-        {
-            npc_arthasAI(Creature* creature) : ScriptedAI(creature)
-            {
-            }
-        };
-
-};
-
 enum Chromie1Gossip
 {
     // offsets from GOSSIP_ACTION_INFO_DEF
@@ -336,7 +307,6 @@ class npc_crate_helper : public CreatureScript
 
 void AddSC_culling_of_stratholme()
 {
-    new npc_arthas();
     new npc_chromie_start();
     new npc_chromie_middle();
     new npc_crate_helper();

@@ -40,8 +40,11 @@ enum Entries
 {
     NPC_GENERIC_BUNNY           =  28960,
     NPC_CRATE_HELPER            =  27827,
+    NPC_ARTHAS                  =  26499,
+
     GO_MALGANIS_GATE_2          = 187723,
     GO_EXIT_GATE                = 191788,
+
     SPELL_CRATES_KILL_CREDIT    =  58109
 };
 
@@ -201,10 +204,16 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 std::cout << "Instance progress is now " << Trinity::StringFormat("0x%X",(uint32)state) << std::endl;
                 ProgressStates oldState = _currentState;
                 _currentState = state;
+
+                // Notify all creatures using spawn control AI of the change so they can despawn as appropriate
                 if (oldState)
                     for (ObjectGuid const& guid : _myCreatures[oldState])
                         if (Creature* creature = instance->GetCreature(guid))
-                            creature->AI()->DoAction(-ACTION_CHECK_DESPAWN);
+                            creature->AI()->DoAction(-ACTION_PROGRESS_UPDATE);
+
+                // Notify Arthas of the change so he can adjust
+                if (Creature* arthas = instance->GetCreature(_arthasGUID))
+                    arthas->AI()->DoAction(-ACTION_PROGRESS_UPDATE);
 
                 /* World state handling */
                 // Plague crates
@@ -293,6 +302,9 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     case NPC_CRATE_HELPER:
                         _plagueCrates.push_back(creature->GetGUID());
                         break;
+                    case NPC_ARTHAS:
+                        _arthasGUID = creature->GetGUID();
+                        break;
                     default:
                         break;
                 }
@@ -319,6 +331,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 if (immediate)
                     PropagateWorldStateUpdate();
             }
+
             void PropagateWorldStateUpdate()
             {
                 std::cout << "Propagate world states" << std::endl;
@@ -354,6 +367,8 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             ++num;
                 return num;
             }
+
+            ObjectGuid _arthasGUID;
         };
 
         InstanceScript* GetInstanceScript(InstanceMap* map) const override

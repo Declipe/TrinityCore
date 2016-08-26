@@ -65,7 +65,7 @@ enum Data
 // these are understood by all creatures using the instance AI; they are passed as negative values to avoid conflicts with creature script specific actions
 enum InstanceActions
 {
-    ACTION_CHECK_DESPAWN = 1
+    ACTION_PROGRESS_UPDATE = 1
 };
 
 enum InstanceMisc
@@ -107,7 +107,7 @@ class StratholmeNPCAIWrapper : public ParentAI
         {
             switch (action)
             {
-                case -ACTION_CHECK_DESPAWN:
+                case -ACTION_PROGRESS_UPDATE:
                     CheckDespawn();
                     break;
                 default:

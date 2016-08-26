@@ -1,7 +1,7 @@
 -- Caverns of Time: Stratholme rework
 SET @DAY = 86400;
 SET @CGUID = 700300; -- creature GUIDs (1 creature);
-DELETE FROM `creature` WHERE `guid` BETWEEN @CGUID+00 AND @CGUID+01;
+DELETE FROM `creature` WHERE `guid` BETWEEN @CGUID+00 AND @CGUID+00;
 
 -- Move additional Chromie spawns to DB
 INSERT INTO `creature` (`guid`,`id`,`map`,`spawnMask`,`phaseMask`,`position_x`,`position_y`,`position_z`,`orientation`,`spawntimesecs`,`spawndist`,`movementtype`) VALUES
@@ -24,3 +24,6 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 -- Make Suspicious Grain Crate and Grain Crate Helper never respawn
 UPDATE `creature` SET `spawntimesecs`=@DAY WHERE `id`=27827;
 UPDATE `gameobject` SET `spawntimesecs`=@DAY WHERE `id`=190094;
+
+-- Arthas AI
+UPDATE `creature_template` SET `ScriptName`="npc_arthas_stratholme" WHERE `entry`=26499;
