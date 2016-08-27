@@ -338,9 +338,18 @@ class npc_crate_helper : public CreatureScript
         }
 };
 
+class npc_stratholme_fluff_living : public CreatureScript
+{
+    public:
+        npc_stratholme_fluff_living() : CreatureScript("npc_stratholme_fluff_living") { }
+        struct npc_stratholme_fluff_livingAI : public StratholmeNPCAIWrapper<NullCreatureAI> { npc_stratholme_fluff_livingAI(Creature* creature) : StratholmeNPCAIWrapper<NullCreatureAI>(creature, ProgressStates(WAVES_IN_PROGRESS-1)) { } };
+        CreatureAI* GetAI(Creature* creature) const override { return GetInstanceAI<npc_stratholme_fluff_livingAI>(creature); }
+};
+
 void AddSC_culling_of_stratholme()
 {
     new npc_chromie_start();
     new npc_chromie_middle();
     new npc_crate_helper();
+    new npc_stratholme_fluff_living();
 }

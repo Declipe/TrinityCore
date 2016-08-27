@@ -45,6 +45,14 @@ enum Entries
     NPC_ARTHAS                  =  26499,
     NPC_LORDAERON_CRIER         =  27913,
 
+    NPC_DEVOURING_GHOUL         =  28249,
+    NPC_ENRAGED_GHOUL           =  27729,
+    NPC_NECROMANCER             =  28200,
+    NPC_CRYPT_FIEND             =  27734,
+    NPC_ACOLYTE                 =  27731,
+    NPC_CRYPT_STALKER           =  28199,
+    NPC_ABOMINATION             =  27736,
+
     GO_MALGANIS_GATE_2          = 187723,
     GO_EXIT_GATE                = 191788,
 
@@ -70,6 +78,7 @@ enum Misc
 {
     NUM_PLAGUE_CRATES   =  5,
     NUM_SCOURGE_WAVES   = 10,
+    MAX_SPAWNS_PER_WAVE =  6,
     WAVE_MEATHOOK       =  5,
     WAVE_SALRAMM        = 10
 };
@@ -95,6 +104,9 @@ class instance_culling_of_stratholme : public InstanceMapScript
 {
     public:
         instance_culling_of_stratholme() : InstanceMapScript("instance_culling_of_stratholme", 595) { }
+
+        typedef std::array<std::array<uint32, MAX_SPAWNS_PER_WAVE>, NUM_SCOURGE_WAVES> WaveData;
+        static const WaveData _heroicWaves;
 
         struct instance_culling_of_stratholme_InstanceMapScript : public InstanceScript
         {
@@ -196,6 +208,17 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     case DATA_SKIP_TO_PURGE:
                         if (_currentState <= CRATES_DONE)
                             SetInstanceProgress(PURGE_PENDING);
+                        break;
+                    case DATA_NOTIFY_DEATH:
+                        for (ObjectGuid const& guid : _waveSpawns)
+                            if (Creature* creature = instance->GetCreature(guid))
+                                if (creature->IsAlive())
+                                    return;
+
+                        if (_waveCount < NUM_SCOURGE_WAVES)
+                            events.ScheduleEvent(EVENT_SCOURGE_WAVE, (_waveCount == WAVE_MEATHOOK) ? Seconds(20) : Seconds(1));
+                        else
+                            SetInstanceProgress(WAVES_DONE);
                         break;
                     default:
                         break;
@@ -328,19 +351,35 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             ++_waveCount;
                             SetWorldState(WORLDSTATE_WAVE_COUNT, _waveCount);
 
-                            uint8 spawnLoc = urand(WAVE_LOC_MIN, WAVE_LOC_MAX);
-                            if (_waveCount == WAVE_MEATHOOK)
-                                spawnLoc = CRIER_SAY_MARKET_ROW;
-                            else if (_waveCount == WAVE_SALRAMM)
-                                spawnLoc = CRIER_SAY_TOWN_HALL;
+                            uint8 spawnLoc;
+                            switch (_waveCount)
+                            {
+                                case WAVE_MEATHOOK:
+                                    spawnLoc = CRIER_SAY_MARKET_ROW;
+                                    std::cout << "spawn meathook" << std::endl;
+                                    break;
+                                case WAVE_SALRAMM:
+                                    spawnLoc = CRIER_SAY_TOWN_HALL;
+                                    std::cout << "spawn salramm" << std::endl;
+                                    break;
+                                default:
+                                    spawnLoc = urand(WAVE_LOC_MIN, WAVE_LOC_MAX);
+                                    if (instance->GetSpawnMode() == DUNGEON_DIFFICULTY_HEROIC)
+                                    {
+                                        for (uint32 entry : _heroicWaves[_waveCount - 1])
+                                            if (entry)
+                                                std::cout << "Spawn " << entry << std::endl;
+                                    }
+                                    else
+                                        std::cout << "Spawn 2x " << NPC_DEVOURING_GHOUL << std::endl;
+                                    break;
+                            }
 
                             if (Creature* crier = instance->GetCreature(_crierGUID))
                                 crier->AI()->Talk(spawnLoc);
 
-                            if (_waveCount < NUM_SCOURGE_WAVES)
-                                events.Repeat(Seconds(10)); // debug crier
-                            else
-                                SetInstanceProgress(WAVES_DONE);
+                            // @todo map marker
+
                             break;
                         }
                         default:
@@ -432,6 +471,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
             ObjectGuid _crierGUID;
 
             uint32 _waveCount;
+            std::set<ObjectGuid> _waveSpawns;
         };
 
         InstanceScript* GetInstanceScript(InstanceMap* map) const override
@@ -439,6 +479,20 @@ class instance_culling_of_stratholme : public InstanceMapScript
             return new instance_culling_of_stratholme_InstanceMapScript(map);
         }
 };
+
+const instance_culling_of_stratholme::WaveData instance_culling_of_stratholme::_heroicWaves =
+{{
+    {{ NPC_DEVOURING_GHOUL, NPC_DEVOURING_GHOUL, NPC_DEVOURING_GHOUL }}, // wave 1
+    {{ NPC_DEVOURING_GHOUL, NPC_ENRAGED_GHOUL, NPC_NECROMANCER }}, // wave 2
+    {{ NPC_DEVOURING_GHOUL, NPC_ENRAGED_GHOUL, NPC_NECROMANCER, NPC_CRYPT_FIEND }}, // wave 3
+    {{ NPC_NECROMANCER, NPC_CRYPT_FIEND, NPC_ACOLYTE, NPC_ACOLYTE, NPC_ACOLYTE, NPC_ACOLYTE }}, // wave 4
+    {{ 0 }}, // wave 5, meathook (special)
+    {{ NPC_DEVOURING_GHOUL, NPC_NECROMANCER, NPC_CRYPT_FIEND, NPC_CRYPT_STALKER }}, // wave 6
+    {{ NPC_DEVOURING_GHOUL, NPC_ENRAGED_GHOUL, NPC_ENRAGED_GHOUL, NPC_ABOMINATION }}, // wave 7
+    {{ NPC_DEVOURING_GHOUL, NPC_ENRAGED_GHOUL, NPC_NECROMANCER, NPC_ABOMINATION }}, // wave 8
+    {{ NPC_DEVOURING_GHOUL, NPC_NECROMANCER, NPC_CRYPT_FIEND, NPC_ABOMINATION }}, // wave 9
+    {{ 0 }} // wave 10, salramm (special)
+}};
 
 void StratholmeAIHello(InstanceScript* instance, ObjectGuid const& me, ProgressStates myStates)
 {

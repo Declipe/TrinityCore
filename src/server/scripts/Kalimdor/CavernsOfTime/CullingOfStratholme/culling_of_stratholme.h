@@ -57,6 +57,7 @@ enum Data
     DATA_CRATE_REVEALED,   // sent by crate helper AI to trigger re-check of crate status
     DATA_UTHER_START,      // sent by chromie #2 creature script to initiate uther RP sequence
     DATA_SKIP_TO_PURGE,    // sent by chromie #1 creature script to skip straight to start of purge
+    DATA_NOTIFY_DEATH,     // sent by wave mob AI to instance script on death
 
     // old stuff below this, need to figure out if needed
     DATA_ARTHAS
@@ -65,7 +66,8 @@ enum Data
 // these are understood by all creatures using the instance AI; they are passed as negative values to avoid conflicts with creature script specific actions
 enum InstanceActions
 {
-    ACTION_PROGRESS_UPDATE = 1
+    ACTION_PROGRESS_UPDATE = 1,
+    ACTION_REQUEST_NOTIFY  = 2
 };
 
 enum InstanceMisc
@@ -86,7 +88,7 @@ template <class ParentAI>
 class StratholmeNPCAIWrapper : public ParentAI
 {
     public:
-        StratholmeNPCAIWrapper(Creature* creature, ProgressStates stateMask) : ParentAI(creature), instance(creature->GetInstanceScript()), _statesMask(stateMask)
+        StratholmeNPCAIWrapper(Creature* creature, ProgressStates stateMask) : ParentAI(creature), instance(creature->GetInstanceScript()), _statesMask(stateMask), _deathNotify(false)
         {
             StratholmeAIHello(instance, me->GetGUID(), _statesMask);
             CheckDespawn();
@@ -110,9 +112,20 @@ class StratholmeNPCAIWrapper : public ParentAI
                 case -ACTION_PROGRESS_UPDATE:
                     CheckDespawn();
                     break;
+                case -ACTION_REQUEST_NOTIFY:
+                    _deathNotify = true;
+                    break;
                 default:
                     _DoAction(action);
             }
+        }
+
+        virtual void _JustDied(Unit* /*killer*/) { }
+        void JustDied(Unit* killer) final override
+        {
+            if (_deathNotify)
+                instance->SetData(DATA_NOTIFY_DEATH, 1);
+            _JustDied(killer);
         }
 
         bool CanRespawn() override
@@ -123,5 +136,6 @@ class StratholmeNPCAIWrapper : public ParentAI
         InstanceScript* const instance;
     private:
         ProgressStates const _statesMask;
+        bool _deathNotify;
 };
 #endif

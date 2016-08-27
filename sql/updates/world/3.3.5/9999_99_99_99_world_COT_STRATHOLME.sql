@@ -31,6 +31,9 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 UPDATE `creature` SET `spawntimesecs`=@DAY WHERE `id`=27827;
 UPDATE `gameobject` SET `spawntimesecs`=@DAY WHERE `id`=190094;
 
+-- Blanket apply a spawn control AI to all "live stratholme" mobs that prevents them respawning after the purge begins
+UPDATE `creature_template` SET `ScriptName`="npc_stratholme_fluff_living",`AIName`="" WHERE `entry` IN (28167,31126,31019,28169,31127,31023,31020,31018);
+
 -- Arthas AI
 UPDATE `creature_template` SET `ScriptName`="npc_arthas_stratholme" WHERE `entry`=26499;
 
@@ -43,3 +46,6 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`Broa
 (27913, 3, "Scourge forces have been spotted near the Festival Lane Gate!", 14, 100, 27644, 3, "Lordaeron Crier FESTIVAL_LANE"),
 (27913, 4, "Scourge forces have been spotted near the Elder's Square Gate!", 14, 100, 27645, 3, "Lordaeron Crier ELDERS_SQUARE"),
 (27913, 5, "Scourge forces have been spotted near the Town Hall!", 14, 100, 27646, 3, "Lordaeron Crier TOWN_HALL");
+
+-- Clean up some incorrect spawns in wave area
+DELETE FROM `creature` WHERE `guid` BETWEEN 143949 AND 143952;
