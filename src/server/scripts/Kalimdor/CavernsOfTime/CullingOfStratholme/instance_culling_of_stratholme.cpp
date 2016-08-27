@@ -33,7 +33,9 @@
 
 enum Events
 {
-    EVENT_GUARDIAN_TICK = 1
+    EVENT_GUARDIAN_TICK = 1,
+    EVENT_CRIER_CALL_TO_GATES,
+    EVENT_SCOURGE_WAVE
 };
 
 enum Entries
@@ -41,11 +43,27 @@ enum Entries
     NPC_GENERIC_BUNNY           =  28960,
     NPC_CRATE_HELPER            =  27827,
     NPC_ARTHAS                  =  26499,
+    NPC_LORDAERON_CRIER         =  27913,
 
     GO_MALGANIS_GATE_2          = 187723,
     GO_EXIT_GATE                = 191788,
 
     SPELL_CRATES_KILL_CREDIT    =  58109
+};
+
+enum Yells
+{
+    CRIER_SAY_CALL_TO_GATES     = 0,
+    CRIER_SAY_KINGS_SQUARE      = 1,
+    CRIER_SAY_MARKET_ROW        = 2,
+    CRIER_SAY_FESTIVAL_LANE     = 3,
+    CRIER_SAY_ELDERS_SQUARE     = 4,
+    CRIER_SAY_TOWN_HALL         = 5
+};
+enum WaveLocations
+{
+    WAVE_LOC_MIN = CRIER_SAY_KINGS_SQUARE,
+    WAVE_LOC_MAX = CRIER_SAY_TOWN_HALL
 };
 
 enum Misc
@@ -80,7 +98,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
 
         struct instance_culling_of_stratholme_InstanceMapScript : public InstanceScript
         {
-            instance_culling_of_stratholme_InstanceMapScript(Map* map) : InstanceScript(map), _currentState(JUST_STARTED), _infiniteGuardianTimeout(0)
+            instance_culling_of_stratholme_InstanceMapScript(Map* map) : InstanceScript(map), _currentState(JUST_STARTED), _infiniteGuardianTimeout(0), _waveCount(0)
             {
                 SetHeaders("CS");
                 SetBossNumber(NUM_BOSS_ENCOUNTERS);
@@ -234,7 +252,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 }
                 // Scourge wave management
                 if (state == WAVES_IN_PROGRESS)
-                    SetWorldState(WORLDSTATE_WAVE_COUNT, 5, false); // @todo
+                    SetWorldState(WORLDSTATE_WAVE_COUNT, _waveCount, false); // @todo
                 else if (state == WAVES_DONE)
                     SetWorldState(WORLDSTATE_WAVE_COUNT, NUM_SCOURGE_WAVES, false);
                 else
@@ -249,8 +267,19 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     case CRATES_DONE:
                         if (Creature* bunny = instance->GetCreature(_genericBunnyGUID))
                             bunny->CastSpell(nullptr, SPELL_CRATES_KILL_CREDIT, TRIGGERED_FULL_MASK);
+                        events.ScheduleEvent(EVENT_CRIER_CALL_TO_GATES, Seconds(5));
                         break;
                     case UTHER_TALK:
+                        // @todo debug skip
+                        if (Creature* crier = instance->GetCreature(_crierGUID))
+                            crier->Talk("Stratholme AI: There should be an RP sequence here. It's not yet implemented. Forwarding the instance to start of purge...", CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, 50000.0f, (WorldObject*)nullptr);
+                        SetInstanceProgress(WAVES_IN_PROGRESS);
+                        break;
+                    case PURGE_PENDING:
+                        break;
+                    case WAVES_IN_PROGRESS:
+                        _waveCount = 0;
+                        events.ScheduleEvent(EVENT_SCOURGE_WAVE, Seconds(1));
                         break;
                 }
             }
@@ -259,6 +288,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
             {
                 if (!_infiniteGuardianTimeout && GetBossState(DATA_INFINITE_CORRUPTOR) != FAIL)
                 {
+                    std::cout << "debug: setting guardian timer to 10 minutes, propagating..." << std::endl;
                     _infiniteGuardianTimeout = time(NULL) + 10 * MINUTE;
                     SetWorldState(WORLDSTATE_TIME_GUARDIAN_SHOW, 1);
                     events.ScheduleEvent(EVENT_GUARDIAN_TICK, Seconds(0));
@@ -286,6 +316,33 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             }
                             break;
                         }
+                        case EVENT_CRIER_CALL_TO_GATES:
+                            if (_currentState == CRATES_DONE)
+                                if (Creature* crier = instance->GetCreature(_crierGUID))
+                                    crier->AI()->Talk(CRIER_SAY_CALL_TO_GATES);
+                            break;
+                        case EVENT_SCOURGE_WAVE:
+                        {
+                            if (_currentState != WAVES_IN_PROGRESS)
+                                break;
+                            ++_waveCount;
+                            SetWorldState(WORLDSTATE_WAVE_COUNT, _waveCount);
+
+                            uint8 spawnLoc = urand(WAVE_LOC_MIN, WAVE_LOC_MAX);
+                            if (_waveCount == WAVE_MEATHOOK)
+                                spawnLoc = CRIER_SAY_MARKET_ROW;
+                            else if (_waveCount == WAVE_SALRAMM)
+                                spawnLoc = CRIER_SAY_TOWN_HALL;
+
+                            if (Creature* crier = instance->GetCreature(_crierGUID))
+                                crier->AI()->Talk(spawnLoc);
+
+                            if (_waveCount < NUM_SCOURGE_WAVES)
+                                events.Repeat(Seconds(10)); // debug crier
+                            else
+                                SetInstanceProgress(WAVES_DONE);
+                            break;
+                        }
                         default:
                             break;
                     }
@@ -304,6 +361,9 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         break;
                     case NPC_ARTHAS:
                         _arthasGUID = creature->GetGUID();
+                        break;
+                    case NPC_LORDAERON_CRIER:
+                        _crierGUID = creature->GetGUID();
                         break;
                     default:
                         break;
@@ -369,6 +429,9 @@ class instance_culling_of_stratholme : public InstanceMapScript
             }
 
             ObjectGuid _arthasGUID;
+            ObjectGuid _crierGUID;
+
+            uint32 _waveCount;
         };
 
         InstanceScript* GetInstanceScript(InstanceMap* map) const override

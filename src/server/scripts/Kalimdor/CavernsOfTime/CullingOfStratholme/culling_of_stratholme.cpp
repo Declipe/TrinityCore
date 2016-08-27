@@ -96,7 +96,7 @@ class npc_chromie_start : public CreatureScript
                         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, Trinity::StringFormat("[GM] Set instance progress 0x%X", state), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL + state);
 
                 uint32 state = instance->GetData(DATA_INSTANCE_PROGRESS);
-                if (state <= CRATES_IN_PROGRESS)
+                if (state < PURGE_PENDING)
                 {
                     player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_INITIAL, GOSSIP_OPTION_EXPLAIN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_EXPLAIN);
                     player->SEND_GOSSIP_MENU(GOSSIP_TEXT_INITIAL, creature->GetGUID());
@@ -185,7 +185,8 @@ enum Chromie2Gossip
 };
 enum Chromie2Misc
 {
-    WHISPER_CRATES_DONE = 0
+    WHISPER_CRATES_DONE = 0,
+    WHISPER_COME_TALK   = 1
 };
 class npc_chromie_middle : public CreatureScript
 {
@@ -240,13 +241,45 @@ class npc_chromie_middle : public CreatureScript
 
         struct npc_chromie_middleAI : public StratholmeNPCAIWrapper<NullCreatureAI>
         {
-            npc_chromie_middleAI(Creature* creature) : StratholmeNPCAIWrapper<NullCreatureAI>(creature, ProgressStates(ALL & ~(JUST_STARTED | CRATES_IN_PROGRESS))) { }
+            npc_chromie_middleAI(Creature* creature) : StratholmeNPCAIWrapper<NullCreatureAI>(creature, ProgressStates(ALL & ~(JUST_STARTED | CRATES_IN_PROGRESS))), _whisperDelay(0) { }
 
             void JustRespawned() override
             {
                 if (instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE)
-                    Talk(WHISPER_CRATES_DONE);
+                    _whisperDelay = 18 * IN_MILLISECONDS;
             }
+
+            void UpdateAI(uint32 diff) override
+            {
+                if (!_whisperDelay)
+                    return;
+                if (_whisperDelay > diff)
+                    _whisperDelay -= diff;
+                else
+                {
+                    if (instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE && _whispered.empty())
+                        Talk(WHISPER_CRATES_DONE);
+                    _whisperDelay = 0;
+                }
+            }
+
+            void MoveInLineOfSight(Unit* unit) override
+            {
+                if (Player* player = unit->ToPlayer())
+                    if (player->GetQuestStatus(QUEST_DISPELLING_ILLUSIONS) == QUEST_STATUS_COMPLETE && me->GetDistance2d(player) < 40.0f)
+                    {
+                        time_t& whisperedTime = _whispered[player->GetGUID()];
+                        time_t now = time(NULL);
+                        if (!whisperedTime || (now - whisperedTime) > 15)
+                        {
+                            Talk(WHISPER_COME_TALK, player);
+                            whisperedTime = now;
+                        }
+                    }
+            }
+
+            uint32 _whisperDelay;
+            std::map<ObjectGuid, time_t> _whispered;
         };
 
         CreatureAI* GetAI(Creature* creature) const override

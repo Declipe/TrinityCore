@@ -10,6 +10,12 @@ INSERT INTO `creature` (`guid`,`id`,`map`,`spawnMask`,`phaseMask`,`position_x`,`
 -- Chromie AI
 UPDATE `creature_template` SET `ScriptName`="npc_chromie_start" WHERE `entry`=26527;
 UPDATE `creature_template` SET `ScriptName`="npc_chromie_middle" WHERE `entry`=27915;
+-- Chromie whispers
+DELETE FROM `creature_text` WHERE `entry`=27915 AND `groupid`=1;
+INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`comment`) VALUES
+(27915, 1, 0, "Come over here time traveller, we need to talk!", 15, 100, 29167, 0, "Chromie - WHISPER_COME_TALK"),
+(27915, 1, 1, "Quick, over here!", 15, 100, 29169, 0, "Chromie - WHISPER_COME_TALK"),
+(27915, 1, 2, "We meet again, time traveller!", 15, 100, 29168, 0, "Chromie - WHISPER_COME_TALK");
 
 -- Fix a random typo in AI name for Grain Crate Helper
 UPDATE `creature_template` SET `ScriptName`="npc_crate_helper_cot" WHERE `entry`=27827;
@@ -27,3 +33,13 @@ UPDATE `gameobject` SET `spawntimesecs`=@DAY WHERE `id`=190094;
 
 -- Arthas AI
 UPDATE `creature_template` SET `ScriptName`="npc_arthas_stratholme" WHERE `entry`=26499;
+
+-- Lordaeron Crier yells
+DELETE FROM `creature_text` WHERE `entry` = 27913;
+INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`comment`) VALUES
+(27913, 0, "All soldiers of Lordaeron should immediately report to the entrance of Stratholme, and await further orders from Prince Arthas.", 14, 100, 27263, 3, "Lordaeron Crier CALL_TO_GATES"),
+(27913, 1, "Scourge forces have been spotted near the King's Square fountain!", 14, 100, 27642, 3, "Lordaeron Crier KINGS_SQUARE"),
+(27913, 2, "Scourge forces have been spotted near the Market Row Gate!", 14, 100, 27643, 3, "Lordaeron Crier MARKET_ROW"),
+(27913, 3, "Scourge forces have been spotted near the Festival Lane Gate!", 14, 100, 27644, 3, "Lordaeron Crier FESTIVAL_LANE"),
+(27913, 4, "Scourge forces have been spotted near the Elder's Square Gate!", 14, 100, 27645, 3, "Lordaeron Crier ELDERS_SQUARE"),
+(27913, 5, "Scourge forces have been spotted near the Town Hall!", 14, 100, 27646, 3, "Lordaeron Crier TOWN_HALL");
