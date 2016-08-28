@@ -39,8 +39,11 @@ UPDATE `gameobject` SET `spawntimesecs`=@DAY WHERE `id`=190094;
 -- Blanket apply a spawn control AI to all "live stratholme" mobs that prevents them respawning after the purge begins
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_fluff_living",`AIName`="" WHERE `entry` IN (28167,31126,31019,28169,31127,31023,31020,31018);
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_living",`AIName`="SmartAI" WHERE `entry` IN (31057);
+-- Do the same for undead stratholme mobs, except for the other phases
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_undead",`AIName`="SmartAI" WHERE `entry` IN (28249,27729,28200,27734,27731,28199,27736);
 
+-- SmartAI fixes for wave creatures
+UPDATE `smart_scripts` SET `event_param3`=3100, `event_param4`=3400 WHERE `entryorguid`=28200 AND `source_type`=0 AND `id` IN (0,1);
 
 -- Arthas AI
 UPDATE `creature_template` SET `ScriptName`="npc_arthas_stratholme" WHERE `entry`=26499;
@@ -57,3 +60,8 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`Broa
 
 -- Clean up some incorrect spawns in wave area
 DELETE FROM `creature` WHERE `guid` BETWEEN 143949 AND 143952;
+
+-- Get rid of the colossal mess that is Risen Zombie SmartAI
+UPDATE `creature_template` SET `ScriptName`="npc_stratholme_fluff_undead",`AIName`="" WHERE `entry` = 27737;
+DELETE FROM `smart_scripts` WHERE -`entryorguid` IN (SELECT `guid` FROM `creature` WHERE `id`=27737 AND `map`=595);
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=22 AND -`SourceEntry` IN (SELECT `guid` FROM `creature` WHERE `id`=27737 AND `map`=595);

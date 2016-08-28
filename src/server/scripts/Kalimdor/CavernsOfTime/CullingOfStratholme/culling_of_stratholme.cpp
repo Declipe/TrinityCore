@@ -353,6 +353,13 @@ class npc_stratholme_smart_living : public CreatureScript
     struct npc_stratholme_smart_livingAI : public StratholmeNPCAIWrapper<SmartAI> { npc_stratholme_smart_livingAI(Creature* creature) : StratholmeNPCAIWrapper<SmartAI>(creature, ProgressStates(WAVES_IN_PROGRESS - 1)) { } };
     CreatureAI* GetAI(Creature* creature) const override { return GetInstanceAI<npc_stratholme_smart_livingAI>(creature); }
 };
+class npc_stratholme_fluff_undead : public CreatureScript
+{
+    public:
+    npc_stratholme_fluff_undead() : CreatureScript("npc_stratholme_fluff_undead") { }
+    struct npc_stratholme_fluff_undeadAI : public StratholmeNPCAIWrapper<AggressorAI> { npc_stratholme_fluff_undeadAI(Creature* creature) : StratholmeNPCAIWrapper<AggressorAI>(creature, ProgressStates(ALL & ~(WAVES_IN_PROGRESS - 1))) { } };
+    CreatureAI* GetAI(Creature* creature) const override { return GetInstanceAI<npc_stratholme_fluff_undeadAI>(creature); }
+};
 class npc_stratholme_smart_undead : public CreatureScript
 {
     public:
@@ -369,5 +376,6 @@ void AddSC_culling_of_stratholme()
 
     new npc_stratholme_fluff_living();
     new npc_stratholme_smart_living();
+    new npc_stratholme_fluff_undead();
     new npc_stratholme_smart_undead();
 }

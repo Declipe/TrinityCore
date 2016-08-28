@@ -584,9 +584,9 @@ class instance_culling_of_stratholme : public InstanceMapScript
         }
 };
 
-const Position instance_culling_of_stratholme::_corruptorPos     = { 2335.470f, 1262.040f, 132.9210f, 1.420790f };
+const Position instance_culling_of_stratholme::_corruptorPos     = { 2331.642f, 1273.273f, 132.9524f, 3.717551f };
 const Position instance_culling_of_stratholme::_guardianPos      = { 2321.489f, 1268.383f, 132.8507f, 0.418879f };
-const Position instance_culling_of_stratholme::_corruptorRiftPos = { 2334.626f, 1280.450f, 133.0066f, 1.727876f };
+const Position instance_culling_of_stratholme::_corruptorRiftPos = { 2443.626f, 1280.450f, 133.0066f, 1.727876f };
 
 const instance_culling_of_stratholme::WaveData instance_culling_of_stratholme::_heroicWaves =
 {{
@@ -618,7 +618,7 @@ const instance_culling_of_stratholme::WaveLocationData instance_culling_of_strat
     { // Market Row
         WORLDSTATE_WAVE_MARKER_MR,
         {{
-            {2229.593f, 1332.397f, 126.846f, 3.24212f},
+            {2226.364f, 1331.808f, 127.0193f, 3.298672f},
             {2229.934f, 1329.146f, 127.057f, 3.24605f},
             {2225.028f, 1327.269f, 127.791f, 3.03792f},
             {2223.844f, 1335.282f, 127.749f, 3.47774f},

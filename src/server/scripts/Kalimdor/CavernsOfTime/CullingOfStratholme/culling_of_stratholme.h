@@ -113,6 +113,7 @@ class StratholmeNPCAIWrapper : public ParentAI
         virtual void _DoAction(int32 /*action*/) { }
         void DoAction(int32 action) final override
         {
+            ParentAI::DoAction(action);
             switch (action)
             {
                 case -ACTION_PROGRESS_UPDATE:
@@ -129,6 +130,7 @@ class StratholmeNPCAIWrapper : public ParentAI
         virtual void _JustDied(Unit* /*killer*/) { }
         void JustDied(Unit* killer) final override
         {
+            ParentAI::JustDied(killer);
             if (_deathNotify)
                 instance->SetData(DATA_NOTIFY_DEATH, 1);
             _JustDied(killer);
@@ -136,7 +138,7 @@ class StratholmeNPCAIWrapper : public ParentAI
 
         bool CanRespawn() override
         {
-            return (_statesMask & instance->GetData(DATA_INSTANCE_PROGRESS)) ? true : false;
+            return (_statesMask & instance->GetData(DATA_INSTANCE_PROGRESS)) ? ParentAI::CanRespawn() : false;
         }
     protected:
         InstanceScript* const instance;
