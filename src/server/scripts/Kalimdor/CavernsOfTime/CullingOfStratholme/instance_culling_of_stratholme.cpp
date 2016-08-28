@@ -42,6 +42,10 @@ enum Entries
 {
     NPC_GENERIC_BUNNY           =  28960,
     NPC_CRATE_HELPER            =  27827,
+    NPC_CHROMIE                 =  26527, // first chromie - we don't need the other two for anything
+    NPC_INFINITE_CORRUPTOR      =  32273,
+    NPC_GUARDIAN_OF_TIME        =  32281,
+    NPC_TIME_RIFT               =  28409,
     NPC_ARTHAS                  =  26499,
     NPC_LORDAERON_CRIER         =  27913,
 
@@ -66,7 +70,11 @@ enum Yells
     CRIER_SAY_MARKET_ROW        = 2,
     CRIER_SAY_FESTIVAL_LANE     = 3,
     CRIER_SAY_ELDERS_SQUARE     = 4,
-    CRIER_SAY_TOWN_HALL         = 5
+    CRIER_SAY_TOWN_HALL         = 5,
+
+    CHROMIE_WHISPER_GUARDIAN_1  = 0,
+    CHROMIE_WHISPER_GUARDIAN_2  = 1,
+    CHROMIE_WHISPER_GUARDIAN_3  = 2
 };
 enum WaveLocations
 {
@@ -106,6 +114,10 @@ class instance_culling_of_stratholme : public InstanceMapScript
 {
     public:
         instance_culling_of_stratholme() : InstanceMapScript("instance_culling_of_stratholme", 595) { }
+
+        static const Position _corruptorPos;
+        static const Position _guardianPos;
+        static const Position _corruptorRiftPos;
 
         typedef std::array<std::array<uint32, MAX_SPAWNS_PER_WAVE>, NUM_SCOURGE_WAVES> WaveData;
         static const WaveData _heroicWaves;
@@ -228,6 +240,12 @@ class instance_culling_of_stratholme : public InstanceMapScript
                                         return;
                             _waveSpawns.clear();
 
+                            // clear existing world markers
+                            for (uint32 marker = WAVE_MARKER_MIN; marker <= WAVE_MARKER_MAX; ++marker)
+                                SetWorldState(InstanceMisc(marker), 0, false);
+                            PropagateWorldStateUpdate();
+
+                            // schedule next wave if applicable
                             if (_waveCount < NUM_SCOURGE_WAVES)
                                 events.ScheduleEvent(EVENT_SCOURGE_WAVE, (_waveCount == WAVE_MEATHOOK) ? Seconds(20) : Seconds(1));
                             else
@@ -295,9 +313,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     SetWorldState(WORLDSTATE_CRATES_REVEALED, state == JUST_STARTED ? 0 : NUM_PLAGUE_CRATES, false);
                 }
                 // Scourge wave management
-                if (state == WAVES_IN_PROGRESS)
-                    SetWorldState(WORLDSTATE_WAVE_COUNT, _waveCount, false); // @todo
-                else if (state == WAVES_DONE)
+                if (state == WAVES_DONE)
                     SetWorldState(WORLDSTATE_WAVE_COUNT, NUM_SCOURGE_WAVES, false);
                 else
                     SetWorldState(WORLDSTATE_WAVE_COUNT, 0, false);
@@ -324,39 +340,73 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     case WAVES_IN_PROGRESS:
                         _waveCount = 0;
                         events.ScheduleEvent(EVENT_SCOURGE_WAVE, Seconds(1));
+
+                        if (!_infiniteGuardianTimeout && instance->GetSpawnMode() == DUNGEON_DIFFICULTY_HEROIC && GetBossState(DATA_INFINITE_CORRUPTOR) != FAIL)
+                        {
+                            instance->SummonCreature(NPC_TIME_RIFT, _corruptorRiftPos);
+                            instance->SummonCreature(NPC_GUARDIAN_OF_TIME, _guardianPos);
+                            instance->SummonCreature(NPC_INFINITE_CORRUPTOR, _corruptorPos);
+                            _infiniteGuardianTimeout = time(NULL) + 25 * MINUTE;
+                            events.ScheduleEvent(EVENT_GUARDIAN_TICK, Seconds(6));
+                        }
+                        break;
+                    case WAVES_DONE:
                         break;
                 }
             }
 
             void Update(uint32 diff) override
             {
-                if (!_infiniteGuardianTimeout && GetBossState(DATA_INFINITE_CORRUPTOR) != FAIL)
-                {
-                    std::cout << "debug: setting guardian timer to 10 minutes, propagating..." << std::endl;
-                    _infiniteGuardianTimeout = time(NULL) + 10 * MINUTE;
-                    SetWorldState(WORLDSTATE_TIME_GUARDIAN_SHOW, 1);
-                    events.ScheduleEvent(EVENT_GUARDIAN_TICK, Seconds(0));
-                }
                 events.Update(diff);
 
                 while (uint32 eventId = events.ExecuteEvent())
                 {
                     switch (eventId)
                     {
-                        case EVENT_GUARDIAN_TICK:
-                        {
+                        case EVENT_GUARDIAN_TICK: // regular ticks at :00 seconds on the timer, and then at 04:30 remaining for the chromie whisper
+                        {                         // we do the whisper as a guardian tick because i don't want to duplicate the real-time code
+
+                            if (instance->GetSpawnMode() != DUNGEON_DIFFICULTY_HEROIC)
+                                return;
+
                             time_t secondsToGuardianDeath = _infiniteGuardianTimeout - time(NULL);
                             if (secondsToGuardianDeath <= 0)
                             {
                                 _infiniteGuardianTimeout = 0;
                                 SetWorldState(WORLDSTATE_TIME_GUARDIAN_SHOW, 0, false);
                                 SetWorldState(WORLDSTATE_TIME_GUARDIAN, 0);
+
+                                if (Creature* corruptor = instance->GetCreature(_corruptorGUID))
+                                {
+                                    corruptor->AI()->DoAction(-ACTION_CORRUPTOR_LEAVE);
+                                    if (Creature* guardian = instance->GetCreature(_guardianGUID))
+                                        corruptor->Kill(guardian); // @todo is there some spell for this?
+                                }
                                 SetBossState(DATA_INFINITE_CORRUPTOR, FAIL);
                             }
                             else
                             {
-                                SetWorldState(WORLDSTATE_TIME_GUARDIAN, (secondsToGuardianDeath + (MINUTE - 1)) / MINUTE);
-                                events.Repeat(Seconds((secondsToGuardianDeath % MINUTE) + 1));
+                                time_t minutes = (secondsToGuardianDeath - 1) / MINUTE;
+                                time_t seconds = ((secondsToGuardianDeath - 1) % MINUTE) + 1;
+
+                                // chromie whispers - we only ever tick at :00 and :30, but give some leeway in case of slow tick rate
+                                if (minutes == 24 && seconds >= 45)
+                                    if (Creature* chromie = instance->GetCreature(_chromieGUID))
+                                        chromie->AI()->Talk(CHROMIE_WHISPER_GUARDIAN_1);
+                                if (minutes ==  4 && seconds < 45)
+                                    if (Creature* chromie = instance->GetCreature(_chromieGUID))
+                                        chromie->AI()->Talk(CHROMIE_WHISPER_GUARDIAN_2);
+                                if (minutes == 0)
+                                    if (Creature* chromie = instance->GetCreature(_chromieGUID))
+                                        chromie->AI()->Talk(CHROMIE_WHISPER_GUARDIAN_3);
+
+                                // update the timer state
+                                SetWorldState(WORLDSTATE_TIME_GUARDIAN_SHOW, 1, false);
+                                SetWorldState(WORLDSTATE_TIME_GUARDIAN, minutes+1);
+                                if (minutes == 4 && seconds > 30)
+                                    events.Repeat(Seconds(seconds-30));
+                                else
+                                    events.Repeat(Seconds(seconds));
                             }
                             break;
                         }
@@ -429,6 +479,18 @@ class instance_culling_of_stratholme : public InstanceMapScript
             {
                 switch (creature->GetEntry())
                 {
+                    case NPC_CHROMIE:
+                        _chromieGUID = creature->GetGUID();
+                        creature->setActive(true);
+                        break;
+                    case NPC_INFINITE_CORRUPTOR:
+                        _corruptorGUID = creature->GetGUID();
+                        creature->setActive(true);
+                        break;
+                    case NPC_GUARDIAN_OF_TIME:
+                        _guardianGUID = creature->GetGUID();
+                        creature->setActive(true);
+                        break;
                     case NPC_GENERIC_BUNNY:
                         _genericBunnyGUID = creature->GetGUID();
                         creature->setActive(true);
@@ -495,6 +557,9 @@ class instance_culling_of_stratholme : public InstanceMapScript
             time_t _infiniteGuardianTimeout;
             std::map<ProgressStates, std::set<ObjectGuid>> _myCreatures;
 
+            ObjectGuid _chromieGUID;
+            ObjectGuid _corruptorGUID;
+            ObjectGuid _guardianGUID;
             ObjectGuid _genericBunnyGUID;
             std::vector<ObjectGuid> _plagueCrates;
             uint32 missingPlagueCrates() const
@@ -519,6 +584,10 @@ class instance_culling_of_stratholme : public InstanceMapScript
             return new instance_culling_of_stratholme_InstanceMapScript(map);
         }
 };
+
+const Position instance_culling_of_stratholme::_corruptorPos     = { 2335.470f, 1262.040f, 132.9210f, 1.420790f };
+const Position instance_culling_of_stratholme::_guardianPos      = { 2321.489f, 1268.383f, 132.8507f, 0.418879f };
+const Position instance_culling_of_stratholme::_corruptorRiftPos = { 2334.626f, 1280.450f, 133.0066f, 1.727876f };
 
 const instance_culling_of_stratholme::WaveData instance_culling_of_stratholme::_heroicWaves =
 {{

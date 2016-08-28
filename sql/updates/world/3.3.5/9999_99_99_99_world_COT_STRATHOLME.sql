@@ -17,15 +17,20 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,
 (27915, 1, 1, "Quick, over here!", 15, 100, 29169, 0, "Chromie - WHISPER_COME_TALK"),
 (27915, 1, 2, "We meet again, time traveller!", 15, 100, 29168, 0, "Chromie - WHISPER_COME_TALK");
 
+-- Corruptor of Time
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 13 AND `SourceEntry`=60422;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `Comment`) VALUES
+(13, 1, 60422, 31, 0, 3, 32281, "Corruption of Time - Implicitly target Guardian of Time");
+
 -- Fix a random typo in AI name for Grain Crate Helper
 UPDATE `creature_template` SET `ScriptName`="npc_crate_helper_cot" WHERE `entry`=27827;
 
 -- Arcane Disruption: Require active grain crate within 8yd, and implicitly target the helper for that crate
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` IN (13,17) AND `SourceEntry`=49590;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ErrorType`, `Comment`) VALUES
-(13, 1, 49590, 31, 0, 3,  27827, 11, "Arcane Disruption - Implicitly target Grain Crate Helper"),
-(17, 0, 49590, 30, 0, 190094, 8,  0, "Arcane Disruption - Must be within 8yd of Suspicious Grain Crate"),
-(17, 0, 49590, 29, 0,  27827, 8,  0, "Arcane Disruption - Must be within 8yd of Grain Crate Helper");
+(13, 1, 49590, 31, 0, 3,  27827,  0, "Arcane Disruption - Implicitly target Grain Crate Helper"),
+(17, 0, 49590, 30, 0, 190094, 8, 11, "Arcane Disruption - Must be within 8yd of Suspicious Grain Crate"),
+(17, 0, 49590, 29, 0,  27827, 8, 11, "Arcane Disruption - Must be within 8yd of Grain Crate Helper");
 
 -- Make Suspicious Grain Crate and Grain Crate Helper never respawn
 UPDATE `creature` SET `spawntimesecs`=@DAY WHERE `id`=27827;

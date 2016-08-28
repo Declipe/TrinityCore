@@ -46,6 +46,11 @@ enum Entries
     NPC_GUARDIAN_OF_TIME = 32281
 };
 
+enum Misc
+{
+    MOVEMENT_TIME_RIFT = 1
+};
+
 class boss_infinite_corruptor : public CreatureScript
 {
     public:
@@ -58,12 +63,12 @@ class boss_infinite_corruptor : public CreatureScript
             void Reset() override
             {
                 _Reset();
-
-                if (Creature* guardian = me->FindNearestCreature(NPC_GUARDIAN_OF_TIME, 100.0f))
-                {
-                    DoCast((Unit*)NULL, SPELL_CORRUPTION_OF_TIME_CHANNEL, false);
-                    guardian->CastSpell(guardian, SPELL_CORRUPTION_OF_TIME_TARGET, false);
-                }
+                DoCastAOE(SPELL_CORRUPTION_OF_TIME_CHANNEL); // implicitly targets the Guardian
+            }
+            void SpellHitTarget(Unit* target, SpellInfo const* spell) override
+            {
+                if (spell->Id == SPELL_CORRUPTION_OF_TIME_CHANNEL)
+                    target->CastSpell(target, SPELL_CORRUPTION_OF_TIME_TARGET, true);
             }
 
             void EnterCombat(Unit* /*who*/) override
@@ -104,6 +109,40 @@ class boss_infinite_corruptor : public CreatureScript
                         break;
                     default:
                         break;
+                }
+            }
+
+            void EnterEvadeMode(EvadeReason why) override
+            {
+                if (me->HasReactState(REACT_PASSIVE))
+                    return;
+                BossAI::EnterEvadeMode(why);
+            }
+
+            void MovementInform(uint32 type, uint32 id) override
+            {
+                if (type == POINT_MOTION_TYPE && id == MOVEMENT_TIME_RIFT)
+                {
+                    me->DespawnOrUnsummon(Seconds(2));
+                    instance->SetBossState(DATA_INFINITE_CORRUPTOR, FAIL);
+                }
+            }
+
+            void DoAction(int32 action) override
+            {
+                if (action == -ACTION_CORRUPTOR_LEAVE)
+                {
+                    me->SetReactState(REACT_PASSIVE);
+                    Talk(SAY_FAIL);
+                    if (Creature* rift = me->FindNearestCreature(NPC_TIME_RIFT, 300.0f))
+                    {
+                        if (me->IsWithinDist2d(rift, 5.0f))
+                            MovementInform(POINT_MOTION_TYPE, MOVEMENT_TIME_RIFT);
+                        else
+                            me->GetMotionMaster()->MovePoint(MOVEMENT_TIME_RIFT, rift->GetPosition()); // @todo offset
+                    }
+                    else
+                        MovementInform(POINT_MOTION_TYPE, MOVEMENT_TIME_RIFT);
                 }
             }
         };

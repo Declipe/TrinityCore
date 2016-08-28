@@ -63,11 +63,12 @@ enum Data
     DATA_ARTHAS
 };
 
-// these are understood by all creatures using the instance AI; they are passed as negative values to avoid conflicts with creature script specific actions
+// these are sent by instance AI to creatures; they are passed as negative values to avoid conflicts with creature script specific actions
 enum InstanceActions
 {
     ACTION_PROGRESS_UPDATE = 1,
-    ACTION_REQUEST_NOTIFY  = 2
+    ACTION_REQUEST_NOTIFY,
+    ACTION_CORRUPTOR_LEAVE
 };
 
 enum InstanceMisc
