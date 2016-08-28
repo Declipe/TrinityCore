@@ -72,11 +72,16 @@ enum InstanceActions
 
 enum InstanceMisc
 {
-    WORLDSTATE_SHOW_CRATES = 3479,
-    WORLDSTATE_CRATES_REVEALED = 3480,
-    WORLDSTATE_WAVE_COUNT = 3504,
-    WORLDSTATE_TIME_GUARDIAN = 3931,
-    WORLDSTATE_TIME_GUARDIAN_SHOW = 3932
+    WORLDSTATE_SHOW_CRATES          = 3479,
+    WORLDSTATE_CRATES_REVEALED      = 3480,
+    WORLDSTATE_WAVE_COUNT           = 3504,
+    WORLDSTATE_WAVE_MARKER_ES       = 3581,
+    WORLDSTATE_WAVE_MARKER_FL       = 3582,
+    WORLDSTATE_WAVE_MARKER_KS       = 3583,
+    WORLDSTATE_WAVE_MARKER_MR       = 3584,
+    WORLDSTATE_WAVE_MARKER_TH       = 3585,
+    WORLDSTATE_TIME_GUARDIAN        = 3931,
+    WORLDSTATE_TIME_GUARDIAN_SHOW   = 3932
 };
 
 // These methods are implemented in instance_culling_of_stratholme.cpp so they can access internals of the instance script
