@@ -21,6 +21,7 @@
 #include "culling_of_stratholme.h"
 #include "ScriptedEscortAI.h"
 #include "PassiveAI.h"
+#include "SmartAI.h"
 #include "Player.h"
 #include "SpellInfo.h"
 
@@ -93,22 +94,22 @@ class npc_chromie_start : public CreatureScript
             {
                 if (player->CanBeGameMaster()) // GM instance state override menu
                     for (uint32 state = 1; state <= COMPLETE; state = state << 1)
-                        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, Trinity::StringFormat("[GM] Set instance progress 0x%X", state), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL + state);
+                        AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, Trinity::StringFormat("[GM] Set instance progress 0x%X", state).c_str(), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL + state);
 
                 uint32 state = instance->GetData(DATA_INSTANCE_PROGRESS);
                 if (state < PURGE_PENDING)
                 {
-                    player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_INITIAL, GOSSIP_OPTION_EXPLAIN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_EXPLAIN);
-                    player->SEND_GOSSIP_MENU(GOSSIP_TEXT_INITIAL, creature->GetGUID());
+                    AddGossipItemFor(player, GOSSIP_MENU_INITIAL, GOSSIP_OPTION_EXPLAIN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_EXPLAIN);
+                    SendGossipMenuFor(player, GOSSIP_TEXT_INITIAL, creature->GetGUID());
                 }
                 else
                 {
-                    player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_INITIAL, GOSSIP_OPTION_TELEPORT, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_TELEPORT);
-                    player->SEND_GOSSIP_MENU(GOSSIP_TEXT_TELEPORT, creature->GetGUID());
+                    AddGossipItemFor(player, GOSSIP_MENU_INITIAL, GOSSIP_OPTION_TELEPORT, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_TELEPORT);
+                    SendGossipMenuFor(player, GOSSIP_TEXT_TELEPORT, creature->GetGUID());
                 }
             }
             else // random fallback, this should really never happen
-                player->SEND_GOSSIP_MENU(GOSSIP_TEXT_INITIAL, creature->GetGUID());
+                SendGossipMenuFor(player, GOSSIP_TEXT_INITIAL, creature->GetGUID());
             return true;
         }
 
@@ -118,32 +119,32 @@ class npc_chromie_start : public CreatureScript
             switch (action - GOSSIP_ACTION_INFO_DEF)
             {
                 case GOSSIP_OFFSET_EXPLAIN:
-                    player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_EXPLAIN_1, GOSSIP_OPTION_EXPLAIN_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_EXPLAIN_1);
-                    player->SEND_GOSSIP_MENU(GOSSIP_TEXT_EXPLAIN_1, creature->GetGUID());
+                    AddGossipItemFor(player, GOSSIP_MENU_EXPLAIN_1, GOSSIP_OPTION_EXPLAIN_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_EXPLAIN_1);
+                    SendGossipMenuFor(player, GOSSIP_TEXT_EXPLAIN_1, creature->GetGUID());
                     break;
                 case GOSSIP_OFFSET_SKIP:
-                    player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_SKIP_1, GOSSIP_OPTION_SKIP_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_SKIP_1);
-                    player->SEND_GOSSIP_MENU(GOSSIP_TEXT_SKIP_1, creature->GetGUID());
+                    AddGossipItemFor(player, GOSSIP_MENU_SKIP_1, GOSSIP_OPTION_SKIP_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_SKIP_1);
+                    SendGossipMenuFor(player, GOSSIP_TEXT_SKIP_1, creature->GetGUID());
                     break;
                 case GOSSIP_OFFSET_SKIP_1:
                     AdvanceDungeonFar(creature);
                     // intentional missing break
                 case GOSSIP_OFFSET_TELEPORT:
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     creature->CastSpell(player, SPELL_TELEPORT_PLAYER);
                     break;
                 case GOSSIP_OFFSET_EXPLAIN_1:
-                    player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_EXPLAIN_2, GOSSIP_OPTION_EXPLAIN_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_EXPLAIN_2);
-                    player->SEND_GOSSIP_MENU(GOSSIP_TEXT_EXPLAIN_2, creature->GetGUID());
+                    AddGossipItemFor(player, GOSSIP_MENU_EXPLAIN_2, GOSSIP_OPTION_EXPLAIN_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_EXPLAIN_2);
+                    SendGossipMenuFor(player, GOSSIP_TEXT_EXPLAIN_2, creature->GetGUID());
                     break;
                 case GOSSIP_OFFSET_EXPLAIN_2:
-                    player->SEND_GOSSIP_MENU(GOSSIP_TEXT_EXPLAIN_3, creature->GetGUID());
+                    SendGossipMenuFor(player, GOSSIP_TEXT_EXPLAIN_3, creature->GetGUID());
                     AdvanceDungeon(creature);
                     if (!player->HasItemCount(ITEM_ARCANE_DISRUPTOR))
                         player->AddItem(ITEM_ARCANE_DISRUPTOR, 1); // @todo figure out spell
                     break;
                 default: // handle GM instance commands
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     if (!player->CanBeGameMaster())
                         break;
                     if (InstanceScript* instance = creature->GetInstanceScript())
@@ -207,8 +208,8 @@ class npc_chromie_middle : public CreatureScript
 
             if (InstanceScript* instance = creature->GetInstanceScript())
                 if (instance->GetData(DATA_INSTANCE_PROGRESS))
-                    player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_STEP1, GOSSIP_OPTION_STEP1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP1);
-            player->SEND_GOSSIP_MENU(GOSSIP_TEXT_STEP1, creature->GetGUID());
+                    AddGossipItemFor(player, GOSSIP_MENU_STEP1, GOSSIP_OPTION_STEP1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP1);
+            SendGossipMenuFor(player, GOSSIP_TEXT_STEP1, creature->GetGUID());
             return true;
         }
 
@@ -218,15 +219,15 @@ class npc_chromie_middle : public CreatureScript
             switch (action - GOSSIP_ACTION_INFO_DEF)
             {
                 case GOSSIP_OFFSET_STEP1:
-                    player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_STEP2, GOSSIP_OPTION_STEP2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP2);
-                    player->SEND_GOSSIP_MENU(GOSSIP_TEXT_STEP2, creature->GetGUID());
+                    AddGossipItemFor(player, GOSSIP_MENU_STEP2, GOSSIP_OPTION_STEP2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP2);
+                    SendGossipMenuFor(player, GOSSIP_TEXT_STEP2, creature->GetGUID());
                     break;
                 case GOSSIP_OFFSET_STEP2:
-                    player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_STEP3, GOSSIP_OPTION_STEP3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP3);
-                    player->SEND_GOSSIP_MENU(GOSSIP_TEXT_STEP3, creature->GetGUID());
+                    AddGossipItemFor(player, GOSSIP_MENU_STEP3, GOSSIP_OPTION_STEP3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP3);
+                    SendGossipMenuFor(player, GOSSIP_TEXT_STEP3, creature->GetGUID());
                     break;
                 case GOSSIP_OFFSET_STEP3:
-                    player->SEND_GOSSIP_MENU(GOSSIP_TEXT_STEP4, creature->GetGUID());
+                    SendGossipMenuFor(player, GOSSIP_TEXT_STEP4, creature->GetGUID());
                     AdvanceDungeon(creature);
                     break;
 
@@ -345,11 +346,28 @@ class npc_stratholme_fluff_living : public CreatureScript
         struct npc_stratholme_fluff_livingAI : public StratholmeNPCAIWrapper<NullCreatureAI> { npc_stratholme_fluff_livingAI(Creature* creature) : StratholmeNPCAIWrapper<NullCreatureAI>(creature, ProgressStates(WAVES_IN_PROGRESS-1)) { } };
         CreatureAI* GetAI(Creature* creature) const override { return GetInstanceAI<npc_stratholme_fluff_livingAI>(creature); }
 };
+class npc_stratholme_smart_living : public CreatureScript
+{
+    public:
+    npc_stratholme_smart_living() : CreatureScript("npc_stratholme_smart_living") { }
+    struct npc_stratholme_smart_livingAI : public StratholmeNPCAIWrapper<SmartAI> { npc_stratholme_smart_livingAI(Creature* creature) : StratholmeNPCAIWrapper<SmartAI>(creature, ProgressStates(WAVES_IN_PROGRESS - 1)) { } };
+    CreatureAI* GetAI(Creature* creature) const override { return GetInstanceAI<npc_stratholme_smart_livingAI>(creature); }
+};
+class npc_stratholme_smart_undead : public CreatureScript
+{
+    public:
+    npc_stratholme_smart_undead() : CreatureScript("npc_stratholme_smart_undead") { }
+    struct npc_stratholme_smart_undeadAI : public StratholmeNPCAIWrapper<SmartAI> { npc_stratholme_smart_undeadAI(Creature* creature) : StratholmeNPCAIWrapper<SmartAI>(creature, ProgressStates(ALL & ~(WAVES_IN_PROGRESS-1))) { } };
+    CreatureAI* GetAI(Creature* creature) const override { return GetInstanceAI<npc_stratholme_smart_undeadAI>(creature); }
+};
 
 void AddSC_culling_of_stratholme()
 {
     new npc_chromie_start();
     new npc_chromie_middle();
     new npc_crate_helper();
+
     new npc_stratholme_fluff_living();
+    new npc_stratholme_smart_living();
+    new npc_stratholme_smart_undead();
 }

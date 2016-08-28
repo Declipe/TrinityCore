@@ -257,13 +257,6 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 }
             }
 
-            void OnUnitDeath(Unit* unit) override
-            {
-                // @todo debug
-                if (unit->ToCreature())
-                    SetData(DATA_NOTIFY_DEATH, 1);
-            }
-
             uint32 GetData(uint32 type) const override
             {
                 if (type == DATA_INSTANCE_PROGRESS)
@@ -432,7 +425,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                                     if (Creature* spawn = instance->SummonCreature(NPC_DEVOURING_GHOUL, spawnLocation.spawnPoints[0]))
                                     {
                                         _waveSpawns.push_back(spawn->GetGUID());
-                                        spawn->SetName("Meathook Placeholder");
+                                        spawn->AI()->DoAction(-ACTION_REQUEST_NOTIFY);
                                     }
                                     break;
                                 case WAVE_SALRAMM:
@@ -440,7 +433,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                                     if (Creature* spawn = instance->SummonCreature(NPC_DEVOURING_GHOUL, spawnLocation.spawnPoints[0]))
                                     {
                                         _waveSpawns.push_back(spawn->GetGUID());
-                                        spawn->SetName("Salramm Placeholder");
+                                        spawn->AI()->DoAction(-ACTION_REQUEST_NOTIFY);
                                     }
                                     break;
                                 default:
@@ -449,13 +442,19 @@ class instance_culling_of_stratholme : public InstanceMapScript
                                         for (uint32 i = 0; i < MAX_SPAWNS_PER_WAVE; ++i)
                                             if (uint32 entry = _heroicWaves[_waveCount - 1][i])
                                                 if (Creature* spawn = instance->SummonCreature(entry, spawnLocation.spawnPoints[i]))
+                                                {
                                                     _waveSpawns.push_back(spawn->GetGUID());
+                                                    spawn->AI()->DoAction(-ACTION_REQUEST_NOTIFY);
+                                                }
                                     }
                                     else
                                     {
                                         for (uint32 i = 0; i <= 1; ++i)
                                             if (Creature* spawn = instance->SummonCreature(NPC_DEVOURING_GHOUL, spawnLocation.spawnPoints[i]))
+                                            {
                                                 _waveSpawns.push_back(spawn->GetGUID());
+                                                spawn->AI()->DoAction(-ACTION_REQUEST_NOTIFY);
+                                            }
                                     }
                                     break;
                             }
