@@ -86,8 +86,8 @@ enum InstanceMisc
 };
 
 // These methods are implemented in instance_culling_of_stratholme.cpp so they can access internals of the instance script
-void StratholmeAIHello(InstanceScript* /*instance*/, ObjectGuid const& /*me*/, ProgressStates /*myStates*/);
-void StratholmeAIGoodbye(InstanceScript* /*instance*/, ObjectGuid const& /*me*/, ProgressStates /*myStates*/);
+void StratholmeAIHello(InstanceScript* instance, ObjectGuid const& me, ProgressStates myStates);
+void StratholmeAIGoodbye(InstanceScript* instance, ObjectGuid const& me, ProgressStates myStates);
 
 // Note: instance script is not nullptr checked in this AI - ONLY use this with GetInstanceAI in script AI getter!
 template <class ParentAI>
@@ -96,12 +96,12 @@ class StratholmeNPCAIWrapper : public ParentAI
     public:
         StratholmeNPCAIWrapper(Creature* creature, ProgressStates stateMask) : ParentAI(creature), instance(creature->GetInstanceScript()), _statesMask(stateMask), _deathNotify(false)
         {
-            StratholmeAIHello(instance, me->GetGUID(), _statesMask);
+            StratholmeAIHello(instance, this->me->GetGUID(), _statesMask);
             CheckDespawn();
         }
         ~StratholmeNPCAIWrapper()
         {
-            StratholmeAIGoodbye(instance, me->GetGUID(), _statesMask);
+            StratholmeAIGoodbye(instance, this->me->GetGUID(), _statesMask);
         }
 
         void CheckDespawn()

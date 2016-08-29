@@ -25,6 +25,193 @@
 #include "Player.h"
 #include "SpellInfo.h"
 
+enum InnEventEntries
+{
+    NPC_FORREST = 30551,
+    NPC_BELFAST = 30571,
+    NPC_JAMES = 30553,
+    NPC_FRAS = 30552,
+    NPC_MAL = 31017,
+    NPC_GRYAN = 30561
+};
+enum InnEventEvents
+{
+    EVENT_FORREST_1 = 1,    // This whole situation seems a bit paranoid, don't you think?
+    EVENT_JAMES_1,          // Orders are orders. If the Prince says jump...
+    EVENT_FRAS_1,           // It's a strange order, you can't deny. Suspicious food? Under that definition, you should arrest Belfast!
+    EVENT_BELFAST_MOVE = 100,
+    EVENT_BELFAST_1,        // I HEARD THAT! No more ale for you! Not a drop!
+    EVENT_MAL_1,            // Enough, Michael. Business is hurting enough with this scare as it is. We can use every copper.
+    EVENT_GRYAN_1,          // The soldiers are doing important work. The safety of the people is more important, Mal, if you're interested in your customers living to spend another day.
+    EVENT_MAL_2,            // Mal Corricks grudgingly nods.
+    EVENT_MAL_3,            // I can't argue with that.
+    EVENT_JAMES_2,          // Don't worry too much. By the time I went off duty, we hadn't found a scrap of befouled grain here.
+    EVENT_FORREST_2,        // Thank the Light for that.
+    EVENT_FRAS_2            // Fras Siabi nods.
+};
+enum InnEventLines
+{
+    LINE_JAMES_1    = 0,
+    LINE_JAMES_2    = 1,
+
+    LINE_FRAS_1     = 0,
+    LINE_FRAS_2     = 1,
+
+    LINE_MAL_1      = 0,
+    LINE_MAL_2      = 1,
+    LINE_MAL_3      = 2,
+
+    LINE_FORREST_1  = 0,
+    LINE_FORREST_2  = 1,
+
+    LINE_BELFAST_0  = 0,
+    LINE_BELFAST_1  = 1,
+    LINE_GRYAN_1    = 0,
+};
+enum InnEventMisc
+{
+    DATA_REQUEST_FACING = 0,
+    DATA_REACHED_WP     = 1
+};
+
+class npc_hearthsinger_forresten_cot : public CreatureScript
+{
+    public:
+        npc_hearthsinger_forresten_cot() : CreatureScript("npc_hearthsinger_forresten_cot") { }
+
+        struct npc_hearthsinger_forresten_cotAI : public NullCreatureAI
+        {
+            npc_hearthsinger_forresten_cotAI(Creature* creature) : NullCreatureAI(creature), instance(creature->GetInstanceScript()), _hadBelfast(false), _hadTalk(false) { }
+
+            void UpdateAI(uint32 diff)
+            {
+                events.Update(diff);
+                while (uint32 eventId = events.ExecuteEvent())
+                {
+                    uint32 talkerEntry, line;
+                    switch (eventId)
+                    {
+                        case EVENT_FORREST_1:
+                            talkerEntry = 0, line = LINE_FORREST_1;
+                            break;
+                        case EVENT_JAMES_1:
+                            talkerEntry = NPC_JAMES, line = LINE_JAMES_1;
+                            break;
+                        case EVENT_FRAS_1:
+                            talkerEntry = NPC_FRAS, line = LINE_FRAS_1;
+                            break;
+                        case EVENT_BELFAST_MOVE:
+                            if (Creature* belfast = me->FindNearestCreature(NPC_BELFAST, 80.0f, true))
+                                belfast->AI()->DoAction(EVENT_BELFAST_MOVE);
+                            return;
+                        case EVENT_BELFAST_1:
+                            talkerEntry = NPC_BELFAST, line = LINE_BELFAST_1;
+                            break;
+                        case EVENT_MAL_1:
+                            talkerEntry = NPC_MAL, line = LINE_MAL_1;
+                            break;
+                        case EVENT_GRYAN_1:
+                            talkerEntry = NPC_GRYAN, line = LINE_GRYAN_1;
+                            break;
+                        case EVENT_MAL_2:
+                            talkerEntry = NPC_MAL, line = LINE_MAL_2;
+                            break;
+                        case EVENT_MAL_3:
+                            talkerEntry = NPC_MAL, line = LINE_MAL_3;
+                            break;
+                        case EVENT_JAMES_2:
+                            talkerEntry = NPC_JAMES, line = LINE_JAMES_2;
+                            break;
+                        case EVENT_FORREST_2:
+                            talkerEntry = 0, line = LINE_FORREST_2;
+                            break;
+                        case EVENT_FRAS_2:
+                            talkerEntry = NPC_FRAS, line = LINE_FRAS_2;
+                            break;
+                        default:
+                            talkerEntry = 0, line = 0;
+                            break;
+                    }
+                    Creature* talker = me;
+                    if (talkerEntry)
+                        talker = me->FindNearestCreature(talkerEntry, 80.0f, true);
+                    if (talker)
+                        talker->AI()->Talk(line, ObjectAccessor::GetPlayer(*talker, _triggeringPlayer));
+                }
+            }
+
+            // Player has hit the Belfast stairs areatrigger, we are taking him over for a moment
+            void SetGUID(ObjectGuid guid, int32 /*id*/) override
+            {
+                if (_hadBelfast)
+                    return;
+                _hadBelfast = true;
+                if (Creature* belfast = me->FindNearestCreature(NPC_BELFAST, 100.0f, true))
+                    if (Player* invoker = ObjectAccessor::GetPlayer(*belfast, guid))
+                    {
+                        belfast->StopMoving();
+                        belfast->SetFacingToObject(invoker);
+                        belfast->AI()->Talk(LINE_BELFAST_0);
+                    }
+            }
+
+            // Belfast SmartAI telling us it's reached the WP
+            void SetData(uint32 data, uint32 /*value*/) override
+            {
+                events.ScheduleEvent(EVENT_BELFAST_1, Seconds(0));
+                events.ScheduleEvent(EVENT_MAL_1, Seconds(4));
+                events.ScheduleEvent(EVENT_GRYAN_1, Seconds(8));
+                events.ScheduleEvent(EVENT_MAL_2, Seconds(11));
+                events.ScheduleEvent(EVENT_MAL_3, Seconds(12));
+                events.ScheduleEvent(EVENT_JAMES_2, Seconds(15));
+                events.ScheduleEvent(EVENT_FORREST_2, Seconds(19));
+                events.ScheduleEvent(EVENT_FRAS_2, Seconds(21));
+            }
+
+            void MoveInLineOfSight(Unit* unit) override
+            {
+                if (!_hadTalk && unit->ToPlayer() && instance->GetData(DATA_INSTANCE_PROGRESS) <= CRATES_IN_PROGRESS && me->GetDistance2d(unit) <= 10.0f)
+                {
+                    _hadTalk = true;
+                    _triggeringPlayer = unit->GetGUID();
+                    events.ScheduleEvent(EVENT_FORREST_1, Seconds(4));
+                    events.ScheduleEvent(EVENT_JAMES_1, Seconds(8));
+                    events.ScheduleEvent(EVENT_FRAS_1, Seconds(12));
+                    events.ScheduleEvent(EVENT_BELFAST_MOVE, Seconds(10));
+                }
+            }
+
+
+            private:
+                InstanceScript const* const instance;
+                EventMap events;
+                bool _hadBelfast;
+                bool _hadTalk;
+                ObjectGuid _triggeringPlayer;
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return GetInstanceAI<npc_hearthsinger_forresten_cotAI>(creature);
+        }
+};
+
+class at_stratholme_inn_stairs_cot : public AreaTriggerScript
+{
+    public:
+        at_stratholme_inn_stairs_cot() : AreaTriggerScript("at_stratholme_inn_stairs_cot") { }
+
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/) override
+        {
+            if (InstanceScript* instance = player->GetInstanceScript())
+                if (instance->GetData(DATA_INSTANCE_PROGRESS) <= CRATES_IN_PROGRESS)
+                    // Forrest's script will handle Belfast for this, since SmartAI lacks the features to do it (we can't pass a custom target)
+                    if (Creature* forrest = player->FindNearestCreature(NPC_FORREST, 200.0f, true))
+                        forrest->AI()->SetGUID(player->GetGUID());
+            return true;
+        }
+};
+
 enum Chromie1Gossip
 {
     // offsets from GOSSIP_ACTION_INFO_DEF
@@ -357,19 +544,22 @@ class npc_stratholme_fluff_undead : public CreatureScript
 {
     public:
     npc_stratholme_fluff_undead() : CreatureScript("npc_stratholme_fluff_undead") { }
-    struct npc_stratholme_fluff_undeadAI : public StratholmeNPCAIWrapper<AggressorAI> { npc_stratholme_fluff_undeadAI(Creature* creature) : StratholmeNPCAIWrapper<AggressorAI>(creature, ProgressStates(ALL & ~(WAVES_IN_PROGRESS - 1))) { } };
+    struct npc_stratholme_fluff_undeadAI : public StratholmeNPCAIWrapper<AggressorAI> { npc_stratholme_fluff_undeadAI(Creature* creature) : StratholmeNPCAIWrapper<AggressorAI>(creature, WAVES_IN_PROGRESS) { } };
     CreatureAI* GetAI(Creature* creature) const override { return GetInstanceAI<npc_stratholme_fluff_undeadAI>(creature); }
 };
 class npc_stratholme_smart_undead : public CreatureScript
 {
     public:
     npc_stratholme_smart_undead() : CreatureScript("npc_stratholme_smart_undead") { }
-    struct npc_stratholme_smart_undeadAI : public StratholmeNPCAIWrapper<SmartAI> { npc_stratholme_smart_undeadAI(Creature* creature) : StratholmeNPCAIWrapper<SmartAI>(creature, ProgressStates(ALL & ~(WAVES_IN_PROGRESS-1))) { } };
+    struct npc_stratholme_smart_undeadAI : public StratholmeNPCAIWrapper<SmartAI> { npc_stratholme_smart_undeadAI(Creature* creature) : StratholmeNPCAIWrapper<SmartAI>(creature, WAVES_IN_PROGRESS) { } };
     CreatureAI* GetAI(Creature* creature) const override { return GetInstanceAI<npc_stratholme_smart_undeadAI>(creature); }
 };
 
 void AddSC_culling_of_stratholme()
 {
+    new npc_hearthsinger_forresten_cot();
+    new at_stratholme_inn_stairs_cot();
+
     new npc_chromie_start();
     new npc_chromie_middle();
     new npc_crate_helper();
