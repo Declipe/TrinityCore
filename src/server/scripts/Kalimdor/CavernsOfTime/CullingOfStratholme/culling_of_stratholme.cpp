@@ -159,13 +159,13 @@ class npc_hearthsinger_forresten_cot : public CreatureScript
             void SetData(uint32 data, uint32 /*value*/) override
             {
                 events.ScheduleEvent(EVENT_BELFAST_1, Seconds(0));
-                events.ScheduleEvent(EVENT_MAL_1, Seconds(4));
-                events.ScheduleEvent(EVENT_GRYAN_1, Seconds(8));
-                events.ScheduleEvent(EVENT_MAL_2, Seconds(11));
-                events.ScheduleEvent(EVENT_MAL_3, Seconds(12));
-                events.ScheduleEvent(EVENT_JAMES_2, Seconds(15));
-                events.ScheduleEvent(EVENT_FORREST_2, Seconds(19));
-                events.ScheduleEvent(EVENT_FRAS_2, Seconds(21));
+                events.ScheduleEvent(EVENT_MAL_1, Seconds(6));
+                events.ScheduleEvent(EVENT_GRYAN_1, Seconds(12));
+                events.ScheduleEvent(EVENT_MAL_2, Seconds(18));
+                events.ScheduleEvent(EVENT_MAL_3, Seconds(20));
+                events.ScheduleEvent(EVENT_JAMES_2, Seconds(26));
+                events.ScheduleEvent(EVENT_FORREST_2, Seconds(32));
+                events.ScheduleEvent(EVENT_FRAS_2, Seconds(38));
             }
 
             void MoveInLineOfSight(Unit* unit) override
@@ -174,10 +174,11 @@ class npc_hearthsinger_forresten_cot : public CreatureScript
                 {
                     _hadTalk = true;
                     _triggeringPlayer = unit->GetGUID();
-                    events.ScheduleEvent(EVENT_FORREST_1, Seconds(4));
-                    events.ScheduleEvent(EVENT_JAMES_1, Seconds(8));
-                    events.ScheduleEvent(EVENT_FRAS_1, Seconds(12));
-                    events.ScheduleEvent(EVENT_BELFAST_MOVE, Seconds(10));
+                    Seconds offset = Seconds(urand(10,30));
+                    events.ScheduleEvent(EVENT_FORREST_1, offset);
+                    events.ScheduleEvent(EVENT_JAMES_1, offset+Seconds(6));
+                    events.ScheduleEvent(EVENT_FRAS_1, offset+Seconds(12));
+                    events.ScheduleEvent(EVENT_BELFAST_MOVE, offset+Seconds(12));
                 }
             }
 

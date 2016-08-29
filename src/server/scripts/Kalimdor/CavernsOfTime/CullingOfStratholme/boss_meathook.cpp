@@ -48,18 +48,17 @@ class boss_meathook : public CreatureScript
 
         struct boss_meathookAI : public BossAI
         {
-            boss_meathookAI(Creature* creature) : BossAI(creature, DATA_MEATHOOK)
-            {
-                Talk(SAY_SPAWN);
-            }
+            boss_meathookAI(Creature* creature) : BossAI(creature, DATA_MEATHOOK) { }
+
+            void InitializeAI() override { Talk(SAY_SPAWN); }
 
             void EnterCombat(Unit* /*who*/) override
             {
                 Talk(SAY_AGGRO);
                 _EnterCombat();
-                events.ScheduleEvent(EVENT_CHAIN, urand(12000, 17000));
-                events.ScheduleEvent(EVENT_DISEASE, urand(2000, 4000));
-                events.ScheduleEvent(EVENT_FRENZY, urand(21000, 26000));
+                events.ScheduleEvent(EVENT_CHAIN, randtime(Seconds(12), Seconds(17)));
+                events.ScheduleEvent(EVENT_DISEASE, randtime(Seconds(2), Seconds(4)));
+                events.ScheduleEvent(EVENT_FRENZY, randtime(Seconds(21), Seconds(26)));
             }
 
             void ExecuteEvent(uint32 eventId) override
@@ -69,15 +68,15 @@ class boss_meathook : public CreatureScript
                     case EVENT_CHAIN:
                         if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
                             DoCast(target, SPELL_CONSTRICTING_CHAINS);
-                        events.ScheduleEvent(EVENT_CHAIN, urand(2000, 4000));
+                        events.Repeat(Seconds(2), Seconds(4));
                         break;
                     case EVENT_DISEASE:
                         DoCastAOE(SPELL_DISEASE_EXPULSION);
-                        events.ScheduleEvent(EVENT_DISEASE, urand(1500, 4000));
+                        events.Repeat(Seconds(1)+Milliseconds(500), Seconds(4));
                         break;
                     case EVENT_FRENZY:
                         DoCast(me, SPELL_FRENZY);
-                        events.ScheduleEvent(EVENT_FRENZY, urand(21000, 26000));
+                        events.Repeat(Seconds(21), Seconds(26));
                         break;
                     default:
                         break;

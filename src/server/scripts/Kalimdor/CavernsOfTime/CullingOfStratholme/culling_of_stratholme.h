@@ -107,7 +107,7 @@ class StratholmeNPCAIWrapper : public ParentAI
         void CheckDespawn()
         {
             if (!(_statesMask & instance->GetData(DATA_INSTANCE_PROGRESS)))
-                me->DespawnOrUnsummon(0, Seconds(1));
+                this->me->DespawnOrUnsummon(0, Seconds(1));
         }
 
         virtual void _DoAction(int32 /*action*/) { }

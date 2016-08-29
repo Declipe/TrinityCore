@@ -35,7 +35,8 @@ enum Events
 {
     EVENT_GUARDIAN_TICK = 1,
     EVENT_CRIER_CALL_TO_GATES,
-    EVENT_SCOURGE_WAVE
+    EVENT_SCOURGE_WAVE,
+    EVENT_CRIER_ANNOUNCE_WAVE
 };
 
 enum Entries
@@ -56,6 +57,8 @@ enum Entries
     NPC_ACOLYTE                 =  27731,
     NPC_CRYPT_STALKER           =  28199,
     NPC_ABOMINATION             =  27736,
+    NPC_MEATHOOK                =  26529,
+    NPC_SALRAMM                 =  26530,
 
     GO_MALGANIS_GATE_2          = 187723,
     GO_EXIT_GATE                = 191788,
@@ -132,7 +135,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
 
         struct instance_culling_of_stratholme_InstanceMapScript : public InstanceScript
         {
-            instance_culling_of_stratholme_InstanceMapScript(Map* map) : InstanceScript(map), _currentState(JUST_STARTED), _infiniteGuardianTimeout(0), _waveCount(0)
+            instance_culling_of_stratholme_InstanceMapScript(Map* map) : InstanceScript(map), _currentState(JUST_STARTED), _infiniteGuardianTimeout(0), _waveCount(0), _currentSpawnLoc(0)
             {
                 SetHeaders("CS");
                 SetBossNumber(NUM_BOSS_ENCOUNTERS);
@@ -269,6 +272,9 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 if (!InstanceScript::SetBossState(type, state))
                     return false;
 
+                if ((type == DATA_MEATHOOK || type == DATA_SALRAMM) && state == DONE)
+                    SetData(DATA_NOTIFY_DEATH, 1);
+
                 return true;
             }
 
@@ -332,6 +338,8 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         break;
                     case WAVES_IN_PROGRESS:
                         _waveCount = 0;
+                        _currentSpawnLoc = 0;
+                        _waveSpawns.clear();
                         events.ScheduleEvent(EVENT_SCOURGE_WAVE, Seconds(1));
 
                         if (!_infiniteGuardianTimeout && instance->GetSpawnMode() == DUNGEON_DIFFICULTY_HEROIC && GetBossState(DATA_INFINITE_CORRUPTOR) != FAIL)
@@ -416,21 +424,21 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             SetWorldState(WORLDSTATE_WAVE_COUNT, _waveCount);
 
                             uint8 spawnLoc = urand(WAVE_LOC_MIN, WAVE_LOC_MAX);
+                            while (spawnLoc == _currentSpawnLoc) // don't allow repeats
+                                spawnLoc = urand(WAVE_LOC_MIN, WAVE_LOC_MAX);
                             WaveLocation const& spawnLocation = _waveLocations[spawnLoc - WAVE_LOC_MIN];
 
                             switch (_waveCount)
                             {
                                 case WAVE_MEATHOOK:
-                                    std::cout << "Spawn Meathook (spawn placeholder ghoul)" << std::endl;
-                                    if (Creature* spawn = instance->SummonCreature(NPC_DEVOURING_GHOUL, spawnLocation.spawnPoints[0]))
+                                    if (Creature* spawn = instance->SummonCreature(NPC_MEATHOOK, spawnLocation.spawnPoints[0]))
                                     {
                                         _waveSpawns.push_back(spawn->GetGUID());
                                         spawn->AI()->DoAction(-ACTION_REQUEST_NOTIFY);
                                     }
                                     break;
                                 case WAVE_SALRAMM:
-                                    std::cout << "Spawn Salramm (spawn placeholder ghoul)" << std::endl;
-                                    if (Creature* spawn = instance->SummonCreature(NPC_DEVOURING_GHOUL, spawnLocation.spawnPoints[0]))
+                                    if (Creature* spawn = instance->SummonCreature(NPC_SALRAMM, spawnLocation.spawnPoints[0]))
                                     {
                                         _waveSpawns.push_back(spawn->GetGUID());
                                         spawn->AI()->DoAction(-ACTION_REQUEST_NOTIFY);
@@ -459,15 +467,19 @@ class instance_culling_of_stratholme : public InstanceMapScript
                                     break;
                             }
 
-                            if (Creature* crier = instance->GetCreature(_crierGUID))
-                                crier->AI()->Talk(spawnLoc);
-
                             for (uint32 marker = WAVE_MARKER_MIN; marker <= WAVE_MARKER_MAX; ++marker)
                                 SetWorldState(InstanceMisc(marker), 0, false);
                             SetWorldState(spawnLocation.worldState, 1);
 
+                            events.RescheduleEvent(EVENT_CRIER_ANNOUNCE_WAVE, Seconds(2));
+                            _currentSpawnLoc = spawnLoc;
                             break;
                         }
+                        case EVENT_CRIER_ANNOUNCE_WAVE:
+                            if (_currentState == WAVES_IN_PROGRESS)
+                                if (Creature* crier = instance->GetCreature(_crierGUID))
+                                    crier->AI()->Talk(_currentSpawnLoc);
+                            break;
                         default:
                             break;
                     }
@@ -575,6 +587,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
             ObjectGuid _crierGUID;
 
             uint32 _waveCount;
+            uint8 _currentSpawnLoc;
             std::vector<ObjectGuid> _waveSpawns;
         };
 

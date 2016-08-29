@@ -25,27 +25,31 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 -- Starting inn RP fluff
 DELETE FROM `areatrigger_scripts` WHERE `entry`=5291;
 INSERT INTO `areatrigger_scripts` (`entry`,`ScriptName`) VALUES (5291,"at_stratholme_inn_stairs_cot");
+UPDATE `creature` SET `movementtype`=0 WHERE `id`=30571;
+UPDATE `creature_addon` SET `bytes1`=0 WHERE `guid` IN (SELECT guid FROM `creature` WHERE `id`=30571);
 UPDATE `creature_template` SET `ScriptName`="",`AIName`="SmartAI" WHERE `entry`=30571;
 UPDATE `creature_template` SET `ScriptName`="npc_hearthsinger_forresten_cot",`AIName`="" WHERE `entry`=30551;
 DELETE FROM `smart_scripts` WHERE `entryorguid` = 30571 AND `source_type`=0;
 INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type`,`event_chance`,`event_flags`,`event_param1`,`event_param2`,`action_type`,`action_param1`,`action_param2`,`target_type`,`target_param1`,`target_param2`,`target_x`,`target_y`,`target_z`,`target_o`,`comment`) VALUES
-(30571, 0, 0, 0, 72, 100, 1, 100,  0, 69, 42, 0,  8,     0,   0, 1554.371, 587.4865, 99.77525, 1.107272, "Michael Belfast - On Action 100 - Move Position (ID 42) (No Repeat)"),
-(30571, 0, 1, 0, 34, 100, 1,   8, 42, 45,  1, 1, 11, 30551, 100,        0,        0,        0,        0, "Michael Belfast - On Movement Inform (ID 42) - Set Data 1-1 on Hearthsinger Forresten (within 100yd) (No Repeat)");
+(30571, 0, 0, 1, 72, 100, 1, 100,  0, 17,  0, 0,  1,     0,   0,        0,        0,        0,        0, "Michael Belfast - On Action 100 - Set Emote State None (No Repeat)"),
+(30571, 0, 1, 2, 61, 100, 1,   0,  0, 59,  0, 0,  0,     0,   0,        0,        0,        0,        0, "Michael Belfast - On Action 100 - Set Run (false) (No Repeat)"),
+(30571, 0, 2, 0, 61, 100, 1,   0,  0, 69, 42, 0,  8,     0,   0, 1554.371, 587.4865, 99.77525, 1.107272, "Michael Belfast - On Action 100 - Move Position (ID 42) (No Repeat)"),
+(30571, 0, 3, 0, 34, 100, 1,   8, 42, 45,  1, 1, 11, 30551, 100,        0,        0,        0,        0, "Michael Belfast - On Movement Inform (ID 42) - Set Data 1-1 on Hearthsinger Forresten (within 100yd) (No Repeat)");
 DELETE FROM `creature_text` WHERE `entry` IN (30551,30552,30553,30561,30571,31017);
-INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,`BroadcastTextId`,`comment`) VALUES
-(30571, 0, 0, "What were you doing in my cellar? There's a food scare going on, and the last thing I need is strangers rummaging around in my goods! Shoo!", 12, 100, 31323, "Michael Belfast - SAY_CELLAR"),
-(30571, 0, 1, "Hey! Stop rooting around in my cellar! Clear out!", 12, 100, 31322, "Michael Belfast - SAY_CELLAR"),
-(30551, 0, 0, "This whole situation seems a bit paranoid, don't you think?", 12, 100, 31324, "Hearthsinger Forresten - LINE_FORREST_1"),
-(30553, 0, 0, "Orders are orders. If the Prince says jump...", 12, 100, 31325, "Footman James - LINE_JAMES_1"),
-(30552, 0, 0, "It's a strange order, you can't deny. Suspicious food? Under that definition, you should arrest Belfast!", 12, 100, 31326, "Fras Siabi - LINE_FRAS_1"),
-(30571, 1, 0, "I HEARD THAT! No more ale for you! Not a drop!", 12, 100, 31327, "Michael Belfast - LINE_BELFAST_1"),
-(31017, 0, 0, "Enough, Michael. Business is hurting enough with this scare as it is. We can use every copper.", 12, 100, 32560, "Mal Corricks - LINE_MAL_1"),
-(30561, 0, 0, "The soldiers are doing important work. The safety of the people is more important, Mal, if you're interested in your customers living to spend another day.", 12, 100, 32571, "Gryan Stoutmantle - LINE_GRYAN_1"),
-(31017, 1, 0, "%s grudgingly nods.", 16, 100, 32569, "Mal Corricks - LINE_MAL_2"),
-(31017, 2, 0, "I can't argue with that.", 12, 100, 32570, "Mal Corricks - LINE_MAL_3"),
-(30553, 1, 0, "Don't worry too much. By the time I went off duty, we hadn't found a scrap of befouled grain here.", 12, 100, 32572, "Footman James - LINE_JAMES_2"),
-(30551, 1, 0, "Thank the Light for that.", 12, 100, 32573, "Hearthsinger Forresten - LINE_FORREST_2"),
-(30552, 1, 0, "%s nods.", 16, 100, 32574, "Fras Siabi - LINE_FRAS_2");
+INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,`BroadcastTextId`,`emote`,`comment`) VALUES
+(30571, 0, 0, "What were you doing in my cellar? There's a food scare going on, and the last thing I need is strangers rummaging around in my goods! Shoo!", 12, 100, 31323, 5, "Michael Belfast - SAY_CELLAR"),
+(30571, 0, 1, "Hey! Stop rooting around in my cellar! Clear out!", 12, 100, 31322, 5, "Michael Belfast - SAY_CELLAR"),
+(30551, 0, 0, "This whole situation seems a bit paranoid, don't you think?", 12, 100, 31324, 1, "Hearthsinger Forresten - LINE_FORREST_1"),
+(30553, 0, 0, "Orders are orders. If the Prince says jump...", 12, 100, 31325, 1, "Footman James - LINE_JAMES_1"),
+(30552, 0, 0, "It's a strange order, you can't deny. Suspicious food? Under that definition, you should arrest Belfast!", 12, 100, 31326, 1, "Fras Siabi - LINE_FRAS_1"),
+(30571, 1, 0, "I HEARD THAT! No more ale for you! Not a drop!", 12, 100, 31327, 22, "Michael Belfast - LINE_BELFAST_1"),
+(31017, 0, 0, "Enough, Michael. Business is hurting enough with this scare as it is. We can use every copper.", 12, 100, 32560, 1, "Mal Corricks - LINE_MAL_1"),
+(30561, 0, 0, "The soldiers are doing important work. The safety of the people is more important, Mal, if you're interested in your customers living to spend another day.", 12, 100, 32571, 1, "Gryan Stoutmantle - LINE_GRYAN_1"),
+(31017, 1, 0, "%s grudgingly nods.", 16, 100, 32569, 273, "Mal Corricks - LINE_MAL_2"),
+(31017, 2, 0, "I can't argue with that.", 12, 100, 32570, 1, "Mal Corricks - LINE_MAL_3"),
+(30553, 1, 0, "Don't worry too much. By the time I went off duty, we hadn't found a scrap of befouled grain here.", 12, 100, 32572, 1, "Footman James - LINE_JAMES_2"),
+(30551, 1, 0, "Thank the Light for that.", 12, 100, 32573, 1, "Hearthsinger Forresten - LINE_FORREST_2"),
+(30552, 1, 0, "%s nods.", 16, 100, 32574, 273, "Fras Siabi - LINE_FRAS_2");
 
 -- Fix a random typo in AI name for Grain Crate Helper
 UPDATE `creature_template` SET `ScriptName`="npc_crate_helper_cot" WHERE `entry`=27827;
