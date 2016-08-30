@@ -12,10 +12,10 @@ UPDATE `creature_template` SET `ScriptName`="npc_chromie_start" WHERE `entry`=26
 UPDATE `creature_template` SET `ScriptName`="npc_chromie_middle" WHERE `entry`=27915;
 -- Chromie whispers
 DELETE FROM `creature_text` WHERE `entry`=27915 AND `groupid`=1;
-INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`comment`) VALUES
-(27915, 1, 0, "Come over here time traveller, we need to talk!", 15, 100, 29167, 0, "Chromie - WHISPER_COME_TALK"),
-(27915, 1, 1, "Quick, over here!", 15, 100, 29169, 0, "Chromie - WHISPER_COME_TALK"),
-(27915, 1, 2, "We meet again, time traveller!", 15, 100, 29168, 0, "Chromie - WHISPER_COME_TALK");
+INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`emote`,`comment`) VALUES
+(27915, 1, 0, "Come over here time traveller, we need to talk!", 15, 100, 29167, 0, 70, "Chromie - WHISPER_COME_TALK"),
+(27915, 1, 1, "Quick, over here!", 15, 100, 29169, 0, 70, "Chromie - WHISPER_COME_TALK"),
+(27915, 1, 2, "We meet again, time traveller!", 15, 100, 29168, 0, 70, "Chromie - WHISPER_COME_TALK");
 
 -- Corruptor of Time
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 13 AND `SourceEntry`=60422;
@@ -65,6 +65,19 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 UPDATE `creature` SET `spawntimesecs`=@DAY WHERE `id`=27827;
 UPDATE `gameobject` SET `spawntimesecs`=@DAY WHERE `id`=190094;
 
+-- Arthas/Uther RP data
+UPDATE `creature_template` SET `ScriptName`="npc_uther_stratholme",`AIName`="" WHERE `entry`=26528;
+UPDATE `creature_text` SET `emote`=396 WHERE
+	(`entry` = 26499 AND `groupid` IN (0,3,5)) OR
+	(`entry` = 26528 AND `groupid`=3) OR
+	(`entry` = 26497 AND `groupid` IN (0,1));
+UPDATE `creature_text` SET `emote`=1 WHERE `entry`=26499 AND `groupid`=7;
+UPDATE `creature_text` SET `emote`=5 WHERE
+	(`entry` = 26499 AND `groupid` IN (2,4)) OR
+	(`entry` = 26528 AND `groupid` IN (1,4));
+UPDATE `creature_text` SET `emote`=6 WHERE `entry`=26528 AND `groupid`=2;
+UPDATE `creature_text` SET `emote`=397 WHERE
+	(`entry` = 26528 AND `groupid` IN (0,5));
 -- Blanket apply a spawn control AI to all "live stratholme" mobs that prevents them respawning after the purge begins
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_fluff_living",`AIName`="" WHERE `entry` IN (28167,31126,31019,28169,31127,31023,31020,31018);
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_living",`AIName`="SmartAI" WHERE `entry` IN (31057);

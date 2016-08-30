@@ -42,7 +42,7 @@ enum ProgressStates
     ALL                     = 0x7FFF
 };
 
-enum Data
+enum InstanceData
 {
     DATA_MEATHOOK,
     DATA_SALRAMM,
@@ -56,6 +56,7 @@ enum Data
     DATA_CRATES_START,     // sent by chromie #1 creature script to initiate crate phase
     DATA_CRATE_REVEALED,   // sent by crate helper AI to trigger re-check of crate status
     DATA_UTHER_START,      // sent by chromie #2 creature script to initiate uther RP sequence
+    DATA_UTHER_FINISHED,   // sent by arthas AI to signal transition to pre-purge
     DATA_SKIP_TO_PURGE,    // sent by chromie #1 creature script to skip straight to start of purge
     DATA_NOTIFY_DEATH,     // sent by wave mob AI to instance script on death
 
@@ -68,7 +69,8 @@ enum InstanceActions
 {
     ACTION_PROGRESS_UPDATE = 1,
     ACTION_REQUEST_NOTIFY,
-    ACTION_CORRUPTOR_LEAVE
+    ACTION_CORRUPTOR_LEAVE,
+    ACTION_START_RP_EVENT
 };
 
 enum InstanceMisc

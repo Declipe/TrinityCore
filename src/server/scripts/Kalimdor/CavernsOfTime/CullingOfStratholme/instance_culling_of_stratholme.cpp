@@ -230,6 +230,10 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         if (_currentState == CRATES_DONE)
                             SetInstanceProgress(UTHER_TALK);
                         break;
+                    case DATA_UTHER_FINISHED:
+                        if (_currentState == UTHER_TALK)
+                            SetInstanceProgress(PURGE_PENDING);
+                        break;
                     case DATA_SKIP_TO_PURGE:
                         if (_currentState <= CRATES_DONE)
                             SetInstanceProgress(PURGE_PENDING);
@@ -254,6 +258,23 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             else
                                 SetInstanceProgress(WAVES_DONE);
                         }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            void SetGuidData(uint32 type, ObjectGuid guid) override
+            {
+                switch (type)
+                {
+                    case DATA_UTHER_START:
+                        if (_currentState == CRATES_DONE)
+                            if (Creature* arthas = instance->GetCreature(_arthasGUID))
+                            {
+                                SetInstanceProgress(UTHER_TALK);
+                                arthas->AI()->SetGUID(guid, -ACTION_START_RP_EVENT);
+                            }
                         break;
                     default:
                         break;
@@ -329,10 +350,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         events.ScheduleEvent(EVENT_CRIER_CALL_TO_GATES, Seconds(5));
                         break;
                     case UTHER_TALK:
-                        // @todo debug skip
-                        if (Creature* crier = instance->GetCreature(_crierGUID))
-                            crier->Talk("Stratholme AI: There should be an RP sequence here. It's not yet implemented. Forwarding the instance to start of purge...", CHAT_MSG_MONSTER_YELL, LANG_UNIVERSAL, 50000.0f, (WorldObject*)nullptr);
-                        SetInstanceProgress(WAVES_IN_PROGRESS);
+                        // nothing to do here, initialization is triggered on arthas AI by SetGUID
                         break;
                     case PURGE_PENDING:
                         break;
@@ -352,6 +370,8 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         }
                         break;
                     case WAVES_DONE:
+                        break;
+                    default:
                         break;
                 }
             }

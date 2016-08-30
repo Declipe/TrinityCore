@@ -156,7 +156,7 @@ class npc_hearthsinger_forresten_cot : public CreatureScript
             }
 
             // Belfast SmartAI telling us it's reached the WP
-            void SetData(uint32 data, uint32 /*value*/) override
+            void SetData(uint32 /*data*/, uint32 /*value*/) override
             {
                 events.ScheduleEvent(EVENT_BELFAST_1, Seconds(0));
                 events.ScheduleEvent(EVENT_MAL_1, Seconds(6));
@@ -382,11 +382,11 @@ class npc_chromie_middle : public CreatureScript
     public:
         npc_chromie_middle() : CreatureScript("npc_chromie_middle") { }
 
-        void AdvanceDungeon(Creature* creature)
+        void AdvanceDungeon(Creature* creature, Player const* player)
         {
             if (InstanceScript* instance = creature->GetInstanceScript())
                 if (instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE)
-                    instance->SetData(DATA_UTHER_START, 1);
+                    instance->SetGuidData(DATA_UTHER_START, player->GetGUID());
         }
 
         bool OnGossipHello(Player* player, Creature* creature) override
@@ -416,7 +416,7 @@ class npc_chromie_middle : public CreatureScript
                     break;
                 case GOSSIP_OFFSET_STEP3:
                     SendGossipMenuFor(player, GOSSIP_TEXT_STEP4, creature->GetGUID());
-                    AdvanceDungeon(creature);
+                    AdvanceDungeon(creature, player);
                     break;
 
             }
@@ -455,7 +455,7 @@ class npc_chromie_middle : public CreatureScript
             void MoveInLineOfSight(Unit* unit) override
             {
                 if (Player* player = unit->ToPlayer())
-                    if (player->GetQuestStatus(QUEST_DISPELLING_ILLUSIONS) == QUEST_STATUS_COMPLETE && me->GetDistance2d(player) < 40.0f)
+                    if (instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE && player->GetQuestStatus(QUEST_DISPELLING_ILLUSIONS) == QUEST_STATUS_COMPLETE && me->GetDistance2d(player) < 40.0f)
                     {
                         time_t& whisperedTime = _whispered[player->GetGUID()];
                         time_t now = time(NULL);
