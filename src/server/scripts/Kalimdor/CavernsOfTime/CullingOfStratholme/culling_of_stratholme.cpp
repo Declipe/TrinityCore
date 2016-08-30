@@ -303,7 +303,7 @@ class npc_chromie_start : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             switch (action - GOSSIP_ACTION_INFO_DEF)
             {
                 case GOSSIP_OFFSET_EXPLAIN:
@@ -403,7 +403,7 @@ class npc_chromie_middle : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             switch (action - GOSSIP_ACTION_INFO_DEF)
             {
                 case GOSSIP_OFFSET_STEP1:
