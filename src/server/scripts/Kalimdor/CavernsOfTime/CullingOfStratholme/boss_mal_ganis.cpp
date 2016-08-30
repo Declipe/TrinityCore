@@ -64,8 +64,22 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<boss_mal_ganisAI>(creature);
+        if (InstanceScript* instance = creature->GetInstanceScript())
+        {
+            if (instance->GetData(DATA_INSTANCE_PROGRESS) < MALGANIS_IN_PROGRESS)
+                return new fluff_mal_ganisAI(creature);
+            else
+                return new boss_mal_ganisAI(creature);
+        }
+        else
+            return nullptr;
     }
+
+    struct fluff_mal_ganisAI : public NullCreatureAI
+    {
+        fluff_mal_ganisAI(Creature* creature) : NullCreatureAI(creature) { }
+        void InitializeAI() override { me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE); }
+    };
 
     struct boss_mal_ganisAI : public ScriptedAI
     {

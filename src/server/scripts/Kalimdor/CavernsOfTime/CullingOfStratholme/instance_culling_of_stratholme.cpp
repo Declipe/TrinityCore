@@ -226,10 +226,6 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         else
                             SetInstanceProgress(CRATES_DONE);
                         break;
-                    case DATA_UTHER_START:
-                        if (_currentState == CRATES_DONE)
-                            SetInstanceProgress(UTHER_TALK);
-                        break;
                     case DATA_UTHER_FINISHED:
                         if (_currentState == UTHER_TALK)
                             SetInstanceProgress(PURGE_PENDING);
@@ -237,6 +233,10 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     case DATA_SKIP_TO_PURGE:
                         if (_currentState <= CRATES_DONE)
                             SetInstanceProgress(PURGE_PENDING);
+                        break;
+                    case DATA_START_WAVES:
+                        if (_currentState == PURGE_STARTING)
+                            SetInstanceProgress(WAVES_IN_PROGRESS);
                         break;
                     case DATA_NOTIFY_DEATH:
                         if (_currentState == WAVES_IN_PROGRESS && !_waveSpawns.empty())
@@ -273,9 +273,16 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             if (Creature* arthas = instance->GetCreature(_arthasGUID))
                             {
                                 SetInstanceProgress(UTHER_TALK);
-                                arthas->AI()->SetGUID(guid, -ACTION_START_RP_EVENT);
+                                arthas->AI()->SetGUID(guid, -ACTION_START_RP_EVENT1);
                             }
                         break;
+                    case DATA_START_PURGE:
+                        if (_currentState == PURGE_PENDING)
+                            if (Creature* arthas = instance->GetCreature(_arthasGUID))
+                            {
+                                SetInstanceProgress(PURGE_STARTING);
+                                arthas->AI()->SetGUID(guid, -ACTION_START_RP_EVENT2);
+                            }
                     default:
                         break;
                 }
@@ -350,9 +357,12 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         events.ScheduleEvent(EVENT_CRIER_CALL_TO_GATES, Seconds(5));
                         break;
                     case UTHER_TALK:
+                    case PURGE_STARTING:
                         // nothing to do here, initialization is triggered on arthas AI by SetGUID
                         break;
                     case PURGE_PENDING:
+                        if (Creature* arthas = instance->GetCreature(_arthasGUID))
+                            arthas->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                         break;
                     case WAVES_IN_PROGRESS:
                         _waveCount = 0;

@@ -65,6 +65,9 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 UPDATE `creature` SET `spawntimesecs`=@DAY WHERE `id`=27827;
 UPDATE `gameobject` SET `spawntimesecs`=@DAY WHERE `id`=190094;
 
+-- Arthas AI
+UPDATE `creature_template` SET `ScriptName`="npc_arthas_stratholme" WHERE `entry`=26499;
+
 -- Arthas/Uther RP data
 UPDATE `creature_template` SET `ScriptName`="npc_uther_stratholme",`AIName`="" WHERE `entry`=26528;
 UPDATE `creature_text` SET `TextRange`=3 WHERE `entry` IN (26499,26528,26497);
@@ -79,6 +82,19 @@ UPDATE `creature_text` SET `emote`=5 WHERE
 UPDATE `creature_text` SET `emote`=6 WHERE `entry`=26528 AND `groupid`=2;
 UPDATE `creature_text` SET `emote`=397 WHERE
 	(`entry` = 26528 AND `groupid` IN (0,5));
+
+-- Arthas/Mal'ganis RP data
+DELETE FROM `creature_text` WHERE `entry`=28169 AND `groupid`=0 AND `id`=1;
+INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`comment`) VALUES
+(28169, 0, 1, "On, no...", 12, 100, 27552, 0, "culling SAY_PHASE204");
+UPDATE `creature_text` SET `emote`=1 WHERE
+	(`entry` = 28167 AND `groupid`=0) OR
+	(`entry` = 28169 AND `groupid`=0) OR
+	(`entry` = 26499 AND `groupid` IN (12,14)) OR
+	(`entry` = 26533 AND `groupid`=0);
+UPDATE `creature_text` SET `emote`=397 WHERE
+	(`entry` = 26499 AND `groupid`=13);
+	
 -- Blanket apply a spawn control AI to all "live stratholme" mobs that prevents them respawning after the purge begins
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_fluff_living",`AIName`="" WHERE `entry` IN (28167,31126,31019,28169,31127,31023,31020,31018);
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_living",`AIName`="SmartAI" WHERE `entry` IN (31057);
@@ -87,9 +103,6 @@ UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_undead",`AINam
 
 -- SmartAI fixes for wave creatures
 UPDATE `smart_scripts` SET `event_param3`=3100, `event_param4`=3400 WHERE `entryorguid`=28200 AND `source_type`=0 AND `id` IN (0,1);
-
--- Arthas AI
-UPDATE `creature_template` SET `ScriptName`="npc_arthas_stratholme" WHERE `entry`=26499;
 
 -- Lordaeron Crier yells
 DELETE FROM `creature_text` WHERE `entry` = 27913;

@@ -23,23 +23,24 @@
 // Note: These are bitmask values to allow combining (spawn state masks on template AI), but only a single bit will ever be true in instance script
 enum ProgressStates
 {
-    JUST_STARTED            = 0x0001, // dungeon just started, crate count not visible yet; pending chromie interaction
-    CRATES_IN_PROGRESS      = 0x0002, // freshly started dungeon, players are revealing scourge crates
-    CRATES_DONE             = 0x0004, // all crates revealed, chromie spawns at Stratholme entrance; waiting for player input to begin first RP event
-    UTHER_TALK              = 0x0008, // RP event in progress, Uther+Arthas talking
-    PURGE_PENDING           = 0x0010, // RP event done, pending player input to start wave event
-    WAVES_IN_PROGRESS       = 0x0020, // first section is underway, players are battling waves
-    WAVES_DONE              = 0x0040, // wave section completed; pending player input to begin Town Hall section
-    TOWN_HALL               = 0x0080, // now escorting Arthas through Stratholme Town Hall
-    TOWN_HALL_COMPLETE      = 0x0100, // Town Hall event complete, third boss defeated; pending player input to begin gauntlet transition
-    GAUNTLET_TRANSITION     = 0x0200, // Arthas is leading players through the secret passage from Town Hall to the gauntlet
-    GAUNTLET_PENDING        = 0x0400, // Pending player input to begin escorting Arthas through the final gauntlet section
-    GAUNTLET_IN_PROGRESS    = 0x0800, // Arthas is being escorted through the gauntlet section
-    GAUNTLET_COMPLETE       = 0x1000, // Arthas has reached the end of the gauntlet section; player input pending to begin Mal'ganis encounter
-    MALGANIS_IN_PROGRESS    = 0x2000, // Arthas has moved into the final square and Mal'ganis encounter begins
-    COMPLETE                = 0x4000, // Mal'ganis encounter is completed; dungeon over
+    JUST_STARTED            = 0x00001, // dungeon just started, crate count not visible yet; pending chromie interaction
+    CRATES_IN_PROGRESS      = 0x00002, // freshly started dungeon, players are revealing scourge crates
+    CRATES_DONE             = 0x00004, // all crates revealed, chromie spawns at Stratholme entrance; waiting for player input to begin first RP event
+    UTHER_TALK              = 0x00008, // RP event in progress, Uther+Arthas talking
+    PURGE_PENDING           = 0x00010, // RP event done, pending player input to start wave event
+    PURGE_STARTING          = 0x00020, // Arthas entering Stratholme, RP sequence with Mal'ganis
+    WAVES_IN_PROGRESS       = 0x00040, // first section is underway, players are battling waves
+    WAVES_DONE              = 0x00080, // wave section completed; pending player input to begin Town Hall section
+    TOWN_HALL               = 0x00100, // now escorting Arthas through Stratholme Town Hall
+    TOWN_HALL_COMPLETE      = 0x00200, // Town Hall event complete, third boss defeated; pending player input to begin gauntlet transition
+    GAUNTLET_TRANSITION     = 0x00400, // Arthas is leading players through the secret passage from Town Hall to the gauntlet
+    GAUNTLET_PENDING        = 0x00800, // Pending player input to begin escorting Arthas through the final gauntlet section
+    GAUNTLET_IN_PROGRESS    = 0x01000, // Arthas is being escorted through the gauntlet section
+    GAUNTLET_COMPLETE       = 0x02000, // Arthas has reached the end of the gauntlet section; player input pending to begin Mal'ganis encounter
+    MALGANIS_IN_PROGRESS    = 0x04000, // Arthas has moved into the final square and Mal'ganis encounter begins
+    COMPLETE                = 0x08000, // Mal'ganis encounter is completed; dungeon over
 
-    ALL                     = 0x7FFF
+    ALL                     = 0x0FFFF
 };
 
 enum InstanceData
@@ -58,6 +59,8 @@ enum InstanceData
     DATA_UTHER_START,      // sent by chromie #2 creature script to initiate uther RP sequence
     DATA_UTHER_FINISHED,   // sent by arthas AI to signal transition to pre-purge
     DATA_SKIP_TO_PURGE,    // sent by chromie #1 creature script to skip straight to start of purge
+    DATA_START_PURGE,      // sent by arthas creature script to begin pre-purge RP event
+    DATA_START_WAVES,      // sent by arthas AI to begin wave event
     DATA_NOTIFY_DEATH,     // sent by wave mob AI to instance script on death
 
     // old stuff below this, need to figure out if needed
@@ -70,7 +73,8 @@ enum InstanceActions
     ACTION_PROGRESS_UPDATE = 1,
     ACTION_REQUEST_NOTIFY,
     ACTION_CORRUPTOR_LEAVE,
-    ACTION_START_RP_EVENT
+    ACTION_START_RP_EVENT1, // Arthas/Uther chat in front of town
+    ACTION_START_RP_EVENT2, // Arthas/Mal'ganis chat at entrance
 };
 
 enum InstanceMisc
