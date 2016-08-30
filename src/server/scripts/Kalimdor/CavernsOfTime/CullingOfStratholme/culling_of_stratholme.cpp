@@ -423,11 +423,6 @@ class npc_chromie_middle : public CreatureScript
             return false;
         }
 
-        bool OnQuestAccept(Player* /*player*/, Creature* creature, Quest const* quest) override
-        {
-            return true;
-        }
-
         struct npc_chromie_middleAI : public StratholmeNPCAIWrapper<NullCreatureAI>
         {
             npc_chromie_middleAI(Creature* creature) : StratholmeNPCAIWrapper<NullCreatureAI>(creature, ProgressStates(ALL & ~(JUST_STARTED | CRATES_IN_PROGRESS))), _whisperDelay(0) { }

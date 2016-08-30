@@ -565,7 +565,22 @@ const std::array<Position, NUM_POSITIONS> npc_arthas_stratholme::npc_arthas_stra
 
 const float npc_arthas_stratholme::npc_arthas_stratholmeAI::_snapbackDistanceThreshold = 10.0f;
 const std::map<ProgressStates, npc_arthas_stratholme::npc_arthas_stratholmeAI::SnapbackInfo> npc_arthas_stratholme::npc_arthas_stratholmeAI::_snapbackPositions = {
-    { PURGE_PENDING, { true, &_positions[ARTHAS_PURGE_PENDING_POS] } }
+    { JUST_STARTED, { false, nullptr } },
+    { CRATES_IN_PROGRESS, { false, nullptr } },
+    { CRATES_DONE, { false, nullptr } },
+    { UTHER_TALK, { false, nullptr } },
+    { PURGE_PENDING, { true, &_positions[ARTHAS_PURGE_PENDING_POS] } },
+    { PURGE_STARTING, { false, &_positions[ARTHAS_PURGE_PENDING_POS] } },
+    { WAVES_IN_PROGRESS, { false, &_positions[RP2_ARTHAS_MOVE_5] } },
+    { WAVES_DONE, { true, nullptr } },
+    { TOWN_HALL, { false, nullptr } },
+    { TOWN_HALL_COMPLETE, { true, nullptr } },
+    { GAUNTLET_TRANSITION, { false, nullptr } },
+    { GAUNTLET_PENDING, { true, nullptr } },
+    { GAUNTLET_IN_PROGRESS, { false, nullptr } },
+    { GAUNTLET_COMPLETE, { true, nullptr } },
+    { MALGANIS_IN_PROGRESS, { false, nullptr } },
+    { COMPLETE, { true, nullptr } }
 };
 
 // Arthas' AI is the one controlling everything, all this AI does is report any movementinforms back to Arthas AI using SetData
