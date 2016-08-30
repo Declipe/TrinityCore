@@ -67,6 +67,7 @@ UPDATE `gameobject` SET `spawntimesecs`=@DAY WHERE `id`=190094;
 
 -- Arthas/Uther RP data
 UPDATE `creature_template` SET `ScriptName`="npc_uther_stratholme",`AIName`="" WHERE `entry`=26528;
+UPDATE `creature_text` SET `TextRange`=3 WHERE `entry` IN (26499,26528,26497);
 UPDATE `creature_text` SET `emote`=396 WHERE
 	(`entry` = 26499 AND `groupid` IN (0,3,5)) OR
 	(`entry` = 26528 AND `groupid`=3) OR
