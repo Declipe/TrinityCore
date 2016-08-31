@@ -65,6 +65,50 @@ enum PositionIndices
     RP1_JAINA_WP6,
     RP1_JAINA_WP7,
     RP1_JAINA_WP8,
+    RP1_ARTHAS_WP20,
+    RP1_ARTHAS_WP21,
+    RP1_ARTHAS_WP22,
+    RP1_ARTHAS_WP23,
+    RP1_ARTHAS_WP24,
+    RP1_ARTHAS_WP25,
+    RP1_ARTHAS_WP26,
+    RP1_ARTHAS_WP27,
+    RP1_ARTHAS_WP28,
+    RP1_ARTHAS_WP29,
+    RP1_ARTHAS_WP30,
+    RP1_ARTHAS_WP31,
+    RP1_UTHER_WP20,
+    RP1_JAINA_WP20,
+    RP1_UTHER_WP40,
+    RP1_UTHER_WP41,
+    RP1_UTHER_WP42,
+    RP1_UTHER_WP43,
+    RP1_UTHER_WP44,
+    RP1_UTHER_WP45,
+    RP1_UTHER_WP46,
+    RP1_UTHER_WP47,
+    RP1_UTHER_WP48,
+    RP1_UTHER_WP49,
+    RP1_UTHER_WP50,
+    RP1_UTHER_WP51,
+    RP1_UTHER_WP52,
+    RP1_JAINA_WP40,
+    RP1_JAINA_WP41,
+    RP1_JAINA_WP60,
+    RP1_JAINA_WP61,
+    RP1_JAINA_WP62,
+    RP1_JAINA_WP63,
+    RP1_JAINA_WP64,
+    RP1_JAINA_WP65,
+    RP1_JAINA_WP66,
+    RP1_JAINA_WP67,
+    RP1_JAINA_WP68,
+    RP1_JAINA_WP69,
+    RP1_JAINA_WP70,
+    RP1_JAINA_WP71,
+    RP1_JAINA_WP72,
+    RP1_JAINA_WP73,
+    RP1_JAINA_WP74,
 
     // Arthas/Mal'ganis RP
     ARTHAS_PURGE_PENDING_POS,
@@ -106,6 +150,7 @@ enum RPEvents
     RP1_EVENT_UTHER2,
     RP1_EVENT_ARTHAS4,
     RP1_EVENT_UTHER3,
+    RP1_EVENT_ARTHAS_TURN,
     RP1_EVENT_ARTHAS5,
     RP1_EVENT_UTHER4,
     RP1_EVENT_ARTHAS6,
@@ -115,8 +160,11 @@ enum RPEvents
     RP1_EVENT_ARTHAS8,
     RP1_EVENT_ARTHAS8_2,
     RP1_EVENT_UTHER6,
+    RP1_EVENT_UTHER_LEAVE,
+    RP1_EVENT_JAINA_LEAVE,
     RP1_EVENT_ARTHAS9,
     RP1_EVENT_JAINA2,
+    RP1_EVENT_JAINA_LEAVE2,
     RP1_EVENT_ARTHAS10,
 
     RP2_EVENT_ARTHAS_MOVE_1,
@@ -191,7 +239,9 @@ enum Entries
     NPC_CITIZEN                 = 28167,
     NPC_RESIDENT                = 28169,
     NPC_FOOTMAN                 = 27745,
+    NPC_KNIGHT                  = 27746,
     NPC_PRIEST                  = 27747,
+    NPC_SORCERESS               = 27752,
 
     SPELL_CRUSADER_STRIKE       = 50773,
     SPELL_SHADOWSTEP_VISUAL     = 51908
@@ -213,7 +263,6 @@ class npc_arthas_stratholme : public CreatureScript
 
         void AdvanceToPosition(ProgressStates newState)
         {
-            events.Reset();
             std::map<ProgressStates, SnapbackInfo>::const_iterator it = _snapbackPositions.find(newState);
             if (it != _snapbackPositions.end())
             {
@@ -289,6 +338,17 @@ class npc_arthas_stratholme : public CreatureScript
                 case RP1_ARTHAS_WP11:
                 case RP1_ARTHAS_WP12:
                 case RP1_ARTHAS_WP13:
+                case RP1_ARTHAS_WP20:
+                case RP1_ARTHAS_WP21:
+                case RP1_ARTHAS_WP22:
+                case RP1_ARTHAS_WP23:
+                case RP1_ARTHAS_WP24:
+                case RP1_ARTHAS_WP25:
+                case RP1_ARTHAS_WP26:
+                case RP1_ARTHAS_WP27:
+                case RP1_ARTHAS_WP28:
+                case RP1_ARTHAS_WP29:
+                case RP1_ARTHAS_WP30:
                     _arthasWP = id+1;
                     events.ScheduleEvent(RP1_EVENT_ARTHAS_MOVE, Seconds(0)); // can't give movement here, needs to be handled outside of movegen finalize - delegate to update
                     break;
@@ -306,6 +366,18 @@ class npc_arthas_stratholme : public CreatureScript
                 case RP1_UTHER_WP12:
                 case RP1_UTHER_WP13:
                 case RP1_UTHER_WP14:
+                case RP1_UTHER_WP40:
+                case RP1_UTHER_WP41:
+                case RP1_UTHER_WP42:
+                case RP1_UTHER_WP43:
+                case RP1_UTHER_WP44:
+                case RP1_UTHER_WP45:
+                case RP1_UTHER_WP46:
+                case RP1_UTHER_WP47:
+                case RP1_UTHER_WP48:
+                case RP1_UTHER_WP49:
+                case RP1_UTHER_WP50:
+                case RP1_UTHER_WP51:
                     _utherWP = id+1;
                     events.ScheduleEvent(RP1_EVENT_UTHER_MOVE, Seconds(0)); // needs to be handled after movementgenerator finishes
                     break;
@@ -316,6 +388,21 @@ class npc_arthas_stratholme : public CreatureScript
                 case RP1_JAINA_WP5:
                 case RP1_JAINA_WP6:
                 case RP1_JAINA_WP7:
+                case RP1_JAINA_WP40:
+                case RP1_JAINA_WP60:
+                case RP1_JAINA_WP61:
+                case RP1_JAINA_WP62:
+                case RP1_JAINA_WP63:
+                case RP1_JAINA_WP64:
+                case RP1_JAINA_WP65:
+                case RP1_JAINA_WP66:
+                case RP1_JAINA_WP67:
+                case RP1_JAINA_WP68:
+                case RP1_JAINA_WP69:
+                case RP1_JAINA_WP70:
+                case RP1_JAINA_WP71:
+                case RP1_JAINA_WP72:
+                case RP1_JAINA_WP73:
                     _jainaWP = id+1;
                     events.ScheduleEvent(RP1_EVENT_JAINA_MOVE, Seconds(0)); // ditto, same as above
                     break;
@@ -327,6 +414,7 @@ class npc_arthas_stratholme : public CreatureScript
                     events.ScheduleEvent(RP1_EVENT_ARTHAS2, Seconds(15));
                     events.ScheduleEvent(RP1_EVENT_ARTHAS3, Seconds(25));
                     events.ScheduleEvent(RP1_EVENT_UTHER2, Seconds(36));
+                    events.ScheduleEvent(RP1_EVENT_ARTHAS_TURN, Seconds(37));
                     events.ScheduleEvent(RP1_EVENT_ARTHAS4, Seconds(38));
                     events.ScheduleEvent(RP1_EVENT_UTHER3, Seconds(42));
                     events.ScheduleEvent(RP1_EVENT_ARTHAS5, Seconds(48));
@@ -338,9 +426,28 @@ class npc_arthas_stratholme : public CreatureScript
                     events.ScheduleEvent(RP1_EVENT_ARTHAS8, Seconds(83));
                     events.ScheduleEvent(RP1_EVENT_ARTHAS8_2, Seconds(89));
                     events.ScheduleEvent(RP1_EVENT_UTHER6, Seconds(95));
+                    events.ScheduleEvent(RP1_EVENT_UTHER_LEAVE, Seconds(98));
+                    events.ScheduleEvent(RP1_EVENT_JAINA_LEAVE, Seconds(99));
                     events.ScheduleEvent(RP1_EVENT_ARTHAS9, Seconds(100));
                     events.ScheduleEvent(RP1_EVENT_JAINA2, Seconds(102));
+                    events.ScheduleEvent(RP1_EVENT_JAINA_LEAVE2, Seconds(106));
                     events.ScheduleEvent(RP1_EVENT_ARTHAS10, Seconds(127));
+                    break;
+                case RP1_UTHER_WP20:
+                    if (Creature* uther = me->FindNearestCreature(NPC_UTHER, 100.0f, true))
+                        uther->SetFacingToObject(me);
+                    break;
+                case RP1_JAINA_WP20:
+                    if (Creature* jaina = me->FindNearestCreature(NPC_JAINA, 100.0f, true))
+                        jaina->SetFacingToObject(me);
+                    break;
+                case RP1_UTHER_WP52:
+                    if (Creature* uther = me->FindNearestCreature(NPC_UTHER, 500.0f, true))
+                        uther->DespawnOrUnsummon();
+                    break;
+                case RP1_JAINA_WP74:
+                    if (Creature* jaina = me->FindNearestCreature(NPC_JAINA, 500.0f, true))
+                        jaina->DespawnOrUnsummon();
                     break;
                 case RP2_ARTHAS_MOVE_1:
                     if (Creature* citizen = me->FindNearestCreature(NPC_CITIZEN, 100.0f, true))
@@ -443,10 +550,31 @@ class npc_arthas_stratholme : public CreatureScript
                         break;
                     case RP1_EVENT_ARTHAS2:
                         talkerEntry = 0, talkerLine = RP1_LINE_ARTHAS2;
+                        me->SetWalk(true);
+                        me->GetMotionMaster()->MovePoint(RP1_ARTHAS_WP20, _positions[RP1_ARTHAS_WP20], false);
+                        if (Creature* uther = me->FindNearestCreature(NPC_UTHER, 100.0f, true))
+                        {
+                            uther->SetWalk(true);
+                            uther->GetMotionMaster()->MovePoint(RP1_UTHER_WP20, _positions[RP1_UTHER_WP20], false);
+                        }
+                        if (Creature* jaina = me->FindNearestCreature(NPC_JAINA, 100.0f, true))
+                        {
+                            jaina->SetWalk(true);
+                            jaina->GetMotionMaster()->MovePoint(RP1_JAINA_WP20, _positions[RP1_JAINA_WP20], false);
+                        }
                         break;
                     case RP1_EVENT_ARTHAS3:
+                    {
                         talkerEntry = 0, talkerLine = RP1_LINE_ARTHAS3;
+                        std::list<Creature*> troops;
+                        me->GetCreatureListWithEntryInGrid(troops, NPC_FOOTMAN, 100.0f);
+                        me->GetCreatureListWithEntryInGrid(troops, NPC_SORCERESS, 100.0f);
+                        me->GetCreatureListWithEntryInGrid(troops, NPC_KNIGHT, 100.0f);
+                        me->GetCreatureListWithEntryInGrid(troops, NPC_PRIEST, 100.0f);
+                        for (Creature* unit : troops)
+                            unit->SetFacingToObject(me);
                         break;
+                    }
                     case RP1_EVENT_UTHER2:
                         talkerEntry = NPC_UTHER, talkerLine = RP1_LINE_UTHER2;
                         break;
@@ -455,6 +583,10 @@ class npc_arthas_stratholme : public CreatureScript
                         break;
                     case RP1_EVENT_UTHER3:
                         talkerEntry = NPC_UTHER, talkerLine = RP1_LINE_UTHER3;
+                        break;
+                    case RP1_EVENT_ARTHAS_TURN:
+                        if (Creature* uther = me->FindNearestCreature(NPC_UTHER, 100.0f, true))
+                            me->SetFacingToObject(uther);
                         break;
                     case RP1_EVENT_ARTHAS5:
                         talkerEntry = 0, talkerLine = RP1_LINE_ARTHAS5;
@@ -483,11 +615,34 @@ class npc_arthas_stratholme : public CreatureScript
                     case RP1_EVENT_UTHER6:
                         talkerEntry = NPC_UTHER, talkerLine = RP1_LINE_UTHER6;
                         break;
+                    case RP1_EVENT_UTHER_LEAVE:
+                        if (Creature* uther = me->FindNearestCreature(NPC_UTHER, 100.0f, true))
+                        {
+                            uther->SetWalk(true);
+                            uther->GetMotionMaster()->MovePoint(RP1_UTHER_WP40, _positions[RP1_UTHER_WP40]);
+                        }
+                        break;
+                    case RP1_EVENT_JAINA_LEAVE:
+                        if (Creature* jaina = me->FindNearestCreature(NPC_JAINA, 100.0f, true))
+                        {
+                            jaina->SetWalk(true);
+                            jaina->GetMotionMaster()->MovePoint(RP1_JAINA_WP40, _positions[RP1_JAINA_WP40]);
+                        }
+                        break;
                     case RP1_EVENT_ARTHAS9:
                         talkerEntry = 0, talkerLine = RP1_LINE_ARTHAS9;
+                        if (Creature* jaina = me->FindNearestCreature(NPC_JAINA, 100.0f, true))
+                            me->SetFacingToObject(jaina);
                         break;
                     case RP1_EVENT_JAINA2:
                         talkerEntry = NPC_JAINA, talkerLine = RP1_LINE_JAINA2;
+                        break;
+                    case RP1_EVENT_JAINA_LEAVE2:
+                        if (Creature* jaina = me->FindNearestCreature(NPC_JAINA, 100.0f, true))
+                        {
+                            jaina->SetWalk(true);
+                            jaina->GetMotionMaster()->MovePoint(RP1_JAINA_WP60, _positions[RP1_JAINA_WP60]);
+                        }
                         break;
                     case RP1_EVENT_ARTHAS10:
                         talkerEntry = 0, talkerLine = RP1_LINE_ARTHAS10;
@@ -697,6 +852,50 @@ const std::array<Position, NUM_POSITIONS> npc_arthas_stratholme::npc_arthas_stra
     { 1889.259f, 1296.148f, 144.7163f }, // RP1_JAINA_WP6
     { 1891.509f, 1294.898f, 144.2163f }, // RP1_JAINA_WP7
     { 1896.754f, 1292.831f, 143.8338f }, // RP1_JAINA_WP8
+    { 1903.773f, 1295.073f, 143.8806f }, // RP1_ARTHAS_WP20
+    { 1904.243f, 1297.470f, 143.7825f }, // RP1_ARTHAS_WP21
+    { 1905.602f, 1301.860f, 144.8910f }, // RP1_ARTHAS_WP22
+    { 1905.852f, 1302.610f, 145.6410f }, // RP1_ARTHAS_WP23
+    { 1906.102f, 1303.360f, 146.6410f }, // RP1_ARTHAS_WP24
+    { 1906.352f, 1304.360f, 147.1410f }, // RP1_ARTHAS_WP25
+    { 1906.605f, 1305.008f, 147.3347f }, // RP1_ARTHAS_WP26
+    { 1907.279f, 1306.383f, 148.3546f }, // RP1_ARTHAS_WP27
+    { 1907.779f, 1307.383f, 148.3546f }, // RP1_ARTHAS_WP28
+    { 1908.279f, 1309.133f, 149.1046f }, // RP1_ARTHAS_WP29
+    { 1909.779f, 1311.633f, 150.1046f }, // RP1_ARTHAS_WP30
+    { 1909.953f, 1312.258f, 149.8745f, 6.248279f }, // RP1_ARTHAS_WP31
+    { 1903.980f, 1297.119f, 143.5117f }, // RP1_UTHER_WP20
+    { 1899.490f, 1298.720f, 143.8338f }, // RP1_JAINA_WP20
+    { 1894.333f, 1289.897f, 143.6610f }, // RP1_UTHER_WP40
+    { 1891.336f, 1287.669f, 143.8724f }, // RP1_UTHER_WP41
+    { 1880.168f, 1285.746f, 144.0307f }, // RP1_UTHER_WP42
+    { 1878.394f, 1285.508f, 144.1768f }, // RP1_UTHER_WP43
+    { 1868.367f, 1283.260f, 144.2789f }, // RP1_UTHER_WP44
+    { 1866.074f, 1282.787f, 144.4259f }, // RP1_UTHER_WP45
+    { 1847.381f, 1281.428f, 144.0926f }, // RP1_UTHER_WP46
+    { 1845.679f, 1281.301f, 144.2642f }, // RP1_UTHER_WP47
+    { 1833.179f, 1281.301f, 144.2642f }, // RP1_UTHER_WP48
+    { 1829.435f, 1279.402f, 143.1175f }, // RP1_UTHER_WP49
+    { 1827.441f, 1279.227f, 143.2142f }, // RP1_UTHER_WP50
+    { 1819.691f, 1277.227f, 142.4642f }, // RP1_UTHER_WP51
+    { 1809.446f, 1274.552f, 141.8109f }, // RP1_UTHER_WP52
+    { 1896.806f, 1295.515f, 144.0838f }, // RP1_JAINA_WP40
+    { 1894.122f, 1293.809f, 143.8338f }, // RP1_JAINA_WP41
+    { 1883.056f, 1288.990f, 144.0463f }, // RP1_JAINA_WP60
+    { 1881.201f, 1288.203f, 144.2471f }, // RP1_JAINA_WP61
+    { 1868.281f, 1286.438f, 144.3624f }, // RP1_JAINA_WP62
+    { 1864.452f, 1285.841f, 144.5302f }, // RP1_JAINA_WP63
+    { 1850.351f, 1284.098f, 144.2387f }, // RP1_JAINA_WP64
+    { 1847.541f, 1283.823f, 144.4623f }, // RP1_JAINA_WP65
+    { 1834.041f, 1281.823f, 143.7123f }, // RP1_JAINA_WP66
+    { 1832.474f, 1281.457f, 143.4485f }, // RP1_JAINA_WP67
+    { 1829.620f, 1280.964f, 143.3172f }, // RP1_JAINA_WP68
+    { 1823.120f, 1280.214f, 143.8172f }, // RP1_JAINA_WP69
+    { 1817.593f, 1279.304f, 142.3018f }, // RP1_JAINA_WP70
+    { 1815.349f, 1278.991f, 142.2914f }, // RP1_JAINA_WP71
+    { 1804.849f, 1276.741f, 141.7914f }, // RP1_JAINA_WP72
+    { 1799.849f, 1275.741f, 141.5414f }, // RP1_JAINA_WP73
+    { 1794.105f, 1274.177f, 140.7811f }, // RP1_JAINA_WP74
 
     { 2047.948f, 1287.598f, 142.8568f, 3.176499f }, // ARTHAS_PURGE_PENDING_POS
     { 2083.011f, 1287.590f, 141.2376f, 5.445427f }, // RP2_ARTHAS_MOVE_1
@@ -739,7 +938,7 @@ struct npc_stratholme_rp_dummy : public CreatureScript
     npc_stratholme_rp_dummy() : CreatureScript("npc_stratholme_rp_dummy") { }
     struct npc_stratholme_rp_dummyAI : public StratholmeNPCAIWrapper<NullCreatureAI>
     {
-        npc_stratholme_rp_dummyAI(Creature* creature) : StratholmeNPCAIWrapper<NullCreatureAI>(creature, UTHER_TALK) { }
+        npc_stratholme_rp_dummyAI(Creature* creature) : StratholmeNPCAIWrapper<NullCreatureAI>(creature, ProgressStates(UTHER_TALK | PURGE_PENDING)) { }
         void MovementInform(uint32 type, uint32 id) override {
             if (type == POINT_MOTION_TYPE) if (TempSummon* self = me->ToTempSummon()) self->GetSummonerCreatureBase()->AI()->SetData(DATA_RP_DUMMY_MOVED, id);
         }
