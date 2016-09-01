@@ -110,6 +110,67 @@ enum PositionIndices
     RP1_JAINA_WP72,
     RP1_JAINA_WP73,
     RP1_JAINA_WP74,
+    RP1_ARTHAS_WP40,
+    RP1_ARTHAS_WP41,
+    RP1_ARTHAS_WP42,
+    RP1_ARTHAS_WP43,
+    RP1_ARTHAS_WP44,
+    RP1_ARTHAS_WP45,
+    RP1_ARTHAS_WP46,
+    RP1_ARTHAS_WP47,
+    RP1_ARTHAS_WP48,
+    RP1_ARTHAS_WP49,
+    RP1_ARTHAS_WP50,
+    RP1_ARTHAS_WP51,
+    RP1_ARTHAS_WP52,
+    RP1_ARTHAS_WP53,
+    RP1_ARTHAS_WP54,
+    RP1_ARTHAS_WP55,
+    RP1_ARTHAS_WP60,
+    RP1_ARTHAS_WP61,
+    RP1_ARTHAS_WP62,
+    RP1_ARTHAS_WP63,
+    RP1_ARTHAS_WP64,
+    RP1_ARTHAS_WP65,
+    RP1_ARTHAS_WP66,
+    RP1_ARTHAS_WP67,
+    RP1_ARTHAS_WP68,
+    RP1_ARTHAS_WP69,
+    RP1_ARTHAS_WP70,
+    RP1_ARTHAS_WP71,
+    RP1_ARTHAS_WP72,
+    RP1_ARTHAS_WP73,
+    RP1_ARTHAS_WP74,
+    RP1_ARTHAS_WP75,
+    RP1_ARTHAS_WP76,
+    RP1_ARTHAS_WP77,
+    RP1_ARTHAS_WP78,
+    RP1_ARTHAS_WP79,
+    RP1_ARTHAS_WP80,
+    RP1_ARTHAS_WP81,
+    RP1_ARTHAS_WP82,
+    RP1_ARTHAS_WP83,
+    RP1_ARTHAS_WP84,
+    RP1_ARTHAS_WP85,
+    RP1_ARTHAS_WP86,
+    RP1_ARTHAS_WP87,
+    RP1_ARTHAS_WP88,
+    RP1_ARTHAS_WP89,
+    RP1_ARTHAS_WP90,
+    RP1_ARTHAS_WP91,
+    RP1_ARTHAS_WP92,
+    RP1_ARTHAS_WP93,
+    RP1_ARTHAS_WP94,
+    RP1_ARTHAS_WP95,
+    RP1_ARTHAS_WP96,
+    RP1_ARTHAS_WP97,
+    RP1_ARTHAS_WP98,
+    RP1_ARTHAS_WP99,
+    RP1_ARTHAS_WP100,
+    RP1_ARTHAS_WP101,
+    RP1_ARTHAS_WP102,
+    RP1_ARTHAS_WP103,
+
 
     // Arthas/Mal'ganis RP
     ARTHAS_PURGE_PENDING_POS,
@@ -163,7 +224,10 @@ enum RPEvents
     RP1_EVENT_ARTHAS9,
     RP1_EVENT_JAINA2,
     RP1_EVENT_JAINA_LEAVE2,
+    RP1_EVENT_ARTHAS_LEAVE,
     RP1_EVENT_ARTHAS10,
+    RP1_EVENT_ARTHAS_LEAVE2,
+    RP1_EVENT_FINISHED,
 
     RP2_EVENT_ARTHAS_MOVE_1,
     RP2_EVENT_CITIZEN1,
@@ -261,6 +325,7 @@ class npc_arthas_stratholme : public CreatureScript
 
         void AdvanceToPosition(ProgressStates newState)
         {
+            events.Reset();
             std::map<ProgressStates, SnapbackInfo>::const_iterator it = _snapbackPositions.find(newState);
             if (it != _snapbackPositions.end())
             {
@@ -361,7 +426,7 @@ class npc_arthas_stratholme : public CreatureScript
                     events.ScheduleEvent(RP1_EVENT_ARTHAS9, Seconds(100));
                     events.ScheduleEvent(RP1_EVENT_JAINA2, Seconds(102));
                     events.ScheduleEvent(RP1_EVENT_JAINA_LEAVE2, Seconds(106));
-                    events.ScheduleEvent(RP1_EVENT_ARTHAS10, Seconds(127));
+                    events.ScheduleEvent(RP1_EVENT_ARTHAS_LEAVE, Seconds(112));
                     break;
                 case RP1_UTHER_WP20:
                     if (Creature* uther = me->FindNearestCreature(NPC_UTHER, 100.0f, true))
@@ -378,6 +443,13 @@ class npc_arthas_stratholme : public CreatureScript
                 case RP1_JAINA_WP74:
                     if (Creature* jaina = me->FindNearestCreature(NPC_JAINA, 500.0f, true))
                         jaina->DespawnOrUnsummon();
+                    break;
+                case RP1_ARTHAS_WP55:
+                    events.ScheduleEvent(RP1_EVENT_ARTHAS10, Seconds(0));
+                    events.ScheduleEvent(RP1_EVENT_ARTHAS_LEAVE2, Seconds(12));
+                    break;
+                case ARTHAS_PURGE_PENDING_POS:
+                    events.ScheduleEvent(RP1_EVENT_FINISHED, Seconds(0));
                     break;
                 case RP2_ARTHAS_MOVE_1:
                     if (Creature* citizen = me->FindNearestCreature(NPC_CITIZEN, 100.0f, true))
@@ -548,8 +620,18 @@ class npc_arthas_stratholme : public CreatureScript
                         if (Creature* jaina = me->FindNearestCreature(NPC_JAINA, 100.0f, true))
                             MoveAlongPath(jaina, RP1_JAINA_WP60, RP1_JAINA_WP74, true);
                         break;
+                    case RP1_EVENT_ARTHAS_LEAVE:
+                        MoveAlongPath(me, RP1_ARTHAS_WP40, RP1_ARTHAS_WP55, true);
+                        break;
                     case RP1_EVENT_ARTHAS10:
                         talkerEntry = 0, talkerLine = RP1_LINE_ARTHAS10;
+                        me->SetFacingTo(_positions[RP1_ARTHAS_WP55].GetOrientation());
+                        break;
+                    case RP1_EVENT_ARTHAS_LEAVE2:
+                        MoveAlongPath(me, RP1_ARTHAS_WP60, ARTHAS_PURGE_PENDING_POS);
+                        break;
+                    case RP1_EVENT_FINISHED:
+                        me->SetFacingTo(_positions[ARTHAS_PURGE_PENDING_POS].GetOrientation());
                         instance->SetData(DATA_UTHER_FINISHED, 1);
                         break;
                     case RP2_EVENT_ARTHAS_MOVE_1:
@@ -797,6 +879,66 @@ const std::array<Position, NUM_POSITIONS> npc_arthas_stratholme::npc_arthas_stra
     { 1804.849f, 1276.741f, 141.7914f }, // RP1_JAINA_WP72
     { 1799.849f, 1275.741f, 141.5414f }, // RP1_JAINA_WP73
     { 1794.105f, 1274.177f, 140.7811f }, // RP1_JAINA_WP74
+    { 1909.149f, 1310.354f, 149.3120f }, // RP1_ARTHAS_WP40
+    { 1908.953f, 1309.581f, 148.9193f }, // RP1_ARTHAS_WP41
+    { 1908.301f, 1307.853f, 148.5280f }, // RP1_ARTHAS_WP42
+    { 1906.801f, 1305.353f, 147.7780f }, // RP1_ARTHAS_WP43
+    { 1906.051f, 1303.853f, 146.5280f }, // RP1_ARTHAS_WP44
+    { 1905.301f, 1303.103f, 146.0280f }, // RP1_ARTHAS_WP45
+    { 1904.976f, 1302.552f, 145.2282f }, // RP1_ARTHAS_WP46
+    { 1904.597f, 1302.058f, 144.8074f }, // RP1_ARTHAS_WP47
+    { 1903.847f, 1300.308f, 144.3074f }, // RP1_ARTHAS_WP48
+    { 1903.347f, 1299.558f, 144.0574f }, // RP1_ARTHAS_WP49
+    { 1903.495f, 1294.424f, 143.4848f }, // RP1_ARTHAS_WP50
+    { 1904.043f, 1291.139f, 143.5607f }, // RP1_ARTHAS_WP51
+    { 1905.880f, 1289.570f, 143.0584f }, // RP1_ARTHAS_WP52
+    { 1910.900f, 1288.434f, 142.5332f }, // RP1_ARTHAS_WP53
+    { 1914.900f, 1287.184f, 142.2832f }, // RP1_ARTHAS_WP54
+    { 1916.920f, 1287.297f, 142.0080f, 3.141593f }, // RP1_ARTHAS_WP55
+    { 1922.920f, 1287.426f, 143.7628f }, // RP1_ARTHAS_WP60
+    { 1926.420f, 1287.426f, 144.2628f }, // RP1_ARTHAS_WP61
+    { 1926.315f, 1287.547f, 144.1820f }, // RP1_ARTHAS_WP62
+    { 1929.387f, 1287.536f, 144.9325f }, // RP1_ARTHAS_WP63
+    { 1939.387f, 1287.536f, 145.6825f }, // RP1_ARTHAS_WP64
+    { 1941.637f, 1287.536f, 145.9325f }, // RP1_ARTHAS_WP65
+    { 1945.476f, 1287.539f, 145.7195f }, // RP1_ARTHAS_WP66
+    { 1952.274f, 1287.516f, 145.9143f }, // RP1_ARTHAS_WP67
+    { 1955.102f, 1287.516f, 145.6653f }, // RP1_ARTHAS_WP68
+    { 1964.744f, 1287.494f, 145.6109f }, // RP1_ARTHAS_WP69
+    { 1976.952f, 1287.353f, 145.7911f }, // RP1_ARTHAS_WP70
+    { 1983.987f, 1287.299f, 145.5024f }, // RP1_ARTHAS_WP71
+    { 1988.481f, 1287.522f, 145.7339f }, // RP1_ARTHAS_WP72
+    { 1989.231f, 1287.522f, 145.7339f }, // RP1_ARTHAS_WP73
+    { 1990.481f, 1291.272f, 145.7339f }, // RP1_ARTHAS_WP74
+    { 1990.737f, 1291.360f, 145.4654f }, // RP1_ARTHAS_WP75
+    { 1991.269f, 1292.252f, 145.7454f }, // RP1_ARTHAS_WP76
+    { 1993.269f, 1297.502f, 145.7454f }, // RP1_ARTHAS_WP77
+    { 1994.019f, 1300.752f, 145.7454f }, // RP1_ARTHAS_WP78
+    { 1996.158f, 1309.712f, 143.8715f }, // RP1_ARTHAS_WP79
+    { 1997.341f, 1313.685f, 143.4305f }, // RP1_ARTHAS_WP80
+    { 1998.091f, 1316.185f, 143.4305f }, // RP1_ARTHAS_WP81
+    { 1998.841f, 1316.935f, 143.4305f }, // RP1_ARTHAS_WP82
+    { 1999.630f, 1318.427f, 142.9734f }, // RP1_ARTHAS_WP83
+    { 2003.284f, 1322.536f, 143.2183f }, // RP1_ARTHAS_WP84
+    { 2004.534f, 1323.286f, 143.2183f }, // RP1_ARTHAS_WP85
+    { 2010.034f, 1326.286f, 143.2183f }, // RP1_ARTHAS_WP86
+    { 2015.219f, 1323.498f, 142.9729f }, // RP1_ARTHAS_WP87
+    { 2019.570f, 1321.246f, 143.2407f }, // RP1_ARTHAS_WP88
+    { 2021.570f, 1313.496f, 143.2407f }, // RP1_ARTHAS_WP89
+    { 2022.320f, 1310.746f, 143.2407f }, // RP1_ARTHAS_WP90
+    { 2022.820f, 1308.996f, 143.2407f }, // RP1_ARTHAS_WP91
+    { 2023.178f, 1307.211f, 143.2767f }, // RP1_ARTHAS_WP92
+    { 2023.797f, 1306.225f, 143.6581f }, // RP1_ARTHAS_WP93
+    { 2025.672f, 1297.923f, 143.5070f }, // RP1_ARTHAS_WP94
+    { 2026.215f, 1296.983f, 143.6298f }, // RP1_ARTHAS_WP95
+    { 2028.965f, 1293.233f, 143.6298f }, // RP1_ARTHAS_WP96
+    { 2030.715f, 1290.983f, 143.6298f }, // RP1_ARTHAS_WP97
+    { 2031.299f, 1290.355f, 143.5597f }, // RP1_ARTHAS_WP98
+    { 2032.124f, 1289.977f, 143.7082f }, // RP1_ARTHAS_WP99
+    { 2033.874f, 1289.477f, 143.4582f }, // RP1_ARTHAS_WP100
+    { 2035.624f, 1288.727f, 143.4582f }, // RP1_ARTHAS_WP101
+    { 2038.124f, 1287.727f, 143.4582f }, // RP1_ARTHAS_WP102
+    { 2045.124f, 1287.727f, 143.2082f }, // RP1_ARTHAS_WP103
 
     { 2047.948f, 1287.598f, 142.8568f, 3.176499f }, // ARTHAS_PURGE_PENDING_POS
     { 2083.011f, 1287.590f, 141.2376f, 5.445427f }, // RP2_ARTHAS_MOVE_1
