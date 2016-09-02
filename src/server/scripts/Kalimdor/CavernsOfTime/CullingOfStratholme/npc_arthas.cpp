@@ -186,6 +186,11 @@ enum PositionIndices
     RP2_FOOT3_POS,
     RP2_FOOT4_POS,
     RP2_MALGANIS_POS,
+
+    // Town Hall
+    ARTHAS_TOWN_HALL_POS,
+
+    // Array element count
     NUM_POSITIONS
 };
 
@@ -233,8 +238,9 @@ enum RPEvents
     RP2_EVENT_CITIZEN1,
     RP2_EVENT_ARTHAS2,
     RP2_EVENT_ARTHAS_MOVE_2,
-    RP2_EVENT_RESIDENT1,
+    RP2_EVENT_KILL1,
     RP2_EVENT_ARTHAS_MOVE_3,
+    RP2_EVENT_KILL2,
     RP2_EVENT_REACT1,
     RP2_EVENT_REACT2,
     RP2_EVENT_REACT3,
@@ -276,7 +282,8 @@ enum RPEventLines1
     RP1_LINE_UTHER6     =  5, // You've just crossed a terrible threshold, Arthas.
     RP1_LINE_ARTHAS9    =  8, // Jaina?
     RP1_LINE_JAINA2     =  1, // I'm sorry, Arthas. I can't watch you do this.
-    RP1_LINE_ARTHAS10   =  9  // Take position here, and I will lead a small force inside Stratholme to begin the culling. We must contain and purge the infected for the sake of all of Lordaeron!
+    RP1_LINE_ARTHAS10   =  9, // Take position here, and I will lead a small force inside Stratholme to begin the culling. We must contain and purge the infected for the sake of all of Lordaeron!
+    RP1_LINE_ARTHAS11   = 40  // All officers should check in with me when their squads are ready. We'll enter Stratholme on my order.
 };
 
 enum RPEventLines2
@@ -292,6 +299,33 @@ enum RPEventLines2
     RP2_LINE_ARTHAS5    = 14  // Mal'Ganis will send out some of his Scourge minions to interfere with us. Those of you with the strongest steel and magic shall go forth and destroy them. I will lead the rest of my forces in purging Stratholme of the infected.
 };
 
+enum RPEventLines3
+{
+    RP3_LINE_ARTHAS1    = 16, // Follow me, I know the way through.
+    RP3_LINE_ARTHAS2    = 17, // Yes, I'm glad I could get to you before the plague.
+    RP3_LINE_ARTHAS3    = 18, // What is this sorcery?
+    RP3_LINE_CITIZEN1   =  0, // There's no need for you to understand, Arthas. All you need to do is die.
+    RP3_LINE_ARTHAS4    = 19, // Mal'Ganis appears to have more than Scourge in his arsenal. We should make haste.
+
+    RP3_LINE_ARTHAS10   = 20, // More vile sorcery! Be ready for anything!
+    RP3_LINE_ARTHAS11   = 21, // Let's move on.
+
+    RP3_LINE_ARTHAS20   = 22, // Watch your backs: they have us surrounded in this hall.
+    RP3_LINE_ARTHAS21   = 24, // Mal'ganis is not making this easy.
+    RP3_LINE_ARTHAS22   = 25, // They're very persistent.
+    
+    RP3_LINE_ARTHAS30   = 26, // What else can he put in my way?
+    RP3_LINE_EPOCH1     =  0, // Prince Arthas Menethil, on this day, a powerful darkness has taken hold of your soul. The death you are destined to visit upon others will this day be your own.
+    RP3_LINE_ARTHAS31   = 27, // I do what I must for Lordaeron, and neither your words nor your actions will stop me.
+    RP3_LINE_EPOCH2     =  1  // We'll see about that, young prince.
+};
+
+enum OtherLines
+{
+    LINE_WAVES_DONE     = 15,
+    LINE_AGGRO          = 39
+};
+
 enum Entries
 {
     NPC_MALGANIS_BUNNY          = 20562,
@@ -304,9 +338,19 @@ enum Entries
     NPC_KNIGHT                  = 27746,
     NPC_PRIEST                  = 27747,
     NPC_SORCERESS               = 27752,
+    NPC_RISEN_ZOMBIE            = 27737,
+    NPC_CITIZEN_INFINITE        = 28340,
+    NPC_EPOCH                   = 26532,
 
+    SPELL_HOLY_LIGHT            = 52444,
+    SPELL_EXORCISM              = 52445,
     SPELL_CRUSADER_STRIKE       = 50773,
     SPELL_SHADOWSTEP_VISUAL     = 51908
+};
+
+enum Debug
+{
+    DEBUGEVENT_TOWNHALL_TRIGGER = 1000000
 };
 
 class npc_arthas_stratholme : public CreatureScript
@@ -316,12 +360,19 @@ class npc_arthas_stratholme : public CreatureScript
 
     struct npc_arthas_stratholmeAI : public ScriptedAI
     {
-        npc_arthas_stratholmeAI(Creature* creature) : ScriptedAI(creature), instance(creature->GetInstanceScript()) { }
+        npc_arthas_stratholmeAI(Creature* creature) : ScriptedAI(creature), instance(creature->GetInstanceScript()), _exorcismCooldown(7300) { }
 
         static const std::array<Position, NUM_POSITIONS> _positions; // all kinds of positions we'll need for RP events (there's a lot of these)
         static const float _snapbackDistanceThreshold; // how far we can be from where we're supposed at start of phase to be before we snap back
-        typedef std::pair<bool, Position const*> SnapbackInfo;
+        struct SnapbackInfo
+        {
+            ReactStates const reactState;
+            bool const haveGossip;
+            Position const* const snapbackPos;
+        };
         static const std::map<ProgressStates, SnapbackInfo> _snapbackPositions; // positions we should be at when starting a given phase
+
+        void InitializeAI() { AdvanceToPosition(ProgressStates(instance->GetData(DATA_INSTANCE_PROGRESS))); }
 
         void AdvanceToPosition(ProgressStates newState)
         {
@@ -330,20 +381,24 @@ class npc_arthas_stratholme : public CreatureScript
             if (it != _snapbackPositions.end())
             {
                 SnapbackInfo const& target = it->second;
-                if (target.first)
+                me->SetReactState(target.reactState);
+                if (target.haveGossip)
                     me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                 else
                     me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 
-                if (target.second)
-                    std::cout << "arthas: have snapback, " << target.second->GetExactDist(me) << "yd away from me" << std::endl;
-                else
-                    std::cout << "no snapback for state " << uint32(newState) << ", only gossip data" << std::endl;
-                if (target.second && target.second->GetExactDist(me) > _snapbackDistanceThreshold)
-                    me->NearTeleportTo(*target.second);
+                if (target.snapbackPos && target.snapbackPos->GetExactDist(me) > _snapbackDistanceThreshold)
+                    me->NearTeleportTo(*target.snapbackPos);
             }
-            else
-                std::cout << "arthas: no snapback for state " << uint32(newState) << std::endl;
+
+            switch (newState)
+            {
+                case WAVES_DONE:
+                    // @todo start movement
+                    Talk(LINE_WAVES_DONE);
+                    events.ScheduleEvent(DEBUGEVENT_TOWNHALL_TRIGGER, Seconds(0));
+                    break;
+            }
         }
 
         void MoveAlongPath(Creature* creature, PositionIndices start, PositionIndices end, bool walk = false)
@@ -391,6 +446,9 @@ class npc_arthas_stratholme : public CreatureScript
                 case -ACTION_START_RP_EVENT2:
                     Talk(RP2_LINE_ARTHAS1, ObjectAccessor::GetPlayer(*me, _eventStarterGuid));
                     events.ScheduleEvent(RP2_EVENT_ARTHAS_MOVE_1, Seconds(9));
+                    break;
+                case -ACTION_START_RP_EVENT3:
+                    Talk(RP3_LINE_ARTHAS1, ObjectAccessor::GetPlayer(*me, _eventStarterGuid));
                     break;
             }
         }
@@ -461,20 +519,11 @@ class npc_arthas_stratholme : public CreatureScript
                     events.ScheduleEvent(RP2_EVENT_ARTHAS_MOVE_2, Seconds(11));
                     break;
                 case RP2_ARTHAS_MOVE_2:
-                    if (Creature* citizen = me->FindNearestCreature(NPC_CITIZEN, 100.0f, true))
-                    {
-                        DoCast(citizen, SPELL_CRUSADER_STRIKE);
-                        me->Kill(citizen);
-                    }
-                    events.ScheduleEvent(RP2_EVENT_RESIDENT1, Seconds(0));
-                    events.ScheduleEvent(RP2_EVENT_ARTHAS_MOVE_3, Seconds(0));
+                    events.ScheduleEvent(RP2_EVENT_KILL1, Seconds(0));
+                    events.ScheduleEvent(RP2_EVENT_ARTHAS_MOVE_3, Seconds(1));
                     break;
                 case RP2_ARTHAS_MOVE_3:
-                    if (Creature* resident = me->FindNearestCreature(NPC_RESIDENT, 100.0f, true))
-                    {
-                        DoCast(resident, SPELL_CRUSADER_STRIKE);
-                        me->Kill(resident);
-                    }
+                    events.ScheduleEvent(RP2_EVENT_KILL2, Seconds(0));
                     events.ScheduleEvent(RP2_EVENT_REACT1, Seconds(1));
                     events.ScheduleEvent(RP2_EVENT_REACT2, Seconds(2));
                     events.ScheduleEvent(RP2_EVENT_REACT3, Seconds(3));
@@ -631,6 +680,7 @@ class npc_arthas_stratholme : public CreatureScript
                         MoveAlongPath(me, RP1_ARTHAS_WP60, ARTHAS_PURGE_PENDING_POS);
                         break;
                     case RP1_EVENT_FINISHED:
+                        talkerEntry = 0, talkerLine = RP1_LINE_ARTHAS11;
                         me->SetFacingTo(_positions[ARTHAS_PURGE_PENDING_POS].GetOrientation());
                         instance->SetData(DATA_UTHER_FINISHED, 1);
                         break;
@@ -647,12 +697,24 @@ class npc_arthas_stratholme : public CreatureScript
                         me->SetWalk(true);
                         me->GetMotionMaster()->MovePoint(RP2_ARTHAS_MOVE_2, _positions[RP2_ARTHAS_MOVE_2]);
                         break;
-                    case RP2_EVENT_RESIDENT1:
+                    case RP2_EVENT_KILL1:
+                        if (Creature* citizen = me->FindNearestCreature(NPC_CITIZEN, 100.0f, true))
+                        {
+                            DoCast(citizen, SPELL_CRUSADER_STRIKE);
+                            me->Kill(citizen);
+                        }
                         talkerEntry = NPC_RESIDENT, talkerLine = RP2_LINE_RESIDENT1;
                         break;
                     case RP2_EVENT_ARTHAS_MOVE_3:
                         me->SetWalk(true);
                         me->GetMotionMaster()->MovePoint(RP2_ARTHAS_MOVE_3, _positions[RP2_ARTHAS_MOVE_3]);
+                        break;
+                    case RP2_EVENT_KILL2:
+                        if (Creature* resident = me->FindNearestCreature(NPC_RESIDENT, 100.0f, true))
+                        {
+                            DoCast(resident, SPELL_CRUSADER_STRIKE);
+                            me->Kill(resident);
+                        }
                         break;
                     case RP2_EVENT_REACT1:
                     case RP2_EVENT_REACT2:
@@ -744,6 +806,10 @@ class npc_arthas_stratholme : public CreatureScript
                     case RP2_EVENT_WAVE_START:
                         instance->SetData(DATA_START_WAVES, 1);
                         break;
+
+                    case DEBUGEVENT_TOWNHALL_TRIGGER:
+                        instance->SetData(DATA_REACH_TOWN_HALL, 1);
+                        break;
                     default:
                         break;
                 }
@@ -759,12 +825,39 @@ class npc_arthas_stratholme : public CreatureScript
                         talker->AI()->Talk(talkerLine, ObjectAccessor::GetPlayer(*talker, _eventStarterGuid));
                 }
             }
+
+            if (me->HasReactState(REACT_PASSIVE))
+                return;
+
+            if (!UpdateVictim())
+                return;
+
+            if (HealthBelowPct(40))
+                DoCastSelf(SPELL_HOLY_LIGHT);
+            if (_exorcismCooldown <= diff)
+            {
+                if (me->HasUnitState(UNIT_STATE_CASTING))
+                    _exorcismCooldown = 0;
+                else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                    DoCast(target, SPELL_EXORCISM);
+            }
+            else
+                _exorcismCooldown -= diff;
+
+            DoMeleeAttackIfReady();
+        }
+
+        void EnterCombat(Unit* who) override
+        {
+            if (who && who->GetEntry() == NPC_RISEN_ZOMBIE)
+                Talk(LINE_AGGRO, who);
         }
 
         private:
             InstanceScript* const instance;
             EventMap events;
             ObjectGuid _eventStarterGuid;
+            uint32 _exorcismCooldown; // no EventMap entry for this, it's reserved for RP handling
     };
 
     void AdvanceDungeon(Creature* creature, Player* cause, ProgressStates from, InstanceData command)
@@ -778,6 +871,7 @@ class npc_arthas_stratholme : public CreatureScript
     {
         std::cout << (player ? player->GetName() : "nullptr") << " select " << action << " on " << (creature ? creature->GetName() : "nullptr") << std::endl;
         AdvanceDungeon(creature, player, PURGE_PENDING, DATA_START_PURGE);
+        AdvanceDungeon(creature, player, TOWN_HALL_PENDING, DATA_START_TOWN_HALL);
         return true;
     }
 
@@ -952,27 +1046,30 @@ const std::array<Position, NUM_POSITIONS> npc_arthas_stratholme::npc_arthas_stra
     { 2078.365f, 1281.254f, 141.5182f }, // RP2_FOOT2_POS
     { 2077.737f, 1290.441f, 141.5698f }, // RP2_FOOT3_POS
     { 2078.055f, 1293.624f, 141.5544f }, // RP2_FOOT4_POS
-    { 2113.454f, 1287.986f, 136.3829f, 3.071779f } // RP2_MALGANIS_POS
+    { 2113.454f, 1287.986f, 136.3829f, 3.071779f }, // RP2_MALGANIS_POS
+
+    { 2366.240f, 1195.253f, 132.0441f, 3.159046f }, // ARTHAS_TOWN_HALL_POS
 }};
 
 const float npc_arthas_stratholme::npc_arthas_stratholmeAI::_snapbackDistanceThreshold = 10.0f;
 const std::map<ProgressStates, npc_arthas_stratholme::npc_arthas_stratholmeAI::SnapbackInfo> npc_arthas_stratholme::npc_arthas_stratholmeAI::_snapbackPositions = {
-    { JUST_STARTED, { false, &_positions[RP1_ARTHAS_INITIAL] } },
-    { CRATES_IN_PROGRESS, { false, &_positions[RP1_ARTHAS_INITIAL] } },
-    { CRATES_DONE, { false, &_positions[RP1_ARTHAS_INITIAL] } },
-    { UTHER_TALK, { false, &_positions[RP1_ARTHAS_INITIAL] } },
-    { PURGE_PENDING, { true, &_positions[ARTHAS_PURGE_PENDING_POS] } },
-    { PURGE_STARTING, { false, &_positions[ARTHAS_PURGE_PENDING_POS] } },
-    { WAVES_IN_PROGRESS, { false, &_positions[RP2_ARTHAS_MOVE_5] } },
-    { WAVES_DONE, { true, nullptr } },
-    { TOWN_HALL, { false, nullptr } },
-    { TOWN_HALL_COMPLETE, { true, nullptr } },
-    { GAUNTLET_TRANSITION, { false, nullptr } },
-    { GAUNTLET_PENDING, { true, nullptr } },
-    { GAUNTLET_IN_PROGRESS, { false, nullptr } },
-    { GAUNTLET_COMPLETE, { true, nullptr } },
-    { MALGANIS_IN_PROGRESS, { false, nullptr } },
-    { COMPLETE, { true, nullptr } }
+    { JUST_STARTED, { REACT_PASSIVE, false, &_positions[RP1_ARTHAS_INITIAL] } },
+    { CRATES_IN_PROGRESS, { REACT_PASSIVE, false, &_positions[RP1_ARTHAS_INITIAL] } },
+    { CRATES_DONE, { REACT_PASSIVE, false, &_positions[RP1_ARTHAS_INITIAL] } },
+    { UTHER_TALK, { REACT_PASSIVE, false, &_positions[RP1_ARTHAS_INITIAL] } },
+    { PURGE_PENDING, { REACT_PASSIVE, true, &_positions[ARTHAS_PURGE_PENDING_POS] } },
+    { PURGE_STARTING, { REACT_PASSIVE, false, &_positions[ARTHAS_PURGE_PENDING_POS] } },
+    { WAVES_IN_PROGRESS, { REACT_AGGRESSIVE, false, &_positions[RP2_ARTHAS_MOVE_5] } },
+    { WAVES_DONE, { REACT_AGGRESSIVE, false, &_positions[RP2_ARTHAS_MOVE_5] } },
+    { TOWN_HALL_PENDING, { REACT_AGGRESSIVE, true, &_positions[ARTHAS_TOWN_HALL_POS] } },
+    { TOWN_HALL, { REACT_AGGRESSIVE, false, &_positions[ARTHAS_TOWN_HALL_POS] } },
+    { TOWN_HALL_COMPLETE, { REACT_PASSIVE, true, nullptr } },
+    { GAUNTLET_TRANSITION, { REACT_PASSIVE, false, nullptr } },
+    { GAUNTLET_PENDING, { REACT_PASSIVE, true, nullptr } },
+    { GAUNTLET_IN_PROGRESS, { REACT_AGGRESSIVE, false, nullptr } },
+    { GAUNTLET_COMPLETE, { REACT_PASSIVE, true, nullptr } },
+    { MALGANIS_IN_PROGRESS, { REACT_AGGRESSIVE, false, nullptr } },
+    { COMPLETE, { REACT_PASSIVE, true, nullptr } }
 };
 
 // Arthas' AI is the one controlling everything, all this AI does is report any movementinforms back to Arthas AI using SetData

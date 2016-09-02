@@ -30,17 +30,18 @@ enum ProgressStates
     PURGE_PENDING           = 0x00010, // RP event done, pending player input to start wave event
     PURGE_STARTING          = 0x00020, // Arthas entering Stratholme, RP sequence with Mal'ganis
     WAVES_IN_PROGRESS       = 0x00040, // first section is underway, players are battling waves
-    WAVES_DONE              = 0x00080, // wave section completed; pending player input to begin Town Hall section
-    TOWN_HALL               = 0x00100, // now escorting Arthas through Stratholme Town Hall
-    TOWN_HALL_COMPLETE      = 0x00200, // Town Hall event complete, third boss defeated; pending player input to begin gauntlet transition
-    GAUNTLET_TRANSITION     = 0x00400, // Arthas is leading players through the secret passage from Town Hall to the gauntlet
-    GAUNTLET_PENDING        = 0x00800, // Pending player input to begin escorting Arthas through the final gauntlet section
-    GAUNTLET_IN_PROGRESS    = 0x01000, // Arthas is being escorted through the gauntlet section
-    GAUNTLET_COMPLETE       = 0x02000, // Arthas has reached the end of the gauntlet section; player input pending to begin Mal'ganis encounter
-    MALGANIS_IN_PROGRESS    = 0x04000, // Arthas has moved into the final square and Mal'ganis encounter begins
-    COMPLETE                = 0x08000, // Mal'ganis encounter is completed; dungeon over
+    WAVES_DONE              = 0x00080, // wave section completed; Arthas moving to take position in front of Stratholme Town Hall
+    TOWN_HALL_PENDING       = 0x00100, // Arthas has reached the Town Hall; pending player input to begin escort section
+    TOWN_HALL               = 0x00200, // now escorting Arthas through Stratholme Town Hall
+    TOWN_HALL_COMPLETE      = 0x00400, // Town Hall event complete, third boss defeated; pending player input to begin gauntlet transition
+    GAUNTLET_TRANSITION     = 0x00800, // Arthas is leading players through the secret passage from Town Hall to the gauntlet
+    GAUNTLET_PENDING        = 0x01000, // Pending player input to begin escorting Arthas through the final gauntlet section
+    GAUNTLET_IN_PROGRESS    = 0x02000, // Arthas is being escorted through the gauntlet section
+    GAUNTLET_COMPLETE       = 0x04000, // Arthas has reached the end of the gauntlet section; player input pending to begin Mal'ganis encounter
+    MALGANIS_IN_PROGRESS    = 0x08000, // Arthas has moved into the final square and Mal'ganis encounter begins
+    COMPLETE                = 0x10000, // Mal'ganis encounter is completed; dungeon over
 
-    ALL                     = 0x0FFFF
+    ALL                     = 0x1FFFF
 };
 
 enum InstanceData
@@ -62,6 +63,8 @@ enum InstanceData
     DATA_START_PURGE,      // sent by arthas creature script to begin pre-purge RP event
     DATA_START_WAVES,      // sent by arthas AI to begin wave event
     DATA_NOTIFY_DEATH,     // sent by wave mob AI to instance script on death
+    DATA_REACH_TOWN_HALL,  // sent by arthas AI once he reaches stratholme town hall
+    DATA_START_TOWN_HALL,  // sent by arthas creature script to begin town hall sequence
 
     // old stuff below this, need to figure out if needed
     DATA_ARTHAS
@@ -75,20 +78,7 @@ enum InstanceActions
     ACTION_CORRUPTOR_LEAVE,
     ACTION_START_RP_EVENT1, // Arthas/Uther chat in front of town
     ACTION_START_RP_EVENT2, // Arthas/Mal'ganis chat at entrance
-};
-
-enum InstanceMisc
-{
-    WORLDSTATE_SHOW_CRATES          = 3479,
-    WORLDSTATE_CRATES_REVEALED      = 3480,
-    WORLDSTATE_WAVE_COUNT           = 3504,
-    WORLDSTATE_WAVE_MARKER_ES       = 3581,
-    WORLDSTATE_WAVE_MARKER_FL       = 3582,
-    WORLDSTATE_WAVE_MARKER_KS       = 3583,
-    WORLDSTATE_WAVE_MARKER_MR       = 3584,
-    WORLDSTATE_WAVE_MARKER_TH       = 3585,
-    WORLDSTATE_TIME_GUARDIAN        = 3931,
-    WORLDSTATE_TIME_GUARDIAN_SHOW   = 3932
+    ACTION_START_RP_EVENT3, // Town Hall sequence
 };
 
 // These methods are implemented in instance_culling_of_stratholme.cpp so they can access internals of the instance script

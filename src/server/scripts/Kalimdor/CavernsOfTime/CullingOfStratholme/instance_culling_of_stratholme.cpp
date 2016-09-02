@@ -79,6 +79,21 @@ enum Yells
     CHROMIE_WHISPER_GUARDIAN_2  = 1,
     CHROMIE_WHISPER_GUARDIAN_3  = 2
 };
+
+enum States
+{
+    WORLDSTATE_SHOW_CRATES = 3479,
+    WORLDSTATE_CRATES_REVEALED = 3480,
+    WORLDSTATE_WAVE_COUNT = 3504,
+    WORLDSTATE_WAVE_MARKER_ES = 3581,
+    WORLDSTATE_WAVE_MARKER_FL = 3582,
+    WORLDSTATE_WAVE_MARKER_KS = 3583,
+    WORLDSTATE_WAVE_MARKER_MR = 3584,
+    WORLDSTATE_WAVE_MARKER_TH = 3585,
+    WORLDSTATE_TIME_GUARDIAN = 3931,
+    WORLDSTATE_TIME_GUARDIAN_SHOW = 3932
+};
+
 enum WaveLocations
 {
     WAVE_LOC_MIN = CRIER_SAY_KINGS_SQUARE,
@@ -127,7 +142,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
 
         struct WaveLocation
         {
-            InstanceMisc const worldState;
+            States const worldState;
             std::array<Position, MAX_SPAWNS_PER_WAVE> spawnPoints;
         };
         typedef std::array<WaveLocation, WAVE_LOC_MAX-WAVE_LOC_MIN+1> WaveLocationData;
@@ -249,7 +264,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
 
                             // clear existing world markers
                             for (uint32 marker = WAVE_MARKER_MIN; marker <= WAVE_MARKER_MAX; ++marker)
-                                SetWorldState(InstanceMisc(marker), 0, false);
+                                SetWorldState(States(marker), 0, false);
                             PropagateWorldStateUpdate();
 
                             // schedule next wave if applicable
@@ -258,6 +273,10 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             else
                                 SetInstanceProgress(WAVES_DONE);
                         }
+                        break;
+                    case DATA_REACH_TOWN_HALL:
+                        if (_currentState == WAVES_DONE)
+                            SetInstanceProgress(TOWN_HALL_PENDING);
                         break;
                     default:
                         break;
@@ -282,6 +301,13 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             {
                                 SetInstanceProgress(PURGE_STARTING);
                                 arthas->AI()->SetGUID(guid, -ACTION_START_RP_EVENT2);
+                            }
+                    case DATA_START_TOWN_HALL:
+                        if (_currentState == PURGE_PENDING)
+                            if (Creature* arthas = instance->GetCreature(_arthasGUID))
+                            {
+                                SetInstanceProgress(TOWN_HALL);
+                                arthas->AI()->SetGUID(guid, -ACTION_START_RP_EVENT3);
                             }
                     default:
                         break;
@@ -498,7 +524,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             }
 
                             for (uint32 marker = WAVE_MARKER_MIN; marker <= WAVE_MARKER_MAX; ++marker)
-                                SetWorldState(InstanceMisc(marker), 0, false);
+                                SetWorldState(States(marker), 0, false);
                             SetWorldState(spawnLocation.worldState, 1);
 
                             events.RescheduleEvent(EVENT_CRIER_ANNOUNCE_WAVE, Seconds(2));
@@ -566,7 +592,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         _myCreatures[curState].erase(me);
             }
 
-            void SetWorldState(InstanceMisc state, uint32 value, bool immediate = true)
+            void SetWorldState(States state, uint32 value, bool immediate = true)
             {
                 std::cout << "SetWorldState " << state << " " << value << std::endl;
                 _currentWorldStates[state] = value;
@@ -592,7 +618,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
         private:
             EventMap events;
             ProgressStates _currentState;
-            typedef std::map<InstanceMisc,uint32> WorldStateMap;
+            typedef std::map<States,uint32> WorldStateMap;
             WorldStateMap _sentWorldStates;
             WorldStateMap _currentWorldStates;
             time_t _infiniteGuardianTimeout;

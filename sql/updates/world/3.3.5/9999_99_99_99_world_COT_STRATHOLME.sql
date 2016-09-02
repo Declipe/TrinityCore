@@ -68,6 +68,12 @@ UPDATE `gameobject` SET `spawntimesecs`=@DAY WHERE `id`=190094;
 -- Arthas AI
 UPDATE `creature_template` SET `ScriptName`="npc_arthas_stratholme" WHERE `entry`=26499;
 
+-- Missing Arthas lines
+DELETE FROM `creature_text` WHERE `entry`=26499 AND `groupid`>38;
+INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`comment`) VALUES
+(26499,39,0,"I can't afford to spare you.",12,100,31355,0,"Arthas SAY_AGGRO_ZOMBIE"),
+(26499,40,0,"All officers should check in with me when their squads are ready. We'll enter Stratholme on my order.",12,100,27517,3,"Arthas RP1_LINE_ARTHAS11");
+
 -- Arthas/Uther RP data
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_rp_dummy",`AIName`="" WHERE `entry` IN (26528,26497);
 UPDATE `creature_text` SET `TextRange`=3 WHERE `entry` IN (26499,26528,26497);
@@ -121,3 +127,8 @@ DELETE FROM `creature` WHERE `guid` BETWEEN 143949 AND 143952;
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_fluff_undead",`AIName`="" WHERE `entry` = 27737;
 DELETE FROM `smart_scripts` WHERE -`entryorguid` IN (SELECT `guid` FROM `creature` WHERE `id`=27737 AND `map`=595);
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=22 AND -`SourceEntry` IN (SELECT `guid` FROM `creature` WHERE `id`=27737 AND `map`=595);
+
+-- Town Hall RP event
+DELETE FROM `creature_text` WHERE `entry`=28340;
+INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`comment`) VALUES
+(28340, 0, "There's no need for you to understand, Arthas. All you need to do is die.", 12, 100, 27815, 3, "Stratholme Citizen (Disguised Infinite) RP3_LINE_CITIZEN1");

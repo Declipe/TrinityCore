@@ -252,7 +252,9 @@ enum Chromie1Misc
 {
     ITEM_ARCANE_DISRUPTOR       = 37888,
     QUEST_DISPELLING_ILLUSIONS  = 13149,
-    SPELL_TELEPORT_PLAYER       = 53435
+    SPELL_TELEPORT_PLAYER       = 53435,
+    ACHIEVEMENT_NORMAL          =   479,
+    ACHIEVEMENT_HEROIC          =   500
 };
 class npc_chromie_start : public CreatureScript
 {
@@ -288,6 +290,25 @@ class npc_chromie_start : public CreatureScript
                 if (state < PURGE_PENDING)
                 {
                     AddGossipItemFor(player, GOSSIP_MENU_INITIAL, GOSSIP_OPTION_EXPLAIN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_EXPLAIN);
+                    {
+                        bool shouldAddSkipGossip = true;
+                        Map::PlayerList const& players = instance->instance->GetPlayers();
+                        for (Map::PlayerList::const_iterator it = players.begin(); it != players.end(); ++it)
+                        {
+                            if (Player* player = it->GetSource())
+                            {
+                                if (player->IsGameMaster())
+                                    continue;
+                                if (!player->HasAchieved(instance->instance->GetSpawnMode() == DUNGEON_DIFFICULTY_HEROIC ? ACHIEVEMENT_HEROIC : ACHIEVEMENT_NORMAL))
+                                {
+                                    shouldAddSkipGossip = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (shouldAddSkipGossip)
+                            AddGossipItemFor(player, GOSSIP_MENU_INITIAL, GOSSIP_OPTION_SKIP, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_SKIP);
+                    }
                     SendGossipMenuFor(player, GOSSIP_TEXT_INITIAL, creature->GetGUID());
                 }
                 else
