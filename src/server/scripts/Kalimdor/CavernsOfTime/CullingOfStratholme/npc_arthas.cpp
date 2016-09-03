@@ -18,6 +18,7 @@
 #include "culling_of_stratholme.h"
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
+#include "SpellScript.h"
 #include "MoveSplineInit.h"
 
 // Indices in arthasAI::_positions
@@ -729,10 +730,7 @@ class npc_arthas_stratholme : public CreatureScript
                         break;
                     case RP2_EVENT_KILL1:
                         if (Creature* citizen = me->FindNearestCreature(NPC_CITIZEN, 100.0f, true))
-                        {
                             DoCast(citizen, SPELL_CRUSADER_STRIKE);
-                            me->Kill(citizen);
-                        }
                         talkerEntry = NPC_RESIDENT, talkerLine = RP2_LINE_RESIDENT1;
                         break;
                     case RP2_EVENT_ARTHAS_MOVE_3:
@@ -741,10 +739,7 @@ class npc_arthas_stratholme : public CreatureScript
                         break;
                     case RP2_EVENT_KILL2:
                         if (Creature* resident = me->FindNearestCreature(NPC_RESIDENT, 100.0f, true))
-                        {
                             DoCast(resident, SPELL_CRUSADER_STRIKE);
-                            me->Kill(resident);
-                        }
                         break;
                     case RP2_EVENT_REACT1:
                     case RP2_EVENT_REACT2:
@@ -847,7 +842,7 @@ class npc_arthas_stratholme : public CreatureScript
                     case RP3_EVENT_CITIZEN1:
                         talkerEntry = NPC_CITIZEN_INFINITE, talkerLine = RP3_LINE_CITIZEN1;
                         break;
-                    RP3_EVENT_ARTHAS1:
+                    case RP3_EVENT_ARTHAS1:
                         talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS1;
                         break;
                     case DEBUGEVENT_TOWNHALL_TRIGGER:
@@ -1138,8 +1133,37 @@ struct npc_stratholme_rp_dummy : public CreatureScript
     CreatureAI* GetAI(Creature* creature) const override { return GetInstanceAI<npc_stratholme_rp_dummyAI>(creature); }
 };
 
+class spell_stratholme_crusader_strike : public SpellScriptLoader
+{
+    public:
+        spell_stratholme_crusader_strike() : SpellScriptLoader("spell_stratholme_crusader_strike") { }
+
+        class spell_stratholme_crusader_strike_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_stratholme_crusader_strike_SpellScript);
+
+            void HandleDummy(SpellEffIndex /*effIndex*/)
+            {
+                if (Unit* target = GetHitUnit())
+                    if (target->GetEntry() != NPC_CITIZEN_INFINITE || target->GetEntry() != NPC_RESIDENT_INFINITE)
+                        GetCaster()->Kill(target);
+            }
+
+            void Register() override
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_stratholme_crusader_strike_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+            }
+        };
+
+        SpellScript* GetSpellScript() const override
+        {
+            return new spell_stratholme_crusader_strike_SpellScript();
+        }
+};
+
 void AddSC_npc_arthas_stratholme()
 {
     new npc_arthas_stratholme();
     new npc_stratholme_rp_dummy();
+    new spell_stratholme_crusader_strike();
 }

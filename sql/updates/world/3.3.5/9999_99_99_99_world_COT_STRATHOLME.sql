@@ -74,6 +74,10 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,
 (26499,39,0,"I can't afford to spare you.",12,100,31355,0,"Arthas SAY_AGGRO_ZOMBIE"),
 (26499,40,0,"All officers should check in with me when their squads are ready. We'll enter Stratholme on my order.",12,100,27517,3,"Arthas RP1_LINE_ARTHAS11");
 
+-- Dummy spell scripts
+DELETE FROM `spell_script_names` WHERE `spell_id`=50773;
+INSERT INTO `spell_script_names` (`spell_id`,`scriptname`) VALUES (50773,"spell_stratholme_crusader_strike");
+
 -- Arthas/Uther RP data
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_rp_dummy",`AIName`="" WHERE `entry` IN (26528,26497);
 UPDATE `creature_text` SET `TextRange`=3 WHERE `entry` IN (26499,26528,26497);

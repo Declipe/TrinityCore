@@ -287,7 +287,7 @@ class npc_chromie_start : public CreatureScript
                         AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, Trinity::StringFormat("[GM] Set instance progress 0x%X", state).c_str(), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL + state);
 
                 uint32 state = instance->GetData(DATA_INSTANCE_PROGRESS);
-                if (state < PURGE_PENDING)
+                if (state < PURGE_STARTING)
                 {
                     AddGossipItemFor(player, GOSSIP_MENU_INITIAL, GOSSIP_OPTION_EXPLAIN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_EXPLAIN);
                     {
