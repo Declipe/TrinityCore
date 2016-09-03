@@ -1,7 +1,7 @@
 -- Caverns of Time: Stratholme rework
 SET @DAY = 86400;
-SET @CGUID = 700300; -- creature GUIDs (1 creature);
-DELETE FROM `creature` WHERE `guid` BETWEEN @CGUID+00 AND @CGUID+00;
+SET @CGUID = 700300; -- creature GUIDs (4 creature);
+DELETE FROM `creature` WHERE `guid` BETWEEN @CGUID+00 AND @CGUID+03;
 
 -- Move additional Chromie spawns to DB
 INSERT INTO `creature` (`guid`,`id`,`map`,`spawnMask`,`phaseMask`,`position_x`,`position_y`,`position_z`,`orientation`,`spawntimesecs`,`spawndist`,`movementtype`) VALUES
@@ -80,7 +80,7 @@ INSERT INTO `spell_script_names` (`spell_id`,`scriptname`) VALUES (50773,"spell_
 
 -- Arthas/Uther RP data
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_rp_dummy",`AIName`="" WHERE `entry` IN (26528,26497);
-UPDATE `creature_text` SET `TextRange`=3 WHERE `entry` IN (26499,26528,26497);
+UPDATE `creature_text` SET `TextRange`=3 WHERE `entry` IN (26499,26528,26497,26529,26530,26532,26533,32273);
 UPDATE `creature_text` SET `emote`=396 WHERE
 	(`entry` = 26499 AND `groupid` IN (0,3,5)) OR
 	(`entry` = 26528 AND `groupid`=3) OR
@@ -106,7 +106,7 @@ UPDATE `creature_text` SET `emote`=397 WHERE
 	(`entry` = 26499 AND `groupid`=13);
 	
 -- Blanket apply a spawn control AI to all "live stratholme" mobs that prevents them respawning after the purge begins
-UPDATE `creature_template` SET `ScriptName`="npc_stratholme_fluff_living",`AIName`="" WHERE `entry` IN (28167,31126,31019,28169,31127,31023,31020,31018);
+UPDATE `creature_template` SET `ScriptName`="npc_stratholme_fluff_living",`AIName`="" WHERE `entry` IN (28167,31126,31019,28169,31127,31023,31020,31018,31028);
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_living",`AIName`="SmartAI" WHERE `entry` IN (31057);
 -- Do the same for undead stratholme mobs, except for the other phases
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_undead",`AIName`="SmartAI" WHERE `entry` IN (28249,27729,28200,27734,27731,28199,27736);
@@ -131,6 +131,12 @@ DELETE FROM `creature` WHERE `guid` BETWEEN 143949 AND 143952;
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_fluff_undead",`AIName`="" WHERE `entry` = 27737;
 DELETE FROM `smart_scripts` WHERE -`entryorguid` IN (SELECT `guid` FROM `creature` WHERE `id`=27737 AND `map`=595);
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=22 AND -`SourceEntry` IN (SELECT `guid` FROM `creature` WHERE `id`=27737 AND `map`=595);
+
+-- Town Hall infinite spawns
+INSERT INTO `creature` (`guid`,`id`,`map`,`spawnMask`,`phaseMask`,`position_x`,`position_y`,`position_z`,`orientation`,`spawntimesecs`,`spawndist`,`movementtype`) VALUES
+(@CGUID+01, 28340, 595, 3, 1, 2398.715, 1207.334, 134.1223, 5.270895, @DAY, 0, 0),
+(@CGUID+02, 28340, 595, 3, 1, 2401.265, 1202.789, 134.1039, 1.466077, @DAY, 0, 0),
+(@CGUID+03, 28341, 595, 3, 1, 2402.654, 1205.786, 134.1223, 2.897247, @DAY, 0, 0);
 
 -- Town Hall RP event
 DELETE FROM `creature_text` WHERE `entry`=28340;

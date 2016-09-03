@@ -109,6 +109,7 @@ class boss_salramm : public CreatureScript
             {
                 Talk(SAY_DEATH);
                 _JustDied();
+                instance->SetData(DATA_NOTIFY_DEATH, 1);
             }
 
             void KilledUnit(Unit* victim) override

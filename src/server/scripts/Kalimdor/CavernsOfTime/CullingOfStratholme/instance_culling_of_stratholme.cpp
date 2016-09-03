@@ -82,16 +82,16 @@ enum Yells
 
 enum States
 {
-    WORLDSTATE_SHOW_CRATES = 3479,
-    WORLDSTATE_CRATES_REVEALED = 3480,
-    WORLDSTATE_WAVE_COUNT = 3504,
-    WORLDSTATE_WAVE_MARKER_ES = 3581,
-    WORLDSTATE_WAVE_MARKER_FL = 3582,
-    WORLDSTATE_WAVE_MARKER_KS = 3583,
-    WORLDSTATE_WAVE_MARKER_MR = 3584,
-    WORLDSTATE_WAVE_MARKER_TH = 3585,
-    WORLDSTATE_TIME_GUARDIAN = 3931,
-    WORLDSTATE_TIME_GUARDIAN_SHOW = 3932
+    WORLDSTATE_SHOW_CRATES          = 3479,
+    WORLDSTATE_CRATES_REVEALED      = 3480,
+    WORLDSTATE_WAVE_COUNT           = 3504,
+    WORLDSTATE_WAVE_MARKER_ES       = 3581,
+    WORLDSTATE_WAVE_MARKER_FL       = 3582,
+    WORLDSTATE_WAVE_MARKER_KS       = 3583,
+    WORLDSTATE_WAVE_MARKER_MR       = 3584,
+    WORLDSTATE_WAVE_MARKER_TH       = 3585,
+    WORLDSTATE_TIME_GUARDIAN        = 3931,
+    WORLDSTATE_TIME_GUARDIAN_SHOW   = 3932
 };
 
 enum WaveLocations
@@ -302,8 +302,9 @@ class instance_culling_of_stratholme : public InstanceMapScript
                                 SetInstanceProgress(PURGE_STARTING);
                                 arthas->AI()->SetGUID(guid, -ACTION_START_RP_EVENT2);
                             }
+                        break;
                     case DATA_START_TOWN_HALL:
-                        if (_currentState == PURGE_PENDING)
+                        if (_currentState == TOWN_HALL_PENDING)
                             if (Creature* arthas = instance->GetCreature(_arthasGUID))
                             {
                                 SetInstanceProgress(TOWN_HALL);
@@ -325,9 +326,6 @@ class instance_culling_of_stratholme : public InstanceMapScript
             {
                 if (!InstanceScript::SetBossState(type, state))
                     return false;
-
-                if ((type == DATA_MEATHOOK || type == DATA_SALRAMM) && state == DONE)
-                    SetData(DATA_NOTIFY_DEATH, 1);
 
                 return true;
             }
