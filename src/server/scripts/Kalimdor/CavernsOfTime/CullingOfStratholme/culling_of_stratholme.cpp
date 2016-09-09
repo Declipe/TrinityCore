@@ -398,10 +398,10 @@ enum Chromie2Misc
     WHISPER_CRATES_DONE = 0,
     WHISPER_COME_TALK   = 1
 };
-class npc_chromie_middle : public CreatureScript
+class npc_chromie_middle : public StratholmeCreatureScript<NullCreatureAI>
 {
     public:
-        npc_chromie_middle() : CreatureScript("npc_chromie_middle") { }
+        npc_chromie_middle() : StratholmeCreatureScript("npc_chromie_middle", ProgressStates(ALL & ~(JUST_STARTED | CRATES_IN_PROGRESS))) { }
 
         void AdvanceDungeon(Creature* creature, Player const* player)
         {
@@ -444,9 +444,9 @@ class npc_chromie_middle : public CreatureScript
             return false;
         }
 
-        struct npc_chromie_middleAI : public StratholmeNPCAIWrapper<NullCreatureAI>
+        struct npc_chromie_middleAI : public StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper
         {
-            npc_chromie_middleAI(Creature* creature) : StratholmeNPCAIWrapper<NullCreatureAI>(creature, ProgressStates(ALL & ~(JUST_STARTED | CRATES_IN_PROGRESS))), _whisperDelay(0) { }
+            npc_chromie_middleAI(Creature* creature, ProgressStates _respawnMask, ProgressStates _despawnMask) : StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper(creature, _respawnMask, _despawnMask), _whisperDelay(0) { }
 
             void JustRespawned() override
             {
@@ -489,7 +489,7 @@ class npc_chromie_middle : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return GetInstanceAI<npc_chromie_middleAI>(creature);
+            return GetInstanceAI<npc_chromie_middleAI>(creature, _respawnMask, _despawnMask);
         }
 };
 
@@ -500,14 +500,14 @@ enum CrateMisc
     SPELL_ARCANE_DISRUPTION =  49590,
     SPELL_CRATES_CREDIT     =  58109
 };
-class npc_crate_helper : public CreatureScript
+class npc_crate_helper : public StratholmeCreatureScript<NullCreatureAI>
 {
     public:
-        npc_crate_helper() : CreatureScript("npc_crate_helper_cot") { }
+        npc_crate_helper() : StratholmeCreatureScript<NullCreatureAI>("npc_crate_helper_cot", ProgressStates(CRATES_IN_PROGRESS | CRATES_DONE)) { }
 
-        struct npc_crate_helperAI : public StratholmeNPCAIWrapper<NullCreatureAI>
+        struct npc_crate_helperAI : public StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper
         {
-            npc_crate_helperAI(Creature* creature) : StratholmeNPCAIWrapper<NullCreatureAI>(creature, ProgressStates(CRATES_IN_PROGRESS | CRATES_DONE)), _crateRevealed(false) { }
+            npc_crate_helperAI(Creature* creature, ProgressStates _respawnMask, ProgressStates _despawnMask) : StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper(creature, _respawnMask, _despawnMask), _crateRevealed(false) { }
 
             void SpellHit(Unit* /*caster*/, SpellInfo const* spell) override
             {
@@ -539,37 +539,25 @@ class npc_crate_helper : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return GetInstanceAI<npc_crate_helperAI>(creature);
+            return GetInstanceAI<npc_crate_helperAI>(creature, _respawnMask, _despawnMask);
         }
 };
 
-class npc_stratholme_fluff_living : public CreatureScript
+struct npc_stratholme_fluff_living : public StratholmeCreatureScript<NullCreatureAI>
 {
-    public:
-        npc_stratholme_fluff_living() : CreatureScript("npc_stratholme_fluff_living") { }
-        struct npc_stratholme_fluff_livingAI : public StratholmeNPCAIWrapper<NullCreatureAI> { npc_stratholme_fluff_livingAI(Creature* creature) : StratholmeNPCAIWrapper<NullCreatureAI>(creature, ProgressStates(WAVES_IN_PROGRESS-1)) { } };
-        CreatureAI* GetAI(Creature* creature) const override { return GetInstanceAI<npc_stratholme_fluff_livingAI>(creature); }
+    npc_stratholme_fluff_living() : StratholmeCreatureScript<NullCreatureAI>("npc_stratholme_fluff_living", ProgressStates(WAVES_IN_PROGRESS - 1)) { }
 };
-class npc_stratholme_smart_living : public CreatureScript
+struct npc_stratholme_smart_living : public StratholmeCreatureScript<SmartAI>
 {
-    public:
-    npc_stratholme_smart_living() : CreatureScript("npc_stratholme_smart_living") { }
-    struct npc_stratholme_smart_livingAI : public StratholmeNPCAIWrapper<SmartAI> { npc_stratholme_smart_livingAI(Creature* creature) : StratholmeNPCAIWrapper<SmartAI>(creature, ProgressStates(WAVES_IN_PROGRESS - 1)) { } };
-    CreatureAI* GetAI(Creature* creature) const override { return GetInstanceAI<npc_stratholme_smart_livingAI>(creature); }
+    npc_stratholme_smart_living() : StratholmeCreatureScript<SmartAI>("npc_stratholme_smart_living", ProgressStates(WAVES_IN_PROGRESS - 1)) { }
 };
-class npc_stratholme_fluff_undead : public CreatureScript
+struct npc_stratholme_fluff_undead : public StratholmeCreatureScript<AggressorAI>
 {
-    public:
-    npc_stratholme_fluff_undead() : CreatureScript("npc_stratholme_fluff_undead") { }
-    struct npc_stratholme_fluff_undeadAI : public StratholmeNPCAIWrapper<AggressorAI> { npc_stratholme_fluff_undeadAI(Creature* creature) : StratholmeNPCAIWrapper<AggressorAI>(creature, WAVES_IN_PROGRESS) { } };
-    CreatureAI* GetAI(Creature* creature) const override { return GetInstanceAI<npc_stratholme_fluff_undeadAI>(creature); }
+    npc_stratholme_fluff_undead() : StratholmeCreatureScript<AggressorAI>("npc_stratholme_fluff_undead", WAVES_IN_PROGRESS, ProgressStates(ALL & ~(WAVES_IN_PROGRESS-1))) { }
 };
-class npc_stratholme_smart_undead : public CreatureScript
+struct npc_stratholme_smart_undead : public StratholmeCreatureScript<SmartAI>
 {
-    public:
-    npc_stratholme_smart_undead() : CreatureScript("npc_stratholme_smart_undead") { }
-    struct npc_stratholme_smart_undeadAI : public StratholmeNPCAIWrapper<SmartAI> { npc_stratholme_smart_undeadAI(Creature* creature) : StratholmeNPCAIWrapper<SmartAI>(creature, WAVES_IN_PROGRESS) { } };
-    CreatureAI* GetAI(Creature* creature) const override { return GetInstanceAI<npc_stratholme_smart_undeadAI>(creature); }
+    npc_stratholme_smart_undead() : StratholmeCreatureScript<SmartAI>("npc_stratholme_smart_undead", WAVES_IN_PROGRESS, ProgressStates(ALL & ~(WAVES_IN_PROGRESS - 1))) { }
 };
 
 void AddSC_culling_of_stratholme()

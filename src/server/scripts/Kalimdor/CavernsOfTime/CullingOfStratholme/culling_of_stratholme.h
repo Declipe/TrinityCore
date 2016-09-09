@@ -85,61 +85,93 @@ enum InstanceActions
 void StratholmeAIHello(InstanceScript* instance, ObjectGuid const& me, ProgressStates myStates);
 void StratholmeAIGoodbye(InstanceScript* instance, ObjectGuid const& me, ProgressStates myStates);
 
-// Note: instance script is not nullptr checked in this AI - ONLY use this with GetInstanceAI in script AI getter!
+// Spawn control creature script that controls which phases each creature may be alive in
 template <class ParentAI>
-class StratholmeNPCAIWrapper : public ParentAI
+class StratholmeCreatureScript : public CreatureScript
 {
     public:
-        StratholmeNPCAIWrapper(Creature* creature, ProgressStates stateMask) : ParentAI(creature), instance(creature->GetInstanceScript()), _statesMask(stateMask), _deathNotify(false)
+        StratholmeCreatureScript(const char* name, ProgressStates respawnMask, ProgressStates despawnMask) : CreatureScript(name), _respawnMask(respawnMask), _despawnMask(despawnMask) { ASSERT(!(respawnMask & ~despawnMask)); }
+        StratholmeCreatureScript(const char* name, ProgressStates stateMask) : StratholmeCreatureScript(name, stateMask, stateMask) { }
+
+        struct StratholmeNPCAIWrapper : public ParentAI
         {
-            StratholmeAIHello(instance, this->me->GetGUID(), _statesMask);
-            CheckDespawn();
-        }
-        ~StratholmeNPCAIWrapper()
+            public:
+                StratholmeNPCAIWrapper(Creature* creature, ProgressStates respawnMask, ProgressStates despawnMask) : ParentAI(creature), instance(creature->GetInstanceScript()), _respawnMask(respawnMask), _despawnMask(despawnMask), _deathNotify(false)
+                {
+                    StratholmeAIHello(instance, this->me->GetGUID(), _despawnMask);
+                }
+                StratholmeNPCAIWrapper(Creature* creature, ProgressStates stateMask) : StratholmeNPCAIWrapper(creature, stateMask, stateMask) { }
+                ~StratholmeNPCAIWrapper()
+                {
+                    StratholmeAIGoodbye(instance, this->me->GetGUID(), _despawnMask);
+                }
+
+                void CheckDespawn()
+                {
+                    if (!(_despawnMask & instance->GetData(DATA_INSTANCE_PROGRESS)))
+                        this->me->DespawnOrUnsummon(0, Seconds(1));
+                }
+
+                virtual void _DoAction(int32 /*action*/) { }
+                void DoAction(int32 action) final override
+                {
+                    ParentAI::DoAction(action);
+                    switch (action)
+                    {
+                        case -ACTION_PROGRESS_UPDATE:
+                            CheckDespawn();
+                            break;
+                        case -ACTION_REQUEST_NOTIFY:
+                            _deathNotify = true;
+                            break;
+                        default:
+                            _DoAction(action);
+                    }
+                }
+
+                virtual void _JustDied(Unit* /*killer*/) { }
+                void JustDied(Unit* killer) final override
+                {
+                    ParentAI::JustDied(killer);
+                    if (_deathNotify)
+                        instance->SetData(DATA_NOTIFY_DEATH, 1);
+                    _JustDied(killer);
+                }
+
+                protected:
+                    InstanceScript* const instance;
+                private:
+                    ProgressStates const _respawnMask;
+                    ProgressStates const _despawnMask;
+                    bool _deathNotify;
+        };
+
+        template<class AI> AI* GetInstanceAI(Creature* creature) const { return ::GetInstanceAI<AI>(creature); }
+        template<class AI>
+        AI* GetInstanceAI(Creature* creature, ProgressStates respawnMask, ProgressStates despawnMask) const
         {
-            StratholmeAIGoodbye(instance, this->me->GetGUID(), _statesMask);
+            if (InstanceMap* instance = creature->GetMap()->ToInstanceMap())
+                if (instance->GetInstanceScript())
+                    return new AI(creature, respawnMask, despawnMask);
+            return nullptr;
         }
 
-        void CheckDespawn()
+        CreatureAI* GetAI(Creature* creature) const override
         {
-            if (!(_statesMask & instance->GetData(DATA_INSTANCE_PROGRESS)))
-                this->me->DespawnOrUnsummon(0, Seconds(1));
+            return GetInstanceAI<StratholmeNPCAIWrapper>(creature, _respawnMask, _despawnMask);
         }
 
-        virtual void _DoAction(int32 /*action*/) { }
-        void DoAction(int32 action) final override
+        bool CanSpawn(ObjectGuid::LowType /*spawnId*/, uint32 /*entry*/, CreatureTemplate const* /*baseTemplate*/, CreatureTemplate const* /*actTemplate*/, CreatureData const* /*cData*/, Map const* map) const override
         {
-            ParentAI::DoAction(action);
-            switch (action)
-            {
-                case -ACTION_PROGRESS_UPDATE:
-                    CheckDespawn();
-                    break;
-                case -ACTION_REQUEST_NOTIFY:
-                    _deathNotify = true;
-                    break;
-                default:
-                    _DoAction(action);
-            }
+            if (InstanceMap const* instance = map->ToInstanceMap())
+                if (InstanceScript const* script = instance->GetInstanceScript())
+                    if (!(_respawnMask & script->GetData(DATA_INSTANCE_PROGRESS)))
+                        return false;
+            return true;
         }
 
-        virtual void _JustDied(Unit* /*killer*/) { }
-        void JustDied(Unit* killer) final override
-        {
-            ParentAI::JustDied(killer);
-            if (_deathNotify)
-                instance->SetData(DATA_NOTIFY_DEATH, 1);
-            _JustDied(killer);
-        }
-
-        bool CanRespawn() override
-        {
-            return (_statesMask & instance->GetData(DATA_INSTANCE_PROGRESS)) ? ParentAI::CanRespawn() : false;
-        }
     protected:
-        InstanceScript* const instance;
-    private:
-        ProgressStates const _statesMask;
-        bool _deathNotify;
+        ProgressStates const _respawnMask; // do not respawn creature if we aren't in one of these states
+        ProgressStates const _despawnMask; // despawn creature if we aren't in one of these states
 };
 #endif

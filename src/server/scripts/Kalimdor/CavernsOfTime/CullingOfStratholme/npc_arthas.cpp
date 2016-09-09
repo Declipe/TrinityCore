@@ -412,6 +412,7 @@ class npc_arthas_stratholme : public CreatureScript
             {
                 case WAVES_DONE:
                     // @todo proper movement
+                    me->SetWalk(false);
                     me->GetMotionMaster()->MovePoint(ARTHAS_TOWN_HALL_POS, _positions[ARTHAS_TOWN_HALL_POS]);
                     break;
                 default:
@@ -1136,12 +1137,12 @@ const std::map<ProgressStates, npc_arthas_stratholme::npc_arthas_stratholmeAI::S
 };
 
 // Arthas' AI is the one controlling everything, all this AI does is report any movementinforms back to Arthas AI using SetData
-struct npc_stratholme_rp_dummy : public CreatureScript
+struct npc_stratholme_rp_dummy : public StratholmeCreatureScript<NullCreatureAI>
 {
-    npc_stratholme_rp_dummy() : CreatureScript("npc_stratholme_rp_dummy") { }
-    struct npc_stratholme_rp_dummyAI : public StratholmeNPCAIWrapper<NullCreatureAI>
+    npc_stratholme_rp_dummy() : StratholmeCreatureScript<NullCreatureAI>("npc_stratholme_rp_dummy", ProgressStates(UTHER_TALK | PURGE_PENDING)) { }
+    struct npc_stratholme_rp_dummyAI : public StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper
     {
-        npc_stratholme_rp_dummyAI(Creature* creature) : StratholmeNPCAIWrapper<NullCreatureAI>(creature, ProgressStates(UTHER_TALK | PURGE_PENDING)) { }
+        npc_stratholme_rp_dummyAI(Creature* creature) : StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper(creature, ProgressStates(UTHER_TALK | PURGE_PENDING)) { }
         void MovementInform(uint32 type, uint32 id) override {
             if (type == POINT_MOTION_TYPE || type == EFFECT_MOTION_TYPE) if (TempSummon* self = me->ToTempSummon()) self->GetSummonerCreatureBase()->AI()->SetData(DATA_RP_DUMMY_MOVED, id);
         }
