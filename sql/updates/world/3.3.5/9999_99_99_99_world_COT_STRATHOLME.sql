@@ -143,3 +143,18 @@ DELETE FROM `creature_text` WHERE `entry`=28340;
 INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`comment`) VALUES
 (28340, 0, "Ah, you've finally arrived Prince Arthas. You're here just in the nick of time.", 12, 100, 27811, 3, "Stratholme Citizen (Disguised Infinite) RP3_LINE_CITIZEN1"),
 (28340, 1, "There's no need for you to understand, Arthas. All you need to do is die.", 12, 100, 27815, 3, "Stratholme Citizen (Disguised Infinite) RP3_LINE_CITIZEN2");
+
+-- Difficulty data for trash mobs
+DELETE FROM `spelldifficulty_dbc` WHERE `id` IN (52660,52657,52635,52634);
+INSERT INTO `spelldifficulty_dbc` (`id`,`spellid0`,`spellid1`) VALUES
+(52660,52660,58817),
+(52657,52657,58816),
+(52635,52635,58820),
+(52634,52634,58813);
+
+-- SAI fixes for Town Hall trash
+DELETE FROM `smart_scripts` WHERE `entryorguid` IN (28340,28341) AND `source_type`=0 AND `event_flags`=4;
+UPDATE `smart_scripts` SET `id`=CEIL(`id`/2)+1 WHERE `entryorguid`=28340 AND `source_type`=0 AND `event_flags`=2;
+UPDATE `smart_scripts` SET `id`=CEIL(`id`/2) WHERE `entryorguid`=28341 AND `source_type`=0 AND `event_flags`=2;
+UPDATE `smart_scripts` SET `event_flags`=`event_flags`|4 WHERE `entryorguid` IN (28340,28341) AND `source_type`=0;
+UPDATE `smart_scripts` SET `event_param3`=500, `event_param4`=750 WHERE `entryorguid`=28340 AND `source_type`=0 AND `id`=3;

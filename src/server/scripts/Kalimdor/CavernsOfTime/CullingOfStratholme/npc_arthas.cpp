@@ -201,6 +201,7 @@ enum PositionIndices
     RP3_ARTHAS_WP7,
     RP3_ARTHAS_WP8,
     RP3_ARTHAS_WP9,
+    RP3_ARTHAS_WP10,
 
     // Array element count
     NUM_POSITIONS
@@ -279,7 +280,14 @@ enum RPEvents
     RP3_EVENT_RESIDENT_FACE,
     RP3_EVENT_ARTHAS_FACE,
     RP3_EVENT_CITIZEN1,
-    RP3_EVENT_ARTHAS1
+    RP3_EVENT_ARTHAS2,
+    RP3_EVENT_ARTHAS_KILL,
+    RP3_EVENT_INFINITE_LAUGH,
+    RP3_EVENT_ARTHAS3,
+    RP3_EVENT_CITIZEN2,
+    RP3_EVENT_TRANSFORM1,
+    RP3_EVENT_TRANSFORM2,
+    RP3_EVENT_TRANSFORM3
 };
 
 enum RPEventLines1
@@ -361,6 +369,8 @@ enum Entries
     NPC_RISEN_ZOMBIE            = 27737,
     NPC_CITIZEN_INFINITE        = 28340,
     NPC_RESIDENT_INFINITE       = 28341,
+    NPC_INFINITE_HUNTER         = 27743,
+    NPC_INFINITE_AGENT          = 27744,
     NPC_EPOCH                   = 26532,
 
     SPELL_HOLY_LIGHT            = 52444,
@@ -577,9 +587,18 @@ class npc_arthas_stratholme : public CreatureScript
                     events.ScheduleEvent(RP3_EVENT_RESIDENT_FACE, Seconds(1));
                     events.ScheduleEvent(RP3_EVENT_ARTHAS_FACE, Seconds(2));
                     events.ScheduleEvent(RP3_EVENT_CITIZEN1, Seconds(3));
-                    events.ScheduleEvent(RP3_EVENT_ARTHAS1, Seconds(12));
+                    events.ScheduleEvent(RP3_EVENT_ARTHAS2, Seconds(12));
                     break;
                 }
+                case RP3_ARTHAS_WP10:
+                    events.ScheduleEvent(RP3_EVENT_ARTHAS_KILL, Seconds(1));
+                    events.ScheduleEvent(RP3_EVENT_INFINITE_LAUGH, Seconds(2));
+                    events.ScheduleEvent(RP3_EVENT_ARTHAS3, Seconds(6));
+                    events.ScheduleEvent(RP3_EVENT_CITIZEN2, Seconds(8));
+                    events.ScheduleEvent(RP3_EVENT_TRANSFORM1, Seconds(10));
+                    events.ScheduleEvent(RP3_EVENT_TRANSFORM2, Seconds(12));
+                    events.ScheduleEvent(RP3_EVENT_TRANSFORM3, Seconds(14));
+                    break;
                 default:
                     break;
             }
@@ -857,8 +876,38 @@ class npc_arthas_stratholme : public CreatureScript
                     case RP3_EVENT_CITIZEN1:
                         talkerEntry = NPC_CITIZEN_INFINITE, talkerLine = RP3_LINE_CITIZEN1;
                         break;
-                    case RP3_EVENT_ARTHAS1:
-                        talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS1;
+                    case RP3_EVENT_ARTHAS2:
+                        talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS2;
+                        MoveAlongPath(me, RP3_ARTHAS_WP10, RP3_ARTHAS_WP10, true);
+                        break;
+                    case RP3_EVENT_ARTHAS_KILL:
+                        if (Creature* citizen = me->FindNearestCreature(NPC_CITIZEN_INFINITE, 100.0f, true))
+                            DoCast(citizen, SPELL_CRUSADER_STRIKE);
+                        break;
+                    case RP3_EVENT_INFINITE_LAUGH:
+                        if (Creature* citizen = me->FindNearestCreature(NPC_CITIZEN_INFINITE, 100.0f, true))
+                            citizen->HandleEmoteCommand(EMOTE_ONESHOT_LAUGH);
+                        break;
+                    case RP3_EVENT_ARTHAS3:
+                        talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS3;
+                        break;
+                    case RP3_EVENT_CITIZEN2:
+                        talkerEntry = NPC_CITIZEN_INFINITE, talkerLine = RP3_LINE_CITIZEN2;
+                        break;
+                    case RP3_EVENT_TRANSFORM1:
+                    case RP3_EVENT_TRANSFORM3:
+                        if (Creature* citizen = me->FindNearestCreature(NPC_CITIZEN_INFINITE, 100.0f, true))
+                        {
+                            citizen->CastSpell(citizen, SPELL_TRANSFORM_VISUAL);
+                            citizen->UpdateEntry(NPC_INFINITE_HUNTER, nullptr, false);
+                        }
+                        break;
+                    case RP3_EVENT_TRANSFORM2:
+                        if (Creature* resident = me->FindNearestCreature(NPC_RESIDENT_INFINITE, 100.0f, true))
+                        {
+                            resident->CastSpell(resident, SPELL_TRANSFORM_VISUAL);
+                            resident->UpdateEntry(NPC_INFINITE_AGENT, nullptr, false);
+                        }
                         break;
                     default:
                         break;
@@ -1113,6 +1162,7 @@ const std::array<Position, NUM_POSITIONS> npc_arthas_stratholme::npc_arthas_stra
     { 2384.146f, 1202.468f, 134.2909f }, // RP3_ARTHAS_WP7
     { 2386.146f, 1202.718f, 134.2909f }, // RP3_ARTHAS_WP8
     { 2392.101f, 1203.767f, 134.0407f, 0.541052f }, // RP3_ARTHAS_WP9
+    { 2396.516f, 1206.148f, 134.0400f, 0.494561f }, // RP3_ARTHAS_WP10
 }};
 
 const float npc_arthas_stratholme::npc_arthas_stratholmeAI::_snapbackDistanceThreshold = 10.0f;
@@ -1162,7 +1212,7 @@ class spell_stratholme_crusader_strike : public SpellScriptLoader
             void HandleDummy(SpellEffIndex /*effIndex*/)
             {
                 if (Unit* target = GetHitUnit())
-                    if (target->GetEntry() != NPC_CITIZEN_INFINITE || target->GetEntry() != NPC_RESIDENT_INFINITE)
+                    if (target->GetEntry() == NPC_CITIZEN || target->GetEntry() == NPC_RESIDENT)
                         GetCaster()->Kill(target);
             }
 
