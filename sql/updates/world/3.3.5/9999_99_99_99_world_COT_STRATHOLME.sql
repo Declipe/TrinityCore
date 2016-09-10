@@ -107,9 +107,27 @@ UPDATE `creature_text` SET `emote`=397 WHERE
 	
 -- Blanket apply a spawn control AI to all "live stratholme" mobs that prevents them respawning after the purge begins
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_fluff_living",`AIName`="" WHERE `entry` IN (28167,31126,31019,28169,31127,31023,31020,31018,31028);
-UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_living",`AIName`="SmartAI" WHERE `entry` IN (31057);
+UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_living",`AIName`="SmartAI" WHERE `entry` IN (31057,30570,31027,31021);
 -- Do the same for undead stratholme mobs, except for the other phases
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_undead",`AIName`="SmartAI" WHERE `entry` IN (28249,27729,28200,27734,27731,28199,27736);
+
+-- City fluff
+DELETE FROM `smart_scripts` WHERE `entryorguid` IN (30570,31027,31021) AND `source_type`=0;
+INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`event_type`,`event_chance`,`event_flags`,`event_param1`,`event_param2`,`action_type`,`target_type`,`comment`) VALUES
+(30570,0,0,10,100,7,1,10,1,1,"Emery Neill - Within 1-10 Range Out of Combat LoS - Say Line 0"),
+(31027,0,0,10,100,7,1,10,1,1,"Leeka Turner - Within 1-10 Range Out of Combat LoS - Say Line 0"),
+(31021,0,0,10,100,7,1,10,1,1,"Sophie Aaren - Within 1-10 Range Out of Combat LoS - Say Line 0");
+
+DELETE FROM `creature_text` WHERE `entry` IN (30570,31027,31021);
+INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,`BroadcastTextId`,`emote`,`comment`) VALUES
+(30570,0,0,"The Stone Crow's closed today, sorry. There are too many health concerns, and I'm not about to have Ed under fire for supposedly making people sick.",12,100,31724,1,"Emery Neill TALK_FLUFF 1"),
+(30570,0,1,"I hate to disappoint people, but the Stone Crow's closed. If the kids from the orphanage were evacuated, I don't see why we should be open, either.",12,100,31729,1,"Emery Neill TALK_FLUFF 2"),
+(31027,0,0,"Look, I'll sell you shields today, but no maces. The last thing I want is for some innocent to get brained by one of my weapons.",12,100,31721,1,"Leeka Turner TALK_FLUFF 1"),
+(31027,0,1,"I don't know how much longer I'll be open today with all the commotion outside. If you need something repaired, I'll take a quick look.",12,100,31722,1,"Leeka Turner TALK_FLUFF 2"),
+(31027,0,2,"I hope you're not coming in here fixing for a fight. There are too many angry people on the streets today.",12,100,31720,1,"Leeka Turner TALK_FLUFF 3"),
+(31021,0,0,"What's the commotion outside?",12,100,31730,1,"Sophie Aaren TALK_FLUFF 1"),
+(31021,0,1,"Is something going on? I hear angry voices.",12,100,31731,1,"Sophie Aaren TALK_FLUFF 2"),
+(31021,0,2,"Everything's been so strange lately...",12,100,31732,1,"Sophie Aaren TALK_FLUFF 3");
 
 -- SmartAI fixes for wave creatures
 UPDATE `smart_scripts` SET `event_param3`=3100, `event_param4`=3400 WHERE `entryorguid`=28200 AND `source_type`=0 AND `id` IN (0,1);
