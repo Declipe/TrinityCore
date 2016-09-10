@@ -37,8 +37,6 @@ enum Spells
 
 enum Yells
 {
-    SAY_INTRO                                   = 0,
-    SAY_AGGRO                                   = 1,
     SAY_TIME_WARP                               = 2,
     SAY_SLAY                                    = 3,
     SAY_DEATH                                   = 4
@@ -63,7 +61,6 @@ class boss_epoch : public CreatureScript
 
             void EnterCombat(Unit* /*who*/) override
             {
-                Talk(SAY_AGGRO);
                 _EnterCombat();
 
                 events.ScheduleEvent(EVENT_CURSE_OF_EXERTION, 9300);

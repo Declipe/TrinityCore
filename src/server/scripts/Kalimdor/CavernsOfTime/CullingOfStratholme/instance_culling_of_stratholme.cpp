@@ -278,6 +278,9 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         if (_currentState == WAVES_DONE)
                             SetInstanceProgress(TOWN_HALL_PENDING);
                         break;
+                    case DATA_TOWN_HALL_DONE:
+                        if (_currentState == TOWN_HALL)
+                            SetInstanceProgress(TOWN_HALL_COMPLETE);
                     default:
                         break;
                 }
@@ -309,6 +312,13 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             {
                                 SetInstanceProgress(TOWN_HALL);
                                 arthas->AI()->SetGUID(guid, -ACTION_START_RP_EVENT3);
+                            }
+                    case DATA_TO_GAUNTLET:
+                        if (_currentState == TOWN_HALL_COMPLETE)
+                            if (Creature* arthas = instance->GetCreature(_arthasGUID))
+                            {
+                                SetInstanceProgress(GAUNTLET_TRANSITION);
+                                arthas->AI()->SetGUID(guid, -ACTION_START_RP_EVENT4);
                             }
                     default:
                         break;

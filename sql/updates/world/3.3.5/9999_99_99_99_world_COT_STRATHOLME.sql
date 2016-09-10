@@ -107,7 +107,7 @@ UPDATE `creature_text` SET `emote`=397 WHERE
 	
 -- Blanket apply a spawn control AI to all "live stratholme" mobs that prevents them respawning after the purge begins
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_fluff_living",`AIName`="" WHERE `entry` IN (28167,31126,31019,28169,31127,31023,31020,31018,31028);
-UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_living",`AIName`="SmartAI" WHERE `entry` IN (31057,30570,31027,31021);
+UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_living",`AIName`="SmartAI" WHERE `entry` IN (31057,30570,31027,31021,30994);
 -- Do the same for undead stratholme mobs, except for the other phases
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_undead",`AIName`="SmartAI" WHERE `entry` IN (28249,27729,28200,27734,27731,28199,27736);
 
@@ -155,7 +155,7 @@ INSERT INTO `creature` (`guid`,`id`,`map`,`spawnMask`,`phaseMask`,`position_x`,`
 (@CGUID+01, 28340, 595, 3, 1, 2398.715, 1207.334, 134.1223, 5.270895, @DAY, 0, 0),
 (@CGUID+02, 28340, 595, 3, 1, 2401.265, 1202.789, 134.1039, 1.466077, @DAY, 0, 0),
 (@CGUID+03, 28341, 595, 3, 1, 2402.654, 1205.786, 134.1223, 2.897247, @DAY, 0, 0);
-UPDATE `creature_template` SET `unit_flags`=(`unit_flags`|0x100|0x200) WHERE `entry` IN (27742,27743,27744,31202,31203,31206);
+UPDATE `creature_template` SET `unit_flags`=(`unit_flags`|0x100|0x200) WHERE `entry` IN (27742,27743,27744,31202,31203,31206,26532,31215);
 
 -- Town Hall RP event
 DELETE FROM `creature_text` WHERE `entry`=28340;
