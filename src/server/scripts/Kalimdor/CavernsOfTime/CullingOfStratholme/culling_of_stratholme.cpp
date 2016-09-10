@@ -29,10 +29,10 @@ enum InnEventEntries
 {
     NPC_FORREST = 30551,
     NPC_BELFAST = 30571,
-    NPC_JAMES = 30553,
-    NPC_FRAS = 30552,
-    NPC_MAL = 31017,
-    NPC_GRYAN = 30561
+    NPC_JAMES   = 30553,
+    NPC_FRAS    = 30552,
+    NPC_MAL     = 31017,
+    NPC_GRYAN   = 30561
 };
 enum InnEventEvents
 {

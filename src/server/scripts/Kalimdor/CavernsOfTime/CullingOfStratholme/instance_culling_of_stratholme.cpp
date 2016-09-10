@@ -204,8 +204,8 @@ class instance_culling_of_stratholme : public InstanceMapScript
 
             void ReadSaveDataMore(std::istringstream& data) override
             {
-                instance->DeleteRespawnTimes();
                 // read current instance progress from save data, then regress to the previous stable state
+                instance->DeleteRespawnTimes();
                 uint32 state = JUST_STARTED;
                 time_t infiniteGuardianTime = 0;
                 data >> state;
