@@ -24,7 +24,7 @@
 // Indices in arthasAI::_positions
 // Also used as movement id for MovementInform
 // All movement informs are handled by arthas AI (forwarded by Jaina/Uther)
-enum PositionIndices
+enum PositionIndices : uint32
 {
     // Arthas/Uther RP
     RP1_ARTHAS_INITIAL = 0,
@@ -202,6 +202,43 @@ enum PositionIndices
     RP3_ARTHAS_WP8,
     RP3_ARTHAS_WP9,
     RP3_ARTHAS_WP10,
+    RP3_ARTHAS_WP20,
+    RP3_ARTHAS_WP21,
+    RP3_ARTHAS_WP22,
+    RP3_ARTHAS_WP23,
+    RP3_ARTHAS_WP24,
+    RP3_ARTHAS_WP25,
+    RP3_ARTHAS_WP26,
+    RP3_ARTHAS_WP27,
+    RP3_ARTHAS_WP28,
+    RP3_ARTHAS_WP29,
+    RP3_ARTHAS_WP30,
+    RP3_ARTHAS_WP31,
+    RP3_ARTHAS_WP32,
+    RP3_ARTHAS_WP33,
+    RP3_ARTHAS_WP34,
+    RP3_ARTHAS_WP35,
+    RP3_ARTHAS_WP36,
+    RP3_ARTHAS_WP37,
+    RP3_ARTHAS_WP38,
+    RP3_ARTHAS_WP39,
+    RP3_ARTHAS_WP40,
+    RP3_ARTHAS_WP50,
+    RP3_ARTHAS_WP51,
+    RP3_SPAWN1_ADVERSARY1_SPAWN,
+    RP3_SPAWN1_ADVERSARY1_WP1,
+    RP3_SPAWN1_ADVERSARY1_WP2,
+    RP3_SPAWN1_ADVERSARY1_WP3,
+    RP3_SPAWN1_ADVERSARY1_WP4,
+    RP3_SPAWN1_ADVERSARY2_SPAWN,
+    RP3_SPAWN1_HUNTER1_SPAWN,
+    RP3_SPAWN1_HUNTER1_WP1,
+    RP3_SPAWN1_HUNTER1_WP2,
+    RP3_SPAWN1_HUNTER1_WP3,
+    RP3_SPAWN1_HUNTER1_WP4,
+    RP3_SPAWN1_HUNTER1_WP5,
+    RP3_SPAWN1_AGENT1_SPAWN,
+
 
     // Array element count
     NUM_POSITIONS
@@ -209,6 +246,9 @@ enum PositionIndices
 
 enum Actions
 {
+    ACTION_NONE = 0,
+    RP3_ACTION_AFTER_INITIAL,
+    RP3_ACTION_AFTER_SPAWN1
 };
 
 enum Data
@@ -287,7 +327,15 @@ enum RPEvents
     RP3_EVENT_CITIZEN2,
     RP3_EVENT_TRANSFORM1,
     RP3_EVENT_TRANSFORM2,
-    RP3_EVENT_TRANSFORM3
+    RP3_EVENT_TRANSFORM3,
+    RP3_EVENT_AGGRO,
+    RP3_EVENT_ARTHAS4,
+    RP3_EVENT_ARTHAS_MOVE_1,
+    RP3_EVENT_ARTHAS_MOVE_2,
+    RP3_EVENT_SPAWN1,
+    RP3_EVENT_SPAWN1_FACE,
+    RP3_EVENT_SPAWN1_AGGRO,
+    RP3_EVENT_ARTHAS11
 };
 
 enum RPEventLines1
@@ -351,7 +399,7 @@ enum RPEventLines3
 enum OtherLines
 {
     LINE_TOWN_HALL_PENDING  = 15,
-    LINE_AGGRO              = 39
+    LINE_SLAY_ZOMBIE        = 39
 };
 
 enum Entries
@@ -371,6 +419,7 @@ enum Entries
     NPC_RESIDENT_INFINITE       = 28341,
     NPC_INFINITE_HUNTER         = 27743,
     NPC_INFINITE_AGENT          = 27744,
+    NPC_INFINITE_ADVERSARY      = 27742,
     NPC_EPOCH                   = 26532,
 
     SPELL_HOLY_LIGHT            = 52444,
@@ -387,7 +436,7 @@ class npc_arthas_stratholme : public CreatureScript
 
     struct npc_arthas_stratholmeAI : public ScriptedAI
     {
-        npc_arthas_stratholmeAI(Creature* creature) : ScriptedAI(creature), instance(creature->GetInstanceScript()), _exorcismCooldown(urandms(7,14)) { }
+        npc_arthas_stratholmeAI(Creature* creature) : ScriptedAI(creature), instance(creature->GetInstanceScript()), _hadSetup(false), _exorcismCooldown(urandms(7,14)), _progressRP(true), _isWPWalk(false) { }
 
         static const std::array<Position, NUM_POSITIONS> _positions; // all kinds of positions we'll need for RP events (there's a lot of these)
         static const float _snapbackDistanceThreshold; // how far we can be from where we're supposed at start of phase to be before we snap back
@@ -399,21 +448,36 @@ class npc_arthas_stratholme : public CreatureScript
         };
         static const std::map<ProgressStates, SnapbackInfo> _snapbackPositions; // positions we should be at when starting a given phase
 
-        void InitializeAI() { AdvanceToPosition(ProgressStates(instance->GetData(DATA_INSTANCE_PROGRESS))); }
-
-        void AdvanceToPosition(ProgressStates newState)
+        void AdvanceToState(ProgressStates newState)
         {
+            std::cout << "Arthas AI: Advancing to " << newState << std::endl;
+            if (!_progressRP)
+            {
+                TC_LOG_WARN("scripts.scripts", "CoT4 Arthas AI: Advancing to instance state 0x%X, but RP is paused. Overriding!", newState);
+                _progressRP = true;
+            }
             events.Reset();
             std::map<ProgressStates, SnapbackInfo>::const_iterator it = _snapbackPositions.find(newState);
             if (it != _snapbackPositions.end())
             {
                 SnapbackInfo const& target = it->second;
+
+                // Adjust react state and npc flags based on current state
                 me->SetReactState(target.reactState);
+                if (target.reactState == REACT_PASSIVE)
+                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+                else
+                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+
+                // Adjust gossip flag based on whether we have a gossip menu or not
                 if (target.haveGossip)
                     me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                 else
                     me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 
+                if (target.snapbackPos)
+                    std::cout << "Have snapback for this state, distance from it is " << target.snapbackPos->GetExactDist(me) << " yd" << std::endl;
+                // Snapback handling - if we're too far from where we're supposed to be, teleport there
                 if (target.snapbackPos && target.snapbackPos->GetExactDist(me) > _snapbackDistanceThreshold)
                     me->NearTeleportTo(*target.snapbackPos);
             }
@@ -422,8 +486,7 @@ class npc_arthas_stratholme : public CreatureScript
             {
                 case WAVES_DONE:
                     // @todo proper movement
-                    me->SetWalk(false);
-                    me->GetMotionMaster()->MovePoint(ARTHAS_TOWN_HALL_POS, _positions[ARTHAS_TOWN_HALL_POS]);
+                    MoveAlongPath(me, ARTHAS_TOWN_HALL_POS, ARTHAS_TOWN_HALL_POS);
                     break;
                 default:
                     break;
@@ -442,6 +505,21 @@ class npc_arthas_stratholme : public CreatureScript
                 Movement::PointsArray const path(_positions.begin() + start, _positions.begin() + end + 1);
                 creature->GetMotionMaster()->MoveSmoothPath(end, path, walk);
             }
+            if (creature == me) // movement resume handling
+            {
+                _firstWP = start;
+                _lastWP = end;
+                _isWPWalk = walk;
+            }
+        }
+
+        // Will happen immediately (if OOC) or on reached home (if IC)
+        void ScheduleActionOOC(Actions action)
+        {
+            if (_progressRP)
+                DoAction(action);
+            else
+                _afterCombat = action;
         }
 
         void DoAction(int32 action) override
@@ -449,7 +527,14 @@ class npc_arthas_stratholme : public CreatureScript
             switch (action)
             {
                 case -ACTION_PROGRESS_UPDATE:
-                    AdvanceToPosition(ProgressStates(instance->GetData(DATA_INSTANCE_PROGRESS)));
+                    AdvanceToState(ProgressStates(instance->GetData(DATA_INSTANCE_PROGRESS)));
+                    break;
+                case RP3_ACTION_AFTER_INITIAL:
+                    events.ScheduleEvent(RP3_EVENT_ARTHAS4, Seconds(1));
+                    events.ScheduleEvent(RP3_EVENT_ARTHAS_MOVE_1, Seconds(7));
+                    break;
+                case RP3_ACTION_AFTER_SPAWN1:
+                    events.ScheduleEvent(RP3_EVENT_ARTHAS11, Seconds(1));
                     break;
             }
         }
@@ -487,6 +572,8 @@ class npc_arthas_stratholme : public CreatureScript
         {
             if (type != POINT_MOTION_TYPE && type != EFFECT_MOTION_TYPE)
                 return;
+            if (id == _lastWP) // motion resume handling, WP reached
+                _firstWP = _lastWP = PositionIndices(0);
             switch (id)
             {
                 case RP1_UTHER_WP15:
@@ -598,6 +685,13 @@ class npc_arthas_stratholme : public CreatureScript
                     events.ScheduleEvent(RP3_EVENT_TRANSFORM1, Seconds(10));
                     events.ScheduleEvent(RP3_EVENT_TRANSFORM2, Seconds(12));
                     events.ScheduleEvent(RP3_EVENT_TRANSFORM3, Seconds(14));
+                    events.ScheduleEvent(RP3_EVENT_AGGRO, Seconds(15));
+                    break;
+                case RP3_ARTHAS_WP40:
+                    events.ScheduleEvent(RP3_EVENT_ARTHAS_MOVE_2, Seconds(1));
+                    events.ScheduleEvent(RP3_EVENT_SPAWN1, Seconds(2));
+                    events.ScheduleEvent(RP3_EVENT_SPAWN1_FACE, Seconds(5));
+                    events.ScheduleEvent(RP3_EVENT_SPAWN1_AGGRO, Seconds(7));
                     break;
                 default:
                     break;
@@ -618,8 +712,50 @@ class npc_arthas_stratholme : public CreatureScript
             }
         }
 
+        void UpdateAICombat(uint32 diff)
+        {
+            if (me->HasReactState(REACT_PASSIVE))
+                return;
+
+            if (!UpdateVictim())
+                return;
+
+            if (HealthBelowPct(40))
+                DoCastSelf(SPELL_HOLY_LIGHT);
+            if (_exorcismCooldown <= diff)
+            {
+                if (me->HasUnitState(UNIT_STATE_CASTING))
+                    _exorcismCooldown = 0;
+                else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
+                {
+                    DoCast(target, SPELL_EXORCISM);
+                    _exorcismCooldown = urandms(7, 14);
+                }
+            }
+            else
+                _exorcismCooldown -= diff;
+
+            DoMeleeAttackIfReady();
+        }
+
         void UpdateAI(uint32 diff) override
         {
+            if (!_hadSetup)
+            {
+                _hadSetup = true;
+                AdvanceToState(ProgressStates(instance->GetData(DATA_INSTANCE_PROGRESS)));
+            }
+
+            if (me->IsInCombat())
+            {
+                UpdateAICombat(diff);
+                return;
+            }
+
+            // EventMap is only used for RP handling. RP events are paused while in combat or leashing back to resume pos
+            if (!_progressRP)
+                return;
+
             events.Update(diff);
             while (uint32 event = events.ExecuteEvent())
             {
@@ -909,6 +1045,47 @@ class npc_arthas_stratholme : public CreatureScript
                             resident->UpdateEntry(NPC_INFINITE_AGENT, nullptr, false);
                         }
                         break;
+                    case RP3_EVENT_AGGRO:
+                        EngageInfinites();
+                        ScheduleActionOOC(RP3_ACTION_AFTER_INITIAL);
+                        break;
+                    case RP3_EVENT_ARTHAS4:
+                        talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS4;
+                        break;
+                    case RP3_EVENT_ARTHAS_MOVE_1:
+                        MoveAlongPath(me, RP3_ARTHAS_WP20, RP3_ARTHAS_WP40);
+                        break;
+                    case RP3_EVENT_ARTHAS_MOVE_2:
+                        talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS10;
+                        MoveAlongPath(me, RP3_ARTHAS_WP50, RP3_ARTHAS_WP51, true);
+                        break;
+                    case RP3_EVENT_SPAWN1:
+                        // creatures without path movement don't have create in 4.x sniff, todo check other versions
+                        if (Creature* adversary = instance->instance->SummonCreature(NPC_INFINITE_ADVERSARY, _positions[RP3_SPAWN1_ADVERSARY1_SPAWN]))
+                            MoveAlongPath(adversary, RP3_SPAWN1_ADVERSARY1_WP1, RP3_SPAWN1_ADVERSARY1_WP4, true);
+                        instance->instance->SummonCreature(NPC_INFINITE_ADVERSARY, _positions[RP3_SPAWN1_ADVERSARY2_SPAWN]);
+                        if (Creature* hunter = instance->instance->SummonCreature(NPC_INFINITE_HUNTER, _positions[RP3_SPAWN1_HUNTER1_SPAWN]))
+                            MoveAlongPath(hunter, RP3_SPAWN1_HUNTER1_WP1, RP3_SPAWN1_HUNTER1_WP5, true);
+                        instance->instance->SummonCreature(NPC_INFINITE_AGENT, _positions[RP3_SPAWN1_AGENT1_SPAWN]);
+                        break;
+                    case RP3_EVENT_SPAWN1_FACE:
+                    {
+                        std::list<Creature*> infinites;
+                        me->GetCreatureListWithEntryInGrid(infinites, NPC_INFINITE_ADVERSARY, 100.0f);
+                        me->GetCreatureListWithEntryInGrid(infinites, NPC_INFINITE_AGENT, 100.0f);
+                        me->GetCreatureListWithEntryInGrid(infinites, NPC_INFINITE_HUNTER, 100.0f);
+                        for (Creature* target : infinites)
+                            target->SetFacingToObject(me);
+                        break;
+                    }
+                    case RP3_EVENT_SPAWN1_AGGRO:
+                        EngageInfinites();
+                        ScheduleActionOOC(RP3_ACTION_AFTER_SPAWN1);
+                        break;
+                    case RP3_EVENT_ARTHAS11:
+                        talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS11;
+                        me->Say("NYI after here", LANG_UNIVERSAL);
+                        break;
                     default:
                         break;
                 }
@@ -924,42 +1101,80 @@ class npc_arthas_stratholme : public CreatureScript
                         talker->AI()->Talk(talkerLine, ObjectAccessor::GetPlayer(*talker, _eventStarterGuid));
                 }
             }
+        }
 
-            if (me->HasReactState(REACT_PASSIVE))
-                return;
-
-            if (!UpdateVictim())
-                return;
-
-            if (HealthBelowPct(40))
-                DoCastSelf(SPELL_HOLY_LIGHT);
-            if (_exorcismCooldown <= diff)
+        void EngageInfinites()
+        {
+            std::list<Creature*> infinites;
+            me->GetCreatureListWithEntryInGrid(infinites, NPC_INFINITE_ADVERSARY, 100.0f);
+            me->GetCreatureListWithEntryInGrid(infinites, NPC_INFINITE_AGENT, 100.0f);
+            me->GetCreatureListWithEntryInGrid(infinites, NPC_INFINITE_HUNTER, 100.0f);
+            for (Creature* target : infinites)
             {
-                if (me->HasUnitState(UNIT_STATE_CASTING))
-                    _exorcismCooldown = 0;
-                else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0))
-                {
-                    DoCast(target, SPELL_EXORCISM);
-                    _exorcismCooldown = urandms(7, 14);
-                }
+                target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
+                me->SetInCombatWith(target);
+                target->SetInCombatWith(me);
+                me->AddThreat(target, 0.0f);
+                target->AddThreat(me, 0.0f);
             }
-            else
-                _exorcismCooldown -= diff;
+        }
 
-            DoMeleeAttackIfReady();
+        void KilledUnit(Unit* who) override
+        {
+            if (who && who->GetEntry() == NPC_RISEN_ZOMBIE)
+                Talk(LINE_SLAY_ZOMBIE, who);
         }
 
         void EnterCombat(Unit* who) override
         {
-            if (who && who->GetEntry() == NPC_RISEN_ZOMBIE)
-                Talk(LINE_AGGRO, who);
+            if (!_progressRP)
+                return;
+
+            _progressRP = false;
+            me->SetHomePosition(me->GetPosition());
+            if (_lastWP) // currently in waypoint motion
+            {
+                // find out which WP we'd be going to next, then save it for resume after combat
+                for (uint32 wpIndex = _firstWP; wpIndex < _lastWP; ++wpIndex)
+                    if (me->IsInBetween(_positions[wpIndex], _positions[wpIndex + 1]))
+                        _firstWP = PositionIndices(wpIndex + 1);
+                std::cout << "Arthas AI: entered combat while pathing, will leash back to " << _firstWP << " after combat" << std::endl;
+            }
+            else
+                std::cout << "Arthas AI: entered combat without pathing, pausing RP regardless" << std::endl;
+        }
+
+        void JustReachedHome() override
+        {
+            _progressRP = true;
+            if (_lastWP) // WP motion was interrupted, resume
+            {
+                std::cout << "Arthas AI: Resuming motion" << std::endl;
+                MoveAlongPath(me, _firstWP, _lastWP, _isWPWalk);
+            }
+            else
+                std::cout << "Arthas AI: Back at leash pos, resuming RP" << std::endl;
+
+            if (_afterCombat)
+            {
+                DoAction(_afterCombat);
+                _afterCombat = ACTION_NONE;
+            }
         }
 
         private:
+            bool _hadSetup; // on first update tick, adjust to current progress state
             InstanceScript* const instance;
             EventMap events;
             ObjectGuid _eventStarterGuid;
             uint32 _exorcismCooldown; // no EventMap entry for this, it's reserved for RP handling
+
+            bool _progressRP;
+            Actions _afterCombat;
+            // nonzero only if waypoint motion in progress - used for resuming movement
+            PositionIndices _firstWP;
+            PositionIndices _lastWP;
+            bool _isWPWalk;
     };
 
     void AdvanceDungeon(Creature* creature, Player* cause, ProgressStates from, InstanceData command)
@@ -1163,9 +1378,45 @@ const std::array<Position, NUM_POSITIONS> npc_arthas_stratholme::npc_arthas_stra
     { 2386.146f, 1202.718f, 134.2909f }, // RP3_ARTHAS_WP8
     { 2392.101f, 1203.767f, 134.0407f, 0.541052f }, // RP3_ARTHAS_WP9
     { 2396.516f, 1206.148f, 134.0400f, 0.494561f }, // RP3_ARTHAS_WP10
+    { 2400.366f, 1205.552f, 134.2849f }, // RP3_ARTHAS_WP20
+    { 2403.866f, 1206.052f, 134.2849f }, // RP3_ARTHAS_WP21
+    { 2404.866f, 1206.302f, 134.2849f }, // RP3_ARTHAS_WP22
+    { 2405.925f, 1206.372f, 134.0335f }, // RP3_ARTHAS_WP23
+    { 2418.885f, 1209.226f, 134.2531f }, // RP3_ARTHAS_WP24
+    { 2419.885f, 1209.726f, 134.2531f }, // RP3_ARTHAS_WP25
+    { 2424.191f, 1211.926f, 134.0185f }, // RP3_ARTHAS_WP26
+    { 2428.424f, 1214.264f, 134.2497f }, // RP3_ARTHAS_WP27
+    { 2432.174f, 1216.014f, 134.2497f }, // RP3_ARTHAS_WP28
+    { 2432.732f, 1216.367f, 133.9702f }, // RP3_ARTHAS_WP29
+    { 2438.031f, 1217.973f, 134.4738f }, // RP3_ARTHAS_WP30
+    { 2441.281f, 1219.223f, 134.4738f }, // RP3_ARTHAS_WP31
+    { 2441.531f, 1217.223f, 134.4738f }, // RP3_ARTHAS_WP32
+    { 2441.781f, 1215.973f, 134.4738f }, // RP3_ARTHAS_WP33
+    { 2442.031f, 1214.973f, 134.4738f }, // RP3_ARTHAS_WP34
+    { 2442.281f, 1214.473f, 135.4738f }, // RP3_ARTHAS_WP35
+    { 2443.117f, 1210.440f, 137.9064f }, // RP3_ARTHAS_WP36
+    { 2444.677f, 1205.141f, 142.4912f }, // RP3_ARTHAS_WP37
+    { 2446.177f, 1198.141f, 147.7412f }, // RP3_ARTHAS_WP38
+    { 2446.677f, 1195.641f, 148.2412f }, // RP3_ARTHAS_WP39
+    { 2447.738f, 1191.342f, 148.0759f }, // RP3_ARTHAS_WP40
+    { 2446.100f, 1190.778f, 148.3259f }, // RP3_ARTHAS_WP50
+    { 2443.461f, 1190.214f, 148.0759f }, // RP3_ARTHAS_WP51
+    { 2433.040f, 1191.160f, 148.1285f, 4.998989f }, // RP3_SPAWN1_ADVERSARY1_SPAWN
+    { 2432.566f, 1193.102f, 148.1593f }, // RP3_SPAWN1_ADVERSARY1_WP1
+    { 2432.757f, 1192.121f, 148.1593f }, // RP3_SPAWN1_ADVERSARY1_WP2
+    { 2433.525f, 1189.516f, 148.0759f }, // RP3_SPAWN1_ADVERSARY1_WP3
+    { 2434.290f, 1185.112f, 148.0759f }, // RP3_SPAWN1_ADVERSARY1_WP4
+    { 2437.091f, 1188.969f, 148.0759f }, // RP3_SPAWN1_ADVERSARY2_SPAWN
+    { 2433.176f, 1193.429f, 148.1162f, 1.215144f }, // RP3_SPAWN1_HUNTER1_SPAWN
+    { 2432.270f, 1191.664f, 148.1593f }, // RP3_SPAWN1_HUNTER1_WP1
+    { 2432.829f, 1192.493f, 148.1593f }, // RP3_SPAWN1_HUNTER1_WP2
+    { 2433.502f, 1194.306f, 148.0759f }, // RP3_SPAWN1_HUNTER1_WP3
+    { 2433.700f, 1194.840f, 148.0759f }, // RP3_SPAWN1_HUNTER1_WP4
+    { 2436.273f, 1198.183f, 148.0759f }, // RP3_SPAWN1_HUNTER1_WP5
+    { 2438.529f, 1192.707f, 148.0579f }  // RP3_SPAWN1_AGENT_SPAWN 
 }};
 
-const float npc_arthas_stratholme::npc_arthas_stratholmeAI::_snapbackDistanceThreshold = 10.0f;
+const float npc_arthas_stratholme::npc_arthas_stratholmeAI::_snapbackDistanceThreshold = 5.0f;
 const std::map<ProgressStates, npc_arthas_stratholme::npc_arthas_stratholmeAI::SnapbackInfo> npc_arthas_stratholme::npc_arthas_stratholmeAI::_snapbackPositions = {
     { JUST_STARTED, { REACT_PASSIVE, false, &_positions[RP1_ARTHAS_INITIAL] } },
     { CRATES_IN_PROGRESS, { REACT_PASSIVE, false, &_positions[RP1_ARTHAS_INITIAL] } },

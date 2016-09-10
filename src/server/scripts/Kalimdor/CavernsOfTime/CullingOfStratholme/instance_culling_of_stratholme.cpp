@@ -161,6 +161,36 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 _plagueCrates.reserve(NUM_PLAGUE_CRATES);
             }
 
+            static ProgressStates GetStableStateFor(ProgressStates const state)
+            {
+                switch (state)
+                {
+                    case JUST_STARTED:
+                    default:
+                        return JUST_STARTED;
+                    case CRATES_IN_PROGRESS:
+                        return CRATES_IN_PROGRESS;
+                    case CRATES_DONE:
+                        return CRATES_DONE;
+                    case UTHER_TALK:
+                    case PURGE_PENDING:
+                    case WAVES_IN_PROGRESS:
+                        return PURGE_PENDING;
+                    case WAVES_DONE:
+                    case TOWN_HALL_PENDING:
+                    case TOWN_HALL:
+                        return TOWN_HALL_PENDING;
+                    case TOWN_HALL_COMPLETE:
+                    case GAUNTLET_TRANSITION:
+                    case GAUNTLET_PENDING:
+                    case GAUNTLET_IN_PROGRESS:
+                        return GAUNTLET_PENDING;
+                    case GAUNTLET_COMPLETE:
+                    case MALGANIS_IN_PROGRESS:
+                        return GAUNTLET_COMPLETE;
+                }
+            }
+
             void FillInitialWorldStates(WorldPacket& data) override
             {
                 for (WorldStateMap::const_iterator it = _sentWorldStates.begin(); it != _sentWorldStates.end(); ++it)
@@ -174,45 +204,15 @@ class instance_culling_of_stratholme : public InstanceMapScript
 
             void ReadSaveDataMore(std::istringstream& data) override
             {
+                instance->DeleteRespawnTimes();
                 // read current instance progress from save data, then regress to the previous stable state
-                uint32 state = JUST_STARTED, loadState;
+                uint32 state = JUST_STARTED;
                 time_t infiniteGuardianTime = 0;
                 data >> state;
                 data >> infiniteGuardianTime; // UNIX timestamp
-                switch(state)
-                {
-                    case JUST_STARTED:
-                    default:
-                        loadState = JUST_STARTED;
-                        break;
-                    case CRATES_IN_PROGRESS:
-                        loadState = CRATES_IN_PROGRESS;
-                        break;
-                    case CRATES_DONE:
-                        loadState = CRATES_DONE;
-                        break;
-                    case UTHER_TALK:
-                    case PURGE_PENDING:
-                    case WAVES_IN_PROGRESS:
-                        loadState = PURGE_PENDING;
-                        break;
-                    case WAVES_DONE:
-                    case TOWN_HALL:
-                        loadState = WAVES_DONE;
-                        break;
-                    case TOWN_HALL_COMPLETE:
-                    case GAUNTLET_TRANSITION:
-                    case GAUNTLET_PENDING:
-                    case GAUNTLET_IN_PROGRESS:
-                        loadState = GAUNTLET_PENDING;
-                        break;
-                    case GAUNTLET_COMPLETE:
-                    case MALGANIS_IN_PROGRESS:
-                        loadState = GAUNTLET_COMPLETE;
-                        break;
-                }
-
-                SetInstanceProgress(ProgressStates(loadState));
+                
+                ProgressStates loadState = GetStableStateFor(ProgressStates(state));
+                SetInstanceProgress(loadState);
                 
                 if (infiniteGuardianTime)
                 {
