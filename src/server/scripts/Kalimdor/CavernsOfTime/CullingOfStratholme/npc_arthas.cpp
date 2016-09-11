@@ -674,31 +674,29 @@ enum OtherLines
 
 enum Entries
 {
-    NPC_MALGANIS_BUNNY          =  20562,
-    NPC_UTHER                   =  26528,
-    NPC_JAINA                   =  26497,
-    NPC_MALGANIS                =  26533,
-    NPC_CITIZEN                 =  28167,
-    NPC_RESIDENT                =  28169,
-    NPC_FOOTMAN                 =  27745,
-    NPC_KNIGHT                  =  27746,
-    NPC_PRIEST                  =  27747,
-    NPC_SORCERESS               =  27752,
-    NPC_RISEN_ZOMBIE            =  27737,
-    NPC_CITIZEN_INFINITE        =  28340,
-    NPC_RESIDENT_INFINITE       =  28341,
-    NPC_INFINITE_HUNTER         =  27743,
-    NPC_INFINITE_AGENT          =  27744,
-    NPC_INFINITE_ADVERSARY      =  27742,
-    NPC_EPOCH                   =  26532,
+    NPC_MALGANIS_BUNNY          = 20562,
+    NPC_UTHER                   = 26528,
+    NPC_JAINA                   = 26497,
+    NPC_MALGANIS                = 26533,
+    NPC_CITIZEN                 = 28167,
+    NPC_RESIDENT                = 28169,
+    NPC_FOOTMAN                 = 27745,
+    NPC_KNIGHT                  = 27746,
+    NPC_PRIEST                  = 27747,
+    NPC_SORCERESS               = 27752,
+    NPC_RISEN_ZOMBIE            = 27737,
+    NPC_CITIZEN_INFINITE        = 28340,
+    NPC_RESIDENT_INFINITE       = 28341,
+    NPC_INFINITE_HUNTER         = 27743,
+    NPC_INFINITE_AGENT          = 27744,
+    NPC_INFINITE_ADVERSARY      = 27742,
+    NPC_EPOCH                   = 26532,
 
-    SPELL_HOLY_LIGHT            =  52444,
-    SPELL_EXORCISM              =  52445,
-    SPELL_CRUSADER_STRIKE       =  50773,
-    SPELL_SHADOWSTEP_VISUAL     =  51908,
-    SPELL_TRANSFORM_VISUAL      =  33133,
-
-    GO_HIDDEN_PASSAGE           = 188686
+    SPELL_HOLY_LIGHT            = 52444,
+    SPELL_EXORCISM              = 52445,
+    SPELL_CRUSADER_STRIKE       = 50773,
+    SPELL_SHADOWSTEP_VISUAL     = 51908,
+    SPELL_TRANSFORM_VISUAL      = 33133
 };
 
 class npc_arthas_stratholme : public CreatureScript

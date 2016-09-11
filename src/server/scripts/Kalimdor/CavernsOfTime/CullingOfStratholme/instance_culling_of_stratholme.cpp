@@ -393,6 +393,10 @@ class instance_culling_of_stratholme : public InstanceMapScript
 
                 PropagateWorldStateUpdate();
 
+                // Hidden Passage status handling
+                if (GameObject* passage = instance->GetGameObject(_passageGUID))
+                    passage->SetGoState(state <= GAUNTLET_TRANSITION ? GO_STATE_READY : GO_STATE_ACTIVE);
+
                 switch (state)
                 {
                     case CRATES_IN_PROGRESS:
@@ -430,6 +434,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     default:
                         break;
                 }
+                SaveToDB();
             }
 
             void Update(uint32 diff) override
@@ -598,6 +603,16 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 }
             }
 
+            void OnGameObjectCreate(GameObject* object) override
+            {
+                switch (object->GetEntry())
+                {
+                    case GO_HIDDEN_PASSAGE:
+                        _passageGUID = object->GetGUID();
+                        break;
+                }
+            }
+
             void CreatureAIHello(ObjectGuid const& me, ProgressStates myStates)
             {
                 for (ProgressStates curState = JUST_STARTED; curState <= COMPLETE; curState = ProgressStates(curState << 1))
@@ -644,6 +659,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
             time_t _infiniteGuardianTimeout;
             std::map<ProgressStates, std::set<ObjectGuid>> _myCreatures;
 
+            // Generic
             ObjectGuid _chromieGUID;
             ObjectGuid _corruptorGUID;
             ObjectGuid _guardianGUID;
@@ -658,13 +674,16 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             ++num;
                 return num;
             }
-
             ObjectGuid _arthasGUID;
             ObjectGuid _crierGUID;
 
+            // Scourge Waves
             uint32 _waveCount;
             uint8 _currentSpawnLoc;
             std::vector<ObjectGuid> _waveSpawns;
+
+            // Gauntlet
+            ObjectGuid _passageGUID;
         };
 
         InstanceScript* GetInstanceScript(InstanceMap* map) const override

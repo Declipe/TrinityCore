@@ -25,7 +25,7 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 -- Starting inn RP fluff
 DELETE FROM `areatrigger_scripts` WHERE `entry`=5291;
 INSERT INTO `areatrigger_scripts` (`entry`,`ScriptName`) VALUES (5291,"at_stratholme_inn_stairs_cot");
-UPDATE `creature` SET `movementtype`=0 WHERE `id`=30571;
+UPDATE `creature` SET `movementtype`=0,`spawndist`=0 WHERE `id`=30571;
 UPDATE `creature_addon` SET `bytes1`=0 WHERE `guid` IN (SELECT guid FROM `creature` WHERE `id`=30571);
 UPDATE `creature_template` SET `ScriptName`="",`AIName`="SmartAI" WHERE `entry`=30571;
 UPDATE `creature_template` SET `ScriptName`="npc_hearthsinger_forresten_cot",`AIName`="" WHERE `entry`=30551;

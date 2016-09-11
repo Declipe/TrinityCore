@@ -91,6 +91,11 @@ enum InstanceActions
     ACTION_START_RP_EVENT5    // Mal'ganis encounter
 };
 
+enum InstanceEntries
+{
+    GO_HIDDEN_PASSAGE = 188686
+};
+
 // These methods are implemented in instance_culling_of_stratholme.cpp so they can access internals of the instance script
 void StratholmeAIHello(InstanceScript* instance, ObjectGuid const& me, ProgressStates myStates);
 void StratholmeAIGoodbye(InstanceScript* instance, ObjectGuid const& me, ProgressStates myStates);
