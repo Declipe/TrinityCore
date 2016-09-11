@@ -755,7 +755,7 @@ class npc_arthas_stratholme : public CreatureScript
 
     struct npc_arthas_stratholmeAI : public ScriptedAI
     {
-        npc_arthas_stratholmeAI(Creature* creature) : ScriptedAI(creature), instance(creature->GetInstanceScript()), _hadSetup(false), _exorcismCooldown(urandms(7,14)), _progressRP(true), _isWPWalk(false) { }
+        npc_arthas_stratholmeAI(Creature* creature) : ScriptedAI(creature), _hadSetup(false), instance(creature->GetInstanceScript()), _exorcismCooldown(urandms(7,14)), _progressRP(true), _isWPWalk(false) { }
 
         static const std::array<Position, NUM_POSITIONS> _positions; // all kinds of positions we'll need for RP events (there's a lot of these)
         static const float _snapbackDistanceThreshold; // how far we can be from where we're supposed at start of phase to be before we snap back
@@ -1109,7 +1109,7 @@ class npc_arthas_stratholme : public CreatureScript
         bool CanAIAttack(Unit const* who) const override
         {
             // Don't let us chase too far from home
-            if (me->HasReactState(REACT_AGGRESSIVE) && (me->GetHomePosition().GetExactDist2d(who) > 30.0f))
+            if (me->IsInCombat() && (me->GetHomePosition().GetExactDist2d(who) > 30.0f))
                 return false;
             return ScriptedAI::CanAIAttack(who);
         }
