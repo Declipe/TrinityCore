@@ -609,6 +609,8 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 {
                     case GO_HIDDEN_PASSAGE:
                         _passageGUID = object->GetGUID();
+                        object->setActive(true);
+                        object->SetGoState(_currentState <= GAUNTLET_TRANSITION ? GO_STATE_READY : GO_STATE_ACTIVE);
                         break;
                 }
             }

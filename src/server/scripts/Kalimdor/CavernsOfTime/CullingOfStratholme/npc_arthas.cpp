@@ -464,7 +464,31 @@ enum PositionIndices : uint32
     GAUNTLET_WP102,
     GAUNTLET_WP103,
     GAUNTLET_WP104,
+
     ARTHAS_GAUNTLET_END_POS,
+    RP5_MALGANIS_POS,
+    RP5_ARTHAS_WP1,
+    RP5_ARTHAS_WP2,
+    RP5_ARTHAS_WP3,
+    RP5_ARTHAS_WP4,
+    RP5_ARTHAS_WP5,
+    RP5_ARTHAS_WP6,
+    RP5_ARTHAS_WP7,
+    RP5_ARTHAS_WP8,
+    RP5_ARTHAS_WP9,
+    RP5_ARTHAS_WP10,
+    RP5_ARTHAS_WP11,
+    RP5_ARTHAS_WP12,
+    RP5_ARTHAS_WP13,
+    RP5_ARTHAS_WP14,
+    RP5_ARTHAS_WP15,
+    RP5_ARTHAS_WP16,
+    RP5_ARTHAS_WP17,
+    RP5_ARTHAS_WP18,
+    RP5_ARTHAS_WP19,
+    RP5_ARTHAS_WP20,
+    RP5_ARTHAS_WP21,
+    RP5_ARTHAS_WP22,
 
     // Array element count
     NUM_POSITIONS
@@ -477,7 +501,8 @@ enum Actions
     RP3_ACTION_AFTER_SPAWN1,
     RP3_ACTION_AFTER_SPAWN2,
     RP3_ACTION_AFTER_SPAWN3,
-    RP3_ACTION_AFTER_EPOCH
+    RP3_ACTION_AFTER_EPOCH,
+    RP5_ACTION_AFTER_MALGANIS
 };
 
 enum Data
@@ -593,7 +618,15 @@ enum RPEvents
     RP4_EVENT_ARTHAS_FACE,
     RP4_EVENT_ARTHAS12,
     RP4_EVENT_GAUNTLET_RESUME,
-    RP4_EVENT_GAUNTLET_DONE
+    RP4_EVENT_GAUNTLET_DONE,
+
+    RP5_EVENT_ARTHAS2,
+    RP5_EVENT_MALGANIS1,
+    RP5_EVENT_MALGANIS10,
+    RP5_EVENT_MALGANIS12,
+    RP5_EVENT_MALGANIS_LEAVE,
+    RP5_EVENT_ARTHAS10,
+    RP5_EVENT_ARTHAS11
 };
 
 enum RPEventLines1
@@ -666,6 +699,18 @@ enum RPEventLines4
     RP4_LINE_ARTHAS13   = 34  // At last some good luck. Market Row has not caught fire yet. Mal'Ganis is supposed to be in Crusaders' Square, which is just ahead. Tell me when you're ready to move forward.
 };
 
+enum RPEventLines5
+{
+    RP5_LINE_ARTHAS1    = 35, // Justice will be done.
+    RP5_LINE_ARTHAS2    = 36, // We're going to finish this right now, Mal'Ganis. Just you... and me.
+    RP5_LINE_MALGANIS1  =  2, // This will be a fine test, Prince Arthas.
+    RP5_LINE_MALGANIS10 =  8, // ENOUGH! I waste my time here. I must gather my strength on the homeworld.
+    RP5_LINE_MALGANIS11 =  9, // You'll never defeat the Lich King without my forces. I'll have my revenge... on him AND you!
+    RP5_LINE_MALGANIS12 = 10, // Your journey has just begun, young prince. Gather your forces and meet me in the arctic land of Northrend. It is there that we shall settle the score between us. It is there that your true destiny will unfold.
+    RP5_LINE_ARTHAS10   = 37, // I'll hunt you to the ends of the earth if I have to! Do you hear me? To the ends of the earth!
+    RP5_LINE_ARTHAS11   = 38  // You performed well this day. Anything that Mal'Ganis has left behind is yours. Take it as your reward. I must now begin plans for an expedition to Northrend.
+};
+
 enum OtherLines
 {
     LINE_TOWN_HALL_PENDING  = 15,
@@ -696,7 +741,11 @@ enum Entries
     SPELL_EXORCISM              = 52445,
     SPELL_CRUSADER_STRIKE       = 50773,
     SPELL_SHADOWSTEP_VISUAL     = 51908,
-    SPELL_TRANSFORM_VISUAL      = 33133
+    SPELL_TRANSFORM_VISUAL      = 33133,
+    SPELL_MALGANIS_QUEST_CREDIT = 58124,
+    SPELL_MALGANIS_KILL_CREDIT  = 58630,
+    GO_CHEST_NORMAL            = 190663,
+    GO_CHEST_HEROIC            = 193597
 };
 
 class npc_arthas_stratholme : public CreatureScript
@@ -757,6 +806,13 @@ class npc_arthas_stratholme : public CreatureScript
                 case WAVES_DONE:
                     // @todo proper movement
                     MoveAlongPath(me, ARTHAS_TOWN_HALL_POS, ARTHAS_TOWN_HALL_POS);
+                    break;
+                case COMPLETE:
+                    // @todo sniff the below
+                    events.ScheduleEvent(RP5_EVENT_MALGANIS12, Seconds(10));
+                    events.ScheduleEvent(RP5_EVENT_MALGANIS_LEAVE, Seconds(24));
+                    events.ScheduleEvent(RP5_EVENT_ARTHAS10, Seconds(36));
+                    events.ScheduleEvent(RP5_EVENT_ARTHAS11, Seconds(45));
                     break;
                 default:
                     break;
@@ -822,6 +878,9 @@ class npc_arthas_stratholme : public CreatureScript
                 case RP3_ACTION_AFTER_EPOCH:
                     instance->SetData(DATA_TOWN_HALL_DONE, 1);
                     break;
+                case RP5_ACTION_AFTER_MALGANIS:
+                    events.ScheduleEvent(RP5_EVENT_MALGANIS10, Seconds(5));
+                    break;
             }
         }
 
@@ -860,7 +919,9 @@ class npc_arthas_stratholme : public CreatureScript
                     MoveAlongPath(me, GAUNTLET_WP1, GAUNTLET_WP48);
                     break;
                 case -ACTION_START_RP_EVENT5:
-                    me->Say("NYI from here", LANG_UNIVERSAL);
+                    Talk(RP5_LINE_ARTHAS1, ObjectAccessor::GetPlayer(*me, _eventStarterGuid));
+                    instance->instance->SummonCreature(NPC_MALGANIS, _positions[RP5_MALGANIS_POS]);
+                    MoveAlongPath(me, RP5_ARTHAS_WP1, RP5_ARTHAS_WP22);
                     break;
             }
         }
@@ -1022,6 +1083,10 @@ class npc_arthas_stratholme : public CreatureScript
                 case ARTHAS_GAUNTLET_END_POS:
                     events.ScheduleEvent(RP4_EVENT_GAUNTLET_DONE, Seconds(1));
                     break;
+                case RP5_ARTHAS_WP22:
+                    events.ScheduleEvent(RP5_EVENT_ARTHAS2, Seconds(1));
+                    events.ScheduleEvent(RP5_EVENT_MALGANIS1, Seconds(6));
+                    break;
                 default:
                     break;
             }
@@ -1044,7 +1109,9 @@ class npc_arthas_stratholme : public CreatureScript
         bool CanAIAttack(Unit const* who) const override
         {
             // Don't let us chase too far from home
-            return me->GetHomePosition().GetExactDist2d(who) <= 30.0f && ScriptedAI::CanAIAttack(who);
+            if (me->HasReactState(REACT_AGGRESSIVE) && (me->GetHomePosition().GetExactDist2d(who) > 30.0f))
+                return false;
+            return ScriptedAI::CanAIAttack(who);
         }
 
         void UpdateAICombat(uint32 diff)
@@ -1528,6 +1595,49 @@ class npc_arthas_stratholme : public CreatureScript
                         talkerEntry = 0, talkerLine = RP4_LINE_ARTHAS13;
                         me->SetFacingTo(_positions[ARTHAS_GAUNTLET_END_POS].GetOrientation());
                         instance->SetData(DATA_GAUNTLET_DONE, 1);
+                        break;
+                    case RP5_EVENT_ARTHAS2:
+                        talkerEntry = 0, talkerLine = RP5_LINE_ARTHAS2;
+                        if (Creature* malganis = me->FindNearestCreature(NPC_MALGANIS, 100.0f, true))
+                            me->SetFacingToObject(malganis);
+                        break;
+                    case RP5_EVENT_MALGANIS1:
+                        if (Creature* malganis = me->FindNearestCreature(NPC_MALGANIS, 100.0f, true))
+                        {
+                            malganis->AI()->Talk(RP5_LINE_MALGANIS1, ObjectAccessor::GetPlayer(*malganis, _eventStarterGuid));
+                            malganis->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
+                            me->SetInCombatWith(malganis);
+                            malganis->SetInCombatWith(me);
+                            me->AddThreat(malganis, 0.0f);
+                            malganis->AddThreat(me, 0.0f);
+                        }
+                        ScheduleActionOOC(RP5_ACTION_AFTER_MALGANIS);
+                        break;
+                    case RP5_EVENT_MALGANIS10:
+                        if (Creature* malganis = me->FindNearestCreature(NPC_MALGANIS, 100.0f, true))
+                        {
+                            malganis->SetFacingToObject(me);
+                            malganis->AI()->Talk(RP5_LINE_MALGANIS10, ObjectAccessor::GetPlayer(*me, _eventStarterGuid));
+                            malganis->CastSpell(malganis, SPELL_MALGANIS_KILL_CREDIT, true);
+                            malganis->CastSpell(malganis, SPELL_MALGANIS_QUEST_CREDIT, true);
+                            if (GameObject* chest = malganis->FindNearestGameObject(RAID_MODE(GO_CHEST_NORMAL, GO_CHEST_HEROIC), 100.0f))
+                                chest->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+                        }
+                        instance->SetBossState(DATA_MAL_GANIS, DONE);
+                        instance->SetData(DATA_MALGANIS_DONE, 1);
+                        break;
+                    case RP5_EVENT_MALGANIS12:
+                        talkerEntry = NPC_MALGANIS, talkerLine = RP5_LINE_MALGANIS12;
+                        break;
+                    case RP5_EVENT_MALGANIS_LEAVE:
+                        if (Creature* malganis = me->FindNearestCreature(NPC_MALGANIS, 100.0f, true))
+                            malganis->DespawnOrUnsummon();
+                        break;
+                    case RP5_EVENT_ARTHAS10:
+                        talkerEntry = 0, talkerLine = RP5_LINE_ARTHAS10;
+                        break;
+                    case RP5_EVENT_ARTHAS11:
+                        talkerEntry = 0, talkerLine = RP5_LINE_ARTHAS11;
                         break;
                     default:
                         break;
@@ -2085,7 +2195,31 @@ const std::array<Position, NUM_POSITIONS> npc_arthas_stratholme::npc_arthas_stra
     { 2372.439f, 1407.525f, 128.2687f }, // GAUNTLET_WP102
     { 2370.189f, 1407.025f, 128.5187f }, // GAUNTLET_WP103
     { 2367.439f, 1406.275f, 129.0187f }, // GAUNTLET_WP104
-    { 2363.440f, 1404.906f, 128.7869f, 2.775074f } // ARTHAS_GAUNTLET_END_POS
+    
+    { 2363.440f, 1404.906f, 128.7869f, 2.775074f }, // ARTHAS_GAUNTLET_END_POS
+    { 2296.862f, 1501.015f, 128.4456f, 5.131268f }, // RP5_MALGANIS_POS
+    { 2358.740f, 1404.739f, 128.9785f }, // RP5_ARTHAS_WP1
+    { 2355.490f, 1404.489f, 128.7285f }, // RP5_ARTHAS_WP2
+    { 2349.740f, 1405.489f, 128.7285f }, // RP5_ARTHAS_WP3
+    { 2348.490f, 1405.739f, 128.4785f }, // RP5_ARTHAS_WP4
+    { 2344.340f, 1406.146f, 128.3061f }, // RP5_ARTHAS_WP5
+    { 2338.921f, 1407.289f, 128.3241f }, // RP5_ARTHAS_WP6
+    { 2333.421f, 1410.039f, 128.0741f }, // RP5_ARTHAS_WP7
+    { 2331.421f, 1411.039f, 128.0741f }, // RP5_ARTHAS_WP8
+    { 2330.421f, 1412.789f, 128.0741f }, // RP5_ARTHAS_WP9
+    { 2328.778f, 1415.333f, 127.6198f }, // RP5_ARTHAS_WP10
+    { 2327.884f, 1417.254f, 127.7447f }, // RP5_ARTHAS_WP11
+    { 2325.884f, 1421.504f, 127.9947f }, // RP5_ARTHAS_WP12
+    { 2325.384f, 1422.254f, 127.9947f }, // RP5_ARTHAS_WP13
+    { 2318.134f, 1438.504f, 127.9947f }, // RP5_ARTHAS_WP14
+    { 2316.422f, 1441.448f, 127.8214f }, // RP5_ARTHAS_WP15
+    { 2313.949f, 1447.049f, 128.1505f }, // RP5_ARTHAS_WP16
+    { 2309.699f, 1456.049f, 128.1505f }, // RP5_ARTHAS_WP17
+    { 2307.938f, 1458.750f, 127.8409f }, // RP5_ARTHAS_WP18
+    { 2307.247f, 1460.363f, 127.9878f }, // RP5_ARTHAS_WP19
+    { 2305.247f, 1464.363f, 127.9878f }, // RP5_ARTHAS_WP20
+    { 2303.747f, 1467.863f, 127.9878f }, // RP5_ARTHAS_WP21
+    { 2303.497f, 1469.113f, 127.7378f }, // RP5_ARTHAS_WP22
 }};
 
 const float npc_arthas_stratholme::npc_arthas_stratholmeAI::_snapbackDistanceThreshold = 5.0f;

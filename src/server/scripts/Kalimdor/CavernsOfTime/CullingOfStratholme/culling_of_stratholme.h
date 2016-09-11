@@ -71,10 +71,7 @@ enum InstanceData
     DATA_START_GAUNTLET,   // sent by arthas creature script to begin gauntlet escort
     DATA_GAUNTLET_DONE,    // sent by arthas AI once he arrives at the end of the gauntlet section
     DATA_START_MALGANIS,   // sent by arthas creature script to begin mal'ganis event
-    DATA_MALGANIS_DONE,    // sent by arthas AI once mal'ganis outro is over
-
-    // old stuff below this, need to figure out if needed
-    DATA_ARTHAS
+    DATA_MALGANIS_DONE     // sent by arthas AI once mal'ganis outro is over
 };
 
 // these are sent by instance AI to creatures; they are passed as negative values to avoid conflicts with creature script specific actions
