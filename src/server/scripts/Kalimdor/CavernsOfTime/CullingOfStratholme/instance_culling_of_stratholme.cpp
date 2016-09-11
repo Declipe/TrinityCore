@@ -281,8 +281,24 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     case DATA_TOWN_HALL_DONE:
                         if (_currentState == TOWN_HALL)
                             SetInstanceProgress(TOWN_HALL_COMPLETE);
+                        break;
+                    case DATA_GAUNTLET_REACHED:
+                        if (_currentState == GAUNTLET_TRANSITION)
+                            SetInstanceProgress(GAUNTLET_PENDING);
+                        break;
                     default:
                         break;
+                }
+            }
+
+            void InitiateArthasEvent(ProgressStates fromState, ProgressStates toState, InstanceActions startAction, ObjectGuid starterGUID)
+            {
+                if (_currentState != fromState)
+                    return;
+                if (Creature* arthas = instance->GetCreature(_arthasGUID))
+                {
+                    SetInstanceProgress(toState);
+                    arthas->AI()->SetGUID(starterGUID, -startAction);
                 }
             }
 
@@ -291,35 +307,19 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 switch (type)
                 {
                     case DATA_UTHER_START:
-                        if (_currentState == CRATES_DONE)
-                            if (Creature* arthas = instance->GetCreature(_arthasGUID))
-                            {
-                                SetInstanceProgress(UTHER_TALK);
-                                arthas->AI()->SetGUID(guid, -ACTION_START_RP_EVENT1);
-                            }
+                        InitiateArthasEvent(CRATES_DONE, UTHER_TALK, ACTION_START_RP_EVENT1, guid);
                         break;
                     case DATA_START_PURGE:
-                        if (_currentState == PURGE_PENDING)
-                            if (Creature* arthas = instance->GetCreature(_arthasGUID))
-                            {
-                                SetInstanceProgress(PURGE_STARTING);
-                                arthas->AI()->SetGUID(guid, -ACTION_START_RP_EVENT2);
-                            }
+                        InitiateArthasEvent(PURGE_PENDING, PURGE_STARTING, ACTION_START_RP_EVENT2, guid);
                         break;
                     case DATA_START_TOWN_HALL:
-                        if (_currentState == TOWN_HALL_PENDING)
-                            if (Creature* arthas = instance->GetCreature(_arthasGUID))
-                            {
-                                SetInstanceProgress(TOWN_HALL);
-                                arthas->AI()->SetGUID(guid, -ACTION_START_RP_EVENT3);
-                            }
+                        InitiateArthasEvent(TOWN_HALL_PENDING, TOWN_HALL, ACTION_START_RP_EVENT3, guid);
+                        break;
                     case DATA_TO_GAUNTLET:
-                        if (_currentState == TOWN_HALL_COMPLETE)
-                            if (Creature* arthas = instance->GetCreature(_arthasGUID))
-                            {
-                                SetInstanceProgress(GAUNTLET_TRANSITION);
-                                arthas->AI()->SetGUID(guid, -ACTION_START_RP_EVENT4);
-                            }
+                        InitiateArthasEvent(TOWN_HALL_COMPLETE, GAUNTLET_TRANSITION, ACTION_START_RP_EVENT4_1, guid);
+                        break;
+                    case DATA_START_GAUNTLET:
+                        InitiateArthasEvent(GAUNTLET_PENDING, GAUNTLET_IN_PROGRESS, ACTION_START_RP_EVENT4_2, guid);
                     default:
                         break;
                 }

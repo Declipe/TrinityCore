@@ -67,6 +67,8 @@ enum InstanceData
     DATA_START_TOWN_HALL,  // sent by arthas creature script to begin town hall sequence
     DATA_TOWN_HALL_DONE,   // sent by arthas AI once Epoch is defeated
     DATA_TO_GAUNTLET,      // sent by arthas creature script to begin gauntlet transition
+    DATA_GAUNTLET_REACHED, // sent by arthas AI once he arrives at the beginning of the gauntlet section
+    DATA_START_GAUNTLET,   // sent by arthas creature script to begin gauntlet escort
 
     // old stuff below this, need to figure out if needed
     DATA_ARTHAS
@@ -81,7 +83,8 @@ enum InstanceActions
     ACTION_START_RP_EVENT1, // Arthas/Uther chat in front of town
     ACTION_START_RP_EVENT2, // Arthas/Mal'ganis chat at entrance
     ACTION_START_RP_EVENT3, // Town Hall sequence
-    ACTION_START_RP_EVENT4, // Bookcase transition sequence
+    ACTION_START_RP_EVENT4_1, // Bookcase transition sequence
+    ACTION_START_RP_EVENT4_2, // Gauntlet escort phase
 };
 
 // These methods are implemented in instance_culling_of_stratholme.cpp so they can access internals of the instance script

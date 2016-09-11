@@ -301,6 +301,66 @@ enum PositionIndices : uint32
     RP3_EPOCH_WP2,
     RP3_EPOCH_WP3,
 
+    // Gauntlet
+    RP4_ARTHAS_WP1,
+    RP4_ARTHAS_WP2,
+    RP4_ARTHAS_WP3,
+    RP4_ARTHAS_WP4,
+    RP4_ARTHAS_WP5,
+    RP4_ARTHAS_WP6,
+    RP4_ARTHAS_WP7,
+    RP4_ARTHAS_WP8,
+    RP4_ARTHAS_WP9,
+    RP4_ARTHAS_WP10,
+    RP4_ARTHAS_WP11,
+    RP4_ARTHAS_WP12,
+    RP4_ARTHAS_WP13,
+    RP4_ARTHAS_WP14,
+    RP4_ARTHAS_WP15,
+    RP4_ARTHAS_WP16,
+    RP4_ARTHAS_WP17,
+    RP4_ARTHAS_WP18,
+    RP4_ARTHAS_WP19,
+    RP4_ARTHAS_WP30,
+    RP4_ARTHAS_WP31,
+    RP4_ARTHAS_WP32,
+    RP4_ARTHAS_WP33,
+    RP4_ARTHAS_WP34,
+    RP4_ARTHAS_WP35,
+    RP4_ARTHAS_WP36,
+    RP4_ARTHAS_WP37,
+    RP4_ARTHAS_WP38,
+    RP4_ARTHAS_WP39,
+    RP4_ARTHAS_WP40,
+    RP4_ARTHAS_WP41,
+    RP4_ARTHAS_WP42,
+    RP4_ARTHAS_WP43,
+    RP4_ARTHAS_WP44,
+    RP4_ARTHAS_WP45,
+    RP4_ARTHAS_WP46,
+    RP4_ARTHAS_WP47,
+    RP4_ARTHAS_WP48,
+    RP4_ARTHAS_WP49,
+    RP4_ARTHAS_WP50,
+    RP4_ARTHAS_WP51,
+    RP4_ARTHAS_WP52,
+    RP4_ARTHAS_WP53,
+    RP4_ARTHAS_WP54,
+    RP4_ARTHAS_WP55,
+    RP4_ARTHAS_WP56,
+    RP4_ARTHAS_WP57,
+    RP4_ARTHAS_WP58,
+    RP4_ARTHAS_WP59,
+    RP4_ARTHAS_WP60,
+    RP4_ARTHAS_WP61,
+    RP4_ARTHAS_WP62,
+    RP4_ARTHAS_WP63,
+    RP4_ARTHAS_WP64,
+    RP4_ARTHAS_WP65,
+    RP4_ARTHAS_WP66,
+    RP4_ARTHAS_WP67,
+    ARTHAS_GAUNTLET_POS,
+
     // Array element count
     NUM_POSITIONS
 };
@@ -417,7 +477,12 @@ enum RPEvents
     RP3_EVENT_EPOCH_FACE,
     RP3_EVENT_EPOCH1,
     RP3_EVENT_ARTHAS32,
-    RP3_EVENT_EPOCH_AGGRO
+    RP3_EVENT_EPOCH_AGGRO,
+
+    RP4_EVENT_ARTHAS2,
+    RP4_EVENT_HIDDEN_PASSAGE,
+    RP4_EVENT_ARTHAS3,
+    RP4_EVENT_GAUNTLET_REACHED
 };
 
 enum RPEventLines1
@@ -478,6 +543,18 @@ enum RPEventLines3
     RP3_LINE_EPOCH2     =  1  // We'll see about that, young prince.
 };
 
+enum RPEventLines4
+{
+    RP4_LINE_ARTHAS1    = 28, // The quickest path to Mal'Ganis lies behind that bookshelf ahead.
+    RP4_LINE_ARTHAS2    = 29, // This will only take a moment.
+    RP4_LINE_ARTHAS3    = 30, // I'm relieved this secret passage still works.
+    
+    RP4_LINE_ARTHAS10   = 31, // Let's move through here as quickly as possible. If the undead don't kill us, the fires might.
+    RP4_LINE_ARTHAS11   = 32, // Rest a moment and clear your lungs, but we must move again soon.
+    RP4_LINE_ARTHAS12   = 33, // That's enough; we must move again. Mal'Ganis awaits.
+    RP4_LINE_ARTHAS13   = 34  // At last some good luck. Market Row has not caught fire yet. Mal'Ganis is supposed to be in Crusaders' Square, which is just ahead. Tell me when you're ready to move forward.
+};
+
 enum OtherLines
 {
     LINE_TOWN_HALL_PENDING  = 15,
@@ -508,7 +585,9 @@ enum Entries
     SPELL_EXORCISM              = 52445,
     SPELL_CRUSADER_STRIKE       = 50773,
     SPELL_SHADOWSTEP_VISUAL     = 51908,
-    SPELL_TRANSFORM_VISUAL      = 33133
+    SPELL_TRANSFORM_VISUAL      = 33133,
+
+    GO_HIDDEN_PASSAGE           = 67455
 };
 
 class npc_arthas_stratholme : public CreatureScript
@@ -663,8 +742,13 @@ class npc_arthas_stratholme : public CreatureScript
                     Talk(RP3_LINE_ARTHAS1, ObjectAccessor::GetPlayer(*me, _eventStarterGuid));
                     MoveAlongPath(me, RP3_ARTHAS_WP1, RP3_ARTHAS_WP9);
                     break;
-                case -ACTION_START_RP_EVENT4:
-                    me->Say("NYI from here", LANG_UNIVERSAL);
+                case -ACTION_START_RP_EVENT4_1:
+                    Talk(RP4_LINE_ARTHAS1, ObjectAccessor::GetPlayer(*me, _eventStarterGuid));
+                    MoveAlongPath(me, RP4_ARTHAS_WP1, RP4_ARTHAS_WP19, true);
+                    break;
+                case -ACTION_START_RP_EVENT4_2:
+                    Talk(RP4_LINE_ARTHAS10, ObjectAccessor::GetPlayer(*me, _eventStarterGuid));
+                    me->Say("NYI after this", LANG_UNIVERSAL);
                     break;
             }
         }
@@ -806,6 +890,15 @@ class npc_arthas_stratholme : public CreatureScript
                     events.ScheduleEvent(RP3_EVENT_ARTHAS30, Seconds(4));
                     events.ScheduleEvent(RP3_EVENT_SPAWN3_FACE, Seconds(5));
                     events.ScheduleEvent(RP3_EVENT_SPAWN3_AGGRO, Seconds(6));
+                    break;
+                case RP4_ARTHAS_WP19:
+                    events.ScheduleEvent(RP4_EVENT_ARTHAS2, Seconds(1));
+                    events.ScheduleEvent(RP4_EVENT_HIDDEN_PASSAGE, Seconds(4)); // @todo sniff timer
+                    events.ScheduleEvent(RP4_EVENT_ARTHAS3, Seconds(5));
+                    break;
+                case ARTHAS_GAUNTLET_POS:
+                    events.ScheduleEvent(RP4_EVENT_GAUNTLET_REACHED, Seconds(1));
+                    break;
                 default:
                     break;
             }
@@ -1275,6 +1368,21 @@ class npc_arthas_stratholme : public CreatureScript
                         }
                         ScheduleActionOOC(RP3_ACTION_AFTER_EPOCH);
                         break;
+                    case RP4_EVENT_ARTHAS2:
+                        talkerEntry = 0, talkerLine = RP4_LINE_ARTHAS2;
+                        break;
+                    case RP4_EVENT_HIDDEN_PASSAGE:
+                        if (GameObject* passage = me->FindNearestGameObject(GO_HIDDEN_PASSAGE, 100.0f))
+                            passage->SetGoState(GO_STATE_ACTIVE);
+                        break;
+                    case RP4_EVENT_ARTHAS3:
+                        talkerEntry = 0, talkerLine = RP4_LINE_ARTHAS3;
+                        MoveAlongPath(me, RP4_ARTHAS_WP30, ARTHAS_GAUNTLET_POS, true);
+                        break;
+                    case RP4_EVENT_GAUNTLET_REACHED:
+                        me->SetFacingTo(_positions[ARTHAS_GAUNTLET_POS].GetOrientation());
+                        instance->SetData(DATA_GAUNTLET_REACHED, 1);
+                        break;
                     default:
                         break;
                 }
@@ -1379,6 +1487,7 @@ class npc_arthas_stratholme : public CreatureScript
         AdvanceDungeon(creature, player, PURGE_PENDING, DATA_START_PURGE);
         AdvanceDungeon(creature, player, TOWN_HALL_PENDING, DATA_START_TOWN_HALL);
         AdvanceDungeon(creature, player, TOWN_HALL_COMPLETE, DATA_TO_GAUNTLET);
+        AdvanceDungeon(creature, player, GAUNTLET_PENDING, DATA_START_GAUNTLET);
         return true;
     }
 
@@ -1666,6 +1775,65 @@ const std::array<Position, NUM_POSITIONS> npc_arthas_stratholme::npc_arthas_stra
     { 2454.884f, 1114.051f, 150.0546f }, // RP3_EPOCH_WP1
     { 2452.134f, 1113.551f, 149.5546f }, // RP3_EPOCH_WP2
     { 2450.874f, 1113.122f, 149.0175f }, // RP3_EPOCH_WP3
+
+    { 2431.960f, 1116.705f, 148.0759f }, // RP4_ARTHAS_WP1
+    { 2433.980f, 1116.161f, 148.5607f }, // RP4_ARTHAS_WP2
+    { 2439.980f, 1114.161f, 148.5607f }, // RP4_ARTHAS_WP3
+    { 2441.157f, 1113.872f, 148.0759f }, // RP4_ARTHAS_WP4
+    { 2448.360f, 1113.663f, 148.5421f }, // RP4_ARTHAS_WP5
+    { 2450.621f, 1113.146f, 148.9136f }, // RP4_ARTHAS_WP6
+    { 2451.243f, 1113.355f, 149.4610f }, // RP4_ARTHAS_WP7
+    { 2451.993f, 1114.105f, 149.4610f }, // RP4_ARTHAS_WP8
+    { 2454.493f, 1117.355f, 150.2110f }, // RP4_ARTHAS_WP9
+    { 2455.493f, 1118.605f, 150.2110f }, // RP4_ARTHAS_WP10
+    { 2455.993f, 1119.105f, 150.2110f }, // RP4_ARTHAS_WP11
+    { 2456.407f, 1120.309f, 150.0083f }, // RP4_ARTHAS_WP12
+    { 2457.265f, 1122.334f, 150.2657f }, // RP4_ARTHAS_WP13
+    { 2458.015f, 1126.084f, 150.2657f }, // RP4_ARTHAS_WP14
+    { 2459.765f, 1126.084f, 150.2657f }, // RP4_ARTHAS_WP15
+    { 2462.765f, 1126.084f, 150.2657f }, // RP4_ARTHAS_WP16
+    { 2464.515f, 1125.334f, 150.2657f }, // RP4_ARTHAS_WP17
+    { 2466.265f, 1124.334f, 150.2657f }, // RP4_ARTHAS_WP18
+    { 2468.624f, 1123.360f, 150.0230f, 0.226893f }, // RP4_ARTHAS_WP19
+    { 2474.084f, 1123.945f, 150.2138f }, // RP4_ARTHAS_WP30
+    { 2476.334f, 1124.195f, 150.2138f }, // RP4_ARTHAS_WP31
+    { 2478.181f, 1123.791f, 149.9747f }, // RP4_ARTHAS_WP32
+    { 2482.852f, 1122.718f, 150.1898f }, // RP4_ARTHAS_WP33
+    { 2484.102f, 1122.468f, 150.1898f }, // RP4_ARTHAS_WP34
+    { 2484.602f, 1119.718f, 150.1898f }, // RP4_ARTHAS_WP35
+    { 2484.645f, 1118.929f, 149.9047f }, // RP4_ARTHAS_WP36
+    { 2485.715f, 1113.623f, 150.1306f }, // RP4_ARTHAS_WP37
+    { 2486.174f, 1109.669f, 148.9116f }, // RP4_ARTHAS_WP38
+    { 2486.680f, 1107.990f, 148.2771f }, // RP4_ARTHAS_WP39
+    { 2487.430f, 1103.740f, 145.7771f }, // RP4_ARTHAS_WP40
+    { 2487.570f, 1101.130f, 144.9768f }, // RP4_ARTHAS_WP41
+    { 2488.088f, 1100.423f, 144.9704f }, // RP4_ARTHAS_WP42
+    { 2488.088f, 1100.173f, 144.9704f }, // RP4_ARTHAS_WP43
+    { 2491.088f, 1100.673f, 144.9704f }, // RP4_ARTHAS_WP44
+    { 2492.838f, 1101.173f, 144.7204f }, // RP4_ARTHAS_WP45
+    { 2498.088f, 1102.173f, 144.7204f }, // RP4_ARTHAS_WP46
+    { 2497.338f, 1105.923f, 144.2204f }, // RP4_ARTHAS_WP47
+    { 2496.338f, 1110.923f, 143.9704f }, // RP4_ARTHAS_WP48
+    { 2495.088f, 1115.923f, 143.9704f }, // RP4_ARTHAS_WP49
+    { 2494.613f, 1118.074f, 142.8223f }, // RP4_ARTHAS_WP50
+    { 2494.454f, 1120.003f, 142.1522f }, // RP4_ARTHAS_WP51
+    { 2493.454f, 1124.533f, 140.4022f }, // RP4_ARTHAS_WP52
+    { 2492.678f, 1126.886f, 139.9672f }, // RP4_ARTHAS_WP53
+    { 2492.797f, 1127.180f, 140.2227f }, // RP4_ARTHAS_WP54
+    { 2496.797f, 1128.180f, 140.2227f }, // RP4_ARTHAS_WP55
+    { 2498.297f, 1128.430f, 140.2227f }, // RP4_ARTHAS_WP56
+    { 2500.797f, 1128.930f, 140.2227f }, // RP4_ARTHAS_WP57
+    { 2501.040f, 1128.099f, 139.9817f }, // RP4_ARTHAS_WP58
+    { 2503.642f, 1119.790f, 140.0229f }, // RP4_ARTHAS_WP59
+    { 2505.142f, 1120.040f, 140.0229f }, // RP4_ARTHAS_WP60
+    { 2506.892f, 1120.290f, 140.0229f }, // RP4_ARTHAS_WP61
+    { 2510.642f, 1121.040f, 137.0229f }, // RP4_ARTHAS_WP62
+    { 2512.219f, 1121.014f, 135.7001f }, // RP4_ARTHAS_WP63
+    { 2516.774f, 1121.972f, 132.8931f }, // RP4_ARTHAS_WP64
+    { 2518.024f, 1122.222f, 132.3931f }, // RP4_ARTHAS_WP65
+    { 2521.524f, 1123.722f, 132.3931f }, // RP4_ARTHAS_WP66
+    { 2523.830f, 1124.929f, 132.0862f }, // RP4_ARTHAS_WP67
+    { 2534.988f, 1126.163f, 130.8621f, 0.541850f }, // ARTHAS_GAUNTLET_POS (orientation not sniffed)
 }};
 
 const float npc_arthas_stratholme::npc_arthas_stratholmeAI::_snapbackDistanceThreshold = 5.0f;
@@ -1682,8 +1850,8 @@ const std::map<ProgressStates, npc_arthas_stratholme::npc_arthas_stratholmeAI::S
     { TOWN_HALL, { REACT_DEFENSIVE, false, &_positions[ARTHAS_TOWN_HALL_POS] } },
     { TOWN_HALL_COMPLETE, { REACT_PASSIVE, true, &_positions[RP3_ARTHAS_WP90] } },
     { GAUNTLET_TRANSITION, { REACT_PASSIVE, false, &_positions[RP3_ARTHAS_WP90] } },
-    { GAUNTLET_PENDING, { REACT_PASSIVE, true, nullptr } },
-    { GAUNTLET_IN_PROGRESS, { REACT_DEFENSIVE, false, nullptr } },
+    { GAUNTLET_PENDING, { REACT_PASSIVE, true, &_positions[ARTHAS_GAUNTLET_POS] } },
+    { GAUNTLET_IN_PROGRESS, { REACT_DEFENSIVE, false, &_positions[ARTHAS_GAUNTLET_POS] } },
     { GAUNTLET_COMPLETE, { REACT_PASSIVE, true, nullptr } },
     { MALGANIS_IN_PROGRESS, { REACT_DEFENSIVE, false, nullptr } },
     { COMPLETE, { REACT_PASSIVE, true, nullptr } }
