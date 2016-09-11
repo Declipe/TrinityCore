@@ -359,7 +359,112 @@ enum PositionIndices : uint32
     RP4_ARTHAS_WP65,
     RP4_ARTHAS_WP66,
     RP4_ARTHAS_WP67,
+
     ARTHAS_GAUNTLET_POS,
+    GAUNTLET_WP1,
+    GAUNTLET_WP2,
+    GAUNTLET_WP3,
+    GAUNTLET_WP4,
+    GAUNTLET_WP5,
+    GAUNTLET_WP6,
+    GAUNTLET_WP7,
+    GAUNTLET_WP8,
+    GAUNTLET_WP9,
+    GAUNTLET_WP10,
+    GAUNTLET_WP11,
+    GAUNTLET_WP12,
+    GAUNTLET_WP13,
+    GAUNTLET_WP14,
+    GAUNTLET_WP15,
+    GAUNTLET_WP16,
+    GAUNTLET_WP17,
+    GAUNTLET_WP18,
+    GAUNTLET_WP19,
+    GAUNTLET_WP20,
+    GAUNTLET_WP21,
+    GAUNTLET_WP22,
+    GAUNTLET_WP23,
+    GAUNTLET_WP24,
+    GAUNTLET_WP25,
+    GAUNTLET_WP26,
+    GAUNTLET_WP27,
+    GAUNTLET_WP28,
+    GAUNTLET_WP29,
+    GAUNTLET_WP30,
+    GAUNTLET_WP31,
+    GAUNTLET_WP32,
+    GAUNTLET_WP33,
+    GAUNTLET_WP34,
+    GAUNTLET_WP35,
+    GAUNTLET_WP36,
+    GAUNTLET_WP37,
+    GAUNTLET_WP38,
+    GAUNTLET_WP39,
+    GAUNTLET_WP40,
+    GAUNTLET_WP41,
+    GAUNTLET_WP42,
+    GAUNTLET_WP43,
+    GAUNTLET_WP44,
+    GAUNTLET_WP45,
+    GAUNTLET_WP46,
+    GAUNTLET_WP47,
+    GAUNTLET_WP48,
+    GAUNTLET_WP50,
+    GAUNTLET_WP51,
+    GAUNTLET_WP52,
+    GAUNTLET_WP53,
+    GAUNTLET_WP54,
+    GAUNTLET_WP55,
+    GAUNTLET_WP56,
+    GAUNTLET_WP57,
+    GAUNTLET_WP58,
+    GAUNTLET_WP59,
+    GAUNTLET_WP60,
+    GAUNTLET_WP61,
+    GAUNTLET_WP62,
+    GAUNTLET_WP63,
+    GAUNTLET_WP64,
+    GAUNTLET_WP65,
+    GAUNTLET_WP66,
+    GAUNTLET_WP67,
+    GAUNTLET_WP68,
+    GAUNTLET_WP69,
+    GAUNTLET_WP70,
+    GAUNTLET_WP71,
+    GAUNTLET_WP72,
+    GAUNTLET_WP73,
+    GAUNTLET_WP74,
+    GAUNTLET_WP75,
+    GAUNTLET_WP76,
+    GAUNTLET_WP77,
+    GAUNTLET_WP78,
+    GAUNTLET_WP79,
+    GAUNTLET_WP80,
+    GAUNTLET_WP81,
+    GAUNTLET_WP82,
+    GAUNTLET_WP83,
+    GAUNTLET_WP84,
+    GAUNTLET_WP85,
+    GAUNTLET_WP86,
+    GAUNTLET_WP87,
+    GAUNTLET_WP88,
+    GAUNTLET_WP89,
+    GAUNTLET_WP90,
+    GAUNTLET_WP91,
+    GAUNTLET_WP92,
+    GAUNTLET_WP93,
+    GAUNTLET_WP94,
+    GAUNTLET_WP95,
+    GAUNTLET_WP96,
+    GAUNTLET_WP97,
+    GAUNTLET_WP98,
+    GAUNTLET_WP99,
+    GAUNTLET_WP100,
+    GAUNTLET_WP101,
+    GAUNTLET_WP102,
+    GAUNTLET_WP103,
+    GAUNTLET_WP104,
+    ARTHAS_GAUNTLET_END_POS,
 
     // Array element count
     NUM_POSITIONS
@@ -482,7 +587,13 @@ enum RPEvents
     RP4_EVENT_ARTHAS2,
     RP4_EVENT_HIDDEN_PASSAGE,
     RP4_EVENT_ARTHAS3,
-    RP4_EVENT_GAUNTLET_REACHED
+    RP4_EVENT_GAUNTLET_REACHED,
+
+    RP4_EVENT_ARTHAS11,
+    RP4_EVENT_ARTHAS_FACE,
+    RP4_EVENT_ARTHAS12,
+    RP4_EVENT_GAUNTLET_RESUME,
+    RP4_EVENT_GAUNTLET_DONE
 };
 
 enum RPEventLines1
@@ -563,31 +674,31 @@ enum OtherLines
 
 enum Entries
 {
-    NPC_MALGANIS_BUNNY          = 20562,
-    NPC_UTHER                   = 26528,
-    NPC_JAINA                   = 26497,
-    NPC_MALGANIS                = 26533,
-    NPC_CITIZEN                 = 28167,
-    NPC_RESIDENT                = 28169,
-    NPC_FOOTMAN                 = 27745,
-    NPC_KNIGHT                  = 27746,
-    NPC_PRIEST                  = 27747,
-    NPC_SORCERESS               = 27752,
-    NPC_RISEN_ZOMBIE            = 27737,
-    NPC_CITIZEN_INFINITE        = 28340,
-    NPC_RESIDENT_INFINITE       = 28341,
-    NPC_INFINITE_HUNTER         = 27743,
-    NPC_INFINITE_AGENT          = 27744,
-    NPC_INFINITE_ADVERSARY      = 27742,
-    NPC_EPOCH                   = 26532,
+    NPC_MALGANIS_BUNNY          =  20562,
+    NPC_UTHER                   =  26528,
+    NPC_JAINA                   =  26497,
+    NPC_MALGANIS                =  26533,
+    NPC_CITIZEN                 =  28167,
+    NPC_RESIDENT                =  28169,
+    NPC_FOOTMAN                 =  27745,
+    NPC_KNIGHT                  =  27746,
+    NPC_PRIEST                  =  27747,
+    NPC_SORCERESS               =  27752,
+    NPC_RISEN_ZOMBIE            =  27737,
+    NPC_CITIZEN_INFINITE        =  28340,
+    NPC_RESIDENT_INFINITE       =  28341,
+    NPC_INFINITE_HUNTER         =  27743,
+    NPC_INFINITE_AGENT          =  27744,
+    NPC_INFINITE_ADVERSARY      =  27742,
+    NPC_EPOCH                   =  26532,
 
-    SPELL_HOLY_LIGHT            = 52444,
-    SPELL_EXORCISM              = 52445,
-    SPELL_CRUSADER_STRIKE       = 50773,
-    SPELL_SHADOWSTEP_VISUAL     = 51908,
-    SPELL_TRANSFORM_VISUAL      = 33133,
+    SPELL_HOLY_LIGHT            =  52444,
+    SPELL_EXORCISM              =  52445,
+    SPELL_CRUSADER_STRIKE       =  50773,
+    SPELL_SHADOWSTEP_VISUAL     =  51908,
+    SPELL_TRANSFORM_VISUAL      =  33133,
 
-    GO_HIDDEN_PASSAGE           = 67455
+    GO_HIDDEN_PASSAGE           = 188686
 };
 
 class npc_arthas_stratholme : public CreatureScript
@@ -748,13 +859,18 @@ class npc_arthas_stratholme : public CreatureScript
                     break;
                 case -ACTION_START_RP_EVENT4_2:
                     Talk(RP4_LINE_ARTHAS10, ObjectAccessor::GetPlayer(*me, _eventStarterGuid));
-                    me->Say("NYI after this", LANG_UNIVERSAL);
+                    MoveAlongPath(me, GAUNTLET_WP1, GAUNTLET_WP48);
+                    break;
+                case -ACTION_START_RP_EVENT5:
+                    me->Say("NYI from here", LANG_UNIVERSAL);
                     break;
             }
         }
 
         void MovementInform(uint32 type, uint32 id)
         {
+            if (!_progressRP)
+                return;
             if (type != POINT_MOTION_TYPE && type != EFFECT_MOTION_TYPE)
                 return;
             if (id == _lastWP) // motion resume handling, WP reached
@@ -899,6 +1015,15 @@ class npc_arthas_stratholme : public CreatureScript
                 case ARTHAS_GAUNTLET_POS:
                     events.ScheduleEvent(RP4_EVENT_GAUNTLET_REACHED, Seconds(1));
                     break;
+                case GAUNTLET_WP48:
+                    events.ScheduleEvent(RP4_EVENT_ARTHAS11, Seconds(1));
+                    events.ScheduleEvent(RP4_EVENT_ARTHAS_FACE, Seconds(5));
+                    events.ScheduleEvent(RP4_EVENT_ARTHAS12, Seconds(21));
+                    events.ScheduleEvent(RP4_EVENT_GAUNTLET_RESUME, Seconds(25));
+                    break;
+                case ARTHAS_GAUNTLET_END_POS:
+                    events.ScheduleEvent(RP4_EVENT_GAUNTLET_DONE, Seconds(1));
+                    break;
                 default:
                     break;
             }
@@ -916,6 +1041,12 @@ class npc_arthas_stratholme : public CreatureScript
                 default:
                     break;
             }
+        }
+
+        bool CanAIAttack(Unit const* who) const override
+        {
+            // Don't let us chase too far from home
+            return me->GetHomePosition().GetExactDist2d(who) <= 30.0f && ScriptedAI::CanAIAttack(who);
         }
 
         void UpdateAICombat(uint32 diff)
@@ -1383,6 +1514,23 @@ class npc_arthas_stratholme : public CreatureScript
                         me->SetFacingTo(_positions[ARTHAS_GAUNTLET_POS].GetOrientation());
                         instance->SetData(DATA_GAUNTLET_REACHED, 1);
                         break;
+                    case RP4_EVENT_ARTHAS11:
+                        talkerEntry = 0, talkerLine = RP4_LINE_ARTHAS11;
+                        break;
+                    case RP4_EVENT_ARTHAS_FACE:
+                        me->SetFacingTo(_positions[GAUNTLET_WP48].GetOrientation());
+                        break;
+                    case RP4_EVENT_ARTHAS12:
+                        talkerEntry = 0, talkerLine = RP4_LINE_ARTHAS12;
+                        break;
+                    case RP4_EVENT_GAUNTLET_RESUME:
+                        MoveAlongPath(me, GAUNTLET_WP50, ARTHAS_GAUNTLET_END_POS);
+                        break;
+                    case RP4_EVENT_GAUNTLET_DONE:
+                        talkerEntry = 0, talkerLine = RP4_LINE_ARTHAS13;
+                        me->SetFacingTo(_positions[ARTHAS_GAUNTLET_END_POS].GetOrientation());
+                        instance->SetData(DATA_GAUNTLET_DONE, 1);
+                        break;
                     default:
                         break;
                 }
@@ -1488,6 +1636,7 @@ class npc_arthas_stratholme : public CreatureScript
         AdvanceDungeon(creature, player, TOWN_HALL_PENDING, DATA_START_TOWN_HALL);
         AdvanceDungeon(creature, player, TOWN_HALL_COMPLETE, DATA_TO_GAUNTLET);
         AdvanceDungeon(creature, player, GAUNTLET_PENDING, DATA_START_GAUNTLET);
+        AdvanceDungeon(creature, player, GAUNTLET_COMPLETE, DATA_START_MALGANIS);
         return true;
     }
 
@@ -1833,7 +1982,112 @@ const std::array<Position, NUM_POSITIONS> npc_arthas_stratholme::npc_arthas_stra
     { 2518.024f, 1122.222f, 132.3931f }, // RP4_ARTHAS_WP65
     { 2521.524f, 1123.722f, 132.3931f }, // RP4_ARTHAS_WP66
     { 2523.830f, 1124.929f, 132.0862f }, // RP4_ARTHAS_WP67
+
     { 2534.988f, 1126.163f, 130.8621f, 0.541850f }, // ARTHAS_GAUNTLET_POS (orientation not sniffed)
+    { 2537.521f, 1127.299f, 130.8223f }, // GAUNTLET_WP1
+    { 2539.021f, 1128.049f, 130.8223f }, // GAUNTLET_WP2
+    { 2540.271f, 1128.549f, 131.0723f }, // GAUNTLET_WP3
+    { 2540.771f, 1128.799f, 131.0723f }, // GAUNTLET_WP4
+    { 2543.521f, 1130.299f, 130.8223f }, // GAUNTLET_WP5
+    { 2546.771f, 1132.299f, 130.3223f }, // GAUNTLET_WP6
+    { 2549.521f, 1134.049f, 130.0723f }, // GAUNTLET_WP7
+    { 2551.760f, 1135.288f, 129.7018f }, // GAUNTLET_WP8
+    { 2552.974f, 1136.249f, 129.6362f }, // GAUNTLET_WP9
+    { 2557.724f, 1139.249f, 128.8862f }, // GAUNTLET_WP10
+    { 2560.974f, 1146.999f, 128.3862f }, // GAUNTLET_WP11
+    { 2562.618f, 1150.176f, 127.8944f }, // GAUNTLET_WP12
+    { 2564.146f, 1153.992f, 127.5698f }, // GAUNTLET_WP13
+    { 2566.646f, 1159.492f, 127.3198f }, // GAUNTLET_WP14
+    { 2565.646f, 1169.742f, 127.0698f }, // GAUNTLET_WP15
+    { 2564.724f, 1178.042f, 126.4597f }, // GAUNTLET_WP16
+    { 2564.493f, 1180.685f, 126.6174f }, // GAUNTLET_WP17
+    { 2564.243f, 1183.435f, 126.3674f }, // GAUNTLET_WP18
+    { 2562.993f, 1197.185f, 126.1174f }, // GAUNTLET_WP19
+    { 2562.821f, 1197.190f, 125.8900f }, // GAUNTLET_WP20
+    { 2562.558f, 1199.721f, 126.0331f }, // GAUNTLET_WP21
+    { 2562.308f, 1202.971f, 126.0331f }, // GAUNTLET_WP22
+    { 2560.308f, 1207.721f, 125.7831f }, // GAUNTLET_WP23
+    { 2557.124f, 1215.418f, 125.8095f }, // GAUNTLET_WP24
+    { 2556.610f, 1217.303f, 126.0669f }, // GAUNTLET_WP25
+    { 2555.610f, 1219.553f, 126.0669f }, // GAUNTLET_WP26
+    { 2553.488f, 1224.329f, 125.7098f }, // GAUNTLET_WP27
+    { 2549.292f, 1234.258f, 126.0170f }, // GAUNTLET_WP28
+    { 2545.627f, 1241.927f, 125.9981f }, // GAUNTLET_WP29
+    { 2543.625f, 1246.555f, 126.5570f }, // GAUNTLET_WP30
+    { 2543.125f, 1247.805f, 126.5570f }, // GAUNTLET_WP31
+    { 2540.625f, 1253.555f, 126.8070f }, // GAUNTLET_WP32
+    { 2538.875f, 1257.305f, 126.8070f }, // GAUNTLET_WP33
+    { 2536.125f, 1263.555f, 127.0570f }, // GAUNTLET_WP34
+    { 2535.375f, 1265.055f, 127.0570f }, // GAUNTLET_WP35
+    { 2534.375f, 1267.055f, 127.0570f }, // GAUNTLET_WP36
+    { 2533.672f, 1268.224f, 127.0429f }, // GAUNTLET_WP37
+    { 2531.305f, 1273.985f, 127.6081f }, // GAUNTLET_WP38
+    { 2527.805f, 1282.735f, 128.8581f }, // GAUNTLET_WP39
+    { 2526.497f, 1285.972f, 129.2153f }, // GAUNTLET_WP40
+    { 2524.543f, 1291.004f, 130.4992f }, // GAUNTLET_WP41
+    { 2524.043f, 1292.504f, 130.7492f }, // GAUNTLET_WP42
+    { 2522.043f, 1297.504f, 130.7492f }, // GAUNTLET_WP43
+    { 2521.293f, 1299.254f, 130.9992f }, // GAUNTLET_WP44
+    { 2518.793f, 1307.254f, 130.9992f }, // GAUNTLET_WP45
+    { 2517.043f, 1312.504f, 130.4992f }, // GAUNTLET_WP46
+    { 2514.793f, 1319.504f, 131.7492f }, // GAUNTLET_WP47
+    { 2513.089f, 1323.535f, 131.7832f, 1.780236f }, // GAUNTLET_WP48
+    { 2511.267f, 1328.168f, 132.3065f }, // GAUNTLET_WP50
+    { 2510.267f, 1330.668f, 132.3065f }, // GAUNTLET_WP51
+    { 2508.517f, 1334.418f, 132.5565f }, // GAUNTLET_WP52
+    { 2506.017f, 1339.918f, 133.3065f }, // GAUNTLET_WP53
+    { 2505.187f, 1341.026f, 133.0155f }, // GAUNTLET_WP54
+    { 2502.316f, 1347.414f, 133.1726f }, // GAUNTLET_WP55
+    { 2501.094f, 1349.733f, 132.8003f }, // GAUNTLET_WP56
+    { 2499.141f, 1354.359f, 132.7238f }, // GAUNTLET_WP57
+    { 2498.891f, 1354.609f, 132.4738f }, // GAUNTLET_WP58
+    { 2495.641f, 1361.609f, 131.4738f }, // GAUNTLET_WP59
+    { 2492.141f, 1369.609f, 130.9783f }, // GAUNTLET_WP60
+    { 2491.641f, 1370.609f, 130.6738f }, // GAUNTLET_WP61
+    { 2489.043f, 1375.858f, 130.3458f }, // GAUNTLET_WP62
+    { 2486.644f, 1381.297f, 130.5764f }, // GAUNTLET_WP63
+    { 2485.894f, 1382.297f, 130.5764f }, // GAUNTLET_WP64
+    { 2485.394f, 1383.297f, 130.5764f }, // GAUNTLET_WP65
+    { 2479.644f, 1392.547f, 130.3264f }, // GAUNTLET_WP66
+    { 2474.199f, 1400.597f, 130.4221f }, // GAUNTLET_WP67
+    { 2473.844f, 1401.471f, 130.6458f }, // GAUNTLET_WP68
+    { 2472.844f, 1402.971f, 130.8958f }, // GAUNTLET_WP69
+    { 2472.344f, 1403.971f, 130.8958f }, // GAUNTLET_WP70
+    { 2471.344f, 1405.471f, 130.8958f }, // GAUNTLET_WP71
+    { 2467.344f, 1409.471f, 130.8958f }, // GAUNTLET_WP72
+    { 2466.594f, 1410.221f, 130.8958f }, // GAUNTLET_WP73
+    { 2460.344f, 1416.471f, 130.6458f }, // GAUNTLET_WP74
+    { 2459.344f, 1417.471f, 130.6458f }, // GAUNTLET_WP75
+    { 2455.844f, 1420.971f, 130.8958f }, // GAUNTLET_WP76
+    { 2454.843f, 1421.910f, 130.6327f }, // GAUNTLET_WP77
+    { 2453.803f, 1421.912f, 130.6348f }, // GAUNTLET_WP78
+    { 2452.553f, 1421.662f, 130.6348f }, // GAUNTLET_WP79
+    { 2451.053f, 1421.662f, 130.6348f }, // GAUNTLET_WP80
+    { 2442.303f, 1421.162f, 130.6348f }, // GAUNTLET_WP81
+    { 2434.803f, 1420.912f, 130.6348f }, // GAUNTLET_WP82
+    { 2432.803f, 1420.912f, 130.8848f }, // GAUNTLET_WP83
+    { 2426.013f, 1420.246f, 130.7083f }, // GAUNTLET_WP84
+    { 2424.032f, 1420.176f, 130.8369f }, // GAUNTLET_WP85
+    { 2422.282f, 1419.926f, 130.8369f }, // GAUNTLET_WP86
+    { 2420.282f, 1419.926f, 130.8369f }, // GAUNTLET_WP87
+    { 2417.532f, 1419.176f, 130.8369f }, // GAUNTLET_WP88
+    { 2414.782f, 1418.426f, 130.5869f }, // GAUNTLET_WP89
+    { 2413.282f, 1418.176f, 130.8369f }, // GAUNTLET_WP90
+    { 2410.782f, 1417.426f, 130.8369f }, // GAUNTLET_WP91
+    { 2407.282f, 1416.426f, 130.8369f }, // GAUNTLET_WP92
+    { 2404.532f, 1415.926f, 130.8369f }, // GAUNTLET_WP93
+    { 2402.032f, 1415.426f, 131.0869f }, // GAUNTLET_WP94
+    { 2397.938f, 1414.144f, 130.2505f }, // GAUNTLET_WP95
+    { 2392.439f, 1412.775f, 129.5187f }, // GAUNTLET_WP96
+    { 2389.939f, 1412.025f, 129.2687f }, // GAUNTLET_WP97
+    { 2384.689f, 1410.775f, 128.7687f }, // GAUNTLET_WP98
+    { 2383.189f, 1410.275f, 128.5187f }, // GAUNTLET_WP99
+    { 2377.189f, 1408.775f, 128.2687f }, // GAUNTLET_WP100
+    { 2373.689f, 1407.775f, 128.0187f }, // GAUNTLET_WP101
+    { 2372.439f, 1407.525f, 128.2687f }, // GAUNTLET_WP102
+    { 2370.189f, 1407.025f, 128.5187f }, // GAUNTLET_WP103
+    { 2367.439f, 1406.275f, 129.0187f }, // GAUNTLET_WP104
+    { 2363.440f, 1404.906f, 128.7869f, 2.775074f } // ARTHAS_GAUNTLET_END_POS
 }};
 
 const float npc_arthas_stratholme::npc_arthas_stratholmeAI::_snapbackDistanceThreshold = 5.0f;
@@ -1851,9 +2105,9 @@ const std::map<ProgressStates, npc_arthas_stratholme::npc_arthas_stratholmeAI::S
     { TOWN_HALL_COMPLETE, { REACT_PASSIVE, true, &_positions[RP3_ARTHAS_WP90] } },
     { GAUNTLET_TRANSITION, { REACT_PASSIVE, false, &_positions[RP3_ARTHAS_WP90] } },
     { GAUNTLET_PENDING, { REACT_PASSIVE, true, &_positions[ARTHAS_GAUNTLET_POS] } },
-    { GAUNTLET_IN_PROGRESS, { REACT_DEFENSIVE, false, &_positions[ARTHAS_GAUNTLET_POS] } },
-    { GAUNTLET_COMPLETE, { REACT_PASSIVE, true, nullptr } },
-    { MALGANIS_IN_PROGRESS, { REACT_DEFENSIVE, false, nullptr } },
+    { GAUNTLET_IN_PROGRESS, { REACT_AGGRESSIVE, false, &_positions[ARTHAS_GAUNTLET_POS] } },
+    { GAUNTLET_COMPLETE, { REACT_PASSIVE, true, &_positions[ARTHAS_GAUNTLET_END_POS] } },
+    { MALGANIS_IN_PROGRESS, { REACT_DEFENSIVE, false, &_positions[ARTHAS_GAUNTLET_END_POS] } },
     { COMPLETE, { REACT_PASSIVE, true, nullptr } }
 };
 

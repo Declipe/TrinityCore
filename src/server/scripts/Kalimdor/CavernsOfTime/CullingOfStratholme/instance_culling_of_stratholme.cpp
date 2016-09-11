@@ -286,6 +286,14 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         if (_currentState == GAUNTLET_TRANSITION)
                             SetInstanceProgress(GAUNTLET_PENDING);
                         break;
+                    case DATA_GAUNTLET_DONE:
+                        if (_currentState == GAUNTLET_IN_PROGRESS)
+                            SetInstanceProgress(GAUNTLET_COMPLETE);
+                        break;
+                    case DATA_MALGANIS_DONE:
+                        if (_currentState == MALGANIS_IN_PROGRESS)
+                            SetInstanceProgress(COMPLETE);
+                        break;
                     default:
                         break;
                 }
@@ -320,6 +328,10 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         break;
                     case DATA_START_GAUNTLET:
                         InitiateArthasEvent(GAUNTLET_PENDING, GAUNTLET_IN_PROGRESS, ACTION_START_RP_EVENT4_2, guid);
+                        break;
+                    case DATA_START_MALGANIS:
+                        InitiateArthasEvent(GAUNTLET_COMPLETE, MALGANIS_IN_PROGRESS, ACTION_START_RP_EVENT5, guid);
+                        break;
                     default:
                         break;
                 }
