@@ -1437,14 +1437,14 @@ class npc_arthas_stratholme : public CreatureScript
                         if (Creature* citizen = me->FindNearestCreature(NPC_CITIZEN_INFINITE, 100.0f, true))
                         {
                             citizen->CastSpell(citizen, SPELL_TRANSFORM_VISUAL);
-                            citizen->UpdateEntry(NPC_INFINITE_HUNTER, nullptr, false);
+                            citizen->UpdateEntry(NPC_INFINITE_HUNTER);
                         }
                         break;
                     case RP3_EVENT_TRANSFORM2:
                         if (Creature* resident = me->FindNearestCreature(NPC_RESIDENT_INFINITE, 100.0f, true))
                         {
                             resident->CastSpell(resident, SPELL_TRANSFORM_VISUAL);
-                            resident->UpdateEntry(NPC_INFINITE_AGENT, nullptr, false);
+                            resident->UpdateEntry(NPC_INFINITE_AGENT);
                         }
                         break;
                     case RP3_EVENT_AGGRO:
@@ -1678,7 +1678,7 @@ class npc_arthas_stratholme : public CreatureScript
                 Talk(LINE_SLAY_ZOMBIE, who);
         }
 
-        void EnterCombat(Unit* who) override
+        void EnterCombat(Unit* /*who*/) override
         {
             if (!_progressRP)
                 return;

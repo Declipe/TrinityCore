@@ -24,6 +24,7 @@
 #include "SmartAI.h"
 #include "Player.h"
 #include "SpellInfo.h"
+#include "AreaBoundary.h"
 
 enum InnEventEntries
 {
@@ -551,13 +552,22 @@ struct npc_stratholme_smart_living : public StratholmeCreatureScript<SmartAI>
 {
     npc_stratholme_smart_living() : StratholmeCreatureScript<SmartAI>("npc_stratholme_smart_living", ProgressStates(WAVES_IN_PROGRESS - 1)) { }
 };
+static const std::unique_ptr<RectangleBoundary const> waveArea (new RectangleBoundary(2028.0f, 2372.0f, 1115.0f, 1355.0f));
 struct npc_stratholme_fluff_undead : public StratholmeCreatureScript<AggressorAI>
 {
-    npc_stratholme_fluff_undead() : StratholmeCreatureScript<AggressorAI>("npc_stratholme_fluff_undead", WAVES_IN_PROGRESS, ProgressStates(ALL & ~(WAVES_IN_PROGRESS-1))) { }
+    npc_stratholme_fluff_undead() : StratholmeCreatureScript<AggressorAI>("npc_stratholme_fluff_undead", ProgressStates(ALL & ~(WAVES_IN_PROGRESS-1))) { }
+    bool CanSpawn(ObjectGuid::LowType spawnId, uint32 entry, CreatureTemplate const* baseTemplate, CreatureTemplate const* actTemplate, CreatureData const* cData, Map const* map) const override
+    {
+        if (InstanceMap const* instance = map->ToInstanceMap())
+            if (InstanceScript const* script = instance->GetInstanceScript())
+                if (waveArea->IsWithinBoundary(&Position({ cData->posX, cData->posY, cData->posZ })) && script->GetData(DATA_INSTANCE_PROGRESS) > WAVES_IN_PROGRESS)
+                    return false;
+        return StratholmeCreatureScript<AggressorAI>::CanSpawn(spawnId, entry, baseTemplate, actTemplate, cData, map);
+    }
 };
 struct npc_stratholme_smart_undead : public StratholmeCreatureScript<SmartAI>
 {
-    npc_stratholme_smart_undead() : StratholmeCreatureScript<SmartAI>("npc_stratholme_smart_undead", WAVES_IN_PROGRESS, ProgressStates(ALL & ~(WAVES_IN_PROGRESS - 1))) { }
+    npc_stratholme_smart_undead() : StratholmeCreatureScript<SmartAI>("npc_stratholme_smart_undead", ProgressStates(ALL & ~(WAVES_IN_PROGRESS - 1))) { }
 };
 
 void AddSC_culling_of_stratholme()
