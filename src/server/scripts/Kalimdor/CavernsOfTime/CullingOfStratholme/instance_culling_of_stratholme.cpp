@@ -22,6 +22,7 @@
 #include "Player.h"
 #include "TemporarySummon.h"
 #include "SpellInfo.h"
+#include "Map.h"
 
 /* Culling of Stratholme encounters:
 0 - Meathook
@@ -205,14 +206,13 @@ class instance_culling_of_stratholme : public InstanceMapScript
             void ReadSaveDataMore(std::istringstream& data) override
             {
                 // read current instance progress from save data, then regress to the previous stable state
-                instance->DeleteRespawnTimes();
                 uint32 state = JUST_STARTED;
                 time_t infiniteGuardianTime = 0;
                 data >> state;
                 data >> infiniteGuardianTime; // UNIX timestamp
                 
                 ProgressStates loadState = GetStableStateFor(ProgressStates(state));
-                SetInstanceProgress(loadState);
+                SetInstanceProgress(loadState, true);
                 
                 if (infiniteGuardianTime)
                 {
@@ -229,29 +229,33 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 switch (type)
                 {
                     case DATA_GM_OVERRIDE:
-                        SetInstanceProgress(ProgressStates(data));
+                        SetInstanceProgress(ProgressStates(data), true);
+                        break;
+                    case DATA_ARTHAS_DIED:
+                        // Respawn everything, then regress to last stable state
+                        SetInstanceProgress(GetStableStateFor(_currentState), true);
                         break;
                     case DATA_CRATES_START:
                         if (_currentState == JUST_STARTED)
-                            SetInstanceProgress(CRATES_IN_PROGRESS);
+                            SetInstanceProgress(CRATES_IN_PROGRESS, false);
                         break;
                     case DATA_CRATE_REVEALED:
                         if (uint32 missingCrates = missingPlagueCrates())
                             SetWorldState(WORLDSTATE_CRATES_REVEALED, NUM_PLAGUE_CRATES - missingCrates);
                         else
-                            SetInstanceProgress(CRATES_DONE);
+                            SetInstanceProgress(CRATES_DONE, false);
                         break;
                     case DATA_UTHER_FINISHED:
                         if (_currentState == UTHER_TALK)
-                            SetInstanceProgress(PURGE_PENDING);
+                            SetInstanceProgress(PURGE_PENDING, false);
                         break;
                     case DATA_SKIP_TO_PURGE:
                         if (_currentState <= CRATES_DONE)
-                            SetInstanceProgress(PURGE_PENDING);
+                            SetInstanceProgress(PURGE_PENDING, false);
                         break;
                     case DATA_START_WAVES:
                         if (_currentState == PURGE_STARTING)
-                            SetInstanceProgress(WAVES_IN_PROGRESS);
+                            SetInstanceProgress(WAVES_IN_PROGRESS, false);
                         break;
                     case DATA_NOTIFY_DEATH:
                         if (_currentState == WAVES_IN_PROGRESS && !_waveSpawns.empty())
@@ -271,28 +275,28 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             if (_waveCount < NUM_SCOURGE_WAVES)
                                 events.ScheduleEvent(EVENT_SCOURGE_WAVE, (_waveCount == WAVE_MEATHOOK) ? Seconds(20) : Seconds(1));
                             else
-                                SetInstanceProgress(WAVES_DONE);
+                                SetInstanceProgress(WAVES_DONE, false);
                         }
                         break;
                     case DATA_REACH_TOWN_HALL:
                         if (_currentState == WAVES_DONE)
-                            SetInstanceProgress(TOWN_HALL_PENDING);
+                            SetInstanceProgress(TOWN_HALL_PENDING, false);
                         break;
                     case DATA_TOWN_HALL_DONE:
                         if (_currentState == TOWN_HALL)
-                            SetInstanceProgress(TOWN_HALL_COMPLETE);
+                            SetInstanceProgress(TOWN_HALL_COMPLETE, false);
                         break;
                     case DATA_GAUNTLET_REACHED:
                         if (_currentState == GAUNTLET_TRANSITION)
-                            SetInstanceProgress(GAUNTLET_PENDING);
+                            SetInstanceProgress(GAUNTLET_PENDING, false);
                         break;
                     case DATA_GAUNTLET_DONE:
                         if (_currentState == GAUNTLET_IN_PROGRESS)
-                            SetInstanceProgress(GAUNTLET_COMPLETE);
+                            SetInstanceProgress(GAUNTLET_COMPLETE, false);
                         break;
                     case DATA_MALGANIS_DONE:
                         if (_currentState == MALGANIS_IN_PROGRESS)
-                            SetInstanceProgress(COMPLETE);
+                            SetInstanceProgress(COMPLETE, false);
                         break;
                     default:
                         break;
@@ -305,7 +309,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     return;
                 if (Creature* arthas = instance->GetCreature(_arthasGUID))
                 {
-                    SetInstanceProgress(toState);
+                    SetInstanceProgress(toState, false);
                     arthas->AI()->SetGUID(starterGUID, -startAction);
                 }
             }
@@ -352,7 +356,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 return true;
             }
 
-            void SetInstanceProgress(ProgressStates state)
+            void SetInstanceProgress(ProgressStates state, bool force)
             {
                 std::cout << "Instance progress is now " << Trinity::StringFormat("0x%X",(uint32)state) << std::endl;
                 ProgressStates oldState = _currentState;
@@ -362,11 +366,11 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 if (oldState)
                     for (ObjectGuid const& guid : _myCreatures[oldState])
                         if (Creature* creature = instance->GetCreature(guid))
-                            creature->AI()->DoAction(-ACTION_PROGRESS_UPDATE);
+                            creature->AI()->DoAction(force ? -ACTION_PROGRESS_UPDATE_FORCE : -ACTION_PROGRESS_UPDATE);
 
                 // Notify Arthas of the change so he can adjust
                 if (Creature* arthas = instance->GetCreature(_arthasGUID))
-                    arthas->AI()->DoAction(-ACTION_PROGRESS_UPDATE);
+                    arthas->AI()->DoAction(force ? -ACTION_PROGRESS_UPDATE_FORCE : -ACTION_PROGRESS_UPDATE);
 
                 /* World state handling */
                 // Plague crates
@@ -434,6 +438,33 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     default:
                         break;
                 }
+
+                if (force)
+                {
+                    // Forced transitions are regressions (event failures) or GM overrides; respawn all dead creatures, and despawn any temporary summons
+                    events.Reset();
+                    instance->DeleteRespawnTimes();
+
+                    // Reset respawn time on all permanent spawns, despawn all temporary spawns
+                    std::vector<Creature*> toDespawn;
+                    std::unordered_map<ObjectGuid, Creature*> const& objects = instance->GetObjectsStore().GetElements()._elements._element;
+                    for (std::unordered_map<ObjectGuid, Creature*>::const_iterator it = objects.cbegin(); it != objects.cend(); ++it)
+                        if (it->second && (it->second->isDead() || !it->second->GetSpawnId()))
+                        {
+                            if (it->second->getDeathState() == DEAD) // despawned, not corpse
+                                it->second->SetRespawnTime(1);
+                            else
+                                toDespawn.push_back(it->second);
+                        }
+
+                    for (Creature* creature : toDespawn)
+                    {
+                        if (creature->GetSpawnId())
+                            creature->SetRespawnTime(1);
+                        creature->DespawnOrUnsummon();
+                    }
+                }
+
                 SaveToDB();
             }
 

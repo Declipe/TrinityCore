@@ -607,6 +607,7 @@ enum RPEvents
     RP3_EVENT_EPOCH_FACE,
     RP3_EVENT_EPOCH1,
     RP3_EVENT_ARTHAS32,
+    RP3_EVENT_ARTHAS32_2,
     RP3_EVENT_EPOCH_AGGRO,
 
     RP4_EVENT_ARTHAS2,
@@ -618,6 +619,7 @@ enum RPEvents
     RP4_EVENT_ARTHAS_FACE,
     RP4_EVENT_ARTHAS12,
     RP4_EVENT_GAUNTLET_RESUME,
+    RP4_EVENT_ARTHAS13,
     RP4_EVENT_GAUNTLET_DONE,
 
     RP5_EVENT_ARTHAS2,
@@ -755,7 +757,7 @@ class npc_arthas_stratholme : public CreatureScript
 
     struct npc_arthas_stratholmeAI : public ScriptedAI
     {
-        npc_arthas_stratholmeAI(Creature* creature) : ScriptedAI(creature), _hadSetup(false), instance(creature->GetInstanceScript()), _exorcismCooldown(urandms(7,14)), _progressRP(true), _isWPWalk(false) { }
+        npc_arthas_stratholmeAI(Creature* creature) : ScriptedAI(creature), _hadSetup(false), instance(creature->GetInstanceScript()), _exorcismCooldown(urandms(7,14)), _progressRP(true), _afterCombat(ACTION_NONE), _firstWP(PositionIndices(0)), _lastWP(_firstWP), _isWPWalk(false) { }
 
         static const std::array<Position, NUM_POSITIONS> _positions; // all kinds of positions we'll need for RP events (there's a lot of these)
         static const float _snapbackDistanceThreshold; // how far we can be from where we're supposed at start of phase to be before we snap back
@@ -794,10 +796,9 @@ class npc_arthas_stratholme : public CreatureScript
                 else
                     me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 
-                if (target.snapbackPos)
-                    std::cout << "Have snapback for this state, distance from it is " << target.snapbackPos->GetExactDist(me) << " yd" << std::endl;
+                std::cout << "Have snapback for this state, distance from it is " << target.snapbackPos->GetExactDist(me) << " yd" << std::endl;
                 // Snapback handling - if we're too far from where we're supposed to be, teleport there
-                if (target.snapbackPos && target.snapbackPos->GetExactDist(me) > _snapbackDistanceThreshold)
+                if (target.snapbackPos->GetExactDist(me) > _snapbackDistanceThreshold)
                     me->NearTeleportTo(*target.snapbackPos);
             }
 
@@ -855,6 +856,20 @@ class npc_arthas_stratholme : public CreatureScript
                 case -ACTION_PROGRESS_UPDATE:
                     AdvanceToState(ProgressStates(instance->GetData(DATA_INSTANCE_PROGRESS)));
                     break;
+                case -ACTION_PROGRESS_UPDATE_FORCE:
+                    // turn RP off so we don't process movementinforms
+                    _progressRP = false;
+
+                    // Reset waypoint and scheduling info
+                    _afterCombat = ACTION_NONE;
+                    _firstWP = _lastWP = PositionIndices(0);
+                    _isWPWalk = false;
+                    me->StopMoving();
+                    me->GetMotionMaster()->Clear();
+
+                    // Re-initialize on next tick
+                    _hadSetup = false;
+                    break;
                 case RP3_ACTION_AFTER_INITIAL:
                     events.ScheduleEvent(RP3_EVENT_ARTHAS4, Seconds(1));
                     events.ScheduleEvent(RP3_EVENT_ARTHAS_MOVE_1, Seconds(7));
@@ -873,7 +888,8 @@ class npc_arthas_stratholme : public CreatureScript
                     events.ScheduleEvent(RP3_EVENT_EPOCH_FACE, Seconds(6));
                     events.ScheduleEvent(RP3_EVENT_EPOCH1, Seconds(9));
                     events.ScheduleEvent(RP3_EVENT_ARTHAS32, Seconds(22));
-                    events.ScheduleEvent(RP3_EVENT_EPOCH_AGGRO, Seconds(28));
+                    events.ScheduleEvent(RP3_EVENT_ARTHAS32_2, Seconds(27));
+                    events.ScheduleEvent(RP3_EVENT_EPOCH_AGGRO, Seconds(30));
                     break;
                 case RP3_ACTION_AFTER_EPOCH:
                     instance->SetData(DATA_TOWN_HALL_DONE, 1);
@@ -912,7 +928,7 @@ class npc_arthas_stratholme : public CreatureScript
                     break;
                 case -ACTION_START_RP_EVENT4_1:
                     Talk(RP4_LINE_ARTHAS1, ObjectAccessor::GetPlayer(*me, _eventStarterGuid));
-                    MoveAlongPath(me, RP4_ARTHAS_WP1, RP4_ARTHAS_WP19, true);
+                    MoveAlongPath(me, RP4_ARTHAS_WP1, RP4_ARTHAS_WP19);
                     break;
                 case -ACTION_START_RP_EVENT4_2:
                     Talk(RP4_LINE_ARTHAS10, ObjectAccessor::GetPlayer(*me, _eventStarterGuid));
@@ -1081,7 +1097,8 @@ class npc_arthas_stratholme : public CreatureScript
                     events.ScheduleEvent(RP4_EVENT_GAUNTLET_RESUME, Seconds(25));
                     break;
                 case ARTHAS_GAUNTLET_END_POS:
-                    events.ScheduleEvent(RP4_EVENT_GAUNTLET_DONE, Seconds(1));
+                    events.ScheduleEvent(RP4_EVENT_ARTHAS13, Seconds(1));
+                    events.ScheduleEvent(RP4_EVENT_GAUNTLET_DONE, Seconds(7));
                     break;
                 case RP5_ARTHAS_WP22:
                     events.ScheduleEvent(RP5_EVENT_ARTHAS2, Seconds(1));
@@ -1142,9 +1159,10 @@ class npc_arthas_stratholme : public CreatureScript
 
         void UpdateAI(uint32 diff) override
         {
-            if (!_hadSetup)
+            if (!_hadSetup && me->IsAlive())
             {
                 _hadSetup = true;
+                _progressRP = true;
                 AdvanceToState(ProgressStates(instance->GetData(DATA_INSTANCE_PROGRESS)));
             }
 
@@ -1552,6 +1570,9 @@ class npc_arthas_stratholme : public CreatureScript
                     case RP3_EVENT_ARTHAS32:
                         talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS32;
                         break;
+                    case RP3_EVENT_ARTHAS32_2:
+                        me->HandleEmoteCommand(EMOTE_ONESHOT_POINT_NO_SHEATHE);
+                        break;
                     case RP3_EVENT_EPOCH_AGGRO:
                         talkerEntry = NPC_EPOCH, talkerLine = RP3_LINE_EPOCH2;
                         if (Creature* epoch = me->FindNearestCreature(NPC_EPOCH, 100.0f, true))
@@ -1565,6 +1586,7 @@ class npc_arthas_stratholme : public CreatureScript
                         ScheduleActionOOC(RP3_ACTION_AFTER_EPOCH);
                         break;
                     case RP4_EVENT_ARTHAS2:
+                        me->SetFacingTo(_positions[RP4_ARTHAS_WP19].GetOrientation());
                         talkerEntry = 0, talkerLine = RP4_LINE_ARTHAS2;
                         break;
                     case RP4_EVENT_HIDDEN_PASSAGE:
@@ -1591,9 +1613,12 @@ class npc_arthas_stratholme : public CreatureScript
                     case RP4_EVENT_GAUNTLET_RESUME:
                         MoveAlongPath(me, GAUNTLET_WP50, ARTHAS_GAUNTLET_END_POS);
                         break;
-                    case RP4_EVENT_GAUNTLET_DONE:
+                    case RP4_EVENT_ARTHAS13:
                         talkerEntry = 0, talkerLine = RP4_LINE_ARTHAS13;
                         me->SetFacingTo(_positions[ARTHAS_GAUNTLET_END_POS].GetOrientation());
+                        break;
+                    case RP4_EVENT_GAUNTLET_DONE:
+                        me->HandleEmoteCommand(EMOTE_ONESHOT_POINT_NO_SHEATHE);
                         instance->SetData(DATA_GAUNTLET_DONE, 1);
                         break;
                     case RP5_EVENT_ARTHAS2:
@@ -1678,23 +1703,31 @@ class npc_arthas_stratholme : public CreatureScript
                 Talk(LINE_SLAY_ZOMBIE, who);
         }
 
-        void EnterCombat(Unit* /*who*/) override
+        void EnterCombat(Unit* who) override
         {
-            if (!_progressRP)
-                return;
-
-            _progressRP = false;
-            me->SetHomePosition(me->GetPosition());
-            if (_lastWP) // currently in waypoint motion
+            std::cout << "EnterCombat " << _progressRP << std::endl;
+            if (_progressRP)
             {
-                // find out which WP we'd be going to next, then save it for resume after combat
-                for (uint32 wpIndex = _firstWP; wpIndex < _lastWP; ++wpIndex)
-                    if (me->IsInBetween(_positions[wpIndex], _positions[wpIndex + 1]))
-                        _firstWP = PositionIndices(wpIndex + 1);
-                std::cout << "Arthas AI: entered combat while pathing, will leash back to " << _firstWP << " after combat" << std::endl;
+                _progressRP = false;
+                me->SetHomePosition(me->GetPosition());
+                if (_lastWP) // currently in waypoint motion
+                {
+                    // find out which WP we'd be going to next, then save it for resume after combat
+                    for (uint32 wpIndex = _firstWP; wpIndex < _lastWP; ++wpIndex)
+                        if (me->IsInBetween(_positions[wpIndex], _positions[wpIndex + 1]))
+                            _firstWP = PositionIndices(wpIndex + 1);
+                    std::cout << "Arthas AI: entered combat while pathing, will leash back to " << _firstWP << " after combat" << std::endl;
+                }
+                else
+                    std::cout << "Arthas AI: entered combat without pathing, pausing RP regardless" << std::endl;
             }
-            else
-                std::cout << "Arthas AI: entered combat without pathing, pausing RP regardless" << std::endl;
+            ScriptedAI::EnterCombat(who);
+        }
+
+        void EnterEvadeMode(EvadeReason why) override
+        {
+            std::cout << "EnterEvadeMode " << why << std::endl;
+            ScriptedAI::EnterEvadeMode(why);
         }
 
         void JustReachedHome() override
@@ -1713,6 +1746,23 @@ class npc_arthas_stratholme : public CreatureScript
                 DoAction(_afterCombat);
                 _afterCombat = ACTION_NONE;
             }
+        }
+
+        void JustDied(Unit* /*killer*/) override
+        {
+            // Instance failure: regress back to last stable state
+            instance->SetData(DATA_ARTHAS_DIED, 1);
+        }
+
+        void JustRespawned() override
+        {
+            // Reset waypoint and scheduling info
+            _afterCombat = ACTION_NONE;
+            _firstWP = _lastWP = PositionIndices(0);
+            _isWPWalk = false;
+
+            // Re-initialize on next tick
+            _hadSetup = false;
         }
 
         private:
@@ -2240,7 +2290,7 @@ const std::map<ProgressStates, npc_arthas_stratholme::npc_arthas_stratholmeAI::S
     { GAUNTLET_IN_PROGRESS, { REACT_AGGRESSIVE, false, &_positions[ARTHAS_GAUNTLET_POS] } },
     { GAUNTLET_COMPLETE, { REACT_PASSIVE, true, &_positions[ARTHAS_GAUNTLET_END_POS] } },
     { MALGANIS_IN_PROGRESS, { REACT_DEFENSIVE, false, &_positions[ARTHAS_GAUNTLET_END_POS] } },
-    { COMPLETE, { REACT_PASSIVE, true, nullptr } }
+    { COMPLETE, { REACT_PASSIVE, true, &_positions[RP5_ARTHAS_WP22] } }
 };
 
 // Arthas' AI is the one controlling everything, all this AI does is report any movementinforms back to Arthas AI using SetData

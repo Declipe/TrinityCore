@@ -105,6 +105,17 @@ UPDATE `creature_text` SET `emote`=1 WHERE
 UPDATE `creature_text` SET `emote`=397 WHERE
 	(`entry` = 26499 AND `groupid`=13);
 	
+-- Town Hall/Gauntlet RP data
+UPDATE `creature_text` SET `emote`=1 WHERE
+	(`entry`=26499 AND `groupid` IN (16,19,22)) OR
+	(`entry`=28340 AND `groupid`=1);
+UPDATE `creature_text` SET `emote`=5 WHERE
+	(`entry`=26499 AND `groupid`=36);
+UPDATE `creature_text` SET `emote`=396 WHERE
+	(`entry`=26499 AND `groupid` IN (21,24,25,26,27,31,32,33,34));
+UPDATE `creature_text` SET `emote`=432 WHERE
+	(`entry`=26499 AND `groupid` IN (29));
+	
 -- Blanket apply a spawn control AI to all "live stratholme" mobs that prevents them respawning after the purge begins
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_fluff_living",`AIName`="" WHERE `entry` IN (28167,31126,31019,28169,31127,31023,31020,31018,31028);
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_living",`AIName`="SmartAI" WHERE `entry` IN (31057,30570,31027,31021,30994);

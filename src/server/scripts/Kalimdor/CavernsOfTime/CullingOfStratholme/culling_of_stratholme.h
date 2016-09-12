@@ -55,6 +55,7 @@ enum InstanceData
 
     DATA_INSTANCE_PROGRESS = NUM_BOSS_ENCOUNTERS, // GET only
     DATA_GM_OVERRIDE,      // sent by chromie #1 in response to GM instance control commands
+    DATA_ARTHAS_DIED,      // failure signal, sent by arthas AI on death - regress instance
     DATA_CRATES_START,     // sent by chromie #1 creature script to initiate crate phase
     DATA_CRATE_REVEALED,   // sent by crate helper AI to trigger re-check of crate status
     DATA_UTHER_START,      // sent by chromie #2 creature script to initiate uther RP sequence
@@ -78,6 +79,7 @@ enum InstanceData
 enum InstanceActions
 {
     ACTION_PROGRESS_UPDATE = 1,
+    ACTION_PROGRESS_UPDATE_FORCE,
     ACTION_REQUEST_NOTIFY,
     ACTION_CORRUPTOR_LEAVE,
     ACTION_START_RP_EVENT1,   // Arthas/Uther chat in front of town
@@ -118,9 +120,10 @@ class StratholmeCreatureScript : public CreatureScript
                     StratholmeAIGoodbye(instance, this->me->GetGUID(), _despawnMask);
                 }
 
-                void CheckDespawn()
+                void CheckDespawn(bool force)
                 {
-                    if (!(_despawnMask & instance->GetData(DATA_INSTANCE_PROGRESS)))
+                    ProgressStates statesMask = force ? _respawnMask : _despawnMask;
+                    if (!(statesMask & instance->GetData(DATA_INSTANCE_PROGRESS)))
                         this->me->DespawnOrUnsummon(0, Seconds(1));
                 }
 
@@ -131,7 +134,10 @@ class StratholmeCreatureScript : public CreatureScript
                     switch (action)
                     {
                         case -ACTION_PROGRESS_UPDATE:
-                            CheckDespawn();
+                            CheckDespawn(false);
+                            break;
+                        case -ACTION_PROGRESS_UPDATE_FORCE:
+                            CheckDespawn(true);
                             break;
                         case -ACTION_REQUEST_NOTIFY:
                             _deathNotify = true;
