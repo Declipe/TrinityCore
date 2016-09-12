@@ -92,6 +92,7 @@ enum InstanceActions
 
 enum InstanceEntries
 {
+    NPC_ARTHAS        =  26499,
     GO_HIDDEN_PASSAGE = 188686
 };
 
@@ -125,6 +126,15 @@ class StratholmeCreatureScript : public CreatureScript
                     ProgressStates statesMask = force ? _respawnMask : _despawnMask;
                     if (!(statesMask & instance->GetData(DATA_INSTANCE_PROGRESS)))
                         this->me->DespawnOrUnsummon(0, Seconds(1));
+                }
+
+                bool CanAIAttack(Unit const* who) const override
+                {
+                    if (Creature* cWho = who->ToCreature())
+                        if (cWho->GetEntry() == NPC_ARTHAS)
+                            if (!cWho->AI()->CanAIAttack(this->me))
+                                return false;
+                    return ParentAI::CanAIAttack(who);
                 }
 
                 virtual void _DoAction(int32 /*action*/) { }
