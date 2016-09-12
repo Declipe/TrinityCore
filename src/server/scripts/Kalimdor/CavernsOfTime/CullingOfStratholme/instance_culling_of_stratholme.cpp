@@ -449,7 +449,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     std::vector<Creature*> toDespawn;
                     std::unordered_map<ObjectGuid, Creature*> const& objects = instance->GetObjectsStore().GetElements()._elements._element;
                     for (std::unordered_map<ObjectGuid, Creature*>::const_iterator it = objects.cbegin(); it != objects.cend(); ++it)
-                        if (it->second && (it->second->isDead() || !it->second->GetSpawnId()))
+                        if (it->second && (it->second->isDead() || !it->second->GetSpawnId() || it->second->GetOriginalEntry() != it->second->GetEntry()))
                         {
                             if (it->second->getDeathState() == DEAD) // despawned, not corpse
                                 it->second->SetRespawnTime(1);
@@ -461,7 +461,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     {
                         if (creature->GetSpawnId())
                             creature->SetRespawnTime(1);
-                        creature->DespawnOrUnsummon();
+                        creature->DespawnOrUnsummon(0, Seconds(1));
                     }
                 }
 

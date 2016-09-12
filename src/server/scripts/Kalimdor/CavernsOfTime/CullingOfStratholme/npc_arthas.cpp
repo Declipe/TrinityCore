@@ -769,6 +769,7 @@ class npc_arthas_stratholme : public CreatureScript
         };
         static const std::map<ProgressStates, SnapbackInfo> _snapbackPositions; // positions we should be at when starting a given phase
 
+        inline ProgressStates GetCurrentProgress() { return ProgressStates(instance->GetData(DATA_INSTANCE_PROGRESS)); }
         void AdvanceToState(ProgressStates newState)
         {
             std::cout << "Arthas AI: Advancing to " << newState << std::endl;
@@ -807,6 +808,9 @@ class npc_arthas_stratholme : public CreatureScript
                 case WAVES_DONE:
                     // @todo proper movement
                     MoveAlongPath(me, ARTHAS_TOWN_HALL_POS, ARTHAS_TOWN_HALL_POS);
+                    break;
+                case TOWN_HALL_PENDING:
+                    Talk(LINE_TOWN_HALL_PENDING);
                     break;
                 case COMPLETE:
                     // @todo sniff the below
@@ -854,9 +858,10 @@ class npc_arthas_stratholme : public CreatureScript
             switch (action)
             {
                 case -ACTION_PROGRESS_UPDATE:
-                    AdvanceToState(ProgressStates(instance->GetData(DATA_INSTANCE_PROGRESS)));
+                    AdvanceToState(GetCurrentProgress());
                     break;
                 case -ACTION_PROGRESS_UPDATE_FORCE:
+                {
                     // turn RP off so we don't process movementinforms
                     _progressRP = false;
 
@@ -867,9 +872,14 @@ class npc_arthas_stratholme : public CreatureScript
                     me->StopMoving();
                     me->GetMotionMaster()->Clear();
 
+                    std::map<ProgressStates, SnapbackInfo>::const_iterator it = _snapbackPositions.find(GetCurrentProgress());
+                    if (it != _snapbackPositions.end())
+                        me->SetHomePosition(*it->second.snapbackPos);
+
                     // Re-initialize on next tick
                     _hadSetup = false;
                     break;
+                }
                 case RP3_ACTION_AFTER_INITIAL:
                     events.ScheduleEvent(RP3_EVENT_ARTHAS4, Seconds(1));
                     events.ScheduleEvent(RP3_EVENT_ARTHAS_MOVE_1, Seconds(7));
@@ -1163,7 +1173,7 @@ class npc_arthas_stratholme : public CreatureScript
             {
                 _hadSetup = true;
                 _progressRP = true;
-                AdvanceToState(ProgressStates(instance->GetData(DATA_INSTANCE_PROGRESS)));
+                AdvanceToState(GetCurrentProgress());
             }
 
             if (me->IsInCombat())
@@ -1419,7 +1429,6 @@ class npc_arthas_stratholme : public CreatureScript
                         break;
                     case EVENT_TOWN_HALL_REACHED:
                         me->SetFacingTo(_positions[ARTHAS_TOWN_HALL_POS].GetOrientation());
-                        Talk(LINE_TOWN_HALL_PENDING);
                         instance->SetData(DATA_REACH_TOWN_HALL, 1);
                         break;
                     case RP3_EVENT_RESIDENT_FACE:
@@ -1497,7 +1506,8 @@ class npc_arthas_stratholme : public CreatureScript
                         me->GetCreatureListWithEntryInGrid(infinites, NPC_INFINITE_AGENT, 100.0f);
                         me->GetCreatureListWithEntryInGrid(infinites, NPC_INFINITE_HUNTER, 100.0f);
                         for (Creature* target : infinites)
-                            target->SetFacingToObject(me);
+                            if (target->IsAlive())
+                                target->SetFacingToObject(me);
                         break;
                     }
                     case RP3_EVENT_SPAWN1_AGGRO:

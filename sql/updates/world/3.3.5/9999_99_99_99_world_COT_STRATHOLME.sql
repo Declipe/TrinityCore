@@ -188,3 +188,6 @@ UPDATE `smart_scripts` SET `id`=CEIL(`id`/2)+1 WHERE `entryorguid`=28340 AND `so
 UPDATE `smart_scripts` SET `id`=CEIL(`id`/2) WHERE `entryorguid`=28341 AND `source_type`=0 AND `event_flags`=2;
 UPDATE `smart_scripts` SET `event_flags`=`event_flags`|4 WHERE `entryorguid` IN (28340,28341) AND `source_type`=0;
 UPDATE `smart_scripts` SET `event_param3`=500, `event_param4`=750 WHERE `entryorguid`=28340 AND `source_type`=0 AND `id`=3;
+DELETE FROM `conditions` WHERE `sourcetypeorreferenceid`=22 AND `sourceentry`=28340 AND `sourceid`=0;
+INSERT INTO `conditions` (`sourcetypeorreferenceid`,`sourcegroup`,`sourceentry`,`sourceid`,`conditiontypeorreference`,`conditiontarget`,`conditionvalue1`,`conditionvalue2`,`comment`) VALUES
+(22,4,28340,0,31,1,3,27743,"Stratholme Citizen - Only execute SAI if entry is 27743 (Infinite Agent)");
