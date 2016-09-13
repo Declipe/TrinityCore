@@ -628,7 +628,7 @@ enum RPEvents
 
     RP5_EVENT_ARTHAS2,
     RP5_EVENT_MALGANIS1,
-    RP5_EVENT_MALGANIS10,
+    RP5_EVENT_MALGANIS_DONE,
     RP5_EVENT_MALGANIS12,
     RP5_EVENT_MALGANIS_LEAVE,
     RP5_EVENT_ARTHAS10,
@@ -715,8 +715,6 @@ enum RPEventLines5
     RP5_LINE_ARTHAS1    = 35, // Justice will be done.
     RP5_LINE_ARTHAS2    = 36, // We're going to finish this right now, Mal'Ganis. Just you... and me.
     RP5_LINE_MALGANIS1  =  2, // This will be a fine test, Prince Arthas.
-    RP5_LINE_MALGANIS10 =  8, // ENOUGH! I waste my time here. I must gather my strength on the homeworld.
-    RP5_LINE_MALGANIS11 =  9, // You'll never defeat the Lich King without my forces. I'll have my revenge... on him AND you!
     RP5_LINE_MALGANIS12 = 10, // Your journey has just begun, young prince. Gather your forces and meet me in the arctic land of Northrend. It is there that we shall settle the score between us. It is there that your true destiny will unfold.
     RP5_LINE_ARTHAS10   = 37, // I'll hunt you to the ends of the earth if I have to! Do you hear me? To the ends of the earth!
     RP5_LINE_ARTHAS11   = 38, // You performed well this day. Anything that Mal'Ganis has left behind is yours. Take it as your reward. I must now begin plans for an expedition to Northrend.
@@ -919,7 +917,7 @@ class npc_arthas_stratholme : public CreatureScript
                     instance->SetData(DATA_TOWN_HALL_DONE, 1);
                     break;
                 case RP5_ACTION_AFTER_MALGANIS:
-                    events.ScheduleEvent(RP5_EVENT_MALGANIS10, Seconds(5));
+                    events.ScheduleEvent(RP5_EVENT_MALGANIS_DONE, Seconds(3));
                     break;
             }
         }
@@ -1666,11 +1664,10 @@ class npc_arthas_stratholme : public CreatureScript
                         }
                         ScheduleActionOOC(RP5_ACTION_AFTER_MALGANIS);
                         break;
-                    case RP5_EVENT_MALGANIS10:
+                    case RP5_EVENT_MALGANIS_DONE:
                         if (Creature* malganis = me->FindNearestCreature(NPC_MALGANIS, 100.0f, true))
                         {
                             malganis->SetFacingToObject(me);
-                            malganis->AI()->Talk(RP5_LINE_MALGANIS10, ObjectAccessor::GetPlayer(*me, _eventStarterGuid));
                             malganis->CastSpell(malganis, SPELL_MALGANIS_QUEST_CREDIT, true);
                             malganis->CastSpell(malganis, SPELL_MALGANIS_KILL_CREDIT, true);
                             if (GameObject* chest = malganis->FindNearestGameObject(RAID_MODE(GO_CHEST_NORMAL, GO_CHEST_HEROIC), 100.0f))
@@ -1678,15 +1675,15 @@ class npc_arthas_stratholme : public CreatureScript
                         }
                         instance->SetBossState(DATA_MAL_GANIS, DONE);
                         instance->SetData(DATA_MALGANIS_DONE, 1);
-                        events.ScheduleEvent(RP5_EVENT_MALGANIS12, Seconds(10));
-                        events.ScheduleEvent(RP5_EVENT_MALGANIS_LEAVE, Seconds(26));
-                        events.ScheduleEvent(RP5_EVENT_ARTHAS10, Seconds(27));
-                        events.ScheduleEvent(RP5_EVENT_ARTHAS10_2, Seconds(34));
-                        events.ScheduleEvent(RP5_EVENT_ARTHAS11, Seconds(37));
-                        events.ScheduleEvent(RP5_EVENT_ARTHAS11_2, Seconds(41));
-                        events.ScheduleEvent(RP5_EVENT_CHROMIE_SPAWN, Seconds(72));
-                        events.ScheduleEvent(RP5_EVENT_CHROMIE_LAND, Seconds(77));
-                        events.ScheduleEvent(RP5_EVENT_CHROMIE_TRANSFORM, Seconds(86));
+                        events.ScheduleEvent(RP5_EVENT_MALGANIS12, Seconds(3));
+                        events.ScheduleEvent(RP5_EVENT_MALGANIS_LEAVE, Seconds(19));
+                        events.ScheduleEvent(RP5_EVENT_ARTHAS10, Seconds(20));
+                        events.ScheduleEvent(RP5_EVENT_ARTHAS10_2, Seconds(27));
+                        events.ScheduleEvent(RP5_EVENT_ARTHAS11, Seconds(30));
+                        events.ScheduleEvent(RP5_EVENT_ARTHAS11_2, Seconds(35));
+                        events.ScheduleEvent(RP5_EVENT_CHROMIE_SPAWN, Seconds(65));
+                        events.ScheduleEvent(RP5_EVENT_CHROMIE_LAND, Seconds(70));
+                        events.ScheduleEvent(RP5_EVENT_CHROMIE_TRANSFORM, Seconds(79));
                         break;
                     case RP5_EVENT_MALGANIS12:
                         talkerEntry = NPC_MALGANIS, talkerLine = RP5_LINE_MALGANIS12;
