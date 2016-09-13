@@ -117,7 +117,7 @@ class boss_epoch : public CreatureScript
                             uint32 selected = urand(_stepTargetIndex, nTargets - 1);
                             if (_stepTargetIndex != selected)
                                 std::swap(_stepTargets[_stepTargetIndex], _stepTargets[selected]);
-                            if (target = ObjectAccessor::GetUnit(*me, _stepTargets[_stepTargetIndex++]))
+                            if ((target = ObjectAccessor::GetUnit(*me, _stepTargets[_stepTargetIndex++])))
                                 break;
                         }
                         if (target)

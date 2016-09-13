@@ -560,7 +560,7 @@ struct npc_stratholme_fluff_undead : public StratholmeCreatureScript<AggressorAI
     {
         if (InstanceMap const* instance = map->ToInstanceMap())
             if (InstanceScript const* script = instance->GetInstanceScript())
-                if (waveArea->IsWithinBoundary(&Position({ cData->posX, cData->posY, cData->posZ })) && script->GetData(DATA_INSTANCE_PROGRESS) > WAVES_IN_PROGRESS)
+                if (waveArea->IsWithinBoundary(&Position(cData->posX, cData->posY, cData->posZ)) && script->GetData(DATA_INSTANCE_PROGRESS) > WAVES_IN_PROGRESS)
                     return false;
         return StratholmeCreatureScript<AggressorAI>::CanSpawn(spawnId, entry, baseTemplate, actTemplate, cData, map);
     }
