@@ -552,7 +552,7 @@ struct npc_stratholme_smart_living : public StratholmeCreatureScript<SmartAI>
 {
     npc_stratholme_smart_living() : StratholmeCreatureScript<SmartAI>("npc_stratholme_smart_living", ProgressStates(WAVES_IN_PROGRESS - 1)) { }
 };
-static const std::unique_ptr<RectangleBoundary const> waveArea (new RectangleBoundary(2028.0f, 2372.0f, 1115.0f, 1355.0f));
+static const std::unique_ptr<AreaBoundary const> waveArea (new RectangleBoundary(2028.0f, 2372.0f, 1115.0f, 1355.0f));
 struct npc_stratholme_fluff_undead : public StratholmeCreatureScript<AggressorAI>
 {
     npc_stratholme_fluff_undead() : StratholmeCreatureScript<AggressorAI>("npc_stratholme_fluff_undead", ProgressStates(ALL & ~(GAUNTLET_COMPLETE | MALGANIS_IN_PROGRESS | COMPLETE) & ~(WAVES_IN_PROGRESS-1))) { }
@@ -560,7 +560,7 @@ struct npc_stratholme_fluff_undead : public StratholmeCreatureScript<AggressorAI
     {
         if (InstanceMap const* instance = map->ToInstanceMap())
             if (InstanceScript const* script = instance->GetInstanceScript())
-                if (waveArea->IsWithinBoundary(&Position(cData->posX, cData->posY, cData->posZ)) && script->GetData(DATA_INSTANCE_PROGRESS) > WAVES_IN_PROGRESS)
+                if (waveArea->IsWithinBoundary(Position(cData->posX, cData->posY, cData->posZ)) && script->GetData(DATA_INSTANCE_PROGRESS) > WAVES_IN_PROGRESS)
                     return false;
         return StratholmeCreatureScript<AggressorAI>::CanSpawn(spawnId, entry, baseTemplate, actTemplate, cData, map);
     }

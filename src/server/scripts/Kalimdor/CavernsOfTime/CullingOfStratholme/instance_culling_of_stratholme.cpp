@@ -166,6 +166,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 switch (state)
                 {
                     case JUST_STARTED:
+                    default:
                         return JUST_STARTED;
                     case CRATES_IN_PROGRESS:
                         return CRATES_IN_PROGRESS;
@@ -173,6 +174,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         return CRATES_DONE;
                     case UTHER_TALK:
                     case PURGE_PENDING:
+                    case PURGE_STARTING:
                     case WAVES_IN_PROGRESS:
                         return PURGE_PENDING;
                     case WAVES_DONE:
@@ -190,7 +192,6 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     case COMPLETE:
                         return COMPLETE;
                 }
-                return JUST_STARTED;
             }
 
             void FillInitialWorldStates(WorldPacket& data) override
