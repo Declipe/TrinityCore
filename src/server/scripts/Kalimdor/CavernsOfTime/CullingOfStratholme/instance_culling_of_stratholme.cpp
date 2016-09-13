@@ -48,7 +48,6 @@ enum Entries
     NPC_INFINITE_CORRUPTOR      =  32273,
     NPC_GUARDIAN_OF_TIME        =  32281,
     NPC_TIME_RIFT               =  28409,
-    NPC_ARTHAS                  =  26499,
     NPC_LORDAERON_CRIER         =  27913,
 
     NPC_DEVOURING_GHOUL         =  28249,

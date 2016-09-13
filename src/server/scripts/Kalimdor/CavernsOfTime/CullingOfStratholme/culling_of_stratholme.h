@@ -130,7 +130,7 @@ class StratholmeCreatureScript : public CreatureScript
 
                 bool CanAIAttack(Unit const* who) const override
                 {
-                    if (Creature* cWho = who->ToCreature())
+                    if (Creature const* cWho = who->ToCreature())
                         if (cWho->GetEntry() == NPC_ARTHAS)
                             if (!cWho->AI()->CanAIAttack(this->me))
                                 return false;
