@@ -489,6 +489,10 @@ enum PositionIndices : uint32
     RP5_ARTHAS_WP20,
     RP5_ARTHAS_WP21,
     RP5_ARTHAS_WP22,
+    RP5_CHROMIE_SPAWN,
+    RP5_CHROMIE_WP1,
+    RP5_CHROMIE_WP2,
+    RP5_CHROMIE_WP3,
 
     // Array element count
     NUM_POSITIONS
@@ -628,7 +632,12 @@ enum RPEvents
     RP5_EVENT_MALGANIS12,
     RP5_EVENT_MALGANIS_LEAVE,
     RP5_EVENT_ARTHAS10,
-    RP5_EVENT_ARTHAS11
+    RP5_EVENT_ARTHAS10_2,
+    RP5_EVENT_ARTHAS11,
+    RP5_EVENT_ARTHAS11_2,
+    RP5_EVENT_CHROMIE_SPAWN,
+    RP5_EVENT_CHROMIE_LAND,
+    RP5_EVENT_CHROMIE_TRANSFORM
 };
 
 enum RPEventLines1
@@ -710,7 +719,8 @@ enum RPEventLines5
     RP5_LINE_MALGANIS11 =  9, // You'll never defeat the Lich King without my forces. I'll have my revenge... on him AND you!
     RP5_LINE_MALGANIS12 = 10, // Your journey has just begun, young prince. Gather your forces and meet me in the arctic land of Northrend. It is there that we shall settle the score between us. It is there that your true destiny will unfold.
     RP5_LINE_ARTHAS10   = 37, // I'll hunt you to the ends of the earth if I have to! Do you hear me? To the ends of the earth!
-    RP5_LINE_ARTHAS11   = 38  // You performed well this day. Anything that Mal'Ganis has left behind is yours. Take it as your reward. I must now begin plans for an expedition to Northrend.
+    RP5_LINE_ARTHAS11   = 38, // You performed well this day. Anything that Mal'Ganis has left behind is yours. Take it as your reward. I must now begin plans for an expedition to Northrend.
+    RP5_LINE_CHROMIE0   =  0  // Why, hello again!
 };
 
 enum OtherLines
@@ -724,7 +734,6 @@ enum Entries
     NPC_MALGANIS_BUNNY          = 20562,
     NPC_UTHER                   = 26528,
     NPC_JAINA                   = 26497,
-    NPC_MALGANIS                = 26533,
     NPC_CITIZEN                 = 28167,
     NPC_RESIDENT                = 28169,
     NPC_FOOTMAN                 = 27745,
@@ -738,6 +747,8 @@ enum Entries
     NPC_INFINITE_AGENT          = 27744,
     NPC_INFINITE_ADVERSARY      = 27742,
     NPC_EPOCH                   = 26532,
+    NPC_MALGANIS                = 26533,
+    NPC_CHROMIE_3               = 30997,
 
     SPELL_HOLY_LIGHT            = 52444,
     SPELL_EXORCISM              = 52445,
@@ -746,6 +757,7 @@ enum Entries
     SPELL_TRANSFORM_VISUAL      = 33133,
     SPELL_MALGANIS_QUEST_CREDIT = 58124,
     SPELL_MALGANIS_KILL_CREDIT  = 58630,
+    SPELL_CHROMIE_3_TRANSFORM   = 58986,
     GO_CHEST_NORMAL            = 190663,
     GO_CHEST_HEROIC            = 193597
 };
@@ -778,7 +790,6 @@ class npc_arthas_stratholme : public CreatureScript
                 TC_LOG_WARN("scripts.scripts", "CoT4 Arthas AI: Advancing to instance state 0x%X, but RP is paused. Overriding!", newState);
                 _progressRP = true;
             }
-            events.Reset();
             std::map<ProgressStates, SnapbackInfo>::const_iterator it = _snapbackPositions.find(newState);
             if (it != _snapbackPositions.end())
             {
@@ -813,11 +824,13 @@ class npc_arthas_stratholme : public CreatureScript
                     Talk(LINE_TOWN_HALL_PENDING);
                     break;
                 case COMPLETE:
-                    // @todo sniff the below
-                    events.ScheduleEvent(RP5_EVENT_MALGANIS12, Seconds(10));
-                    events.ScheduleEvent(RP5_EVENT_MALGANIS_LEAVE, Seconds(24));
-                    events.ScheduleEvent(RP5_EVENT_ARTHAS10, Seconds(36));
-                    events.ScheduleEvent(RP5_EVENT_ARTHAS11, Seconds(45));
+                    if (events.Empty())
+                    {
+                        // This must be instance loading into COMPLETE state, spawn chromie
+                        events.ScheduleEvent(RP5_EVENT_CHROMIE_SPAWN, Seconds(1));
+                        events.ScheduleEvent(RP5_EVENT_CHROMIE_LAND, Seconds(8));
+                        events.ScheduleEvent(RP5_EVENT_CHROMIE_TRANSFORM, Seconds(17));
+                    }
                     break;
                 default:
                     break;
@@ -871,6 +884,7 @@ class npc_arthas_stratholme : public CreatureScript
                     _isWPWalk = false;
                     me->StopMoving();
                     me->GetMotionMaster()->Clear();
+                    events.Reset();
 
                     std::map<ProgressStates, SnapbackInfo>::const_iterator it = _snapbackPositions.find(GetCurrentProgress());
                     if (it != _snapbackPositions.end())
@@ -1135,9 +1149,13 @@ class npc_arthas_stratholme : public CreatureScript
 
         bool CanAIAttack(Unit const* who) const override
         {
-            // Don't let us chase too far from home
-            if (me->IsInCombat() && (me->GetHomePosition().GetExactDist2d(who) > 30.0f))
-                return false;
+            if (me->HasReactState(REACT_AGGRESSIVE))
+            {
+                Position const& relativePos = me->IsInCombat() ? me->GetHomePosition() : me->GetPosition();
+                // Don't let us chase too far from home
+                if (relativePos.GetExactDist2d(who) > 30.0f)
+                    return false;
+            }
             return ScriptedAI::CanAIAttack(who);
         }
 
@@ -1653,27 +1671,65 @@ class npc_arthas_stratholme : public CreatureScript
                         {
                             malganis->SetFacingToObject(me);
                             malganis->AI()->Talk(RP5_LINE_MALGANIS10, ObjectAccessor::GetPlayer(*me, _eventStarterGuid));
-                            malganis->CastSpell(malganis, SPELL_MALGANIS_KILL_CREDIT, true);
                             malganis->CastSpell(malganis, SPELL_MALGANIS_QUEST_CREDIT, true);
+                            malganis->CastSpell(malganis, SPELL_MALGANIS_KILL_CREDIT, true);
                             if (GameObject* chest = malganis->FindNearestGameObject(RAID_MODE(GO_CHEST_NORMAL, GO_CHEST_HEROIC), 100.0f))
                                 chest->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
                         }
                         instance->SetBossState(DATA_MAL_GANIS, DONE);
                         instance->SetData(DATA_MALGANIS_DONE, 1);
+                        events.ScheduleEvent(RP5_EVENT_MALGANIS12, Seconds(10));
+                        events.ScheduleEvent(RP5_EVENT_MALGANIS_LEAVE, Seconds(26));
+                        events.ScheduleEvent(RP5_EVENT_ARTHAS10, Seconds(27));
+                        events.ScheduleEvent(RP5_EVENT_ARTHAS10_2, Seconds(34));
+                        events.ScheduleEvent(RP5_EVENT_ARTHAS11, Seconds(37));
+                        events.ScheduleEvent(RP5_EVENT_ARTHAS11_2, Seconds(41));
+                        events.ScheduleEvent(RP5_EVENT_CHROMIE_SPAWN, Seconds(72));
+                        events.ScheduleEvent(RP5_EVENT_CHROMIE_LAND, Seconds(77));
+                        events.ScheduleEvent(RP5_EVENT_CHROMIE_TRANSFORM, Seconds(86));
                         break;
                     case RP5_EVENT_MALGANIS12:
                         talkerEntry = NPC_MALGANIS, talkerLine = RP5_LINE_MALGANIS12;
                         break;
                     case RP5_EVENT_MALGANIS_LEAVE:
                         if (Creature* malganis = me->FindNearestCreature(NPC_MALGANIS, 100.0f, true))
-                            malganis->DespawnOrUnsummon();
+                            malganis->CastSpell(malganis, SPELL_SHADOWSTEP_VISUAL);
                         break;
                     case RP5_EVENT_ARTHAS10:
+                        if (Creature* malganis = me->FindNearestCreature(NPC_MALGANIS, 100.0f, true))
+                            malganis->DespawnOrUnsummon();
                         talkerEntry = 0, talkerLine = RP5_LINE_ARTHAS10;
+                        break;
+                    case RP5_EVENT_ARTHAS10_2:
+                        me->HandleEmoteCommand(EMOTE_ONESHOT_EXCLAMATION);
                         break;
                     case RP5_EVENT_ARTHAS11:
                         talkerEntry = 0, talkerLine = RP5_LINE_ARTHAS11;
                         break;
+                    case RP5_EVENT_ARTHAS11_2:
+                        me->HandleEmoteCommand(EMOTE_ONESHOT_TALK);
+                        break;
+                    case RP5_EVENT_CHROMIE_SPAWN:
+                        if (Creature* chromie = instance->instance->SummonCreature(NPC_CHROMIE_3, _positions[RP5_CHROMIE_SPAWN]))
+                        {
+                            chromie->SetDisableGravity(true);
+                            MoveAlongPath(chromie, RP5_CHROMIE_WP1, RP5_CHROMIE_WP3);
+                        }
+                        break;
+                    case RP5_EVENT_CHROMIE_LAND:
+                        if (Creature* chromie = me->FindNearestCreature(NPC_CHROMIE_3, 100.0f, true))
+                        {
+                            chromie->SetByteValue(UNIT_FIELD_BYTES_1, 3, 0);
+                            chromie->SetDisableGravity(false);
+                        }
+                        break;
+                    case RP5_EVENT_CHROMIE_TRANSFORM:
+                        if (Creature* chromie = me->FindNearestCreature(NPC_CHROMIE_3, 100.0f, true))
+                        {
+                            chromie->CastSpell(chromie, SPELL_CHROMIE_3_TRANSFORM);
+                            chromie->AI()->Talk(RP5_LINE_CHROMIE0);
+                            chromie->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
+                        }
                     default:
                         break;
                 }
@@ -2280,6 +2336,10 @@ const std::array<Position, NUM_POSITIONS> npc_arthas_stratholme::npc_arthas_stra
     { 2305.247f, 1464.363f, 127.9878f }, // RP5_ARTHAS_WP20
     { 2303.747f, 1467.863f, 127.9878f }, // RP5_ARTHAS_WP21
     { 2303.497f, 1469.113f, 127.7378f }, // RP5_ARTHAS_WP22
+    { 2319.560f, 1506.408f, 152.0474f }, // RP5_CHROMIE_SPAWN
+    { 2320.632f, 1507.193f, 152.5081f }, // RP5_CHROMIE_WP1
+    { 2319.823f, 1506.605f, 152.5081f }, // RP5_CHROMIE_WP2
+    { 2306.770f, 1496.780f, 128.3620f }  // RP5_CHROMIE_WP3
 }};
 
 const float npc_arthas_stratholme::npc_arthas_stratholmeAI::_snapbackDistanceThreshold = 5.0f;

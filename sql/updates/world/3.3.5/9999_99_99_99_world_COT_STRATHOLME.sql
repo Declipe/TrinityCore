@@ -107,7 +107,7 @@ UPDATE `creature_text` SET `emote`=397 WHERE
 	
 -- Town Hall/Gauntlet RP data
 UPDATE `creature_text` SET `emote`=1 WHERE
-	(`entry`=26499 AND `groupid` IN (16,19,22)) OR
+	(`entry`=26499 AND `groupid` IN (16,19,22,38)) OR
 	(`entry`=28340 AND `groupid`=1);
 UPDATE `creature_text` SET `emote`=5 WHERE
 	(`entry`=26499 AND `groupid`=36);
@@ -120,7 +120,7 @@ UPDATE `creature_text` SET `emote`=432 WHERE
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_fluff_living",`AIName`="" WHERE `entry` IN (28167,31126,31019,28169,31127,31023,31020,31018,31028);
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_living",`AIName`="SmartAI" WHERE `entry` IN (31057,30570,31027,31021,30994);
 -- Do the same for undead stratholme mobs, except for the other phases
-UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_undead",`AIName`="SmartAI" WHERE `entry` IN (28249,27729,28200,27734,27731,28199,27736);
+UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_undead",`AIName`="SmartAI" WHERE `entry` IN (28249,27729,28200,27734,27731,28199,27736,28201);
 
 -- City fluff
 DELETE FROM `smart_scripts` WHERE `entryorguid` IN (30570,31027,31021) AND `source_type`=0;
@@ -191,3 +191,12 @@ UPDATE `smart_scripts` SET `event_param3`=500, `event_param4`=750 WHERE `entryor
 DELETE FROM `conditions` WHERE `sourcetypeorreferenceid`=22 AND `sourceentry`=28340 AND `sourceid`=0;
 INSERT INTO `conditions` (`sourcetypeorreferenceid`,`sourcegroup`,`sourceentry`,`sourceid`,`conditiontypeorreference`,`conditiontarget`,`conditionvalue1`,`conditionvalue2`,`comment`) VALUES
 (22,4,28340,0,31,1,3,27743,"Stratholme Citizen - Only execute SAI if entry is 27743 (Infinite Agent)");
+
+-- Chromie #3 data
+DELETE FROM `creature_template_addon` WHERE `entry`=30997;
+INSERT INTO `creature_template_addon` (`entry`,`bytes1`) VALUES
+(30997,50331648);
+UPDATE `creature_template` SET `inhabittype`=5,`npcflag`=0 WHERE `entry`=30997;
+DELETE FROM `creature_text` WHERE `entry`=30997;
+INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`BroadcastTextId`,`comment`) VALUES
+(30997,0,"Why, hello again!",12,100,32022,"Chromie #3 RP5_LINE_CHROMIE0");

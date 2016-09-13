@@ -57,7 +57,11 @@ class boss_epoch : public CreatureScript
 
         struct boss_epochAI : public BossAI
         {
-            boss_epochAI(Creature* creature) : BossAI(creature, DATA_EPOCH) { }
+            boss_epochAI(Creature* creature) : BossAI(creature, DATA_EPOCH)
+            {
+                if (instance->GetBossState(DATA_EPOCH) == DONE)
+                    me->RemoveLootMode(LOOT_MODE_DEFAULT);
+            }
 
             void EnterCombat(Unit* /*who*/) override
             {

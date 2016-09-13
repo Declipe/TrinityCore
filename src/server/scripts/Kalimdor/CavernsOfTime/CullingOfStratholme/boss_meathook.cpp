@@ -50,7 +50,11 @@ class boss_meathook : public CreatureScript
         {
             boss_meathookAI(Creature* creature) : BossAI(creature, DATA_MEATHOOK) { }
 
-            void InitializeAI() override { Talk(SAY_SPAWN); }
+            void InitializeAI() override {
+                Talk(SAY_SPAWN);
+                if (instance->GetBossState(DATA_MEATHOOK) == DONE)
+                    me->RemoveLootMode(LOOT_MODE_DEFAULT);
+            }
 
             void EnterCombat(Unit* /*who*/) override
             {

@@ -555,7 +555,7 @@ struct npc_stratholme_smart_living : public StratholmeCreatureScript<SmartAI>
 static const std::unique_ptr<RectangleBoundary const> waveArea (new RectangleBoundary(2028.0f, 2372.0f, 1115.0f, 1355.0f));
 struct npc_stratholme_fluff_undead : public StratholmeCreatureScript<AggressorAI>
 {
-    npc_stratholme_fluff_undead() : StratholmeCreatureScript<AggressorAI>("npc_stratholme_fluff_undead", ProgressStates(ALL & ~(WAVES_IN_PROGRESS-1))) { }
+    npc_stratholme_fluff_undead() : StratholmeCreatureScript<AggressorAI>("npc_stratholme_fluff_undead", ProgressStates(ALL & ~(GAUNTLET_COMPLETE | MALGANIS_IN_PROGRESS | COMPLETE) & ~(WAVES_IN_PROGRESS-1))) { }
     bool CanSpawn(ObjectGuid::LowType spawnId, uint32 entry, CreatureTemplate const* baseTemplate, CreatureTemplate const* actTemplate, CreatureData const* cData, Map const* map) const override
     {
         if (InstanceMap const* instance = map->ToInstanceMap())

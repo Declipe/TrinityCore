@@ -57,7 +57,11 @@ class boss_salramm : public CreatureScript
         {
             boss_salrammAI(Creature* creature) : BossAI(creature, DATA_SALRAMM) { }
 
-            void InitializeAI() override { Talk(SAY_SPAWN); }
+            void InitializeAI() override {
+                Talk(SAY_SPAWN);
+                if (instance->GetBossState(DATA_SALRAMM) == DONE)
+                    me->RemoveLootMode(LOOT_MODE_DEFAULT);
+            }
 
             void EnterCombat(Unit* /*who*/) override
             {

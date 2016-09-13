@@ -166,7 +166,6 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 switch (state)
                 {
                     case JUST_STARTED:
-                    default:
                         return JUST_STARTED;
                     case CRATES_IN_PROGRESS:
                         return CRATES_IN_PROGRESS;
@@ -188,7 +187,10 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     case GAUNTLET_COMPLETE:
                     case MALGANIS_IN_PROGRESS:
                         return GAUNTLET_COMPLETE;
+                    case COMPLETE:
+                        return COMPLETE;
                 }
+                return JUST_STARTED;
             }
 
             void FillInitialWorldStates(WorldPacket& data) override
@@ -412,10 +414,6 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     case UTHER_TALK:
                     case PURGE_STARTING:
                         // nothing to do here, initialization is triggered on arthas AI by SetGUID
-                        break;
-                    case PURGE_PENDING:
-                        if (Creature* arthas = instance->GetCreature(_arthasGUID))
-                            arthas->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                         break;
                     case WAVES_IN_PROGRESS:
                         _waveCount = 0;
