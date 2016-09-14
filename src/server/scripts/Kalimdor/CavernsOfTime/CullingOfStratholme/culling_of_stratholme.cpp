@@ -497,6 +497,7 @@ class npc_chromie_middle : public StratholmeCreatureScript<NullCreatureAI>
 enum CrateMisc
 {
     GO_SUSPICIOUS_CRATE     = 190094,
+    GO_CRATE_HIGHLIGHT      = 190117,
     GO_PLAGUED_CRATE        = 190095,
     SPELL_ARCANE_DISRUPTION =  49590,
     SPELL_CRATES_CREDIT     =  58109
@@ -523,6 +524,8 @@ class npc_crate_helper : public StratholmeCreatureScript<NullCreatureAI>
                             crate->SummonGameObject(GO_PLAGUED_CRATE, *crate, crate->GetWorldRotation(), DAY);
                             crate->Delete();
                         }
+                        if (GameObject* highlight = me->FindNearestGameObject(GO_CRATE_HIGHLIGHT, 5.0f))
+                            highlight->Delete();
                     }
                 }
             }
@@ -544,6 +547,53 @@ class npc_crate_helper : public StratholmeCreatureScript<NullCreatureAI>
         }
 };
 
+// Crate fluff event #1
+class npc_jena_anderson : public CreatureScript
+{
+    public:
+        npc_jena_anderson() : CreatureScript("npc_jena_anderson") { }
+        struct npc_jena_andersonAI : public NullCreatureAI
+        {
+            npc_jena_andersonAI(Creature* creature) : NullCreatureAI(creature) { }
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return GetInstanceAI<npc_jena_andersonAI>(creature);
+        }
+};
+class npc_martha_goslin : public CreatureScript
+{
+    public:
+    npc_martha_goslin() : CreatureScript("npc_martha_goslin") { }
+    struct npc_martha_goslinAI : public NullCreatureAI
+    {
+        npc_martha_goslinAI(Creature* creature) : NullCreatureAI(creature) { }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return GetInstanceAI<npc_martha_goslinAI>(creature);
+    }
+};
+
+// Crate fluff event #2
+class npc_bartleby_battson : public CreatureScript
+{
+    public:
+    npc_bartleby_battson() : CreatureScript("npc_bartleby_battson") { }
+    struct npc_bartleby_battsonAI : public NullCreatureAI
+    {
+        npc_bartleby_battsonAI(Creature* creature) : NullCreatureAI(creature) { }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return GetInstanceAI<npc_bartleby_battsonAI>(creature);
+    }
+};
+
+// Blanket spawn control AI
 struct npc_stratholme_fluff_living : public StratholmeCreatureScript<NullCreatureAI>
 {
     npc_stratholme_fluff_living() : StratholmeCreatureScript<NullCreatureAI>("npc_stratholme_fluff_living", ProgressStates(WAVES_IN_PROGRESS - 1)) { }
@@ -578,6 +628,10 @@ void AddSC_culling_of_stratholme()
     new npc_chromie_start();
     new npc_chromie_middle();
     new npc_crate_helper();
+
+    new npc_jena_anderson();
+    new npc_martha_goslin();
+    new npc_bartleby_battson();
 
     new npc_stratholme_fluff_living();
     new npc_stratholme_smart_living();

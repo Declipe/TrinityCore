@@ -779,7 +779,7 @@ const instance_culling_of_stratholme::WaveLocationData instance_culling_of_strat
     { // Elders' Square
         WORLDSTATE_WAVE_MARKER_ES,
         {{
-			{2267.003f, 1168.055f, 137.821f, 2.79050f},
+            {2267.003f, 1168.055f, 137.821f, 2.79050f},
             {2264.392f, 1162.145f, 137.910f, 2.39937f},
             {2262.785f, 1166.648f, 138.053f, 2.71353f},
             {2265.214f, 1170.771f, 137.972f, 2.80385f},

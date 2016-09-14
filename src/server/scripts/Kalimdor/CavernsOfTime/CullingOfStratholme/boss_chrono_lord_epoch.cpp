@@ -136,7 +136,7 @@ class boss_epoch : public CreatureScript
 
             void SpellHitTarget(Unit* target, SpellInfo const* info) override
             {
-                if (target && info->Id == SPELL_TIME_STEP_DUMMY && me->IsHostileTo(target))
+                if (info->Id == SPELL_TIME_STEP_DUMMY && me->IsHostileTo(target))
                 {
                     _stepTargets.push_back(target->GetGUID());
                     events.RescheduleEvent(EVENT_TIME_STEP, Milliseconds(500));

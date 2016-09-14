@@ -65,6 +65,15 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 UPDATE `creature` SET `spawntimesecs`=@DAY WHERE `id`=27827;
 UPDATE `gameobject` SET `spawntimesecs`=@DAY WHERE `id`=190094;
 
+-- Grain Crate reaction fluff
+UPDATE `creature` SET `movementtype`=0,`spawndist`=0 WHERE `id` IN (27884,27885,27907);
+-- Event #1:
+UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_jena_anderson" WHERE `entry`=27885;
+UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_martha_goslin" WHERE `entry`=27884;
+-- Event #2:
+UPDATE `creature` SET `position_x`=1670.256, `position_y`=872.8734, `position_z`=120.0351, `orientation`=0.418879 WHERE `id`=27907;
+UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_bartleby_battson" WHERE `entry`=27907;
+
 -- Arthas AI
 UPDATE `creature_template` SET `ScriptName`="npc_arthas_stratholme" WHERE `entry`=26499;
 
