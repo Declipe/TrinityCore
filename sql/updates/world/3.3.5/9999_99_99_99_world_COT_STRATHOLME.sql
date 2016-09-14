@@ -66,13 +66,22 @@ UPDATE `creature` SET `spawntimesecs`=@DAY WHERE `id`=27827;
 UPDATE `gameobject` SET `spawntimesecs`=@DAY WHERE `id`=190094;
 
 -- Grain Crate reaction fluff
-UPDATE `creature` SET `movementtype`=0,`spawndist`=0 WHERE `id` IN (27884,27885,27907);
+UPDATE `creature` SET `movementtype`=0,`spawndist`=0 WHERE `id` IN (27884,27885,27891,27892,27907);
 -- Event #1:
 UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_jena_anderson" WHERE `entry`=27885;
 UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_martha_goslin" WHERE `entry`=27884;
 -- Event #2:
 UPDATE `creature` SET `position_x`=1670.256, `position_y`=872.8734, `position_z`=120.0351, `orientation`=0.418879 WHERE `id`=27907;
 UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_bartleby_battson" WHERE `entry`=27907;
+DELETE FROM `creature_text` WHERE `entry`=27907;
+INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,`emote`,`BroadcastTextId`,`comment`) VALUES
+(27907,0,0,"I'm going to lose my on time bonus because of this!",12,10,0,27255,"LINE_BARTLEBY_IDLE 1"),
+(27907,0,1,"I wasn't even supposed to be here today!",12,10,0,27256,"LINE_BARTLEBY_IDLE 2"),
+(27907,1,0,"Well, guess I should load everything back into the cart.",12,100,0,27257,"LINE_BARTLEBY1"),
+(27907,2,0,"Oh, come on! My cart broke, my horse lost a shoe, and now the cargo goes bad!",12,100,5,27258,"LINE_BARTLEBY2"),
+(27907,3,0,"I guess I'll go find the authorities. If I'm lucky they'll tell me it's the plague and that we're all going to die.",12,100,0,27259,"LINE_BARTLEBY3");
+-- Event #3:
+UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_malcolm_moore" WHERE `entry`=27891;
 
 -- Arthas AI
 UPDATE `creature_template` SET `ScriptName`="npc_arthas_stratholme" WHERE `entry`=26499;

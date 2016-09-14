@@ -826,8 +826,8 @@ class npc_arthas_stratholme : public CreatureScript
                     {
                         // This must be instance loading into COMPLETE state, spawn chromie
                         events.ScheduleEvent(RP5_EVENT_CHROMIE_SPAWN, Seconds(1));
-                        events.ScheduleEvent(RP5_EVENT_CHROMIE_LAND, Seconds(8));
-                        events.ScheduleEvent(RP5_EVENT_CHROMIE_TRANSFORM, Seconds(17));
+                        events.ScheduleEvent(RP5_EVENT_CHROMIE_LAND, Seconds(12)+Milliseconds(668));
+                        events.ScheduleEvent(RP5_EVENT_CHROMIE_TRANSFORM, Seconds(15)+Milliseconds(491));
                     }
                     break;
                 default:
@@ -1682,8 +1682,8 @@ class npc_arthas_stratholme : public CreatureScript
                         events.ScheduleEvent(RP5_EVENT_ARTHAS11, Seconds(30));
                         events.ScheduleEvent(RP5_EVENT_ARTHAS11_2, Seconds(35));
                         events.ScheduleEvent(RP5_EVENT_CHROMIE_SPAWN, Seconds(65));
-                        events.ScheduleEvent(RP5_EVENT_CHROMIE_LAND, Seconds(70));
-                        events.ScheduleEvent(RP5_EVENT_CHROMIE_TRANSFORM, Seconds(79));
+                        events.ScheduleEvent(RP5_EVENT_CHROMIE_LAND, Seconds(76)+Milliseconds(668));
+                        events.ScheduleEvent(RP5_EVENT_CHROMIE_TRANSFORM, Seconds(79)+Milliseconds(491));
                         break;
                     case RP5_EVENT_MALGANIS12:
                         talkerEntry = NPC_MALGANIS, talkerLine = RP5_LINE_MALGANIS12;
@@ -1709,16 +1709,20 @@ class npc_arthas_stratholme : public CreatureScript
                     case RP5_EVENT_CHROMIE_SPAWN:
                         if (Creature* chromie = instance->instance->SummonCreature(NPC_CHROMIE_3, _positions[RP5_CHROMIE_SPAWN]))
                         {
-                            chromie->SetDisableGravity(true);
-                            MoveAlongPath(chromie, RP5_CHROMIE_WP1, RP5_CHROMIE_WP3);
+                            // SMOOOOOOOOOOOOOOOOTH AF custom movespline
+                            Movement::MoveSplineInit init(chromie);
+                            init.Path().push_back(_positions[RP5_CHROMIE_WP1]);
+                            init.Path().push_back(_positions[RP5_CHROMIE_WP2]);
+                            init.Path().push_back(_positions[RP5_CHROMIE_WP3]);
+                            init.Path().push_back(_positions[RP5_CHROMIE_WP3]);
+                            init.SetFly();
+                            init.SetWalk(true);
+                            init.Launch();
                         }
                         break;
                     case RP5_EVENT_CHROMIE_LAND:
                         if (Creature* chromie = me->FindNearestCreature(NPC_CHROMIE_3, 100.0f, true))
-                        {
                             chromie->SetByteValue(UNIT_FIELD_BYTES_1, 3, 0);
-                            chromie->SetDisableGravity(false);
-                        }
                         break;
                     case RP5_EVENT_CHROMIE_TRANSFORM:
                         if (Creature* chromie = me->FindNearestCreature(NPC_CHROMIE_3, 100.0f, true))

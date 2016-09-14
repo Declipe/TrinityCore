@@ -494,77 +494,33 @@ class npc_chromie_middle : public StratholmeCreatureScript<NullCreatureAI>
         }
 };
 
-enum CrateMisc
+// Generic data for crate fluff events
+enum CrateGenericMisc
 {
-    GO_SUSPICIOUS_CRATE     = 190094,
-    GO_CRATE_HIGHLIGHT      = 190117,
-    GO_PLAGUED_CRATE        = 190095,
-    SPELL_ARCANE_DISRUPTION =  49590,
-    SPELL_CRATES_CREDIT     =  58109
-};
-class npc_crate_helper : public StratholmeCreatureScript<NullCreatureAI>
-{
-    public:
-        npc_crate_helper() : StratholmeCreatureScript<NullCreatureAI>("npc_crate_helper_cot", ProgressStates(CRATES_IN_PROGRESS | CRATES_DONE)) { }
+    MOVEID_EVENT1 = 4200,
+    MOVEID_EVENT2,
 
-        struct npc_crate_helperAI : public StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper
-        {
-            npc_crate_helperAI(Creature* creature, ProgressStates _respawnMask, ProgressStates _despawnMask) : StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper(creature, _respawnMask, _despawnMask), _crateRevealed(false) { }
-
-            void SpellHit(Unit* /*caster*/, SpellInfo const* spell) override
-            {
-                if (!_crateRevealed && spell->Id == SPELL_ARCANE_DISRUPTION)
-                {
-                    _crateRevealed = true;
-                    if (InstanceScript* instance = me->GetInstanceScript())
-                    {
-                        instance->SetData(DATA_CRATE_REVEALED, 1);
-                        if (GameObject* crate = me->FindNearestGameObject(GO_SUSPICIOUS_CRATE, 5.0f))
-                        {
-                            crate->SummonGameObject(GO_PLAGUED_CRATE, *crate, crate->GetWorldRotation(), DAY);
-                            crate->Delete();
-                        }
-                        if (GameObject* highlight = me->FindNearestGameObject(GO_CRATE_HIGHLIGHT, 5.0f))
-                            highlight->Delete();
-                    }
-                }
-            }
-
-            uint32 GetData(uint32 data) const override
-            {
-                if (data == DATA_CRATE_REVEALED)
-                    return _crateRevealed ? 1 : 0;
-                return 0;
-            }
-
-        private:
-            bool _crateRevealed;
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return GetInstanceAI<npc_crate_helperAI>(creature, _respawnMask, _despawnMask);
-        }
+    ACTION_START_FLUFF = 9001
 };
 
 // Crate fluff event #1
-class npc_jena_anderson : public CreatureScript
+struct npc_jena_anderson : public CreatureScript
 {
-    public:
-        npc_jena_anderson() : CreatureScript("npc_jena_anderson") { }
-        struct npc_jena_andersonAI : public NullCreatureAI
-        {
-            npc_jena_andersonAI(Creature* creature) : NullCreatureAI(creature) { }
-        };
+    npc_jena_anderson() : CreatureScript("npc_jena_anderson") { }
 
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return GetInstanceAI<npc_jena_andersonAI>(creature);
-        }
+    static Creature* Find(Creature* helper) { return nullptr; }
+    struct npc_jena_andersonAI : public NullCreatureAI
+    {
+        npc_jena_andersonAI(Creature* creature) : NullCreatureAI(creature) { }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return GetInstanceAI<npc_jena_andersonAI>(creature);
+    }
 };
-class npc_martha_goslin : public CreatureScript
+struct npc_martha_goslin : public CreatureScript
 {
-    public:
     npc_martha_goslin() : CreatureScript("npc_martha_goslin") { }
     struct npc_martha_goslinAI : public NullCreatureAI
     {
@@ -578,18 +534,295 @@ class npc_martha_goslin : public CreatureScript
 };
 
 // Crate fluff event #2
-class npc_bartleby_battson : public CreatureScript
+enum CrateEvent2Misc
 {
-    public:
+    NPC_BARTLEBY    = 27907,
+
+    EVENT_BARTLEBY_IDLE = 1,
+    EVENT_BARTLEBY1,
+    EVENT_BARTLEBY2,
+    EVENT_BARTLEBY2_2,
+    EVENT_BARTLEBY3,
+
+    LINE_BARTLEBY_IDLE  = 0,
+    LINE_BARTLEBY1      = 1, // Well, guess I should load everything back into the cart.
+    LINE_BARTLEBY2      = 2, // Oh, come on! My cart broke, my horse lost a shoe, and now the cargo goes bad!
+    LINE_BARTLEBY3      = 3  // I guess I'll go find the authorities. If I'm lucky they'll tell me it's the plague and that we're all going to die.
+};
+static const Movement::PointsArray bartlebyPath1 = {
+    { 1671.586f, 872.1134f, 120.4314f },
+    { 1672.917f, 871.3535f, 120.3277f }
+};
+static const Movement::PointsArray bartlebyPath2 = {
+    { 1669.969f, 870.7180f, 120.1384f },
+    { 1667.148f, 870.1765f, 120.0045f },
+    { 1664.689f, 868.1503f, 119.9065f },
+    { 1662.898f, 866.5289f, 120.0467f },
+    { 1659.009f, 861.1918f, 119.3174f },
+    { 1658.206f, 859.9042f, 119.4396f },
+    { 1655.873f, 856.0323f, 119.1204f },
+    { 1654.021f, 852.6975f, 119.3411f },
+    { 1650.059f, 845.4074f, 119.0619f },
+    { 1648.144f, 841.8294f, 119.5816f },
+    { 1644.644f, 832.8294f, 119.8316f },
+    { 1642.712f, 828.8032f, 119.8451f },
+    { 1641.215f, 825.3640f, 120.1445f },
+    { 1638.808f, 817.3542f, 119.9748f },
+    { 1638.145f, 815.3091f, 120.1469f },
+    { 1635.010f, 805.8387f, 119.8493f },
+    { 1633.980f, 802.8589f, 119.8655f },
+    { 1630.980f, 791.6089f, 119.3655f },
+    { 1628.730f, 783.8589f, 119.1155f },
+    { 1628.106f, 782.6379f, 118.5758f },
+    { 1627.364f, 780.3354f, 118.5013f },
+    { 1626.114f, 774.8354f, 118.0013f },
+    { 1625.746f, 773.9089f, 117.7027f },
+    { 1625.181f, 771.5463f, 117.5337f },
+    { 1623.431f, 765.7963f, 117.0337f },
+    { 1621.931f, 760.2963f, 116.7837f },
+    { 1621.453f, 759.4308f, 116.1794f },
+    { 1620.671f, 756.5874f, 116.0332f },
+    { 1619.671f, 752.8374f, 115.5332f },
+    { 1618.921f, 749.0874f, 115.0332f },
+    { 1617.759f, 744.8360f, 114.2508f },
+    { 1617.185f, 742.1613f, 114.0811f },
+    { 1616.935f, 741.1613f, 114.0811f },
+    { 1615.685f, 736.6613f, 113.3311f },
+    { 1614.935f, 732.6613f, 113.0811f },
+    { 1614.185f, 729.9113f, 112.5811f },
+    { 1614.082f, 730.3239f, 112.2263f },
+    { 1613.991f, 729.7391f, 112.3380f },
+    { 1613.491f, 728.4891f, 112.0880f },
+    { 1612.741f, 725.7391f, 111.5880f },
+    { 1611.741f, 722.7391f, 110.8380f },
+    { 1610.491f, 718.9891f, 110.0880f },
+    { 1609.491f, 715.4891f, 109.5880f },
+    { 1608.241f, 711.7391f, 109.0880f },
+    { 1607.669f, 710.4952f, 108.4556f },
+    { 1606.452f, 706.7616f, 108.1364f },
+    { 1604.952f, 702.7616f, 107.3864f },
+    { 1603.702f, 698.5116f, 106.8864f },
+    { 1602.202f, 694.7616f, 106.3864f },
+    { 1601.766f, 693.5259f, 105.9085f },
+    { 1601.327f, 692.0245f, 105.8733f },
+    { 1600.077f, 687.5245f, 105.3733f },
+    { 1593.179f, 667.8270f, 103.3361f },
+    { 1592.436f, 665.4673f, 103.2942f },
+    { 1588.686f, 658.7173f, 102.5442f },
+    { 1587.781f, 657.0647f, 102.1362f },
+    { 1586.359f, 654.4169f, 101.7926f },
+    { 1586.304f, 654.0751f, 101.8038f },
+    { 1583.304f, 652.0751f, 101.8038f },
+    { 1581.581f, 652.3631f, 101.6499f },
+    { 1577.755f, 654.0015f, 101.9234f },
+    { 1574.082f, 657.1602f, 102.0366f },
+    { 1571.396f, 659.9266f, 102.3597f },
+    { 1564.711f, 666.6931f, 102.1827f }
+};
+struct npc_bartleby_battson : public CreatureScript
+{
     npc_bartleby_battson() : CreatureScript("npc_bartleby_battson") { }
+
+    static Creature* Find(Creature* helper) { return helper->FindNearestCreature(NPC_BARTLEBY, 5.0f, true); }
     struct npc_bartleby_battsonAI : public NullCreatureAI
     {
-        npc_bartleby_battsonAI(Creature* creature) : NullCreatureAI(creature) { }
+        npc_bartleby_battsonAI(Creature* creature) : NullCreatureAI(creature), started(false) { }
+
+        void InitializeAI() override
+        {
+            events.ScheduleEvent(EVENT_BARTLEBY_IDLE, Minutes(1), Minutes(2));
+        }
+
+        void DoAction(int32 action) override
+        {
+            if (started || action != ACTION_START_FLUFF)
+                return;
+            started = true;
+            events.CancelEvent(EVENT_BARTLEBY_IDLE);
+            events.ScheduleEvent(EVENT_BARTLEBY1, Seconds(15), Seconds(30));
+        }
+
+        void MovementInform(uint32 type, uint32 id) override
+        {
+            if (type == EFFECT_MOTION_TYPE)
+                switch (id)
+                {
+                    case MOVEID_EVENT1:
+                        me->SetStandState(UNIT_STAND_STATE_KNEEL);
+                        events.ScheduleEvent(EVENT_BARTLEBY2, Seconds(4));
+                        events.ScheduleEvent(EVENT_BARTLEBY2_2, Seconds(6));
+                        events.ScheduleEvent(EVENT_BARTLEBY3, Seconds(12));
+                        break;
+                    case MOVEID_EVENT2:
+                        me->DespawnOrUnsummon(Seconds(1));
+                        break;
+                }
+        }
+
+        void UpdateAI(uint32 diff)
+        {
+            events.Update(diff);
+            while (uint32 eventId = events.ExecuteEvent())
+                switch (eventId)
+                {
+                    case EVENT_BARTLEBY_IDLE:
+                        Talk(LINE_BARTLEBY_IDLE);
+                        events.Repeat(Minutes(2), Minutes(4));
+                        break;
+                    case EVENT_BARTLEBY1:
+                        Talk(LINE_BARTLEBY1);
+                        me->GetMotionMaster()->MoveSmoothPath(MOVEID_EVENT1, bartlebyPath1, true);
+                        break;
+                    case EVENT_BARTLEBY2:
+                        Talk(LINE_BARTLEBY2);
+                        break;
+                    case EVENT_BARTLEBY2_2:
+                        me->HandleEmoteCommand(EMOTE_ONESHOT_TALK);
+                        break;
+                    case EVENT_BARTLEBY3:
+                        Talk(LINE_BARTLEBY3);
+                        me->SetStandState(UNIT_STAND_STATE_STAND);
+                        me->GetMotionMaster()->MoveSmoothPath(MOVEID_EVENT2, bartlebyPath2, true);
+                        break;
+                }
+        }
+
+        bool started;
+        EventMap events;
     };
 
     CreatureAI* GetAI(Creature* creature) const override
     {
         return GetInstanceAI<npc_bartleby_battsonAI>(creature);
+    }
+};
+
+// Crate fluff event #3
+enum CrateEvent3Misc
+{
+    NPC_MALCOLM     = 27891,
+    NPC_SCRUFFY     = 27892,
+
+    LINE_MALCOLM1   =     0, // Looks like a storm's coming in, Scruffy...
+    LINE_SCRUFFY1   =     0, // %s begins to growl...
+    LINE_MALCOLM2   =     1, // What's wrong, pal?
+    LINE_MALCOLM3   =     2, // What did you find, boy?
+    LINE_MALCOLM4   =     3, // This is no good, Scruffy. Stay here and guard the house, I need to go find a soldier.
+};
+static const Position malcolmSpawn = { 1605.2420f, 805.4160f, 122.9956f, 5.284148f };
+static const Position scruffySpawn = { 1601.1030f, 805.3391f, 123.7677f, 5.471561f };
+static const Movement::PointsArray malcolmPath = {
+    { 1604.2450f, 806.4799f, 123.0291f },
+    { 1604.9880f, 805.8108f, 123.0291f },
+    { 1608.5230f, 800.3172f, 122.5636f },
+    { 1609.0760f, 799.8616f, 122.6980f },
+    { 1609.5760f, 799.1116f, 122.6980f },
+    { 1612.5760f, 796.8616f, 122.1980f },
+    { 1613.6290f, 795.9061f, 121.8324f }
+};
+static const Movement::PointsArray scruffyPath = {
+    { 1600.0040f, 806.3074f, 123.8376f },
+    { 1600.7810f, 805.6780f, 123.8376f },
+    { 1604.2240f, 802.0498f, 123.0886f },
+    { 1604.5490f, 801.7065f, 123.0492f },
+    { 1606.5230f, 799.9467f, 122.9261f },
+    { 1606.6550f, 799.5586f, 122.7780f },
+    { 1609.7550f, 797.2820f, 122.3657f },
+    { 1612.8550f, 794.5053f, 121.9534f }
+};
+class npc_malcolm_moore : public CreatureScript
+{
+    public:
+        npc_malcolm_moore() : CreatureScript("npc_malcolm_moore") { }
+
+        static void Spawn(Map* map) { map->SummonCreature(NPC_MALCOLM, malcolmSpawn); }
+        struct npc_malcolm_mooreAI : public NullCreatureAI
+        {
+            npc_malcolm_mooreAI(Creature* creature) : NullCreatureAI(creature) { }
+            void InitializeAI() override
+            {
+                me->GetMotionMaster()->MoveSmoothPath(MOVEID_EVENT1, malcolmPath, true);
+                if (Creature* scruffy = me->SummonCreature(NPC_SCRUFFY, scruffySpawn))
+                    scruffy->GetMotionMaster()->MoveSmoothPath(MOVEID_EVENT1, scruffyPath, true);
+            }
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return GetInstanceAI<npc_malcolm_mooreAI>(creature);
+        }
+};
+
+enum CrateMisc
+{
+    GO_SUSPICIOUS_CRATE = 190094,
+    GO_CRATE_HIGHLIGHT = 190117,
+    GO_PLAGUED_CRATE = 190095,
+    SPELL_ARCANE_DISRUPTION = 49590,
+    SPELL_CRATES_CREDIT = 58109
+};
+class npc_crate_helper : public StratholmeCreatureScript<NullCreatureAI>
+{
+    public:
+    npc_crate_helper() : StratholmeCreatureScript<NullCreatureAI>("npc_crate_helper_cot", ProgressStates(CRATES_IN_PROGRESS | CRATES_DONE)) { }
+
+    struct npc_crate_helperAI : public StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper
+    {
+        npc_crate_helperAI(Creature* creature, ProgressStates _respawnMask, ProgressStates _despawnMask) : StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper(creature, _respawnMask, _despawnMask), _crateRevealed(false) { }
+
+        const void replaceIfCloser(Creature* candidate, Creature*& current, float& currentDist)
+        {
+            if (!candidate)
+                return;
+            float newDist = me->GetExactDist2dSq(candidate);
+            if (newDist >= currentDist)
+                return;
+            currentDist = newDist;
+            current = candidate;
+        }
+        void SpellHit(Unit* /*caster*/, SpellInfo const* spell) override
+        {
+            if (!_crateRevealed && spell->Id == SPELL_ARCANE_DISRUPTION)
+            {
+                _crateRevealed = true;
+                if (InstanceScript* instance = me->GetInstanceScript())
+                {
+                    // Update world state
+                    instance->SetData(DATA_CRATE_REVEALED, 1);
+
+                    // Replace suspicious crate with plagued crate
+                    if (GameObject* crate = me->FindNearestGameObject(GO_SUSPICIOUS_CRATE, 5.0f))
+                    {
+                        crate->SummonGameObject(GO_PLAGUED_CRATE, *crate, crate->GetWorldRotation(), DAY);
+                        crate->Delete();
+                    }
+                    if (GameObject* highlight = me->FindNearestGameObject(GO_CRATE_HIGHLIGHT, 5.0f))
+                        highlight->Delete();
+
+                    // Find nearest fluff event and initiate it
+                    Creature* closest = nullptr;
+                    float closestDist = INFINITY;
+                    replaceIfCloser(npc_jena_anderson::Find(me), closest, closestDist);
+                    replaceIfCloser(npc_bartleby_battson::Find(me), closest, closestDist);
+                    closest->AI()->DoAction(ACTION_START_FLUFF);
+                }
+            }
+        }
+
+        uint32 GetData(uint32 data) const override
+        {
+            if (data == DATA_CRATE_REVEALED)
+                return _crateRevealed ? 1 : 0;
+            return 0;
+        }
+
+        private:
+        bool _crateRevealed;
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return GetInstanceAI<npc_crate_helperAI>(creature, _respawnMask, _despawnMask);
     }
 };
 
@@ -627,11 +860,12 @@ void AddSC_culling_of_stratholme()
 
     new npc_chromie_start();
     new npc_chromie_middle();
-    new npc_crate_helper();
 
     new npc_jena_anderson();
     new npc_martha_goslin();
     new npc_bartleby_battson();
+    new npc_malcolm_moore();
+    new npc_crate_helper();
 
     new npc_stratholme_fluff_living();
     new npc_stratholme_smart_living();
