@@ -82,9 +82,17 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,
 (27907,3,0,"I guess I'll go find the authorities. If I'm lucky they'll tell me it's the plague and that we're all going to die.",12,100,0,27259,"LINE_BARTLEBY3");
 -- Event #3:
 UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_malcolm_moore" WHERE `entry`=27891;
+UPDATE `creature_template` SET `ScriptName`="npc_stratholme_rp_dummy",`AIName`="" WHERE `entry`=27892;
+DELETE FROM `creature_text` WHERE `entry` IN (27891,27892);
+INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`emote`,`BroadcastTextId`,`comment`) VALUES
+(27891,0,"Looks like a storm's coming in, Scruffy...",12,100,0,27236,"LINE_MALCOLM1"),
+(27892,0,"%s begins to growl...",16,100,0,27237,"LINE_SCRUFFY1"),
+(27891,1,"What's wrong, pal?",12,100,1,27238,"LINE_MALCOLM2"),
+(27891,2,"What did you find, boy?",12,100,16,27240,"LINE_MALCOLM3"),
+(27891,3,"This is no good, Scruffy. Stay here and guard the house, I need to go find a soldier.",12,100,0,27241,"LINE_MALCOLM4");
 
 -- Arthas AI
-UPDATE `creature_template` SET `ScriptName`="npc_arthas_stratholme" WHERE `entry`=26499;
+UPDATE `creature_template` SET `ScriptName`="npc_arthas_stratholme",`AIName`="" WHERE `entry`=26499;
 
 -- Missing Arthas lines
 DELETE FROM `creature_text` WHERE `entry`=26499 AND `groupid`>38;

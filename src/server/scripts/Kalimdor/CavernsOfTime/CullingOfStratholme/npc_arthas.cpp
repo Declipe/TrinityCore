@@ -1131,20 +1131,6 @@ class npc_arthas_stratholme : public CreatureScript
             }
         }
 
-        void SetData(uint32 type, uint32 data) override
-        {
-            switch (type)
-            {
-                case DATA_RP_DUMMY_MOVED:
-                    // we use the _positions array indices for movement IDs, so we're allowed to do this
-                    // movement IDs are unique across ALL npcs involved, not just single ones, so we can forward everything to arthas' MovementInform
-                    MovementInform(POINT_MOTION_TYPE, data);
-                    break;
-                default:
-                    break;
-            }
-        }
-
         bool CanAIAttack(Unit const* who) const override
         {
             if (me->HasReactState(REACT_AGGRESSIVE))
@@ -2372,7 +2358,7 @@ struct npc_stratholme_rp_dummy : public StratholmeCreatureScript<NullCreatureAI>
     {
         npc_stratholme_rp_dummyAI(Creature* creature) : StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper(creature, ProgressStates(UTHER_TALK | PURGE_PENDING)) { }
         void MovementInform(uint32 type, uint32 id) override {
-            if (type == POINT_MOTION_TYPE || type == EFFECT_MOTION_TYPE) if (TempSummon* self = me->ToTempSummon()) self->GetSummonerCreatureBase()->AI()->SetData(DATA_RP_DUMMY_MOVED, id);
+            if (type == POINT_MOTION_TYPE || type == EFFECT_MOTION_TYPE) if (TempSummon* self = me->ToTempSummon()) self->GetSummonerCreatureBase()->AI()->MovementInform(type, id);
         }
     };
     CreatureAI* GetAI(Creature* creature) const override { return GetInstanceAI<npc_stratholme_rp_dummyAI>(creature); }
