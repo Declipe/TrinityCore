@@ -511,7 +511,7 @@ struct npc_jena_anderson : public CreatureScript
 {
     npc_jena_anderson() : CreatureScript("npc_jena_anderson") { }
 
-    static Creature* Find(Creature* helper) { return nullptr; }
+    static Creature* Find(Creature* /*helper*/) { return nullptr; }
     struct npc_jena_andersonAI : public NullCreatureAI
     {
         npc_jena_andersonAI(Creature* creature) : NullCreatureAI(creature) { }
@@ -706,7 +706,7 @@ enum CrateEvent3Misc
     NPC_MALCOLM     = 27891,
     NPC_SCRUFFY     = 27892,
 
-    EVENT_SCRUFFY1  =     0,
+    EVENT_SCRUFFY1  =     1,
     EVENT_MALCOLM2,
     EVENT_SCRUFFY_MOVE,
     EVENT_MALCOLM_MOVE,
