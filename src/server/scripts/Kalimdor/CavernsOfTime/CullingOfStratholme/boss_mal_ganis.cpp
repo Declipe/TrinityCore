@@ -90,31 +90,7 @@ class boss_mal_ganis : public CreatureScript
                         return;
                     _defeated = true;
                     if (InstanceMap* map = instance->instance->ToInstanceMap())
-                        if (map->IsHeroic())
-                        {
-                            Player* sourcePlayer = source->GetCharmerOrOwnerPlayerOrPlayerItself();
-                            if (!sourcePlayer)
-                            {
-                                MapRefManager const& players = map->GetPlayers();
-                                // Find any player with a valid instance state
-                                for (MapRefManager::const_iterator it = players.begin(); !sourcePlayer && it != players.end(); ++it)
-                                {
-                                    Player* p = it->GetSource();
-                                    if (p && !p->IsGameMaster() && p->m_InstanceValid)
-                                        sourcePlayer = p;
-                                }
-                                // Fall back to any player, regardless of instance state
-                                for (MapRefManager::const_iterator it = players.begin(); !sourcePlayer && it != players.end(); ++it)
-                                {
-                                    Player* p = it->GetSource();
-                                    if (p && !p->IsGameMaster())
-                                        sourcePlayer = p;
-                                }
-                            }
-
-                            if (sourcePlayer)
-                                map->PermBindAllPlayers(sourcePlayer);
-                        }
+                        map->PermBindAllPlayers();
                 }
             }
 
@@ -127,6 +103,12 @@ class boss_mal_ganis : public CreatureScript
                 events.ScheduleEvent(EVENT_MIND_BLAST, Seconds(6), Seconds(8));
                 events.ScheduleEvent(EVENT_VAMPIRIC_TOUCH, Seconds(4));
                 events.ScheduleEvent(EVENT_SLEEP, Seconds(17), Seconds(21));
+            }
+
+            void JustReachedHome() override
+            {
+                if (!_defeated)
+                    me->DespawnOrUnsummon(Seconds(1));
             }
 
             void UpdateAI(uint32 diff) override
