@@ -998,7 +998,7 @@ class npc_crate_helper : public StratholmeCreatureScript<NullCreatureAI>
     {
         npc_crate_helperAI(Creature* creature, ProgressStates _respawnMask, ProgressStates _despawnMask) : StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper(creature, _respawnMask, _despawnMask), _crateRevealed(false) { }
 
-        const void replaceIfCloser(Creature* candidate, Creature*& current, float& currentDist)
+        void replaceIfCloser(Creature* candidate, Creature*& current, float& currentDist) const
         {
             if (!candidate)
                 return;

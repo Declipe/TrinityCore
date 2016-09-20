@@ -15,14 +15,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* Script Data Start
-SDName: Boss epoch
-SDAuthor: Tartalo
-SD%Complete: 80
-SDComment: @todo Intro, consecutive attacks to a random target durin time wrap, adjust timers
-SDCategory:
-Script Data End */
-
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "culling_of_stratholme.h"
@@ -64,8 +56,6 @@ class boss_epoch : public CreatureScript
 
             void InitializeAI() override
             {
-                // @todo for debugging, remove this
-                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
                 if (instance->GetBossState(DATA_EPOCH) == DONE)
                     me->RemoveLootMode(LOOT_MODE_DEFAULT);
             }

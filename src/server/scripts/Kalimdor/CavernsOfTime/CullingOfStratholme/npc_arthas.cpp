@@ -69,6 +69,21 @@ enum SplineChains
     RP1_CHAIN_JAINA4    = 4, // Jaina leaves for real
     RP1_CHAIN_ARTHAS3   = 3, // Arthas moves down the hill to the bridge
     RP1_CHAIN_ARTHAS4   = 4, // Arthas moves to the Stratholme entrance
+
+    // RP2: Arthas/Mal'ganis, at Stratholme gates
+    RP2_CHAIN_ARTHAS1   = 5, // Arthas enters Stratholme proper
+    RP2_CHAIN_CITIZEN1  = 1, // A Stratholme citizen greets Arthas
+    RP2_CHAIN_ARTHAS2   = 6, // Arthas advances towards the approaching citizen
+    RP2_CHAIN_ARTHAS3   = 7, // Arthas moves on to a nearby resident
+
+    // RP3: Arthas/Infinites, in Stratholme Town Hall
+    RP3_CHAIN_ARTHAS1   = 91, // Arthas enters Stratholme Town Hall
+    RP3_CHAIN_ARTHAS2   = 92, // Arthas approaches one of the disguised Infinites
+    RP3_CHAIN_ARTHAS3   = 95, // Arthas proceeds up the stairs
+    RP3_CHAIN_ARTHAS3_2 = 96, // Arthas encounters more Infinite resistance
+    RP3_CHAIN_ARTHAS4   = 97, // Arthas presses onward into a hallway
+    RP3_CHAIN_ARTHAS5   = 98, // Arthas advances into the boss room
+    RP3_CHAIN_EPOCH     = 1,  // Chrono-Lord Epoch advances out of the portal
 };
 
 enum PointIDs
@@ -80,7 +95,18 @@ enum PointIDs
     RP1_POINTID_UTHER3,
     RP1_POINTID_JAINA4,
     RP1_POINTID_ARTHAS3,
-    RP1_POINTID_ARTHAS4
+    RP1_POINTID_ARTHAS4,
+
+    RP2_POINTID_ARTHAS1,
+    RP2_POINTID_ARTHAS2,
+    RP2_POINTID_ARTHAS3,
+
+    RP3_POINTID_TOWN_HALL,
+    RP3_POINTID_ARTHAS1,
+    RP3_POINTID_ARTHAS2,
+    RP3_POINTID_ARTHAS3,
+    RP3_POINTID_ARTHAS4,
+    RP3_POINTID_ARTHAS5
 };
 
 enum Actions
@@ -136,6 +162,7 @@ enum RPEvents
     RP2_EVENT_CITIZEN1,
     RP2_EVENT_ARTHAS2,
     RP2_EVENT_ARTHAS_MOVE_2,
+    RP2_EVENT_CITIZEN2,
     RP2_EVENT_KILL1,
     RP2_EVENT_ARTHAS_MOVE_3,
     RP2_EVENT_KILL2,
@@ -255,7 +282,8 @@ enum RPEventLines2
     RP2_LINE_ARTHAS1    = 10, // Everyone looks ready. Remember, these people are all infected with the plague and will die soon. We must purge Stratholme to protect the remainder of Lordaeron from the Scourge. Let's go.
     RP2_LINE_CITIZEN1   =  0, // Prince Arthas, may the light be praised! Many people in the town have begun to fall seriously ill, can you help us?
     RP2_LINE_ARTHAS2    = 11, // I can only help you with a clean death.
-    RP2_LINE_RESIDENT1  =  0, // Oh, no... / What? This can't be!
+    RP2_LINE_CITIZEN2   =  1, // What? This can't be!
+    RP2_LINE_RESIDENT1  =  0, // Oh, no...
     RP2_LINE_ARTHAS3    = 12, // That was just the beginning.
     RP2_LINE_MALGANIS1  =  0, // Yes, this is the beginning. I've been waiting for you, young prince. I am Mal'Ganis.
     RP2_LINE_MALGANIS2  =  1, // As you can see, your people are now mine. I will now turn this city household by household, until the flame of life has been snuffed out... forever.
@@ -317,13 +345,7 @@ enum PositionIndices : uint32
     
     // Arthas/Mal'ganis RP
     ARTHAS_PURGE_PENDING_POS,
-    RP2_ARTHAS_MOVE_1,
-    RP2_CITIZEN_MOVE_1,
-    RP2_CITIZEN_MOVE_2,
-    RP2_ARTHAS_MOVE_2,
-    RP2_ARTHAS_MOVE_3,
-    RP2_ARTHAS_MOVE_4,
-    RP2_ARTHAS_MOVE_5,
+    ARTHAS_WAVES_POS,
     RP2_PRIEST1_POS,
     RP2_PRIEST2_POS,
     RP2_FOOT1_POS,
@@ -334,39 +356,6 @@ enum PositionIndices : uint32
 
     // Town Hall
     ARTHAS_TOWN_HALL_POS,
-    RP3_ARTHAS_WP1,
-    RP3_ARTHAS_WP2,
-    RP3_ARTHAS_WP3,
-    RP3_ARTHAS_WP4,
-    RP3_ARTHAS_WP5,
-    RP3_ARTHAS_WP6,
-    RP3_ARTHAS_WP7,
-    RP3_ARTHAS_WP8,
-    RP3_ARTHAS_WP9,
-    RP3_ARTHAS_WP10,
-    RP3_ARTHAS_WP20,
-    RP3_ARTHAS_WP21,
-    RP3_ARTHAS_WP22,
-    RP3_ARTHAS_WP23,
-    RP3_ARTHAS_WP24,
-    RP3_ARTHAS_WP25,
-    RP3_ARTHAS_WP26,
-    RP3_ARTHAS_WP27,
-    RP3_ARTHAS_WP28,
-    RP3_ARTHAS_WP29,
-    RP3_ARTHAS_WP30,
-    RP3_ARTHAS_WP31,
-    RP3_ARTHAS_WP32,
-    RP3_ARTHAS_WP33,
-    RP3_ARTHAS_WP34,
-    RP3_ARTHAS_WP35,
-    RP3_ARTHAS_WP36,
-    RP3_ARTHAS_WP37,
-    RP3_ARTHAS_WP38,
-    RP3_ARTHAS_WP39,
-    RP3_ARTHAS_WP40,
-    RP3_ARTHAS_WP50,
-    RP3_ARTHAS_WP51,
     RP3_SPAWN1_ADVERSARY1_SPAWN,
     RP3_SPAWN1_ADVERSARY1_WP1,
     RP3_SPAWN1_ADVERSARY1_WP2,
@@ -380,22 +369,6 @@ enum PositionIndices : uint32
     RP3_SPAWN1_HUNTER1_WP4,
     RP3_SPAWN1_HUNTER1_WP5,
     RP3_SPAWN1_AGENT1_SPAWN,
-    RP3_ARTHAS_WP60,
-    RP3_ARTHAS_WP61,
-    RP3_ARTHAS_WP62,
-    RP3_ARTHAS_WP63,
-    RP3_ARTHAS_WP64,
-    RP3_ARTHAS_WP65,
-    RP3_ARTHAS_WP66,
-    RP3_ARTHAS_WP67,
-    RP3_ARTHAS_WP68,
-    RP3_ARTHAS_WP69,
-    RP3_ARTHAS_WP70,
-    RP3_ARTHAS_WP71,
-    RP3_ARTHAS_WP72,
-    RP3_ARTHAS_WP73,
-    RP3_ARTHAS_WP74,
-    RP3_ARTHAS_WP75,
     RP3_SPAWN2_ADVERSARY1_SPAWN,
     RP3_SPAWN2_HUNTER1_SPAWN,
     RP3_SPAWN2_HUNTER1_WP1,
@@ -408,17 +381,7 @@ enum PositionIndices : uint32
     RP3_SPAWN2_AGENT1_WP2,
     RP3_SPAWN2_AGENT1_WP3,
     RP3_SPAWN2_AGENT1_WP4,
-    RP3_ARTHAS_WP80,
-    RP3_ARTHAS_WP81,
-    RP3_ARTHAS_WP82,
-    RP3_ARTHAS_WP83,
-    RP3_ARTHAS_WP84,
-    RP3_ARTHAS_WP85,
-    RP3_ARTHAS_WP86,
-    RP3_ARTHAS_WP87,
-    RP3_ARTHAS_WP88,
-    RP3_ARTHAS_WP89,
-    RP3_ARTHAS_WP90,
+    ARTHAS_TOWN_HALL_END_POS,
     RP3_SPAWN3_ADVERSARY1_SPAWN,
     RP3_SPAWN3_ADVERSARY1_WP1,
     RP3_SPAWN3_ADVERSARY1_WP2,
@@ -439,9 +402,6 @@ enum PositionIndices : uint32
     RP3_SPAWN3_AGENT1_WP2,
     RP3_SPAWN3_AGENT1_WP3,
     RP3_EPOCH_SPAWN,
-    RP3_EPOCH_WP1,
-    RP3_EPOCH_WP2,
-    RP3_EPOCH_WP3,
 
     // Gauntlet
     RP4_ARTHAS_WP1,
@@ -702,7 +662,8 @@ class npc_arthas_stratholme : public CreatureScript
             {
                 case WAVES_DONE:
                     // @todo proper movement
-                    MoveAlongPath(me, ARTHAS_TOWN_HALL_POS, ARTHAS_TOWN_HALL_POS);
+                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
+                    me->GetMotionMaster()->MovePoint(RP3_POINTID_TOWN_HALL, _positions[ARTHAS_TOWN_HALL_POS], true);
                     break;
                 case TOWN_HALL_PENDING:
                     Talk(LINE_TOWN_HALL_PENDING);
@@ -825,7 +786,7 @@ class npc_arthas_stratholme : public CreatureScript
                     break;
                 case -ACTION_START_RP_EVENT3:
                     Talk(RP3_LINE_ARTHAS1, ObjectAccessor::GetPlayer(*me, _eventStarterGuid));
-                    MoveAlongPath(me, RP3_ARTHAS_WP1, RP3_ARTHAS_WP9);
+                    me->GetMotionMaster()->MoveAlongSplineChain(RP3_POINTID_ARTHAS1, RP3_CHAIN_ARTHAS1, false);
                     break;
                 case -ACTION_START_RP_EVENT4_1:
                     Talk(RP4_LINE_ARTHAS1, ObjectAccessor::GetPlayer(*me, _eventStarterGuid));
@@ -901,7 +862,7 @@ class npc_arthas_stratholme : public CreatureScript
                 case RP1_POINTID_ARTHAS4:
                     events.ScheduleEvent(RP1_EVENT_FINISHED, Seconds(0));
                     break;
-                /*case RP2_ARTHAS_MOVE_1:
+                case RP2_POINTID_ARTHAS1:
                     if (Creature* citizen = me->FindNearestCreature(NPC_CITIZEN, 100.0f, true))
                         citizen->SetFacingToObject(me);
                     if (Creature* resident = me->FindNearestCreature(NPC_RESIDENT, 100.0f, true))
@@ -910,11 +871,12 @@ class npc_arthas_stratholme : public CreatureScript
                     events.ScheduleEvent(RP2_EVENT_ARTHAS2, Seconds(10));
                     events.ScheduleEvent(RP2_EVENT_ARTHAS_MOVE_2, Seconds(11));
                     break;
-                case RP2_ARTHAS_MOVE_2:
-                    events.ScheduleEvent(RP2_EVENT_KILL1, Seconds(0));
-                    events.ScheduleEvent(RP2_EVENT_ARTHAS_MOVE_3, Seconds(2));
+                case RP2_POINTID_ARTHAS2:
+                    events.ScheduleEvent(RP2_EVENT_CITIZEN2, Seconds(0));
+                    events.ScheduleEvent(RP2_EVENT_KILL1, Seconds(1));
+                    events.ScheduleEvent(RP2_EVENT_ARTHAS_MOVE_3, Seconds(3));
                     break;
-                case RP2_ARTHAS_MOVE_3:
+                case RP2_POINTID_ARTHAS3:
                     events.ScheduleEvent(RP2_EVENT_KILL2, Seconds(1));
                     events.ScheduleEvent(RP2_EVENT_REACT1, Seconds(2));
                     events.ScheduleEvent(RP2_EVENT_REACT2, Seconds(3));
@@ -936,11 +898,11 @@ class npc_arthas_stratholme : public CreatureScript
                     events.ScheduleEvent(RP2_EVENT_ARTHAS5_2, Seconds(51));
                     events.ScheduleEvent(RP2_EVENT_ARTHAS5_3, Seconds(57));
                     events.ScheduleEvent(RP2_EVENT_WAVE_START, Seconds(64));
-                    break;*/
-                case ARTHAS_TOWN_HALL_POS:
+                    break;
+                case RP3_POINTID_TOWN_HALL:
                     events.ScheduleEvent(EVENT_TOWN_HALL_REACHED, Seconds(1));
                     break;
-                case RP3_ARTHAS_WP9:
+                case RP3_POINTID_ARTHAS1:
                 {
                     std::list<Creature*> infinites;
                     me->GetCreatureListWithEntryInGrid(infinites, NPC_CITIZEN_INFINITE, 100.0f);
@@ -952,7 +914,7 @@ class npc_arthas_stratholme : public CreatureScript
                     events.ScheduleEvent(RP3_EVENT_ARTHAS2, Seconds(12));
                     break;
                 }
-                case RP3_ARTHAS_WP10:
+                case RP3_POINTID_ARTHAS2:
                     events.ScheduleEvent(RP3_EVENT_ARTHAS_KILL, Seconds(1));
                     events.ScheduleEvent(RP3_EVENT_INFINITE_LAUGH, Seconds(2));
                     events.ScheduleEvent(RP3_EVENT_ARTHAS3, Seconds(6));
@@ -962,20 +924,20 @@ class npc_arthas_stratholme : public CreatureScript
                     events.ScheduleEvent(RP3_EVENT_TRANSFORM3, Seconds(14));
                     events.ScheduleEvent(RP3_EVENT_AGGRO, Seconds(15));
                     break;
-                case RP3_ARTHAS_WP40:
+                case RP3_POINTID_ARTHAS3:
                     events.ScheduleEvent(RP3_EVENT_ARTHAS_MOVE_1_2, Seconds(1));
                     events.ScheduleEvent(RP3_EVENT_SPAWN1, Seconds(2));
                     events.ScheduleEvent(RP3_EVENT_SPAWN1_FACE, Seconds(5));
                     events.ScheduleEvent(RP3_EVENT_SPAWN1_AGGRO, Seconds(7));
                     break;
-                case RP3_ARTHAS_WP75:
+                case RP3_POINTID_ARTHAS4:
                     events.ScheduleEvent(RP3_EVENT_ARTHAS20, Seconds(1));
                     events.ScheduleEvent(RP3_EVENT_SPAWN2, Seconds(2));
                     events.ScheduleEvent(RP3_EVENT_ARTHAS_FACE2, Seconds(3));
                     events.ScheduleEvent(RP3_EVENT_SPAWN2_FACE, Seconds(4));
                     events.ScheduleEvent(RP3_EVENT_SPAWN2_AGGRO, Seconds(6));
                     break;
-                case RP3_ARTHAS_WP90:
+                case RP3_POINTID_ARTHAS5:
                     events.ScheduleEvent(RP3_EVENT_SPAWN3, Seconds(2));
                     events.ScheduleEvent(RP3_EVENT_ARTHAS30, Seconds(4));
                     events.ScheduleEvent(RP3_EVENT_SPAWN3_FACE, Seconds(5));
@@ -1194,32 +1156,35 @@ class npc_arthas_stratholme : public CreatureScript
                         instance->SetData(DATA_UTHER_FINISHED, 1);
                         break;
                     case RP2_EVENT_ARTHAS_MOVE_1:
-                        me->SetWalk(true);
-                        me->GetMotionMaster()->MovePoint(RP2_ARTHAS_MOVE_1, _positions[RP2_ARTHAS_MOVE_1]);
+                        me->GetMotionMaster()->MoveAlongSplineChain(RP2_POINTID_ARTHAS1, RP2_CHAIN_ARTHAS1, true);
                         break;
                     case RP2_EVENT_CITIZEN1:
                         if (Creature* citizen = me->FindNearestCreature(NPC_CITIZEN, 100.0f, true))
                         {
-                            MoveAlongPath(citizen, RP2_CITIZEN_MOVE_1, RP2_CITIZEN_MOVE_2, true);
+                            citizen->GetMotionMaster()->MoveAlongSplineChain(0, RP2_CHAIN_CITIZEN1, true);
                             citizen->AI()->Talk(RP2_LINE_CITIZEN1, ObjectAccessor::GetPlayer(*me, _eventStarterGuid));
                         }
-                        talkerEntry = NPC_CITIZEN, talkerLine = RP2_LINE_CITIZEN1;
                         break;
                     case RP2_EVENT_ARTHAS2:
                         talkerEntry = 0, talkerLine = RP2_LINE_ARTHAS2;
                         break;
                     case RP2_EVENT_ARTHAS_MOVE_2:
-                        me->SetWalk(true);
-                        me->GetMotionMaster()->MovePoint(RP2_ARTHAS_MOVE_2, _positions[RP2_ARTHAS_MOVE_2]);
+                        me->GetMotionMaster()->MoveAlongSplineChain(RP2_POINTID_ARTHAS2, RP2_CHAIN_ARTHAS2, true);
+                        break;
+                    case RP2_EVENT_CITIZEN2:
+                        talkerEntry = NPC_CITIZEN, talkerLine = RP2_LINE_CITIZEN2;
                         break;
                     case RP2_EVENT_KILL1:
                         if (Creature* citizen = me->FindNearestCreature(NPC_CITIZEN, 100.0f, true))
                             DoCast(citizen, SPELL_CRUSADER_STRIKE);
-                        talkerEntry = NPC_RESIDENT, talkerLine = RP2_LINE_RESIDENT1;
+                        if (Creature* resident = me->FindNearestCreature(NPC_RESIDENT, 100.0f, true))
+                        {
+                            resident->SetFlag(UNIT_NPC_EMOTESTATE, EMOTE_STATE_COWER);
+                            resident->AI()->Talk(RP2_LINE_RESIDENT1, ObjectAccessor::GetPlayer(*me, _eventStarterGuid));
+                        }
                         break;
                     case RP2_EVENT_ARTHAS_MOVE_3:
-                        me->SetWalk(true);
-                        me->GetMotionMaster()->MovePoint(RP2_ARTHAS_MOVE_3, _positions[RP2_ARTHAS_MOVE_3]);
+                        me->GetMotionMaster()->MoveAlongSplineChain(RP2_POINTID_ARTHAS3, RP2_CHAIN_ARTHAS3, true);
                         break;
                     case RP2_EVENT_KILL2:
                         if (Creature* resident = me->FindNearestCreature(NPC_RESIDENT, 100.0f, true))
@@ -1253,11 +1218,13 @@ class npc_arthas_stratholme : public CreatureScript
                                     emote = EMOTE_ONESHOT_ROAR;
                                     break;
                             }
-                            (*it)->HandleEmoteCommand(emote);
+                            if ((*it)->IsAlive())
+                                (*it)->HandleEmoteCommand(emote);
                         }
+                        break;
                     }
                     case RP2_EVENT_ARTHAS_MOVE_4:
-                        me->GetMotionMaster()->MovePoint(RP2_ARTHAS_MOVE_4, _positions[RP2_ARTHAS_MOVE_4]);
+                        me->SetFacingTo(2.234021f); // @todo
                         break;
                     case RP2_EVENT_ARTHAS3:
                         talkerEntry = 0, talkerLine = RP2_LINE_ARTHAS3;
@@ -1324,14 +1291,14 @@ class npc_arthas_stratholme : public CreatureScript
                             infinite->SetFacingToObject(me);
                         break;
                     case RP3_EVENT_ARTHAS_FACE:
-                        me->SetFacingTo(_positions[RP3_ARTHAS_WP9].GetOrientation());
+                        me->SetFacingTo(0.541052f); // @todo
                         break;
                     case RP3_EVENT_CITIZEN1:
                         talkerEntry = NPC_CITIZEN_INFINITE, talkerLine = RP3_LINE_CITIZEN1;
                         break;
                     case RP3_EVENT_ARTHAS2:
                         talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS2;
-                        MoveAlongPath(me, RP3_ARTHAS_WP10, RP3_ARTHAS_WP10, true);
+                        me->GetMotionMaster()->MoveAlongSplineChain(RP3_POINTID_ARTHAS2, RP3_CHAIN_ARTHAS2, true);
                         break;
                     case RP3_EVENT_ARTHAS_KILL:
                         if (Creature* citizen = me->FindNearestCreature(NPC_CITIZEN_INFINITE, 100.0f, true))
@@ -1370,11 +1337,11 @@ class npc_arthas_stratholme : public CreatureScript
                         talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS4;
                         break;
                     case RP3_EVENT_ARTHAS_MOVE_1:
-                        MoveAlongPath(me, RP3_ARTHAS_WP20, RP3_ARTHAS_WP40);
+                        me->GetMotionMaster()->MoveAlongSplineChain(RP3_POINTID_ARTHAS3, RP3_CHAIN_ARTHAS3, false);
                         break;
                     case RP3_EVENT_ARTHAS_MOVE_1_2:
                         talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS10;
-                        MoveAlongPath(me, RP3_ARTHAS_WP50, RP3_ARTHAS_WP51, true);
+                        me->GetMotionMaster()->MoveAlongSplineChain(0, RP3_CHAIN_ARTHAS3_2, true);
                         break;
                     case RP3_EVENT_SPAWN1:
                         // creatures without path movement don't have create in 4.x sniff, todo check other versions
@@ -1406,7 +1373,7 @@ class npc_arthas_stratholme : public CreatureScript
                         talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS11;
                         break;
                     case RP3_EVENT_ARTHAS_MOVE_2:
-                        MoveAlongPath(me, RP3_ARTHAS_WP60, RP3_ARTHAS_WP75, true);
+                        me->GetMotionMaster()->MoveAlongSplineChain(RP3_POINTID_ARTHAS4, RP3_CHAIN_ARTHAS4, false);
                         break;
                     case RP3_EVENT_ARTHAS20:
                         talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS20;
@@ -1421,7 +1388,7 @@ class npc_arthas_stratholme : public CreatureScript
                             MoveAlongPath(agent, RP3_SPAWN2_AGENT1_WP1, RP3_SPAWN2_AGENT1_WP4, true);
                         break;
                     case RP3_EVENT_ARTHAS_FACE2:
-                        me->SetFacingTo(_positions[RP3_ARTHAS_WP75].GetOrientation());
+                        me->SetFacingTo(1.762783f); // @todo
                         break;
                     case RP3_EVENT_SPAWN2_AGGRO:
                         EngageInfinites();
@@ -1431,7 +1398,7 @@ class npc_arthas_stratholme : public CreatureScript
                         talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS21;
                         break;
                     case RP3_EVENT_ARTHAS_MOVE_3:
-                        MoveAlongPath(me, RP3_ARTHAS_WP80, RP3_ARTHAS_WP90, true);
+                        me->GetMotionMaster()->MoveAlongSplineChain(RP3_POINTID_ARTHAS5, RP3_CHAIN_ARTHAS5, false);
                         break;
                     case RP3_EVENT_SPAWN3:
                         if (Creature* adversary = instance->instance->SummonCreature(NPC_INFINITE_ADVERSARY, _positions[RP3_SPAWN3_ADVERSARY1_SPAWN]))
@@ -1452,11 +1419,11 @@ class npc_arthas_stratholme : public CreatureScript
                         break;
                     case RP3_EVENT_EPOCH_SPAWN:
                         if (Creature* epoch = instance->instance->SummonCreature(NPC_EPOCH, _positions[RP3_EPOCH_SPAWN]))
-                            MoveAlongPath(epoch, RP3_EPOCH_WP1, RP3_EPOCH_WP3);
+                            epoch->GetMotionMaster()->MoveAlongSplineChain(0, RP3_CHAIN_EPOCH, false);
                         break;
                     case RP3_EVENT_ARTHAS31:
                         talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS31;
-                        me->SetFacingTo(_positions[RP3_ARTHAS_WP90].GetOrientation());
+                        me->SetFacingTo(6.073746f); // @todo
                         break;
                     case RP3_EVENT_EPOCH_FACE:
                         if (Creature* epoch = me->FindNearestCreature(NPC_EPOCH, 100.0f, true))
@@ -1754,13 +1721,7 @@ const std::array<Position, NUM_POSITIONS> npc_arthas_stratholme::npc_arthas_stra
     { 1876.788f, 1305.723f, 146.2474f, 6.0737460f }, // RP1_JAINA_SPAWN
 
     { 2047.948f, 1287.598f, 142.8568f, 3.176499f }, // ARTHAS_PURGE_PENDING_POS
-    { 2083.011f, 1287.590f, 141.2376f, 5.445427f }, // RP2_ARTHAS_MOVE_1
-    { 2090.946f, 1276.898f, 140.7805f }, // RP2_CITIZEN_MOVE_1
-    { 2088.873f, 1279.260f, 140.7279f }, // RP2_CITIZEN_MOVE_2
-    { 2087.723f, 1280.895f, 140.6912f }, // RP2_ARTHAS_MOVE_2
-    { 2091.994f, 1277.257f, 140.4707f }, // RP2_ARTHAS_MOVE_3
-    { 2091.994f, 1277.257f, 140.4707f, 2.234021f }, // RP2_ARTHAS_MOVE_4
-    { 2091.994f, 1277.257f, 140.4707f, 1.134464f }, // RP2_ARTHAS_MOVE_5
+    { 2091.994f, 1277.257f, 140.4707f, 1.134464f }, // ARTHAS_WAVES_POS // @todo
     { 2074.624f, 1282.958f, 141.6344f }, // RP2_PRIEST1_POS
     { 2074.805f, 1292.172f, 141.6728f }, // RP2_PRIEST2_POS
     { 2077.590f, 1284.609f, 141.5710f }, // RP2_FOOT1_POS
@@ -1770,39 +1731,6 @@ const std::array<Position, NUM_POSITIONS> npc_arthas_stratholme::npc_arthas_stra
     { 2113.454f, 1287.986f, 136.3829f, 3.071779f }, // RP2_MALGANIS_POS
 
     { 2366.240f, 1195.253f, 132.0441f, 3.159046f }, // ARTHAS_TOWN_HALL_POS
-    { 2371.452f, 1199.571f, 134.8580f }, // RP3_ARTHAS_WP1
-    { 2373.452f, 1200.071f, 134.8580f }, // RP3_ARTHAS_WP2
-    { 2375.452f, 1200.571f, 134.3580f }, // RP3_ARTHAS_WP3
-    { 2376.452f, 1200.571f, 134.1080f }, // RP3_ARTHAS_WP4
-    { 2377.202f, 1200.821f, 134.1080f }, // RP3_ARTHAS_WP5
-    { 2379.192f, 1201.169f, 134.0411f }, // RP3_ARTHAS_WP6
-    { 2384.146f, 1202.468f, 134.2909f }, // RP3_ARTHAS_WP7
-    { 2386.146f, 1202.718f, 134.2909f }, // RP3_ARTHAS_WP8
-    { 2392.101f, 1203.767f, 134.0407f, 0.541052f }, // RP3_ARTHAS_WP9
-    { 2396.516f, 1206.148f, 134.0400f, 0.494561f }, // RP3_ARTHAS_WP10
-    { 2400.366f, 1205.552f, 134.2849f }, // RP3_ARTHAS_WP20
-    { 2403.866f, 1206.052f, 134.2849f }, // RP3_ARTHAS_WP21
-    { 2404.866f, 1206.302f, 134.2849f }, // RP3_ARTHAS_WP22
-    { 2405.925f, 1206.372f, 134.0335f }, // RP3_ARTHAS_WP23
-    { 2418.885f, 1209.226f, 134.2531f }, // RP3_ARTHAS_WP24
-    { 2419.885f, 1209.726f, 134.2531f }, // RP3_ARTHAS_WP25
-    { 2424.191f, 1211.926f, 134.0185f }, // RP3_ARTHAS_WP26
-    { 2428.424f, 1214.264f, 134.2497f }, // RP3_ARTHAS_WP27
-    { 2432.174f, 1216.014f, 134.2497f }, // RP3_ARTHAS_WP28
-    { 2432.732f, 1216.367f, 133.9702f }, // RP3_ARTHAS_WP29
-    { 2438.031f, 1217.973f, 134.4738f }, // RP3_ARTHAS_WP30
-    { 2441.281f, 1219.223f, 134.4738f }, // RP3_ARTHAS_WP31
-    { 2441.531f, 1217.223f, 134.4738f }, // RP3_ARTHAS_WP32
-    { 2441.781f, 1215.973f, 134.4738f }, // RP3_ARTHAS_WP33
-    { 2442.031f, 1214.973f, 134.4738f }, // RP3_ARTHAS_WP34
-    { 2442.281f, 1214.473f, 135.4738f }, // RP3_ARTHAS_WP35
-    { 2443.117f, 1210.440f, 137.9064f }, // RP3_ARTHAS_WP36
-    { 2444.677f, 1205.141f, 142.4912f }, // RP3_ARTHAS_WP37
-    { 2446.177f, 1198.141f, 147.7412f }, // RP3_ARTHAS_WP38
-    { 2446.677f, 1195.641f, 148.2412f }, // RP3_ARTHAS_WP39
-    { 2447.738f, 1191.342f, 148.0759f }, // RP3_ARTHAS_WP40
-    { 2446.100f, 1190.778f, 148.3259f }, // RP3_ARTHAS_WP50
-    { 2443.461f, 1190.214f, 148.0759f }, // RP3_ARTHAS_WP51
     { 2433.040f, 1191.160f, 148.1285f, 4.998989f }, // RP3_SPAWN1_ADVERSARY1_SPAWN
     { 2432.566f, 1193.102f, 148.1593f }, // RP3_SPAWN1_ADVERSARY1_WP1
     { 2432.757f, 1192.121f, 148.1593f }, // RP3_SPAWN1_ADVERSARY1_WP2
@@ -1816,22 +1744,6 @@ const std::array<Position, NUM_POSITIONS> npc_arthas_stratholme::npc_arthas_stra
     { 2433.700f, 1194.840f, 148.0759f }, // RP3_SPAWN1_HUNTER1_WP4
     { 2436.273f, 1198.183f, 148.0759f }, // RP3_SPAWN1_HUNTER1_WP5
     { 2438.529f, 1192.707f, 148.0579f }, // RP3_SPAWN1_AGENT_SPAWN
-    { 2441.500f, 1190.161f, 148.3259f }, // RP3_ARTHAS_WP60
-    { 2441.000f, 1190.161f, 148.3259f }, // RP3_ARTHAS_WP61
-    { 2434.460f, 1192.957f, 148.0759f }, // RP3_ARTHAS_WP62
-    { 2431.968f, 1194.012f, 148.3259f }, // RP3_ARTHAS_WP63
-    { 2425.051f, 1194.506f, 148.0759f }, // RP3_ARTHAS_WP64
-    { 2423.425f, 1194.627f, 148.3256f }, // RP3_ARTHAS_WP65
-    { 2415.430f, 1194.193f, 148.0759f }, // RP3_ARTHAS_WP66
-    { 2412.978f, 1194.008f, 148.3257f }, // RP3_ARTHAS_WP67
-    { 2410.478f, 1193.008f, 148.3257f }, // RP3_ARTHAS_WP68
-    { 2407.478f, 1191.758f, 148.3257f }, // RP3_ARTHAS_WP69
-    { 2406.954f, 1190.761f, 148.0753f }, // RP3_ARTHAS_WP70
-    { 2404.760f, 1183.744f, 148.3256f }, // RP3_ARTHAS_WP71
-    { 2404.796f, 1181.537f, 148.0756f }, // RP3_ARTHAS_WP72
-    { 2405.533f, 1177.359f, 148.3256f }, // RP3_ARTHAS_WP73
-    { 2407.033f, 1167.859f, 148.3256f }, // RP3_ARTHAS_WP74
-    { 2409.271f, 1156.181f, 148.0757f, 1.762783f }, // RP3_ARTHAS_WP75
     { 2415.398f, 1140.661f, 148.0759f }, // RP3_SPAWN2_ADVERSARY1_SPAWN
     { 2404.376f, 1179.393f, 148.1379f, 5.141369f }, // RP3_SPAWN2_HUNTER1_SPAWN
     { 2404.736f, 1179.674f, 148.1587f }, // RP3_SPAWN2_HUNTER1_WP1
@@ -1844,17 +1756,7 @@ const std::array<Position, NUM_POSITIONS> npc_arthas_stratholme::npc_arthas_stra
     { 2403.908f, 1179.996f, 148.1587f }, // RP3_SPAWN2_AGENT1_WP2
     { 2403.413f, 1176.008f, 148.0759f }, // RP3_SPAWN2_AGENT1_WP3
     { 2403.444f, 1172.043f, 148.0759f }, // RP3_SPAWN2_AGENT1_WP4
-    { 2410.534f, 1152.238f, 148.3258f }, // RP3_ARTHAS_WP80
-    { 2411.275f, 1146.770f, 148.0758f }, // RP3_ARTHAS_WP81
-    { 2412.609f, 1141.852f, 148.3259f }, // RP3_ARTHAS_WP82
-    { 2413.536f, 1137.411f, 148.0759f }, // RP3_ARTHAS_WP83
-    { 2415.129f, 1132.406f, 148.3259f }, // RP3_ARTHAS_WP84
-    { 2417.129f, 1129.156f, 148.3259f }, // RP3_ARTHAS_WP85
-    { 2417.258f, 1128.615f, 148.0760f }, // RP3_ARTHAS_WP86
-    { 2421.078f, 1123.228f, 148.3260f }, // RP3_ARTHAS_WP87
-    { 2422.578f, 1121.728f, 148.3260f }, // RP3_ARTHAS_WP88
-    { 2424.078f, 1120.478f, 148.3260f }, // RP3_ARTHAS_WP89
-    { 2425.898f, 1118.842f, 148.0759f, 6.073746f }, // RP3_ARTHAS_WP90
+    { 2425.898f, 1118.842f, 148.0759f, 6.073746f }, // ARTHAS_TOWN_HALL_END_POS
     { 2429.303f, 1102.002f, 148.1593f }, // RP3_SPAWN3_ADVERSARY1_SPAWN
     { 2428.320f, 1104.574f, 148.1176f }, // RP3_SPAWN3_ADVERSARY1_WP1
     { 2429.303f, 1102.002f, 148.1593f }, // RP3_SPAWN3_ADVERSARY1_WP2
@@ -1874,10 +1776,7 @@ const std::array<Position, NUM_POSITIONS> npc_arthas_stratholme::npc_arthas_stra
     { 2440.408f, 1113.748f, 148.1176f }, // RP3_SPAWN3_AGENT1_WP1
     { 2436.158f, 1113.748f, 148.1176f }, // RP3_SPAWN3_AGENT1_WP2
     { 2442.031f, 1113.648f, 148.1593f }, // RP3_SPAWN3_AGENT1_WP3
-    { 2457.393f, 1113.980f, 150.0917f }, // RP3_EPOCH_SPAWN
-    { 2454.884f, 1114.051f, 150.0546f }, // RP3_EPOCH_WP1
-    { 2452.134f, 1113.551f, 149.5546f }, // RP3_EPOCH_WP2
-    { 2450.874f, 1113.122f, 149.0175f }, // RP3_EPOCH_WP3
+    { 2457.008f, 1113.929f, 150.0776f, 3.272437f }, // RP3_EPOCH_SPAWN
 
     { 2431.960f, 1116.705f, 148.0759f }, // RP4_ARTHAS_WP1
     { 2433.980f, 1116.161f, 148.5607f }, // RP4_ARTHAS_WP2
@@ -2080,12 +1979,12 @@ const std::map<ProgressStates, npc_arthas_stratholme::npc_arthas_stratholmeAI::S
     { UTHER_TALK, { REACT_PASSIVE, false, &_positions[RP1_ARTHAS_INITIAL] } },
     { PURGE_PENDING, { REACT_PASSIVE, true, &_positions[ARTHAS_PURGE_PENDING_POS] } },
     { PURGE_STARTING, { REACT_PASSIVE, false, &_positions[ARTHAS_PURGE_PENDING_POS] } },
-    { WAVES_IN_PROGRESS, { REACT_AGGRESSIVE, false, &_positions[RP2_ARTHAS_MOVE_5] } },
-    { WAVES_DONE, { REACT_DEFENSIVE, false, &_positions[RP2_ARTHAS_MOVE_5] } },
+    { WAVES_IN_PROGRESS, { REACT_AGGRESSIVE, false, &_positions[ARTHAS_WAVES_POS] } },
+    { WAVES_DONE, { REACT_DEFENSIVE, false, &_positions[ARTHAS_WAVES_POS] } },
     { TOWN_HALL_PENDING, { REACT_DEFENSIVE, true, &_positions[ARTHAS_TOWN_HALL_POS] } },
     { TOWN_HALL, { REACT_DEFENSIVE, false, &_positions[ARTHAS_TOWN_HALL_POS] } },
-    { TOWN_HALL_COMPLETE, { REACT_PASSIVE, true, &_positions[RP3_ARTHAS_WP90] } },
-    { GAUNTLET_TRANSITION, { REACT_PASSIVE, false, &_positions[RP3_ARTHAS_WP90] } },
+    { TOWN_HALL_COMPLETE, { REACT_PASSIVE, true, &_positions[ARTHAS_TOWN_HALL_END_POS] } },
+    { GAUNTLET_TRANSITION, { REACT_PASSIVE, false, &_positions[ARTHAS_TOWN_HALL_END_POS] } },
     { GAUNTLET_PENDING, { REACT_PASSIVE, true, &_positions[ARTHAS_GAUNTLET_POS] } },
     { GAUNTLET_IN_PROGRESS, { REACT_AGGRESSIVE, false, &_positions[ARTHAS_GAUNTLET_POS] } },
     { GAUNTLET_COMPLETE, { REACT_PASSIVE, true, &_positions[ARTHAS_GAUNTLET_END_POS] } },

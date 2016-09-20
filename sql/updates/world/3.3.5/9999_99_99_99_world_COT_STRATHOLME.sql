@@ -120,12 +120,12 @@ UPDATE `creature_text` SET `emote`=397 WHERE
 	(`entry` = 26528 AND `groupid` IN (0,5));
 
 -- Arthas/Mal'ganis RP data
-DELETE FROM `creature_text` WHERE `entry`=28169 AND `groupid`=0 AND `id`=1;
-INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`comment`) VALUES
-(28169, 0, 1, "On, no...", 12, 100, 27552, 0, "culling SAY_PHASE204");
+DELETE FROM `creature_text` WHERE `entry` IN (28167,28169);
+INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`emote`,`comment`) VALUES
+(28167, 0, "Prince Arthas, may the light be praised! Many people in the town have begun to fall seriously ill, can you help us?", 12, 100, 27547, 0, 1, "RP2_LINE_CITIZEN1"),
+(28167, 1, "What? This can't be!", 12, 100, 27549, 0, 274, "RP2_LINE_CITIZEN2"),
+(28169, 0, "Oh, no...", 12, 100, 27552, 0, 0, "RP2_LINE_RESIDENT1");
 UPDATE `creature_text` SET `emote`=1 WHERE
-	(`entry` = 28167 AND `groupid`=0) OR
-	(`entry` = 28169 AND `groupid`=0) OR
 	(`entry` = 26499 AND `groupid` IN (12,14)) OR
 	(`entry` = 26533 AND `groupid`=0);
 UPDATE `creature_text` SET `emote`=397 WHERE

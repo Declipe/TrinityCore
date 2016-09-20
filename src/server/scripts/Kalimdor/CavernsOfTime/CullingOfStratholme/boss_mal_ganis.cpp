@@ -15,14 +15,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* Script Data Start
-SDName: Boss mal_ganis
-SDAuthor: Tartalo
-SD%Complete: 80
-SDComment: @todo Intro & outro
-SDCategory:
-Script Data End */
-
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "culling_of_stratholme.h"
