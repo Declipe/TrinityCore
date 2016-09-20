@@ -320,6 +320,19 @@ class instance_culling_of_stratholme : public InstanceMapScript
             {
                 switch (type)
                 {
+                    case DATA_GM_RECALL:
+                        if (Creature* arthas = instance->GetCreature(_arthasGUID))
+                        {
+                            MapRefManager const& players = instance->GetPlayers();
+                            for (auto it = players.begin(); it != players.end(); ++it)
+                                if (Player* player = it->GetSource())
+                                    if (player->GetGUID() == guid || !player->IsGameMaster())
+                                    {
+                                        player->CombatStop(true);
+                                        player->NearTeleportTo(arthas->GetRandomNearPosition(5.0f));
+                                    }
+                        }
+                        break;
                     case DATA_UTHER_START:
                         InitiateArthasEvent(CRATES_DONE, UTHER_TALK, ACTION_START_RP_EVENT1, guid);
                         break;

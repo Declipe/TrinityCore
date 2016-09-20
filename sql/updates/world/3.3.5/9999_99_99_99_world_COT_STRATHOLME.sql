@@ -93,6 +93,7 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`emot
 
 -- Arthas AI
 UPDATE `creature_template` SET `ScriptName`="npc_arthas_stratholme",`AIName`="" WHERE `entry`=26499;
+UPDATE `creature_template` SET `unit_flags`=0x8000, `unit_flags2`=0x800 WHERE `entry` IN (26499,31210);
 
 -- Missing Arthas lines
 DELETE FROM `creature_text` WHERE `entry`=26499 AND `groupid`>38;

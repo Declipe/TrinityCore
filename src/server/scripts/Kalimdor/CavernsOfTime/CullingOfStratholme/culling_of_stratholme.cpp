@@ -284,8 +284,11 @@ class npc_chromie_start : public CreatureScript
             if (InstanceScript* instance = creature->GetInstanceScript())
             {
                 if (player->CanBeGameMaster()) // GM instance state override menu
+                {
+                    AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, "[GM] Teleport all players to Arthas", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL);
                     for (uint32 state = 1; state <= COMPLETE; state = state << 1)
                         AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, Trinity::StringFormat("[GM] Set instance progress 0x%X", state).c_str(), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL + state);
+                }
 
                 uint32 state = instance->GetData(DATA_INSTANCE_PROGRESS);
                 if (state < PURGE_STARTING)
@@ -353,7 +356,14 @@ class npc_chromie_start : public CreatureScript
                     if (!player->HasItemCount(ITEM_ARCANE_DISRUPTOR))
                         player->AddItem(ITEM_ARCANE_DISRUPTOR, 1); // @todo figure out spell
                     break;
-                default: // handle GM instance commands
+                case GOSSIP_OFFSET_GM_INITIAL:
+                    CloseGossipMenuFor(player);
+                    if (!player->CanBeGameMaster())
+                        break;
+                    if (InstanceScript* instance = creature->GetInstanceScript())
+                        instance->SetGuidData(DATA_GM_RECALL, player->GetGUID());
+                    break;
+                default: // handle GM instance state switch
                     CloseGossipMenuFor(player);
                     if (!player->CanBeGameMaster())
                         break;

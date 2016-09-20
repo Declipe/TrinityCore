@@ -120,7 +120,8 @@ enum InstanceData
     NUM_BOSS_ENCOUNTERS,
 
     DATA_INSTANCE_PROGRESS = NUM_BOSS_ENCOUNTERS, // GET only
-    DATA_GM_OVERRIDE,      // sent by chromie #1 in response to GM instance control commands
+    DATA_GM_RECALL,        // sent by chromie #1 in response to GM recall command (teleport all to arthas)
+    DATA_GM_OVERRIDE,      // sent by chromie #1 in response to GM instance state change commands
     DATA_ARTHAS_DIED,      // failure signal, sent by arthas AI on death - regress instance
     DATA_CRATES_START,     // sent by chromie #1 creature script to initiate crate phase
     DATA_CRATE_REVEALED,   // sent by crate helper AI to trigger re-check of crate status
