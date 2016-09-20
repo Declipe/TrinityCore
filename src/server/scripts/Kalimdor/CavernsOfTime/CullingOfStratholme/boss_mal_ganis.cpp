@@ -73,7 +73,7 @@ class boss_mal_ganis : public CreatureScript
                     instance->SetBossState(DATA_MAL_GANIS, NOT_STARTED);
             }
 
-            void DamageTaken(Unit* source, uint32 &damage) override
+            void DamageTaken(Unit* /*source*/, uint32 &damage) override
             {
                 if (damage >= me->GetHealth())
                 {

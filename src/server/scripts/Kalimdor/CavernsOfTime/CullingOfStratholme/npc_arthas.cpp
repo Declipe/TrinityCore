@@ -21,6 +21,7 @@
 #include "SpellScript.h"
 #include "MoveSplineInit.h"
 #include "SplineChainMovementGenerator.h"
+#include "ScriptSystem.h"
 
 enum Entries
 {
@@ -36,9 +37,11 @@ enum Entries
     NPC_RISEN_ZOMBIE = 27737,
     NPC_CITIZEN_INFINITE = 28340,
     NPC_RESIDENT_INFINITE = 28341,
+    NPC_TIME_RIFT = 28409,
+    NPC_TIME_RIFT_LARGE = 28439,
+    NPC_INFINITE_ADVERSARY = 27742,
     NPC_INFINITE_HUNTER = 27743,
     NPC_INFINITE_AGENT = 27744,
-    NPC_INFINITE_ADVERSARY = 27742,
     NPC_EPOCH = 26532,
     NPC_MALGANIS = 26533,
     NPC_CHROMIE_3 = 30997,
@@ -84,6 +87,20 @@ enum SplineChains
     RP3_CHAIN_ARTHAS4   = 97, // Arthas presses onward into a hallway
     RP3_CHAIN_ARTHAS5   = 98, // Arthas advances into the boss room
     RP3_CHAIN_EPOCH     = 1,  // Chrono-Lord Epoch advances out of the portal
+
+    // Spawn motions (all on 27742, infinite adversary)
+    RP3_CHAIN_SPAWN1_LOC1 = 4,
+    RP3_CHAIN_SPAWN1_LOC2 = 2,
+    RP3_CHAIN_SPAWN1_LOC3 = 1,
+    RP3_CHAIN_SPAWN1_LOC4 = 3,
+    RP3_CHAIN_SPAWN2_LOC1 = 5,
+    RP3_CHAIN_SPAWN2_LOC2 = 6,
+    RP3_CHAIN_SPAWN2_LOC3 = 7,
+    RP3_CHAIN_SPAWN2_LOC4 = 8,
+    RP3_CHAIN_SPAWN3_LOC1 = 9,
+    RP3_CHAIN_SPAWN3_LOC2 = 10,
+    RP3_CHAIN_SPAWN3_LOC3 = 11,
+    RP3_CHAIN_SPAWN3_LOC4 = 12
 };
 
 enum PointIDs
@@ -356,52 +373,26 @@ enum PositionIndices : uint32
 
     // Town Hall
     ARTHAS_TOWN_HALL_POS,
-    RP3_SPAWN1_ADVERSARY1_SPAWN,
-    RP3_SPAWN1_ADVERSARY1_WP1,
-    RP3_SPAWN1_ADVERSARY1_WP2,
-    RP3_SPAWN1_ADVERSARY1_WP3,
-    RP3_SPAWN1_ADVERSARY1_WP4,
-    RP3_SPAWN1_ADVERSARY2_SPAWN,
-    RP3_SPAWN1_HUNTER1_SPAWN,
-    RP3_SPAWN1_HUNTER1_WP1,
-    RP3_SPAWN1_HUNTER1_WP2,
-    RP3_SPAWN1_HUNTER1_WP3,
-    RP3_SPAWN1_HUNTER1_WP4,
-    RP3_SPAWN1_HUNTER1_WP5,
-    RP3_SPAWN1_AGENT1_SPAWN,
-    RP3_SPAWN2_ADVERSARY1_SPAWN,
-    RP3_SPAWN2_HUNTER1_SPAWN,
-    RP3_SPAWN2_HUNTER1_WP1,
-    RP3_SPAWN2_HUNTER1_WP2,
-    RP3_SPAWN2_HUNTER1_WP3,
-    RP3_SPAWN2_HUNTER1_WP4,
-    RP3_SPAWN2_HUNTER2_SPAWN,
-    RP3_SPAWN2_AGENT1_SPAWN,
-    RP3_SPAWN2_AGENT1_WP1,
-    RP3_SPAWN2_AGENT1_WP2,
-    RP3_SPAWN2_AGENT1_WP3,
-    RP3_SPAWN2_AGENT1_WP4,
-    ARTHAS_TOWN_HALL_END_POS,
-    RP3_SPAWN3_ADVERSARY1_SPAWN,
-    RP3_SPAWN3_ADVERSARY1_WP1,
-    RP3_SPAWN3_ADVERSARY1_WP2,
-    RP3_SPAWN3_HUNTER1_SPAWN,
-    RP3_SPAWN3_HUNTER1_WP1,
-    RP3_SPAWN3_HUNTER1_WP2,
-    RP3_SPAWN3_HUNTER1_WP3,
-    RP3_SPAWN3_HUNTER1_WP4,
-    RP3_SPAWN3_HUNTER1_WP5,
-    RP3_SPAWN3_HUNTER1_WP6,
-    RP3_SPAWN3_HUNTER2_SPAWN,
-    RP3_SPAWN3_HUNTER2_WP1,
-    RP3_SPAWN3_HUNTER2_WP2,
-    RP3_SPAWN3_HUNTER2_WP3,
-    RP3_SPAWN3_HUNTER2_WP4,
-    RP3_SPAWN3_AGENT1_SPAWN,
-    RP3_SPAWN3_AGENT1_WP1,
-    RP3_SPAWN3_AGENT1_WP2,
-    RP3_SPAWN3_AGENT1_WP3,
+    RP3_SPAWN1_LOC1,
+    RP3_SPAWN1_LOC2,
+    RP3_SPAWN1_LOC3,
+    RP3_SPAWN1_LOC4,
+    RP3_SPAWN1_RIFT,
+    RP3_SPAWN2_LOC1,
+    RP3_SPAWN2_LOC2,
+    RP3_SPAWN2_LOC3,
+    RP3_SPAWN2_LOC4,
+    RP3_SPAWN2_RIFT1,
+    RP3_SPAWN2_RIFT2,
+    RP3_SPAWN3_LOC1,
+    RP3_SPAWN3_LOC2,
+    RP3_SPAWN3_LOC3,
+    RP3_SPAWN3_LOC4,
+    RP3_SPAWN3_RIFT1,
+    RP3_SPAWN3_RIFT2,
     RP3_EPOCH_SPAWN,
+    RP3_EPOCH_RIFT,
+    ARTHAS_TOWN_HALL_END_POS,
 
     // Gauntlet
     RP4_ARTHAS_WP1,
@@ -1344,14 +1335,20 @@ class npc_arthas_stratholme : public CreatureScript
                         me->GetMotionMaster()->MoveAlongSplineChain(0, RP3_CHAIN_ARTHAS3_2, true);
                         break;
                     case RP3_EVENT_SPAWN1:
-                        // creatures without path movement don't have create in 4.x sniff, todo check other versions
-                        if (Creature* adversary = instance->instance->SummonCreature(NPC_INFINITE_ADVERSARY, _positions[RP3_SPAWN1_ADVERSARY1_SPAWN]))
-                            MoveAlongPath(adversary, RP3_SPAWN1_ADVERSARY1_WP1, RP3_SPAWN1_ADVERSARY1_WP4, true);
-                        instance->instance->SummonCreature(NPC_INFINITE_ADVERSARY, _positions[RP3_SPAWN1_ADVERSARY2_SPAWN]);
-                        if (Creature* hunter = instance->instance->SummonCreature(NPC_INFINITE_HUNTER, _positions[RP3_SPAWN1_HUNTER1_SPAWN]))
-                            MoveAlongPath(hunter, RP3_SPAWN1_HUNTER1_WP1, RP3_SPAWN1_HUNTER1_WP5, true);
-                        instance->instance->SummonCreature(NPC_INFINITE_AGENT, _positions[RP3_SPAWN1_AGENT1_SPAWN]);
+                    {
+                        uint8 extra = urand(0, 2); // 0 = extra adversary, 1 = extra hunter, 2 = extra agent
+                        if (Creature* spawn1 = instance->instance->SummonCreature(NPC_INFINITE_ADVERSARY, _positions[RP3_SPAWN1_LOC1]))
+                            MoveInfiniteOnSpawn(spawn1, RP3_CHAIN_SPAWN1_LOC1);
+                        if (Creature* spawn2 = instance->instance->SummonCreature(extra ? NPC_INFINITE_HUNTER : NPC_INFINITE_ADVERSARY, _positions[RP3_SPAWN1_LOC2]))
+                            MoveInfiniteOnSpawn(spawn2, RP3_CHAIN_SPAWN1_LOC2);
+                        if (Creature* spawn3 = instance->instance->SummonCreature(extra < 2 ? NPC_INFINITE_HUNTER : NPC_INFINITE_AGENT, _positions[RP3_SPAWN1_LOC3]))
+                            MoveInfiniteOnSpawn(spawn3, RP3_CHAIN_SPAWN1_LOC3);
+                        if (Creature* spawn4 = instance->instance->SummonCreature(NPC_INFINITE_AGENT, _positions[RP3_SPAWN1_LOC4]))
+                            MoveInfiniteOnSpawn(spawn4, RP3_CHAIN_SPAWN1_LOC4);
+                        if (Creature* rift = instance->instance->SummonCreature(NPC_TIME_RIFT, _positions[RP3_SPAWN1_RIFT]))
+                            rift->DespawnOrUnsummon(Seconds(4));
                         break;
+                    }
                     case RP3_EVENT_SPAWN1_FACE:
                     case RP3_EVENT_SPAWN2_FACE:
                     case RP3_EVENT_SPAWN3_FACE:
@@ -1379,14 +1376,22 @@ class npc_arthas_stratholme : public CreatureScript
                         talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS20;
                         break;
                     case RP3_EVENT_SPAWN2:
-                        // same as above, no path movement -> no sniff data in 4.x era sniff
-                        instance->instance->SummonCreature(NPC_INFINITE_ADVERSARY, _positions[RP3_SPAWN2_ADVERSARY1_SPAWN]);
-                        if (Creature* hunter = instance->instance->SummonCreature(NPC_INFINITE_HUNTER, _positions[RP3_SPAWN2_HUNTER1_SPAWN]))
-                            MoveAlongPath(hunter, RP3_SPAWN2_HUNTER1_WP1, RP3_SPAWN2_HUNTER1_WP4, true);
-                        instance->instance->SummonCreature(NPC_INFINITE_HUNTER, _positions[RP3_SPAWN2_HUNTER2_SPAWN]);
-                        if (Creature* agent = instance->instance->SummonCreature(NPC_INFINITE_AGENT, _positions[RP3_SPAWN2_AGENT1_SPAWN]))
-                            MoveAlongPath(agent, RP3_SPAWN2_AGENT1_WP1, RP3_SPAWN2_AGENT1_WP4, true);
+                    {
+                        uint8 extra = urand(0, 2); // 0 = extra adversary, 1 = extra hunter, 2 = extra agent
+                        if (Creature* SPAWN2 = instance->instance->SummonCreature(NPC_INFINITE_ADVERSARY, _positions[RP3_SPAWN2_LOC1]))
+                            MoveInfiniteOnSpawn(SPAWN2, RP3_CHAIN_SPAWN2_LOC1);
+                        if (Creature* spawn2 = instance->instance->SummonCreature(extra ? NPC_INFINITE_HUNTER : NPC_INFINITE_ADVERSARY, _positions[RP3_SPAWN2_LOC2]))
+                            MoveInfiniteOnSpawn(spawn2, RP3_CHAIN_SPAWN2_LOC2);
+                        if (Creature* spawn3 = instance->instance->SummonCreature(extra < 2 ? NPC_INFINITE_HUNTER : NPC_INFINITE_AGENT, _positions[RP3_SPAWN2_LOC3]))
+                            MoveInfiniteOnSpawn(spawn3, RP3_CHAIN_SPAWN2_LOC3);
+                        if (Creature* spawn4 = instance->instance->SummonCreature(NPC_INFINITE_AGENT, _positions[RP3_SPAWN2_LOC4]))
+                            MoveInfiniteOnSpawn(spawn4, RP3_CHAIN_SPAWN2_LOC4);
+                        if (Creature* rift1 = instance->instance->SummonCreature(NPC_TIME_RIFT, _positions[RP3_SPAWN2_RIFT1]))
+                            rift1->DespawnOrUnsummon(Seconds(5));
+                        if (Creature* rift2 = instance->instance->SummonCreature(NPC_TIME_RIFT, _positions[RP3_SPAWN2_RIFT2]))
+                            rift2->DespawnOrUnsummon(Seconds(5));
                         break;
+                    }
                     case RP3_EVENT_ARTHAS_FACE2:
                         me->SetFacingTo(1.762783f); // @todo
                         break;
@@ -1401,15 +1406,22 @@ class npc_arthas_stratholme : public CreatureScript
                         me->GetMotionMaster()->MoveAlongSplineChain(RP3_POINTID_ARTHAS5, RP3_CHAIN_ARTHAS5, false);
                         break;
                     case RP3_EVENT_SPAWN3:
-                        if (Creature* adversary = instance->instance->SummonCreature(NPC_INFINITE_ADVERSARY, _positions[RP3_SPAWN3_ADVERSARY1_SPAWN]))
-                            MoveAlongPath(adversary, RP3_SPAWN3_ADVERSARY1_WP1, RP3_SPAWN3_ADVERSARY1_WP2, true);
-                        if (Creature* hunter = instance->instance->SummonCreature(NPC_INFINITE_HUNTER, _positions[RP3_SPAWN3_HUNTER1_SPAWN]))
-                            MoveAlongPath(hunter, RP3_SPAWN3_HUNTER1_WP1, RP3_SPAWN3_HUNTER1_WP6, true);
-                        if (Creature* hunter = instance->instance->SummonCreature(NPC_INFINITE_HUNTER, _positions[RP3_SPAWN3_HUNTER2_SPAWN]))
-                            MoveAlongPath(hunter, RP3_SPAWN3_HUNTER2_WP1, RP3_SPAWN3_HUNTER2_WP4, true);
-                        if (Creature* agent = instance->instance->SummonCreature(NPC_INFINITE_AGENT, _positions[RP3_SPAWN3_AGENT1_SPAWN]))
-                            MoveAlongPath(agent, RP3_SPAWN3_AGENT1_WP1, RP3_SPAWN3_AGENT1_WP3, true);
+                    {
+                        uint8 extra = urand(0, 2); // 0 = extra adversary, 1 = extra hunter, 2 = extra agent
+                        if (Creature* SPAWN3 = instance->instance->SummonCreature(NPC_INFINITE_ADVERSARY, _positions[RP3_SPAWN3_LOC1]))
+                            MoveInfiniteOnSpawn(SPAWN3, RP3_CHAIN_SPAWN3_LOC1);
+                        if (Creature* SPAWN3 = instance->instance->SummonCreature(extra ? NPC_INFINITE_HUNTER : NPC_INFINITE_ADVERSARY, _positions[RP3_SPAWN3_LOC2]))
+                            MoveInfiniteOnSpawn(SPAWN3, RP3_CHAIN_SPAWN3_LOC2);
+                        if (Creature* spawn3 = instance->instance->SummonCreature(extra < 2 ? NPC_INFINITE_HUNTER : NPC_INFINITE_AGENT, _positions[RP3_SPAWN3_LOC3]))
+                            MoveInfiniteOnSpawn(spawn3, RP3_CHAIN_SPAWN3_LOC3);
+                        if (Creature* spawn4 = instance->instance->SummonCreature(NPC_INFINITE_AGENT, _positions[RP3_SPAWN3_LOC4]))
+                            MoveInfiniteOnSpawn(spawn4, RP3_CHAIN_SPAWN3_LOC4);
+                        if (Creature* rift1 = instance->instance->SummonCreature(NPC_TIME_RIFT, _positions[RP3_SPAWN3_RIFT1]))
+                            rift1->DespawnOrUnsummon(Seconds(5));
+                        if (Creature* rift2 = instance->instance->SummonCreature(NPC_TIME_RIFT, _positions[RP3_SPAWN3_RIFT2]))
+                            rift2->DespawnOrUnsummon(Seconds(5));
                         break;
+                    }
                     case RP3_EVENT_ARTHAS30:
                         talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS30;
                         break;
@@ -1420,6 +1432,8 @@ class npc_arthas_stratholme : public CreatureScript
                     case RP3_EVENT_EPOCH_SPAWN:
                         if (Creature* epoch = instance->instance->SummonCreature(NPC_EPOCH, _positions[RP3_EPOCH_SPAWN]))
                             epoch->GetMotionMaster()->MoveAlongSplineChain(0, RP3_CHAIN_EPOCH, false);
+                        if (Creature* rift = instance->instance->SummonCreature(NPC_TIME_RIFT_LARGE, _positions[RP3_EPOCH_RIFT]))
+                            rift->DespawnOrUnsummon(Seconds(27));
                         break;
                     case RP3_EVENT_ARTHAS31:
                         talkerEntry = 0, talkerLine = RP3_LINE_ARTHAS31;
@@ -1603,6 +1617,12 @@ class npc_arthas_stratholme : public CreatureScript
             }
         }
 
+        static void MoveInfiniteOnSpawn(Creature* infinite, SplineChains chainId)
+        {
+            if (SplineChain const* chain = sScriptSystemMgr->GetSplineChain(NPC_INFINITE_ADVERSARY, chainId))
+                infinite->GetMotionMaster()->MoveAlongSplineChain(0, *chain, true);
+        }
+
         void KilledUnit(Unit* who) override
         {
             if (who && who->GetEntry() == NPC_RISEN_ZOMBIE)
@@ -1731,52 +1751,26 @@ const std::array<Position, NUM_POSITIONS> npc_arthas_stratholme::npc_arthas_stra
     { 2113.454f, 1287.986f, 136.3829f, 3.071779f }, // RP2_MALGANIS_POS
 
     { 2366.240f, 1195.253f, 132.0441f, 3.159046f }, // ARTHAS_TOWN_HALL_POS
-    { 2433.040f, 1191.160f, 148.1285f, 4.998989f }, // RP3_SPAWN1_ADVERSARY1_SPAWN
-    { 2432.566f, 1193.102f, 148.1593f }, // RP3_SPAWN1_ADVERSARY1_WP1
-    { 2432.757f, 1192.121f, 148.1593f }, // RP3_SPAWN1_ADVERSARY1_WP2
-    { 2433.525f, 1189.516f, 148.0759f }, // RP3_SPAWN1_ADVERSARY1_WP3
-    { 2434.290f, 1185.112f, 148.0759f }, // RP3_SPAWN1_ADVERSARY1_WP4
-    { 2437.091f, 1188.969f, 148.0759f }, // RP3_SPAWN1_ADVERSARY2_SPAWN
-    { 2433.176f, 1193.429f, 148.1162f, 1.215144f }, // RP3_SPAWN1_HUNTER1_SPAWN
-    { 2432.270f, 1191.664f, 148.1593f }, // RP3_SPAWN1_HUNTER1_WP1
-    { 2432.829f, 1192.493f, 148.1593f }, // RP3_SPAWN1_HUNTER1_WP2
-    { 2433.502f, 1194.306f, 148.0759f }, // RP3_SPAWN1_HUNTER1_WP3
-    { 2433.700f, 1194.840f, 148.0759f }, // RP3_SPAWN1_HUNTER1_WP4
-    { 2436.273f, 1198.183f, 148.0759f }, // RP3_SPAWN1_HUNTER1_WP5
-    { 2438.529f, 1192.707f, 148.0579f }, // RP3_SPAWN1_AGENT_SPAWN
-    { 2415.398f, 1140.661f, 148.0759f }, // RP3_SPAWN2_ADVERSARY1_SPAWN
-    { 2404.376f, 1179.393f, 148.1379f, 5.141369f }, // RP3_SPAWN2_HUNTER1_SPAWN
-    { 2404.736f, 1179.674f, 148.1587f }, // RP3_SPAWN2_HUNTER1_WP1
-    { 2403.959f, 1180.304f, 148.1587f }, // RP3_SPAWN2_HUNTER1_WP2
-    { 2405.620f, 1176.671f, 148.0759f }, // RP3_SPAWN2_HUNTER1_WP3
-    { 2407.341f, 1172.870f, 148.0759f }, // RP3_SPAWN2_HUNTER1_WP4
-    { 2411.154f, 1140.153f, 148.0759f }, // RP3_SPAWN2_HUNTER2_SPAWN
-    { 2403.785f, 1179.004f, 148.1381f, 4.588950f }, // RP3_SPAWN2_AGENT1_SPAWN
-    { 2403.891f, 1180.996f, 148.1587f }, // RP3_SPAWN2_AGENT1_WP1
-    { 2403.908f, 1179.996f, 148.1587f }, // RP3_SPAWN2_AGENT1_WP2
-    { 2403.413f, 1176.008f, 148.0759f }, // RP3_SPAWN2_AGENT1_WP3
-    { 2403.444f, 1172.043f, 148.0759f }, // RP3_SPAWN2_AGENT1_WP4
-    { 2425.898f, 1118.842f, 148.0759f, 6.073746f }, // ARTHAS_TOWN_HALL_END_POS
-    { 2429.303f, 1102.002f, 148.1593f }, // RP3_SPAWN3_ADVERSARY1_SPAWN
-    { 2428.320f, 1104.574f, 148.1176f }, // RP3_SPAWN3_ADVERSARY1_WP1
-    { 2429.303f, 1102.002f, 148.1593f }, // RP3_SPAWN3_ADVERSARY1_WP2
-    { 2442.348f, 1114.049f, 148.1413f, 2.183568f }, // RP3_SPAWN3_HUNTER1_SPAWN
-    { 2442.718f, 1112.450f, 148.1593f }, // RP3_SPAWN3_HUNTER1_WP1
-    { 2442.771f, 1113.448f, 148.1593f }, // RP3_SPAWN3_HUNTER1_WP2
-    { 2440.811f, 1116.235f, 148.0759f }, // RP3_SPAWN3_HUNTER1_WP3
-    { 2439.670f, 1117.256f, 148.0759f }, // RP3_SPAWN3_HUNTER1_WP4
-    { 2438.849f, 1117.990f, 148.0759f }, // RP3_SPAWN3_HUNTER1_WP5
-    { 2438.027f, 1118.726f, 148.0759f }, // RP3_SPAWN3_HUNTER1_WP6
-    { 2430.089f, 1103.095f, 148.1353f, 0.905703f }, // RP3_SPAWN3_HUNTER2_SPAWN
-    { 2429.549f, 1101.521f, 148.1593f }, // RP3_SPAWN3_HUNTER2_WP1
-    { 2429.636f, 1102.517f, 148.1593f }, // RP3_SPAWN3_HUNTER2_WP2
-    { 2431.217f, 1104.532f, 148.0759f }, // RP3_SPAWN3_HUNTER2_WP3
-    { 2432.575f, 1108.833f, 148.0759f }, // RP3_SPAWN3_HUNTER2_WP4
-    { 2442.031f, 1113.648f, 148.1593f }, // RP3_SPAWN3_AGENT1_SPAWN
-    { 2440.408f, 1113.748f, 148.1176f }, // RP3_SPAWN3_AGENT1_WP1
-    { 2436.158f, 1113.748f, 148.1176f }, // RP3_SPAWN3_AGENT1_WP2
-    { 2442.031f, 1113.648f, 148.1593f }, // RP3_SPAWN3_AGENT1_WP3
+    { 2433.154f, 1192.572f, 148.1547f, 5.542059f }, // RP3_SPAWN1_LOC1
+    { 2432.990f, 1192.760f, 148.1474f, 1.026526f }, // RP3_SPAWN1_LOC2
+    { 2432.824f, 1191.816f, 148.1556f, 4.927707f }, // RP3_SPAWN1_LOC3
+    { 2432.711f, 1192.857f, 148.1550f, 6.257423f }, // RP3_SPAWN1_LOC4
+    { 2433.357f, 1192.168f, 148.1593f, 3.001966f }, // RP3_SPAWN1_RIFT_SPAWN
+    { 2414.349f, 1136.075f, 148.1592f, 1.345922f }, // RP3_SPAWN2_LOC1
+    { 2403.961f, 1180.299f, 148.1587f, 5.139339f }, // RP3_SPAWN2_LOC2
+    { 2414.671f, 1136.262f, 148.1592f, 2.305776f }, // RP3_SPAWN2_LOC3
+    { 2403.908f, 1179.994f, 148.1586f, 4.654133f }, // RP3_SPAWN2_LOC4
+    { 2404.311f, 1178.306f, 148.1585f, 1.605703f }, // RP3_SPAWN2_RIFT1
+    { 2414.041f, 1136.068f, 148.1593f, 2.234021f }, // RP3_SPAWN2_RIFT2
+    { 2429.026f, 1102.693f, 148.1499f, 1.952652f }, // RP3_SPAWN3_LOC1
+    { 2441.173f, 1115.225f, 148.1264f, 2.302970f }, // RP3_SPAWN3_LOC2
+    { 2430.645f, 1104.685f, 148.1306f, 1.135255f }, // RP3_SPAWN3_LOC3
+    { 2439.649f, 1113.719f, 148.1298f, 3.111888f }, // RP3_SPAWN3_LOC4
+    { 2429.296f, 1102.007f, 148.1593f, 6.213372f }, // RP3_SPAWN3_RIFT1
+    { 2440.057f, 1114.226f, 148.1593f, 6.108652f }, // RP3_SPAWN3_RIFT2
     { 2457.008f, 1113.929f, 150.0776f, 3.272437f }, // RP3_EPOCH_SPAWN
+    { 2456.058f, 1113.838f, 150.0917f, 1.745329f }, // RP3_EPOCH_RIFT
+    { 2425.898f, 1118.842f, 148.0759f, 6.073746f }, // ARTHAS_TOWN_HALL_END_POS
 
     { 2431.960f, 1116.705f, 148.0759f }, // RP4_ARTHAS_WP1
     { 2433.980f, 1116.161f, 148.5607f }, // RP4_ARTHAS_WP2

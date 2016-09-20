@@ -117,7 +117,7 @@ Position const ChromieSummonPos[] =
     { 2273.725f, 1483.684f, 128.7205f, 6.057528f }
 };
 
-Position const InfiniteCorruptorPos = { 2335.47f, 1262.04f, 132.921f, 1.42079f };
+Position const InfiniteCorruptorPos = { 2331.642f, 1273.273f, 132.9524f, 3.717551f };
 Position const TimeRiftPos = { 2334.626f, 1280.45f, 133.0066f, 1.727876f };
 Position const GuardianOfTimePos = { 2321.489f, 1268.383f, 132.8507f, 0.418879f };
 
