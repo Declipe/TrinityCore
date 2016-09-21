@@ -1487,15 +1487,9 @@ class npc_arthas_stratholme : public CreatureScript
             {
                 _progressRP = false;
                 me->SetHomePosition(me->GetPosition());
-                MotionMaster const* mm = me->GetMotionMaster();
-                if (MovementGenerator const* activeGen = mm->GetMotionSlot(MOTION_SLOT_ACTIVE))
-                    if (activeGen->GetMovementGeneratorType() == SPLINE_CHAIN_MOTION_TYPE)
-                    {
-                        std::cout << "Arthas AI: spline chain motion paused" << std::endl;
-                        _resumeMovement = reinterpret_cast<SplineChainMovementGenerator const*>(activeGen)->GetResumeInfo(me);
-                    }
-                    else
-                        std::cout << "Arthas AI: entered combat, but active movement gen is of type " << activeGen->GetMovementGeneratorType() << " != spline chain." << std::endl;
+                SplineChainMovementGenerator::GetResumeInfo(me, _resumeMovement);
+                if (!_resumeMovement.Empty())
+                    std::cout << "Arthas AI: spline chain motion paused" << std::endl;
                 else
                     std::cout << "Arthas AI: entered combat without pathing, pausing RP regardless" << std::endl;
             }
@@ -1511,7 +1505,7 @@ class npc_arthas_stratholme : public CreatureScript
         void JustReachedHome() override
         {
             _progressRP = true;
-            if (_resumeMovement.Chain) // WP motion was interrupted, resume
+            if (!_resumeMovement.Empty()) // WP motion was interrupted, resume
             {
                 std::cout << "Arthas AI: Resuming motion" << std::endl;
                 me->GetMotionMaster()->ResumeSplineChain(_resumeMovement);

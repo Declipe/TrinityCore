@@ -25,6 +25,7 @@
 #include "Player.h"
 #include "SpellInfo.h"
 #include "AreaBoundary.h"
+#include "SplineChainMovementGenerator.h"
 
 enum InnEventEntries
 {
@@ -518,6 +519,103 @@ enum CrateGenericMisc
 };
 
 // Crate fluff event #1
+enum CrateEvent1Misc
+{
+    NPC_MARTHA = 27884,
+    NPC_JENA = 27885,
+
+    EVENT_MARTHA_IDLE1 = 1,
+    EVENT_MARTHA_IDLE2,
+
+    CHAIN_MARTHA_IDLE1 = 1,
+    CHAIN_MARTHA_IDLE2 = 2,
+};
+static const float marthaIdleOrientation1 = 3.159046f;
+static const float marthaIdleOrientation2 = 4.764749f;
+struct npc_martha_goslin : public CreatureScript
+{
+    npc_martha_goslin() : CreatureScript("npc_martha_goslin") { }
+    struct npc_martha_goslinAI : public NullCreatureAI
+    {
+        npc_martha_goslinAI(Creature* creature) : NullCreatureAI(creature), _interruptTimer(0) { }
+
+        void DoAction(int32 action) override {
+            _interruptTimer = 12000;
+            SplineChainMovementGenerator::GetResumeInfo(me, _resumeInfo);
+        }
+
+        void MovementInform(uint32 type, uint32 id) override
+        {
+            if (type == SPLINE_CHAIN_MOTION_TYPE)
+                switch (id)
+                {
+                    case MOVEID_EVENT1:
+                        me->SetFlag(UNIT_NPC_EMOTESTATE, EMOTE_STATE_USE_STANDING);
+                        me->SetFacingTo(marthaIdleOrientation1, true);
+                        events.ScheduleEvent(EVENT_MARTHA_IDLE2, Seconds(9), Seconds(15));
+                        break;
+                    case MOVEID_EVENT2:
+                        me->SetFlag(UNIT_NPC_EMOTESTATE, EMOTE_STATE_USE_STANDING);
+                        me->SetFacingTo(marthaIdleOrientation2, true);
+                        events.ScheduleEvent(EVENT_MARTHA_IDLE1, Seconds(9), Seconds(15));
+                        break;
+                }
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (_interruptTimer)
+            {
+                if (_interruptTimer > diff)
+                {
+                    _interruptTimer -= diff;
+                    return;
+                }
+                diff -= _interruptTimer;
+                _interruptTimer = 0;
+                if (!_resumeInfo.Empty())
+                {
+                    me->GetMotionMaster()->ResumeSplineChain(_resumeInfo);
+                    _resumeInfo.Chain = nullptr;
+                }
+
+                if (!diff)
+                    return;
+            }
+
+            events.Update(diff);
+            while (uint32 eventId = events.ExecuteEvent())
+                switch (eventId)
+                {
+                    case EVENT_MARTHA_IDLE1:
+                        me->SetFlag(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_NONE);
+                        me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT1, CHAIN_MARTHA_IDLE1, true);
+                        break;
+                    case EVENT_MARTHA_IDLE2:
+                        me->SetFlag(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_NONE);
+                        me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT2, CHAIN_MARTHA_IDLE2, true);
+                        break;
+                }
+        }
+
+        void InitializeAI() override
+        {
+            me->SetFlag(UNIT_NPC_EMOTESTATE, EMOTE_STATE_USE_STANDING);
+            events.RescheduleEvent(EVENT_MARTHA_IDLE2, Seconds(5), Seconds(10));
+        }
+
+        void JustRespawned() override { InitializeAI(); }
+
+        EventMap events;
+        uint32 _interruptTimer;
+        SplineChainResumeInfo _resumeInfo;
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return GetInstanceAI<npc_martha_goslinAI>(creature);
+    }
+};
 struct npc_jena_anderson : public CreatureScript
 {
     npc_jena_anderson() : CreatureScript("npc_jena_anderson") { }
@@ -531,19 +629,6 @@ struct npc_jena_anderson : public CreatureScript
     CreatureAI* GetAI(Creature* creature) const override
     {
         return GetInstanceAI<npc_jena_andersonAI>(creature);
-    }
-};
-struct npc_martha_goslin : public CreatureScript
-{
-    npc_martha_goslin() : CreatureScript("npc_martha_goslin") { }
-    struct npc_martha_goslinAI : public NullCreatureAI
-    {
-        npc_martha_goslinAI(Creature* creature) : NullCreatureAI(creature) { }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return GetInstanceAI<npc_martha_goslinAI>(creature);
     }
 };
 
