@@ -89,7 +89,7 @@ class npc_hearthsinger_forresten_cot : public CreatureScript
                 events.Update(diff);
                 while (uint32 eventId = events.ExecuteEvent())
                 {
-                    uint32 talkerEntry, line;
+                    uint32 talkerEntry = UINT_MAX, line = 0;
                     switch (eventId)
                     {
                         case EVENT_FORREST_1:
@@ -129,15 +129,16 @@ class npc_hearthsinger_forresten_cot : public CreatureScript
                         case EVENT_FRAS_2:
                             talkerEntry = NPC_FRAS, line = LINE_FRAS_2;
                             break;
-                        default:
-                            talkerEntry = 0, line = 0;
-                            break;
                     }
-                    Creature* talker = me;
-                    if (talkerEntry)
-                        talker = me->FindNearestCreature(talkerEntry, 80.0f, true);
-                    if (talker)
-                        talker->AI()->Talk(line, ObjectAccessor::GetPlayer(*talker, _triggeringPlayer));
+
+                    if (talkerEntry != UINT_MAX)
+                    {
+                        Creature* talker = me;
+                        if (talkerEntry)
+                            talker = me->FindNearestCreature(talkerEntry, 80.0f, true);
+                        if (talker)
+                            talker->AI()->Talk(line, ObjectAccessor::GetPlayer(*talker, _triggeringPlayer));
+                    }
                 }
             }
 
@@ -560,77 +561,10 @@ enum CrateEvent2Misc
     LINE_BARTLEBY_IDLE  = 0,
     LINE_BARTLEBY1      = 1, // Well, guess I should load everything back into the cart.
     LINE_BARTLEBY2      = 2, // Oh, come on! My cart broke, my horse lost a shoe, and now the cargo goes bad!
-    LINE_BARTLEBY3      = 3  // I guess I'll go find the authorities. If I'm lucky they'll tell me it's the plague and that we're all going to die.
-};
-static const Movement::PointsArray bartlebyPath1 = {
-    { 1671.586f, 872.1134f, 120.4314f },
-    { 1672.917f, 871.3535f, 120.3277f }
-};
-static const Movement::PointsArray bartlebyPath2 = {
-    { 1669.969f, 870.7180f, 120.1384f },
-    { 1667.148f, 870.1765f, 120.0045f },
-    { 1664.689f, 868.1503f, 119.9065f },
-    { 1662.898f, 866.5289f, 120.0467f },
-    { 1659.009f, 861.1918f, 119.3174f },
-    { 1658.206f, 859.9042f, 119.4396f },
-    { 1655.873f, 856.0323f, 119.1204f },
-    { 1654.021f, 852.6975f, 119.3411f },
-    { 1650.059f, 845.4074f, 119.0619f },
-    { 1648.144f, 841.8294f, 119.5816f },
-    { 1644.644f, 832.8294f, 119.8316f },
-    { 1642.712f, 828.8032f, 119.8451f },
-    { 1641.215f, 825.3640f, 120.1445f },
-    { 1638.808f, 817.3542f, 119.9748f },
-    { 1638.145f, 815.3091f, 120.1469f },
-    { 1635.010f, 805.8387f, 119.8493f },
-    { 1633.980f, 802.8589f, 119.8655f },
-    { 1630.980f, 791.6089f, 119.3655f },
-    { 1628.730f, 783.8589f, 119.1155f },
-    { 1628.106f, 782.6379f, 118.5758f },
-    { 1627.364f, 780.3354f, 118.5013f },
-    { 1626.114f, 774.8354f, 118.0013f },
-    { 1625.746f, 773.9089f, 117.7027f },
-    { 1625.181f, 771.5463f, 117.5337f },
-    { 1623.431f, 765.7963f, 117.0337f },
-    { 1621.931f, 760.2963f, 116.7837f },
-    { 1621.453f, 759.4308f, 116.1794f },
-    { 1620.671f, 756.5874f, 116.0332f },
-    { 1619.671f, 752.8374f, 115.5332f },
-    { 1618.921f, 749.0874f, 115.0332f },
-    { 1617.759f, 744.8360f, 114.2508f },
-    { 1617.185f, 742.1613f, 114.0811f },
-    { 1616.935f, 741.1613f, 114.0811f },
-    { 1615.685f, 736.6613f, 113.3311f },
-    { 1614.935f, 732.6613f, 113.0811f },
-    { 1614.185f, 729.9113f, 112.5811f },
-    { 1614.082f, 730.3239f, 112.2263f },
-    { 1613.991f, 729.7391f, 112.3380f },
-    { 1613.491f, 728.4891f, 112.0880f },
-    { 1612.741f, 725.7391f, 111.5880f },
-    { 1611.741f, 722.7391f, 110.8380f },
-    { 1610.491f, 718.9891f, 110.0880f },
-    { 1609.491f, 715.4891f, 109.5880f },
-    { 1608.241f, 711.7391f, 109.0880f },
-    { 1607.669f, 710.4952f, 108.4556f },
-    { 1606.452f, 706.7616f, 108.1364f },
-    { 1604.952f, 702.7616f, 107.3864f },
-    { 1603.702f, 698.5116f, 106.8864f },
-    { 1602.202f, 694.7616f, 106.3864f },
-    { 1601.766f, 693.5259f, 105.9085f },
-    { 1601.327f, 692.0245f, 105.8733f },
-    { 1600.077f, 687.5245f, 105.3733f },
-    { 1593.179f, 667.8270f, 103.3361f },
-    { 1592.436f, 665.4673f, 103.2942f },
-    { 1588.686f, 658.7173f, 102.5442f },
-    { 1587.781f, 657.0647f, 102.1362f },
-    { 1586.359f, 654.4169f, 101.7926f },
-    { 1586.304f, 654.0751f, 101.8038f },
-    { 1583.304f, 652.0751f, 101.8038f },
-    { 1581.581f, 652.3631f, 101.6499f },
-    { 1577.755f, 654.0015f, 101.9234f },
-    { 1574.082f, 657.1602f, 102.0366f },
-    { 1571.396f, 659.9266f, 102.3597f },
-    { 1564.711f, 666.6931f, 102.1827f }
+    LINE_BARTLEBY3      = 3, // I guess I'll go find the authorities. If I'm lucky they'll tell me it's the plague and that we're all going to die.
+
+    CHAIN_BARTLEBY1     = 1,
+    CHAIN_BARTLEBY2     = 2
 };
 struct npc_bartleby_battson : public CreatureScript
 {
@@ -657,7 +591,7 @@ struct npc_bartleby_battson : public CreatureScript
 
         void MovementInform(uint32 type, uint32 id) override
         {
-            if (type == EFFECT_MOTION_TYPE)
+            if (type == SPLINE_CHAIN_MOTION_TYPE)
                 switch (id)
                 {
                     case MOVEID_EVENT1:
@@ -684,7 +618,7 @@ struct npc_bartleby_battson : public CreatureScript
                         break;
                     case EVENT_BARTLEBY1:
                         Talk(LINE_BARTLEBY1);
-                        me->GetMotionMaster()->MoveSmoothPath(MOVEID_EVENT1, bartlebyPath1, true);
+                        me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT1, CHAIN_BARTLEBY1, true);
                         break;
                     case EVENT_BARTLEBY2:
                         Talk(LINE_BARTLEBY2);
@@ -695,7 +629,7 @@ struct npc_bartleby_battson : public CreatureScript
                     case EVENT_BARTLEBY3:
                         Talk(LINE_BARTLEBY3);
                         me->SetStandState(UNIT_STAND_STATE_STAND);
-                        me->GetMotionMaster()->MoveSmoothPath(MOVEID_EVENT2, bartlebyPath2, true);
+                        me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT2, CHAIN_BARTLEBY2, true);
                         break;
                 }
         }
@@ -716,7 +650,7 @@ enum CrateEvent3Misc
     NPC_MALCOLM     = 27891,
     NPC_SCRUFFY     = 27892,
 
-    EVENT_SCRUFFY1  =     1,
+    EVENT_SCRUFFY1  = 1,
     EVENT_MALCOLM2,
     EVENT_SCRUFFY_MOVE,
     EVENT_MALCOLM_MOVE,
@@ -726,157 +660,25 @@ enum CrateEvent3Misc
     EVENT_MALCOLM4,
     EVENT_MALCOLM_MOVE2,
 
-    LINE_MALCOLM1   =     0, // Looks like a storm's coming in, Scruffy...
-    LINE_SCRUFFY1   =     0, // %s begins to growl...
-    LINE_MALCOLM2   =     1, // What's wrong, pal?
-    LINE_MALCOLM3   =     2, // What did you find, boy?
-    LINE_MALCOLM4   =     3, // This is no good, Scruffy. Stay here and guard the house, I need to go find a soldier.
+    LINE_MALCOLM1   = 0, // Looks like a storm's coming in, Scruffy...
+    LINE_SCRUFFY1   = 0, // %s begins to growl...
+    LINE_MALCOLM2   = 1, // What's wrong, pal?
+    LINE_MALCOLM3   = 2, // What did you find, boy?
+    LINE_MALCOLM4   = 3, // This is no good, Scruffy. Stay here and guard the house, I need to go find a soldier.
+
+    CHAIN_MALCOLM1  = 1,
+    CHAIN_MALCOLM2  = 2,
+    CHAIN_MALCOLM3  = 3,
+    CHAIN_MALCOLM4  = 4,
+    CHAIN_SCRUFFY1  = 1,
+    CHAIN_SCRUFFY2  = 2
+
 };
 static const Position malcolmSpawn = { 1605.2420f, 805.4160f, 122.9956f, 5.284148f };
 static const Position scruffySpawn = { 1601.1030f, 805.3391f, 123.7677f, 5.471561f };
-static const Movement::PointsArray malcolmPath = {
-    { 1604.245f, 806.4799f, 123.0291f },
-    { 1604.988f, 805.8108f, 123.0291f },
-    { 1608.523f, 800.3172f, 122.5636f },
-    { 1609.076f, 799.8616f, 122.6980f },
-    { 1609.576f, 799.1116f, 122.6980f },
-    { 1612.576f, 796.8616f, 122.1980f },
-    { 1613.629f, 795.9061f, 121.8324f }
-};
-static const Movement::PointsArray scruffyPath = {
-    { 1600.004f, 806.3074f, 123.8376f },
-    { 1600.781f, 805.6780f, 123.8376f },
-    { 1604.224f, 802.0498f, 123.0886f },
-    { 1604.549f, 801.7065f, 123.0492f },
-    { 1606.523f, 799.9467f, 122.9261f },
-    { 1606.655f, 799.5586f, 122.7780f },
-    { 1609.755f, 797.2820f, 122.3657f },
-    { 1611.604f, 795.5046f, 122.0837f }
-};
-static const Movement::PointsArray malcolmPath2 = {
-    { 1619.153f, 798.0073f, 121.4171f },
-    { 1621.158f, 798.6797f, 120.8393f },
-    { 1622.953f, 799.5732f, 120.9390f },
-    { 1623.703f, 799.8232f, 120.9390f },
-    { 1624.453f, 802.0732f, 120.9390f },
-    { 1624.479f, 802.8199f, 120.4636f },
-    { 1624.002f, 804.5468f, 121.3668f },
-    { 1624.752f, 805.2968f, 121.1168f },
-    { 1623.752f, 805.5468f, 121.3668f },
-    { 1623.526f, 808.2736f, 121.2700f }
-};
-static const Movement::PointsArray scruffyPath2 = {
-    { 1613.088f, 794.5215f, 122.1889f },
-    { 1614.179f, 794.0447f, 121.7464f },
-    { 1616.998f, 793.0639f, 121.3057f },
-    { 1621.170f, 794.7802f, 120.8156f },
-    { 1622.230f, 795.6549f, 120.5766f },
-    { 1624.277f, 797.8823f, 120.3798f },
-    { 1624.999f, 798.7412f, 120.5467f },
-    { 1626.999f, 801.2412f, 120.2967f },
-    { 1628.722f, 805.1000f, 120.2136f }
-};
 static const float scruffyFacing2 = 5.734883f;
-static const Movement::PointsArray malcolmPath3 = {
-    { 1624.479f, 808.1288f, 120.9776f },
-    { 1626.838f, 808.1813f, 120.6276f },
-    { 1627.280f, 807.3809f, 120.2768f },
-    { 1628.257f, 807.1616f, 120.3377f },
-    { 1630.257f, 808.9116f, 120.3377f },
-    { 1630.235f, 810.9423f, 120.3985f }
-};
 static const float malcolmFacing3 = 2.303835f;
 static const Position scruffyPos3 = { 1629.004f, 810.138f, 120.4927f };
-static const Movement::PointsArray malcolmPath4 = {
-    { 1633.221f, 810.4380f, 120.2148f },
-    { 1637.633f, 810.0463f, 120.0794f },
-    { 1638.513f, 810.9830f, 119.9439f },
-    { 1641.174f, 815.0283f, 120.1939f },
-    { 1642.674f, 818.9854f, 119.9439f },
-    { 1644.072f, 822.2241f, 120.1545f },
-    { 1644.710f, 824.6933f, 119.9116f },
-    { 1646.290f, 828.7598f, 120.0492f },
-    { 1649.444f, 836.2549f, 119.2863f },
-    { 1650.179f, 837.8422f, 119.4052f },
-    { 1650.679f, 838.5922f, 119.4052f },
-    { 1654.576f, 847.1667f, 119.0511f },
-    { 1655.585f, 849.0662f, 119.1610f },
-    { 1659.596f, 858.2399f, 119.2232f },
-    { 1660.843f, 860.6360f, 119.5880f },
-    { 1666.319f, 871.9752f, 119.7821f },
-    { 1667.038f, 873.1796f, 119.9924f },
-    { 1667.788f, 874.6796f, 120.2424f },
-    { 1671.561f, 882.8347f, 119.7776f },
-    { 1673.602f, 886.5914f, 119.8583f },
-    { 1678.839f, 899.4649f, 119.9093f },
-    { 1679.969f, 901.5616f, 120.2496f },
-    { 1682.465f, 910.9940f, 120.4706f },
-    { 1683.396f, 913.5186f, 120.7802f },
-    { 1684.195f, 916.7935f, 120.5898f },
-    { 1685.654f, 920.6906f, 120.8133f },
-    { 1687.636f, 925.1472f, 120.2918f },
-    { 1689.939f, 929.3484f, 120.2842f },
-    { 1691.542f, 933.3212f, 119.8984f },
-    { 1693.478f, 937.1957f, 119.9730f },
-    { 1696.199f, 944.5081f, 119.9687f },
-    { 1697.549f, 947.8503f, 120.3882f },
-    { 1700.049f, 954.1003f, 120.8882f },
-    { 1700.771f, 955.6768f, 120.7328f },
-    { 1701.678f, 957.3701f, 121.1093f },
-    { 1702.178f, 962.1201f, 121.6093f },
-    { 1702.531f, 964.4929f, 121.6341f },
-    { 1703.102f, 968.4348f, 122.2155f },
-    { 1699.959f, 975.9057f, 122.2345f },
-    { 1699.201f, 978.1485f, 122.5168f },
-    { 1693.720f, 989.7047f, 122.2989f },
-    { 1692.886f, 991.5643f, 122.7157f },
-    { 1688.386f, 1000.314f, 122.9657f },
-    { 1688.126f, 1000.414f, 122.9252f },
-    { 1686.979f, 1002.745f, 123.5141f },
-    { 1685.729f, 1008.245f, 124.0141f },
-    { 1685.289f, 1008.901f, 123.9621f },
-    { 1684.719f, 1010.909f, 124.5019f },
-    { 1683.969f, 1017.409f, 125.0019f },
-    { 1683.598f, 1017.778f, 124.8063f },
-    { 1683.211f, 1020.651f, 125.4366f },
-    { 1682.461f, 1025.651f, 125.9366f },
-    { 1681.661f, 1032.742f, 125.9537f },
-    { 1681.260f, 1035.870f, 126.1730f },
-    { 1680.544f, 1050.879f, 125.9257f },
-    { 1680.535f, 1054.749f, 125.9715f },
-    { 1680.476f, 1062.975f, 125.9798f },
-    { 1680.652f, 1066.777f, 126.1676f },
-    { 1681.482f, 1075.029f, 126.2654f },
-    { 1682.196f, 1078.414f, 126.6603f },
-    { 1683.277f, 1086.956f, 126.8661f },
-    { 1683.617f, 1088.229f, 127.3948f },
-    { 1684.117f, 1090.979f, 127.3948f },
-    { 1687.117f, 1094.729f, 127.8948f },
-    { 1687.148f, 1094.779f, 127.8260f },
-    { 1689.088f, 1097.265f, 128.7533f },
-    { 1692.588f, 1099.265f, 129.2533f },
-    { 1694.088f, 1100.265f, 129.7533f },
-    { 1696.527f, 1101.835f, 130.2339f },
-    { 1697.750f, 1102.589f, 130.8327f },
-    { 1699.750f, 1104.089f, 131.0827f },
-    { 1702.500f, 1105.589f, 132.0827f },
-    { 1705.500f, 1107.339f, 132.5827f },
-    { 1707.250f, 1108.339f, 133.0827f },
-    { 1709.266f, 1109.362f, 133.3899f },
-    { 1710.148f, 1109.964f, 133.9583f },
-    { 1711.148f, 1110.714f, 134.4583f },
-    { 1713.148f, 1111.464f, 134.9583f },
-    { 1714.898f, 1112.214f, 135.4583f },
-    { 1717.398f, 1113.464f, 135.9583f },
-    { 1719.148f, 1114.214f, 136.7083f },
-    { 1719.710f, 1114.490f, 136.6331f },
-    { 1721.044f, 1115.318f, 137.4891f },
-    { 1723.294f, 1116.318f, 137.9891f },
-    { 1725.794f, 1117.818f, 138.7391f },
-    { 1727.294f, 1118.568f, 138.9891f },
-    { 1730.044f, 1120.068f, 139.7391f },
-    { 1731.544f, 1121.068f, 140.2391f }
-};
 static const float scruffyFacing4 = 5.445427f;
 struct npc_malcolm_moore : public CreatureScript
 {
@@ -889,25 +691,19 @@ struct npc_malcolm_moore : public CreatureScript
 
         void InitializeAI() override
         {
-            me->GetMotionMaster()->MoveSmoothPath(MOVEID_EVENT1, malcolmPath, true);
+            me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT1, CHAIN_MALCOLM1, true);
             if (Creature* scruffy = me->SummonCreature(NPC_SCRUFFY, scruffySpawn))
-                scruffy->GetMotionMaster()->MoveSmoothPath(0, scruffyPath, true);
+                scruffy->GetMotionMaster()->MoveAlongSplineChain(0, CHAIN_SCRUFFY1, true);
         }
 
         void MovementInform(uint32 type, uint32 id) override
         {
-            if (type == EFFECT_MOTION_TYPE || type == POINT_MOTION_TYPE)
+            if (type == SPLINE_CHAIN_MOTION_TYPE)
                 switch (id)
                 {
                     case MOVEID_EVENT1:
                         Talk(LINE_MALCOLM1);
-                        me->GetMotionMaster()->MoveSmoothPath(0, malcolmPath2, true);
-                        if (Creature* scruffy = me->FindNearestCreature(NPC_SCRUFFY, 100.0f, true))
-                        {
-                            scruffy->StopMoving();
-                            scruffy->GetMotionMaster()->Clear();
-                            scruffy->GetMotionMaster()->MoveSmoothPath(MOVEID_EVENT2, scruffyPath2, false);
-                        }
+                        me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT2, CHAIN_MALCOLM2, true);
                         break;
                     case MOVEID_EVENT2:
                         events.ScheduleEvent(EVENT_SCRUFFY1, Seconds(0));
@@ -952,10 +748,10 @@ struct npc_malcolm_moore : public CreatureScript
                         break;
                     case EVENT_SCRUFFY_MOVE:
                         if (Creature* scruffy = me->FindNearestCreature(NPC_SCRUFFY, 100.0f, true))
-                            scruffy->GetMotionMaster()->MovePoint(MOVEID_EVENT5, scruffyPos3, false);
+                            scruffy->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT5, CHAIN_SCRUFFY2, false);
                         break;
                     case EVENT_MALCOLM_MOVE:
-                        me->GetMotionMaster()->MoveSmoothPath(MOVEID_EVENT3, malcolmPath3, true);
+                        me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT3, CHAIN_MALCOLM3, true);
                         break;
                     case EVENT_SCRUFFY_EMOTE:
                         if (Creature* scruffy = me->FindNearestCreature(NPC_SCRUFFY, 100.0f, true))
@@ -975,7 +771,7 @@ struct npc_malcolm_moore : public CreatureScript
                         }
                         break;
                     case EVENT_MALCOLM_MOVE2:
-                        me->GetMotionMaster()->MoveSmoothPath(MOVEID_EVENT4, malcolmPath4, true);
+                        me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT4, CHAIN_MALCOLM4, true);
                         if (Creature* scruffy = me->FindNearestCreature(NPC_SCRUFFY, 100.0f, true))
                             scruffy->SetFacingTo(scruffyFacing4);
                         break;
