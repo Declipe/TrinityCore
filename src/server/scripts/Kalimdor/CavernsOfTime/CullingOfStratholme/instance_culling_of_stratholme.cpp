@@ -35,6 +35,7 @@
 enum Events
 {
     EVENT_GUARDIAN_TICK = 1,
+    EVENT_RESPAWN_ARTHAS,
     EVENT_CRIER_CALL_TO_GATES,
     EVENT_SCOURGE_WAVE,
     EVENT_CRIER_ANNOUNCE_WAVE
@@ -223,6 +224,8 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 }
 
                 time_t timediff = (infiniteGuardianTime - time(NULL));
+                if (!infiniteGuardianTime)
+                    timediff = -1;
                 std::cout << "Loaded with state " << (uint32)loadState << " and guardian timeout at " << timediff/MINUTE << " minutes " << timediff%MINUTE << " seconds  from now." << std::endl;
             }
 
@@ -235,6 +238,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         break;
                     case DATA_ARTHAS_DIED:
                         // Respawn everything, then regress to last stable state
+                        _arthasGUID = ObjectGuid::Empty;
                         SetInstanceProgress(GetStableStateFor(_currentState), true);
                         break;
                     case DATA_CRATES_START:
@@ -309,11 +313,9 @@ class instance_culling_of_stratholme : public InstanceMapScript
             {
                 if (_currentState != fromState)
                     return;
+                SetInstanceProgress(toState, false);
                 if (Creature* arthas = instance->GetCreature(_arthasGUID))
-                {
-                    SetInstanceProgress(toState, false);
                     arthas->AI()->SetGUID(starterGUID, -startAction);
-                }
             }
 
             void SetGuidData(uint32 type, ObjectGuid guid) override
@@ -334,7 +336,8 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         }
                         break;
                     case DATA_UTHER_START:
-                        InitiateArthasEvent(CRATES_DONE, UTHER_TALK, ACTION_START_RP_EVENT1, guid);
+                        if (_currentState == CRATES_DONE)
+                            SetInstanceProgress(UTHER_TALK, false);
                         break;
                     case DATA_START_PURGE:
                         InitiateArthasEvent(PURGE_PENDING, PURGE_STARTING, ACTION_START_RP_EVENT2, guid);
@@ -383,9 +386,16 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         if (Creature* creature = instance->GetCreature(guid))
                             creature->AI()->DoAction(force ? -ACTION_PROGRESS_UPDATE_FORCE : -ACTION_PROGRESS_UPDATE);
 
-                // Notify Arthas of the change so he can adjust
-                if (Creature* arthas = instance->GetCreature(_arthasGUID))
-                    arthas->AI()->DoAction(force ? -ACTION_PROGRESS_UPDATE_FORCE : -ACTION_PROGRESS_UPDATE);
+                if (state > CRATES_DONE)
+                { // there should be an Arthas instance in the dungeon somewhere
+                    // Notify Arthas of the change so he can adjust
+                    if (Creature* arthas = instance->GetCreature(_arthasGUID))
+                        arthas->AI()->DoAction(force ? -ACTION_PROGRESS_UPDATE_FORCE : -ACTION_PROGRESS_UPDATE);
+                    else // if there is currently no arthas, then we need to spawn one
+                        events.ScheduleEvent(EVENT_RESPAWN_ARTHAS, Seconds(1));
+                }
+                else if (Creature* arthas = instance->GetCreature(_arthasGUID)) // there shouldn't be any Arthas around
+                    arthas->DespawnOrUnsummon();
 
                 /* World state handling */
                 // Plague crates
@@ -474,15 +484,16 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             creature->SetRespawnTime(1);
                         creature->DespawnOrUnsummon(0, Seconds(1));
                     }
+
+                    events.RescheduleEvent(EVENT_RESPAWN_ARTHAS, Seconds(1));
                 }
 
                 SaveToDB();
             }
 
             void Update(uint32 diff) override
-            {
+            {                
                 events.Update(diff);
-
                 while (uint32 eventId = events.ExecuteEvent())
                 {
                     switch (eventId)
@@ -534,6 +545,11 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             }
                             break;
                         }
+                        case EVENT_RESPAWN_ARTHAS:
+                            std::cout << "Spawning new Arthas for instance..." << std::endl;
+                            instance->SummonCreature(NPC_ARTHAS, GetArthasSnapbackFor(_currentState));
+                            events.CancelEvent(EVENT_RESPAWN_ARTHAS); // make sure we don't have two scheduled
+                            break;
                         case EVENT_CRIER_CALL_TO_GATES:
                             if (_currentState == CRATES_DONE)
                                 if (Creature* crier = instance->GetCreature(_crierGUID))
@@ -633,6 +649,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         _plagueCrates.push_back(creature->GetGUID());
                         break;
                     case NPC_ARTHAS:
+                        std::cout << "Arthas spawned at " << creature->GetPosition().ToString() << std::endl;
                         _arthasGUID = creature->GetGUID();
                         creature->setActive(true);
                         break;

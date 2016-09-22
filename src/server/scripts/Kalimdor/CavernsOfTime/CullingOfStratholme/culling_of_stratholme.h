@@ -109,6 +109,7 @@ enum ProgressStates : uint32
 
     ALL                     = 0x1FFFF
 };
+Position const& GetArthasSnapbackFor(ProgressStates state);
 
 enum InstanceData
 {

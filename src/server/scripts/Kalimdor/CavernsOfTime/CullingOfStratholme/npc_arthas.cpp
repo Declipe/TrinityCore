@@ -446,7 +446,7 @@ class npc_arthas_stratholme : public CreatureScript
 
     struct npc_arthas_stratholmeAI : public ScriptedAI
     {
-        npc_arthas_stratholmeAI(Creature* creature) : ScriptedAI(creature), _hadSetup(false), instance(creature->GetInstanceScript()), _exorcismCooldown(urandms(7,14)), _progressRP(true), _afterCombat(ACTION_NONE) { }
+        npc_arthas_stratholmeAI(Creature* creature) : ScriptedAI(creature), _hadSetup(false), instance(creature->GetInstanceScript()), _exorcismCooldown(urandms(7, 14)), _progressRP(true), _afterCombat(ACTION_NONE) { me->SetVisible(false);  }
 
         static const std::array<Position, NUM_POSITIONS> _positions; // all kinds of positions we'll need for RP events (there's a lot of these)
         static const float _snapbackDistanceThreshold; // how far we can be from where we're supposed at start of phase to be before we snap back
@@ -494,15 +494,24 @@ class npc_arthas_stratholme : public CreatureScript
             switch (newState)
             {
                 case WAVES_DONE:
-                    // @todo proper movement
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
-                    me->GetMotionMaster()->MovePoint(RP3_POINTID_TOWN_HALL, _positions[ARTHAS_TOWN_HALL_POS], true);
+                    me->SetVisible(false);
+                    events.ScheduleEvent(EVENT_TOWN_HALL_REACHED, Seconds(3));
+                    break;
+                case UTHER_TALK:
+                    if (Creature* uther = me->SummonCreature(NPC_UTHER, _positions[RP1_UTHER_SPAWN], TEMPSUMMON_MANUAL_DESPAWN))
+                    {
+                        uther->setActive(true);
+                        uther->GetMotionMaster()->MoveAlongSplineChain(RP1_POINTID_UTHER1, RP1_CHAIN_UTHER1, false);
+                    }
+                    if (Creature* jaina = me->SummonCreature(NPC_JAINA, _positions[RP1_JAINA_SPAWN], TEMPSUMMON_MANUAL_DESPAWN))
+                    {
+                        jaina->setActive(true);
+                        jaina->GetMotionMaster()->MoveAlongSplineChain(0, RP1_CHAIN_JAINA1, true);
+                    }
+                    me->GetMotionMaster()->MoveAlongSplineChain(0, RP1_CHAIN_ARTHAS1, false);
                     break;
                 case TOWN_HALL_PENDING:
                     Talk(LINE_TOWN_HALL_PENDING);
-                    break;
-                case GAUNTLET_PENDING:
-                    me->SetVisible(true);
                     break;
                 case COMPLETE:
                     if (events.Empty())
@@ -552,6 +561,7 @@ class npc_arthas_stratholme : public CreatureScript
                         me->SetHomePosition(*it->second.snapbackPos);
 
                     // Re-initialize on next tick
+                    me->SetVisible(false);
                     _hadSetup = false;
                     break;
                 }
@@ -590,19 +600,6 @@ class npc_arthas_stratholme : public CreatureScript
             _eventStarterGuid = guid;
             switch (type)
             {
-                case -ACTION_START_RP_EVENT1:
-                    if (Creature* uther = me->SummonCreature(NPC_UTHER, _positions[RP1_UTHER_SPAWN], TEMPSUMMON_MANUAL_DESPAWN))
-                    {
-                        uther->setActive(true);
-                        uther->GetMotionMaster()->MoveAlongSplineChain(RP1_POINTID_UTHER1, RP1_CHAIN_UTHER1, false);
-                    }
-                    if (Creature* jaina = me->SummonCreature(NPC_JAINA, _positions[RP1_JAINA_SPAWN], TEMPSUMMON_MANUAL_DESPAWN))
-                    {
-                        jaina->setActive(true);
-                        jaina->GetMotionMaster()->MoveAlongSplineChain(0, RP1_CHAIN_JAINA1, true);
-                    }
-                    me->GetMotionMaster()->MoveAlongSplineChain(0, RP1_CHAIN_ARTHAS1, false);
-                    break;
                 case -ACTION_START_RP_EVENT2:
                     Talk(RP2_LINE_ARTHAS1, ObjectAccessor::GetPlayer(*me, _eventStarterGuid));
                     events.ScheduleEvent(RP2_EVENT_ARTHAS_MOVE_1, Seconds(9));
@@ -721,9 +718,6 @@ class npc_arthas_stratholme : public CreatureScript
                     events.ScheduleEvent(RP2_EVENT_ARTHAS5_2, Seconds(51));
                     events.ScheduleEvent(RP2_EVENT_ARTHAS5_3, Seconds(57));
                     events.ScheduleEvent(RP2_EVENT_WAVE_START, Seconds(64));
-                    break;
-                case RP3_POINTID_TOWN_HALL:
-                    events.ScheduleEvent(EVENT_TOWN_HALL_REACHED, Seconds(1));
                     break;
                 case RP3_POINTID_ARTHAS1:
                 {
@@ -847,6 +841,7 @@ class npc_arthas_stratholme : public CreatureScript
                 _progressRP = true;
                 me->SetVisible(true);
                 AdvanceToState(GetCurrentProgress());
+                DoCastSelf(SPELL_DEVOTION_AURA);
             }
 
             if (me->IsInCombat())
@@ -1115,7 +1110,7 @@ class npc_arthas_stratholme : public CreatureScript
                         instance->SetData(DATA_START_WAVES, 1);
                         break;
                     case EVENT_TOWN_HALL_REACHED:
-                        me->SetFacingTo(_positions[ARTHAS_TOWN_HALL_POS].GetOrientation());
+                        me->DespawnOrUnsummon();
                         instance->SetData(DATA_REACH_TOWN_HALL, 1);
                         break;
                     case RP3_EVENT_RESIDENT_FACE:
@@ -1318,6 +1313,7 @@ class npc_arthas_stratholme : public CreatureScript
                         me->GetMotionMaster()->MoveAlongSplineChain(RP4_POINTID_ARTHAS2, RP4_CHAIN_ARTHAS2, false);
                         break;
                     case RP4_EVENT_GAUNTLET_REACHED:
+                        me->DespawnOrUnsummon();
                         instance->SetData(DATA_GAUNTLET_REACHED, 1);
                         break;
                     case RP4_EVENT_ARTHAS_MOVE:
@@ -1504,6 +1500,8 @@ class npc_arthas_stratholme : public CreatureScript
 
         void JustReachedHome() override
         {
+            if (_hadSetup && !me->HasAura(SPELL_DEVOTION_AURA))
+                DoCastSelf(SPELL_DEVOTION_AURA);
             _progressRP = true;
             if (!_resumeMovement.Empty()) // WP motion was interrupted, resume
             {
@@ -1525,6 +1523,7 @@ class npc_arthas_stratholme : public CreatureScript
         {
             // Instance failure: regress back to last stable state
             instance->SetData(DATA_ARTHAS_DIED, 1);
+            me->DespawnOrUnsummon(Seconds(5));
         }
 
         void JustRespawned() override
@@ -1534,6 +1533,7 @@ class npc_arthas_stratholme : public CreatureScript
             _resumeMovement.Chain = nullptr;
 
             // Re-initialize on next tick
+            me->SetVisible(false);
             _hadSetup = false;
         }
 
@@ -1578,6 +1578,14 @@ class npc_arthas_stratholme : public CreatureScript
         return GetInstanceAI<npc_arthas_stratholmeAI>(creature);
     }
 };
+Position const& GetArthasSnapbackFor(ProgressStates state)
+{
+    auto const& _snapbackPositions = npc_arthas_stratholme::npc_arthas_stratholmeAI::_snapbackPositions;
+    auto it = _snapbackPositions.find(state);
+    if (it == _snapbackPositions.end())
+        it = _snapbackPositions.begin();
+    return *(it->second.snapbackPos);
+}
 
 // @todo sniff
 const std::array<Position, NUM_POSITIONS> npc_arthas_stratholme::npc_arthas_stratholmeAI::_positions = { {
