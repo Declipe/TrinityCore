@@ -565,7 +565,7 @@ struct npc_martha_goslin : public CreatureScript
     {
         npc_martha_goslinAI(Creature* creature) : NullCreatureAI(creature), _interruptTimer(0) { }
 
-        void DoAction(int32 action) override
+        void DoAction(int32 /*action*/) override
         {
             _interruptTimer = 12000;
             SplineChainMovementGenerator::GetResumeInfo(me, _resumeInfo);
