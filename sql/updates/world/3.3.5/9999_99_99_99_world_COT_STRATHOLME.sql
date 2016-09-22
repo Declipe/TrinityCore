@@ -129,6 +129,16 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,
 (27877,3,0,"Wait, what is this? You've been holding out on me, Perelli!",12,100,0,27206,"LINE_SERGEANT1"),
 (27877,4,0,"I'm confiscating this suspicious grain, Perelli. We were looking for signs of tampered food, and it would be in your best interest to stay put while Prince Arthas checks this out.",12,100,1,27210,"LINE_SERGEANT2"),
 (27877,5,0,"We'll see about that, Perelli. We'll see about that.",12,100,25,27216,"LINE_SERGEANT3");
+-- Event #5:
+UPDATE `creature` SET `position_x`=1588.942, `position_y`=597.9799, `position_z`=99.37262, `orientation`=2.80998 WHERE `id`=27903;
+UPDATE `creature_template` SET `AIName`="", `ScriptName`="npc_roger_owens" WHERE `entry`=27903;
+DELETE FROM `creature_text` WHERE `entry`=27903;
+INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`emote`,`BroadcastTextId`,`comment`) VALUES
+(27903,0,"Ok, enough work for now. Time for refreshments and a little conversation in the inn.",12,100,1,27247,"LINE_ROGER1"),
+(27903,1,"Wait, what's that smell?",12,100,1,27248,"LINE_ROGER2"),
+(27903,2,"Can't be me, I took a bath 3 days ago!",12,100,5,27249,"LINE_ROGER3"),
+(27903,3,"Oh, close call. It's just the grain here.",12,100,5,27250,"LINE_ROGER4"),
+(27903,4,"Wait a second. Grain isn't supposed to smell like THAT! I better go find a guard.",12,100,0,27252,"LINE_ROGER5");
 
 -- Arthas AI
 UPDATE `creature_template` SET `ScriptName`="npc_arthas_stratholme",`AIName`="" WHERE `entry`=26499;

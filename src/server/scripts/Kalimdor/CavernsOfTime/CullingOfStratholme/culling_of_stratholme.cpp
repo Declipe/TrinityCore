@@ -1109,8 +1109,8 @@ struct npc_sergeant_morigan : public CreatureScript
                         Talk(LINE_SERGEANT1);
                         break;
                     case EVENT_SERGEANT_STAND:
-                        me->SetStandState(UNIT_STAND_STATE_STAND);
                         me->SetFacingTo(2.617994f);
+                        me->SetStandState(UNIT_STAND_STATE_STAND);
                         break;
                     case EVENT_PERELLI1:
                         Perelli(LINE_PERELLI1, 5.916666f);
@@ -1138,6 +1138,119 @@ struct npc_sergeant_morigan : public CreatureScript
     CreatureAI* GetAI(Creature* creature) const override
     {
         return GetInstanceAI<npc_sergeant_moriganAI>(creature);
+    }
+};
+
+// Crate fluff event #5
+enum CrateEvent5Misc
+{
+    NPC_ROGER = 27903,
+
+    EVENT_ROGER_START = 1,
+    EVENT_ROGER_MOVE1,
+    EVENT_ROGER_FACE3,
+    EVENT_ROGER3,
+    EVENT_ROGER_FACE4,
+    EVENT_ROGER4,
+    EVENT_ROGER_MOVE2,
+    EVENT_ROGER5_2,
+    EVENT_ROGER_LEAVE,
+
+    LINE_ROGER1 = 0, // Ok, enough work for now. Time for refreshments and a little conversation in the inn.
+    LINE_ROGER2 = 1, // Wait, what's that smell?
+    LINE_ROGER3 = 2, // Can't be me, I took a bath 3 days ago!
+    LINE_ROGER4 = 3, // Oh, close call. It's just the grain here.
+    LINE_ROGER5 = 4, // Wait a second. Grain isn't supposed to smell like THAT! I better go find a guard.
+
+    CHAIN_ROGER1 = 1,
+    CHAIN_ROGER2 = 2,
+    CHAIN_ROGER3 = 3
+};
+struct npc_roger_owens : public CreatureScript
+{
+    npc_roger_owens() : CreatureScript("npc_roger_owens") { }
+
+    static Creature* Find(Creature* helper) { return helper->FindNearestCreature(NPC_ROGER, 30.0f, true); }
+    struct npc_roger_owensAI : public NullCreatureAI
+    {
+        npc_roger_owensAI(Creature* creature) : NullCreatureAI(creature) { }
+
+        void DoAction(int32 action) override
+        {
+            if (action == ACTION_START_FLUFF)
+                events.ScheduleEvent(EVENT_ROGER_START, Seconds(5), Seconds(12));
+        }
+
+        void MovementInform(uint32 type, uint32 id) override
+        {
+            if (type == SPLINE_CHAIN_MOTION_TYPE)
+                switch (id)
+                {
+                    case MOVEID_EVENT1:
+                        Talk(LINE_ROGER2);
+                        events.ScheduleEvent(EVENT_ROGER_FACE3, Seconds(5));
+                        events.ScheduleEvent(EVENT_ROGER3, Seconds(6));
+                        events.ScheduleEvent(EVENT_ROGER_FACE4, Seconds(12));
+                        events.ScheduleEvent(EVENT_ROGER4, Seconds(14));
+                        events.ScheduleEvent(EVENT_ROGER_MOVE2, Seconds(18));
+                        break;
+                    case MOVEID_EVENT2:
+                        me->SetFacingTo(1.134464f, true);
+                        Talk(LINE_ROGER5);
+                        events.ScheduleEvent(EVENT_ROGER5_2, Seconds(3));
+                        events.ScheduleEvent(EVENT_ROGER_LEAVE, Seconds(8));
+                        break;
+                    case MOVEID_EVENT3:
+                        me->DespawnOrUnsummon(Seconds(1));
+                        break;
+                }
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            events.Update(diff);
+            while (uint32 eventId = events.ExecuteEvent())
+                switch (eventId)
+                {
+                    case EVENT_ROGER_START:
+                        me->SetStandState(UNIT_STAND_STATE_STAND);
+                        me->SetFacingTo(1.53589f);
+                        Talk(LINE_ROGER1);
+                        events.ScheduleEvent(EVENT_ROGER_MOVE1, Seconds(6));
+                        break;
+                    case EVENT_ROGER_MOVE1:
+                        me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT1, CHAIN_ROGER1, true);
+                        break;
+                    case EVENT_ROGER_FACE3:
+                        me->SetFacingTo(6.265732f);
+                        break;
+                    case EVENT_ROGER3:
+                        Talk(LINE_ROGER3);
+                        break;
+                    case EVENT_ROGER_FACE4:
+                        me->SetFacingTo(4.520403f);
+                        break;
+                    case EVENT_ROGER4:
+                        Talk(LINE_ROGER4);
+                        break;
+                    case EVENT_ROGER_MOVE2:
+                        me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT2, CHAIN_ROGER2, true);
+                        break;
+                    case EVENT_ROGER5_2:
+                        me->HandleEmoteCommand(EMOTE_ONESHOT_EXCLAMATION);
+                        break;
+                    case EVENT_ROGER_LEAVE:
+                        me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT3, CHAIN_ROGER3, true);
+                        break;
+                }
+        }
+
+        EventMap events;
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return GetInstanceAI<npc_roger_owensAI>(creature);
     }
 };
 
@@ -1193,6 +1306,7 @@ class npc_crate_helper : public StratholmeCreatureScript<NullCreatureAI>
                     replaceIfCloser(npc_jena_anderson::Find(me), closest, closestDist);
                     replaceIfCloser(npc_bartleby_battson::Find(me), closest, closestDist);
                     replaceIfCloser(npc_sergeant_morigan::Find(me), closest, closestDist);
+                    replaceIfCloser(npc_roger_owens::Find(me), closest, closestDist);
                     if (closest)
                         closest->AI()->DoAction(ACTION_START_FLUFF);
                     else
@@ -1258,6 +1372,7 @@ void AddSC_culling_of_stratholme()
     new npc_bartleby_battson();
     new npc_malcolm_moore();
     new npc_sergeant_morigan();
+    new npc_roger_owens();
     new npc_crate_helper();
 
     new npc_stratholme_fluff_living();
