@@ -633,7 +633,7 @@ struct npc_martha_goslin : public CreatureScript
             events.RescheduleEvent(EVENT_MARTHA_IDLE2, Seconds(5), Seconds(10));
         }
 
-        void JustRespawned() override { InitializeAI(); }
+        void JustRespawned() override { InitializeAI(); _interruptTimer = 0; _resumeInfo.Clear(); }
 
         EventMap events;
         uint32 _interruptTimer;
@@ -753,7 +753,7 @@ struct npc_jena_anderson : public CreatureScript
                 return;
             me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT1, CHAIN_JENA_INITIAL, true);
         }
-        void JustRespawned() override { InitializeAI(); }
+        void JustRespawned() override { InitializeAI(); started = false; }
 
         EventMap events;
         bool started;
@@ -1005,6 +1005,142 @@ struct npc_malcolm_moore : public CreatureScript
     }
 };
 
+// Crate fluff event #4
+enum CrateEvent4Misc
+{
+    NPC_SERGEANT = 27877,
+    NPC_PERELLI  = 27876,
+
+    EVENT_SERGEANT_IDLE1, // questioning
+    EVENT_SERGEANT_IDLE2, // response
+    EVENT_SERGEANT_CHAIN1,
+    EVENT_SERGEANT1,
+    EVENT_SERGEANT_STAND,
+    EVENT_PERELLI1,
+    EVENT_SERGEANT2,
+    EVENT_PERELLI2,
+    EVENT_SERGEANT3,
+    EVENT_SERGEANT_LEAVE,
+
+    LINE_SERGEANT_ASK_NO = 0,
+    LINE_SERGEANT_ASK_YES = 1,
+    LINE_SERGEANT_START = 2, // You don't mind me checking out your merchandise for signs of tampering, do you?
+    LINE_SERGEANT1 = 3, // Wait, what is this? You've been holding out on me, Perelli!
+    LINE_SERGEANT2 = 4, // I'm confiscating this suspicious grain, Perelli. We were looking for signs of tampered food, and it would be in your best interest to stay put while Prince Arthas checks this out.
+    LINE_SERGEANT3 = 5, // We'll see about that, Perelli. We'll see about that.
+    LINE_PERELLI_NO = 0,
+    LINE_PERELLI_YES = 1,
+    LINE_PERELLI1 = 2, // What are you talking about, Sergeant!
+    LINE_PERELLI2 = 3, // You have to believe me, I'm innocent!
+
+    CHAIN_SERGEANT1 = 1,
+    CHAIN_SERGEANT2 = 2
+};
+struct npc_sergeant_morigan : public CreatureScript
+{
+    npc_sergeant_morigan() : CreatureScript("npc_sergeant_morigan") { }
+
+    static Creature* Find(Creature* helper) { return helper->FindNearestCreature(NPC_SERGEANT, 15.0f, true); }
+    struct npc_sergeant_moriganAI : public NullCreatureAI
+    {
+        npc_sergeant_moriganAI(Creature* creature) : NullCreatureAI(creature), started(false) { }
+
+        void InitializeAI() override { events.RescheduleEvent(EVENT_SERGEANT_IDLE1, Seconds(5), Seconds(15)); }
+        void JustRespawned() override { InitializeAI(); started = false; }
+
+        void DoAction(int32 id)
+        {
+            if (id == ACTION_START_FLUFF)
+                started = true;
+        }
+
+        void MovementInform(uint32 type, uint32 id) override
+        {
+            if (type == SPLINE_CHAIN_MOTION_TYPE)
+                switch (id)
+                {
+                    case MOVEID_EVENT1:
+                        me->SetStandState(UNIT_STAND_STATE_KNEEL);
+                        events.ScheduleEvent(EVENT_SERGEANT1, Seconds(1));
+                        events.ScheduleEvent(EVENT_SERGEANT_STAND, Seconds(3));
+                        events.ScheduleEvent(EVENT_PERELLI1, Seconds(7));
+                        events.ScheduleEvent(EVENT_SERGEANT2, Seconds(12));
+                        events.ScheduleEvent(EVENT_PERELLI2, Seconds(20));
+                        events.ScheduleEvent(EVENT_SERGEANT3, Seconds(26));
+                        events.ScheduleEvent(EVENT_SERGEANT_LEAVE, Seconds(31));
+                        break;
+                    case MOVEID_EVENT2:
+                        me->DespawnOrUnsummon(Seconds(1));
+                        break;
+                }
+        }
+
+        void Perelli(uint32 line, float ori = 0.0f) { if (Creature* perelli = me->FindNearestCreature(NPC_PERELLI, 10.0f, true)) { perelli->AI()->Talk(line, me); if (ori) perelli->SetFacingTo(ori); } }
+        void UpdateAI(uint32 diff) override
+        {
+            events.Update(diff);
+            while (uint32 eventId = events.ExecuteEvent())
+                switch (eventId)
+                {
+                    case EVENT_SERGEANT_IDLE1:
+                        if (started)
+                        {
+                            question = 2;
+                            Talk(LINE_SERGEANT_START);
+                        }
+                        else
+                        {
+                            question = urand(0,1); // 0 is question that's answered with "yes", 1 is question that's answered with "no"
+                            Talk(question ? LINE_SERGEANT_ASK_NO : LINE_SERGEANT_ASK_YES);
+                        }
+                        events.ScheduleEvent(EVENT_SERGEANT_IDLE2, Seconds(10));
+                        break;
+                    case EVENT_SERGEANT_IDLE2:
+                        Perelli(question ? LINE_PERELLI_NO : LINE_PERELLI_YES);
+                        if (question == 2)
+                            events.ScheduleEvent(EVENT_SERGEANT_CHAIN1, Seconds(2));
+                        else
+                            events.ScheduleEvent(EVENT_SERGEANT_IDLE1, Seconds(15), Seconds(30));
+                        break;
+                    case EVENT_SERGEANT_CHAIN1:
+                        me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT1, CHAIN_SERGEANT1, true);
+                        break;
+                    case EVENT_SERGEANT1:
+                        Talk(LINE_SERGEANT1);
+                        break;
+                    case EVENT_SERGEANT_STAND:
+                        me->SetStandState(UNIT_STAND_STATE_STAND);
+                        me->SetFacingTo(2.617994f);
+                        break;
+                    case EVENT_PERELLI1:
+                        Perelli(LINE_PERELLI1, 5.916666f);
+                        break;
+                    case EVENT_SERGEANT2:
+                        Talk(LINE_SERGEANT2);
+                        break;
+                    case EVENT_PERELLI2:
+                        Perelli(LINE_PERELLI2);
+                        break;
+                    case EVENT_SERGEANT3:
+                        Talk(LINE_SERGEANT3);
+                        break;
+                    case EVENT_SERGEANT_LEAVE:
+                        me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT2, CHAIN_SERGEANT2, true);
+                        break;
+                }
+        }
+
+        EventMap events;
+        bool started;
+        uint8 question;
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return GetInstanceAI<npc_sergeant_moriganAI>(creature);
+    }
+};
+
 enum CrateMisc
 {
     GO_SUSPICIOUS_CRATE = 190094,
@@ -1056,6 +1192,7 @@ class npc_crate_helper : public StratholmeCreatureScript<NullCreatureAI>
                     float closestDist = INFINITY;
                     replaceIfCloser(npc_jena_anderson::Find(me), closest, closestDist);
                     replaceIfCloser(npc_bartleby_battson::Find(me), closest, closestDist);
+                    replaceIfCloser(npc_sergeant_morigan::Find(me), closest, closestDist);
                     if (closest)
                         closest->AI()->DoAction(ACTION_START_FLUFF);
                     else
@@ -1120,6 +1257,7 @@ void AddSC_culling_of_stratholme()
     new npc_martha_goslin();
     new npc_bartleby_battson();
     new npc_malcolm_moore();
+    new npc_sergeant_morigan();
     new npc_crate_helper();
 
     new npc_stratholme_fluff_living();

@@ -71,8 +71,10 @@ UPDATE `creature` SET `movementtype`=0,`spawndist`=0 WHERE `id` IN (27884,27885,
 UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_jena_anderson" WHERE `entry`=27885;
 UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_martha_goslin" WHERE `entry`=27884;
 UPDATE `creature` SET `position_x`=1635.827,`position_y`=723.0861,`position_z`=113.6452,`orientation`=3.089233 WHERE `id`=27884;
-DELETE FROM `creature_text` WHERE `entry` IN (27885,27886,27884);
+DELETE FROM `creature_text` WHERE `entry` IN (27884,27885);
 INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`emote`,`BroadcastTextId`,`comment`) VALUES
+(27884,0,"Oh hello, Jena. Of course you can borrow some grain. Help yourself.",12,100,1,27232,"LINE_MARTHA1"),
+(27884,1,"Oh, my.",12,100,1,27235,"LINE_MARTHA2"),
 (27885,0,"Let's see, we had chicken last night.",12,100,0,27219,"LINE_JENA1"),
 (27885,1,"I've got plenty of cured bacon, but he had some for breakfast.",12,100,0,27220,"LINE_JENA2"),
 (27885,2,"I need to make something healthy for him, he's still not recovered from that illness from last week.",12,100,0,27221,"LINE_JENA3"),
@@ -81,9 +83,7 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`emot
 (27885,5,"Martha, I'm out of flour for bread. You wouldn't happen to have any grain from that recent shipment, would you?",12,100,6,27224,"LINE_JENA6"),
 (27885,6,"Thanks, Martha! I owe you one.",12,100,1,27229,"LINE_JENA7"),
 (27885,7,"Oh, dear.",12,100,0,27230,"LINE_JENA8"),
-(27885,8,"Martha, something's wrong with this grain! Some of the Prince's soldiers were looking for this. I'm going to go look for one.",12,100,5,27231,"LINE_JENA9"),
-(27884,0,"Oh hello, Jena. Of course you can borrow some grain. Help yourself.",12,100,1,27232,"LINE_MARTHA1"),
-(27884,1,"Oh, my.",12,100,1,27235,"LINE_MARTHA2");
+(27885,8,"Martha, something's wrong with this grain! Some of the Prince's soldiers were looking for this. I'm going to go look for one.",12,100,5,27231,"LINE_JENA9");
 -- Event #2:
 UPDATE `creature` SET `position_x`=1670.256, `position_y`=872.8734, `position_z`=120.0351, `orientation`=0.418879 WHERE `id`=27907;
 UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_bartleby_battson" WHERE `entry`=27907;
@@ -96,7 +96,7 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,
 (27907,3,0,"I guess I'll go find the authorities. If I'm lucky they'll tell me it's the plague and that we're all going to die.",12,100,0,27259,"LINE_BARTLEBY3");
 -- Event #3:
 UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_malcolm_moore" WHERE `entry`=27891;
-UPDATE `creature_template` SET `ScriptName`="npc_stratholme_rp_dummy",`AIName`="" WHERE `entry`=27892;
+UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_stratholme_rp_dummy" WHERE `entry`=27892;
 DELETE FROM `creature_text` WHERE `entry` IN (27891,27892);
 INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`emote`,`BroadcastTextId`,`comment`) VALUES
 (27891,0,"Looks like a storm's coming in, Scruffy...",12,100,0,27236,"LINE_MALCOLM1"),
@@ -104,6 +104,31 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`emot
 (27891,1,"What's wrong, pal?",12,100,1,27238,"LINE_MALCOLM2"),
 (27891,2,"What did you find, boy?",12,100,16,27240,"LINE_MALCOLM3"),
 (27891,3,"This is no good, Scruffy. Stay here and guard the house, I need to go find a soldier.",12,100,0,27241,"LINE_MALCOLM4");
+-- Event #4:
+UPDATE `creature` SET `position_x`=1563.337, `position_y`=671.6413, `position_z`=102.1412, `orientation`=4.2586040 WHERE `id`=27876;
+UPDATE `creature` SET `position_x`=1561.571, `position_y`=670.3199, `position_z`=102.1444, `orientation`=0.5759587 WHERE `id`=27877;
+UPDATE `creature_template` SET `AIName`="", `ScriptName`="npc_sergeant_morigan" WHERE `entry`=27877;
+DELETE FROM `creature_text` WHERE `entry` IN (27876,27877);
+INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,`emote`,`BroadcastTextId`,`comment`) VALUES
+(27876,0,0,"No, Sergeant.",12,100,274,27198,"LINE_PERELLI_NO #1"),
+(27876,0,1,"No, sir.",12,100,274,27199,"LINE_PERELLI_NO #2"),
+(27876,0,2,"Nope.",12,100,274,27200,"LINE_PERELLI_NO #3"),
+(27876,1,0,"Yes, sir.",12,100,1,27201,"LINE_PERELLI_YES #1"),
+(27876,1,1,"Yes, Sergeant Morigan.",12,100,1,27202,"LINE_PERELLI_YES #2"),
+(27876,1,2,"Absolutely.",12,100,1,27203,"LINE_PERELLI_YES #3"),
+(27876,2,0,"What are you talking about, Sergeant!",12,100,5,27208,"LINE_PERELLI1"),
+(27876,3,0,"You have to believe me, I'm innocent!",12,100,20,27213,"LINE_PERELLI2"),
+(27877,0,0,"Mr. Perelli, have you seen any suspicious activity by men wearing dark robes in the last few weeks?",12,100,6,27190,"LINE_SERGEANT_ASK_NO #1"),
+(27877,0,1,"Mr. Perelli, have you seen any signs of the undead? Any information you can provide would be appreciated by Prince Arthas.",12,100,1,27191,"LINE_SERGEANT_ASK_NO #2"),
+(27877,0,2,"Mr. Perelli, I know you travel around quite a bit hawking your goods. Surely you've heard rumors or information about the Scourge?",12,100,1,27192,"LINE_SERGEANT_ASK_NO #3"),
+(27877,0,3,"Do you plan on leaving the area soon if we have further questions?",12,100,1,27193,"LINE_SERGEANT_ASK_NO #4"),
+(27877,1,0,"Mr. Perelli, have these goods been under your supervision at all times?",12,100,6,27194,"LINE_SERGEANT_ASK_YES #1"),
+(27877,1,1,"You wouldn't happen to have any canned turtle soup from Hillsbrad, would you?",12,100,1,27195,"LINE_SERGEANT_ASK_YES #2"),
+(27877,1,2,"Mr. Perelli, if you happen across any signs of Scourge activity or shady dealings in your travels, let the nearest Lordaeron soldier know.",12,100,1,27197,"LINE_SERGEANT_ASK_YES #3"),
+(27877,2,0,"You don't mind me checking out your merchandise for signs of tampering, do you?",12,100,1,27205,"LINE_SERGEANT_START"),
+(27877,3,0,"Wait, what is this? You've been holding out on me, Perelli!",12,100,0,27206,"LINE_SERGEANT1"),
+(27877,4,0,"I'm confiscating this suspicious grain, Perelli. We were looking for signs of tampered food, and it would be in your best interest to stay put while Prince Arthas checks this out.",12,100,1,27210,"LINE_SERGEANT2"),
+(27877,5,0,"We'll see about that, Perelli. We'll see about that.",12,100,25,27216,"LINE_SERGEANT3");
 
 -- Arthas AI
 UPDATE `creature_template` SET `ScriptName`="npc_arthas_stratholme",`AIName`="" WHERE `entry`=26499;
