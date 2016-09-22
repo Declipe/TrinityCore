@@ -323,18 +323,22 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 switch (type)
                 {
                     case DATA_GM_RECALL:
-                        if (Creature* arthas = instance->GetCreature(_arthasGUID))
-                        {
-                            MapRefManager const& players = instance->GetPlayers();
-                            for (auto it = players.begin(); it != players.end(); ++it)
-                                if (Player* player = it->GetSource())
-                                    if (player->GetGUID() == guid || !player->IsGameMaster())
-                                    {
-                                        player->CombatStop(true);
-                                        player->NearTeleportTo(arthas->GetRandomNearPosition(5.0f));
-                                    }
-                        }
+                    {
+                        Creature* arthas = instance->GetCreature(_arthasGUID);
+                        Position const& target = arthas ? arthas->GetPosition() : GetArthasSnapbackFor(_currentState);
+                        MapRefManager const& players = instance->GetPlayers();
+                        for (auto it = players.begin(); it != players.end(); ++it)
+                            if (Player* player = it->GetSource())
+                                if (player->GetGUID() == guid || !player->IsGameMaster())
+                                {
+                                    player->CombatStop(true);
+                                    const float offsetDist = 10;
+                                    float myAngle = rand_norm() * 2.0 * M_PI;
+                                    Position myTarget(target.GetPositionX() + std::sin(myAngle) * offsetDist, target.GetPositionY() + std::sin(myAngle) * offsetDist, target.GetPositionZ(), myAngle + M_PI);
+                                    player->NearTeleportTo(myTarget);
+                                }
                         break;
+                    }
                     case DATA_UTHER_START:
                         if (_currentState == CRATES_DONE)
                             SetInstanceProgress(UTHER_TALK, false);
@@ -492,7 +496,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
             }
 
             void Update(uint32 diff) override
-            {                
+            {
                 events.Update(diff);
                 while (uint32 eventId = events.ExecuteEvent())
                 {
