@@ -71,6 +71,19 @@ UPDATE `creature` SET `movementtype`=0,`spawndist`=0 WHERE `id` IN (27884,27885,
 UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_jena_anderson" WHERE `entry`=27885;
 UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_martha_goslin" WHERE `entry`=27884;
 UPDATE `creature` SET `position_x`=1635.827,`position_y`=723.0861,`position_z`=113.6452,`orientation`=3.089233 WHERE `id`=27884;
+DELETE FROM `creature_text` WHERE `entry` IN (27885,27886,27884);
+INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`emote`,`BroadcastTextId`,`comment`) VALUES
+(27885,0,"Let's see, we had chicken last night.",12,100,0,27219,"LINE_JENA1"),
+(27885,1,"I've got plenty of cured bacon, but he had some for breakfast.",12,100,0,27220,"LINE_JENA2"),
+(27885,2,"I need to make something healthy for him, he's still not recovered from that illness from last week.",12,100,0,27221,"LINE_JENA3"),
+(27885,3,"Strawberries! Oh wait, they're not in season.",12,100,0,27222,"LINE_JENA4"),
+(27885,4,"Ah, I'll make him some fresh bread! I need to get some flour from Martha!",12,100,0,27223,"LINE_JENA5"),
+(27885,5,"Martha, I'm out of flour for bread. You wouldn't happen to have any grain from that recent shipment, would you?",12,100,6,27224,"LINE_JENA6"),
+(27885,6,"Thanks, Martha! I owe you one.",12,100,1,27229,"LINE_JENA7"),
+(27885,7,"Oh, dear.",12,100,0,27230,"LINE_JENA8"),
+(27885,8,"Martha, something's wrong with this grain! Some of the Prince's soldiers were looking for this. I'm going to go look for one.",12,100,5,27231,"LINE_JENA9"),
+(27884,0,"Oh hello, Jena. Of course you can borrow some grain. Help yourself.",12,100,1,27232,"LINE_MARTHA1"),
+(27884,1,"Oh, my.",12,100,1,27235,"LINE_MARTHA2");
 -- Event #2:
 UPDATE `creature` SET `position_x`=1670.256, `position_y`=872.8734, `position_z`=120.0351, `orientation`=0.418879 WHERE `id`=27907;
 UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_bartleby_battson" WHERE `entry`=27907;

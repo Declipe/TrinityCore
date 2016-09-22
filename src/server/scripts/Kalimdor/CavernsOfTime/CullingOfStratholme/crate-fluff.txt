@@ -1,6 +1,8 @@
 == EVENT #1 ==
 Martha Goslin (27884), Jena Anderson (27885)
 == EVENT DATA ==
+T-33s: JA move
+to 1633.366 etc
 T+00s: JA move
 	Position: X: 1633.366 Y: 726.3549 Z: 113.5467
 	(MovementMonsterSpline) (MovementSpline) [0] Points: X: 1630.407 Y: 730.1193 Z: 113.6845

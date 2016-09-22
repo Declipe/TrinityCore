@@ -526,9 +526,35 @@ enum CrateEvent1Misc
 
     EVENT_MARTHA_IDLE1 = 1,
     EVENT_MARTHA_IDLE2,
+    EVENT_JENA_IDLE1,
+    EVENT_JENA_IDLE2,
+    EVENT_JENA_START,
+    EVENT_MARTHA1,
+    EVENT_JENA7,
+    EVENT_JENA_MOVE2,
+    EVENT_JENA8,
+    EVENT_JENA_LEAVE,
 
-    CHAIN_MARTHA_IDLE1 = 1,
-    CHAIN_MARTHA_IDLE2 = 2,
+    LINE_JENA1  = 0, // Let's see, we had chicken last night.
+    LINE_JENA2  = 1, // I've got plenty of cured bacon, but he had some for breakfast.
+    LINE_JENA3  = 2, // I need to make something healthy for him, he's still not recovered from that illness from last week.
+    LINE_JENA4  = 3, // Strawberries! Oh wait, they're not in season.
+    LINE_JENA5  = 4, // Ah, I'll make him some fresh bread! I need to get some flour from Martha!
+    LINE_JENA6  = 5, // Martha, I'm out of flour for bread. You wouldn't happen to have any grain from that recent shipment, would you?
+    LINE_JENA7  = 6, // Thanks, Martha! I owe you one.
+    LINE_JENA8  = 7, // Oh, dear.
+    LINE_JENA9  = 8, // Martha, something's wrong with this grain! Some of the Prince's soldiers were looking for this. I'm going to go look for one.
+    LINE_MARTHA1= 0, // Oh hello, Jena. Of course you can borrow some grain. Help yourself.
+    LINE_MARTHA2= 1, // Oh, my.
+
+    CHAIN_MARTHA_IDLE1  = 1,
+    CHAIN_MARTHA_IDLE2  = 2,
+    CHAIN_JENA_INITIAL  = 1,
+    CHAIN_JENA_IDLE1    = 3,
+    CHAIN_JENA_IDLE2    = 2,
+    CHAIN_JENA_MOVE1    = 70,
+    CHAIN_JENA_MOVE2    = 71,
+    CHAIN_JENA_LEAVE    = 72
 };
 static const float marthaIdleOrientation1 = 3.159046f;
 static const float marthaIdleOrientation2 = 4.764749f;
@@ -539,9 +565,12 @@ struct npc_martha_goslin : public CreatureScript
     {
         npc_martha_goslinAI(Creature* creature) : NullCreatureAI(creature), _interruptTimer(0) { }
 
-        void DoAction(int32 action) override {
+        void DoAction(int32 action) override
+        {
             _interruptTimer = 12000;
             SplineChainMovementGenerator::GetResumeInfo(me, _resumeInfo);
+            me->GetMotionMaster()->Clear();
+            me->SetFlag(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_NONE);
         }
 
         void MovementInform(uint32 type, uint32 id) override
@@ -620,10 +649,114 @@ struct npc_jena_anderson : public CreatureScript
 {
     npc_jena_anderson() : CreatureScript("npc_jena_anderson") { }
 
-    static Creature* Find(Creature* /*helper*/) { return nullptr; }
+    static Creature* Find(Creature* helper) { return helper->FindNearestCreature(NPC_JENA, 45.0f, true); }
     struct npc_jena_andersonAI : public NullCreatureAI
     {
-        npc_jena_andersonAI(Creature* creature) : NullCreatureAI(creature) { }
+        npc_jena_andersonAI(Creature* creature) : NullCreatureAI(creature), started(false) { }
+
+        void UpdateAI(uint32 diff) override
+        {
+            events.Update(diff);
+            while (uint32 eventId = events.ExecuteEvent())
+                switch (eventId)
+                {
+                    case EVENT_JENA_IDLE1:
+                        me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT1, CHAIN_JENA_IDLE1, true);
+                        break;
+                    case EVENT_JENA_IDLE2:
+                        me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT2, CHAIN_JENA_IDLE2, true);
+                        break;
+                    case EVENT_JENA_START:
+                        me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT3, CHAIN_JENA_MOVE1, true);
+                        break;
+                    case EVENT_MARTHA1:
+                        if (Creature* martha = me->FindNearestCreature(NPC_MARTHA, 100.0f, true))
+                        {
+                            martha->AI()->DoAction(0); // interrupt idle movement
+                            martha->SetFacingToObject(me, true);
+                            martha->AI()->Talk(LINE_MARTHA1, me);
+                        }
+                        break;
+                    case EVENT_JENA7:
+                        Talk(LINE_JENA7, me->FindNearestCreature(NPC_MARTHA, 100.0f, true));
+                        break;
+                    case EVENT_JENA_MOVE2:
+                        me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT4, CHAIN_JENA_MOVE2, true);
+                        break;
+                    case EVENT_JENA8:
+                    {
+                        me->SetStandState(UNIT_STAND_STATE_STAND);
+                        Creature* martha = me->FindNearestCreature(NPC_MARTHA, 100.0f, true);
+                        Talk(LINE_JENA8, martha);
+                        Talk(LINE_JENA9, martha);
+                        if (martha)
+                            me->SetFacingToObject(martha);
+                        break;
+                    }
+                    case EVENT_JENA_LEAVE:
+                        if (Creature* martha = me->FindNearestCreature(NPC_MARTHA, 100.0f, true))
+                        {
+                            martha->AI()->DoAction(0); // interrupt idle movement (again)
+                            martha->SetFacingToObject(me, true);
+                            martha->AI()->Talk(LINE_MARTHA2, me);
+                        }
+                        me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT5, CHAIN_JENA_LEAVE, true);
+                        break;
+                }
+        }
+
+        void MovementInform(uint32 type, uint32 id) override
+        {
+            if (type == SPLINE_CHAIN_MOTION_TYPE)
+                switch (id)
+                {
+                    case MOVEID_EVENT1: // IDLE1
+                        if (started)
+                            events.ScheduleEvent(EVENT_JENA_START, Seconds(1), Seconds(3));
+                        else
+                            events.ScheduleEvent(EVENT_JENA_IDLE2, Milliseconds(200), Milliseconds(700));
+                        break;
+                    case MOVEID_EVENT2: // IDLE2
+                        events.ScheduleEvent(EVENT_JENA_IDLE1, Milliseconds(200), Milliseconds(700));
+                        break;
+                    case MOVEID_EVENT3:
+                    {
+                        Creature* martha = me->FindNearestCreature(NPC_MARTHA, 100.0f, true);
+                        if (martha)
+                            me->SetFacingToObject(martha, true);
+                        Talk(LINE_JENA6, martha);
+                        events.ScheduleEvent(EVENT_MARTHA1, Seconds(5) + Milliseconds(500));
+                        events.ScheduleEvent(EVENT_JENA7, Seconds(11));
+                        events.ScheduleEvent(EVENT_JENA_MOVE2, Seconds(16));
+                        break;
+                    }
+                    case MOVEID_EVENT4:
+                        me->SetStandState(UNIT_STAND_STATE_KNEEL);
+                        events.ScheduleEvent(EVENT_JENA8, Seconds(2));
+                        events.ScheduleEvent(EVENT_JENA_LEAVE, Seconds(8));
+                        break;
+                    case MOVEID_EVENT5:
+                        me->DespawnOrUnsummon(Seconds(1));
+                        break;
+                }
+        }
+
+        void DoAction(int32 action) override
+        {
+            if (action == ACTION_START_FLUFF)
+                started = true;
+        }
+
+        void InitializeAI() override
+        {
+            if (me->isMoving())
+                return;
+            me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT1, CHAIN_JENA_INITIAL, true);
+        }
+        void JustRespawned() override { InitializeAI(); }
+
+        EventMap events;
+        bool started;
     };
 
     CreatureAI* GetAI(Creature* creature) const override
