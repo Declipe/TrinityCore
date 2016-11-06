@@ -71,6 +71,33 @@ std::string& DBUpdaterUtil::corrected_path()
 
 // Auth Database
 template<>
+std::string DBUpdater<ZynDatabaseConnection>::GetConfigEntry()
+{
+	return "Updates.ZynDatabase";
+}
+
+template<>
+std::string DBUpdater<ZynDatabaseConnection>::GetTableName()
+{
+	return "ZynDatabase";
+}
+
+template<>
+std::string DBUpdater<ZynDatabaseConnection>::GetBaseFile()
+{
+	return BuiltInConfig::GetSourceDirectory() +
+		"/sql/base/ZynDatabase_database.sql";
+}
+
+template<>
+bool DBUpdater<ZynDatabaseConnection>::IsEnabled(uint32 const updateMask)
+{
+	// This way silences warnings under msvc
+	return (updateMask & DatabaseLoader::DATABASE_ZynDatabase) ? true : false;
+}
+
+// Auth Database
+template<>
 std::string DBUpdater<LoginDatabaseConnection>::GetConfigEntry()
 {
     return "Updates.Auth";
@@ -396,3 +423,4 @@ void DBUpdater<T>::ApplyFile(DatabaseWorkerPool<T>& pool, std::string const& hos
 template class TC_DATABASE_API DBUpdater<LoginDatabaseConnection>;
 template class TC_DATABASE_API DBUpdater<WorldDatabaseConnection>;
 template class TC_DATABASE_API DBUpdater<CharacterDatabaseConnection>;
+template class TC_DATABASE_API DBUpdater<ZynDatabaseConnection>;

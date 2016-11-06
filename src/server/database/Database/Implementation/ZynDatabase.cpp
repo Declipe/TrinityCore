@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2008-2013 TrinityCore <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -15,9 +15,11 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "DatabaseEnv.h"
+#include "ZynDatabase.h"
 
-WorldDatabaseWorkerPool WorldDatabase;
-CharacterDatabaseWorkerPool CharacterDatabase;
-LoginDatabaseWorkerPool LoginDatabase;
-ZynDatabaseWorkerPool ZynDatabase;
+void ZynDatabaseConnection::DoPrepareStatements()
+{
+    if (!m_reconnecting)
+        m_stmts.resize(MAX_ZYNDATABASE_STATEMENTS);
+
+}
