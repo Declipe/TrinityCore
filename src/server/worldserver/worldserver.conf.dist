@@ -105,7 +105,9 @@ LogsDir = ""
 LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;auth"
 WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world"
 CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters"
-
+ZynDatabaseInfo       = "127.0.0.1;3306;trinity;trinity;zyndatabase"
+ZynDatabase.WorkerThreads       = 1
+ZynDatabase.SynchThreads        = 1
 #
 #    LoginDatabase.WorkerThreads
 #    WorldDatabase.WorkerThreads
