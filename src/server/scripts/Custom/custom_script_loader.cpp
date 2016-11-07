@@ -227,6 +227,7 @@ void AddSC_eonar();
 void AddSC_anna();
 void AddSC_event_npc();
 void AddSC_Resets();
+void AddSC_Mod_ItemUpgrade();
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
 void AddCustomScripts()
@@ -442,4 +443,5 @@ AddSC_anna();
 AddSC_event_npc();
 AddSC_Resets();
 AddSC_Mod_Tournaments();
+AddSC_Mod_ItemUpgrade();
 }
