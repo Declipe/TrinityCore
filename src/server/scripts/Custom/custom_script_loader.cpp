@@ -217,7 +217,7 @@
 // start198
 // start199
 // start200
-
+void AddSC_Mod_Tournaments();
 void AddSC_lighthardmode();
 void AddSC_orrig();
 void AddSC_light();
@@ -441,4 +441,5 @@ AddSC_eonar();
 AddSC_anna();
 AddSC_event_npc();
 AddSC_Resets();
+AddSC_Mod_Tournaments();
 }
