@@ -537,13 +537,9 @@ bool SpellMgr::CanSpellTriggerProcOnEvent(SpellProcEntry const& procEntry, ProcE
     // check spell family name/flags (if set) for spells
     if (eventInfo.GetTypeMask() & (PERIODIC_PROC_FLAG_MASK | SPELL_PROC_FLAG_MASK))
     {
-        SpellInfo const* eventSpellInfo = eventInfo.GetSpellInfo();
-
-        if (procEntry.SpellFamilyName && eventSpellInfo && (procEntry.SpellFamilyName != eventSpellInfo->SpellFamilyName))
-            return false;
-
-        if (procEntry.SpellFamilyMask && eventSpellInfo && !(procEntry.SpellFamilyMask & eventSpellInfo->SpellFamilyFlags))
-            return false;
+        if (SpellInfo const* eventSpellInfo = eventInfo.GetSpellInfo())
+            if (!eventSpellInfo->IsAffected(procEntry.SpellFamilyName, procEntry.SpellFamilyMask))
+                return false;
 
         // check spell type mask (if set)
         if (procEntry.SpellTypeMask && !(eventInfo.GetSpellTypeMask() & procEntry.SpellTypeMask))
@@ -2856,6 +2852,14 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 16236: // Ancestral Fortitude (Rank 2)
             case 16237: // Ancestral Fortitude (Rank 3)
             case 47930: // Grace
+            case 45145: // Snake Trap Effect (Rank 1)
+            case 13812: // Explosive Trap Effect (Rank 1)
+            case 14314: // Explosive Trap Effect (Rank 2)
+            case 14315: // Explosive Trap Effect (Rank 3)
+            case 27026: // Explosive Trap Effect (Rank 4)
+            case 49064: // Explosive Trap Effect (Rank 5)
+            case 49065: // Explosive Trap Effect (Rank 6)
+            case 43446: // Explosive Trap Effect (Hexlord Malacrass)
                 spellInfo->RangeEntry = sSpellRangeStore.LookupEntry(13);
                 break;
             // target allys instead of enemies, target A is src_caster, spells with effect like that have ally target
