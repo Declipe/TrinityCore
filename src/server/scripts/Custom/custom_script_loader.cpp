@@ -32,7 +32,8 @@
 // start14
 // start15
 // start16
-// start17
+    //GuildHouse NPC
+	void AddSC_guildmaster();
 // start18
 // start19
 // start20
@@ -217,6 +218,15 @@
 // start199
 // start200
 
+void AddSC_lighthardmode();
+void AddSC_orrig();
+void AddSC_light();
+void AddSC_boss_two();
+void AddSC_exitare();
+void AddSC_eonar();
+void AddSC_anna();
+void AddSC_event_npc();
+void AddSC_Resets();
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
 void AddCustomScripts()
@@ -237,7 +247,8 @@ void AddCustomScripts()
 // end14
 // end15
 // end16
-// end17
+    // GuildHouse NPC
+	AddSC_guildmaster();
 // end18
 // end19
 // end20
@@ -421,4 +432,13 @@ void AddCustomScripts()
 // end198
 // end199
 // end200
+AddSC_lighthardmode();
+AddSC_orrig();
+AddSC_light();
+AddSC_boss_two();
+AddSC_exitare();
+AddSC_eonar();
+AddSC_anna();
+AddSC_event_npc();
+AddSC_Resets();
 }
