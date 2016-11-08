@@ -5902,26 +5902,27 @@ bool Player::UpdateSkillPro(uint16 SkillId, int32 Chance, uint32 step)
 
     if (Roll <= Chance)
     {
-        uint32 new_value = SkillValue+step;
-        if (new_value > MaxValue)
-            new_value = MaxValue;
+        uint16 SkillNewValue = SkillValue+step;
+        if (SkillNewValue > MaxValue)
+			SkillNewValue = MaxValue;
 
-        SetUInt32Value(valueIndex, MAKE_SKILL_VALUE(new_value, MaxValue));
+        SetUInt32Value(valueIndex, MAKE_SKILL_VALUE(SkillNewValue, MaxValue));
         if (itr->second.uState != SKILL_NEW)
             itr->second.uState = SKILL_CHANGED;
         for (size_t i = 0; i < bonusSkillLevelsSize; ++i)
         {
             uint32 bsl = bonusSkillLevels[i];
-            if (SkillValue < bsl && new_value >= bsl)
+            if (SkillValue < bsl && SkillNewValue >= bsl)
             {
-                LearnSkillRewardedSpells(SkillId, new_value);
+                LearnSkillRewardedSpells(SkillId, SkillNewValue);
                 break;
             }
         }
-        UpdateSkillEnchantments(SkillId, SkillValue, new_value);
+        UpdateSkillEnchantments(SkillId, SkillValue, SkillNewValue);
         UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL, SkillId);
         TC_LOG_DEBUG("entities.player.skills", "Player::UpdateSkillPro: Player '%s' (%s), SkillID: %u, Chance: %3.1f%% taken",
             GetName().c_str(), GetGUID().ToString().c_str(), SkillId, Chance / 10.0f);
+        sScriptMgr->OnPlayerSkillUpdate(this, SkillId, SkillValue, SkillNewValue);
         return true;
     }
 

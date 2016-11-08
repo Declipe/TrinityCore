@@ -228,6 +228,7 @@ void AddSC_anna();
 void AddSC_event_npc();
 void AddSC_Resets();
 void AddSC_Mod_ItemUpgrade();
+void AddSC_Mod_AutoLearn();
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
 void AddCustomScripts()
@@ -444,4 +445,5 @@ AddSC_event_npc();
 AddSC_Resets();
 AddSC_Mod_Tournaments();
 AddSC_Mod_ItemUpgrade();
+AddSC_Mod_AutoLearn();
 }
