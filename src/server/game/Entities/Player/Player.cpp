@@ -6590,6 +6590,9 @@ void Player::CheckAreaExploreAndOutdoor()
                     XP = uint32(sObjectMgr->GetBaseXP(areaEntry->area_level)*sWorld->getRate(RATE_XP_EXPLORE));
                 }
 
+                if (GetSession()->IsPremium())
+                      XP *= sWorld->getRate(RATE_XP_EXPLORE_PREMIUM);
+
                 GiveXP(XP, nullptr);
                 SendExplorationExperience(areaId, XP);
             }
@@ -6959,7 +6962,8 @@ bool Player::RewardHonor(Unit* victim, uint32 groupsize, int32 honor, bool pvpto
     // 34
     // 35
     // 36
-    // 37
+    if(GetSession()->IsPremium())
+        honor_f *= sWorld->getRate(RATE_HONOR_PREMIUM);
     // 38
     // 39
     // 40
@@ -15214,7 +15218,8 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
     // 49
     // 50
     // 51
-    // 52
+    if (GetSession()->IsPremium())
+        XP *= sWorld->getRate(RATE_XP_QUEST_PREMIUM);
     // 53
     // 54
     // 55

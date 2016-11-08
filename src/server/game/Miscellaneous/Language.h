@@ -1213,7 +1213,7 @@ enum TrinityStrings
     // 15
     // 16
     // 17
-    // 18
+    LANG_PREMIUM_CANT_DO                = 12009,
     // 19
     // 20
     // Visit http://www.realmsofwarcraft.com/bb for forums and information

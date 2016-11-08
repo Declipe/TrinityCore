@@ -505,7 +505,7 @@ void WorldSocket::HandleAuthSessionCallback(std::shared_ptr<AuthSession> authSes
 
     // Check that Key and account name are the same on client and server
     uint32 t = 0;
-
+    bool isPremium = false;
     SHA1Hash sha;
     sha.UpdateData(authSession->Account);
     sha.UpdateData((uint8*)&t, 4);
@@ -569,6 +569,16 @@ void WorldSocket::HandleAuthSessionCallback(std::shared_ptr<AuthSession> authSes
         return;
     }
 
+    // Check premium
+    stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_PREMIUM);
+    stmt->setUInt32(0, account.Id);
+    PreparedQueryResult premresult = LoginDatabase.Query(stmt);
+
+    if (premresult)
+    {
+        isPremium = true;
+    }
+
     // Check locked state for server
     AccountTypes allowedAccountType = sWorld->GetPlayerSecurityLimit();
     TC_LOG_DEBUG("network", "Allowed Level: %u Player Level %u", allowedAccountType, account.Security);
@@ -596,7 +606,7 @@ void WorldSocket::HandleAuthSessionCallback(std::shared_ptr<AuthSession> authSes
 
     _authed = true;
     _worldSession = new WorldSession(account.Id, std::move(authSession->Account), shared_from_this(), account.Security,
-        account.Expansion, mutetime, account.Locale, account.Recruiter, account.IsRectuiter);
+        isPremium, account.Expansion, mutetime, account.Locale, account.Recruiter, account.IsRectuiter);
     _worldSession->ReadAddonsInfo(authSession->AddonInfo);
 
     // Initialize Warden system only if it is enabled by config
