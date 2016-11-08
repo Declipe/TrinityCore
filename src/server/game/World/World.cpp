@@ -489,8 +489,17 @@ void World::LoadConfigSettings(bool reload)
     rate_values[RATE_XP_EXPLORE_PREMIUM] = sConfigMgr->GetFloatDefault("Rate.XP.Explore.Premium", 1.0f);
     rate_values[RATE_REPUTATION_PREMIUM] = sConfigMgr->GetFloatDefault("Rate.Reputation.Premium", 1.0f);
     rate_values[RATE_HONOR_PREMIUM]      = sConfigMgr->GetFloatDefault("Rate.Honor.Premium", 1.0f);
-    m_bool_configs[COMMAND_BANK_PREMIUM] = sConfigMgr->GetFloatDefault("Command.Bank.Premium", false);
-    m_bool_configs[COMMAND_MAIL_PREMIUM] = sConfigMgr->GetFloatDefault("Command.Mail.Premium", false);
+    m_bool_configs[COMMAND_BANK_PREMIUM] = sConfigMgr->GetBoolDefault("Command.Bank.Premium", false);
+    m_bool_configs[COMMAND_MAIL_PREMIUM] = sConfigMgr->GetBoolDefault("Command.Mail.Premium", false);
+    m_bool_configs[CONFIG_VIP_DEBUFF_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Debuff.Command", false);
+    m_bool_configs[CONFIG_VIP_REPAIR_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Repair.Command", false);
+    m_bool_configs[CONFIG_VIP_RESET_TALENTS_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Reset.Talents.Command", false);
+    m_bool_configs[CONFIG_VIP_TAXI_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Taxi.Command", false);
+    m_bool_configs[CONFIG_VIP_HOME_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Home.Command", false);
+    m_bool_configs[CONFIG_VIP_CAPITAL_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Capital.Command", false);
+    m_bool_configs[CONFIG_VIP_CUSTOMIZE_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Customize.Command", false);
+    m_bool_configs[CONFIG_VIP_CHANGERACE_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Changerace.Command", false);
+    m_bool_configs[CONFIG_VIP_APPEAR_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Appear.Command", false);
 
     rate_values[RATE_REPAIRCOST]  = sConfigMgr->GetFloatDefault("Rate.RepairCost", 1.0f);
     if (rate_values[RATE_REPAIRCOST] < 0.0f)

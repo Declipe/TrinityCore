@@ -2822,22 +2822,6 @@ CharDelete.KeepDays = 30
 #
 ###################################################################################################
 
-#    Rate.XP.Kill.Premium
-#    Rate.XP.Quest.Premium
-#    Rate.XP.Explore.Premium
-#    Rate.Honor.Premium
-#    Rate.Reputation.Gain.Premium
-#        XP rates Premium modifier
-#        Default: 1
-
-Rate.XP.Kill.Premium     = 1
-Rate.XP.Quest.Premium    = 1
-Rate.XP.Explore.Premium  = 1
-Rate.Honor.Premium       = 1
-Rate.Reputation.Premium  = 1
-Command.Bank.Premium     = 1
-Command.Mail.Premium     = 1
-
 ###################################################################################################
 # CUSTOM SERVER OPTIONS
 #
@@ -3826,7 +3810,129 @@ Metric.OverallStatusInterval = 1
 
 #
 ###################################################################################################
+###################################################################################################
+# TOURNAMENTS SYSTEM
+#
+#    Tournaments.Enable
+#        Description: Enable Disable Tournaments System.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
 
+Tournaments.Enable = 1
+
+#    Tournaments.Debug
+#        Description: Debug mode for Tournaments System.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+Tournaments.Debug = 1
+
+#    Tournaments.Ladder
+#        Description: Enable/Disable Ladder system for Tournaments. (1..2..3..levels, die: reset)
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+Tournaments.Ladder = 1
+
+#    Tournaments.LadderText
+#        Description: Trinity string for organizer gossip menu (default: "[%u] Next level").
+#        Default:     0
+
+Tournaments.LadderText = 0
+
+#
+###################################################################################################
+# UPGRADE ITEMS
+#
+#   On/Off upgrade items
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+ItemUpgrade.Enable = 0
+
+# String ID from `trinity_string` for gossip menu
+
+ItemUpgrade.Text.AreYouSure = 11300
+ItemUpgrade.Text.NoEffect = 11301
+ItemUpgrade.Text.EffectNow = 11302
+ItemUpgrade.Text.EffectRemove = 11303
+
+###################################################################################################
+###################################################################################################
+# AUTO LEARN SPELL SYSTEM
+#
+#   AutoLearn.Enable
+#        Description: Enabe/Disable Autolearn System.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.Enable = 1
+
+#   AutoLearn.Check.Level
+#        Description: Enabe/Disable Check Level For Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.Check.Level = 1
+
+#   AutoLearn.Spell.Class
+#        Description: Enabe/Disable Learn Class Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.SpellClass = 1
+
+#   AutoLearn.Spell.Riding
+#        Description: Enabe/Disable Learn Riding Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.SpellRiding = 1
+
+#   AutoLearn.Spell.Mount
+#        Description: Enabe/Disable Learn Mount Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.SpellMount = 1
+
+#   AutoLearn.Spell.Weapon
+#        Description: Enabe/Disable Learn Weapon Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.SpellWeapon = 1
+
+#   AutoLearn.Spell.Profession
+#        Description: Enabe/Disable Learn Profession Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.SpellProfession = 1
+
+#   AutoLearn.DualSpec
+#        Description: Enabe/Disable Learn Dual Spec.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.DualSpec = 1
+
+#   AutoLearn.Login.Spell
+#        Description: Check spells on login
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.Login.Spell = 1
+
+#   AutoLearn.Login.Skill
+#        Description: Check skills on login
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.Login.Skill = 1
+
+AutoLearn.Create.Spell = 0
+AutoLearn.Create.Skill = 0
 ###################################################################################################
 # GuildHouse
 #
@@ -3855,6 +3961,25 @@ Guildhouse.BuyCost = 1000
 Guildhouse.SellCost = 500
 
 #
+###################################################################################################
+Rate.XP.Kill.Premium     = 1
+Rate.XP.Quest.Premium    = 1
+Rate.XP.Explore.Premium  = 1
+Rate.Honor.Premium       = 1
+Rate.Reputation.Premium  = 1
+Command.Bank.Premium     = 1
+Command.Mail.Premium     = 1
+Vip.Debuff.Command       = 1
+Vip.Bank.Command         = 1
+Vip.Repair.Command       = 1
+Vip.Reset.Talents.Command = 1
+Vip.Taxi.Command         = 1
+Vip.Home.Command         = 1
+Vip.Capital.Command      = 1
+Vip.Mail.Command         = 1
+Vip.Customize.Command    = 1
+Vip.Changerace.Command   = 1
+Vip.Appear.Command       = 1
 ###################################################################################################
 #
 
