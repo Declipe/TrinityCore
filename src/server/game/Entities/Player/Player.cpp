@@ -421,6 +421,16 @@ Player::Player(WorldSession* session): Unit(true)
     ptr_Money = sConfigMgr->GetIntDefault("PlayedTimeReward.Money", 0);
     ptr_Honor = sConfigMgr->GetIntDefault("PlayedTimeReward.Honor", 0);
     ptr_Arena = sConfigMgr->GetIntDefault("PlayedTimeReward.Arena", 0);
+    ptr_item1 = sConfigMgr->GetIntDefault("PlayedTimeReward.item1", 0);
+    ptr_item2 = sConfigMgr->GetIntDefault("PlayedTimeReward.item2", 0);
+    ptr_item3 = sConfigMgr->GetIntDefault("PlayedTimeReward.item3", 0);
+    ptr_item4 = sConfigMgr->GetIntDefault("PlayedTimeReward.item4", 0);
+    ptr_item5 = sConfigMgr->GetIntDefault("PlayedTimeReward.item5", 0);
+    ptr_item1id = sConfigMgr->GetIntDefault("PlayedTimeReward.item1id", 0);
+    ptr_item2id = sConfigMgr->GetIntDefault("PlayedTimeReward.item2id", 0);
+    ptr_item3id = sConfigMgr->GetIntDefault("PlayedTimeReward.item3id", 0);
+    ptr_item4id = sConfigMgr->GetIntDefault("PlayedTimeReward.item4id", 0);
+    ptr_item5id = sConfigMgr->GetIntDefault("PlayedTimeReward.item5id", 0);
 
     m_logintime = time(nullptr);
     m_Last_tick = m_logintime;
@@ -1322,6 +1332,29 @@ void Player::Update(uint32 p_time)
             ModifyMoney(ptr_Money);
             ModifyHonorPoints(ptr_Honor);
             ModifyArenaPoints(ptr_Arena);
+    if (!sWorld->getBoolConfig(CONFIG_VIP1))
+            {
+				if (!sWorld->getBoolConfig(CONFIG_VIP2))
+                 {
+                   AddItem(ptr_item1id, ptr_item1);
+                 }
+				if (!sWorld->getBoolConfig(CONFIG_VIP3))
+                 {
+                   AddItem(ptr_item2id, ptr_item2);
+                 }
+				if (!sWorld->getBoolConfig(CONFIG_VIP4))
+                 {
+                   AddItem(ptr_item3id, ptr_item3);
+                 }
+				if (!sWorld->getBoolConfig(CONFIG_VIP5))
+                 {
+                   AddItem(ptr_item4id, ptr_item4);
+                 }
+				if (!sWorld->getBoolConfig(CONFIG_VIP6))
+                 {
+                   AddItem(ptr_item5id, ptr_item5);
+                 }
+             }
             ptr_Interval = sConfigMgr->GetIntDefault("PlayedTimeReward.Interval", 0);
         }
         else
