@@ -300,7 +300,6 @@ public:
     }
 };
 
-
 void AddSC_npc_1v1arena()
 {
     new npc_1v1arena();

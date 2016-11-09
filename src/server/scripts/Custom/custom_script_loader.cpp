@@ -27,13 +27,13 @@
 // start09
 // start10
 // start11
-// start12
+void AddSC_npc_teleport();
 // start13
 // start14
 // start15
 // start16
-    //GuildHouse NPC
-	void AddSC_guildmaster();
+//GuildHouse NPC
+void AddSC_guildmaster();
 // start18
 // start19
 // start20
@@ -450,4 +450,5 @@ AddSC_Resets();
 AddSC_Mod_Tournaments();
 AddSC_Mod_ItemUpgrade();
 AddSC_Mod_AutoLearn();
+AddSC_npc_teleport();
 }

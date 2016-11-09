@@ -23,6 +23,7 @@
 #include "DBCStores.h"
 #include "ObjectMgr.h"
 #include "OutdoorPvPMgr.h"
+#include "sc_npc_teleport.h"
 #include "ScriptSystem.h"
 #include "Transport.h"
 #include "Vehicle.h"
