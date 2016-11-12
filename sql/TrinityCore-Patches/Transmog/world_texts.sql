@@ -16,3 +16,20 @@ INSERT INTO `trinity_string` (`entry`, `content_default`) VALUES
 (@STRING_ENTRY+8, 'Transmogrifications removed'),
 (@STRING_ENTRY+9, 'There are no transmogrifications'),
 (@STRING_ENTRY+10, 'Invalid name inserted');
+
+SET @STRING_ENTRY := 12100;
+INSERT INTO `trinity_string` (`entry`, `content_default`, `content_loc8`) VALUES
+(@STRING_ENTRY+11,'Head','Голова'),
+(@STRING_ENTRY+12,'Shoulders','Плечи'),
+(@STRING_ENTRY+13,'Body','Рубашка'),
+(@STRING_ENTRY+14,'Chest','Грудь'),
+(@STRING_ENTRY+15,'Waist','Пояс'),
+(@STRING_ENTRY+16,'Legs','Ноги'),
+(@STRING_ENTRY+17,'Feet','Ступни'),
+(@STRING_ENTRY+18,'Wrists','Запястие'),
+(@STRING_ENTRY+19,'Hands','Кисти рук'),
+(@STRING_ENTRY+20,'Back','Спина'),
+(@STRING_ENTRY+21,'Main Hand','Правая рука'),
+(@STRING_ENTRY+22,'Off Hand','Левая рука'),
+(@STRING_ENTRY+23,'Ranged','Оружие дальнего боя'),
+(@STRING_ENTRY+24,'Tabard','Гербовая накидка');
