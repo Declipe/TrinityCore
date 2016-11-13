@@ -15,7 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ScriptLoader.h"
+//#include "ScriptLoader.h"
 #include "World.h"
 #include "AnticheatMgr.h"
 
