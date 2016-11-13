@@ -197,8 +197,8 @@ class npc_thalorien_dawnseeker : public CreatureScript
         {
             player->PrepareGossipMenu(creature, 0);
 
-            if ((player->GetQuestStatus(QUEST_THALORIEN_A) == QUEST_STATUS_INCOMPLETE) || (player->GetQuestStatus(QUEST_THALORIEN_H) == QUEST_STATUS_INCOMPLETE))
-                player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_ID_REMAINS, OPTION_ID_REMAINS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+			if ((player->GetQuestStatus(QUEST_THALORIEN_A) == QUEST_STATUS_INCOMPLETE) || (player->GetQuestStatus(QUEST_THALORIEN_H) == QUEST_STATUS_INCOMPLETE))
+				AddGossipItemFor(player, GOSSIP_MENU_ID_REMAINS, OPTION_ID_REMAINS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
             player->SendPreparedGossip(creature);
             return true;
         }
@@ -210,7 +210,7 @@ class npc_thalorien_dawnseeker : public CreatureScript
             switch (action)
             {
             case GOSSIP_ACTION_INFO_DEF + 1:
-                player->CLOSE_GOSSIP_MENU();
+				CloseGossipMenuFor(player);
                 creature->AI()->SetGUID(player->GetGUID());
                 creature->CastSpell(creature, PHASE_SHIFT, true);
                 player->CastSpell(player, PHASE_SHIFT, true);
