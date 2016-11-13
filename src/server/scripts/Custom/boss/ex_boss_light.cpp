@@ -81,7 +81,7 @@ enum Phases
 
 enum Summons
 {
-	NPC_PUSTELIGER_SCHRECKEN = 31139
+	NPC_PUSTELIGER_SCHRECKEN = 60767
 };
 
 enum Texts

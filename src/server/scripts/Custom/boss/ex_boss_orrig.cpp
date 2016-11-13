@@ -26,9 +26,6 @@ enum Events
 	EVENT_ARCANE_BOMB = 6,
 	EVENT_ACID_BLAST = 7,
 	EVENT_POISON_SHOCK = 8
-
-
-
 };
 
 enum Phases
@@ -37,8 +34,6 @@ enum Phases
 	PHASE_TWO = 2,
 	PHASE_THREE = 3
 };
-
-
 
 enum Texts
 {
@@ -189,8 +184,6 @@ public:
 	{
 		return new orrigAI(creature);
 	}
-
-
 
 };
 

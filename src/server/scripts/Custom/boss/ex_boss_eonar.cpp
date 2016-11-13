@@ -48,7 +48,7 @@ enum Phases
 
 enum Summons
 {
-	NPC_ADD = 800094
+	NPC_ADD = 60763
 };
 
 enum Texts

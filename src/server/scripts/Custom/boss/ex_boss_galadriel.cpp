@@ -34,7 +34,7 @@ enum Phases
 
 enum Summons
 {
-	NPC_SCHMORRSCHUPPEN = 40421
+	NPC_SCHMORRSCHUPPEN = 60766
 };
 
 enum Texts
