@@ -1563,6 +1563,9 @@ void World::SetInitialWorldSettings()
     TC_LOG_INFO("server.loading", "Loading SpellInfo diminishing infos...");
     sSpellMgr->LoadSpellInfoDiminishing();
 
+    TC_LOG_INFO("server.loading", "Loading SpellInfo immunity infos...");
+    sSpellMgr->LoadSpellInfoImmunities();
+
     TC_LOG_INFO("server.loading", "Loading GameObject models...");
     LoadGameObjectModelList(m_dataPath);
 
