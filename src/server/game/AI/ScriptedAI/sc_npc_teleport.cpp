@@ -420,8 +420,7 @@ void LoadNpcTele(void)
             nsNpcTel::TabCatDest.back().AddDest(item);
             ++nbDest;
         } while (result->NextRow());
-
-        TC_LOG_INFO("server.loading", " ");
+        //TC_LOG_INFO("server.loading", "");
         TC_LOG_INFO("server.loading", "Loaded %u npc_teleport.", nbDest);
     }
     else
