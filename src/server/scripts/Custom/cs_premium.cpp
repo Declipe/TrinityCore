@@ -35,6 +35,7 @@ public:
 			{ "app", rbac::RBAC_PERM_COMMAND_VIP_ARPPEAR, false, &HandleAppearCommand, "" },
 			{ "taxi", rbac::RBAC_PERM_COMMAND_VIP_TAXI, false, &HandleVipTaxiCommand, "" },
 			{ "home", rbac::RBAC_PERM_COMMAND_VIP_HOME, false, &HandleVipHomeCommand, "" },
+			{ "status", rbac::RBAC_PERM_COMMAND_VIP_HOMEs, false, &HandleVipStatusCommand, "" },
 			//{ "teles", rbac::RBAC_PERM_COMMAND_VIP_HOMEs, false, &HandleTelesNameCommand, "" },
 			//{ "qcomplete", rbac::RBAC_PERM_COMMAND_VIP_qcomplete, false, &HandleQuestCompletes, "" },
         };
@@ -46,6 +47,45 @@ public:
 
         return commandTable;
     }
+
+static bool HandleVipStatusCommand(ChatHandler* handler, char const* args)
+    {
+		uint32 accountId;
+        AccountTypes level = handler->GetSession()->GetSecurity();
+        if (uint32(level) > 0)
+        {
+            if (!*args)
+                return false;
+
+            std::string accountName = strtok((char*)args, " ");
+			// Fix?!
+            uint32 accountid = AccountMgr::GetId(accountName);
+            if (!AccountMgr::GetName(accountid, accountName))
+            {
+                handler->PSendSysMessage(LANG_ACCOUNT_NOT_EXIST, accountName.c_str());
+                handler->SetSentErrorMessage(true);
+                return false;
+            }
+
+            accountId = AccountMgr::GetId(accountName);
+            if (!accountId)
+            {
+                handler->PSendSysMessage(LANG_ACCOUNT_NOT_EXIST, accountName.c_str());
+                handler->SetSentErrorMessage(true);
+                return false;
+            }
+        }
+		else
+           accountId = handler->GetSession()->GetAccountId();
+
+		uint32 days = AccountMgr::VipDaysLeft(accountId);
+
+       if (days > 0)
+            handler->PSendSysMessage("Du hast keinen Elite Account.", days);
+        else
+            handler->PSendSysMessage("Dein Elite Account endet in %u Tagen.");
+        return true;
+	}
 
 	/* static bool HandleQuestCompletes(ChatHandler* handler, const char* args)
 	{
