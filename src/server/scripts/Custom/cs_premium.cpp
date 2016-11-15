@@ -35,7 +35,7 @@ public:
 			{ "app", rbac::RBAC_PERM_COMMAND_VIP_ARPPEAR, false, &HandleAppearCommand, "" },
 			{ "taxi", rbac::RBAC_PERM_COMMAND_VIP_TAXI, false, &HandleVipTaxiCommand, "" },
 			{ "home", rbac::RBAC_PERM_COMMAND_VIP_HOME, false, &HandleVipHomeCommand, "" },
-			//{ "teles", rbac::RBAC_PERM_COMMAND_VIP_HOMEs, false, &HandleTelesNameCommand, "" },
+			{ "teles", rbac::RBAC_PERM_COMMAND_VIP_HOMEs, false, &HandleTelesNameCommand, "" },
 			//{ "qcomplete", rbac::RBAC_PERM_COMMAND_VIP_qcomplete, false, &HandleQuestCompletes, "" },
         };
 
@@ -186,7 +186,7 @@ public:
 
 		player->CompleteQuest(entry);
 		return true;
-	}
+	}*/
 
 	static bool HandleTelesNameCommand(ChatHandler* handler, const char* args)
 	{
@@ -199,12 +199,12 @@ public:
 			return false;
 		}
 
-		if (!sWorld->getBoolConfig(COMMAND_BANK_PREMIUM))
-		{
-			handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
-			handler->SetSentErrorMessage(true);
-			return false;
-		}
+		//if (!sWorld->getBoolConfig(COMMAND_BANK_PREMIUM))
+		//{
+		//	handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
+		//	handler->SetSentErrorMessage(true);
+		//	return false;
+		//}
 
 		if (_player->IsInCombat())
 		{
@@ -333,7 +333,7 @@ public:
 		}
 
 		return true;
-	}*/
+	}
 
     static bool HandlePremiumBankCommand(ChatHandler* handler, char const* /*args*/)
     {

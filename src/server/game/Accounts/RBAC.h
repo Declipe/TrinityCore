@@ -791,7 +791,7 @@ enum RBACPermissions
     RBAC_PERM_COMMAND_VIP_arathi                               = 1016,
     RBAC_PERM_COMMAND_VIP_eye                                  = 1017,
     RBAC_PERM_COMMAND_VIP_alterac                              = 1018,
-    //RBAC_PERM_COMMAND_VIP_HOMEs                                = 1019,
+    RBAC_PERM_COMMAND_VIP_HOMEs                                = 1019,
     //RBAC_PERM_COMMAND_VIP_qcomplete                            = 1020,
     // Visit http://www.realmsofwarcraft.com/bb for forums and information
     //
