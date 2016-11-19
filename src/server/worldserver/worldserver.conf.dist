@@ -92,7 +92,6 @@ RealmID = 1
 #        Example:     "@prefix@/share/trinitycore"
 #        Default:     "."
 
-DataDir = "."
 
 #
 #    LogsDir
@@ -101,7 +100,8 @@ DataDir = "."
 #                     Logs directory must exists, or log file creation will be disabled.
 #        Default:     "" - (Log files will be stored in the current path)
 
-LogsDir = ""
+DataDir = "/home/declipe/work/data"
+LogsDir = "/home/declipe/work/log"
 
 #
 #    LoginDatabaseInfo
@@ -124,9 +124,9 @@ LogsDir = ""
 #    Don't open port on firewall to external connections (it belongs to mysql, not to wow server).
 #    The username you choose must have permisions to create/alter/rename tables.
 
-LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;auth"
-WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world"
-CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters"
+LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;auth3"
+WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world3"
+CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters3"
 ZynDatabaseInfo       = "127.0.0.1;3306;trinity;trinity;zyndatabase"
 ZynDatabase.WorkerThreads       = 1
 ZynDatabase.SynchThreads        = 1
@@ -200,7 +200,7 @@ ThreadPool = 2
 #                     "/usr/bin/cmake"
 #        Default:     ""
 
-CMakeCommand  = ""
+CMakeCommand  = "/usr/bin/cmake"
 
 #
 #    BuildDirectory
@@ -209,7 +209,7 @@ CMakeCommand  = ""
 #        Example:     "../TrinityCore"
 #        Default:     ""
 
-BuildDirectory  = ""
+BuildDirectory  = "/home/declipe/TrinityCore/build"
 
 #
 #    SourceDirectory
@@ -218,7 +218,7 @@ BuildDirectory  = ""
 #        Example:     "../TrinityCore"
 #        Default:     ""
 
-SourceDirectory  = ""
+SourceDirectory  = "/home/declipe/TrinityCore"
 
 #
 #    MySQLExecutable
@@ -229,7 +229,7 @@ SourceDirectory  = ""
 #                     "/usr/bin/mysql"
 #        Default:     ""
 
-MySQLExecutable = ""
+MySQLExecutable = "/usr/bin/mysql"
 
 #
 ###################################################################################################
@@ -393,7 +393,7 @@ DisconnectToleranceInterval = 0
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-mmap.enablePathFinding = 0
+mmap.enablePathFinding = 1
 
 #
 #    vmap.enableLOS
@@ -831,7 +831,7 @@ MinDualSpecLevel = 40
 #        Range:       1-MaxPlayerLevel
 #        Default:     1
 
-StartPlayerLevel = 1
+StartPlayerLevel = 80
 
 #
 #    StartHeroicPlayerLevel
@@ -847,14 +847,14 @@ StartHeroicPlayerLevel = 55
 #        Default:     0
 #                     100 - (1 Silver)
 
-StartPlayerMoney = 0
+StartPlayerMoney = 800000000
 
 #
 #    MaxHonorPoints
 #        Description: Maximum honor points a character can have.
 #        Default:     75000
 
-MaxHonorPoints = 75000
+MaxHonorPoints = 7500000000
 
 #
 #    StartHonorPoints
@@ -868,7 +868,7 @@ StartHonorPoints = 0
 #        Description: Maximum arena points a character can have.
 #        Default:     10000
 
-MaxArenaPoints = 10000
+MaxArenaPoints = 7500000000
 
 #
 #    StartArenaPoints
@@ -1269,7 +1269,7 @@ BirthdayTime = 1222964635
 #                     4  - (Enable world only)
 #                     0  - (All disabled)
 
-Updates.EnableDatabases = 7
+Updates.EnableDatabases = 4
 
 #
 #    Updates.AutoSetup
@@ -1337,7 +1337,7 @@ HotSwap.Enabled = 1
 #        Example:     "/usr/local/scripts"
 #        Default:     "scripts"
 
-HotSwap.ScriptDir = "scripts"
+HotSwap.ScriptDir = "/home/declipe/work/bin/scripts"
 
 #    HotSwap.EnableReCompiler
 #        Description: Enables the dynamic script recompiler.
@@ -1387,7 +1387,7 @@ HotSwap.EnablePrefixCorrection = 1
 #                     "Release" - Release builds only
 #                     "Debug" - Debug builds only
 
-HotSwap.ReCompilerBuildType = ""
+HotSwap.ReCompilerBuildType = "Debug"
 
 #
 ###################################################################################################
@@ -2683,71 +2683,6 @@ ArenaLog.ExtendedInfo = 0
 
 #
 ###################################################################################################
-# 1V1 ARENA CONFIG
-#
-#     Arena.1v1.Enable
-#         Description: Enable the 1v1 arena.
-#         Default:     0 - (Disabled)
-#                      1 - (Enabled)
-
-Arena.1v1.Enable = 1
-
-#
-#    Arena.1v1.Announcer
-#        Description: Announce 1v1 arena queue status to chat.
-#                      Arena.QueueAnnouncer.Enable must be enabled.
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-Arena.1v1.Announcer = 0
-
-#
-#    Arena.1v1.MinLevel
-#        Description: Min level to create an arena team
-#        Default:     80
-
-Arena.1v1.MinLevel = 80
-
-#
-#    Arena.1v1.Costs
-#        Description: Costs for create an arena team
-#        Default:     400000 - (40 gold)
-
-Arena.1v1.Costs = 400000
-
-#
-#    Arena.1v1.VendorRating
-#        Description: If true, 1v1 rating will use to calculate highest personal-rating (extended costs).
-#                      Note: The vendor-item will show as not buyable (red), but players can buy it, if enabled and rating is high enough.
-#        Default:     0 - (false)
-#                      1 - (true)
-
-Arena.1v1.VendorRating = 0
-
-#
-#    Arena.1v1.ArenaPointsMulti
-#        Description: An 5v5 arena team with 1500 rating will gain 344 points per week (blizzlike).
-#                      3v3 with same rating will gain 302 points (5v5points * 0.88)
-#                      2v2 will gain 261 points (5v5points * 0.76)
-#                      and 1v1 will gain 167 points (5v5points * 0.64)
-#                      With this multiplier you can modify the arenapoints for 1v1.
-#        Default:     0.64
-
-Arena.1v1.ArenaPointsMulti = 0.64
-
-#
-#    Arena.1v1.BlockForbiddenTalents
-#        Description: If true, healers can't join 1v1 arena, if they invested more than 35 talentpoints in a healing-talenttree.
-#                      You can also block tanks and other talents, if you modify FORBIDDEN_TALENTS_IN_1V1_ARENA in the npc_arena1v1.h file (hardcoding). See TalentTab.dbc for available talents (you will need an DBC-Editor).
-#        Default:     1 - (true)
-#                      0 - (false)
-
-Arena.1v1.BlockForbiddenTalents = 1
-
-#
-###################################################################################################
-
-###################################################################################################
 
 ###################################################################################################
 # NETWORK CONFIG
@@ -2901,7 +2836,7 @@ CharDelete.KeepDays = 30
 #                       bugs out and doesn't switch the check mark. It has no effect on the actual tracking though).
 #                     * The minimap dots are yellow for both resources.
 
-AllowTrackBothResources = 0
+AllowTrackBothResources = 1
 
 #
 #    PlayerStart.AllReputation
@@ -3181,7 +3116,7 @@ AuctionHouseBot.Update.Interval = 20
 #       Default:     0 - (Disabled)
 #                    1 - (Enabled)
 
-AuctionHouseBot.Seller.Enabled = 0
+AuctionHouseBot.Seller.Enabled = 1
 
 #
 #    AuctionHouseBot.Alliance.Items.Amount.Ratio
@@ -3568,7 +3503,7 @@ AuctionHouseBot.Class.RandomStackRatio.Glyph = 0
 #       Default:     0 - (Disabled)
 #                    1 - (Enabled)
 
-AuctionHouseBot.Buyer.Enabled = 0
+AuctionHouseBot.Buyer.Enabled = 1
 
 #
 #    AuctionHouseBot.Buyer.FACTION.Enabled
@@ -3576,9 +3511,9 @@ AuctionHouseBot.Buyer.Enabled = 0
 #       Default:     0 - (Disabled)
 #                    1 - (Enabled)
 
-AuctionHouseBot.Buyer.Alliance.Enabled = 0
-AuctionHouseBot.Buyer.Horde.Enabled = 0
-AuctionHouseBot.Buyer.Neutral.Enabled = 0
+AuctionHouseBot.Buyer.Alliance.Enabled = 1
+AuctionHouseBot.Buyer.Horde.Enabled = 1
+AuctionHouseBot.Buyer.Neutral.Enabled = 1
 
 #    AuctionHouseBot.Buyer.ChanceFactor
 #       Description: k value in the formula used for the chance to buy an item "100^(1 + (1 - (AuctionBid / ItemPrice)) / k)"
@@ -3706,9 +3641,10 @@ AuctionHouseBot.Buyer.Recheck.Interval = 20
 #
 
 Appender.Console=1,3,0
+Appender.Hots=2,2,0,Hots.log,w
 Appender.Server=2,2,0,Server.log,w
-Appender.GM=2,2,15,gm/gm_%s.log
-Appender.DBErrors=2,2,0,DBErrors.log
+Appender.GM=2,2,15,gm_%s.log
+Appender.DBErrors=2,2,0,DBErrors.log,w
 
 #  Logger config values: Given a logger "name"
 #    Logger.name
@@ -3731,7 +3667,8 @@ Appender.DBErrors=2,2,0,DBErrors.log
 Logger.root=5,Console Server
 Logger.server=3,Console Server
 Logger.commands.gm=3,Console GM
-Logger.scripts.hotswap=3,Console Server
+Logger.scripts.hotswap=3,Console Hots
+#Console Server
 Logger.sql.sql=5,Console DBErrors
 Logger.sql.updates=3,Console Server
 Logger.mmaps=3,Server
@@ -3838,6 +3775,293 @@ PacketSpoof.BanDuration = 86400
 ###################################################################################################
 
 ###################################################################################################
+# METRIC SETTINGS
+#
+# These settings control the statistics sent to the metric database (currently InfluxDB)
+#
+#    Metric.Enable
+#        Description: Enables statistics sent to the metric database.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+Metric.Enable = 0
+
+#
+#    Metric.Interval
+#        Description: Interval between every batch of data sent in seconds
+#        Default:     10 seconds
+#
+
+Metric.Interval = 10
+
+#
+#    Metric.ConnectionInfo
+#        Description: Connection settings for metric database (currently InfluxDB).
+#        Example:     "hostname;port;database"
+#        Default:     "127.0.0.1;8086;worldserver"
+
+Metric.ConnectionInfo = "127.0.0.1;8086;worldserver"
+
+#
+#    Metric.OverallStatusInterval
+#        Description: Interval between every gathering of overall worldserver status data in seconds
+#        Default:     1 second
+#
+
+Metric.OverallStatusInterval = 1
+
+#
+###################################################################################################
+# TOURNAMENTS SYSTEM
+#
+#    Tournaments.Enable
+#        Description: Enable Disable Tournaments System.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+Tournaments.Enable = 1
+
+#    Tournaments.Debug
+#        Description: Debug mode for Tournaments System.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+Tournaments.Debug = 1
+
+#    Tournaments.Ladder
+#        Description: Enable/Disable Ladder system for Tournaments. (1..2..3..levels, die: reset)
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+Tournaments.Ladder = 1
+
+#    Tournaments.LadderText
+#        Description: Trinity string for organizer gossip menu (default: "[%u] Next level").
+#        Default:     0
+
+Tournaments.LadderText = 0
+
+#
+###################################################################################################
+# UPGRADE ITEMS
+#
+#   On/Off upgrade items
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+ItemUpgrade.Enable = 0
+
+# String ID from `trinity_string` for gossip menu
+
+ItemUpgrade.Text.AreYouSure = 11300
+ItemUpgrade.Text.NoEffect = 11301
+ItemUpgrade.Text.EffectNow = 11302
+ItemUpgrade.Text.EffectRemove = 11303
+
+###################################################################################################
+###################################################################################################
+# AUTO LEARN SPELL SYSTEM
+#
+#   AutoLearn.Enable
+#        Description: Enabe/Disable Autolearn System.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.Enable = 1
+
+#   AutoLearn.Check.Level
+#        Description: Enabe/Disable Check Level For Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.Check.Level = 1
+
+#   AutoLearn.Spell.Class
+#        Description: Enabe/Disable Learn Class Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.SpellClass = 1
+
+#   AutoLearn.Spell.Riding
+#        Description: Enabe/Disable Learn Riding Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.SpellRiding = 1
+
+#   AutoLearn.Spell.Mount
+#        Description: Enabe/Disable Learn Mount Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.SpellMount = 1
+
+#   AutoLearn.Spell.Weapon
+#        Description: Enabe/Disable Learn Weapon Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.SpellWeapon = 1
+
+#   AutoLearn.Spell.Profession
+#        Description: Enabe/Disable Learn Profession Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.SpellProfession = 1
+
+#   AutoLearn.DualSpec
+#        Description: Enabe/Disable Learn Dual Spec.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.DualSpec = 1
+
+#   AutoLearn.Login.Spell
+#        Description: Check spells on login
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.Login.Spell = 1
+
+#   AutoLearn.Login.Skill
+#        Description: Check skills on login
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.Login.Skill = 1
+
+AutoLearn.Create.Spell = 0
+AutoLearn.Create.Skill = 0
+###################################################################################################
+# GuildHouse
+#
+# Settings for the GuildHouse Keeper.
+#
+#    Guildhouse.TokenOrGold
+#        Description: Use tokens or money to buy guild houses.
+#        Default:     0 - Use Money
+#                     1 - Use Token
+#
+
+Guildhouse.TokenOrGold = 0
+
+#    GuildHouse.BuyCost
+#        Description: Amount of gold or quantity of tokens to buy guildhouse.
+#        Default:     1000 - 1000 gold
+#
+
+Guildhouse.BuyCost = 1000
+
+#    GuildHouse.BuyCost
+#        Description: Amount of gold or quantity of tokens gained when selling guildhouse.
+#        Default:     5000000 - 500 gold
+#
+
+Guildhouse.SellCost = 500
+
+#
+###################################################################################################
+Rate.XP.Kill.Premium     = 1
+Rate.XP.Quest.Premium    = 1
+Rate.XP.Explore.Premium  = 1
+Rate.Honor.Premium       = 1
+Rate.Reputation.Premium  = 1
+Command.Bank.Premium     = 1
+Command.Mail.Premium     = 1
+Vip.Debuff.Command       = 1
+Vip.Repair.Command       = 1
+Vip.Reset.Talents.Command = 1
+Vip.Taxi.Command         = 1
+Vip.Home.Command         = 1
+Vip.Capital.Command      = 1
+Vip.Customize.Command    = 1
+Vip.Changerace.Command   = 1
+Vip.Appear.Command       = 1
+###################################################################################################
+#
+ PlayedTimeReward.Interval = 3600000
+ PlayedTimeReward.Money    = 50
+ PlayedTimeReward.Honor    = 500
+ PlayedTimeReward.Arena    = 500
+ PlayedTimeReward.item1id  = 0
+ PlayedTimeReward.item2id  = 0
+ PlayedTimeReward.item3id  = 0
+ PlayedTimeReward.item4id  = 0
+ PlayedTimeReward.item5id  = 49426
+ PlayedTimeReward.item1    = 0
+ PlayedTimeReward.item2    = 0
+ PlayedTimeReward.item3    = 0
+ PlayedTimeReward.item4    = 0
+ PlayedTimeReward.item5    = 100
+ Item.Disableall           = 0
+ Item.Disable1             = 1
+ Item.Disable2             = 1
+ Item.Disable3             = 1
+ Item.Disable4             = 1
+ Item.Disable5             = 0
+# 1V1 ARENA CONFIG
+#
+#     Arena.1v1.Enable
+#         Description: Enable the 1v1 arena.
+#         Default:     0 - (Disabled)
+#                      1 - (Enabled)
+
+Arena.1v1.Enable = 1
+
+#
+#    Arena.1v1.Announcer
+#        Description: Announce 1v1 arena queue status to chat.
+#                      Arena.QueueAnnouncer.Enable must be enabled.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+Arena.1v1.Announcer = 0
+
+#
+#    Arena.1v1.MinLevel
+#        Description: Min level to create an arena team
+#        Default:     80
+
+Arena.1v1.MinLevel = 80
+
+#
+#    Arena.1v1.Costs
+#        Description: Costs for create an arena team
+#        Default:     400000 - (40 gold)
+
+Arena.1v1.Costs = 400000
+
+#
+#    Arena.1v1.VendorRating
+#        Description: If true, 1v1 rating will use to calculate highest personal-rating (extended costs).
+#                      Note: The vendor-item will show as not buyable (red), but players can buy it, if enabled and rating is high enough.
+#        Default:     0 - (false)
+#                      1 - (true)
+
+Arena.1v1.VendorRating = 0
+
+#
+#    Arena.1v1.ArenaPointsMulti
+#        Description: An 5v5 arena team with 1500 rating will gain 344 points per week (blizzlike).
+#                      3v3 with same rating will gain 302 points (5v5points * 0.88)
+#                      2v2 will gain 261 points (5v5points * 0.76)
+#                      and 1v1 will gain 167 points (5v5points * 0.64)
+#                      With this multiplier you can modify the arenapoints for 1v1.
+#        Default:     0.64
+
+Arena.1v1.ArenaPointsMulti = 0.64
+
+#
+#    Arena.1v1.BlockForbiddenTalents
+#        Description: If true, healers can't join 1v1 arena, if they invested more than 35 talentpoints in a healing-talenttree.
+#                      You can also block tanks and other talents, if you modify FORBIDDEN_TALENTS_IN_1V1_ARENA in the npc_arena1v1.h file (hardcoding). See TalentTab.dbc for available talents (you will need an DBC-Editor).
+#        Default:     1 - (true)
+#                      0 - (false)
+
+Arena.1v1.BlockForbiddenTalents = 1
+#
 #    Transmogrification config
 ###################################################################################################
 #
@@ -4039,229 +4263,8 @@ Transmogrification.SetNpcText = 65001
 
 Transmogrification.SetCostModifier = 3.0
 Transmogrification.SetCopperCost = 0
-
-#
+DefaultSpec.Enable = 1
 ###################################################################################################
-
-###################################################################################################
-# METRIC SETTINGS
-#
-# These settings control the statistics sent to the metric database (currently InfluxDB)
-#
-#    Metric.Enable
-#        Description: Enables statistics sent to the metric database.
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-Metric.Enable = 0
-
-#
-#    Metric.Interval
-#        Description: Interval between every batch of data sent in seconds
-#        Default:     10 seconds
-#
-
-Metric.Interval = 10
-
-#
-#    Metric.ConnectionInfo
-#        Description: Connection settings for metric database (currently InfluxDB).
-#        Example:     "hostname;port;database"
-#        Default:     "127.0.0.1;8086;worldserver"
-
-Metric.ConnectionInfo = "127.0.0.1;8086;worldserver"
-
-#
-#    Metric.OverallStatusInterval
-#        Description: Interval between every gathering of overall worldserver status data in seconds
-#        Default:     1 second
-#
-
-Metric.OverallStatusInterval = 1
-
-#
-###################################################################################################
-###################################################################################################
-# TOURNAMENTS SYSTEM
-#
-#    Tournaments.Enable
-#        Description: Enable Disable Tournaments System.
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-Tournaments.Enable = 1
-
-#    Tournaments.Debug
-#        Description: Debug mode for Tournaments System.
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-Tournaments.Debug = 1
-
-#    Tournaments.Ladder
-#        Description: Enable/Disable Ladder system for Tournaments. (1..2..3..levels, die: reset)
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-Tournaments.Ladder = 1
-
-#    Tournaments.LadderText
-#        Description: Trinity string for organizer gossip menu (default: "[%u] Next level").
-#        Default:     0
-
-Tournaments.LadderText = 0
-
-#
-###################################################################################################
-# UPGRADE ITEMS
-#
-#   On/Off upgrade items
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-ItemUpgrade.Enable = 0
-
-# String ID from `trinity_string` for gossip menu
-
-ItemUpgrade.Text.AreYouSure = 11300
-ItemUpgrade.Text.NoEffect = 11301
-ItemUpgrade.Text.EffectNow = 11302
-ItemUpgrade.Text.EffectRemove = 11303
-
-###################################################################################################
-###################################################################################################
-# AUTO LEARN SPELL SYSTEM
-#
-#   AutoLearn.Enable
-#        Description: Enabe/Disable Autolearn System.
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-AutoLearn.Enable = 1
-
-#   AutoLearn.Check.Level
-#        Description: Enabe/Disable Check Level For Spells.
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-AutoLearn.Check.Level = 1
-
-#   AutoLearn.Spell.Class
-#        Description: Enabe/Disable Learn Class Spells.
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-AutoLearn.SpellClass = 1
-
-#   AutoLearn.Spell.Riding
-#        Description: Enabe/Disable Learn Riding Spells.
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-AutoLearn.SpellRiding = 1
-
-#   AutoLearn.Spell.Mount
-#        Description: Enabe/Disable Learn Mount Spells.
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-AutoLearn.SpellMount = 1
-
-#   AutoLearn.Spell.Weapon
-#        Description: Enabe/Disable Learn Weapon Spells.
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-AutoLearn.SpellWeapon = 1
-
-#   AutoLearn.Spell.Profession
-#        Description: Enabe/Disable Learn Profession Spells.
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-AutoLearn.SpellProfession = 1
-
-#   AutoLearn.DualSpec
-#        Description: Enabe/Disable Learn Dual Spec.
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-AutoLearn.DualSpec = 1
-
-#   AutoLearn.Login.Spell
-#        Description: Check spells on login
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-AutoLearn.Login.Spell = 1
-
-#   AutoLearn.Login.Skill
-#        Description: Check skills on login
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-AutoLearn.Login.Skill = 1
-
-AutoLearn.Create.Spell = 0
-AutoLearn.Create.Skill = 0
-###################################################################################################
-# GuildHouse
-#
-# Settings for the GuildHouse Keeper.
-#
-#    Guildhouse.TokenOrGold
-#        Description: Use tokens or money to buy guild houses.
-#        Default:     0 - Use Money
-#                     1 - Use Token
-#
-
-Guildhouse.TokenOrGold = 0
-
-#    GuildHouse.BuyCost
-#        Description: Amount of gold or quantity of tokens to buy guildhouse.
-#        Default:     1000 - 1000 gold
-#
-
-Guildhouse.BuyCost = 1000
-
-#    GuildHouse.BuyCost
-#        Description: Amount of gold or quantity of tokens gained when selling guildhouse.
-#        Default:     5000000 - 500 gold
-#
-
-Guildhouse.SellCost = 500
-
-#
-###################################################################################################
-Rate.XP.Kill.Premium     = 1
-Rate.XP.Quest.Premium    = 1
-Rate.XP.Explore.Premium  = 1
-Rate.Honor.Premium       = 1
-Rate.Reputation.Premium  = 1
-Command.Bank.Premium     = 1
-Command.Mail.Premium     = 1
-Vip.Debuff.Command       = 1
-Vip.Bank.Command         = 1
-Vip.Repair.Command       = 1
-Vip.Reset.Talents.Command = 1
-Vip.Taxi.Command         = 1
-Vip.Home.Command         = 1
-Vip.Capital.Command      = 1
-Vip.Mail.Command         = 1
-Vip.Customize.Command    = 1
-Vip.Changerace.Command   = 1
-Vip.Appear.Command       = 1
-###################################################################################################
-#
-
-PlayedTimeReward.Interval = 0
-PlayedTimeReward.Money    = 0
-PlayedTimeReward.Honor    = 0
-PlayedTimeReward.Arena    = 0
-
-#
-###################################################################################################
-
 #
 # Prepatch by LordPsyan.
 # See http://www.realmsofwarcraft.com/bb for forums and information.

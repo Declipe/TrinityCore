@@ -232,6 +232,7 @@ void AddSC_Resets();
 void AddSC_Mod_ItemUpgrade();
 void AddSC_Mod_AutoLearn();
 void AddSC_Transmogrification();
+void AddSC_mod_DefaultSpec();
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
 void AddCustomScripts()
@@ -453,4 +454,5 @@ AddSC_Mod_ItemUpgrade();
 AddSC_Mod_AutoLearn();
 AddSC_npc_teleport();
 AddSC_Transmogrification();
+AddSC_mod_DefaultSpec();
 }

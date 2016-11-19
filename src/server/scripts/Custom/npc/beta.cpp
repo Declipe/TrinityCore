@@ -885,7 +885,24 @@ public:
 
 };
 
+class channel_factions : public PlayerScript
+{
+public:
+	channel_factions() : PlayerScript("channel_factions") {}
+
+	void OnChat(Player* player, uint32 /*type*/, uint32 lang, std::string& msg, Channel* channel)
+	{
+		if (!player || !channel)
+			return;
+
+		std::stringstream ssMsg;
+		ssMsg << ((player->GetTeam() == HORDE) ? "|TInterface\\PVPFrame\\PVP-Currency-Horde:18:18:0:-1|t" : "|TInterface\\PVPFrame\\PVP-Currency-Alliance:18:18:0:-1|t") << msg;
+		msg = ssMsg.str();
+	}
+};
+
 void AddSC_Resets()
 {
 	new npc_buffer;
+	new channel_factions();
 }
