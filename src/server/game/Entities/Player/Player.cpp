@@ -1475,7 +1475,28 @@ void Player::Update(uint32 p_time)
             }
         }
     }
+if (freezeTimer > 0)
+{
+    if (p_time >= freezeTimer)
+		{
+			if (HasAura(9454))
+				RemoveAurasDueToSpell(9454);
+		}
+		else
+			freezeTimer -= p_time;
+	}
 
+	if (stunTimer > 0)
+	{
+		if (p_time >= stunTimer)
+		{
+			if (HasAura(31539))
+				RemoveAurasDueToSpell(31539);
+		}
+		else
+			stunTimer -= p_time;
+	}
+	
     if (m_weaponChangeTimer > 0)
     {
         if (p_time >= m_weaponChangeTimer)
@@ -5263,6 +5284,9 @@ void Player::RepopAtGraveyard()
 
 bool Player::CanJoinConstantChannelInZone(ChatChannelsEntry const* channel, AreaTableEntry const* zone) const
 {
+	if (channel->flags & CHANNEL_DBC_FLAG_LFG)
+	    return true;
+	    
     if (channel->flags & CHANNEL_DBC_FLAG_ZONE_DEP && zone->flags & AREA_FLAG_ARENA_INSTANCE)
         return false;
 
