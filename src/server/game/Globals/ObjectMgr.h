@@ -705,7 +705,6 @@ class TC_GAME_API ObjectMgr
         typedef std::unordered_map<uint32, PointOfInterest> PointOfInterestContainer;
 
         typedef std::vector<std::string> ScriptNameContainer;
-        typedef std::vector<std::pair<std::string, uint32> > ChatFilterContainer;
 
         typedef std::map<uint32, uint32> CharacterConversionMap;
 
@@ -1039,9 +1038,7 @@ class TC_GAME_API ObjectMgr
         void LoadNPCSpellClickSpells();
 
         void LoadGameTele();
-        void LoadChatFilter();
-        ChatFilterContainer& GetCensoredWords() { return _chatFilterStore; }
- 
+
         void LoadGossipMenu();
         void LoadGossipMenuItems();
 
@@ -1397,8 +1394,6 @@ class TC_GAME_API ObjectMgr
         SpellClickInfoContainer _spellClickInfoStore;
 
         SpellScriptsContainer _spellScriptsStore;
-
-        ChatFilterContainer _chatFilterStore;
 
         VehicleAccessoryContainer _vehicleTemplateAccessoryStore;
         VehicleAccessoryContainer _vehicleAccessoryStore;

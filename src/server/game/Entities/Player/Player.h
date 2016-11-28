@@ -1195,17 +1195,6 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void Whisper(uint32 textId, Player* target, bool isBossWhisper = false) override;
 
         /*********************************************************/
-        /***                 CHAT FILTER SYSTEM                ***/
-	    /*********************************************************/
-        void SetLoggedOutWhilePunished(bool _true) { loggedOutWhilePunished = _true; }
-	    bool LoggedOutWhilePunished() { return loggedOutWhilePunished; }
-	    void SetFreezeStunTimer(bool freeze, uint32 _timer) { freeze ? freezeTimer = _timer : stunTimer = _timer; }
-	    uint32 GetFreezeStunTimer(bool freeze) { return freeze ? freezeTimer : stunTimer; }
-        uint32 freezeTimer;
-        uint32 stunTimer;
-        bool loggedOutWhilePunished;
-
-	/*********************************************************/
         /***                    STORAGE SYSTEM                 ***/
         /*********************************************************/
 
