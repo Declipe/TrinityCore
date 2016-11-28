@@ -188,6 +188,7 @@ public:
         HandleReloadLoadChatFilterCommand(handler, "");
         HandleReloadAccessRequirementCommand(handler, "");
         HandleReloadMailLevelRewardCommand(handler, "");
+        HandleReloadLoadChatFilterCommand(handler, "");
         HandleReloadCommandCommand(handler, "");
         HandleReloadReservedNameCommand(handler, "");
         HandleReloadTrinityStringCommand(handler, "");
