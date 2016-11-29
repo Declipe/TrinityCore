@@ -706,9 +706,6 @@ class TC_GAME_API ObjectMgr
 
         typedef std::vector<std::string> ScriptNameContainer;
 
-		//CHAT_FILTER
-		typedef std::vector<std::pair<std::string, uint32> > ChatFilterContainer;
-
         typedef std::map<uint32, uint32> CharacterConversionMap;
 
         Player* GetPlayerByLowGUID(ObjectGuid::LowType lowguid) const;
@@ -1039,10 +1036,6 @@ class TC_GAME_API ObjectMgr
         void LoadQuestPOI();
 
         void LoadNPCSpellClickSpells();
-
-		//CHAT_FILTER
-		void LoadChatFilter();
-		ChatFilterContainer& GetCensoredWords() { return _chatFilterStore; }
 
         void LoadGameTele();
 
@@ -1399,9 +1392,6 @@ class TC_GAME_API ObjectMgr
         ScriptNameContainer _scriptNamesStore;
 
         SpellClickInfoContainer _spellClickInfoStore;
-        
-		//CHAT_FILTER
-		ChatFilterContainer _chatFilterStore;
 
         SpellScriptsContainer _spellScriptsStore;
 
