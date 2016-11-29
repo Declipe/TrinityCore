@@ -1475,7 +1475,29 @@ void Player::Update(uint32 p_time)
             }
         }
     }
+	//CHAT_FILTER
+	if (freezeTimer > 0)
+	{
+		if (p_time >= freezeTimer)
+		{
+			if (HasAura(9454))
+				RemoveAurasDueToSpell(9454);
+		}
+		else
+			freezeTimer -= p_time;
+	}
 
+	if (stunTimer > 0)
+	{
+		if (p_time >= stunTimer)
+		{
+			if (HasAura(31539))
+				RemoveAurasDueToSpell(31539);
+		}
+		else
+			stunTimer -= p_time;
+	}
+	
     if (m_weaponChangeTimer > 0)
     {
         if (p_time >= m_weaponChangeTimer)
