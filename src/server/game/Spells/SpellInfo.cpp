@@ -419,8 +419,7 @@ int32 SpellEffectInfo::CalcValue(Unit const* caster, int32 const* bp, Unit const
             level = int32(_spellInfo->MaxLevel);
         else if (level < int32(_spellInfo->BaseLevel))
             level = int32(_spellInfo->BaseLevel);
-        if (!_spellInfo->IsPassive())
-           level -= int32(_spellInfo->SpellLevel);
+        level -= int32(_spellInfo->SpellLevel);
         basePoints += int32(level * basePointsPerLevel);
     }
 
@@ -3157,6 +3156,10 @@ SpellInfo const* SpellInfo::GetAuraRankForLevel(uint8 level) const
 {
     // ignore passive spells
     if (IsPassive())
+        return this;
+
+    // Client ignores spell with these attributes (sub_53D9D0)
+    if (HasAttribute(SPELL_ATTR0_NEGATIVE_1) || HasAttribute(SPELL_ATTR2_UNK3))
         return this;
 
     bool needRankSelection = false;
