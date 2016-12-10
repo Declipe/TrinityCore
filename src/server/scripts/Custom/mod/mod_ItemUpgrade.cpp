@@ -1,10 +1,36 @@
-#include "CreatureTextMgr.h"
-#include "Player.h"
-#include "BattlegroundMgr.h"
-#include "Battleground.h"
-#include "ArenaTeamMgr.h"
-#include "ArenaTeam.h"
 #include "Config.h"
+#include "GuildMgr.h"
+#include "ObjectMgr.h"
+#include "Player.h"
+#include "Battleground.h"
+#include "BattlegroundMgr.h"
+#include "ScriptedCreature.h"
+#include "ScriptedGossip.h"
+#include "WorldPacket.h"
+#include "ObjectMgr.h"
+#include "ArenaTeam.h"
+#include "ArenaTeamMgr.h"
+#include "World.h"
+#include "WorldSession.h"
+#include "Group.h"
+#include "AchievementMgr.h"
+#include "ObjectAccessor.h"
+#include "Unit.h"
+#include "SharedDefines.h"
+#include "Creature.h"
+#include "ScriptMgr.h"
+#include "ScriptedCreature.h"
+#include "GridNotifiers.h"
+#include "GridNotifiersImpl.h"
+#include "Cell.h"
+#include "CellImpl.h"
+#include "Language.h"
+#include "Chat.h"
+#include <sstream>
+#include "Channel.h"
+#include "MapManager.h"
+#include "CreatureTextMgr.h"
+#include "SmartScriptMgr.h"
 
 enum ItemUpgradeStrings
 {
@@ -89,7 +115,7 @@ class Mod_ItemUpgrade_WorldScript : public WorldScript
 		ItemUpgradeTextNoEffect      = sConfigMgr->GetIntDefault("ItemUpgrade.Text.NoEffect", NO_EFFECT);
 		ItemUpgradeTextEffectNow     = sConfigMgr->GetIntDefault("ItemUpgrade.Text.EffectNow", EFFECT_NOW);
 		ItemUpgradeTextEffectRemove  = sConfigMgr->GetIntDefault("ItemUpgrade.Text.EffectRemove", EFFECT_REMOVE);
-		ItemUpgradeEnable            = sConfigMgr->GetIntDefault("ItemUpgrade.Enable", false);
+		ItemUpgradeEnable            = sConfigMgr->GetBoolDefault("ItemUpgrade.Enable", false);
 
         if (ItemUpgradeEnable)
             LoadDataFromDataBase();
