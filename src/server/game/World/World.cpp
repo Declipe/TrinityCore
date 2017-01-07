@@ -1451,6 +1451,9 @@ void World::LoadConfigSettings(bool reload)
 // Visit http://www.realmsofwarcraft.com/bb for forums and information
 //
 // End of prepatch
+    // Allow 5-man parties to use raid warnings
+    m_bool_configs[CONFIG_CHAT_PARTY_RAID_WARNINGS] = sConfigMgr->GetBoolDefault("PartyRaidWarnings", false);
+
     // call ScriptMgr if we're reloading the configuration
     if (reload)
         sScriptMgr->OnConfigLoad(reload);
