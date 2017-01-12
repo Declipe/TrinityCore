@@ -837,6 +837,8 @@ public:
 			_player->AddAura(30090, _player);
 			_player->AddAura(30088, _player);
 			_player->AddAura(30089, _player);
+			_player->AddAura(131, _player);
+			_player->AddAura(34906, _player);
 		}
 		return true;
 	}
