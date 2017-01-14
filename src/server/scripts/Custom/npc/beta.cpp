@@ -57,6 +57,7 @@
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip1 "[Premium buff] ->"
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip2 "[Title] ->"
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip3 "[test] ->"
+#define MSG_GOSSIP_TEXT_BUFF_MENUvip33 "[titlestest] ->"
 #define MSG_GOSSIP_TEXT_MAIN_MENU "<- [Вернутся в Главное меню]"
 #define MSG_GOSSIP_TEXT_PROFFESION_MENU "[Меню Профессий] ->"
 #define MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU "[Меню Второстепенных профессий] ->"
@@ -240,6 +241,7 @@ public:
         AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip1, GOSSIP_SENDER_MAIN, 13);
         AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip2, GOSSIP_SENDER_MAIN, 22);
 		AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
+		AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
 		AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
 		SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
 		return true;
@@ -429,9 +431,205 @@ public:
             AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip1, GOSSIP_SENDER_MAIN, 13);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip2, GOSSIP_SENDER_MAIN, 22);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
 			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
 			break;
+		case 22333:
+			player->PlayerTalkClass->ClearMenus();
+			//AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_JENKINS, GOSSIP_SENDER_MAIN, 23);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "1", GOSSIP_SENDER_MAIN, 22334);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "2", GOSSIP_SENDER_MAIN, 22335);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "3", GOSSIP_SENDER_MAIN, 22336);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "4", GOSSIP_SENDER_MAIN, 22337);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "5", GOSSIP_SENDER_MAIN, 22338);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "6", GOSSIP_SENDER_MAIN, 22339);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "7", GOSSIP_SENDER_MAIN, 22340);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "8", GOSSIP_SENDER_MAIN, 22341);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "9", GOSSIP_SENDER_MAIN, 22342);
+			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
+			break;
+		case 22334:
+		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(178);
+		if (player->HasTitle(titleInfo))
+		{
+			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+			return false;
+		}
+		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+		}
+		else {
+			// Даем звание Весельчак
+			player->SetTitle(titleInfo);
+			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+			CloseGossipMenuFor(player);
+		}
+		}
+		break;
+		case 22335:
+		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(179);
+		if (player->HasTitle(titleInfo))
+		{
+			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+			return false;
+		}
+		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+		}
+		else {
+			// Даем звание Весельчак
+			player->SetTitle(titleInfo);
+			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+			CloseGossipMenuFor(player);
+		}
+		}
+		break;
+		case 22336:
+		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(180);
+		if (player->HasTitle(titleInfo))
+		{
+			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+			return false;
+		}
+		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+		}
+		else {
+			// Даем звание Весельчак
+			player->SetTitle(titleInfo);
+			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+			CloseGossipMenuFor(player);
+		}
+		}
+		break;
+		case 22337:
+		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(181);
+		if (player->HasTitle(titleInfo))
+		{
+			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+			return false;
+		}
+		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+		}
+		else {
+			// Даем звание Весельчак
+			player->SetTitle(titleInfo);
+			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+			CloseGossipMenuFor(player);
+		}
+		}
+		break;
+		case 22338:
+		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(182);
+		if (player->HasTitle(titleInfo))
+		{
+			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+			return false;
+		}
+		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+		}
+		else {
+			// Даем звание Весельчак
+			player->SetTitle(titleInfo);
+			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+			CloseGossipMenuFor(player);
+		}
+		}
+		break;
+		case 22339:
+		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(183);
+		if (player->HasTitle(titleInfo))
+		{
+			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+			return false;
+		}
+		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+		}
+		else {
+			// Даем звание Весельчак
+			player->SetTitle(titleInfo);
+			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+			CloseGossipMenuFor(player);
+		}
+		}
+		break;
+		case 22340:
+		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(184);
+		if (player->HasTitle(titleInfo))
+		{
+			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+			return false;
+		}
+		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+		}
+		else {
+			// Даем звание Весельчак
+			player->SetTitle(titleInfo);
+			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+			CloseGossipMenuFor(player);
+		}
+		}
+		break;
+		case 22341:
+		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(185);
+		if (player->HasTitle(titleInfo))
+		{
+			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+			return false;
+		}
+		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+		}
+		else {
+			// Даем звание Весельчак
+			player->SetTitle(titleInfo);
+			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+			CloseGossipMenuFor(player);
+		}
+		}
+		break;
+		case 22342:
+		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(186);
+		if (player->HasTitle(titleInfo))
+		{
+			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+			return false;
+		}
+		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			CloseGossipMenuFor(player);
+		}
+		else {
+			// Даем звание Весельчак
+			player->SetTitle(titleInfo);
+			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+			CloseGossipMenuFor(player);
+		}
+		}
+		break;
+
 		case 2233:
 			player->PlayerTalkClass->ClearMenus();
 			//AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_JENKINS, GOSSIP_SENDER_MAIN, 23);
