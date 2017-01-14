@@ -37,7 +37,7 @@
 // Prepatch by LordPsyan
 // 01
 // 02
-#include "../../scripts/Custom/npc_arena1v1.h"
+#include "../../scripts/Custom/npc/npc_arena1v1.h"
 // 04
 // 05
 // 06
