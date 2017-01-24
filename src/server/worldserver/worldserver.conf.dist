@@ -4282,6 +4282,7 @@ Transmogrification.SetNpcText = 65001
 Transmogrification.SetCostModifier = 3.0
 Transmogrification.SetCopperCost = 0
 DefaultSpec.Enable = 1
+DeathKnight.SkipQuest = 0
 ###################################################################################################
 #
 # Prepatch by LordPsyan.

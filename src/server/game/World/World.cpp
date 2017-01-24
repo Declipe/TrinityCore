@@ -506,6 +506,7 @@ void World::LoadConfigSettings(bool reload)
 	m_bool_configs[CONFIG_VIP4] = sConfigMgr->GetBoolDefault("Item.Disable3", false);
 	m_bool_configs[CONFIG_VIP5] = sConfigMgr->GetBoolDefault("Item.Disable4", false);
 	m_bool_configs[CONFIG_VIP6] = sConfigMgr->GetBoolDefault("Item.Disable5", false);
+	m_bool_configs[CONFIG_DEATH_KNIGHT_SKIP_QUEST] = sConfigMgr->GetBoolDefault("DeathKnight.SkipQuest", false);
 
     rate_values[RATE_REPAIRCOST]  = sConfigMgr->GetFloatDefault("Rate.RepairCost", 1.0f);
     if (rate_values[RATE_REPAIRCOST] < 0.0f)
