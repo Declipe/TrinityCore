@@ -1168,6 +1168,7 @@ void WorldSession::HandleCharRenameCallback(std::shared_ptr<CharacterRenameInfo>
     SendCharRename(RESPONSE_SUCCESS, renameInfo.get());
 
     sWorld->UpdateCharacterInfo(renameInfo->Guid, renameInfo->Name);
+    sWorld->UpdateCharacterGuidByName(renameInfo->Guid, oldName, renameInfo->Name);
 }
 
 void WorldSession::HandleSetPlayerDeclinedNames(WorldPacket& recvData)
@@ -1425,7 +1426,7 @@ void WorldSession::HandleCharCustomizeCallback(std::shared_ptr<CharacterCustomiz
     }
 
     // character with this name already exist
-    if (ObjectGuid newGuid = sObjectMgr->GetPlayerGUIDByName(customizeInfo->Name))
+    if (ObjectGuid newGuid = sWorld->GetCharacterGuidByName(customizeInfo->Name))
     {
         if (newGuid != customizeInfo->Guid)
         {
@@ -1460,6 +1461,7 @@ void WorldSession::HandleCharCustomizeCallback(std::shared_ptr<CharacterCustomiz
     CharacterDatabase.CommitTransaction(trans);
 
     sWorld->UpdateCharacterInfo(customizeInfo->Guid, customizeInfo->Name, customizeInfo->Gender);
+    sWorld->UpdateCharacterGuidByName(customizeInfo->Guid, oldName, customizeInfo->Name);
 
     SendCharCustomize(RESPONSE_SUCCESS, customizeInfo.get());
 
@@ -1643,6 +1645,7 @@ void WorldSession::HandleCharFactionOrRaceChangeCallback(std::shared_ptr<Charact
     uint8 oldRace     = characterInfo->Race;
     uint8 playerClass = characterInfo->Class;
     uint8 level       = characterInfo->Level;
+    std::string oldName = characterInfo->Name;
 
     if (!sObjectMgr->GetPlayerInfo(factionChangeInfo->Race, playerClass))
     {
@@ -1707,7 +1710,7 @@ void WorldSession::HandleCharFactionOrRaceChangeCallback(std::shared_ptr<Charact
     }
 
     // character with this name already exist
-    ObjectGuid newGuid = sObjectMgr->GetPlayerGUIDByName(factionChangeInfo->Name);
+    ObjectGuid newGuid = sWorld->GetCharacterGuidByName(factionChangeInfo->Name);
     if (!newGuid.IsEmpty())
     {
         if (newGuid != factionChangeInfo->Guid)
@@ -1759,6 +1762,7 @@ void WorldSession::HandleCharFactionOrRaceChangeCallback(std::shared_ptr<Charact
     }
 
     sWorld->UpdateCharacterInfo(factionChangeInfo->Guid, factionChangeInfo->Name, factionChangeInfo->Gender, factionChangeInfo->Race);
+    sWorld->UpdateCharacterGuidByName(factionChangeInfo->Guid, oldName, factionChangeInfo->Name);
 
     if (oldRace != factionChangeInfo->Race)
     {
@@ -1851,15 +1855,11 @@ void WorldSession::HandleCharFactionOrRaceChangeCallback(std::shared_ptr<Charact
                 trans->Append(stmt);
             }
 
-            /// @todo: make this part async
             if (!sWorld->getBoolConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_GUILD))
             {
                 // Reset guild
-                stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_GUILD_MEMBER);
-                stmt->setUInt32(0, lowGuid);
-                if (PreparedQueryResult result = CharacterDatabase.Query(stmt))
-                    if (Guild* guild = sGuildMgr->GetGuildById((result->Fetch()[0]).GetUInt32()))
-                        guild->DeleteMember(trans, factionChangeInfo->Guid, false, false, true);
+                if (Guild* guild = sGuildMgr->GetGuildById(characterInfo->GuildId))
+                    guild->DeleteMember(trans, factionChangeInfo->Guid, false, false, true);
 
                 Player::LeaveAllArenaTeams(factionChangeInfo->Guid);
             }
