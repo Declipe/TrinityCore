@@ -49,7 +49,6 @@ public:
         static std::vector<ChatCommand> commandTable =
         {
             { "additem",          rbac::RBAC_PERM_COMMAND_ADDITEM,          false, &HandleAddItemCommand,          "" },
-            { "additem2",          rbac::RBAC_PERM_COMMAND_ADDITEM,          false, &HandleAddItemCommand2,          "" },
             { "additemset",       rbac::RBAC_PERM_COMMAND_ADDITEMSET,       false, &HandleAddItemSetCommand,       "" },
             { "appear",           rbac::RBAC_PERM_COMMAND_APPEAR,           false, &HandleAppearCommand,           "" },
             { "aura",             rbac::RBAC_PERM_COMMAND_AURA,             false, &HandleAuraCommand,             "" },
@@ -1295,115 +1294,6 @@ public:
         return true;
     }
 
-static bool HandleAddItemCommand2(ChatHandler* handler, char const* args)
-    {
-        if (!*args)
-            return false;
-
-        uint32 itemId = 0;
-
-        if (args[0] == '[')                                        // [name] manual form
-        {
-            char const* itemNameStr = strtok((char*)args, "]");
-
-            if (itemNameStr && itemNameStr[0])
-            {
-                std::string itemName = itemNameStr+1;
-                ZynDatabase.EscapeString(itemName);
-
-                PreparedStatement* stmt = ZynDatabase.GetPreparedStatement(Zyn_SEL_ITEM_TEMPLATE_BY_NAME);
-                stmt->setString(0, itemName);
-                PreparedQueryResult result = ZynDatabase.Query(stmt);
-
-                if (!result)
-                {
-                    handler->PSendSysMessage(LANG_COMMAND_COULDNOTFIND, itemNameStr+1);
-                    handler->SetSentErrorMessage(true);
-                    return false;
-                }
-                itemId = result->Fetch()->GetUInt32();
-            }
-            else
-                return false;
-        }
-        else                                                    // item_id or [name] Shift-click form |color|Hitem:item_id:0:0:0|h[name]|h|r
-        {
-            char const* id = handler->extractKeyFromLink((char*)args, "Hitem");
-            if (!id)
-                return false;
-            itemId = atoul(id);
-        }
-
-        char const* ccount = strtok(NULL, " ");
-
-        int32 count = 1;
-
-        if (ccount)
-            count = strtol(ccount, NULL, 10);
-
-        if (count == 0)
-            count = 1;
-
-        Player* player = handler->GetSession()->GetPlayer();
-        Player* playerTarget = handler->getSelectedPlayer();
-        if (!playerTarget)
-            playerTarget = player;
-
-        TC_LOG_DEBUG("misc", handler->GetTrinityString(LANG_ADDITEM), itemId, count);
-
-        ItemTemplate const* itemTemplate = sObjectMgr->GetItemTemplate(itemId);
-        if (!itemTemplate)
-        {
-            handler->PSendSysMessage(LANG_COMMAND_ITEMIDINVALID, itemId);
-            handler->SetSentErrorMessage(true);
-            return false;
-        }
-
-        // Subtract
-        if (count < 0)
-        {
-            playerTarget->DestroyItemCount(itemId, -count, true, false);
-            handler->PSendSysMessage(LANG_REMOVEITEM, itemId, -count, handler->GetNameLink(playerTarget).c_str());
-            return true;
-        }
-
-        // Adding items
-        uint32 noSpaceForCount = 0;
-
-        // check space and find places
-        ItemPosCountVec dest;
-        InventoryResult msg = playerTarget->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, itemId, count, &noSpaceForCount);
-        if (msg != EQUIP_ERR_OK)                               // convert to possible store amount
-            count -= noSpaceForCount;
-
-        if (count == 0 || dest.empty())                         // can't add any
-        {
-            handler->PSendSysMessage(LANG_ITEM_CANNOT_CREATE, itemId, noSpaceForCount);
-            handler->SetSentErrorMessage(true);
-            return false;
-        }
-
-        Item* item = playerTarget->StoreNewItem(dest, itemId, true, Item::GenerateItemRandomPropertyId(itemId));
-
-        // remove binding (let GM give it to another player later)
-        if (player == playerTarget)
-            for (ItemPosCountVec::const_iterator itr = dest.begin(); itr != dest.end(); ++itr)
-                if (Item* item1 = player->GetItemByPos(itr->pos))
-                    item1->SetBinding(false);
-
-        if (count > 0 && item)
-        {
-            player->SendNewItem(item, count, false, true);
-            if (player != playerTarget)
-                playerTarget->SendNewItem(item, count, true, false);
-        }
-
-        if (noSpaceForCount > 0)
-            handler->PSendSysMessage(LANG_ITEM_CANNOT_CREATE, itemId, noSpaceForCount);
-
-        return true;
-    }
-    
     static bool HandleAddItemSetCommand(ChatHandler* handler, char const* args)
     {
         if (!*args)
