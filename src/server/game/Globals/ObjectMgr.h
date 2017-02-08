@@ -984,6 +984,7 @@ class TC_GAME_API ObjectMgr
         void LoadGameObjectLocales();
         void LoadGameobjects();
         void LoadItemTemplates();
+        void LoadItemTemplatess();
         void LoadItemLocales();
         void LoadItemSetNames();
         void LoadItemSetNameLocales();
