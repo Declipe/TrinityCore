@@ -1,7 +1,8 @@
 SET @buy := 200;
 SET @stack := 20000;
 
-UPDATE `item_template` SET `BuyCount` = @buy, `stackable` = @stack WHERE `entry` = 21215;
+UPDATE `item_template` SET `BuyCount` = @buy, `stackable` = @stack WHERE `entry` = 52020;
+UPDATE `item_template` SET `BuyCount` = @buy, `stackable` = @stack WHERE `entry` = 52021;
 UPDATE `item_template` SET `BuyCount` = @buy, `stackable` = @stack WHERE `entry` = 33444;
 UPDATE `item_template` SET `BuyCount` = @buy, `stackable` = @stack WHERE `entry` = 33445;
 UPDATE `item_template` SET `BuyCount` = @buy, `stackable` = @stack WHERE `entry` = 34125;
