@@ -8193,7 +8193,7 @@ void Player::CastItemCombatSpell(DamageInfo const& damageInfo, Item* item, ItemT
 
                 // reduce effect values if enchant is limited
                 CustomSpellValues values;
-                if ((entry->AttributesMask & ENCHANT_PROC_ATTR_LIMIT_60) && target->getLevel() > 60)
+                if (entry && (entry->AttributesMask & ENCHANT_PROC_ATTR_LIMIT_60) && target->getLevel() > 60)
                 {
                     int32 const lvlDifference = target->getLevel() - 60;
                     int32 const lvlPenaltyFactor = 4; // 4% lost effectiveness per level
@@ -16160,9 +16160,6 @@ QuestGiverStatus Player::GetQuestDialogStatus(Object* questgiver)
         if (!quest)
             continue;
 
-        if (!sConditionMgr->IsObjectMeetingNotGroupedConditions(CONDITION_SOURCE_TYPE_QUEST_ACCEPT, quest->GetQuestId(), this))
-            continue;
-
         QuestStatus status = GetQuestStatus(questId);
         if (status == QUEST_STATUS_COMPLETE && !GetQuestRewardStatus(questId))
             result2 = DIALOG_STATUS_REWARD;
@@ -23133,10 +23130,31 @@ void Player::LearnSkillRewardedSpells(uint32 skillId, uint32 skillValue)
         if (skillValue < ability->req_skill_value && ability->AutolearnType == SKILL_LINE_ABILITY_LEARNED_ON_SKILL_VALUE)
             RemoveSpell(ability->spellId);
         // need learn
-        else if (!IsInWorld())
-            AddSpell(ability->spellId, true, true, true, false, false, ability->skillId);
         else
-            LearnSpell(ability->spellId, true, ability->skillId);
+        {
+            // used to avoid double Seal of Righteousness on paladins, it's the only player spell which has both spell and forward spell in auto learn
+            if (ability->AutolearnType == SKILL_LINE_ABILITY_LEARNED_ON_SKILL_LEARN && ability->forward_spellid)
+            {
+                bool skipCurrent = false;
+                auto bounds = sSpellMgr->GetSkillLineAbilityMapBounds(ability->forward_spellid);
+                for (auto itr = bounds.first; itr != bounds.second; ++itr)
+                {
+                    if (itr->second->AutolearnType == SKILL_LINE_ABILITY_LEARNED_ON_SKILL_LEARN && skillValue >= itr->second->req_skill_value)
+                    {
+                        skipCurrent = true;
+                        break;
+                    }
+                }
+
+                if (skipCurrent)
+                    continue;
+            }
+
+            if (!IsInWorld())
+                AddSpell(ability->spellId, true, true, true, false, false, ability->skillId);
+            else
+                LearnSpell(ability->spellId, true, ability->skillId);
+        }
     }
 }
 
