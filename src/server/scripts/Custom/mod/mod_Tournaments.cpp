@@ -35,6 +35,7 @@
 #include "MapManager.h"
 #include "CreatureTextMgr.h"
 #include "SmartScriptMgr.h"
+#include "GameTime.h"
 
 #define SQL_TEMPLATE "SELECT `entry`, `level`, `time_limit`, `say_start`, `say_win`, `say_lose`, `chest_id`, `point_id`, `req_quest_id`, `kill_credit`, `menu_string` FROM `world_tournaments` ORDER BY `entry`, `level` DESC"
 #define SQL_CREATURE "SELECT `id`, `tournament_entry`, `tournament_level`, `entry`, `count`, `from_point_id`, `to_point_id`, `time` FROM `world_tournament_creature` ORDER BY `tournament_level`, `time`"

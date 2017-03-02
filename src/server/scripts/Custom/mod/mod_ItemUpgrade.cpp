@@ -31,6 +31,7 @@
 #include "MapManager.h"
 #include "CreatureTextMgr.h"
 #include "SmartScriptMgr.h"
+#include "GameTime.h"
 
 enum ItemUpgradeStrings
 {

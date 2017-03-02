@@ -1,0 +1,89 @@
+SET @buy := 200;
+SET @stack := 20000;
+
+UPDATE `item_template` SET `BuyCount` = @buy, `stackable` = @stack WHERE `entry` = 52020;
+UPDATE `item_template` SET `BuyCount` = @buy, `stackable` = @stack WHERE `entry` = 52021;
+
+
+
+INSERT INTO `npc_vendor` VALUES
+(60641,0,39233,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,39276,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,39716,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,40266,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,40400,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,40401,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,40475,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,40700,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,40701,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,42508,0,0,2,0);
+
+INSERT INTO `npc_vendor` VALUES
+(60641,0,44313,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,45450,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,45587,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,45682,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,45707,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,45877,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,45887,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,46963,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,46964,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,47079,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,47085,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,47260,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,47287,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,47421,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,47448,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,47812,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,47835,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,47895,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,47910,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,47963,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,47978,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,48040,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,48055,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,49821,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,49835,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,49976,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,50065,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,50794,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,51791,0,0,2,0);
+INSERT INTO `npc_vendor` VALUES
+(60641,0,51812,0,0,2,0);

@@ -1,6 +1,37 @@
-//#include "ScriptPCH.h"
-#include "Player.h"
 #include "Config.h"
+#include "GuildMgr.h"
+#include "ObjectMgr.h"
+#include "Player.h"
+#include "Battleground.h"
+#include "BattlegroundMgr.h"
+#include "ScriptedCreature.h"
+#include "ScriptedGossip.h"
+#include "WorldPacket.h"
+#include "ObjectMgr.h"
+#include "ArenaTeam.h"
+#include "ArenaTeamMgr.h"
+#include "World.h"
+#include "WorldSession.h"
+#include "Group.h"
+#include "AchievementMgr.h"
+#include "ObjectAccessor.h"
+#include "Unit.h"
+#include "SharedDefines.h"
+#include "Creature.h"
+#include "ScriptMgr.h"
+#include "ScriptedCreature.h"
+#include "GridNotifiers.h"
+#include "GridNotifiersImpl.h"
+#include "Cell.h"
+#include "CellImpl.h"
+#include "Language.h"
+#include "Chat.h"
+#include <sstream>
+#include "Channel.h"
+#include "MapManager.h"
+#include "CreatureTextMgr.h"
+#include "SmartScriptMgr.h"
+#include "GameTime.h"
 
 #define SPELL_MASK_CLASS        1
 #define SPELL_MASK_RIDING       2
@@ -79,7 +110,7 @@ public:
             LoadDataFromDataBase();
     }
 
-    void LoadDataFromDataBase()
+    void LoadDataFromDataBase(void)
     {
         LearnSpellForClass.clear();
         uint8 spellMask = OnLevelSpellMask | OnSkillSpellMask;
@@ -143,7 +174,7 @@ public:
             ++count;
         }
         while (result->NextRow());
-
+             //++count;
         TC_LOG_INFO("server.loading", ">> Loaded %u spells for AutoLearn in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
     }
 };

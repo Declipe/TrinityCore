@@ -29,7 +29,7 @@
 #include <sstream>
 #include "Channel.h"
 
-#define MSG_GOSSIP_TEXT_GETTING_STARTED	"Приветствуем вас на сервере OneGo - World of Warcraft !"
+#define MSG_GOSSIP_TEXT_GETTING_STARTED	"Приветствуем вас на сервере"// OneGo - World of Warcraft !"
  
 #define MSG_ERR_HONOR "У вас не достаточно хонора для совершения покупки!"
 #define MSG_ERR_ARENA_POINT_1 "У вас не достаточно Апа!"
