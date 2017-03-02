@@ -23,6 +23,7 @@
  */
 
 #include "ScriptMgr.h"
+#include "GameTime.h"
 #include "Battleground.h"
 #include "Cell.h"
 #include "CellImpl.h"
@@ -3586,7 +3587,7 @@ class spell_gen_turkey_marker : public SpellScriptLoader
             void OnApply(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
             {
                 // store stack apply times, so we can pop them while they expire
-                _applyTimes.push_back(getMSTime());
+                _applyTimes.push_back(GameTime::GetGameTimeMS());
                 Unit* target = GetTarget();
 
                 // on stack 15 cast the achievement crediting spell
@@ -3600,7 +3601,7 @@ class spell_gen_turkey_marker : public SpellScriptLoader
                     return;
 
                 // pop stack if it expired for us
-                if (_applyTimes.front() + GetMaxDuration() < getMSTime())
+                if (_applyTimes.front() + GetMaxDuration() < GameTime::GetGameTimeMS())
                     ModStackAmount(-1, AURA_REMOVE_BY_EXPIRE);
             }
 
