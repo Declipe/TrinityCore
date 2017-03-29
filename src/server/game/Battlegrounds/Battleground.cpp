@@ -1532,6 +1532,9 @@ Creature* Battleground::AddCreature(uint32 entry, uint32 type, float x, float y,
     if (respawntime)
         creature->SetRespawnDelay(respawntime);
 
+    if (creature->IsVehicle())
+        creature->setRegeneratingHealth(false);
+
     return creature;
 }
 
