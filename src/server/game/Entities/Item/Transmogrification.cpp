@@ -193,11 +193,11 @@ std::string Transmogrification::GetItemLink(Item* item, WorldSession* session) c
 {
     TC_LOG_DEBUG("custom.transmog", "Transmogrification::GetItemLink");
 
-    int loc_idx = session->GetSessionDbLocaleIndex();
+	LocaleConstant localeConstant = session->GetSessionDbLocaleIndex();
     const ItemTemplate* temp = item->GetTemplate();
     std::string name = temp->Name1;
     if (ItemLocale const* il = sObjectMgr->GetItemLocale(temp->ItemId))
-        ObjectMgr::GetLocaleString(il->Name, loc_idx, name);
+        ObjectMgr::GetLocaleString(il->Name, localeConstant, name);
 
     if (int32 itemRandPropId = item->GetItemRandomPropertyId())
     {
@@ -216,7 +216,7 @@ std::string Transmogrification::GetItemLink(Item* item, WorldSession* session) c
         }
         if (suffix)
         {
-            std::string test(suffix[(name != temp->Name1) ? loc_idx : DEFAULT_LOCALE]);
+            std::string test(suffix[(name != temp->Name1) ? localeConstant : DEFAULT_LOCALE]);
             if (!test.empty())
             {
                 name += ' ';
@@ -244,10 +244,10 @@ std::string Transmogrification::GetItemLink(uint32 entry, WorldSession* session)
     TC_LOG_DEBUG("custom.transmog", "Transmogrification::GetItemLink");
 
     const ItemTemplate* temp = sObjectMgr->GetItemTemplate(entry);
-    int loc_idx = session->GetSessionDbLocaleIndex();
+	LocaleConstant localeConstant = session->GetSessionDbLocaleIndex();
     std::string name = temp->Name1;
     if (ItemLocale const* il = sObjectMgr->GetItemLocale(entry))
-        ObjectMgr::GetLocaleString(il->Name, loc_idx, name);
+        ObjectMgr::GetLocaleString(il->Name, localeConstant, name);
 
     std::ostringstream oss;
     oss << "|c" << std::hex << ItemQualityColors[temp->Quality] << std::dec <<
