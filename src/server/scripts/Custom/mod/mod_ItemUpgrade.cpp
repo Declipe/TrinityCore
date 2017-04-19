@@ -147,7 +147,7 @@ class go_item_upgrade : public GameObjectScript
             SendGossipMenuFor(player, player->GetGossipTextId(go), go->GetGUID());
             return true;
         }
-        int loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
+		LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
 
         for (uint8 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; i++)
         {
@@ -157,7 +157,7 @@ class go_item_upgrade : public GameObjectScript
                 ItemTemplate const *itemTemplate = item->GetTemplate();
 
                 std::string Name = itemTemplate->Name1;
-                if (loc_idx >= 0)
+				if (loc_idx >= 0)
                     if (ItemLocale const* il = sObjectMgr->GetItemLocale(itemTemplate->ItemId))
                         ObjectMgr::GetLocaleString(il->Name, loc_idx, Name);
 
