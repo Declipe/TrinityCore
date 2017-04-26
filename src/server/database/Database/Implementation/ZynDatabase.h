@@ -23,6 +23,7 @@
 
 enum ZynDatabaseStatements
 {
+	ZynDatabase1,
 	MAX_ZYNDATABASE_STATEMENTS
 };
 

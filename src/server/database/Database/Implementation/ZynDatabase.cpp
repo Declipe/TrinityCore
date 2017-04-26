@@ -22,4 +22,5 @@ void ZynDatabaseConnection::DoPrepareStatements()
     if (!m_reconnecting)
         m_stmts.resize(MAX_ZYNDATABASE_STATEMENTS);
 
+	PrepareStatement(ZynDatabase1, "SELECT `enchant_id`, `prev_enchant_id`, `golds` FROM `world_item_upgrade`", CONNECTION_SYNCH);
 }

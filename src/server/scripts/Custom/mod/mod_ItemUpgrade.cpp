@@ -31,6 +31,7 @@
 #include "MapManager.h"
 #include "CreatureTextMgr.h"
 #include "SmartScriptMgr.h"
+#include "ZynDatabase.h"
 #include "GameTime.h"
 
 enum ItemUpgradeStrings
@@ -70,7 +71,9 @@ class Mod_ItemUpgrade_WorldScript : public WorldScript
 		TC_LOG_ERROR("misc", "Loading ItemUpgrade...");
         uint32 oldMSTime = getMSTime();
 
-        QueryResult result = ZynDatabase.PQuery("SELECT `enchant_id`, `prev_enchant_id`, `golds` FROM `world_item_upgrade`");
+        //QueryResult result = ZynDatabase.PQuery("SELECT `enchant_id`, `prev_enchant_id`, `golds` FROM `world_item_upgrade`");
+		PreparedStatement* stmt = ZynDatabase.GetPreparedStatement(ZynDatabase1);
+		PreparedQueryResult result = ZynDatabase.Query(stmt);
 
         if (!result)
         {
