@@ -123,8 +123,8 @@ public:
         uint32 oldMSTime = getMSTime();
 
        // QueryResult result = ZynDatabase.PQuery("SELECT SpellId, SpellMask, RequiredClassMask, RequiredRaceMask, RequiredLevel, RequiredSpellId, RequiredSkillId, RequiredSkillValue FROM `world_autolearn`");
-		PreparedStatement* stmt = ZynDatabase.GetPreparedStatement(ZynDatabase2);
-		PreparedQueryResult result = ZynDatabase.Query(stmt);
+        PreparedStatement* stmt = ZynDatabase.GetPreparedStatement(ZynDatabase2);
+        PreparedQueryResult result = ZynDatabase.Query(stmt);
 
         if (!result)
             return;

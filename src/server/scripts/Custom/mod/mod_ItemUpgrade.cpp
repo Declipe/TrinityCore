@@ -72,8 +72,8 @@ class Mod_ItemUpgrade_WorldScript : public WorldScript
         uint32 oldMSTime = getMSTime();
 
         //QueryResult result = ZynDatabase.PQuery("SELECT `enchant_id`, `prev_enchant_id`, `golds` FROM `world_item_upgrade`");
-		PreparedStatement* stmt = ZynDatabase.GetPreparedStatement(ZynDatabase1);
-		PreparedQueryResult result = ZynDatabase.Query(stmt);
+        PreparedStatement* stmt = ZynDatabase.GetPreparedStatement(ZynDatabase1);
+        PreparedQueryResult result = ZynDatabase.Query(stmt);
 
         if (!result)
         {
