@@ -24,6 +24,7 @@
 enum ZynDatabaseStatements
 {
 	ZynDatabase1,
+	ZynDatabase2,
 	MAX_ZYNDATABASE_STATEMENTS
 };
 

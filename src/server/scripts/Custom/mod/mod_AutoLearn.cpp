@@ -31,6 +31,7 @@
 #include "MapManager.h"
 #include "CreatureTextMgr.h"
 #include "SmartScriptMgr.h"
+#include "ZynDatabase.h"
 #include "GameTime.h"
 
 #define SPELL_MASK_CLASS        1
@@ -121,7 +122,9 @@ public:
         TC_LOG_INFO("server.loading", "Loading AutoLearn...");
         uint32 oldMSTime = getMSTime();
 
-        QueryResult result = ZynDatabase.PQuery("SELECT SpellId, SpellMask, RequiredClassMask, RequiredRaceMask, RequiredLevel, RequiredSpellId, RequiredSkillId, RequiredSkillValue FROM `world_autolearn`");
+       // QueryResult result = ZynDatabase.PQuery("SELECT SpellId, SpellMask, RequiredClassMask, RequiredRaceMask, RequiredLevel, RequiredSpellId, RequiredSkillId, RequiredSkillValue FROM `world_autolearn`");
+		PreparedStatement* stmt = ZynDatabase.GetPreparedStatement(ZynDatabase2);
+		PreparedQueryResult result = ZynDatabase.Query(stmt);
 
         if (!result)
             return;

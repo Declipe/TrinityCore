@@ -23,4 +23,5 @@ void ZynDatabaseConnection::DoPrepareStatements()
         m_stmts.resize(MAX_ZYNDATABASE_STATEMENTS);
 
 	PrepareStatement(ZynDatabase1, "SELECT `enchant_id`, `prev_enchant_id`, `golds` FROM `world_item_upgrade`", CONNECTION_SYNCH);
+	PrepareStatement(ZynDatabase2, "SELECT SpellId, SpellMask, RequiredClassMask, RequiredRaceMask, RequiredLevel, RequiredSpellId, RequiredSkillId, RequiredSkillValue FROM `world_autolearn`", CONNECTION_SYNCH);
 }
