@@ -2671,13 +2671,13 @@ void Player::SetGameMaster(bool on)
     if (on)
     {
         m_ExtraFlags |= PLAYER_EXTRA_GM_ON;
-        setFaction(35);
+        SetFaction(35);
         SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_GM);
         SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_ALLOW_CHEAT_SPELLS);
 
         if (Pet* pet = GetPet())
         {
-            pet->setFaction(35);
+            pet->SetFaction(35);
             pet->getHostileRefManager().setOnlineOfflineState(false);
         }
 
@@ -2711,7 +2711,7 @@ void Player::SetGameMaster(bool on)
 
         if (Pet* pet = GetPet())
         {
-            pet->setFaction(getFaction());
+            pet->SetFaction(GetFaction());
             pet->getHostileRefManager().setOnlineOfflineState(true);
         }
 
@@ -6788,7 +6788,7 @@ void Player::setFactionForRace(uint8 race)
     m_team = TeamForRace(race);
 
     ChrRacesEntry const* rEntry = sChrRacesStore.LookupEntry(race);
-    setFaction(rEntry ? rEntry->FactionID : 0);
+    SetFaction(rEntry ? rEntry->FactionID : 0);
 }
 
 ReputationRank Player::GetReputationRank(uint32 faction) const
@@ -20822,6 +20822,20 @@ void Player::RemovePet(Pet* pet, PetSaveMode mode, bool returnreagent)
     }
 }
 
+void Player::AddPetAura(PetAura const* petSpell)
+{
+    m_petAuras.insert(petSpell);
+    if (Pet* pet = GetPet())
+        pet->CastPetAura(petSpell);
+}
+
+void Player::RemovePetAura(PetAura const* petSpell)
+{
+    m_petAuras.erase(petSpell);
+    if (Pet* pet = GetPet())
+        pet->RemoveAurasDueToSpell(petSpell->GetAura(pet->GetEntry()));
+}
+
 void Player::StopCastingCharm()
 {
     if (IsGhouled())
@@ -24495,7 +24509,7 @@ bool Player::CanUseBattlegroundObject(GameObject* gameobject) const
     if (gameobject)
     {
         FactionTemplateEntry const* playerFaction = GetFactionTemplateEntry();
-        FactionTemplateEntry const* faction = sFactionTemplateStore.LookupEntry(gameobject->GetUInt32Value(GAMEOBJECT_FACTION));
+        FactionTemplateEntry const* faction = sFactionTemplateStore.LookupEntry(gameobject->GetFaction());
 
         if (playerFaction && faction && !playerFaction->IsFriendlyTo(*faction))
             return false;
@@ -26767,7 +26781,7 @@ Pet* Player::SummonPet(uint32 entry, float x, float y, float z, float ang, PetTy
     }
 
     pet->SetCreatorGUID(GetGUID());
-    pet->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, getFaction());
+    pet->SetFaction(GetFaction());
 
     pet->setPowerType(POWER_MANA);
     pet->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_NONE);
