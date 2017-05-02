@@ -120,6 +120,10 @@ class npc_buffer : public CreatureScript
 public:
 	npc_buffer() : CreatureScript("npc_buffer") { }
 
+	struct npc_bufferAI : public ScriptedAI
+	{
+
+	npc_bufferAI(Creature* creature) : ScriptedAI(creature) { }
 
 	void CompleteLearnProfession(Player *player, Creature * _creature, SkillType skill)
 	{
@@ -1079,8 +1083,13 @@ public:
 			}
 		}
 		return true;
-	}
+		}
+	};
 
+	CreatureAI* GetAI(Creature* creature) const override
+	{
+		return new npc_bufferAI(creature);
+	}
 };
 
 class channel_factions : public PlayerScript
@@ -1101,6 +1110,6 @@ public:
 
 void AddSC_Resets()
 {
-	new npc_buffer;
+	new npc_buffer();
 	new channel_factions();
 }

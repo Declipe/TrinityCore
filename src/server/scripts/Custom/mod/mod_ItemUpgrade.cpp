@@ -27,6 +27,7 @@
 #include "Language.h"
 #include "Chat.h"
 #include <sstream>
+#include "GameObjectAI.h"
 #include "Channel.h"
 #include "MapManager.h"
 #include "CreatureTextMgr.h"
@@ -131,6 +132,10 @@ class go_item_upgrade : public GameObjectScript
 {
     public:
         go_item_upgrade() : GameObjectScript("go_item_upgrade") { }
+
+		struct go_item_upgradeAI : public GameObjectAI
+		{
+			go_item_upgradeAI(GameObject* go) : GameObjectAI(go) { }
 
     uint16 getSlot(uint32 sender) {
         return (uint16) ((sender - GOSSIP_SENDER_MAIN) >> 16);
@@ -300,8 +305,15 @@ class go_item_upgrade : public GameObjectScript
         CharacterDatabase.CommitTransaction(trans);
         CloseGossipMenuFor(player);
         return true;
-    }
+	  }
+	};
+
+	GameObjectAI* GetAI(GameObject* go) const override
+	{
+		return new go_item_upgradeAI(go);
+	}
 };
+
 
 void AddSC_Mod_ItemUpgrade()
 {

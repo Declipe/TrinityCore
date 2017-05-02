@@ -19,10 +19,11 @@
 class npc_1v1arena : public CreatureScript
 {
 public:
-    npc_1v1arena() : CreatureScript("npc_1v1arena")
-    {
-    }
+    npc_1v1arena() : CreatureScript("npc_1v1arena") { }
 
+	struct npc_1v1arenaAI : public ScriptedAI
+	{
+      npc_1v1arenaAI(Creature* creature) : ScriptedAI(creature) { }
 
     bool JoinQueueArena(Player* player, Creature* me, bool isRated)
     {
@@ -297,7 +298,13 @@ public:
 
         OnGossipHello(player, me);
         return true;
-    }
+	}
+	};
+
+	CreatureAI* GetAI(Creature* creature) const override
+	{
+		return new npc_1v1arenaAI(creature);
+	}
 };
 
 void AddSC_npc_1v1arena()

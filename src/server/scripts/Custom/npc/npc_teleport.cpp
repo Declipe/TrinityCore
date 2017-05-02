@@ -17,9 +17,37 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Config.h"
+#include "GuildMgr.h"
+#include "ObjectMgr.h"
+#include "Player.h"
+#include "Battleground.h"
+#include "BattlegroundMgr.h"
+#include "ScriptedCreature.h"
+#include "ScriptedGossip.h"
+#include "WorldPacket.h"
+#include "ObjectMgr.h"
+#include "ArenaTeam.h"
+#include "ArenaTeamMgr.h"
+#include "World.h"
+#include "WorldSession.h"
+#include "Group.h"
+#include "AchievementMgr.h"
+#include "ObjectAccessor.h"
+#include "Unit.h"
+#include "SharedDefines.h"
+#include "Creature.h"
 #include "ScriptMgr.h"
-#include "sc_npc_teleport.h"
+#include "ScriptedCreature.h"
+#include "GridNotifiers.h"
+#include "GridNotifiersImpl.h"
+#include "Cell.h"
+#include "CellImpl.h"
+#include "Language.h"
+#include "Chat.h"
 #include <sstream>
+#include "Channel.h"
+#include "sc_npc_teleport.h"
 
 #define GOSSIP_SHOW_DEST        1000
 #define GOSSIP_TELEPORT         1001
@@ -167,6 +195,10 @@ class npc_teleport_gossip : public CreatureScript
 public:
     npc_teleport_gossip() : CreatureScript("npc_teleport") {}
 
+    struct npc_teleport_gossipAI : public ScriptedAI
+    {
+		npc_teleport_gossipAI(Creature* creature) : ScriptedAI(creature) { }
+
 bool OnGossipHello(Player *player, Creature *creature)
 {
     PageC(player) = PageD(player) = Cat(player) = 0;
@@ -238,6 +270,13 @@ bool OnGossipSelect(Player *player, Creature *creature, uint32 sender, uint32 pa
     }
     return true;
 }
+};
+
+CreatureAI* GetAI(Creature* creature) const override
+{
+	return new npc_teleport_gossipAI(creature);
+}
+
 };
 
 class npc_teleport_load : public WorldScript

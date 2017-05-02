@@ -1,4 +1,33 @@
 #include "Config.h"
+#include "GuildMgr.h"
+#include "ObjectMgr.h"
+#include "Player.h"
+#include "Battleground.h"
+#include "BattlegroundMgr.h"
+#include "ScriptedCreature.h"
+#include "ScriptedGossip.h"
+#include "WorldPacket.h"
+#include "ObjectMgr.h"
+#include "ArenaTeam.h"
+#include "ArenaTeamMgr.h"
+#include "World.h"
+#include "WorldSession.h"
+#include "Group.h"
+#include "AchievementMgr.h"
+#include "ObjectAccessor.h"
+#include "Unit.h"
+#include "SharedDefines.h"
+#include "Creature.h"
+#include "ScriptMgr.h"
+#include "ScriptedCreature.h"
+#include "GridNotifiers.h"
+#include "GridNotifiersImpl.h"
+#include "Cell.h"
+#include "CellImpl.h"
+#include "Language.h"
+#include "Chat.h"
+#include <sstream>
+#include "Channel.h"
 
 #define MSG_GOSSIP_TELE          "Телепортироваться в дом гильдии"
 #define MSG_GOSSIP_BUY           "Купить дом гильдии"
@@ -41,6 +70,10 @@ class guildmaster : public CreatureScript
 {
  public:
  guildmaster() : CreatureScript("guildmaster") { }
+
+ struct guildmasterAI : public ScriptedAI
+ {
+	    guildmasterAI(Creature* creature) : ScriptedAI(creature) { }
 
 bool isPlayerGuildLeader(Player *player)
 {
@@ -299,7 +332,12 @@ void sellGuildhouse(Player *player, Creature *_creature)
  return true;
  }
 
+ };
 
+ CreatureAI* GetAI(Creature* creature) const override
+ {
+	 return new guildmasterAI(creature);
+ }
 };
 
 void AddSC_guildmaster()
