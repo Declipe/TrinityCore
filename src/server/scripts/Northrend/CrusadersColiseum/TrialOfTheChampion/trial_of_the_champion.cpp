@@ -1243,7 +1243,7 @@ public:
 
             UpdateVictim();
         }
-    };
+};
 
     CreatureAI* GetAI(Creature* creature) const override
     {

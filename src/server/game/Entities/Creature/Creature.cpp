@@ -774,8 +774,6 @@ void Creature::Update(uint32 diff)
         default:
             break;
     }
-
-    sScriptMgr->OnCreatureUpdate(this, diff);
 }
 
 void Creature::Regenerate(Powers power)
@@ -3110,8 +3108,7 @@ bool Creature::IsMovementPreventedByCasting() const
     {
         if (spell->getState() != SPELL_STATE_FINISHED && spell->IsChannelActive())
             if (spell->GetSpellInfo()->IsMoveAllowedChannel())
-                if (HasUnitState(UNIT_STATE_CASTING))
-                    return true;
+                return false;
     }
 
     if (const_cast<Creature*>(this)->IsFocusing(nullptr, true))
