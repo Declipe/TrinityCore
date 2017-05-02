@@ -193,7 +193,7 @@ class npc_thalorien_dawnseeker : public CreatureScript
     public:
         npc_thalorien_dawnseeker() : CreatureScript("npc_thalorien_dawnseeker") { }
 
-        bool OnGossipHello(Player* player, Creature* creature) override
+        bool GossipHello(Player* player, Creature* creature)
         {
             player->PrepareGossipMenu(creature, 0);
 
@@ -203,7 +203,7 @@ class npc_thalorien_dawnseeker : public CreatureScript
             return true;
         }
 
-        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 action) override
+        bool GossipSelect(Player* player, Creature* creature, uint32 /*uiSender*/, uint32 action)
         {
             player->PlayerTalkClass->ClearMenus();
 

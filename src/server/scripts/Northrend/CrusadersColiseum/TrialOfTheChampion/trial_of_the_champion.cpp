@@ -1276,7 +1276,7 @@ public:
         return seen;
     }
 
-    bool OnGossipHello(Player* player, Creature* creature) override
+    bool GossipHello(Player* player, Creature* creature)
     {
         // @TODO: MOVE THIS HORRIBLE STUFF TO DB
 
@@ -1338,7 +1338,7 @@ public:
         return true;
     }
 
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
+    bool GossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
     {
         ClearGossipMenuFor(player);
         CloseGossipMenuFor(player);
