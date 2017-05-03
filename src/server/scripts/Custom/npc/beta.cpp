@@ -122,17 +122,16 @@ public:
 
 	struct npc_bufferAI : public ScriptedAI
 	{
-
-	npc_bufferAI(Creature* creature) : ScriptedAI(creature) { }
+		npc_bufferAI(Creature* me) : ScriptedAI(me) { }
 
 	void CompleteLearnProfession(Player *player, Creature * _creature, SkillType skill)
 	{
 		if (PlayerAlreadyHasNineProfessions(player) && !IsSecondarySkill(skill))
-			_creature->Whisper("Вы уже выучили 11 професии!", LANG_UNIVERSAL, player);
+			me->Whisper("Вы уже выучили 11 професии!", LANG_UNIVERSAL, player);
 		else
 		{
 			if (!LearnAllRecipesInProfession(player, skill))
-				_creature->Whisper("Ошибка!", LANG_UNIVERSAL, player);
+				me->Whisper("Ошибка!", LANG_UNIVERSAL, player);
 		}
 	}
 
@@ -235,9 +234,9 @@ public:
 		}
 	}
 
-	bool OnGossipHello(Player *player, Creature *_creature)
+	bool GossipHello(Player* player) override
 	{
-		_creature->Whisper(MSG_GOSSIP_TEXT_GETTING_STARTED, LANG_UNIVERSAL, player);
+		me->Whisper(MSG_GOSSIP_TEXT_GETTING_STARTED, LANG_UNIVERSAL, player);
 		AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_RIDING, GOSSIP_SENDER_MAIN, 35);
 		AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_HEALTH, GOSSIP_SENDER_MAIN, 33);
 		AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_SKILL, GOSSIP_SENDER_MAIN, 34);
@@ -247,15 +246,22 @@ public:
 		AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
 		AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
 		AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
-		SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
+		SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 		return true;
 	}
 
-	bool OnGossipSelect(Player *player, Creature *_creature, uint32 sender, uint32 action)
+	bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+	{
+		uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+		uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+		return OnGossipSelect(player, sender, action);
+	}
+
+	bool OnGossipSelect(Player* player, uint32 sender, uint32 action)
 	{
 		if (!player->getAttackers().empty())
 		{
-			_creature->Whisper(MSG_ERR_INCOMBAT, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_INCOMBAT, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 			return false;
 		}
@@ -274,7 +280,7 @@ public:
 			AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_SHADOW_PROTECTION, GOSSIP_SENDER_MAIN, 11);
 			AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_STAMINA, GOSSIP_SENDER_MAIN, 12);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
-			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
+			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
 		case 3:
 			// Наложение стойкости (Исправлено)
@@ -335,12 +341,12 @@ public:
 			AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_PINCHI, GOSSIP_SENDER_MAIN, 19);
 			AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_TEXT_SUPPER_BUFF_TRANSPARENCY, GOSSIP_SENDER_MAIN, 20);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
-			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
+			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
 		case 14:
 			if (player->GetHonorPoints() < CONST_HONOR_1)
 			{
-				_creature->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
+				me->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
 				CloseGossipMenuFor(player);
 			}
 			else{
@@ -353,7 +359,7 @@ public:
 		case 15:
 			if (player->GetHonorPoints() < CONST_HONOR_2)
 			{
-				_creature->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
+				me->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
 				CloseGossipMenuFor(player);
 			}
 			else{
@@ -366,7 +372,7 @@ public:
 		case 16:
 			if (player->GetHonorPoints() < CONST_HONOR_2)
 			{
-				_creature->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
+				me->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
 				CloseGossipMenuFor(player);
 			}
 			else{
@@ -379,7 +385,7 @@ public:
 		case 17:
 			if (player->GetHonorPoints() < CONST_HONOR_2)
 			{
-				_creature->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
+				me->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
 				CloseGossipMenuFor(player);
 			}
 			else{
@@ -392,7 +398,7 @@ public:
 		case 18:
 			if (player->GetHonorPoints() < CONST_HONOR_2)
 			{
-				_creature->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
+				me->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
 				CloseGossipMenuFor(player);
 			}
 			else{
@@ -405,7 +411,7 @@ public:
 		case 19:
 			if (player->GetHonorPoints() < CONST_HONOR_2)
 			{
-				_creature->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
+				me->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
 				CloseGossipMenuFor(player);
 			}
 			else{
@@ -418,7 +424,7 @@ public:
 		case 20:
 			if (player->GetHonorPoints() < CONST_HONOR_2)
 			{
-				_creature->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
+				me->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
 				CloseGossipMenuFor(player);
 			}
 			else{
@@ -437,7 +443,7 @@ public:
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
-			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
+			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
 		case 22333:
 			player->PlayerTalkClass->ClearMenus();
@@ -451,18 +457,18 @@ public:
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, "7", GOSSIP_SENDER_MAIN, 22340);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, "8", GOSSIP_SENDER_MAIN, 22341);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, "9", GOSSIP_SENDER_MAIN, 22342);
-			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
+			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
 		case 22334:
 		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(178);
 		if (player->HasTitle(titleInfo))
 		{
-			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 			return false;
 		}
 		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 		}
 		else {
@@ -477,12 +483,12 @@ public:
 		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(179);
 		if (player->HasTitle(titleInfo))
 		{
-			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 			return false;
 		}
 		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 		}
 		else {
@@ -497,12 +503,12 @@ public:
 		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(180);
 		if (player->HasTitle(titleInfo))
 		{
-			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 			return false;
 		}
 		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 		}
 		else {
@@ -517,12 +523,12 @@ public:
 		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(181);
 		if (player->HasTitle(titleInfo))
 		{
-			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 			return false;
 		}
 		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 		}
 		else {
@@ -537,12 +543,12 @@ public:
 		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(182);
 		if (player->HasTitle(titleInfo))
 		{
-			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 			return false;
 		}
 		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 		}
 		else {
@@ -557,12 +563,12 @@ public:
 		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(183);
 		if (player->HasTitle(titleInfo))
 		{
-			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 			return false;
 		}
 		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 		}
 		else {
@@ -577,12 +583,12 @@ public:
 		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(184);
 		if (player->HasTitle(titleInfo))
 		{
-			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 			return false;
 		}
 		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 		}
 		else {
@@ -597,12 +603,12 @@ public:
 		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(185);
 		if (player->HasTitle(titleInfo))
 		{
-			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 			return false;
 		}
 		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 		}
 		else {
@@ -617,12 +623,12 @@ public:
 		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(186);
 		if (player->HasTitle(titleInfo))
 		{
-			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 			return false;
 		}
 		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 		}
 		else {
@@ -656,7 +662,7 @@ public:
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Varimathras", GOSSIP_SENDER_MAIN, 727);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Alexstrasza (Drache)", GOSSIP_SENDER_MAIN, 728);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Mal'ganis", GOSSIP_SENDER_MAIN, 729);
-			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
+			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
 		case 22:
 			player->PlayerTalkClass->ClearMenus();
@@ -667,7 +673,7 @@ public:
 			AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_THE_NOBLE, GOSSIP_SENDER_MAIN, 27);
 			AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_OBSIDIAN_SLAYER, GOSSIP_SENDER_MAIN, 28);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
-			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
+			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
        case 711: // Algalon
             CloseGossipMenuFor(player);
@@ -768,13 +774,13 @@ public:
 		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(143);
 		if (player->HasTitle(titleInfo))
 		{
-			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 			return false;
 		}
 		if (player->GetArenaPoints() < CONST_ARENA_POINT_1)
 		{
-			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 		}
 		else{
@@ -789,13 +795,13 @@ public:
 		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(135);
 		if (player->HasTitle(titleInfo))
 		{
-			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 			return false;
 		}
 		if (player->GetArenaPoints() < CONST_ARENA_POINT_1)
 		{
-			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 		}
 		else{
@@ -810,12 +816,12 @@ public:
 		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(134);
 		if (player->HasTitle(titleInfo))
 		{
-			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 			return false;
 		}
 		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 		}
 		else{
@@ -830,12 +836,12 @@ public:
 		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(46);
 		if (player->HasTitle(titleInfo))
 		{
-			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 			return false;
 		}
 		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 		}
 		else{
@@ -850,12 +856,12 @@ public:
 		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(155);
 		if (player->HasTitle(titleInfo))
 		{
-			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 			return false;
 		}
 		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 		}
 		else{
@@ -870,12 +876,12 @@ public:
 		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(139);
 		if (player->HasTitle(titleInfo))
 		{
-			_creature->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 			return false;
 		}
 		if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-			_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+			me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 			CloseGossipMenuFor(player);
 		}
 		else{
@@ -892,47 +898,47 @@ public:
 			AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_CUSTOM, GOSSIP_SENDER_MAIN, 31);
 			AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_CHANGE_FACTION, GOSSIP_SENDER_MAIN, 32);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
-			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
+			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
 		case 30:
 			if (player->GetArenaPoints() < CONST_ARENA_POINT_3)
 			{
-				_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+				me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 				CloseGossipMenuFor(player);
 			}
 			else{
 				// Делаем Ренейм
 				player->SetAtLoginFlag(AT_LOGIN_RENAME);
 				player->ModifyArenaPoints(-CONST_ARENA_POINT_3);
-				_creature->Whisper(MSG_COMPLETE_RENAME, LANG_UNIVERSAL, player);
+				me->Whisper(MSG_COMPLETE_RENAME, LANG_UNIVERSAL, player);
 				CloseGossipMenuFor(player);
 			}
 			break;
 		case 31:
 			if (player->GetArenaPoints() < CONST_ARENA_POINT_3)
 			{
-				_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+				me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 				CloseGossipMenuFor(player);
 			}
 			else{
 				// Делаем Смену внешности
 				player->SetAtLoginFlag(AT_LOGIN_CUSTOMIZE);
 				player->ModifyArenaPoints(-CONST_ARENA_POINT_3);
-				_creature->Whisper(MSG_CUSTOMIZE_COMPLETE, LANG_UNIVERSAL, player);
+				me->Whisper(MSG_CUSTOMIZE_COMPLETE, LANG_UNIVERSAL, player);
 				CloseGossipMenuFor(player);
 			}
 			break;
 		case 32:
 			if (player->GetArenaPoints() < CONST_ARENA_POINT_4)
 			{
-				_creature->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+				me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
 				CloseGossipMenuFor(player);
 			}
 			else{
 				// Делаем Смену внешности
 				player->SetAtLoginFlag(AT_LOGIN_CHANGE_FACTION);
 				player->ModifyArenaPoints(-CONST_ARENA_POINT_4);
-				_creature->Whisper(MSG_CHANGE_FACTION_COMPLETE, LANG_UNIVERSAL, player);
+				me->Whisper(MSG_CHANGE_FACTION_COMPLETE, LANG_UNIVERSAL, player);
 				CloseGossipMenuFor(player);
 			}
 			break;
@@ -966,50 +972,50 @@ public:
 			AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_TAILORING, GOSSIP_SENDER_MAIN, 47);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU, GOSSIP_SENDER_MAIN, 48);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
-			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
+			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
 		case 37:
-			CompleteLearnProfession(player, _creature, SKILL_ALCHEMY);
+			CompleteLearnProfession(player, me, SKILL_ALCHEMY);
 			CloseGossipMenuFor(player);
 			break;
 		case 38:
-			CompleteLearnProfession(player, _creature, SKILL_BLACKSMITHING);
+			CompleteLearnProfession(player, me, SKILL_BLACKSMITHING);
 			CloseGossipMenuFor(player);
 			break;
 		case 39:
-			CompleteLearnProfession(player, _creature, SKILL_ENCHANTING);
+			CompleteLearnProfession(player, me, SKILL_ENCHANTING);
 			CloseGossipMenuFor(player);
 			break;
 		case 40:
-			CompleteLearnProfession(player, _creature, SKILL_ENGINEERING);
+			CompleteLearnProfession(player, me, SKILL_ENGINEERING);
 			CloseGossipMenuFor(player);
 			break;
 		case 41:
-			CompleteLearnProfession(player, _creature, SKILL_HERBALISM);
+			CompleteLearnProfession(player, me, SKILL_HERBALISM);
 			CloseGossipMenuFor(player);
                         break;
 		case 42:
-			CompleteLearnProfession(player, _creature, SKILL_INSCRIPTION);
+			CompleteLearnProfession(player, me, SKILL_INSCRIPTION);
 			CloseGossipMenuFor(player);
 			break;
 		case 43:
-			CompleteLearnProfession(player, _creature, SKILL_JEWELCRAFTING);
+			CompleteLearnProfession(player, me, SKILL_JEWELCRAFTING);
 			CloseGossipMenuFor(player);
 			break;
 		case 44:
-			CompleteLearnProfession(player, _creature, SKILL_LEATHERWORKING);
+			CompleteLearnProfession(player, me, SKILL_LEATHERWORKING);
 			CloseGossipMenuFor(player);
 			break;
 		case 45:
-			CompleteLearnProfession(player, _creature, SKILL_MINING);
+			CompleteLearnProfession(player, me, SKILL_MINING);
 			CloseGossipMenuFor(player);
 			break;
 		case 46:
-			CompleteLearnProfession(player, _creature, SKILL_SKINNING);
+			CompleteLearnProfession(player, me, SKILL_SKINNING);
 			CloseGossipMenuFor(player);
 			break;
 		case 47:
-			CompleteLearnProfession(player, _creature, SKILL_TAILORING);
+			CompleteLearnProfession(player, me, SKILL_TAILORING);
 			CloseGossipMenuFor(player);
 			break;
 		case 48:
@@ -1018,18 +1024,18 @@ public:
 			AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_FIRST_AID, GOSSIP_SENDER_MAIN, 50);
 			AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_FISHING, GOSSIP_SENDER_MAIN, 51);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
-			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
+			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
 		case 49:
-			CompleteLearnProfession(player, _creature, SKILL_COOKING);
+			CompleteLearnProfession(player, me, SKILL_COOKING);
 			CloseGossipMenuFor(player);
 			break;
 		case 50:
-			CompleteLearnProfession(player, _creature, SKILL_FIRST_AID);
+			CompleteLearnProfession(player, me, SKILL_FIRST_AID);
 			CloseGossipMenuFor(player);
 			break;
 		case 51:
-			CompleteLearnProfession(player, _creature, SKILL_FISHING);
+			CompleteLearnProfession(player, me, SKILL_FISHING);
 			CloseGossipMenuFor(player);
 			break;
 		case 52:
@@ -1043,7 +1049,7 @@ public:
 			AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_TAUREN_MALE, GOSSIP_SENDER_MAIN, 59);
 			AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_TAUREN_FEMALE, GOSSIP_SENDER_MAIN, 50);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
-			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
+			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
 		case 53:
 			player->CastSpell(player, 37808, true);
@@ -1086,9 +1092,9 @@ public:
 		}
 	};
 
-	CreatureAI* GetAI(Creature* creature) const override
+	CreatureAI* GetAI(Creature* me) const override
 	{
-		return new npc_bufferAI(creature);
+		return new npc_bufferAI(me);
 	}
 };
 
