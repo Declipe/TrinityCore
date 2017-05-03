@@ -73,7 +73,7 @@ class guildmaster : public CreatureScript
 
  struct guildmasterAI : public ScriptedAI
  {
-	    guildmasterAI(Creature* creature) : ScriptedAI(creature) { }
+	    guildmasterAI(Creature* me) : ScriptedAI(me) { }
 
 bool isPlayerGuildLeader(Player *player)
 {
@@ -164,7 +164,7 @@ bool showBuyList(Player *player, Creature *_creature, uint32 showFromId = 0)
  guildhouseId + OFFSET_SHOWBUY_FROM);
  }
 
- SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
+ SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 
  return true;
  }
@@ -172,7 +172,7 @@ bool showBuyList(Player *player, Creature *_creature, uint32 showFromId = 0)
  {
  //all guildhouses are occupied
  _creature->Whisper(MSG_NOFREEGH, LANG_UNIVERSAL, player);
- CloseGossipMenuFor(player);;
+ CloseGossipMenuFor(player);
  }
  else
  {
@@ -268,7 +268,14 @@ void sellGuildhouse(Player *player, Creature *_creature)
  }
 }
 
- bool OnGossipSelect(Player *player, Creature *_creature, uint32 sender, uint32 action)
+bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+{
+	uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+	uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+	return OnGossipSelect(player, sender, action);
+}
+
+bool OnGossipSelect(Player* player, uint32 sender, uint32 action)
  {
  player->PlayerTalkClass->ClearMenus();
  if (sender != GOSSIP_SENDER_MAIN)
@@ -278,30 +285,30 @@ void sellGuildhouse(Player *player, Creature *_creature)
  {
  case ACTION_TELE:
  //teleport player to GH
- CloseGossipMenuFor(player);;
- teleportPlayerToGuildHouse(player, _creature);
+ CloseGossipMenuFor(player);
+ teleportPlayerToGuildHouse(player, me);
  break;
  case ACTION_SHOW_BUYLIST:
  //show list of GHs which currently not occupied
- showBuyList(player, _creature);
+ showBuyList(player, me);
  break;
  case ACTION_SELL_GUILDHOUSE:
-  sellGuildhouse(player, _creature);
+  sellGuildhouse(player, me);
   CloseGossipMenuFor(player);;
  break;
  default:
  if (action > OFFSET_SHOWBUY_FROM)
  {
- showBuyList(player, _creature, action - OFFSET_SHOWBUY_FROM);
+ showBuyList(player, me, action - OFFSET_SHOWBUY_FROM);
  }
  else if (action > OFFSET_GH_ID_TO_ACTION)
  {
  //player clicked on buy list
- CloseGossipMenuFor(player);;
+ CloseGossipMenuFor(player);
 
  //get guildhouseId from action
  //guildhouseId = action - OFFSET_GH_ID_TO_ACTION
- buyGuildhouse(player, _creature, action - OFFSET_GH_ID_TO_ACTION);
+ buyGuildhouse(player, me, action - OFFSET_GH_ID_TO_ACTION);
  }
  break;
  }
@@ -309,13 +316,13 @@ void sellGuildhouse(Player *player, Creature *_creature)
  return true;
  }
 
- bool OnGossipHello(Player *player, Creature *_creature)
+ bool GossipHello(Player *player) override
  {
  AddGossipItemFor(player, ICON_GOSSIP_BALOON, MSG_GOSSIP_TELE, GOSSIP_SENDER_MAIN, ACTION_TELE);
 
  if (isPlayerGuildLeader(player))
  {
- if (isPlayerHasGuildhouse(player, _creature))
+ if (isPlayerHasGuildhouse(player, me))
  {
  //and additional for guildhouse owner (Removed :
  AddGossipItemFor(player, ICON_GOSSIP_GOLD, MSG_GOSSIP_SELL, GOSSIP_SENDER_MAIN, ACTION_SELL_GUILDHOUSE, MSG_SELL_CONFIRM, 0, false);
@@ -328,15 +335,15 @@ void sellGuildhouse(Player *player, Creature *_creature)
  }
  }
 
- SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
+ SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
  return true;
  }
 
  };
 
- CreatureAI* GetAI(Creature* creature) const override
+ CreatureAI* GetAI(Creature* me) const override
  {
-	 return new guildmasterAI(creature);
+	 return new guildmasterAI(me);
  }
 };
 

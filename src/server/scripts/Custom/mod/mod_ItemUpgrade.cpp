@@ -135,7 +135,7 @@ class go_item_upgrade : public GameObjectScript
 
 		struct go_item_upgradeAI : public GameObjectAI
 		{
-			go_item_upgradeAI(GameObject* go) : GameObjectAI(go) { }
+			go_item_upgradeAI(GameObject* me) : GameObjectAI(me) { }
 
     uint16 getSlot(uint32 sender) {
         return (uint16) ((sender - GOSSIP_SENDER_MAIN) >> 16);
@@ -149,10 +149,11 @@ class go_item_upgrade : public GameObjectScript
         return (uint32) (GOSSIP_SENDER_MAIN + ((slot << 16) | (enchant & 0xFFFF)));
     }
 
-    bool OnGossipHello(Player* player, GameObject* go)
+	bool GossipHello(Player* player, bool /*reportUse*/) override
     {
         if (!ItemUpgradeEnable) {
-            SendGossipMenuFor(player, player->GetGossipTextId(go), go->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
+			//SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             return true;
         }
 		LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
@@ -172,11 +173,19 @@ class go_item_upgrade : public GameObjectScript
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, Name.c_str(), senderValue(i, 0), GOSSIP_ACTION_INFO_DEF);
             }
         }
-        SendGossipMenuFor(player, player->GetGossipTextId(go), go->GetGUID());
+        SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
         return true;
     }
 
-    bool OnGossipSelect(Player* player, GameObject* go, uint32 sender, uint32 action)
+	bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+	{
+		uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+		uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+		return OnGossipSelect(player, sender, action);
+	}
+
+	bool OnGossipSelect(Player* player, uint32 sender, uint32 action)
+    //bool OnGossipSelect(Player* player, GameObject* go, uint32 sender, uint32 action)
     {
         if (!ItemUpgradeEnable) {
             CloseGossipMenuFor(player);
@@ -233,7 +242,7 @@ class go_item_upgrade : public GameObjectScript
                 snprintf(gossipTextFormat, 100, sObjectMgr->GetTrinityStringForDBCLocale(ItemUpgradeTextEffectNow), i - PROP_ENCHANTMENT_SLOT_0 + 1, oldEffect.c_str());
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, gossipTextFormat, senderValue(itemSlot, i), GOSSIP_ACTION_INFO_DEF);
             }
-            SendGossipMenuFor(player, player->GetGossipTextId(go), go->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
             return true;
         }
 
@@ -254,7 +263,7 @@ class go_item_upgrade : public GameObjectScript
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, ItemUpgradeInfo[i].description.c_str(), senderValue(itemSlot, itemEnchantSlot), GOSSIP_ACTION_INFO_DEF + ItemUpgradeInfo[i].enchantId, ItemUpgradeInfo[i].description.c_str(), ItemUpgradeInfo[i].golds, 0);
             }
 
-            SendGossipMenuFor(player, player->GetGossipTextId(go), go->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
             return true;
         }
 
@@ -308,9 +317,9 @@ class go_item_upgrade : public GameObjectScript
 	  }
 	};
 
-	GameObjectAI* GetAI(GameObject* go) const override
+	GameObjectAI* GetAI(GameObject* me) const override
 	{
-		return new go_item_upgradeAI(go);
+		return new go_item_upgradeAI(me);
 	}
 };
 

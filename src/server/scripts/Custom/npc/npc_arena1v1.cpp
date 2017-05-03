@@ -13,6 +13,7 @@
 #include "Battleground.h"
 #include "ArenaTeam.h"
 #include "Language.h"
+#include "Player.h"
 #include "npc_arena1v1.h"
 
 
@@ -23,7 +24,7 @@ public:
 
 	struct npc_1v1arenaAI : public ScriptedAI
 	{
-      npc_1v1arenaAI(Creature* creature) : ScriptedAI(creature) { }
+      npc_1v1arenaAI(Creature* me) : ScriptedAI(me) { }
 
     bool JoinQueueArena(Player* player, Creature* me, bool isRated)
     {
@@ -111,7 +112,6 @@ public:
         return true;
     }
 
-
     bool CreateArenateam(Player* player, Creature* me)
     {
         if(!player || !me)
@@ -163,8 +163,7 @@ public:
         return true;
     }
 
-
-    bool OnGossipHello(Player* player, Creature* me)
+    bool GossipHello(Player* player) override
     {
         if(!player || !me)
             return true;
@@ -198,16 +197,21 @@ public:
         return true;
     }
 
+	bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+	{
+		uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+		uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+		return OnGossipSelect(player, sender, action);
+	}
 
-
-    bool OnGossipSelect(Player* player, Creature* me, uint32 /*uiSender*/, uint32 uiAction)
+	bool OnGossipSelect(Player* player, uint32 sender, uint32 action)
     {
         if(!player || !me)
             return true;
 
         player->PlayerTalkClass->ClearMenus();
 
-        switch (uiAction)
+        switch (action)
         {
         case 1: // Create new Arenateam
             {
@@ -296,14 +300,14 @@ public:
 
         }
 
-        OnGossipHello(player, me);
+        GossipHello(player);
         return true;
 	}
 	};
 
-	CreatureAI* GetAI(Creature* creature) const override
+	CreatureAI* GetAI(Creature* me) const override
 	{
-		return new npc_1v1arenaAI(creature);
+		return new npc_1v1arenaAI(me);
 	}
 };
 
