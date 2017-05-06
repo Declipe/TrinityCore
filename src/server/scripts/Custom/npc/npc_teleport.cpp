@@ -37,7 +37,6 @@
 #include "Unit.h"
 #include "SharedDefines.h"
 #include "Creature.h"
-#include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "GridNotifiers.h"
 #include "GridNotifiersImpl.h"
@@ -45,9 +44,10 @@
 #include "CellImpl.h"
 #include "Language.h"
 #include "Chat.h"
+#include "ScriptMgr.h"
+#include "sc_npc_teleport.h"
 #include <sstream>
 #include "Channel.h"
-#include "sc_npc_teleport.h"
 
 #define GOSSIP_SHOW_DEST        1000
 #define GOSSIP_TELEPORT         1001
@@ -140,12 +140,11 @@ namespace
         {
             std::string icon = TabCatDest[Cat[player]].GetDest(i).m_icon;
             std::string size = TabCatDest[Cat[player]].GetDest(i).m_size;
-			std::string colour = TabCatDest[Cat[player]].GetDest(i).m_colour;
             std::string name = TabCatDest[Cat[player]].GetDest(i).m_name[loc];
             if (name.length() == 0)
                 name = TabCatDest[Cat[player]].GetDest(i).m_name[0];
-                //name = "|TInterface/ICONS/"+icon+":"+size+":"+size+"|t "+name;
-				name = "|TInterface/ICONS/"+icon+":"+size+":"+ size+"|t|cff"+colour+""+name;
+                name = "|TInterface/ICONS/"+icon+":"+size+":"+size+"|t "+name;
+
             AddGossipItemFor(player, 2, name.c_str(), GOSSIP_TELEPORT, i); //taxi destination
         }
 
@@ -192,91 +191,92 @@ namespace
 
 class npc_teleport_gossip : public CreatureScript
 {
-public:
-    npc_teleport_gossip() : CreatureScript("npc_teleport") {}
+    public:
+        npc_teleport_gossip() : CreatureScript("npc_teleport") {}
 
-    struct npc_teleport_gossipAI : public ScriptedAI
-    {
-		npc_teleport_gossipAI(Creature* creature) : ScriptedAI(creature) { }
+        struct npc_teleport_gossipAI : public ScriptedAI
+        {
+            npc_teleport_gossipAI(Creature* creature) : ScriptedAI(creature) { }
 
-bool OnGossipHello(Player *player, Creature *creature)
-{
-    PageC(player) = PageD(player) = Cat(player) = 0;
+            bool GossipHello(Player* player) override
+            {
+                PageC(player) = PageD(player) = Cat(player) = 0;
 
-    if(player->IsInCombat())
-    {
-        CloseGossipMenuFor(player);
+                if (player->IsInCombat())
+                {
+                    CloseGossipMenuFor(player);
 
-        LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
-        char const* text = sObjectMgr->GetTrinityString(8002, loc_idx);
-        creature->Whisper(text, LANG_UNIVERSAL, player);
+                    LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
+                    char const* text = sObjectMgr->GetTrinityString(8002, loc_idx);
+                    me->Whisper(text, LANG_UNIVERSAL, player);
 
-        return true;
-    }
-    AffichCat(player, creature);
-    return true;
-}
+                    return true;
+                }
+                AffichCat(player, me);
+                return true;
+            }
 
-bool OnGossipSelect(Player *player, Creature *creature, uint32 sender, uint32 param)
-{
-    player->PlayerTalkClass->ClearMenus();
-    switch(sender)
-    {
-      // Display destinations
-      case GOSSIP_SHOW_DEST:
-        Cat(player) = param;
-        AffichDest(player, creature);
-        break;
+            bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
+            {
+                uint32 const sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+                uint32 const action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+                ClearGossipMenuFor(player);
+                switch (sender)
+                {
+                    // Display destinations
+                    case GOSSIP_SHOW_DEST:
+                        Cat(player) = action;
+                        AffichDest(player, me);
+                        break;
 
-      // Previous categories page
-      case GOSSIP_PREV_PAGEC:
-        --PageC(player);
-        AffichCat(player, creature);
-        break;
+                    // Previous categories page
+                    case GOSSIP_PREV_PAGEC:
+                        --PageC(player);
+                        AffichCat(player, me);
+                        break;
 
-      // Next page categories
-      case GOSSIP_NEXT_PAGEC:
-        ++PageC(player);
-        AffichCat(player, creature);
-        break;
+                    // Next page categories
+                    case GOSSIP_NEXT_PAGEC:
+                        ++PageC(player);
+                        AffichCat(player, me);
+                        break;
 
-      // Previous destinations page
-      case GOSSIP_PREV_PAGED:
-        --PageD(player);
-        AffichDest(player, creature);
-        break;
+                    // Previous destinations page
+                    case GOSSIP_PREV_PAGED:
+                        --PageD(player);
+                        AffichDest(player, me);
+                        break;
 
-      // Next destination page
-      case GOSSIP_NEXT_PAGED:
-        ++PageD(player);
-        AffichDest(player, creature);
-        break;
+                    // Next destination page
+                    case GOSSIP_NEXT_PAGED:
+                        ++PageD(player);
+                        AffichDest(player, me);
+                        break;
 
-      // Display main menu
-      case GOSSIP_MAIN_MENU:
-        OnGossipHello(player, creature);
-        break;
+                    // Display main menu
+                    case GOSSIP_MAIN_MENU:
+                        GossipHello(player);
+                        break;
 
-      // Teleportation
-      case GOSSIP_TELEPORT:
-        CloseGossipMenuFor(player);
-        if(player->HasAura(SPELL_ID_PASSIVE_RESURRECTION_SICKNESS)) {
-            creature->CastSpell(player,38588,false); // Healing effect
-            player->RemoveAurasDueToSpell(SPELL_ID_PASSIVE_RESURRECTION_SICKNESS);
+                    // Teleportation
+                    case GOSSIP_TELEPORT:
+                        CloseGossipMenuFor(player);
+                        if (player->HasAura(SPELL_ID_PASSIVE_RESURRECTION_SICKNESS)) {
+                            DoCast(player, 38588, false); // Healing effect
+                            player->RemoveAurasDueToSpell(SPELL_ID_PASSIVE_RESURRECTION_SICKNESS);
+                        }
+
+                        ActionTeleport(player, me, action);
+                        break;
+                }
+                return true;
+            }
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new npc_teleport_gossipAI(creature);
         }
-
-        ActionTeleport(player, creature, param);
-        break;
-    }
-    return true;
-}
-};
-
-CreatureAI* GetAI(Creature* creature) const override
-{
-	return new npc_teleport_gossipAI(creature);
-}
-
 };
 
 class npc_teleport_load : public WorldScript
@@ -292,7 +292,7 @@ public:
 
 void AddSC_npc_teleport()
 {
-    new npc_teleport_gossip;
-    new npc_teleport_load;
+    new npc_teleport_gossip();
+    new npc_teleport_load();
 }
 // End of TeleNPC2

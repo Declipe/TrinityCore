@@ -114,7 +114,7 @@ namespace nsNpcTel
       protected:
 
         // Class instance for current player
-        class TC_GAME_API Instance
+      class TC_GAME_API Instance
         {
           public:
 

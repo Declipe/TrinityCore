@@ -97,15 +97,15 @@ std::string TELE::GetName(const uint8 loc /* = 0 */, const bool IsGM /* = false 
 
     if (!IsGM || m_catvalue.flag != FLAG_TEAM)
     {
-		return "|TInterface/ICONS/" + icon + ":" + size + ":" + size + "|t|cff" + colour + " " + name;
-	}
+        return "|TInterface/ICONS/"+icon+":"+size+":"+size+"|t|cff"+colour+" "+name;
+    }
 
-	switch (m_catvalue.data0)
-	{
-	case TEAM_HORDE:      return "|TInterface/ICONS/" + icon + ":" + size + ":" + size + "|t|cff" + colour + " " + name + " (H)";
-	case TEAM_ALLIANCE:   return "|TInterface/ICONS/" + icon + ":" + size + ":" + size + "|t|cff" + colour + " " + name + " (A)";
-	}
-	return "|TInterface/ICONS/" + icon + ":" + size + ":" + size + "|t|cff" + colour + " " + name;;
+    switch (m_catvalue.data0)
+    {
+      case TEAM_HORDE:      return "|TInterface/ICONS/"+icon+":"+size+":"+size+"|t|cff"+colour+" "+name + " (H)";
+      case TEAM_ALLIANCE:   return "|TInterface/ICONS/"+icon+":"+size+":"+size+"|t|cff"+colour+" "+name + " (A)";
+    }
+    return "|TInterface/ICONS/"+icon+":"+size+":"+size+"|t|cff"+colour+" "+name;;
 }
 
 bool TELE::IsAllowedToTeleport(Player * const player) const
@@ -420,7 +420,7 @@ void LoadNpcTele(void)
             nsNpcTel::TabCatDest.back().AddDest(item);
             ++nbDest;
         } while (result->NextRow());
-        //TC_LOG_INFO("server.loading", "");
+        //TC_LOG_INFO("server.loading", " ");
         TC_LOG_INFO("server.loading", "Loaded %u npc_teleport.", nbDest);
     }
     else
