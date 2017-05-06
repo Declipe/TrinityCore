@@ -140,10 +140,11 @@ namespace
         {
             std::string icon = TabCatDest[Cat[player]].GetDest(i).m_icon;
             std::string size = TabCatDest[Cat[player]].GetDest(i).m_size;
+            std::string colour = TabCatDest[Cat[player]].GetDest(i).m_colour;
             std::string name = TabCatDest[Cat[player]].GetDest(i).m_name[loc];
             if (name.length() == 0)
                 name = TabCatDest[Cat[player]].GetDest(i).m_name[0];
-                name = "|TInterface/ICONS/"+icon+":"+size+":"+size+"|t "+name;
+                name = "|TInterface/ICONS/"+icon+":"+size+":"+size+"|t|cff"+colour+""+name;
 
             AddGossipItemFor(player, 2, name.c_str(), GOSSIP_TELEPORT, i); //taxi destination
         }
