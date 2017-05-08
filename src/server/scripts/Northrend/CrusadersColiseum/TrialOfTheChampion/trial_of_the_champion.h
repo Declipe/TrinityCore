@@ -212,7 +212,7 @@ enum Creatures
     NPC_SPECTATOR_GNOME                             = 34910
 };
 
-enum TCGameObjects
+enum GameObjects
 {
     GO_MAIN_GATE                                    = 195647,
     GO_NORTH_PORTCULLIS                             = 195650,
@@ -227,7 +227,7 @@ enum TCGameObjects
     GO_CONFESSOR_S_CACHE_H                          = 195324
 };
 
-enum TCVehicles
+enum Vehicles
 {
     // Grand Champions Alliance Vehicles
     VEHICLE_MARSHAL_JACOB_ALERIUS_MOUNT             = 35637,

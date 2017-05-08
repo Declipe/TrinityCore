@@ -297,7 +297,7 @@ class instance_trial_of_the_champion : public InstanceMapScript
                         {
                             if (Creature* boss = instance->GetCreature(_argentChampionGUID))
                             {
-                                boss->SetFaction(16);
+                                boss->setFaction(16);
                                 boss->SetHomePosition(747.02f, 637.65f, 411.57f, centerOrientation);
                                 boss->GetMotionMaster()->MovePoint(1, boss->GetHomePosition());
                             }

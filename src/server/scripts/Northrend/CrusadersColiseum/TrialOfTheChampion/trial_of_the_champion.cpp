@@ -1243,7 +1243,7 @@ public:
 
             UpdateVictim();
         }
-};
+    };
 
     CreatureAI* GetAI(Creature* creature) const override
     {
@@ -1276,7 +1276,7 @@ public:
         return seen;
     }
 
-    bool GossipHello(Player* player, Creature* creature)
+    bool OnGossipHello(Player* player, Creature* creature) override
     {
         // @TODO: MOVE THIS HORRIBLE STUFF TO DB
 
@@ -1338,7 +1338,7 @@ public:
         return true;
     }
 
-    bool GossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
         ClearGossipMenuFor(player);
         CloseGossipMenuFor(player);
