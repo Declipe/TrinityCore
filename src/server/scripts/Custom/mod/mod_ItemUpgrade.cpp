@@ -135,7 +135,7 @@ class go_item_upgrade : public GameObjectScript
 
 		struct go_item_upgradeAI : public GameObjectAI
 		{
-			go_item_upgradeAI(GameObject* me) : GameObjectAI(me) { }
+			go_item_upgradeAI(GameObject* go) : GameObjectAI(go) { }
 
     uint16 getSlot(uint32 sender) {
         return (uint16) ((sender - GOSSIP_SENDER_MAIN) >> 16);
@@ -153,7 +153,6 @@ class go_item_upgrade : public GameObjectScript
     {
         if (!ItemUpgradeEnable) {
             SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
-			//SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             return true;
         }
 		LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
@@ -178,15 +177,9 @@ class go_item_upgrade : public GameObjectScript
     }
 
 	bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
-	{
+    {
 		uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
 		uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
-		return OnGossipSelect(player, sender, action);
-	}
-
-	bool OnGossipSelect(Player* player, uint32 sender, uint32 action)
-    //bool OnGossipSelect(Player* player, GameObject* go, uint32 sender, uint32 action)
-    {
         if (!ItemUpgradeEnable) {
             CloseGossipMenuFor(player);
             return true;
@@ -317,9 +310,9 @@ class go_item_upgrade : public GameObjectScript
 	  }
 	};
 
-	GameObjectAI* GetAI(GameObject* me) const override
+	GameObjectAI* GetAI(GameObject* go) const override
 	{
-		return new go_item_upgradeAI(me);
+		return new go_item_upgradeAI(go);
 	}
 };
 
