@@ -137,8 +137,6 @@ class go_item_upgrade : public GameObjectScript
 		{
 			go_item_upgradeAI(GameObject* go) : GameObjectAI(go) { }
 
-     uint32 limit = 0;
-
     uint16 getSlot(uint32 sender) {
         return (uint16) ((sender - GOSSIP_SENDER_MAIN) >> 16);
     }
@@ -150,6 +148,8 @@ class go_item_upgrade : public GameObjectScript
     uint32 senderValue(uint16 slot, uint16 enchant) {
         return (uint32) (GOSSIP_SENDER_MAIN + ((slot << 16) | (enchant & 0xFFFF)));
     }
+
+uint32 limit = 0;
 
 	bool GossipHello(Player* player, bool /*reportUse*/) override
     {
@@ -165,14 +165,13 @@ class go_item_upgrade : public GameObjectScript
             if (item)
             {
 				if (limit >= MAX_OPTIONS)
-                   break;
+                   break;  
                 ItemTemplate const *itemTemplate = item->GetTemplate();
 
                 std::string Name = itemTemplate->Name1;
 				if (loc_idx >= 0)
                     if (ItemLocale const* il = sObjectMgr->GetItemLocale(itemTemplate->ItemId))
                         ObjectMgr::GetLocaleString(il->Name, loc_idx, Name);
-                ++limit;
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, Name.c_str(), senderValue(i, 0), GOSSIP_ACTION_INFO_DEF);
             }
         }
@@ -185,7 +184,7 @@ class go_item_upgrade : public GameObjectScript
 		uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
 		uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
         if (!ItemUpgradeEnable) {
-            CloseGossipMenuFor(player);
+            //CloseGossipMenuFor(player);
             return true;
         }
 
