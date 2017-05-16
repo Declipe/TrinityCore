@@ -137,6 +137,8 @@ class go_item_upgrade : public GameObjectScript
 		{
 			go_item_upgradeAI(GameObject* go) : GameObjectAI(go) { }
 
+     uint32 limit = 0;
+
     uint16 getSlot(uint32 sender) {
         return (uint16) ((sender - GOSSIP_SENDER_MAIN) >> 16);
     }
@@ -149,8 +151,6 @@ class go_item_upgrade : public GameObjectScript
         return (uint32) (GOSSIP_SENDER_MAIN + ((slot << 16) | (enchant & 0xFFFF)));
     }
 
-    uint32 limit = 0;
-    
 	bool GossipHello(Player* player, bool /*reportUse*/) override
     {
         if (!ItemUpgradeEnable) {
@@ -166,7 +166,6 @@ class go_item_upgrade : public GameObjectScript
             {
 				if (limit >= MAX_OPTIONS)
                    break;
-                   
                 ItemTemplate const *itemTemplate = item->GetTemplate();
 
                 std::string Name = itemTemplate->Name1;
@@ -181,7 +180,7 @@ class go_item_upgrade : public GameObjectScript
         return true;
     }
 
-    bool GossipSelect(Player* player, uint32 menu_id, uint32 gossipListId) override
+    bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
     {
            uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
            uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
