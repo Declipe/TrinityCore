@@ -176,10 +176,18 @@ class go_item_upgrade : public GameObjectScript
         return true;
     }
 
-	bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+    bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
     {
-		uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
-		uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+           uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+           uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+           return OnGossipSelect(player, sender, action);
+    }
+
+    bool OnGossipSelect(Player* player, uint32 sender, uint32 action)
+	//bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+    {
+		//uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+		//uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
         if (!ItemUpgradeEnable) {
             CloseGossipMenuFor(player);
             return true;
