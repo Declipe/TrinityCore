@@ -137,7 +137,7 @@ class go_item_upgrade : public GameObjectScript
 		{
 			go_item_upgradeAI(GameObject* go) : GameObjectAI(go) { }
 
-    uint32 limit = 0;
+     uint32 limit = 0;
 
     uint16 getSlot(uint32 sender) {
         return (uint16) ((sender - GOSSIP_SENDER_MAIN) >> 16);
@@ -166,15 +166,14 @@ class go_item_upgrade : public GameObjectScript
             {
 				if (limit >= MAX_OPTIONS)
                    break;
-                   
                 ItemTemplate const *itemTemplate = item->GetTemplate();
 
                 std::string Name = itemTemplate->Name1;
 				if (loc_idx >= 0)
                     if (ItemLocale const* il = sObjectMgr->GetItemLocale(itemTemplate->ItemId))
                         ObjectMgr::GetLocaleString(il->Name, loc_idx, Name);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, Name.c_str(), senderValue(i, 0), GOSSIP_ACTION_INFO_DEF);
                 ++limit;
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, Name.c_str(), senderValue(i, 0), GOSSIP_ACTION_INFO_DEF);
             }
         }
         SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
@@ -216,8 +215,8 @@ class go_item_upgrade : public GameObjectScript
         }
 
         if (itemEnchantSlot < PROP_ENCHANTMENT_SLOT_0 || itemEnchantSlot >= MAX_ENCHANTMENT_SLOT) {
+			++limit;
             AddGossipItemFor(player, GOSSIP_ICON_CHAT, "<< ...", senderValue(0, 0), GOSSIP_ACTION_INFO_DEF);
-            ++limit;
             for (uint8 i = PROP_ENCHANTMENT_SLOT_0; i < MAX_ENCHANTMENT_SLOT; ++i) {
                 std::string oldEffect = sObjectMgr->GetTrinityStringForDBCLocale(ItemUpgradeTextNoEffect);
                 uint32 enchantId = item->GetEnchantmentId(EnchantmentSlot(i));
@@ -246,8 +245,8 @@ class go_item_upgrade : public GameObjectScript
 
                 char gossipTextFormat[100];
                 snprintf(gossipTextFormat, 100, sObjectMgr->GetTrinityStringForDBCLocale(ItemUpgradeTextEffectNow), i - PROP_ENCHANTMENT_SLOT_0 + 1, oldEffect.c_str());
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, gossipTextFormat, senderValue(itemSlot, i), GOSSIP_ACTION_INFO_DEF);
                 ++limit;
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, gossipTextFormat, senderValue(itemSlot, i), GOSSIP_ACTION_INFO_DEF);
             }
             SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
             return true;
@@ -257,17 +256,17 @@ class go_item_upgrade : public GameObjectScript
 
         if (action <= GOSSIP_ACTION_INFO_DEF)
         {
+			++limit;
             AddGossipItemFor(player, GOSSIP_ICON_CHAT, "<< ...", senderValue(itemSlot, 0), GOSSIP_ACTION_INFO_DEF);
-            ++limit;
             if (currentEnchantId != 0)
+            ++limit;
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, sObjectMgr->GetTrinityStringForDBCLocale(ItemUpgradeTextEffectRemove), senderValue(itemSlot, itemEnchantSlot), GOSSIP_ACTION_INFO_DEF + 1, sObjectMgr->GetTrinityStringForDBCLocale(ItemUpgradeTextAreYouSure), 100 * GOLD, 0);
-                ++limit;
             for (uint32 i = 0; i < ItemUpgradeInfo.size(); ++i)
             {
                 if (ItemUpgradeInfo[i].prevEnchantId != currentEnchantId)
                     continue;
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, ItemUpgradeInfo[i].description.c_str(), senderValue(itemSlot, itemEnchantSlot), GOSSIP_ACTION_INFO_DEF + ItemUpgradeInfo[i].enchantId, ItemUpgradeInfo[i].description.c_str(), ItemUpgradeInfo[i].golds, 0);
                 ++limit;
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, ItemUpgradeInfo[i].description.c_str(), senderValue(itemSlot, itemEnchantSlot), GOSSIP_ACTION_INFO_DEF + ItemUpgradeInfo[i].enchantId, ItemUpgradeInfo[i].description.c_str(), ItemUpgradeInfo[i].golds, 0);
             }
 
             SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
