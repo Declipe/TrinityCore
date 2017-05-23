@@ -68,7 +68,7 @@ public:
 
 		void Reset() override
 		{
-			me->SetFaction(21);
+			me->SetFaction(FACTION_MONSTER);
 			_events.Reset();
 			Summons.DespawnAll();
 		}
@@ -76,7 +76,7 @@ public:
 		void EnterCombat(Unit* /*who*/) override
 		{
 			me->Yell("Ich bin gerade auf Kaffee bei Kayoula. Bitte versucht es spaeter noch einmal!", LANG_UNIVERSAL, nullptr);
-			me->SetFaction(35);
+			me->SetFaction(FACTION_FRIENDLY);
 			Reset();
 			Talk(SAY_AGGRO);
 			_events.SetPhase(PHASE_ONE);
