@@ -74,6 +74,7 @@ TC_GAME_API uint32 GetDefaultMapLight(uint32 mapId);
 typedef std::unordered_multimap<uint32, SkillRaceClassInfoEntry const*> SkillRaceClassInfoMap;
 typedef std::pair<SkillRaceClassInfoMap::iterator, SkillRaceClassInfoMap::iterator> SkillRaceClassInfoBounds;
 TC_GAME_API SkillRaceClassInfoEntry const* GetSkillRaceClassInfo(uint32 skill, uint8 race, uint8 class_);
+typedef std::unordered_map<uint32, const ItemExtendedCostEntry*> ItemExtendedCostContainer;
 
 TC_GAME_API ResponseCodes ValidateName(std::wstring const& name, LocaleConstant locale);
 
@@ -197,4 +198,21 @@ TC_GAME_API extern DBCStorage <WorldSafeLocsEntry>           sWorldSafeLocsStore
 
 TC_GAME_API void LoadDBCStores(const std::string& dataPath);
 
+class TC_GAME_API DBCMgr
+{
+    public:
+        static DBCMgr* instance()
+        {
+            static DBCMgr instance;
+            return &instance;
+        }
+
+    public:
+//tut
+TC_GAME_API void LoadItemExtendedCostStore();
+const ItemExtendedCostEntry* GetItemExtendedCostEntry(uint32 ID) const { ItemExtendedCostContainer::const_iterator itr = ItemExtendedCostStore.find(ID); if (itr != ItemExtendedCostStore.end()) return itr->second; return NULL; }
+ItemExtendedCostContainer ItemExtendedCostStore;
+};
+
+#define sDBCMgr DBCMgr::instance()
 #endif
