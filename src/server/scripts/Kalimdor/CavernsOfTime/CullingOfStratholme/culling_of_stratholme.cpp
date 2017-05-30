@@ -264,123 +264,132 @@ class npc_chromie_start : public CreatureScript
     public:
         npc_chromie_start() : CreatureScript("npc_chromie_start") { }
 
-        void AdvanceDungeon(Creature* creature)
+        struct npc_chromie_startAI : public NullCreatureAI
         {
-            if (InstanceScript* instance = creature->GetInstanceScript())
+            npc_chromie_startAI(Creature* creature) : NullCreatureAI(creature), instance(creature->GetInstanceScript()) { }
+            void AdvanceDungeon()
+            {
                 if (instance->GetData(DATA_INSTANCE_PROGRESS) == JUST_STARTED)
                     instance->SetData(DATA_CRATES_START, 1);
-        }
+            }
 
-        void AdvanceDungeonFar(Creature* creature)
-        {
-            if (InstanceScript* instance = creature->GetInstanceScript())
+            void AdvanceDungeonFar()
+            {
                 if (instance->GetData(DATA_INSTANCE_PROGRESS) <= CRATES_DONE)
                     instance->SetData(DATA_SKIP_TO_PURGE, 1);
-        }
+            }
 
-        bool OnGossipHello(Player* player, Creature* creature) override
-        {
-            if (creature->IsQuestGiver())
-                player->PrepareQuestMenu(creature->GetGUID());
-
-            if (InstanceScript* instance = creature->GetInstanceScript())
+            bool GossipHello(Player* player) override
             {
-                if (player->CanBeGameMaster()) // GM instance state override menu
-                {
-                    AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, "[GM] Teleport all players to Arthas", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL);
-                    for (uint32 state = 1; state <= COMPLETE; state = state << 1)
-                        AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, Trinity::StringFormat("[GM] Set instance progress 0x%X", state).c_str(), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL + state);
-                }
+                if (me->IsQuestGiver())
+                    player->PrepareQuestMenu(me->GetGUID());
 
-                uint32 state = instance->GetData(DATA_INSTANCE_PROGRESS);
-                if (state < PURGE_STARTING)
+                if (InstanceScript* instance = me->GetInstanceScript())
                 {
-                    AddGossipItemFor(player, GOSSIP_MENU_INITIAL, GOSSIP_OPTION_EXPLAIN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_EXPLAIN);
+                    if (player->CanBeGameMaster()) // GM instance state override menu
                     {
-                        bool shouldAddSkipGossip = true;
-                        Map::PlayerList const& players = instance->instance->GetPlayers();
-                        for (Map::PlayerList::const_iterator it = players.begin(); it != players.end(); ++it)
+                        AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, "[GM] Teleport all players to Arthas", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL);
+                        for (uint32 state = 1; state <= COMPLETE; state = state << 1)
+                            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, Trinity::StringFormat("[GM] Set instance progress 0x%X", state).c_str(), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL + state);
+                    }
+
+                    uint32 state = instance->GetData(DATA_INSTANCE_PROGRESS);
+                    if (state < PURGE_STARTING)
+                    {
+                        AddGossipItemFor(player, GOSSIP_MENU_INITIAL, GOSSIP_OPTION_EXPLAIN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_EXPLAIN);
                         {
-                            if (Player* player = it->GetSource())
+                            bool shouldAddSkipGossip = true;
+                            Map::PlayerList const& players = instance->instance->GetPlayers();
+                            for (Map::PlayerList::const_iterator it = players.begin(); it != players.end(); ++it)
                             {
-                                if (player->IsGameMaster())
-                                    continue;
-                                if (!player->HasAchieved(instance->instance->GetSpawnMode() == DUNGEON_DIFFICULTY_HEROIC ? ACHIEVEMENT_HEROIC : ACHIEVEMENT_NORMAL))
+                                if (Player* player = it->GetSource())
                                 {
-                                    shouldAddSkipGossip = false;
-                                    break;
+                                    if (player->IsGameMaster())
+                                        continue;
+                                    if (!player->HasAchieved(instance->instance->GetSpawnMode() == DUNGEON_DIFFICULTY_HEROIC ? ACHIEVEMENT_HEROIC : ACHIEVEMENT_NORMAL))
+                                    {
+                                        shouldAddSkipGossip = false;
+                                        break;
+                                    }
                                 }
                             }
+                            if (shouldAddSkipGossip)
+                                AddGossipItemFor(player, GOSSIP_MENU_INITIAL, GOSSIP_OPTION_SKIP, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_SKIP);
                         }
-                        if (shouldAddSkipGossip)
-                            AddGossipItemFor(player, GOSSIP_MENU_INITIAL, GOSSIP_OPTION_SKIP, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_SKIP);
+                        SendGossipMenuFor(player, GOSSIP_TEXT_INITIAL, me->GetGUID());
                     }
-                    SendGossipMenuFor(player, GOSSIP_TEXT_INITIAL, creature->GetGUID());
+                    else
+                    {
+                        AddGossipItemFor(player, GOSSIP_MENU_INITIAL, GOSSIP_OPTION_TELEPORT, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_TELEPORT);
+                        SendGossipMenuFor(player, GOSSIP_TEXT_TELEPORT, me->GetGUID());
+                    }
                 }
-                else
-                {
-                    AddGossipItemFor(player, GOSSIP_MENU_INITIAL, GOSSIP_OPTION_TELEPORT, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_TELEPORT);
-                    SendGossipMenuFor(player, GOSSIP_TEXT_TELEPORT, creature->GetGUID());
-                }
+                else // random fallback, this should really never happen
+                    SendGossipMenuFor(player, GOSSIP_TEXT_INITIAL, me->GetGUID());
+                return true;
             }
-            else // random fallback, this should really never happen
-                SendGossipMenuFor(player, GOSSIP_TEXT_INITIAL, creature->GetGUID());
-            return true;
-        }
 
-        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
-        {
-            ClearGossipMenuFor(player);
-            switch (action - GOSSIP_ACTION_INFO_DEF)
+            bool GossipSelect(Player* player, uint32 /*sender*/, uint32 action) override
             {
-                case GOSSIP_OFFSET_EXPLAIN:
-                    AddGossipItemFor(player, GOSSIP_MENU_EXPLAIN_1, GOSSIP_OPTION_EXPLAIN_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_EXPLAIN_1);
-                    SendGossipMenuFor(player, GOSSIP_TEXT_EXPLAIN_1, creature->GetGUID());
-                    break;
-                case GOSSIP_OFFSET_SKIP:
-                    AddGossipItemFor(player, GOSSIP_MENU_SKIP_1, GOSSIP_OPTION_SKIP_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_SKIP_1);
-                    SendGossipMenuFor(player, GOSSIP_TEXT_SKIP_1, creature->GetGUID());
-                    break;
-                case GOSSIP_OFFSET_SKIP_1:
-                    AdvanceDungeonFar(creature);
-                    // intentional missing break
-                case GOSSIP_OFFSET_TELEPORT:
-                    CloseGossipMenuFor(player);
-                    creature->CastSpell(player, SPELL_TELEPORT_PLAYER);
-                    break;
-                case GOSSIP_OFFSET_EXPLAIN_1:
-                    AddGossipItemFor(player, GOSSIP_MENU_EXPLAIN_2, GOSSIP_OPTION_EXPLAIN_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_EXPLAIN_2);
-                    SendGossipMenuFor(player, GOSSIP_TEXT_EXPLAIN_2, creature->GetGUID());
-                    break;
-                case GOSSIP_OFFSET_EXPLAIN_2:
-                    SendGossipMenuFor(player, GOSSIP_TEXT_EXPLAIN_3, creature->GetGUID());
-                    AdvanceDungeon(creature);
-                    if (!player->HasItemCount(ITEM_ARCANE_DISRUPTOR))
-                        player->AddItem(ITEM_ARCANE_DISRUPTOR, 1); // @todo figure out spell
-                    break;
-                case GOSSIP_OFFSET_GM_INITIAL:
-                    CloseGossipMenuFor(player);
-                    if (!player->CanBeGameMaster())
+                ClearGossipMenuFor(player);
+                switch (action - GOSSIP_ACTION_INFO_DEF)
+                {
+                    case GOSSIP_OFFSET_EXPLAIN:
+                        AddGossipItemFor(player, GOSSIP_MENU_EXPLAIN_1, GOSSIP_OPTION_EXPLAIN_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_EXPLAIN_1);
+                        SendGossipMenuFor(player, GOSSIP_TEXT_EXPLAIN_1, me->GetGUID());
                         break;
-                    if (InstanceScript* instance = creature->GetInstanceScript())
-                        instance->SetGuidData(DATA_GM_RECALL, player->GetGUID());
-                    break;
-                default: // handle GM instance state switch
-                    CloseGossipMenuFor(player);
-                    if (!player->CanBeGameMaster())
+                    case GOSSIP_OFFSET_SKIP:
+                        AddGossipItemFor(player, GOSSIP_MENU_SKIP_1, GOSSIP_OPTION_SKIP_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_SKIP_1);
+                        SendGossipMenuFor(player, GOSSIP_TEXT_SKIP_1, me->GetGUID());
                         break;
-                    if (InstanceScript* instance = creature->GetInstanceScript())
-                        instance->SetData(DATA_GM_OVERRIDE, action - GOSSIP_ACTION_INFO_DEF - GOSSIP_OFFSET_GM_INITIAL);
-                    break;
+                    case GOSSIP_OFFSET_SKIP_1:
+                        AdvanceDungeonFar();
+                        // intentional missing break
+                    case GOSSIP_OFFSET_TELEPORT:
+                        CloseGossipMenuFor(player);
+                        me->CastSpell(player, SPELL_TELEPORT_PLAYER);
+                        break;
+                    case GOSSIP_OFFSET_EXPLAIN_1:
+                        AddGossipItemFor(player, GOSSIP_MENU_EXPLAIN_2, GOSSIP_OPTION_EXPLAIN_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_EXPLAIN_2);
+                        SendGossipMenuFor(player, GOSSIP_TEXT_EXPLAIN_2, me->GetGUID());
+                        break;
+                    case GOSSIP_OFFSET_EXPLAIN_2:
+                        SendGossipMenuFor(player, GOSSIP_TEXT_EXPLAIN_3, me->GetGUID());
+                        AdvanceDungeon();
+                        if (!player->HasItemCount(ITEM_ARCANE_DISRUPTOR))
+                            player->AddItem(ITEM_ARCANE_DISRUPTOR, 1); // @todo figure out spell
+                        break;
+                    case GOSSIP_OFFSET_GM_INITIAL:
+                        CloseGossipMenuFor(player);
+                        if (!player->CanBeGameMaster())
+                            break;
+                        if (InstanceScript* instance = me->GetInstanceScript())
+                            instance->SetGuidData(DATA_GM_RECALL, player->GetGUID());
+                        break;
+                    default: // handle GM instance state switch
+                        CloseGossipMenuFor(player);
+                        if (!player->CanBeGameMaster())
+                            break;
+                        if (InstanceScript* instance = me->GetInstanceScript())
+                            instance->SetData(DATA_GM_OVERRIDE, action - GOSSIP_ACTION_INFO_DEF - GOSSIP_OFFSET_GM_INITIAL);
+                        break;
+                }
+                return false;
             }
-            return false;
-        }
 
-        bool OnQuestAccept(Player* /*player*/, Creature* creature, Quest const* quest) override
+            void QuestAccept(Player* /*player*/, Quest const* quest) override
+            {
+                if (quest->GetQuestId() == QUEST_DISPELLING_ILLUSIONS)
+                    AdvanceDungeon();
+            }
+
+            private:
+                InstanceScript* const instance;
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
         {
-            if (quest->GetQuestId() == QUEST_DISPELLING_ILLUSIONS)
-                AdvanceDungeon(creature);
-            return true;
+            return GetInstanceAI<npc_chromie_startAI>(creature);
         }
 };
 
@@ -415,47 +424,6 @@ class npc_chromie_middle : public StratholmeCreatureScript<NullCreatureAI>
 {
     public:
         npc_chromie_middle() : StratholmeCreatureScript("npc_chromie_middle", ProgressStates(ALL & ~(JUST_STARTED | CRATES_IN_PROGRESS))) { }
-
-        void AdvanceDungeon(Creature* creature, Player const* player)
-        {
-            if (InstanceScript* instance = creature->GetInstanceScript())
-                if (instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE)
-                    instance->SetGuidData(DATA_UTHER_START, player->GetGUID());
-        }
-
-        bool OnGossipHello(Player* player, Creature* creature) override
-        {
-            if (creature->IsQuestGiver())
-                player->PrepareQuestMenu(creature->GetGUID());
-
-            if (InstanceScript* instance = creature->GetInstanceScript())
-                if (instance->GetData(DATA_INSTANCE_PROGRESS))
-                    AddGossipItemFor(player, GOSSIP_MENU_STEP1, GOSSIP_OPTION_STEP1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP1);
-            SendGossipMenuFor(player, GOSSIP_TEXT_STEP1, creature->GetGUID());
-            return true;
-        }
-
-        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
-        {
-            ClearGossipMenuFor(player);
-            switch (action - GOSSIP_ACTION_INFO_DEF)
-            {
-                case GOSSIP_OFFSET_STEP1:
-                    AddGossipItemFor(player, GOSSIP_MENU_STEP2, GOSSIP_OPTION_STEP2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP2);
-                    SendGossipMenuFor(player, GOSSIP_TEXT_STEP2, creature->GetGUID());
-                    break;
-                case GOSSIP_OFFSET_STEP2:
-                    AddGossipItemFor(player, GOSSIP_MENU_STEP3, GOSSIP_OPTION_STEP3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP3);
-                    SendGossipMenuFor(player, GOSSIP_TEXT_STEP3, creature->GetGUID());
-                    break;
-                case GOSSIP_OFFSET_STEP3:
-                    SendGossipMenuFor(player, GOSSIP_TEXT_STEP4, creature->GetGUID());
-                    AdvanceDungeon(creature, player);
-                    break;
-
-            }
-            return false;
-        }
 
         struct npc_chromie_middleAI : public StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper
         {
@@ -494,6 +462,45 @@ class npc_chromie_middle : public StratholmeCreatureScript<NullCreatureAI>
                             whisperedTime = now;
                         }
                     }
+            }
+
+            void AdvanceDungeon(Player const* player)
+            {
+                if (instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE)
+                    instance->SetGuidData(DATA_UTHER_START, player->GetGUID());
+            }
+
+            bool GossipHello(Player* player) override
+            {
+                if (me->IsQuestGiver())
+                    player->PrepareQuestMenu(me->GetGUID());
+
+                if (instance->GetData(DATA_INSTANCE_PROGRESS))
+                    AddGossipItemFor(player, GOSSIP_MENU_STEP1, GOSSIP_OPTION_STEP1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP1);
+                SendGossipMenuFor(player, GOSSIP_TEXT_STEP1, me->GetGUID());
+                return true;
+            }
+
+            bool GossipSelect(Player* player, uint32 /*sender*/, uint32 action) override
+            {
+                ClearGossipMenuFor(player);
+                switch (action - GOSSIP_ACTION_INFO_DEF)
+                {
+                    case GOSSIP_OFFSET_STEP1:
+                        AddGossipItemFor(player, GOSSIP_MENU_STEP2, GOSSIP_OPTION_STEP2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP2);
+                        SendGossipMenuFor(player, GOSSIP_TEXT_STEP2, me->GetGUID());
+                        break;
+                    case GOSSIP_OFFSET_STEP2:
+                        AddGossipItemFor(player, GOSSIP_MENU_STEP3, GOSSIP_OPTION_STEP3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP3);
+                        SendGossipMenuFor(player, GOSSIP_TEXT_STEP3, me->GetGUID());
+                        break;
+                    case GOSSIP_OFFSET_STEP3:
+                        SendGossipMenuFor(player, GOSSIP_TEXT_STEP4, me->GetGUID());
+                        AdvanceDungeon(player);
+                        break;
+
+                }
+                return false;
             }
 
             uint32 _whisperDelay;

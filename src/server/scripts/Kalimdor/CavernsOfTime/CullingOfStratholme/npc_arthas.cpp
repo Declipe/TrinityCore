@@ -1537,6 +1537,29 @@ class npc_arthas_stratholme : public CreatureScript
             _hadSetup = false;
         }
 
+        void AdvanceDungeon(Player* cause, ProgressStates from, InstanceData command)
+        {
+            if (instance->GetData(DATA_INSTANCE_PROGRESS) == from)
+                instance->SetGuidData(command, cause->GetGUID());
+        }
+
+        bool GossipSelect(Player* player, uint32 /*sender*/, uint32 action) override
+        {
+            std::cout << (player ? player->GetName() : "nullptr") << " select " << action << " on " << me->GetName() << std::endl;
+            AdvanceDungeon(player, PURGE_PENDING, DATA_START_PURGE);
+            AdvanceDungeon(player, TOWN_HALL_PENDING, DATA_START_TOWN_HALL);
+            AdvanceDungeon(player, TOWN_HALL_COMPLETE, DATA_TO_GAUNTLET);
+            AdvanceDungeon(player, GAUNTLET_PENDING, DATA_START_GAUNTLET);
+            AdvanceDungeon(player, GAUNTLET_COMPLETE, DATA_START_MALGANIS);
+            return true;
+        }
+
+        bool GossipHello(Player* player) override
+        {
+            std::cout << (player ? player->GetName() : "nullptr") << " hello " << me->GetName() << std::endl;
+            return false;
+        }
+
         private:
             bool _hadSetup; // on first update tick, adjust to current progress state
             InstanceScript* const instance;
@@ -1548,30 +1571,6 @@ class npc_arthas_stratholme : public CreatureScript
             Actions _afterCombat;
             SplineChainResumeInfo _resumeMovement;
     };
-
-    void AdvanceDungeon(Creature* creature, Player* cause, ProgressStates from, InstanceData command)
-    {
-        if (InstanceScript* instance = creature->GetInstanceScript())
-            if (instance->GetData(DATA_INSTANCE_PROGRESS) == from)
-                instance->SetGuidData(command, cause->GetGUID());
-    }
-
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
-    {
-        std::cout << (player ? player->GetName() : "nullptr") << " select " << action << " on " << (creature ? creature->GetName() : "nullptr") << std::endl;
-        AdvanceDungeon(creature, player, PURGE_PENDING, DATA_START_PURGE);
-        AdvanceDungeon(creature, player, TOWN_HALL_PENDING, DATA_START_TOWN_HALL);
-        AdvanceDungeon(creature, player, TOWN_HALL_COMPLETE, DATA_TO_GAUNTLET);
-        AdvanceDungeon(creature, player, GAUNTLET_PENDING, DATA_START_GAUNTLET);
-        AdvanceDungeon(creature, player, GAUNTLET_COMPLETE, DATA_START_MALGANIS);
-        return true;
-    }
-
-    bool OnGossipHello(Player* player, Creature* creature) override
-    {
-        std::cout << (player ? player->GetName() : "nullptr") << " hello " << (creature ? creature->GetName() : "nullptr") << std::endl;
-        return false;
-    }
 
     CreatureAI* GetAI(Creature* creature) const override
     {
