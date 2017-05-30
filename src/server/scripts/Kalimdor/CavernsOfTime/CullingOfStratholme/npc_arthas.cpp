@@ -624,7 +624,7 @@ class npc_arthas_stratholme : public CreatureScript
             }
         }
 
-        void MovementInform(uint32 type, uint32 id)
+        void MovementInform(uint32 type, uint32 id) override
         {
             if (!_progressRP)
                 return;

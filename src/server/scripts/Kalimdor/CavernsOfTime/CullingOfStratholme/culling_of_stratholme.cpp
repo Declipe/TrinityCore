@@ -85,7 +85,7 @@ class npc_hearthsinger_forresten_cot : public CreatureScript
         {
             npc_hearthsinger_forresten_cotAI(Creature* creature) : NullCreatureAI(creature), instance(creature->GetInstanceScript()), _hadBelfast(false), _hadTalk(false) { }
 
-            void UpdateAI(uint32 diff)
+            void UpdateAI(uint32 diff) override
             {
                 events.Update(diff);
                 while (uint32 eventId = events.ExecuteEvent())
