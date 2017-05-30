@@ -831,7 +831,7 @@ struct npc_bartleby_battson : public CreatureScript
                 }
         }
 
-        void UpdateAI(uint32 diff)
+        void UpdateAI(uint32 diff) override
         {
             events.Update(diff);
             while (uint32 eventId = events.ExecuteEvent())
