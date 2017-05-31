@@ -1543,8 +1543,9 @@ class npc_arthas_stratholme : public CreatureScript
                 instance->SetGuidData(command, cause->GetGUID());
         }
 
-        bool GossipSelect(Player* player, uint32 /*sender*/, uint32 action) override
+        bool GossipSelect(Player* player, uint32 /*sender*/, uint32 listId) override
         {
+            uint32 const action = GetGossipActionFor(player, listId);
             std::cout << (player ? player->GetName() : "nullptr") << " select " << action << " on " << me->GetName() << std::endl;
             AdvanceDungeon(player, PURGE_PENDING, DATA_START_PURGE);
             AdvanceDungeon(player, TOWN_HALL_PENDING, DATA_START_TOWN_HALL);

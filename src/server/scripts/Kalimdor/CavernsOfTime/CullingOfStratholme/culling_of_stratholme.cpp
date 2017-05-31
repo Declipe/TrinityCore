@@ -329,10 +329,10 @@ class npc_chromie_start : public CreatureScript
                 return true;
             }
 
-            bool GossipSelect(Player* player, uint32 /*sender*/, uint32 action) override
+            bool GossipSelect(Player* player, uint32 /*sender*/, uint32 listId) override
             {
                 ClearGossipMenuFor(player);
-                switch (action - GOSSIP_ACTION_INFO_DEF)
+                switch (GetGossipActionFor(player, listId) - GOSSIP_ACTION_INFO_DEF)
                 {
                     case GOSSIP_OFFSET_EXPLAIN:
                         AddGossipItemFor(player, GOSSIP_MENU_EXPLAIN_1, GOSSIP_OPTION_EXPLAIN_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_EXPLAIN_1);
@@ -371,7 +371,7 @@ class npc_chromie_start : public CreatureScript
                         if (!player->CanBeGameMaster())
                             break;
                         if (InstanceScript* instance = me->GetInstanceScript())
-                            instance->SetData(DATA_GM_OVERRIDE, action - GOSSIP_ACTION_INFO_DEF - GOSSIP_OFFSET_GM_INITIAL);
+                            instance->SetData(DATA_GM_OVERRIDE, GetGossipActionFor(player, listId) - GOSSIP_ACTION_INFO_DEF - GOSSIP_OFFSET_GM_INITIAL);
                         break;
                 }
                 return false;
@@ -481,10 +481,10 @@ class npc_chromie_middle : public StratholmeCreatureScript<NullCreatureAI>
                 return true;
             }
 
-            bool GossipSelect(Player* player, uint32 /*sender*/, uint32 action) override
+            bool GossipSelect(Player* player, uint32 /*sender*/, uint32 listId) override
             {
                 ClearGossipMenuFor(player);
-                switch (action - GOSSIP_ACTION_INFO_DEF)
+                switch (GetGossipActionFor(player, listId) - GOSSIP_ACTION_INFO_DEF)
                 {
                     case GOSSIP_OFFSET_STEP1:
                         AddGossipItemFor(player, GOSSIP_MENU_STEP2, GOSSIP_OPTION_STEP2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP2);
@@ -1055,7 +1055,7 @@ struct npc_sergeant_morigan : public CreatureScript
         void InitializeAI() override { events.RescheduleEvent(EVENT_SERGEANT_IDLE1, Seconds(5), Seconds(15)); }
         void JustRespawned() override { InitializeAI(); started = false; }
 
-        void DoAction(int32 id)
+        void DoAction(int32 id) override
         {
             if (id == ACTION_START_FLUFF)
                 started = true;

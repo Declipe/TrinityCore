@@ -11,8 +11,8 @@ INSERT INTO `creature` (`guid`,`id`,`map`,`spawnMask`,`phaseMask`,`position_x`,`
 UPDATE `creature_template` SET `ScriptName`="npc_chromie_start" WHERE `entry`=26527;
 UPDATE `creature_template` SET `ScriptName`="npc_chromie_middle" WHERE `entry`=27915;
 -- Chromie whispers
-DELETE FROM `creature_text` WHERE `entry`=27915 AND `groupid`=1;
-INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`emote`,`comment`) VALUES
+DELETE FROM `creature_text` WHERE `creatureid`=27915 AND `groupid`=1;
+INSERT INTO `creature_text` (`creatureid`,`groupid`,`id`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`emote`,`comment`) VALUES
 (27915, 1, 0, "Come over here time traveller, we need to talk!", 15, 100, 29167, 0, 70, "Chromie - WHISPER_COME_TALK"),
 (27915, 1, 1, "Quick, over here!", 15, 100, 29169, 0, 70, "Chromie - WHISPER_COME_TALK"),
 (27915, 1, 2, "We meet again, time traveller!", 15, 100, 29168, 0, 70, "Chromie - WHISPER_COME_TALK");
@@ -35,8 +35,8 @@ INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type
 (30571, 0, 1, 2, 61, 100, 1,   0,  0, 59,  0, 0,  0,     0,   0,        0,        0,        0,        0, "Michael Belfast - On Action 100 - Set Run (false) (No Repeat)"),
 (30571, 0, 2, 0, 61, 100, 1,   0,  0, 69, 42, 0,  8,     0,   0, 1554.371, 587.4865, 99.77525, 1.107272, "Michael Belfast - On Action 100 - Move Position (ID 42) (No Repeat)"),
 (30571, 0, 3, 0, 34, 100, 1,   8, 42, 45,  1, 1, 11, 30551, 100,        0,        0,        0,        0, "Michael Belfast - On Movement Inform (ID 42) - Set Data 1-1 on Hearthsinger Forresten (within 100yd) (No Repeat)");
-DELETE FROM `creature_text` WHERE `entry` IN (30551,30552,30553,30561,30571,31017);
-INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,`BroadcastTextId`,`emote`,`comment`) VALUES
+DELETE FROM `creature_text` WHERE `creatureid` IN (30551,30552,30553,30561,30571,31017);
+INSERT INTO `creature_text` (`creatureid`,`groupid`,`id`,`text`,`type`,`probability`,`BroadcastTextId`,`emote`,`comment`) VALUES
 (30571, 0, 0, "What were you doing in my cellar? There's a food scare going on, and the last thing I need is strangers rummaging around in my goods! Shoo!", 12, 100, 31323, 5, "Michael Belfast - SAY_CELLAR"),
 (30571, 0, 1, "Hey! Stop rooting around in my cellar! Clear out!", 12, 100, 31322, 5, "Michael Belfast - SAY_CELLAR"),
 (30551, 0, 0, "This whole situation seems a bit paranoid, don't you think?", 12, 100, 31324, 1, "Hearthsinger Forresten - LINE_FORREST_1"),
@@ -71,8 +71,8 @@ UPDATE `creature` SET `movementtype`=0,`spawndist`=0 WHERE `id` IN (27884,27885,
 UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_jena_anderson" WHERE `entry`=27885;
 UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_martha_goslin" WHERE `entry`=27884;
 UPDATE `creature` SET `position_x`=1635.827,`position_y`=723.0861,`position_z`=113.6452,`orientation`=3.089233 WHERE `id`=27884;
-DELETE FROM `creature_text` WHERE `entry` IN (27884,27885);
-INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`emote`,`BroadcastTextId`,`comment`) VALUES
+DELETE FROM `creature_text` WHERE `creatureid` IN (27884,27885);
+INSERT INTO `creature_text` (`creatureid`,`groupid`,`text`,`type`,`probability`,`emote`,`BroadcastTextId`,`comment`) VALUES
 (27884,0,"Oh hello, Jena. Of course you can borrow some grain. Help yourself.",12,100,1,27232,"LINE_MARTHA1"),
 (27884,1,"Oh, my.",12,100,1,27235,"LINE_MARTHA2"),
 (27885,0,"Let's see, we had chicken last night.",12,100,0,27219,"LINE_JENA1"),
@@ -87,8 +87,8 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`emot
 -- Event #2:
 UPDATE `creature` SET `position_x`=1670.256, `position_y`=872.8734, `position_z`=120.0351, `orientation`=0.418879 WHERE `id`=27907;
 UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_bartleby_battson" WHERE `entry`=27907;
-DELETE FROM `creature_text` WHERE `entry`=27907;
-INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,`emote`,`BroadcastTextId`,`comment`) VALUES
+DELETE FROM `creature_text` WHERE `creatureid`=27907;
+INSERT INTO `creature_text` (`creatureid`,`groupid`,`id`,`text`,`type`,`probability`,`emote`,`BroadcastTextId`,`comment`) VALUES
 (27907,0,0,"I'm going to lose my on time bonus because of this!",12,10,0,27255,"LINE_BARTLEBY_IDLE 1"),
 (27907,0,1,"I wasn't even supposed to be here today!",12,10,0,27256,"LINE_BARTLEBY_IDLE 2"),
 (27907,1,0,"Well, guess I should load everything back into the cart.",12,100,0,27257,"LINE_BARTLEBY1"),
@@ -97,8 +97,8 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,
 -- Event #3:
 UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_malcolm_moore" WHERE `entry`=27891;
 UPDATE `creature_template` SET `AIName`="",`ScriptName`="npc_stratholme_rp_dummy" WHERE `entry`=27892;
-DELETE FROM `creature_text` WHERE `entry` IN (27891,27892);
-INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`emote`,`BroadcastTextId`,`comment`) VALUES
+DELETE FROM `creature_text` WHERE `creatureid` IN (27891,27892);
+INSERT INTO `creature_text` (`creatureid`,`groupid`,`text`,`type`,`probability`,`emote`,`BroadcastTextId`,`comment`) VALUES
 (27891,0,"Looks like a storm's coming in, Scruffy...",12,100,0,27236,"LINE_MALCOLM1"),
 (27892,0,"%s begins to growl...",16,100,0,27237,"LINE_SCRUFFY1"),
 (27891,1,"What's wrong, pal?",12,100,1,27238,"LINE_MALCOLM2"),
@@ -108,8 +108,8 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`emot
 UPDATE `creature` SET `position_x`=1563.337, `position_y`=671.6413, `position_z`=102.1412, `orientation`=4.2586040 WHERE `id`=27876;
 UPDATE `creature` SET `position_x`=1561.571, `position_y`=670.3199, `position_z`=102.1444, `orientation`=0.5759587 WHERE `id`=27877;
 UPDATE `creature_template` SET `AIName`="", `ScriptName`="npc_sergeant_morigan" WHERE `entry`=27877;
-DELETE FROM `creature_text` WHERE `entry` IN (27876,27877);
-INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,`emote`,`BroadcastTextId`,`comment`) VALUES
+DELETE FROM `creature_text` WHERE `creatureid` IN (27876,27877);
+INSERT INTO `creature_text` (`creatureid`,`groupid`,`id`,`text`,`type`,`probability`,`emote`,`BroadcastTextId`,`comment`) VALUES
 (27876,0,0,"No, Sergeant.",12,100,274,27198,"LINE_PERELLI_NO #1"),
 (27876,0,1,"No, sir.",12,100,274,27199,"LINE_PERELLI_NO #2"),
 (27876,0,2,"Nope.",12,100,274,27200,"LINE_PERELLI_NO #3"),
@@ -132,8 +132,8 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,
 -- Event #5:
 UPDATE `creature` SET `position_x`=1588.942, `position_y`=597.9799, `position_z`=99.37262, `orientation`=2.80998 WHERE `id`=27903;
 UPDATE `creature_template` SET `AIName`="", `ScriptName`="npc_roger_owens" WHERE `entry`=27903;
-DELETE FROM `creature_text` WHERE `entry`=27903;
-INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`emote`,`BroadcastTextId`,`comment`) VALUES
+DELETE FROM `creature_text` WHERE `creatureid`=27903;
+INSERT INTO `creature_text` (`creatureid`,`groupid`,`text`,`type`,`probability`,`emote`,`BroadcastTextId`,`comment`) VALUES
 (27903,0,"Ok, enough work for now. Time for refreshments and a little conversation in the inn.",12,100,1,27247,"LINE_ROGER1"),
 (27903,1,"Wait, what's that smell?",12,100,1,27248,"LINE_ROGER2"),
 (27903,2,"Can't be me, I took a bath 3 days ago!",12,100,5,27249,"LINE_ROGER3"),
@@ -146,8 +146,8 @@ UPDATE `creature_template` SET `unit_flags`=0x8000, `unit_flags2`=0x800 WHERE `e
 DELETE FROM `creature` WHERE `id`=26499;
 
 -- Missing Arthas lines
-DELETE FROM `creature_text` WHERE `entry`=26499 AND `groupid`>38;
-INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`comment`) VALUES
+DELETE FROM `creature_text` WHERE `creatureid`=26499 AND `groupid`>38;
+INSERT INTO `creature_text` (`creatureid`,`groupid`,`id`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`comment`) VALUES
 (26499,39,0,"I can't afford to spare you.",12,100,31355,0,"Arthas SAY_AGGRO_ZOMBIE"),
 (26499,40,0,"All officers should check in with me when their squads are ready. We'll enter Stratholme on my order.",12,100,27517,3,"Arthas RP1_LINE_ARTHAS11");
 
@@ -157,41 +157,41 @@ INSERT INTO `spell_script_names` (`spell_id`,`scriptname`) VALUES (50773,"spell_
 
 -- Arthas/Uther RP data
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_rp_dummy",`AIName`="" WHERE `entry` IN (26528,26497);
-UPDATE `creature_text` SET `TextRange`=3 WHERE `entry` IN (26499,26528,26497,26529,26530,26532,26533,32273);
+UPDATE `creature_text` SET `TextRange`=3 WHERE `creatureid` IN (26499,26528,26497,26529,26530,26532,26533,32273);
 UPDATE `creature_text` SET `emote`=396 WHERE
-	(`entry` = 26499 AND `groupid` IN (0,3,5)) OR
-	(`entry` = 26528 AND `groupid`=3) OR
-	(`entry` = 26497 AND `groupid` IN (0,1));
-UPDATE `creature_text` SET `emote`=1 WHERE `entry`=26499 AND `groupid`=7;
+	(`creatureid` = 26499 AND `groupid` IN (0,3,5)) OR
+	(`creatureid` = 26528 AND `groupid`=3) OR
+	(`creatureid` = 26497 AND `groupid` IN (0,1));
+UPDATE `creature_text` SET `emote`=1 WHERE `creatureid`=26499 AND `groupid`=7;
 UPDATE `creature_text` SET `emote`=5 WHERE
-	(`entry` = 26499 AND `groupid` IN (2,4)) OR
-	(`entry` = 26528 AND `groupid` IN (1,4));
-UPDATE `creature_text` SET `emote`=6 WHERE `entry`=26528 AND `groupid`=2;
+	(`creatureid` = 26499 AND `groupid` IN (2,4)) OR
+	(`creatureid` = 26528 AND `groupid` IN (1,4));
+UPDATE `creature_text` SET `emote`=6 WHERE `creatureid`=26528 AND `groupid`=2;
 UPDATE `creature_text` SET `emote`=397 WHERE
-	(`entry` = 26528 AND `groupid` IN (0,5));
+	(`creatureid` = 26528 AND `groupid` IN (0,5));
 
 -- Arthas/Mal'ganis RP data
-DELETE FROM `creature_text` WHERE `entry` IN (28167,28169);
-INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`emote`,`comment`) VALUES
+DELETE FROM `creature_text` WHERE `creatureid` IN (28167,28169);
+INSERT INTO `creature_text` (`creatureid`,`groupid`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`emote`,`comment`) VALUES
 (28167, 0, "Prince Arthas, may the light be praised! Many people in the town have begun to fall seriously ill, can you help us?", 12, 100, 27547, 0, 1, "RP2_LINE_CITIZEN1"),
 (28167, 1, "What? This can't be!", 12, 100, 27549, 0, 274, "RP2_LINE_CITIZEN2"),
 (28169, 0, "Oh, no...", 12, 100, 27552, 0, 0, "RP2_LINE_RESIDENT1");
 UPDATE `creature_text` SET `emote`=1 WHERE
-	(`entry` = 26499 AND `groupid` IN (12,14)) OR
-	(`entry` = 26533 AND `groupid`=0);
+	(`creatureid` = 26499 AND `groupid` IN (12,14)) OR
+	(`creatureid` = 26533 AND `groupid`=0);
 UPDATE `creature_text` SET `emote`=397 WHERE
-	(`entry` = 26499 AND `groupid`=13);
+	(`creatureid` = 26499 AND `groupid`=13);
 	
 -- Town Hall/Gauntlet RP data
 UPDATE `creature_text` SET `emote`=1 WHERE
-	(`entry`=26499 AND `groupid` IN (16,19,22,38)) OR
-	(`entry`=28340 AND `groupid`=1);
+	(`creatureid`=26499 AND `groupid` IN (16,19,22,38)) OR
+	(`creatureid`=28340 AND `groupid`=1);
 UPDATE `creature_text` SET `emote`=5 WHERE
-	(`entry`=26499 AND `groupid`=36);
+	(`creatureid`=26499 AND `groupid`=36);
 UPDATE `creature_text` SET `emote`=396 WHERE
-	(`entry`=26499 AND `groupid` IN (21,24,25,26,27,31,32,33,34));
+	(`creatureid`=26499 AND `groupid` IN (21,24,25,26,27,31,32,33,34));
 UPDATE `creature_text` SET `emote`=432 WHERE
-	(`entry`=26499 AND `groupid` IN (29));
+	(`creatureid`=26499 AND `groupid` IN (29));
 	
 -- Blanket apply a spawn control AI to all "live stratholme" mobs that prevents them respawning after the purge begins
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_fluff_living",`AIName`="" WHERE `entry` IN (28167,31126,31019,28169,31127,31023,31020,31018,31028);
@@ -206,8 +206,8 @@ INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`event_type`,`even
 (31027,0,0,10,100,7,1,10,1,1,"Leeka Turner - Within 1-10 Range Out of Combat LoS - Say Line 0"),
 (31021,0,0,10,100,7,1,10,1,1,"Sophie Aaren - Within 1-10 Range Out of Combat LoS - Say Line 0");
 
-DELETE FROM `creature_text` WHERE `entry` IN (30570,31027,31021);
-INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,`BroadcastTextId`,`emote`,`comment`) VALUES
+DELETE FROM `creature_text` WHERE `creatureid` IN (30570,31027,31021);
+INSERT INTO `creature_text` (`creatureid`,`groupid`,`id`,`text`,`type`,`probability`,`BroadcastTextId`,`emote`,`comment`) VALUES
 (30570,0,0,"The Stone Crow's closed today, sorry. There are too many health concerns, and I'm not about to have Ed under fire for supposedly making people sick.",12,100,31724,1,"Emery Neill TALK_FLUFF 1"),
 (30570,0,1,"I hate to disappoint people, but the Stone Crow's closed. If the kids from the orphanage were evacuated, I don't see why we should be open, either.",12,100,31729,1,"Emery Neill TALK_FLUFF 2"),
 (31027,0,0,"Look, I'll sell you shields today, but no maces. The last thing I want is for some innocent to get brained by one of my weapons.",12,100,31721,1,"Leeka Turner TALK_FLUFF 1"),
@@ -221,8 +221,8 @@ INSERT INTO `creature_text` (`entry`,`groupid`,`id`,`text`,`type`,`probability`,
 UPDATE `smart_scripts` SET `event_param3`=3100, `event_param4`=3400 WHERE `entryorguid`=28200 AND `source_type`=0 AND `id` IN (0,1);
 
 -- Lordaeron Crier yells
-DELETE FROM `creature_text` WHERE `entry` = 27913;
-INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`comment`) VALUES
+DELETE FROM `creature_text` WHERE `creatureid` = 27913;
+INSERT INTO `creature_text` (`creatureid`,`groupid`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`comment`) VALUES
 (27913, 0, "All soldiers of Lordaeron should immediately report to the entrance of Stratholme, and await further orders from Prince Arthas.", 14, 100, 27263, 3, "Lordaeron Crier CALL_TO_GATES"),
 (27913, 1, "Scourge forces have been spotted near the King's Square fountain!", 14, 100, 27642, 3, "Lordaeron Crier KINGS_SQUARE"),
 (27913, 2, "Scourge forces have been spotted near the Market Row Gate!", 14, 100, 27643, 3, "Lordaeron Crier MARKET_ROW"),
@@ -246,8 +246,8 @@ INSERT INTO `creature` (`guid`,`id`,`map`,`spawnMask`,`phaseMask`,`position_x`,`
 UPDATE `creature_template` SET `unit_flags`=(`unit_flags`|0x100|0x200) WHERE `entry` IN (27742,27743,27744,31202,31203,31206,26532,31215,26533);
 
 -- Town Hall RP event
-DELETE FROM `creature_text` WHERE `entry`=28340;
-INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`comment`) VALUES
+DELETE FROM `creature_text` WHERE `creatureid`=28340;
+INSERT INTO `creature_text` (`creatureid`,`groupid`,`text`,`type`,`probability`,`BroadcastTextId`,`TextRange`,`comment`) VALUES
 (28340, 0, "Ah, you've finally arrived Prince Arthas. You're here just in the nick of time.", 12, 100, 27811, 3, "Stratholme Citizen (Disguised Infinite) RP3_LINE_CITIZEN1"),
 (28340, 1, "There's no need for you to understand, Arthas. All you need to do is die.", 12, 100, 27815, 3, "Stratholme Citizen (Disguised Infinite) RP3_LINE_CITIZEN2");
 
@@ -274,8 +274,8 @@ DELETE FROM `creature_template_addon` WHERE `entry`=30997;
 INSERT INTO `creature_template_addon` (`entry`,`bytes1`) VALUES
 (30997,50331648);
 UPDATE `creature_template` SET `inhabittype`=5,`npcflag`=0 WHERE `entry`=30997;
-DELETE FROM `creature_text` WHERE `entry`=30997;
-INSERT INTO `creature_text` (`entry`,`groupid`,`text`,`type`,`probability`,`BroadcastTextId`,`comment`) VALUES
+DELETE FROM `creature_text` WHERE `creatureid`=30997;
+INSERT INTO `creature_text` (`creatureid`,`groupid`,`text`,`type`,`probability`,`BroadcastTextId`,`comment`) VALUES
 (30997,0,"Why, hello again!",12,100,32022,"Chromie #3 RP5_LINE_CHROMIE0");
 
 -- Meathook
