@@ -331,8 +331,9 @@ class npc_chromie_start : public CreatureScript
 
             bool GossipSelect(Player* player, uint32 /*sender*/, uint32 listId) override
             {
+                uint32 const action = GetGossipActionFor(player, listId);
                 ClearGossipMenuFor(player);
-                switch (GetGossipActionFor(player, listId) - GOSSIP_ACTION_INFO_DEF)
+                switch (action - GOSSIP_ACTION_INFO_DEF)
                 {
                     case GOSSIP_OFFSET_EXPLAIN:
                         AddGossipItemFor(player, GOSSIP_MENU_EXPLAIN_1, GOSSIP_OPTION_EXPLAIN_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_EXPLAIN_1);
@@ -371,7 +372,7 @@ class npc_chromie_start : public CreatureScript
                         if (!player->CanBeGameMaster())
                             break;
                         if (InstanceScript* instance = me->GetInstanceScript())
-                            instance->SetData(DATA_GM_OVERRIDE, GetGossipActionFor(player, listId) - GOSSIP_ACTION_INFO_DEF - GOSSIP_OFFSET_GM_INITIAL);
+                            instance->SetData(DATA_GM_OVERRIDE, action - GOSSIP_ACTION_INFO_DEF - GOSSIP_OFFSET_GM_INITIAL);
                         break;
                 }
                 return false;
@@ -483,8 +484,9 @@ class npc_chromie_middle : public StratholmeCreatureScript<NullCreatureAI>
 
             bool GossipSelect(Player* player, uint32 /*sender*/, uint32 listId) override
             {
+                uint32 const action = GetGossipActionFor(player, listId);
                 ClearGossipMenuFor(player);
-                switch (GetGossipActionFor(player, listId) - GOSSIP_ACTION_INFO_DEF)
+                switch (action - GOSSIP_ACTION_INFO_DEF)
                 {
                     case GOSSIP_OFFSET_STEP1:
                         AddGossipItemFor(player, GOSSIP_MENU_STEP2, GOSSIP_OPTION_STEP2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP2);
@@ -1354,6 +1356,8 @@ struct npc_stratholme_fluff_undead : public StratholmeCreatureScript<AggressorAI
     npc_stratholme_fluff_undead() : StratholmeCreatureScript<AggressorAI>("npc_stratholme_fluff_undead", ProgressStates(ALL & ~(GAUNTLET_COMPLETE | MALGANIS_IN_PROGRESS | COMPLETE) & ~(WAVES_IN_PROGRESS-1))) { }
     bool CanSpawn(ObjectGuid::LowType spawnId, uint32 entry, CreatureTemplate const* baseTemplate, CreatureTemplate const* actTemplate, CreatureData const* cData, Map const* map) const override
     {
+        // make sure stuff doesn't respawn in wave area after we've advanced past it
+        // (some creatures in gauntlet share entry, so needs explicit position check)
         if (InstanceMap const* instance = map->ToInstanceMap())
             if (InstanceScript const* script = instance->GetInstanceScript())
                 if (waveArea->IsWithinBoundary(Position(cData->posX, cData->posY, cData->posZ)) && script->GetData(DATA_INSTANCE_PROGRESS) > WAVES_IN_PROGRESS)

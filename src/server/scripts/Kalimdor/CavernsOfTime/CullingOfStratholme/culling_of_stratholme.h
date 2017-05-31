@@ -51,17 +51,14 @@
 *    - AdvanceToState:                                                                                                  *
 *      - handles all the state updating/position consistency logic                                                      *
 *      - invoked from SetData when the instance script notifies Arthas of a state change                                *
-*    - MoveAlongPath:                                                                                                   *
-*      - handles RP sequence movement                                                                                   *
-*      - takes two indices for the master _positions array (start + end) and moves a creature along the WPs between     *
 *    - ScheduleActionOOC:                                                                                               *
 *      - queues the specified action to be passed to DoAction after Arthas finishes combat (JustReachedHome)            *
 *      - typically called during RP sequences just after ensuring Arthas has entered combat with all enemies involved   *
 *    - MovementInform:                                                                                                  *
 *      - handles movement notifications not just for Arthas, but also some other creatures that run RP slave AI         *
-*      - all movement IDs are indices of the one single _positions array, which means they are still unique             *
+*      - all movement IDs are taken from one single PointIDs enum, which means they are still unique                    *
 *    - EnterCombat:                                                                                                     *
-*      - finds out where along the path we currently are, and stores that so we can resume after (JustReachedHome)      *
+*      - stores the current spline chain state so we can resume after (JustReachedHome)                                 *
 |***********************************************************************************************************************|
 *   Instance script: (instance_culling_of_stratholme in instance_culling_of_stratholme.cpp)                             *
 *    - GetStableStateFor:                                                                                               *
