@@ -12,27 +12,27 @@ CREATE TABLE IF NOT EXISTS `auth3`.`account_premium` (
 
 DELETE FROM `rbac_permissions` WHERE `Id` IN (1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020);
 INSERT INTO `rbac_permissions` VALUES
-('1000', 'Vip'),
-('1001', 'Vip debuff'),
-('1002', 'Vip bank'),
-('1003', 'Vip repair'),
-('1004', 'Vip resettalents'),
-('1005', 'Vip taxa'),
-('1006', 'Vip home'),
-('1007', 'Vip capital'),
-('1008', 'Vip mail'),
-('1009', 'Vip changerace'),
-('1010', 'Vip customize'),
-('1011', 'Vip appear'),
-('1012', 'Vip map'),
-('1013', 'Vip buffs'),
-('1014', 'Vip arena'),
-('1015', 'Vip warsong'),
-('1016', 'Vip arathi'),
-('1017', 'Vip eye'),
-('1018', 'Vip alterac'),
-('1019', 'Vip teles'),
-('1020', 'Vip qcomplete');
+('1000', 'vip'),
+('1001', 'vip debuff'),
+('1002', 'vip bank'),
+('1003', 'vip repair'),
+('1004', 'vip resettalents'),
+('1005', 'vip taxa'),
+('1006', 'vip home'),
+('1007', 'vip capital'),
+('1008', 'vip mail'),
+('1009', 'vip changerace'),
+('1010', 'vip customize'),
+('1011', 'vip appear'),
+('1012', 'vip map'),
+('1013', 'vip buffs'),
+('1014', 'vip arena'),
+('1015', 'vip warsong'),
+('1016', 'vip arathi'),
+('1017', 'vip eye'),
+('1018', 'vip alterac'),
+('1019', 'vip teles'),
+('1020', 'vip qcomplete');
 
 DELETE FROM `rbac_linked_permissions` WHERE `linkedId` IN (1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020);
 INSERT INTO `rbac_linked_permissions` VALUES
