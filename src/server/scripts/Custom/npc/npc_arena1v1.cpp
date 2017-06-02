@@ -287,16 +287,16 @@ public:
             }
             break;
 
-       /* case 8: // Script Info
+        case 8: // Script Info
             {
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Developer: Teiby", GOSSIP_SENDER_MAIN, uiAction);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Website: www.teiby.de", GOSSIP_SENDER_MAIN, uiAction);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Version: 2.1", GOSSIP_SENDER_MAIN, uiAction);
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Developer: Teiby", GOSSIP_SENDER_MAIN, action);
+                //AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Website: www.teiby.de", GOSSIP_SENDER_MAIN, action);
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Version: 2.1", GOSSIP_SENDER_MAIN, action);
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, "<-- Back", GOSSIP_SENDER_MAIN, 7);
                 SendGossipMenuFor(player, 68, me->GetGUID());
                 return true;
             }
-            break;*/
+            break;/**/
 
         }
 

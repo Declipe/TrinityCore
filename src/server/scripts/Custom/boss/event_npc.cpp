@@ -140,7 +140,7 @@ class event_npc_firelord : public CreatureScript
                 summons.Summon(summon);
             }
 
-            void EnterCombat(Unit* pWho)
+            void EnterCombat(Unit* /*pWho*/)
             {
 				me->Yell(FIRE_SAY_AGGRO, LANG_UNIVERSAL);
                 summons.DespawnAll();
@@ -369,11 +369,11 @@ class event_npc_icelord : public CreatureScript
                 me->SetReactState(REACT_DEFENSIVE);
             }
 
-            void JustSummoned(Creature *summon)
+            void JustSummoned(Creature /*summon*/)
             {
             }
 
-            void EnterCombat(Unit* pWho)
+            void EnterCombat(Unit* /*pWho*/)
             {
 				me->Yell(ICE_SAY_AGGRO, LANG_UNIVERSAL);
             }
@@ -539,11 +539,11 @@ class event_npc_earthlord : public CreatureScript
                 me->SetReactState(REACT_DEFENSIVE);
             }
 
-            void JustSummoned(Creature *summon)
+            void JustSummoned(Creature */*summon*/)
             {
             }
 
-            void EnterCombat(Unit* pWho)
+            void EnterCombat(Unit* /*pWho*/)
             {
                 me->Yell(EARTH_SAY_AGGRO, LANG_UNIVERSAL, 0);
                 me->RemoveAurasDueToSpell(SPELL_FURY);
@@ -727,7 +727,7 @@ class event_npc_darklord : public CreatureScript
                     summon->AI()->AttackStart(pTarget);
             }
 
-            void EnterCombat(Unit* pWho)
+            void EnterCombat(Unit* /*pWho*/)
             {
                 me->Yell(DARK_SAY_AGGRO, LANG_UNIVERSAL);
                 me->RemoveAurasDueToSpell(SPELL_FURY);
@@ -937,11 +937,11 @@ class event_mage_ice : public CreatureScript
                 m_uiCounterspellTimer  = urand(10000, 20000);
             }
 
-            void JustSummoned(Creature *summon)
+            void JustSummoned(Creature */*summon*/)
             {
             }
 
-            void EnterCombat(Unit* pWho)
+            void EnterCombat(Unit* /*pWho*/)
             {
             }
 
@@ -949,7 +949,7 @@ class event_mage_ice : public CreatureScript
             {
             }
 			
-            void KilledUnit(Unit *victim)
+            void KilledUnit(Unit */*victim*/)
             {
             }
 			
@@ -1033,11 +1033,11 @@ class event_mage_fire : public CreatureScript
                 m_uiFireNovaTimer  = urand(10000, 20000);
             }
 
-            void JustSummoned(Creature *summon)
+            void JustSummoned(Creature */*summon*/)
             {
             }
 
-            void EnterCombat(Unit* pWho)
+            void EnterCombat(Unit* /*pWho*/)
             {
             }
 
@@ -1045,7 +1045,7 @@ class event_mage_fire : public CreatureScript
             {
             }
 			
-            void KilledUnit(Unit *victim)
+            void KilledUnit(Unit */*victim*/)
             {
             }
 			
@@ -1131,11 +1131,11 @@ class event_dk : public CreatureScript
                 m_uiTapTimer              = urand(12000,17000);
             }
 
-            void JustSummoned(Creature *summon)
+            void JustSummoned(Creature */*summon*/)
             {
             }
 
-            void EnterCombat(Unit* pWho)
+            void EnterCombat(Unit* /*pWho*/)
             {
             }
 
@@ -1236,11 +1236,11 @@ class event_warrior : public CreatureScript
                 m_uiDisarmTimer         = urand(8000,20000);
             }
 
-            void JustSummoned(Creature *summon)
+            void JustSummoned(Creature */*summon*/)
             {
             }
 
-            void EnterCombat(Unit* pWho)
+            void EnterCombat(Unit* /*pWho*/)
             {
             }
 
@@ -1248,7 +1248,7 @@ class event_warrior : public CreatureScript
             {
             }
 			
-            void KilledUnit(Unit *victim)
+            void KilledUnit(Unit */*victim*/)
             {
             }
 			

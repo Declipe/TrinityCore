@@ -89,6 +89,8 @@
 #include "WorldSession.h"
 #include "GameObjectAI.h"
 #include "Config.h"
+
+
 // Prepatch by LordPsyan
 // 61
 // 62

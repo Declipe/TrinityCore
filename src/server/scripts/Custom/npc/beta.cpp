@@ -124,7 +124,7 @@ public:
 	{
 		npc_bufferAI(Creature* me) : ScriptedAI(me) { }
 
-	void CompleteLearnProfession(Player *player, Creature * _creature, SkillType skill)
+	void CompleteLearnProfession(Player *player, Creature* /*_creature*/, SkillType skill)
 	{
 		if (PlayerAlreadyHasNineProfessions(player) && !IsSecondarySkill(skill))
 			me->Whisper("Вы уже выучили 11 професии!", LANG_UNIVERSAL, player);
@@ -257,7 +257,7 @@ public:
 		return OnGossipSelect(player, sender, action);
 	}
 
-	bool OnGossipSelect(Player* player, uint32 sender, uint32 action)
+	bool OnGossipSelect(Player* player, uint32 /*sender*/, uint32 action)
 	{
 		if (!player->getAttackers().empty())
 		{
@@ -1105,7 +1105,7 @@ class channel_factions : public PlayerScript
 public:
 	channel_factions() : PlayerScript("channel_factions") {}
 
-	void OnChat(Player* player, uint32 /*type*/, uint32 lang, std::string& msg, Channel* channel)
+	void OnChat(Player* player, uint32 /*type*/, uint32 /*lang*/, std::string& msg, Channel* channel)
 	{
 		if (!player || !channel)
 			return;

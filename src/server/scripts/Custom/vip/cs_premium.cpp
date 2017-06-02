@@ -768,7 +768,7 @@ public:
 		return true;
 	}
 
-	static bool HandleVipbuffsCommand(ChatHandler* handler, const char* args)
+	static bool HandleVipbuffsCommand(ChatHandler* handler, const char* /*args*/)
 	{
 		Player *_player = handler->GetSession()->GetPlayer();
 
@@ -1021,7 +1021,7 @@ public:
 		return true;
 	}
 
-	static bool HandleChangeRaceCommand(ChatHandler* handler, const char* args)
+	static bool HandleChangeRaceCommand(ChatHandler* handler, const char* /*args*/)
 	{
 		Player *_player = handler->GetSession()->GetPlayer();
 
@@ -1079,7 +1079,7 @@ public:
 		return true;
 	}
 
-	static bool HandleCustomizeCommand(ChatHandler* handler, const char* args)
+	static bool HandleCustomizeCommand(ChatHandler* handler, const char* /*args*/)
 	{
 
 		Player *_player = handler->GetSession()->GetPlayer();
