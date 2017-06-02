@@ -757,35 +757,37 @@ class npc_tournaments_organizer : public CreatureScript
 
     struct npc_gladiators_organizerAI : public ScriptedAI
     {
-        npc_gladiators_organizerAI(Creature* creature) : ScriptedAI(creature)
+        npc_gladiators_organizerAI(Creature* me) : ScriptedAI(me)
         {
-            TournamentMgr.setTournamentOrganizer(creature->GetOriginalEntry(), creature);
+            TournamentMgr.setTournamentOrganizer(me->GetOriginalEntry(), me);
         }
-    };
-    
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new npc_gladiators_organizerAI(creature);
-    }
 
-    bool OnGossipHello(Player* player, Creature* creature)
+    bool GossipHello(Player *player) override
     {
         if (TournamentEnable)
-            TournamentMgr.addGossip(creature, player);
+            TournamentMgr.addGossip(me, player);
         
-        player->PlayerTalkClass->SendGossipMenu(player->GetGossipTextId(creature), creature->GetGUID());
+        player->PlayerTalkClass->SendGossipMenu(player->GetGossipTextId(me), me->GetGUID());
         return true;
     }
 
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
+    bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
     {
+		//uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+		uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
         player->PlayerTalkClass->ClearMenus();
         
         if (TournamentEnable && action > GOSSIP_ACTION_INFO_DEF)
-            TournamentMgr.start(creature->GetOriginalEntry(), action - GOSSIP_ACTION_INFO_DEF, player);
+            TournamentMgr.start(me->GetOriginalEntry(), action - GOSSIP_ACTION_INFO_DEF, player);
 
         CloseGossipMenuFor(player);
         return true;
+    }
+};
+    
+    CreatureAI* GetAI(Creature* me) const
+    {
+        return new npc_gladiators_organizerAI(me);
     }
 };
 

@@ -136,44 +136,43 @@ class go_item_upgrade : public GameObjectScript
 		struct go_item_upgradeAI : public GameObjectAI
 		{
 			go_item_upgradeAI(GameObject* go) : GameObjectAI(go) { }
-
+			
     uint16 getSlot(uint32 sender) {
         return (uint16) ((sender - GOSSIP_SENDER_MAIN) >> 16);
     }
-
     uint16 getEnchant(uint32 sender) {
         return (uint16) ((sender - GOSSIP_SENDER_MAIN) & 0xFFFF);
     }
-
     uint32 senderValue(uint16 slot, uint16 enchant) {
         return (uint32) (GOSSIP_SENDER_MAIN + ((slot << 16) | (enchant & 0xFFFF)));
     }
-
+ 
 	bool GossipHello(Player* player, bool /*reportUse*/) override
     {
         if (!ItemUpgradeEnable) {
             SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
             return true;
         }
+        
 		LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
 
         for (uint8 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; i++)
         {
             Item* item = player->GetUseableItemByPos(INVENTORY_SLOT_BAG_0, i);
+            
             if (item)
             {
                 ItemTemplate const *itemTemplate = item->GetTemplate();
-
                 std::string Name = itemTemplate->Name1;
 				if (loc_idx >= 0)
                     if (ItemLocale const* il = sObjectMgr->GetItemLocale(itemTemplate->ItemId))
                         ObjectMgr::GetLocaleString(il->Name, loc_idx, Name);
-
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, Name.c_str(), senderValue(i, 0), GOSSIP_ACTION_INFO_DEF);
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, Name.c_str(), senderValue(i,0), GOSSIP_ACTION_INFO_DEF);
             }
         }
         SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
-        return true;
+        return false;
+        //return true;
     }
 
     bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
@@ -323,7 +322,6 @@ class go_item_upgrade : public GameObjectScript
 		return new go_item_upgradeAI(go);
 	}
 };
-
 
 void AddSC_Mod_ItemUpgrade()
 {

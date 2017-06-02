@@ -457,6 +457,7 @@ public:
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, "7", GOSSIP_SENDER_MAIN, 22340);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, "8", GOSSIP_SENDER_MAIN, 22341);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, "9", GOSSIP_SENDER_MAIN, 22342);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
 			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
 		case 22334:
@@ -662,6 +663,7 @@ public:
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Varimathras", GOSSIP_SENDER_MAIN, 727);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Alexstrasza (Drache)", GOSSIP_SENDER_MAIN, 728);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Mal'ganis", GOSSIP_SENDER_MAIN, 729);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
 			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
 		case 22:
