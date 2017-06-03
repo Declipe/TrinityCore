@@ -636,17 +636,17 @@ void TournamentManager::stop(uint32 entry, bool win)
     
     if (tournament->organizer && tournament->current->killCredit)
     {
-        ObjectList* units = new ObjectList();
+		ObjectVector units;
+        //ObjectList* units = new ObjectList();
         Trinity::AllWorldObjectsInRange u_check(tournament->organizer, 60.0f);
-        Trinity::WorldObjectListSearcher<Trinity::AllWorldObjectsInRange> searcher(tournament->organizer, *units, u_check);
+        Trinity::WorldObjectListSearcher<Trinity::AllWorldObjectsInRange> searcher(tournament->organizer, units, u_check);
         tournament->organizer->VisitNearbyObject(60.0f, searcher);
 
-        if (!units->empty())
-            for (ObjectList::const_iterator itr = units->begin(); itr != units->end(); ++itr)
-                if ((*itr)->GetTypeId() == TYPEID_PLAYER)
-					((Player*)(*itr))->KilledMonsterCredit(tournament->current->killCredit);
-
-        delete units;
+        if (!units.empty())
+        for (WorldObject* unit : units)
+                if ((unit)->GetTypeId() == TYPEID_PLAYER)
+					((Player*)(unit))->KilledMonsterCredit(tournament->current->killCredit);				
+      //  delete units;
     }
 }
 
