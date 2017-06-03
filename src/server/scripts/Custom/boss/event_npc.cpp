@@ -369,10 +369,6 @@ class event_npc_icelord : public CreatureScript
                 me->SetReactState(REACT_DEFENSIVE);
             }
 
-            void JustSummoned(Creature /*summon*/)
-            {
-            }
-
             void EnterCombat(Unit* /*pWho*/)
             {
 				me->Yell(ICE_SAY_AGGRO, LANG_UNIVERSAL);
@@ -1248,7 +1244,7 @@ class event_warrior : public CreatureScript
             {
             }
 			
-            void KilledUnit(Unit */*victim*/)
+            void KilledUnit(Unit* /*victim*/)
             {
             }
 			
