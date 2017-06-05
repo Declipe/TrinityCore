@@ -117,9 +117,6 @@ public:
 			playerdie = 0;
 		}
 
-	
-		
-		
 		void Lootchange(uint32 playerdie){
 			me->ResetLootMode();
 			if (playerdie == 0){
@@ -242,15 +239,15 @@ public:
 			Talk(SAY_KILL);
 			if (victim->GetTypeId() != TYPEID_PLAYER)
 				return;
-			char msg[250];		
+			//char msg[250];		
 			DoCast(me, SPELL_ERNEUERUNG);
 			DoCast(me, SPELL_ENRAGE);
 			DoCast(SPELL_SEUCHENSTROM);
 			DoCast(SPELL_SEUCHENBOMBE);
 			DoCast(SPELL_BLISTERING_COLD);
 			++playerdie;
-			snprintf(msg, 250, "|cffff0000[Boss System]|r |cffff6060 Lightshadow|r hat einen Mitstreiter Darkshadows getoetet! Was fuer eine Schmach. Der Killcounter steht bei : %u", playerdie);
-			sWorld->SendGlobalText(msg, NULL);
+			//snprintf(msg, 250, "|cffff0000[Boss System]|r |cffff6060 Lightshadow|r hat einen Mitstreiter Darkshadows getoetet! Was fuer eine Schmach. Der Killcounter steht bei : %u", playerdie);
+			//sWorld->SendGlobalText(msg, NULL);
 		}
 		
 		void UpdateAI(uint32 diff) override

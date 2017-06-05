@@ -36,7 +36,6 @@ enum Events
 	EVENT_TAIL_LASH = 12,
 	EVENT_SUMMONS = 13,
 	EVENT_EISBLOCK = 14
-
 };
 
 enum Phases
@@ -82,8 +81,6 @@ public:
 			armor = me->GetArmor();
 			me->SetObjectScale(1);
 			me->SetArmor(20);
-
-
 		}
 
 		void EnterCombat(Unit* /*who*/) override
@@ -126,10 +123,9 @@ public:
 
 		void JustDied(Unit* /*player */) override
 		{
-
-			char msg[250];
-			snprintf(msg, 250, "|cffff0000[Boss System]|r Boss|cffff6060 Eonar|r wurde getoetet! Respawn in 4h 30min.");
-			sWorld->SendGlobalText(msg, NULL);
+			//char msg[250];
+			//snprintf(msg, 250, "|cffff0000[Boss System]|r Boss|cffff6060 Eonar|r wurde getoetet! Respawn in 4h 30min.");
+			//sWorld->SendGlobalText(msg, NULL);
 			Summons.DespawnAll();
 		}
 
@@ -161,11 +157,11 @@ public:
 
 			if (victim->GetTypeId() != TYPEID_PLAYER)
 				return;
-			char msg[250];
+			//char msg[250];
 
 			++kills;
-			snprintf(msg, 250, "|cffff0000[Boss System]|r |cffff6060 Eonar|r hat einen Spieler getoetet! Was fuer eine Schmach. Insgesamt steht der Killcounter seit dem letzten Restart bei: %u", kills);
-			sWorld->SendGlobalText(msg, NULL);
+			//snprintf(msg, 250, "|cffff0000[Boss System]|r |cffff6060 Eonar|r hat einen Spieler getoetet! Was fuer eine Schmach. Insgesamt steht der Killcounter seit dem letzten Restart bei: %u", kills);
+			//sWorld->SendGlobalText(msg, NULL);
 		}
 
 		void UpdateAI(uint32 diff) override

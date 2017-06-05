@@ -496,7 +496,7 @@ class event_npc_icelord : public CreatureScript
 };
 
 #define EARTH_SAY_AGGRO                               "Вам не следовало сюда приходить! Это место станет вашей могилой!"
-#define EARTH_EMOTE_NATURE                            "Стража замли Акрилия наполняют силы земли"
+#define EARTH_EMOTE_NATURE                            "Стража земли Акрилия наполняют силы земли"
 #define EARTH_SAY_KILL                                "Отправляйся в землю!"
 #define EARTH_SAY_DIE                                 "Мать земля, помо... ох..."
 
@@ -535,7 +535,7 @@ class event_npc_earthlord : public CreatureScript
                 me->SetReactState(REACT_DEFENSIVE);
             }
 
-            void JustSummoned(Creature */*summon*/)
+            void JustSummoned(Creature* /*summon*/)
             {
             }
 
@@ -933,7 +933,7 @@ class event_mage_ice : public CreatureScript
                 m_uiCounterspellTimer  = urand(10000, 20000);
             }
 
-            void JustSummoned(Creature */*summon*/)
+            void JustSummoned(Creature* /*summon*/)
             {
             }
 
@@ -945,7 +945,7 @@ class event_mage_ice : public CreatureScript
             {
             }
 			
-            void KilledUnit(Unit */*victim*/)
+            void KilledUnit(Unit* /*victim*/)
             {
             }
 			
@@ -1029,7 +1029,7 @@ class event_mage_fire : public CreatureScript
                 m_uiFireNovaTimer  = urand(10000, 20000);
             }
 
-            void JustSummoned(Creature */*summon*/)
+            void JustSummoned(Creature* /*summon*/)
             {
             }
 
@@ -1041,7 +1041,7 @@ class event_mage_fire : public CreatureScript
             {
             }
 			
-            void KilledUnit(Unit */*victim*/)
+            void KilledUnit(Unit* /*victim*/)
             {
             }
 			
@@ -1127,7 +1127,7 @@ class event_dk : public CreatureScript
                 m_uiTapTimer              = urand(12000,17000);
             }
 
-            void JustSummoned(Creature */*summon*/)
+            void JustSummoned(Creature* /*summon*/)
             {
             }
 
@@ -1232,7 +1232,7 @@ class event_warrior : public CreatureScript
                 m_uiDisarmTimer         = urand(8000,20000);
             }
 
-            void JustSummoned(Creature */*summon*/)
+            void JustSummoned(Creature* /*summon*/)
             {
             }
 
@@ -1314,5 +1314,3 @@ void AddSC_event_npc()
     new event_dk();
     new event_warrior();
 }
-
-// © gmlt.A [worldofwarcraft.by]

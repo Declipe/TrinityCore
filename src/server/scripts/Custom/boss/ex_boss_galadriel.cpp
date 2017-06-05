@@ -106,9 +106,9 @@ public:
 
 		void JustDied(Unit* /*killer*/) override
 		{
-			char msg[250];
-			snprintf(msg, 250, "|cffff0000[Boss System]|r Boss|cffff6060 Galadriel|r wurde getoetet! Der Respawn ist in 7 Tagen ab jetzt! "); 
-			sWorld->SendGlobalText(msg, NULL);
+			//char msg[250];
+			//snprintf(msg, 250, "|cffff0000[Boss System]|r Boss|cffff6060 Galadriel|r wurde getoetet! Der Respawn ist in 7 Tagen ab jetzt! "); 
+			//sWorld->SendGlobalText(msg, NULL);
 			Summons.DespawnAll();
 		}
 
@@ -173,9 +173,6 @@ public:
 	{
 		return new boss_twoAI(creature);
 	}
-
-
-
 };
 
 void AddSC_boss_two()

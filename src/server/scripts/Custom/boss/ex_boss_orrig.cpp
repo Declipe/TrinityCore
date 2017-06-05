@@ -13,7 +13,6 @@ enum Spells
 	SPELL_ARCANE_BOMB = 56431,
 	SPELL_ACID_BLAST = 75637,
 	SPELL_POISON_SHOCK = 28741,
-
 };
 
 enum Events
@@ -95,30 +94,24 @@ public:
 			}
 		}
 
-		
-
-
 		void JustDied(Unit* /*pPlayer*/) override
 		{
-			char msg[250];
-			snprintf(msg, 250, "|cffff0000[Boss System]|r Boss|cffff6060 Orrig|r wurde getoetet! Respawn in 6h 33min.");
-			sWorld->SendGlobalText(msg, NULL);
+			//char msg[250];
+			//snprintf(msg, 250, "|cffff0000[Boss System]|r Boss|cffff6060 Orrig|r wurde getoetet! Respawn in 6h 33min.");
+			//sWorld->SendGlobalText(msg, NULL);
 		}
-
 
 		void KilledUnit(Unit* victim) override
 		{
 			
 			if (victim->GetTypeId() != TYPEID_PLAYER)
 				return;
-			char msg[250];
-			
-			++kills;
-			snprintf(msg, 250, "|cffff0000[Boss System]|r |cffff6060 Orrig|r hat einen Spieler getoetet! Was fuer eine Schmach. Insgesamt steht der Killcounter seit dem letzten Restart bei: %u", kills);
-			sWorld->SendGlobalText(msg, NULL);
+			//char msg[250];
+			//++kills;
+			//snprintf(msg, 250, "|cffff0000[Boss System]|r |cffff6060 Orrig|r hat einen Spieler getoetet! Was fuer eine Schmach. Insgesamt steht der Killcounter seit dem letzten Restart bei: %u", kills);
+			//sWorld->SendGlobalText(msg, NULL);
 		}
 		
-
 		void UpdateAI(uint32 diff) override
 		{
 			if (!UpdateVictim())
