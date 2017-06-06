@@ -1651,7 +1651,7 @@ const std::map<ProgressStates, npc_arthas_stratholme::npc_arthas_stratholmeAI::S
     { TOWN_HALL_COMPLETE, { REACT_PASSIVE, true, &_positions[ARTHAS_TOWN_HALL_END_POS] } },
     { GAUNTLET_TRANSITION, { REACT_PASSIVE, false, &_positions[ARTHAS_TOWN_HALL_END_POS] } },
     { GAUNTLET_PENDING, { REACT_PASSIVE, true, &_positions[ARTHAS_GAUNTLET_POS] } },
-    { GAUNTLET_IN_PROGRESS, { REACT_PASSIVE, false, &_positions[ARTHAS_GAUNTLET_POS] } },
+    { GAUNTLET_IN_PROGRESS, { REACT_DEFENSIVE, false, &_positions[ARTHAS_GAUNTLET_POS] } },
     { GAUNTLET_COMPLETE, { REACT_PASSIVE, true, &_positions[ARTHAS_GAUNTLET_END_POS] } },
     { MALGANIS_IN_PROGRESS, { REACT_DEFENSIVE, false, &_positions[ARTHAS_GAUNTLET_END_POS] } },
     { COMPLETE, { REACT_PASSIVE, false, &_positions[ARTHAS_FINAL_POS] } }

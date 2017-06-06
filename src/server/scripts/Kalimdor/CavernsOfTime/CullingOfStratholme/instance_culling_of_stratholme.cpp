@@ -372,6 +372,13 @@ class instance_culling_of_stratholme : public InstanceMapScript
 
             bool SetBossState(uint32 type, EncounterState state) override
             {
+                if (type == DATA_INFINITE_CORRUPTOR && state == DONE)
+                {
+                    events.CancelEvent(EVENT_GUARDIAN_TICK);
+                    SetWorldState(WORLDSTATE_TIME_GUARDIAN_SHOW, 0, false);
+                    SetWorldState(WORLDSTATE_TIME_GUARDIAN, 0);
+                }
+
                 if (!InstanceScript::SetBossState(type, state))
                     return false;
 
@@ -449,7 +456,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         _waveSpawns.clear();
                         events.ScheduleEvent(EVENT_SCOURGE_WAVE, Seconds(1));
 
-                        if (!_infiniteGuardianTimeout && instance->GetSpawnMode() == DUNGEON_DIFFICULTY_HEROIC && GetBossState(DATA_INFINITE_CORRUPTOR) != FAIL)
+                        if (!_infiniteGuardianTimeout && instance->GetSpawnMode() == DUNGEON_DIFFICULTY_HEROIC && (GetBossState(DATA_INFINITE_CORRUPTOR) != DONE && GetBossState(DATA_INFINITE_CORRUPTOR) != FAIL))
                         {
                             instance->SummonCreature(NPC_TIME_RIFT, _corruptorRiftPos);
                             instance->SummonCreature(NPC_GUARDIAN_OF_TIME, _guardianPos);
