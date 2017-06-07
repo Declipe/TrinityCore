@@ -106,7 +106,8 @@ enum ProgressStates : uint32
 
     ALL                     = 0x1FFFF
 };
-Position const& GetArthasSnapbackFor(ProgressStates state);
+ProgressStates GetStableStateFor(ProgressStates const state); // defined by instance script
+Position const& GetArthasSnapbackFor(ProgressStates state); // defined by arthas script
 
 enum InstanceData
 {

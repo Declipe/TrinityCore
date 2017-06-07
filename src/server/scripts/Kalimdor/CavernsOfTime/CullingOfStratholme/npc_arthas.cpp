@@ -1507,7 +1507,7 @@ class npc_arthas_stratholme : public CreatureScript
             {
                 std::cout << "Arthas AI: Resuming motion" << std::endl;
                 me->GetMotionMaster()->ResumeSplineChain(_resumeMovement);
-                _resumeMovement.Chain = nullptr;
+                _resumeMovement.Clear();
             }
             else
                 std::cout << "Arthas AI: Back at leash pos, resuming RP" << std::endl;

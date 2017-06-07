@@ -225,6 +225,7 @@ enum Chromie1Gossip
     GOSSIP_OFFSET_EXPLAIN_1,
     GOSSIP_OFFSET_EXPLAIN_2,
     GOSSIP_OFFSET_SKIP_1,
+    GOSSIP_OFFSET_OPEN_GM_MENU,
     GOSSIP_OFFSET_GM_INITIAL,
 
     GOSSIP_MENU_INITIAL         =  9586,
@@ -287,11 +288,7 @@ class npc_chromie_start : public CreatureScript
                 if (InstanceScript* instance = me->GetInstanceScript())
                 {
                     if (player->CanBeGameMaster()) // GM instance state override menu
-                    {
-                        AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, "[GM] Teleport all players to Arthas", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL);
-                        for (uint32 state = 1; state <= COMPLETE; state = state << 1)
-                            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, Trinity::StringFormat("[GM] Set instance progress 0x%X", state).c_str(), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL + state);
-                    }
+                        AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, "[GM] Access instance control panel", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_OPEN_GM_MENU);
 
                     uint32 state = instance->GetData(DATA_INSTANCE_PROGRESS);
                     if (state < PURGE_STARTING)
@@ -359,6 +356,20 @@ class npc_chromie_start : public CreatureScript
                         AdvanceDungeon();
                         if (!player->HasItemCount(ITEM_ARCANE_DISRUPTOR))
                             player->AddItem(ITEM_ARCANE_DISRUPTOR, 1); // @todo figure out spell
+                        break;
+                    case GOSSIP_OFFSET_OPEN_GM_MENU:
+                        AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, "Teleport all players to Arthas", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL);
+                        for (uint32 state = 1; state <= COMPLETE; state = state << 1)
+                        {
+                            if (GetStableStateFor(ProgressStates(state)) == state)
+                                AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, Trinity::StringFormat("Set instance progress to 0x%05X", state).c_str(), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL + state);
+                        }
+                        for (uint32 state = 1; state <= COMPLETE; state = state << 1)
+                        {
+                            if (GetStableStateFor(ProgressStates(state)) != state)
+                                AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, Trinity::StringFormat("Force state to 0x%05X (UNSTABLE)", state).c_str(), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL + state);
+                        }
+                        SendGossipMenuFor(player, GOSSIP_TEXT_SKIP_1, me->GetGUID());
                         break;
                     case GOSSIP_OFFSET_GM_INITIAL:
                         CloseGossipMenuFor(player);

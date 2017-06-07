@@ -129,6 +129,39 @@ DoorData const doorData[] =
     { 0,                  0,              DOOR_TYPE_ROOM } // END
 };
 
+ProgressStates GetStableStateFor(ProgressStates const state)
+{
+    switch (state)
+    {
+        case JUST_STARTED:
+        default:
+            return JUST_STARTED;
+        case CRATES_IN_PROGRESS:
+            return CRATES_IN_PROGRESS;
+        case CRATES_DONE:
+            return CRATES_DONE;
+        case UTHER_TALK:
+        case PURGE_PENDING:
+        case PURGE_STARTING:
+        case WAVES_IN_PROGRESS:
+            return PURGE_PENDING;
+        case WAVES_DONE:
+        case TOWN_HALL_PENDING:
+        case TOWN_HALL:
+            return TOWN_HALL_PENDING;
+        case TOWN_HALL_COMPLETE:
+        case GAUNTLET_TRANSITION:
+        case GAUNTLET_PENDING:
+        case GAUNTLET_IN_PROGRESS:
+            return GAUNTLET_PENDING;
+        case GAUNTLET_COMPLETE:
+        case MALGANIS_IN_PROGRESS:
+            return GAUNTLET_COMPLETE;
+        case COMPLETE:
+            return COMPLETE;
+    }
+}
+
 class instance_culling_of_stratholme : public InstanceMapScript
 {
     public:
@@ -160,39 +193,6 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 _currentWorldStates[WORLDSTATE_SHOW_CRATES] = _currentWorldStates[WORLDSTATE_CRATES_REVEALED] = _currentWorldStates[WORLDSTATE_WAVE_COUNT] = _currentWorldStates[WORLDSTATE_TIME_GUARDIAN_SHOW] = _currentWorldStates[WORLDSTATE_TIME_GUARDIAN] = 0;
                 _sentWorldStates = _currentWorldStates;
                 _plagueCrates.reserve(NUM_PLAGUE_CRATES);
-            }
-
-            static ProgressStates GetStableStateFor(ProgressStates const state)
-            {
-                switch (state)
-                {
-                    case JUST_STARTED:
-                    default:
-                        return JUST_STARTED;
-                    case CRATES_IN_PROGRESS:
-                        return CRATES_IN_PROGRESS;
-                    case CRATES_DONE:
-                        return CRATES_DONE;
-                    case UTHER_TALK:
-                    case PURGE_PENDING:
-                    case PURGE_STARTING:
-                    case WAVES_IN_PROGRESS:
-                        return PURGE_PENDING;
-                    case WAVES_DONE:
-                    case TOWN_HALL_PENDING:
-                    case TOWN_HALL:
-                        return TOWN_HALL_PENDING;
-                    case TOWN_HALL_COMPLETE:
-                    case GAUNTLET_TRANSITION:
-                    case GAUNTLET_PENDING:
-                    case GAUNTLET_IN_PROGRESS:
-                        return GAUNTLET_PENDING;
-                    case GAUNTLET_COMPLETE:
-                    case MALGANIS_IN_PROGRESS:
-                        return GAUNTLET_COMPLETE;
-                    case COMPLETE:
-                        return COMPLETE;
-                }
             }
 
             void FillInitialWorldStates(WorldPacket& data) override
