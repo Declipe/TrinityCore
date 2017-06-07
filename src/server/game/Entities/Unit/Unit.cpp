@@ -683,19 +683,15 @@ uint32 Unit::DealDamage(Unit* victim, uint32 damage, CleanDamage const* cleanDam
         // Signal to pets that their owner was attacked - except when DOT.
         if (damagetype != DOT)
         {
-            Pet* pet = victim->ToPlayer()->GetPet();
-
-            if (pet && pet->IsAlive())
-                pet->AI()->OwnerAttackedBy(this);
+            for (Unit* controlled : victim->m_Controlled)
+                if (Creature* cControlled = controlled->ToCreature())
+                    if (cControlled->IsAIEnabled)
+                        cControlled->AI()->OwnerAttackedBy(this);
         }
 
         if (victim->ToPlayer()->GetCommandStatus(CHEAT_GOD))
             return 0;
     }
-
-    // Signal the pet it was attacked so the AI can respond if needed
-    if (victim->GetTypeId() == TYPEID_UNIT && this != victim && victim->IsPet() && victim->IsAlive())
-        victim->ToPet()->AI()->AttackedBy(this);
 
     if (damagetype != NODAMAGE)
     {
@@ -5894,10 +5890,10 @@ bool Unit::Attack(Unit* victim, bool meleeAttack)
     // Spells such as auto-shot and others handled in WorldSession::HandleCastSpellOpcode
     if (GetTypeId() == TYPEID_PLAYER)
     {
-        Pet* playerPet = this->ToPlayer()->GetPet();
-
-        if (playerPet && playerPet->IsAlive())
-            playerPet->AI()->OwnerAttacked(victim);
+        for (Unit* controlled : m_Controlled)
+            if (Creature* cControlled = controlled->ToCreature())
+                if (cControlled->IsAIEnabled)
+                    cControlled->AI()->OwnerAttacked(victim);
     }
 
     return true;
@@ -8682,12 +8678,7 @@ void Unit::CombatStart(Unit* target, bool initialAggro)
 
         if (!target->IsInCombat() && target->GetTypeId() != TYPEID_PLAYER
             && !target->ToCreature()->HasReactState(REACT_PASSIVE) && target->ToCreature()->IsAIEnabled)
-        {
-            if (target->IsPet())
-                target->ToCreature()->AI()->AttackedBy(this); // PetAI has special handler before AttackStart()
-            else
-                target->ToCreature()->AI()->AttackStart(this);
-        }
+            target->ToCreature()->AI()->AttackStart(this);
 
         SetInCombatWith(target);
         target->SetInCombatWith(this);
@@ -13837,20 +13828,25 @@ void Unit::NearTeleportTo(Position const& pos, bool casting /*= false*/)
     }
 }
 
-void Unit::SendTeleportPacket(Position const& pos)
+void Unit::SendTeleportPacket(Position const& pos, bool teleportingTransport /*= false*/)
 {
     // MSG_MOVE_TELEPORT is sent to nearby players to signal the teleport
     // MSG_MOVE_TELEPORT_ACK is sent to self in order to trigger ACK and update the position server side
 
     MovementInfo teleportMovementInfo = m_movementInfo;
     teleportMovementInfo.pos.Relocate(pos);
-    Position transportPos = pos;
+    Position transportPos = m_movementInfo.transport.pos;
     if (TransportBase* transportBase = GetDirectTransport())
     {
-        float x, y, z, o;
-        pos.GetPosition(x, y, z, o);
-        transportBase->CalculatePassengerOffset(x, y, z, &o);
-        transportPos.Relocate(x, y, z, o);
+        // if its the transport that is teleported then we have old transport position here and cannot use it to calculate offsets
+        // assume that both transport teleport and teleport within transport cannot happen at the same time
+        if (!teleportingTransport)
+        {
+            float x, y, z, o;
+            pos.GetPosition(x, y, z, o);
+            transportBase->CalculatePassengerOffset(x, y, z, &o);
+            transportPos.Relocate(x, y, z, o);
+        }
     }
 
     WorldPacket moveUpdateTeleport(MSG_MOVE_TELEPORT, 38);
