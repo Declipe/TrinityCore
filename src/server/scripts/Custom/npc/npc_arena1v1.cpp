@@ -123,7 +123,7 @@ public:
 		{
 			if (bgQueue.IPExistsInQueue(player, NULL, bracketEntry, isRated, false))
 			{
-				ChatHandler(player->GetSession()).SendSysMessage("Вы не можете присоединиться 1х1 сейчас, потому что уже есть кто - то в очереди с тем же IP");
+				ChatHandler(player->GetSession()).SendSysMessage("Р’С‹ РЅРµ РјРѕР¶РµС‚Рµ РїСЂРёСЃРѕРµРґРёРЅРёС‚СЊСЃВ¤ 1С…1 СЃРµР№С‡Р°СЃ, РїРѕС‚РѕРјСѓ С‡С‚Рѕ СѓР¶Рµ РµСЃС‚СЊ РєС‚Рѕ - С‚Рѕ РІ РѕС‡РµСЂРµРґРё СЃ С‚РµРј Р¶Рµ IP");
 				//ChatHandler(player->GetSession()).SendSysMessage("You cannot join 1v1 Arena now because there is already someone queued with the same IP address.");
 				return false;
 			}
@@ -221,7 +221,7 @@ public:
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Disband arenateam", GOSSIP_SENDER_MAIN, 5, "Are you sure?", 0, false);
             }
 
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Покажи статистику", GOSSIP_SENDER_MAIN, 4);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "РџРѕРєР°Р¶Рё СЃС‚Р°С‚РёСЃС‚РёРєСѓ", GOSSIP_SENDER_MAIN, 4);
         }
 
         AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Script Info", GOSSIP_SENDER_MAIN, 8);

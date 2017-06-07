@@ -4090,6 +4090,7 @@ Arena.1v1.ArenaPointsMulti = 0.64
 #                      0 - (false)
 
 Arena.1v1.BlockForbiddenTalents = 1
+Ip.enabled = 0
 #
 #    Transmogrification config
 ###################################################################################################
