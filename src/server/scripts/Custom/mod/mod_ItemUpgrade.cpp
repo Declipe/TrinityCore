@@ -147,7 +147,7 @@ class go_item_upgrade : public GameObjectScript
         return (uint32) (GOSSIP_SENDER_MAIN + ((slot << 16) | (enchant & 0xFFFF)));
     }
  
-	bool GossipHello(Player* player, bool /*reportUse*/) override
+	bool GossipHello(Player* player) override
     {
         if (!ItemUpgradeEnable) {
             SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
@@ -171,8 +171,8 @@ class go_item_upgrade : public GameObjectScript
             }
         }
         SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
-        return false;
-        //return true;
+        //return false;
+        return true;
     }
 
     bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override

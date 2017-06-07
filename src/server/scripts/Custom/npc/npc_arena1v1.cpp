@@ -15,7 +15,30 @@
 #include "Language.h"
 #include "Player.h"
 #include "npc_arena1v1.h"
-
+#include "Config.h"
+#include "GuildMgr.h"
+#include "ObjectMgr.h"
+#include "ScriptedCreature.h"
+#include "ScriptedGossip.h"
+#include "WorldPacket.h"
+#include "ObjectMgr.h"
+#include "ArenaTeamMgr.h"
+#include "World.h"
+#include "WorldSession.h"
+#include "Group.h"
+#include "AchievementMgr.h"
+#include "ObjectAccessor.h"
+#include "Unit.h"
+#include "SharedDefines.h"
+#include "Creature.h"
+#include "ScriptedCreature.h"
+#include "GridNotifiers.h"
+#include "GridNotifiersImpl.h"
+#include "Cell.h"
+#include "CellImpl.h"
+#include "Chat.h"
+#include <sstream>
+#include "Channel.h"
 
 class npc_1v1arena : public CreatureScript
 {
@@ -96,6 +119,15 @@ public:
         }
 
         BattlegroundQueue &bgQueue = sBattlegroundMgr->GetBattlegroundQueue(bgQueueTypeId);
+		if (sConfigMgr->GetBoolDefault("Ip.enabled", false)) // If "fatigue.enabled" is enabled
+		{
+			if (bgQueue.IPExistsInQueue(player, NULL, bracketEntry, isRated, false))
+			{
+				ChatHandler(player->GetSession()).SendSysMessage("¬ы не можете присоединитьс€ 1х1 сейчас, потому что уже есть кто - то в очереди с тем же IP");
+				//ChatHandler(player->GetSession()).SendSysMessage("You cannot join 1v1 Arena now because there is already someone queued with the same IP address.");
+				return false;
+			}
+		}
         bg->SetRated(isRated);
 
         GroupQueueInfo* ginfo = bgQueue.AddGroup(player, NULL, bgTypeId, bracketEntry, arenatype, isRated, false, arenaRating, matchmakerRating, ateamId);
@@ -189,7 +221,7 @@ public:
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Disband arenateam", GOSSIP_SENDER_MAIN, 5, "Are you sure?", 0, false);
             }
 
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Show statistics", GOSSIP_SENDER_MAIN, 4);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "ѕокажи статистику", GOSSIP_SENDER_MAIN, 4);
         }
 
         AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Script Info", GOSSIP_SENDER_MAIN, 8);

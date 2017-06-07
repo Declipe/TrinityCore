@@ -127,6 +127,46 @@ bool BattlegroundQueue::SelectionPool::AddGroup(GroupQueueInfo* ginfo, uint32 de
 /***               BATTLEGROUND QUEUES                 ***/
 /*********************************************************/
 
+bool BattlegroundQueue::IPExistsInQueue(std::string const& remote_addr, PvPDifficultyEntry const* bracketEntry, bool isRated, bool isPremade)
+{
+	BattlegroundBracketId bracketId = bracketEntry->GetBracketId();
+
+	uint32 index = 0;
+	if (!isRated && !isPremade)
+		index += BG_TEAMS_COUNT;
+
+	for (GroupsQueueType::const_iterator queue_itr = m_QueuedGroups[bracketId][index].begin(); queue_itr != m_QueuedGroups[bracketId][index].end(); ++queue_itr)
+		for (std::map<ObjectGuid, PlayerQueueInfo*>::const_iterator group_itr = (*queue_itr)->Players.begin(); group_itr != (*queue_itr)->Players.end(); ++group_itr)
+			if (Player* player = ObjectAccessor::FindPlayer(group_itr->first))
+				if (player->GetSession()->GetRemoteAddress() == remote_addr)
+					return true;
+
+	index++;
+
+	for (GroupsQueueType::const_iterator queue_itr = m_QueuedGroups[bracketId][index].begin(); queue_itr != m_QueuedGroups[bracketId][index].end(); ++queue_itr)
+		for (std::map<ObjectGuid, PlayerQueueInfo*>::const_iterator group_itr = (*queue_itr)->Players.begin(); group_itr != (*queue_itr)->Players.end(); ++group_itr)
+			if (Player* player = ObjectAccessor::FindPlayer(group_itr->first))
+				if (player->GetSession()->GetRemoteAddress() == remote_addr)
+					return true;
+
+	return false;
+}
+
+bool BattlegroundQueue::IPExistsInQueue(Player* leader, Group* group, PvPDifficultyEntry const* bracketEntry, bool isRated, bool isPremade)
+{
+	if (group)
+	{
+		for (GroupReference* itr = group->GetFirstMember(); itr != NULL; itr = itr->next())
+			if (Player* player = itr->GetSource())
+				if (IPExistsInQueue(player->GetSession()->GetRemoteAddress(), bracketEntry, isRated, isPremade))
+					return true;
+	}
+	else
+		return IPExistsInQueue(leader->GetSession()->GetRemoteAddress(), bracketEntry, isRated, isPremade);
+
+	return false;
+}
+
 // add group or player (grp == NULL) to bg queue with the given leader and bg specifications
 GroupQueueInfo* BattlegroundQueue::AddGroup(Player* leader, Group* grp, BattlegroundTypeId BgTypeId, PvPDifficultyEntry const*  bracketEntry, uint8 ArenaType, bool isRated, bool isPremade, uint32 ArenaRating, uint32 MatchmakerRating, uint32 arenateamid)
 {
