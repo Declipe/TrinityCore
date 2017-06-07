@@ -487,7 +487,7 @@ class npc_chromie_middle : public StratholmeCreatureScript<NullCreatureAI>
                 if (me->IsQuestGiver())
                     player->PrepareQuestMenu(me->GetGUID());
 
-                if (instance->GetData(DATA_INSTANCE_PROGRESS))
+                if (instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE)
                     AddGossipItemFor(player, GOSSIP_MENU_STEP1, GOSSIP_OPTION_STEP1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP1);
                 SendGossipMenuFor(player, GOSSIP_TEXT_STEP1, me->GetGUID());
                 return true;
