@@ -551,7 +551,7 @@ class npc_arthas_stratholme : public CreatureScript
 
                     // Reset waypoint and scheduling info
                     _afterCombat = ACTION_NONE;
-                    _resumeMovement.Chain = nullptr;
+                    _resumeMovement.Clear();
                     me->StopMoving();
                     me->GetMotionMaster()->Clear();
                     events.Reset();
@@ -1530,7 +1530,7 @@ class npc_arthas_stratholme : public CreatureScript
         {
             // Reset waypoint and scheduling info
             _afterCombat = ACTION_NONE;
-            _resumeMovement.Chain = nullptr;
+            _resumeMovement.Clear();
 
             // Re-initialize on next tick
             me->SetVisible(false);

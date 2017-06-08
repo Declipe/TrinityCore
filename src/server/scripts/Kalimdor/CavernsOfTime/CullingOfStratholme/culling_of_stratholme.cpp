@@ -625,7 +625,7 @@ struct npc_martha_goslin : public CreatureScript
                 if (!_resumeInfo.Empty())
                 {
                     me->GetMotionMaster()->ResumeSplineChain(_resumeInfo);
-                    _resumeInfo.Chain = nullptr;
+                    _resumeInfo.Clear();
                 }
 
                 if (!diff)
