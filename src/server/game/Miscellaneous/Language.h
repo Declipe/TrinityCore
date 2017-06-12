@@ -315,7 +315,15 @@ enum TrinityStrings
     LANG_COMMAND_WHISPERON              = 285,
     LANG_COMMAND_WHISPEROFF             = 286,
     LANG_COMMAND_CREATGUIDNOTFOUND      = 287,
-      // TICKET STRINGS NEED REWRITE // 288-296 FREE
+    LANG_COMMAND_NOT_DEAD_OR_NO_LOOT    = 288,
+    LANG_COMMAND_NPC_SHOWLOOT_HEADER    = 289,
+    LANG_COMMAND_NPC_SHOWLOOT_LABEL     = 290,
+    LANG_COMMAND_NPC_SHOWLOOT_ENTRY     = 291,
+    LANG_COMMAND_NPC_SHOWLOOT_MONEY     = 292,
+    LANG_COMMAND_NPC_SHOWLOOT_LABEL_2   = 293,
+    LANG_COMMAND_NPC_SHOWLOOT_SUBLABEL  = 294,
+    LANG_COMMAND_NPC_SHOWLOOT_ENTRY_2   = 295,
+      // 296 free
 
       // END
     LANG_COMMAND_SPAWNDIST              = 297,
@@ -988,7 +996,10 @@ enum TrinityStrings
     LANG_GUILD_INFO_MOTD                = 1182,
     LANG_GUILD_INFO_EXTRA_INFO          = 1183,
     LANG_CHANGEACCOUNT_SUCCESS          = 1184,             // log
-    // Room for more level 3              1185-1198 not used
+    LANG_GROUP_NOT_IN_RAID_GROUP        = 1185,
+    LANG_GROUP_ROLE_CHANGED             = 1186,
+    LANG_LEADER_CANNOT_BE_ASSISTANT     = 1187,
+    // Room for more level 3              1188-1198 not used
 
     // Debug commands
     LANG_DO_NOT_USE_6X_DEBUG_AREATRIGGER_LEFT = 1999,
