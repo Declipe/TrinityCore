@@ -950,7 +950,7 @@ public:
 
 			break;
 		case 34:
-			player->UpdateSkillsToMaxSkillsForLevel();
+			player->UpdateWeaponsSkillsToMaxSkillsForLevel();
 			CloseGossipMenuFor(player);
 			break;
 		case 35:

@@ -323,7 +323,7 @@ public:
             {
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Developer: Teiby", GOSSIP_SENDER_MAIN, action);
                 //AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Website: www.teiby.de", GOSSIP_SENDER_MAIN, action);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Version: 2.1", GOSSIP_SENDER_MAIN, action);
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Version: 2.2", GOSSIP_SENDER_MAIN, action);
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, "<-- Back", GOSSIP_SENDER_MAIN, 7);
                 SendGossipMenuFor(player, 68, me->GetGUID());
                 return true;
