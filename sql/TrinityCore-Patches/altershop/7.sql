@@ -1,5 +1,3 @@
-
-
 replace INTO `npc_vendor` (`entry`,`item`) VALUES
 ('60677','37693'),
 ('60677','39416'),

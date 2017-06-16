@@ -954,9 +954,11 @@ public:
 			CloseGossipMenuFor(player);
 			break;
 		case 35:
-			player->LearnSpell(90265, true);
-			player->SetSkill(762, 6, 450, 450);
 			player->LearnSpell(54197, true);
+            player->LearnSpell(34093, true);
+            player->LearnSpell(34092, true);
+            player->LearnSpell(33392, true);
+            player->LearnSpell(33389, true);
 			CloseGossipMenuFor(player);
 			break;
 		case 36:
@@ -973,8 +975,8 @@ public:
 			AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_SKINNING, GOSSIP_SENDER_MAIN, 46);
 			AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_TAILORING, GOSSIP_SENDER_MAIN, 47);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU, GOSSIP_SENDER_MAIN, 48);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
-			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+		   SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
 		case 37:
 			CompleteLearnProfession(player, me, SKILL_ALCHEMY);
