@@ -639,7 +639,8 @@ void TournamentManager::stop(uint32 entry, bool win)
         //ObjectList* units = new ObjectList();
         Trinity::AllWorldObjectsInRange u_check(tournament->organizer, 60.0f);
         Trinity::WorldObjectListSearcher<Trinity::AllWorldObjectsInRange> searcher(tournament->organizer, units, u_check);
-        tournament->organizer->VisitNearbyObject(60.0f, searcher);
+        //tournament->organizer->VisitNearbyObject(60.0f, searcher);
+		Cell::VisitAllObjects(tournament->organizer, searcher, 60.0f);
 
         if (!units.empty())
         for (WorldObject* unit : units)

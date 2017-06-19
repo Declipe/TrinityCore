@@ -460,7 +460,8 @@ struct boss_grand_championAI : BossAI
 
                 Trinity::AllCreaturesOfEntryInRange check(me, newMountEntry, 100);
                 Trinity::CreatureListSearcher<Trinity::AllCreaturesOfEntryInRange> searcher(me, tempList, check);
-                me->VisitNearbyGridObject(me->GetGridActivationRange(), searcher);
+                //me->VisitNearbyGridObject(me->GetGridActivationRange(), searcher);
+				Cell::VisitGridObjects(me, searcher, me->GetGridActivationRange());
 
                 for (std::list<Creature*>::const_iterator itr = tempList.begin(); itr != tempList.end(); ++itr)
                 {
