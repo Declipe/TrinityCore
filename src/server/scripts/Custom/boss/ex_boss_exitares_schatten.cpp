@@ -1,7 +1,12 @@
 #include "ObjectMgr.h"
 #include "ScriptMgr.h"
-#include "ScriptedCreature.h"
+#include "GameObject.h"
+#include "InstanceScript.h"
+#include "Map.h"
+#include "ObjectAccessor.h"
 #include "Player.h"
+#include "ScriptedCreature.h"
+#include "SpellInfo.h"
 
 enum Spells
 {
@@ -148,7 +153,7 @@ public:
 					_events.ScheduleEvent(EVENT_TOXIC_WASTE, 30000);
 					break;
 				case EVENT_TOXIC_WASTE:
-					DoCastToAllHostilePlayers(SPELL_TOXIC_WASTE);
+					DoCast(SPELL_TOXIC_WASTE);
 					_events.ScheduleEvent(EVENT_TOXIC_WASTE, 45000);
 					break;
 				case EVENT_ENRAGE:
@@ -157,7 +162,7 @@ public:
 					break;
 				case EVENT_RAIN_OF_FIRE:
 					me->FinishSpell(CURRENT_CHANNELED_SPELL, true);
-					DoCastToAllHostilePlayers(SPELL_RAIN_OF_FIRE);
+					DoCast(SPELL_RAIN_OF_FIRE);
 					_events.ScheduleEvent(EVENT_RAIN_OF_FIRE, 10000);
 					break;
 				case EVENT_FLAME_BURST:
@@ -174,11 +179,11 @@ public:
 					break;
 				case EVENT_ARCANE_BOMB:
 					Talk(SAY_ENRAGE);
-					DoCastToAllHostilePlayers(SPELL_ARCANE_BOMB);
+					DoCast(SPELL_ARCANE_BOMB);
 					_events.ScheduleEvent(EVENT_ARCANE_BOMB, 15000);
 					break;
 				case EVENT_SPALTEN:
-					DoCastToAllHostilePlayers(SPELL_SPALTEN);
+					DoCast(SPELL_SPALTEN);
 					_events.ScheduleEvent(EVENT_SPALTEN, 30000);
 					break;
 				case EVENT_BURN:

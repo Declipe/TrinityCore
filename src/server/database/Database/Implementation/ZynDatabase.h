@@ -18,10 +18,9 @@
 #ifndef _ZYNDATABASE_H
 #define _ZYNDATABASE_H
 
-#include "DatabaseWorkerPool.h"
 #include "MySQLConnection.h"
 
-enum ZynDatabaseStatements
+enum ZynDatabaseStatements : uint32
 {
 	ZynDatabase1,
 	ZynDatabase2,
@@ -34,13 +33,13 @@ public:
 	typedef ZynDatabaseStatements Statements;
 
 	//- Constructors for sync and async connections
-	ZynDatabaseConnection(MySQLConnectionInfo& connInfo) : MySQLConnection(connInfo) { }
-	ZynDatabaseConnection(ProducerConsumerQueue<SQLOperation*>* q, MySQLConnectionInfo& connInfo) : MySQLConnection(q, connInfo) { }
-
+	ZynDatabaseConnection(MySQLConnectionInfo& connInfo);
+	ZynDatabaseConnection(ProducerConsumerQueue<SQLOperation*>* q, MySQLConnectionInfo& connInfo);
+	~ZynDatabaseConnection();
 	//- Loads database type specific prepared statements
 	void DoPrepareStatements() override;
 };
 
-typedef DatabaseWorkerPool<ZynDatabaseConnection> ZynDatabaseWorkerPool;
+//typedef DatabaseWorkerPool<ZynDatabaseConnection> ZynDatabaseWorkerPool;
 //typedef DatabaseWorkerPool<ZynDatabaseConnection> ZynDatabaseWorkerPool;
 #endif

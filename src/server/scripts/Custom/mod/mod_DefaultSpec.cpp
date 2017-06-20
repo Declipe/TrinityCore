@@ -1,10 +1,9 @@
 #include "Config.h"
-#include "GuildMgr.h"
+//#include "GuildMgr.h"
 #include "ObjectMgr.h"
 #include "Player.h"
 #include "Battleground.h"
 #include "BattlegroundMgr.h"
-#include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
 #include "WorldPacket.h"
 #include "ObjectMgr.h"
@@ -26,8 +25,16 @@
 #include "CellImpl.h"
 #include "Language.h"
 #include "Chat.h"
-#include <sstream>
 #include "Channel.h"
+#include "MapManager.h"
+#include "CreatureTextMgr.h"
+#include "SmartScriptMgr.h"
+#include "ZynDatabase.h"
+#include "DatabaseEnvFwd.h"
+#include "DatabaseEnv.h"
+#include "Log.h"
+#include "GameTime.h"
+#include "SpellMgr.h"
 
 bool DefaultSpecEnable   = false;
 

@@ -1,12 +1,32 @@
-#include "Language.h"
-#include "World.h"
-#include "Player.h"
-#include "Chat.h"
 #include "ScriptMgr.h"
-#include "MapManager.h"
-#include "Group.h"
+#include "Chat.h"
+#include "CreatureAI.h"
+#include "CreatureGroups.h"
+#include "DatabaseEnv.h"
+#include "Language.h"
+#include "Log.h"
+#include "Map.h"
+#include "ObjectAccessor.h"
+#include "ObjectMgr.h"
+#include "Pet.h"
+#include "Player.h"
+#include "RBAC.h"
+#include "TargetedMovementGenerator.h"                      // for HandleNpcUnFollowCommand
+#include "Transport.h"
+#include "World.h"
+#include "WorldSession.h"
 #include "InstanceSaveMgr.h"
 #include "InstanceScript.h"
+#include "Config.h"
+#include "Group.h"
+#include "MapManager.h"
+#include "Spell.h"
+#include "SpellInfo.h"
+#include "SpellMgr.h"
+#include "SkillDiscovery.h"
+#include "SpellAuraEffects.h"
+#include "SpellHistory.h"
+#include "SpellScript.h"
 
 class premium_commandscript : public CommandScript
 {
@@ -41,7 +61,7 @@ public:
 
         static std::vector<ChatCommand> commandTable =
         {
-            { "vip", rbac::RBAC_PERM_COMMAND_VIP, false, NULL, "", premiumCommandTable },
+            { "vip", rbac::RBAC_PERM_COMMAND_VIP, false, nullptr, "", premiumCommandTable },
         };
 
         return commandTable;
@@ -975,7 +995,7 @@ public:
 			{
 				Group* group = _player->GetGroup();
 				// if no bind exists, create a solo bind
-				InstanceGroupBind* gBind = group ? group->GetBoundInstance(target) : NULL;                // if no bind exists, create a solo bind
+				InstanceGroupBind* gBind = group ? group->GetBoundInstance(target) : nullptr;                // if no bind exists, create a solo bind
 				if (!gBind)
 					if (InstanceSave* save = sInstanceSaveMgr->GetInstanceSave(target->GetInstanceId()))
 						_player->BindToInstance(save, !save->CanReset());

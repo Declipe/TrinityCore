@@ -1,7 +1,12 @@
 #include "ObjectMgr.h"
 #include "ScriptMgr.h"
-#include "ScriptedCreature.h"
+#include "GameObject.h"
+#include "InstanceScript.h"
+#include "Map.h"
+#include "ObjectAccessor.h"
 #include "Player.h"
+#include "ScriptedCreature.h"
+#include "SpellInfo.h"
 
 enum Spells
 {
@@ -127,7 +132,7 @@ public:
 					DoCastAOE(SPELL_SHADOW_SPIKE);
 					break;
 				case EVENT_FEAR:
-					DoCastToAllHostilePlayers(SPELL_FEAR);
+					DoCast(SPELL_FEAR);
 					_events.ScheduleEvent(EVENT_FEAR, 8000);
 					break;
 				case EVENT_ENRAGE:
@@ -155,7 +160,7 @@ public:
 					_events.ScheduleEvent(EVENT_ACID_BLAST, 15000);
 					break;
 				case EVENT_CHAIN_LIGHTNING:
-					DoCastToAllHostilePlayers(SPELL_CHAIN_LIGHTNING);
+					DoCast(SPELL_CHAIN_LIGHTNING);
 					_events.ScheduleEvent(EVENT_CHAIN_LIGHTNING, 10000);
 					break;
 		

@@ -20,6 +20,7 @@
 #ifndef SC_NPC_TELEPORT_H
 #define SC_NPC_TELEPORT_H
 
+#include "ZynDatabase.h"
 #include <vector>
 
 namespace nsNpcTel
@@ -163,6 +164,7 @@ namespace nsNpcTel
 // Loading contents of database
 TC_GAME_API void LoadNpcTele(void);
 
-TC_DATABASE_API extern ZynDatabaseWorkerPool ZynDatabase;
+//TC_DATABASE_API extern ZynDatabaseWorkerPool ZynDatabase;
+TC_DATABASE_API extern DatabaseWorkerPool<ZynDatabaseConnection> ZynDatabase;
 
 #endif

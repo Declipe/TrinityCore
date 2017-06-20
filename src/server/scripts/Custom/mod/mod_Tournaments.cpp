@@ -1,14 +1,12 @@
 /*
 ** Experimental!!!
 */
-
 #include "Config.h"
-#include "GuildMgr.h"
+//#include "GuildMgr.h"
 #include "ObjectMgr.h"
 #include "Player.h"
 #include "Battleground.h"
 #include "BattlegroundMgr.h"
-#include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
 #include "WorldPacket.h"
 #include "ObjectMgr.h"
@@ -30,12 +28,18 @@
 #include "CellImpl.h"
 #include "Language.h"
 #include "Chat.h"
-#include <sstream>
 #include "Channel.h"
 #include "MapManager.h"
 #include "CreatureTextMgr.h"
 #include "SmartScriptMgr.h"
+#include "ZynDatabase.h"
+#include "DatabaseEnvFwd.h"
+#include "DatabaseEnv.h"
+#include "Log.h"
 #include "GameTime.h"
+#include "SpellMgr.h"
+#include "TemporarySummon.h"
+#include "MotionMaster.h"
 
 #define SQL_TEMPLATE "SELECT `entry`, `level`, `time_limit`, `say_start`, `say_win`, `say_lose`, `chest_id`, `point_id`, `req_quest_id`, `kill_credit`, `menu_string` FROM `world_tournaments` ORDER BY `entry`, `level` DESC"
 #define SQL_CREATURE "SELECT `id`, `tournament_entry`, `tournament_level`, `entry`, `count`, `from_point_id`, `to_point_id`, `time` FROM `world_tournament_creature` ORDER BY `tournament_level`, `time`"
@@ -571,7 +575,8 @@ void TournamentManager::updateTournament(uint32 entry, uint32 diff)
                     if (move)
                     {
                         summon->SetHomePosition(move->x, move->y, move->z, move->o);
-                        summon->GetMotionMaster()->MovePoint(0, move->x, move->y, move->z);
+                        //summon->GetMotionMaster()->MovePoint(0, move->x, move->y, move->z);
+						summon->GetMotionMaster()->MovePoint(0, move->x, move->y, move->z);
                     }
                     else if (tournament->starter && tournament->starter->IsAlive())
                     {
@@ -630,7 +635,7 @@ void TournamentManager::stop(uint32 entry, bool win)
     {
         PointOnTournament const* point = getPoint(tournament->current->point);
         if (tournament->organizer && point)
-			tournament->organizer->SummonGameObject(tournament->current->chest, point->x, point->y, point->z, point->o, G3D::Quat(), 300);
+			tournament->organizer->SummonGameObject(tournament->current->chest, point->x, point->y, point->z, point->o, QuaternionData(), 300);
     }
     
     if (tournament->organizer && tournament->current->killCredit)

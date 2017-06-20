@@ -27,7 +27,12 @@
 #include "Language.h"
 #include "Chat.h"
 #include <sstream>
+#include "SpellInfo.h"
 #include "Channel.h"
+#include "SpellMgr.h"
+#include "Implementation/ZynDatabase.h"
+#include "DatabaseEnvFwd.h"
+#include "Log.h"
 
 #define MSG_GOSSIP_TEXT_GETTING_STARTED	"Приветствуем вас на сервере"// OneGo - World of Warcraft !"
  

@@ -1,10 +1,9 @@
 #include "Config.h"
-#include "GuildMgr.h"
+//#include "GuildMgr.h"
 #include "ObjectMgr.h"
 #include "Player.h"
 #include "Battleground.h"
 #include "BattlegroundMgr.h"
-#include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
 #include "WorldPacket.h"
 #include "ObjectMgr.h"
@@ -26,13 +25,16 @@
 #include "CellImpl.h"
 #include "Language.h"
 #include "Chat.h"
-#include <sstream>
 #include "Channel.h"
 #include "MapManager.h"
 #include "CreatureTextMgr.h"
 #include "SmartScriptMgr.h"
 #include "ZynDatabase.h"
+#include "DatabaseEnvFwd.h"
+#include "DatabaseEnv.h"
+#include "Log.h"
 #include "GameTime.h"
+#include "SpellMgr.h"
 
 #define SPELL_MASK_CLASS        1
 #define SPELL_MASK_RIDING       2
@@ -123,6 +125,7 @@ public:
         uint32 oldMSTime = getMSTime();
 
        // QueryResult result = ZynDatabase.PQuery("SELECT SpellId, SpellMask, RequiredClassMask, RequiredRaceMask, RequiredLevel, RequiredSpellId, RequiredSkillId, RequiredSkillValue FROM `world_autolearn`");
+
         PreparedStatement* stmt = ZynDatabase.GetPreparedStatement(ZynDatabase2);
         PreparedQueryResult result = ZynDatabase.Query(stmt);
 

@@ -1,7 +1,12 @@
 #include "ObjectMgr.h"
 #include "ScriptMgr.h"
-#include "ScriptedCreature.h"
+#include "GameObject.h"
+#include "InstanceScript.h"
+#include "Map.h"
+#include "ObjectAccessor.h"
 #include "Player.h"
+#include "ScriptedCreature.h"
+#include "SpellInfo.h"
 
 enum Spells
 {
@@ -258,31 +263,31 @@ public:
 				switch (eventId)
 				{
 				case EVENT_ALPTRAUM:
-					DoCastToAllHostilePlayers(SPELL_ALPTRAUM);
+					DoCast(SPELL_ALPTRAUM);
 					_events.ScheduleEvent(EVENT_ALPTRAUM, 10000);
 					break;
 				case EVENT_ENRAGE:
-					DoCastToAllHostilePlayers(SPELL_ENRAGE);
+					DoCast(SPELL_ENRAGE);
 					break;
 				case EVENT_ARKANE_AUFLADUNG:
-					DoCastToAllHostilePlayers(SPELL_ARKANE_AUFLADUNG);
+					DoCast(SPELL_ARKANE_AUFLADUNG);
 					_events.ScheduleEvent(EVENT_BLIZZARD, 15000);
 					break;
 				case EVENT_FEUERBALL:
-					DoCastToAllHostilePlayers(SPELL_FEUERBALL);
+					DoCast(SPELL_FEUERBALL);
 					_events.ScheduleEvent(EVENT_SEUCHENBOMBE, 10000);
 					break;
 				case EVENT_BLITZENTLADUNG:
-					DoCastToAllHostilePlayers(SPELL_BLITZENTLADUNG);
+					DoCast(SPELL_BLITZENTLADUNG);
 					_events.ScheduleEvent(EVENT_BLITZENTLADUNG, 12000);
 					break;
 				case EVENT_BLIZZARD:
 					Talk(SAY_BLIZZARD);
-					DoCastToAllHostilePlayers(SPELL_BLIZZARD);
+					DoCast(SPELL_BLIZZARD);
 					_events.ScheduleEvent(EVENT_ARKANE_AUFLADUNG, 25000);
 					break;
 				case EVENT_BLUTGERUCH:
-					DoCastToAllHostilePlayers(SPELL_BLUTGERUCH);
+					DoCast(SPELL_BLUTGERUCH);
 					_events.ScheduleEvent(EVENT_BLUTGERUCH, 18000);
 					break;
 				case EVENT_BRECHENDE_WELLE:
@@ -294,11 +299,11 @@ public:
 					_events.ScheduleEvent(EVENT_DEGENERATION, 20000, 1);
 					break;
 				case EVENT_DURCHDRINGENDE_KAELTE:
-					DoCastToAllHostilePlayers(SPELL_DURCHDRINGENDE_KAELTE);
+					DoCast(SPELL_DURCHDRINGENDE_KAELTE);
 					_events.ScheduleEvent(EVENT_DURCHDRINGENDE_KAELTE, 12000);
 					break;
 				case EVENT_EISBLITZ:
-					DoCastToAllHostilePlayers(SPELL_EISBLITZ);
+					DoCast(SPELL_EISBLITZ);
 					_events.ScheduleEvent(EVENT_ERNEUERUNG, 25000);
 					break;
 				case EVENT_ERNEUERUNG:
@@ -310,7 +315,7 @@ public:
 					_events.ScheduleEvent(EVENT_SEUCHENBOMBE, 25000);
 					break;
 				case EVENT_TOXIC_WASTE:
-					DoCastToAllHostilePlayers(SPELL_TOXIC_WASTE);
+					DoCast(SPELL_TOXIC_WASTE);
 					_events.ScheduleEvent(EVENT_TOXIC_WASTE, 15000);
 					break;
 				case EVENT_SPALTEN:
