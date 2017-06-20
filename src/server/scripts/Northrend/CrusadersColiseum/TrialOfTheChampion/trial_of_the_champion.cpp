@@ -14,13 +14,27 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 #include "ScriptMgr.h"
-#include "ScriptedCreature.h"
-#include "ScriptedGossip.h"
-#include "trial_of_the_champion.h"
-#include "Vehicle.h"
+#include "DBCStores.h"
+#include "GameObject.h"
+#include "GameObjectAI.h"
+#include "InstanceScript.h"
+#include "Map.h"
+#include "MotionMaster.h"
+#include "MoveSplineInit.h"
+#include "ObjectAccessor.h"
+#include "PassiveAI.h"
 #include "Player.h"
+#include "ScriptedCreature.h"
+#include "Spell.h"
+#include "SpellInfo.h"
+#include "SpellScript.h"
+#include "TemporarySummon.h"
+#include "ScriptedGossip.h"
+#include "CreatureAIImpl.h"
+#include "VehicleDefines.h"
+#include "Vehicle.h"
+#include "trial_of_the_champion.h"
 
 #define GOSSIP_START_EVENT1     "I am ready."
 #define GOSSIP_START_EVENT2     "I am ready for the next challenge."
@@ -1369,7 +1383,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<npc_announcer_toc5AI>(creature);
+        return GetTrialOfTheChampionAI<npc_announcer_toc5AI>(creature);
     }
 };
 

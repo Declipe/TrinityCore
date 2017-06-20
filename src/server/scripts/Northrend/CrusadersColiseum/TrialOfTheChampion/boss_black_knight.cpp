@@ -22,13 +22,30 @@ SDComment:
 SDCategory: Trial of the Champion
 EndScriptData */
 
-#include "Player.h"
 #include "ScriptMgr.h"
-#include "ScriptedCreature.h"
+#include "InstanceScript.h"
+#include "Map.h"
+#include "ObjectAccessor.h"
+#include "Player.h"
 #include "ScriptedEscortAI.h"
+#include "ScriptedGossip.h"
+#include "trial_of_the_champion.h"
+#include "Vehicle.h"
+#include "GameObject.h"
+#include "GameObjectAI.h"
+#include "MotionMaster.h"
+#include "ScriptedGossip.h"
+#include "TemporarySummon.h"
+#include "PassiveAI.h"
+#include "VehicleDefines.h"
+#include "GridNotifiers.h"
+#include "ScriptedCreature.h"
 #include "SpellAuraEffects.h"
 #include "SpellScript.h"
-#include "trial_of_the_champion.h"
+#include "Spell.h"
+#include "SpellInfo.h"
+#include "SpellMgr.h"
+#include "WorldSession.h"
 
 enum Yells
 {
@@ -484,7 +501,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<boss_black_knightAI>(creature);
+        return GetTrialOfTheChampionAI<boss_black_knightAI>(creature);
     }
 };
 

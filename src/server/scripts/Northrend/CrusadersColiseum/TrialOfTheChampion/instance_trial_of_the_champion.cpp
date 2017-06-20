@@ -21,11 +21,27 @@ SDComment: missing fireworks when boss encounter is set to done
 SDCategory: Trial Of the Champion
 EndScriptData */
 
-#include "InstanceScript.h"
-#include "Player.h"
-#include "ScriptedCreature.h"
 #include "ScriptMgr.h"
+#include "InstanceScript.h"
+#include "Map.h"
+#include "ObjectAccessor.h"
+#include "Player.h"
+#include "ScriptedEscortAI.h"
+#include "ScriptedGossip.h"
 #include "trial_of_the_champion.h"
+#include "Vehicle.h"
+#include "GameObject.h"
+#include "GameObjectAI.h"
+#include "MotionMaster.h"
+#include "ScriptedGossip.h"
+#include "TemporarySummon.h"
+#include "PassiveAI.h"
+#include "VehicleDefines.h"
+#include "GridNotifiers.h"
+#include "ScriptedCreature.h"
+#include "SpellAuraEffects.h"
+#include "SpellScript.h"
+#include "WorldSession.h"
 
 ObjectData const creatureData[] =
 {
