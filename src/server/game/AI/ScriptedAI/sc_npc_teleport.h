@@ -21,7 +21,16 @@
 #define SC_NPC_TELEPORT_H
 
 #include "ZynDatabase.h"
+#include "Player.h"
 #include <vector>
+#include "Field.h"
+#include "PreparedStatement.h"
+#include "QueryCallback.h"
+#include "QueryResult.h"
+#include "Transaction.h"
+#include "Define.h"
+#include "DatabaseWorkerPool.h"
+#include "DatabaseEnv.h"
 
 namespace nsNpcTel
 {
