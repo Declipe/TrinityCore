@@ -5,7 +5,6 @@
 #include "Map.h"
 #include "ObjectAccessor.h"
 #include "Player.h"
-#include "ScriptedCreature.h"
 #include "SpellInfo.h"
 
 enum Spells{

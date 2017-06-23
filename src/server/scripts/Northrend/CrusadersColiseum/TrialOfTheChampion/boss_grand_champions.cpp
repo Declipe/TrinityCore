@@ -35,14 +35,16 @@ EndScriptData */
 #include "GameObject.h"
 #include "GameObjectAI.h"
 #include "MotionMaster.h"
-#include "ScriptedGossip.h"
 #include "TemporarySummon.h"
 #include "PassiveAI.h"
 #include "VehicleDefines.h"
 #include "GridNotifiers.h"
 #include "ScriptedCreature.h"
+#include "SmartScript.h"
 #include "SpellAuraEffects.h"
 #include "SpellScript.h"
+#include "Cell.h"
+#include "CellImpl.h"
 #include "SpellMgr.h"
 #include "WorldSession.h"
 
@@ -470,10 +472,10 @@ struct boss_grand_championAI : BossAI
                 Creature* newMount = nullptr;
                 float dist = 0.0f;
                 std::list<Creature*> tempList;
-
                 Trinity::AllCreaturesOfEntryInRange check(me, newMountEntry, 100);
                 Trinity::CreatureListSearcher<Trinity::AllCreaturesOfEntryInRange> searcher(me, tempList, check);
 				Cell::VisitGridObjects(me, searcher, me->GetGridActivationRange());
+				//Cell::VisitGridObjects(me, searcher, 20.0f);
 
                 for (std::list<Creature*>::const_iterator itr = tempList.begin(); itr != tempList.end(); ++itr)
                 {

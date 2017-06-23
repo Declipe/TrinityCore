@@ -33,7 +33,6 @@ EndScriptData */
 #include "GameObject.h"
 #include "GameObjectAI.h"
 #include "MotionMaster.h"
-#include "ScriptedGossip.h"
 #include "TemporarySummon.h"
 #include "PassiveAI.h"
 #include "VehicleDefines.h"
