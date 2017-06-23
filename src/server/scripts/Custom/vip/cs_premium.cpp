@@ -38,7 +38,6 @@ public:
         static std::vector<ChatCommand> premiumCommandTable =
         {
             { "bank",  rbac::RBAC_PERM_COMMAND_VIP_BANK, false, &HandlePremiumBankCommand,    "" },
-			{ "bank2",  rbac::RBAC_PERM_COMMAND_VIP_BANK2, false, &HandlePremiumBank2Command,    "" },
             { "mail",  rbac::RBAC_PERM_COMMAND_VIP_MAIL, false, &HandlePremiumMailCommand,    "" },
 			{ "buffs", rbac::RBAC_PERM_COMMAND_VIP_buffs, false, &HandleVipbuffsCommand, "" },
 			{ "arena", rbac::RBAC_PERM_COMMAND_VIP_arena, false, &HandleVipjoinArenaCommand, "" },
@@ -412,56 +411,6 @@ public:
             handler->GetSession()->SendShowBank(handler->GetSession()->GetPlayer()->GetGUID());
         return true;
     }
-
-	static bool HandlePremiumBank2Command(ChatHandler* handler, char const* /*args*/)
-	{
-		Player *_player = handler->GetSession()->GetPlayer();
-
-		if (!handler->GetSession()->IsPremium())
-		{
-			handler->SendSysMessage(LANG_PLAYER_NOT_VIP);
-			handler->SetSentErrorMessage(true);
-			return false;
-		}
-
-		if (_player->IsInCombat())
-		{
-			handler->SendSysMessage(LANG_YOU_IN_COMBAT);
-			handler->SetSentErrorMessage(true);
-			return false;
-		}
-
-		if (_player->IsInFlight())
-		{
-			handler->SendSysMessage(LANG_YOU_IN_FLIGHT);
-			handler->SetSentErrorMessage(true);
-			return false;
-		}
-
-		if (_player->GetMap()->IsBattlegroundOrArena())
-		{
-			handler->SendSysMessage(LANG_VIP_BG);
-			handler->SetSentErrorMessage(true);
-			return false;
-		}
-
-		if (_player->HasStealthAura())
-		{
-			handler->SendSysMessage(LANG_VIP_STEALTH);
-			handler->SetSentErrorMessage(true);
-			return false;
-		}
-
-		if (_player->isDead() || _player->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH))
-		{
-			handler->SendSysMessage(LANG_VIP_DEAD);
-			handler->SetSentErrorMessage(true);
-			return false;
-		}
-
-		handler->GetSession()->SendShowMailBox(handler->GetSession()->GetPlayer()->GetGUID());
-		return true;
-	}
 
 	static bool HandleVipResetTalentsCommand(ChatHandler* handler, const char* /*args*/)
 	{
