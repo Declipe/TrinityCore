@@ -816,6 +816,7 @@ enum RBACPermissions
     RBAC_PERM_COMMAND_VIP_HOMEs                                = 1019,
     RBAC_PERM_COMMAND_RELOAD_CHAT_FILTER                       = 1590,
     //RBAC_PERM_COMMAND_VIP_qcomplete                            = 1020,
+    RBAC_PERM_COMMAND_VIP_BANK2                                 = 1021,
     // Visit http://www.realmsofwarcraft.com/bb for forums and information
     //
     // End of prepatch
