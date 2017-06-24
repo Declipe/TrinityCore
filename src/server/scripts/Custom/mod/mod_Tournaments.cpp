@@ -118,7 +118,7 @@ class TournamentManager
         
 		 void load(bool reload = false);
         
-		 void start(uint32 entry, uint32 level, Player* player = NULL);
+		 void start(uint32 entry, uint32 level, Player* player = nullptr);
 		 void stop(uint32 entry, bool win = false);
 		 bool checkEnd(uint32 entry);
 		 void addGossip(Creature* creature, Player* player);
@@ -157,7 +157,7 @@ TournamentTemplate* TournamentManager::getTournament(uint32 entry)
     Tournaments::const_iterator itr = tournaments.find(entry);
     if (itr != tournaments.end())
         return (*itr).second;
-    return NULL;
+    return nullptr;
 }
 
 TournamentLevel* TournamentManager::getTournamentLevel(uint32 entry, uint32 level)
@@ -170,7 +170,7 @@ TournamentLevel* TournamentManager::getTournamentLevel(uint32 entry, uint32 leve
     {
         if (TournamentDebug)
             TC_LOG_ERROR("misc", "TournamentManager::getTournamentLevel not exists entry: %u level: %u", entry, level);
-        return NULL;
+        return nullptr;
     }
         
     TournamentLevels::const_iterator itr = tournament->levels.find(level);
@@ -179,13 +179,13 @@ TournamentLevel* TournamentManager::getTournamentLevel(uint32 entry, uint32 leve
         
     if (TournamentDebug)
         TC_LOG_ERROR("misc", "TournamentManager::getTournamentLevel not exists level: %u for entry: %u", level, entry);
-    return NULL;
+    return nullptr;
 }
 
 PointOnTournament const* TournamentManager::getPoint(uint32 id)
 {
     if (!pointExists(id))
-        return NULL;
+        return nullptr;
         
     return points[id];
 }
@@ -227,12 +227,12 @@ uint32 TournamentManager::getLevel(uint32 entry)
 
 bool TournamentManager::existsTournament(uint32 entry)
 {
-    return getTournament(entry) != NULL;
+    return getTournament(entry) != nullptr;
 }
 
 bool TournamentManager::existsLevelTournament(uint32 entry, uint32 level)
 {
-    return getTournamentLevel(entry, level) != NULL;
+    return getTournamentLevel(entry, level) != nullptr;
 }
 
 void TournamentManager::createTournament(uint32 entry)
@@ -562,7 +562,7 @@ void TournamentManager::updateTournament(uint32 entry, uint32 diff)
 				TC_LOG_INFO("misc", "TournamentManager::update -> spawn %u", (*itr)->entry);
                 
             PointOnTournament const* point = getPoint((*itr)->point);
-            PointOnTournament const* move = NULL;
+            PointOnTournament const* move = nullptr;
             if ((*itr)->move)
                 move = getPoint((*itr)->move);
                 

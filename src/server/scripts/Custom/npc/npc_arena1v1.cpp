@@ -95,7 +95,7 @@ public:
             return false;
         }
 
-        if (DisableMgr::IsDisabledFor(DISABLE_TYPE_BATTLEGROUND, BATTLEGROUND_AA, NULL))
+        if (DisableMgr::IsDisabledFor(DISABLE_TYPE_BATTLEGROUND, BATTLEGROUND_AA, nullptr))
         {
             ChatHandler(player->GetSession()).PSendSysMessage(LANG_ARENA_DISABLED);
             return false;
@@ -141,7 +141,7 @@ public:
         BattlegroundQueue &bgQueue = sBattlegroundMgr->GetBattlegroundQueue(bgQueueTypeId);
 		if (sConfigMgr->GetBoolDefault("Ip.enabled", false)) // If "fatigue.enabled" is enabled
 		{
-			if (bgQueue.IPExistsInQueue(player, NULL, bracketEntry, isRated, false))
+			if (bgQueue.IPExistsInQueue(player, nullptr, bracketEntry, isRated, false))
 			{
 				ChatHandler(player->GetSession()).SendSysMessage("Вы не можете присоединитьс¤ 1х1 сейчас, потому что уже есть кто - то в очереди с тем же IP");
 				//ChatHandler(player->GetSession()).SendSysMessage("You cannot join 1v1 Arena now because there is already someone queued with the same IP address.");
@@ -150,7 +150,7 @@ public:
 		}
         bg->SetRated(isRated);
 
-        GroupQueueInfo* ginfo = bgQueue.AddGroup(player, NULL, bgTypeId, bracketEntry, arenatype, isRated, false, arenaRating, matchmakerRating, ateamId);
+        GroupQueueInfo* ginfo = bgQueue.AddGroup(player, nullptr, bgTypeId, bracketEntry, arenatype, isRated, false, arenaRating, matchmakerRating, ateamId);
         uint32 avgTime = bgQueue.GetAverageQueueWaitTime(ginfo, bracketEntry->GetBracketId());
         uint32 queueSlot = player->AddBattlegroundQueueId(bgQueueTypeId);
 
@@ -188,7 +188,7 @@ public:
         teamName << player->GetName();
         do
         {
-            if(sArenaTeamMgr->GetArenaTeamByName(teamName.str()) != NULL) // teamname exist, so choose another name
+            if(sArenaTeamMgr->GetArenaTeamByName(teamName.str()) != nullptr) // teamname exist, so choose another name
             {
                 teamName.str(std::string());
                 teamName << player->GetName() << (i++);

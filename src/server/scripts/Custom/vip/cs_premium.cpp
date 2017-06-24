@@ -1,32 +1,49 @@
+//#include "CreatureAI.h"
+//#include "CreatureGroups.h"
+//#include "Map.h"
+//#include "RBAC.h"
+//#include "InstanceScript.h"
+//#include "Config.h"
+//#include "Spell.h"
+//#include "SpellInfo.h"
+//#include "SkillDiscovery.h"
+//#include "SpellScript.h"
+
 #include "ScriptMgr.h"
+#include "AccountMgr.h"
+#include "ArenaTeamMgr.h"
+#include "CellImpl.h"
+#include "CharacterCache.h"
 #include "Chat.h"
-#include "CreatureAI.h"
-#include "CreatureGroups.h"
 #include "DatabaseEnv.h"
+#include "DisableMgr.h"
+#include "GridNotifiers.h"
+#include "Group.h"
+#include "GroupMgr.h"
+#include "InstanceSaveMgr.h"
+#include "Item.h"
 #include "Language.h"
+#include "LFG.h"
 #include "Log.h"
-#include "Map.h"
+#include "MapManager.h"
+#include "MMapFactory.h"
+#include "MovementGenerator.h"
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
+#include "Opcodes.h"
 #include "Pet.h"
 #include "Player.h"
-#include "RBAC.h"
-#include "TargetedMovementGenerator.h"                      // for HandleNpcUnFollowCommand
+#include "Realm.h"
+#include "SpellAuras.h"
+#include "SpellHistory.h"
+#include "SpellMgr.h"
+#include "TargetedMovementGenerator.h"
 #include "Transport.h"
+#include "Weather.h"
+#include "WeatherMgr.h"
 #include "World.h"
 #include "WorldSession.h"
-#include "InstanceSaveMgr.h"
-#include "InstanceScript.h"
-#include "Config.h"
-#include "Group.h"
-#include "MapManager.h"
-#include "Spell.h"
-#include "SpellInfo.h"
-#include "SpellMgr.h"
-#include "SkillDiscovery.h"
-#include "SpellAuraEffects.h"
-#include "SpellHistory.h"
-#include "SpellScript.h"
+#include <boost/asio/ip/address_v4.hpp>
 
 class premium_commandscript : public CommandScript
 {
@@ -37,8 +54,8 @@ public:
     {
         static std::vector<ChatCommand> premiumCommandTable =
         {
-            { "bank",  rbac::RBAC_PERM_COMMAND_VIP_BANK, false, &HandlePremiumBankCommand,    "" },
-            { "mail",  rbac::RBAC_PERM_COMMAND_VIP_MAIL, false, &HandlePremiumMailCommand,    "" },
+            { "bank",             rbac::RBAC_PERM_COMMAND_VIP_BANK,         false, &HandlePremiumBankCommand,    "" },
+            { "mail",             rbac::RBAC_PERM_COMMAND_VIP_MAIL,         false, &HandlePremiumMailCommand,    "" },
 			{ "buffs", rbac::RBAC_PERM_COMMAND_VIP_buffs, false, &HandleVipbuffsCommand, "" },
 			{ "arena", rbac::RBAC_PERM_COMMAND_VIP_arena, false, &HandleVipjoinArenaCommand, "" },
 			{ "warsong", rbac::RBAC_PERM_COMMAND_VIP_warsong, false, &HandleVipjoinWarsongCommand, "" },
@@ -67,9 +84,9 @@ public:
         return commandTable;
     }
 
-	/* static bool HandleQuestCompletes(ChatHandler* handler, const char* args)
+	/* static bool HandleQuestCompletes(ChatHandler* handler, char const* args)
 	{
-		Player *_player = handler->GetSession()->GetPlayer();
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{
@@ -208,9 +225,9 @@ public:
 		return true;
 	}*/
 
-	static bool HandleTelesNameCommand(ChatHandler* handler, const char* args)
+	static bool HandleTelesNameCommand(ChatHandler* handler, char const* args)
 	{
-		Player *_player = handler->GetSession()->GetPlayer();
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{
@@ -340,7 +357,7 @@ public:
 		else
 		{
 			// check offline security
-			if (handler->HasLowerSecurity(NULL, target_guid))
+			if (handler->HasLowerSecurity(nullptr, target_guid))
 				return false;
 
 			std::string nameLink = handler->playerLink(target_name);
@@ -357,7 +374,7 @@ public:
 
     static bool HandlePremiumBankCommand(ChatHandler* handler, char const* /*args*/)
     {
-		Player *_player = handler->GetSession()->GetPlayer();
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{
@@ -412,7 +429,7 @@ public:
         return true;
     }
 
-	static bool HandleVipResetTalentsCommand(ChatHandler* handler, const char* /*args*/)
+	static bool HandleVipResetTalentsCommand(ChatHandler* handler, char const* /*args*/)
 	{
 		Player *_player = handler->GetSession()->GetPlayer();
 
@@ -473,9 +490,9 @@ public:
 		return true;
 	}
 	//bag
-    static bool HandlePremiumMailCommand(ChatHandler* handler, char const* /*args*/)
-    {
-			Player *_player = handler->GetSession()->GetPlayer();
+	static bool HandlePremiumMailCommand(ChatHandler* handler, char const* args)
+	{
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{
@@ -525,14 +542,13 @@ public:
 			handler->SetSentErrorMessage(true);
 			return false;
 		}
+		handler->GetSession()->SendShowMailBox(_player->GetGUID());
+		return true;
+	}
 
-            handler->GetSession()->SendShowMailBox(_player->GetGUID());
-        return true;
-    }
-
-	static bool HandleVipjoinArathiCommand(ChatHandler* handler, const char* /*args*/)
+	static bool HandleVipjoinArathiCommand(ChatHandler* handler, char const* /*args*/)
 	{
-		Player *_player = handler->GetSession()->GetPlayer();
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{
@@ -582,9 +598,9 @@ public:
 		return true;
 	}
 
-	static bool HandleVipjoinEyeCommand(ChatHandler* handler, const char* /*args*/)
+	static bool HandleVipjoinEyeCommand(ChatHandler* handler, char const* /*args*/)
 	{
-		Player *_player = handler->GetSession()->GetPlayer();
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{
@@ -634,9 +650,9 @@ public:
 		return true;
 	}
 
-	static bool HandleVipjoinWarsongCommand(ChatHandler* handler, const char* /*args*/)
+	static bool HandleVipjoinWarsongCommand(ChatHandler* handler, char const* /*args*/)
 	{
-		Player *_player = handler->GetSession()->GetPlayer();
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{
@@ -686,9 +702,9 @@ public:
 		return true;
 	}
 
-	static bool HandleVipjoinAlteracCommand(ChatHandler* handler, const char* /*args*/)
+	static bool HandleVipjoinAlteracCommand(ChatHandler* handler, char const* /*args*/)
 	{
-		Player *_player = handler->GetSession()->GetPlayer();
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{
@@ -737,9 +753,9 @@ public:
 		return true;
 	}
 
-	static bool HandleVipjoinArenaCommand(ChatHandler* handler, const char* /*args*/)
+	static bool HandleVipjoinArenaCommand(ChatHandler* handler, char const* /*args*/)
 	{
-		Player *_player = handler->GetSession()->GetPlayer();
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{
@@ -788,9 +804,9 @@ public:
 		return true;
 	}
 
-	static bool HandleVipbuffsCommand(ChatHandler* handler, const char* /*args*/)
+	static bool HandleVipbuffsCommand(ChatHandler* handler, char const* /*args*/)
 	{
-		Player *_player = handler->GetSession()->GetPlayer();
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{
@@ -1027,7 +1043,7 @@ public:
 		else
 		{
 			// check offline security
-			if (handler->HasLowerSecurity(NULL, targetGuid))
+			if (handler->HasLowerSecurity(nullptr, targetGuid))
 				return false;
 
 			std::string nameLink = handler->playerLink(targetName);
@@ -1041,9 +1057,9 @@ public:
 		return true;
 	}
 
-	static bool HandleChangeRaceCommand(ChatHandler* handler, const char* /*args*/)
+	static bool HandleChangeRaceCommand(ChatHandler* handler, char const* /*args*/)
 	{
-		Player *_player = handler->GetSession()->GetPlayer();
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{
@@ -1099,10 +1115,10 @@ public:
 		return true;
 	}
 
-	static bool HandleCustomizeCommand(ChatHandler* handler, const char* /*args*/)
+	static bool HandleCustomizeCommand(ChatHandler* handler, char const* /*args*/)
 	{
 
-		Player *_player = handler->GetSession()->GetPlayer();
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{
@@ -1158,9 +1174,9 @@ public:
 		return true;
 	}
 
-	static bool HandleVipTaxiCommand(ChatHandler* handler, const char* /*args*/)
+	static bool HandleVipTaxiCommand(ChatHandler* handler, char const* /*args*/)
 	{
-		Player *_player = handler->GetSession()->GetPlayer();
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{
@@ -1218,9 +1234,9 @@ public:
 		return true;
 	}
 
-	static bool HandleVipHomeCommand(ChatHandler* handler, const char* /*args*/)
+	static bool HandleVipHomeCommand(ChatHandler* handler, char const* /*args*/)
 	{
-		Player *_player = handler->GetSession()->GetPlayer();
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{
@@ -1276,9 +1292,9 @@ public:
 		return true;
 	}
 
-	static bool HandleVipDebuffCommand(ChatHandler* handler, const char* /*args*/)
+	static bool HandleVipDebuffCommand(ChatHandler* handler, char const* /*args*/)
 	{
-		Player *_player = handler->GetSession()->GetPlayer();
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{
@@ -1335,9 +1351,9 @@ public:
 		return true;
 	}
 
-	static bool HandleVipMapCommand(ChatHandler* handler, const char* /*args*/)
+	static bool HandleVipMapCommand(ChatHandler* handler, char const* /*args*/)
 	{
-		Player *_player = handler->GetSession()->GetPlayer();
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{
@@ -1390,9 +1406,9 @@ public:
 		return true;
 	}
 
-	static bool HandleVipRepairCommand(ChatHandler* handler, const char* /*args*/)
+	static bool HandleVipRepairCommand(ChatHandler* handler, char const* /*args*/)
 	{
-		Player *_player = handler->GetSession()->GetPlayer();
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{
@@ -1449,9 +1465,9 @@ public:
 		return true;
 	}
 
-	static bool HandleVipCapitalCommand(ChatHandler* handler, const char* /*args*/)
+	static bool HandleVipCapitalCommand(ChatHandler* handler, char const* /*args*/)
 	{
-		Player *_player = handler->GetSession()->GetPlayer();
+		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
 		{

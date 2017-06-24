@@ -125,7 +125,7 @@ public:
 		{
 			//char msg[250];
 			//snprintf(msg, 250, "|cffff0000[Boss System]|r Boss|cffff6060 Anna|r wurde getoetet! Der Respawn erfolgt in 7 Tagen.");
-			//sWorld->SendGlobalText(msg, NULL);
+			//sWorld->SendGlobalText(msg, nullptr);
 		}
 
 		void UpdateAI(uint32 diff) override

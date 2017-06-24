@@ -130,7 +130,7 @@ public:
 		{
 			//char msg[250];
 			//snprintf(msg, 250, "|cffff0000[Boss System]|r Boss|cffff6060 Eonar|r wurde getoetet! Respawn in 4h 30min.");
-			//sWorld->SendGlobalText(msg, NULL);
+			//sWorld->SendGlobalText(msg, nullptr);
 			Summons.DespawnAll();
 		}
 
@@ -166,7 +166,7 @@ public:
 
 			++kills;
 			//snprintf(msg, 250, "|cffff0000[Boss System]|r |cffff6060 Eonar|r hat einen Spieler getoetet! Was fuer eine Schmach. Insgesamt steht der Killcounter seit dem letzten Restart bei: %u", kills);
-			//sWorld->SendGlobalText(msg, NULL);
+			//sWorld->SendGlobalText(msg, nullptr);
 		}
 
 		void UpdateAI(uint32 diff) override
