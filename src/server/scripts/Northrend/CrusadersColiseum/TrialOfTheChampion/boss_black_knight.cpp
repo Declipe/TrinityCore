@@ -28,7 +28,6 @@ EndScriptData */
 #include "ObjectAccessor.h"
 #include "Player.h"
 #include "ScriptedEscortAI.h"
-#include "ScriptedGossip.h"
 #include "trial_of_the_champion.h"
 #include "Vehicle.h"
 #include "GameObject.h"

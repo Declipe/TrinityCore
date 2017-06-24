@@ -99,32 +99,6 @@
 #include "WorldSession.h"
 #include "Config.h"
 
-
-// Prepatch by LordPsyan
-// 61
-// 62
-// 63
-// 64
-// 65
-// 66
-// 67
-// 68
-// 69
-// 70
-// 71
-// 72
-// 73
-// 74
-// 75
-// 76
-// 77
-// 78
-// 79
-// 80
-// Visit http://www.realmsofwarcraft.com/bb for forums and information
-//
-// End of prepatch
-
 #define ZONE_UPDATE_INTERVAL (1*IN_MILLISECONDS)
 
 #define PLAYER_SKILL_INDEX(x)       (PLAYER_SKILL_INFO_1_1 + ((x)*3))
