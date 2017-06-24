@@ -5,25 +5,13 @@
  *
  */
 
-
-#include "ArenaTeamMgr.h"
 #include "Common.h"
 #include "DisableMgr.h"
-#include "BattlegroundMgr.h"
-#include "Battleground.h"
-#include "ArenaTeam.h"
-#include "Language.h"
 #include "npc_arena1v1.h"
-#include "SharedDefines.h"
-#include "Channel.h"
-
 #include "Config.h"
- //#include "GuildMgr.h"
-#include "ObjectMgr.h"
 #include "Player.h"
 #include "Battleground.h"
 #include "BattlegroundMgr.h"
-#include "ScriptedGossip.h"
 #include "WorldPacket.h"
 #include "ObjectMgr.h"
 #include "ArenaTeam.h"
@@ -53,7 +41,6 @@
 #include "DatabaseEnv.h"
 #include "Log.h"
 #include "GameTime.h"
-#include "SpellMgr.h"
 #include "DBCStructure.h"
 #include "GameEventMgr.h"
 #include "GameObject.h"

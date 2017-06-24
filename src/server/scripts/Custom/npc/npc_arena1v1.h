@@ -9,8 +9,6 @@
 #define ARENA_1V1_H
 
 #include "Config.h"
- //#include "GuildMgr.h"
-#include "ObjectMgr.h"
 #include "Player.h"
 #include "Battleground.h"
 #include "BattlegroundMgr.h"
@@ -44,7 +42,6 @@
 #include "DatabaseEnv.h"
 #include "Log.h"
 #include "GameTime.h"
-#include "SpellMgr.h"
 #include "DBCStructure.h"
 #include "GameEventMgr.h"
 #include "GameObject.h"

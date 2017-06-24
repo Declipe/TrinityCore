@@ -3,7 +3,6 @@
 */
 #include "Config.h"
 //#include "GuildMgr.h"
-#include "ObjectMgr.h"
 #include "Player.h"
 #include "Battleground.h"
 #include "BattlegroundMgr.h"
