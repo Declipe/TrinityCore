@@ -527,6 +527,7 @@ enum WorldIntConfigs
     // Visit http://www.realmsofwarcraft.com/bb for forums and information
     //
     // End of prepatch
+    CONFIG_SOCKET_TIMEOUTTIME_ACTIVE,
     INT_CONFIG_VALUE_COUNT
 };
 
