@@ -4531,6 +4531,12 @@ void SpellMgr::LoadSpellInfoCorrections()
                     if (!spellInfo->Speed && !spellInfo->SpellFamilyName)
                         spellInfo->Speed = SPEED_CHARGE;
                     break;
+                case SPELL_EFFECT_APPLY_GLYPH:
+                        spellInfo->CastTimeEntry = sSpellCastTimesStore.LookupEntry(1);
+                    break;
+				case SPELL_EFFECT_ENCHANT_ITEM:
+                         spellInfo->CastTimeEntry = sSpellCastTimesStore.LookupEntry(1);
+                    break;
             }
 
             // Passive talent auras cannot target pets
