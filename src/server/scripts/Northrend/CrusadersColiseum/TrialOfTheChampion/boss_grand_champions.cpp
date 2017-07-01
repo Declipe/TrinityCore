@@ -231,7 +231,7 @@ void SetGrandChampionToEvadeMode(Creature* me)
 {
     me->RemoveAllAuras();
     me->ApplySpellImmune(SPELL_TRAMPLE_AURA, IMMUNITY_ID, SPELL_TRAMPLE_AURA, false);
-    me->DeleteThreatList();
+    me->GetThreatManager().ClearAllThreat();
     me->CombatStop(true);
     me->SetLootRecipient(nullptr);
     me->AI()->Reset();
@@ -352,7 +352,7 @@ struct boss_grand_championAI : BossAI
                 if (pGrandChampion->HasAura(SPELL_KNEEL))
                 {
                     pGrandChampion->RemoveAllAuras();
-                    pGrandChampion->DeleteThreatList();
+                    pGrandChampion->GetThreatManager().ClearAllThreat();
                     pGrandChampion->SetLootRecipient(nullptr);
                     pGrandChampion->setRegeneratingHealth(true);
                     pGrandChampion->GetMotionMaster()->MoveTargetedHome();
@@ -953,7 +953,7 @@ public:
                         return false;
                     }
                 }
-                else if (rider->getThreatManager().isThreatListEmpty())
+                else if (rider->GetThreatManager().isThreatListEmpty())
                 {
                     SetGrandChampionToEvadeMode(rider->ToCreature());
                     return false;
@@ -1015,12 +1015,12 @@ public:
                                                     {
                                                         // Grand Champion
                                                         // Resetting rider's threat (DoResetThreat() cannot be used on external unit)
-                                                        rider->getThreatManager().resetAllAggro();
+                                                        rider->GetThreatManager().resetAllAggro();
                                                         // Setting gaze on the new player
                                                         if (plr->GetVehicleBase())
-                                                            rider->AddThreat(plr->GetVehicleBase(), 100000.0f);
+                                                            AddThreat(plr->GetVehicleBase(), 100000.0f, rider);
                                                         else
-                                                            rider->AddThreat(plr, 100000.0f);
+                                                            AddThreat(plr, 100000.0f, rider);
                                                         // Casting actual charge
                                                         if (plr->GetVehicleBase())
                                                             rider->CastSpell(plr->GetVehicleBase(), spell_charge);
@@ -1034,12 +1034,12 @@ public:
                                             {
                                                 // Lesser Champion
                                                 // Resetting threat
-                                                DoResetThreat();
+                                                ResetThreatList();
                                                 // Setting gaze on the new player
                                                 if (plr->GetVehicleBase())
-                                                    me->AddThreat(plr->GetVehicleBase(), 100000.0f);
+                                                    AddThreat(plr->GetVehicleBase(), 100000.0f, me);
                                                 else
-                                                    me->AddThreat(plr, 100000.0f);
+                                                    AddThreat(plr, 100000.0f, me);
                                                 // Casting actual charge
                                                 if (plr->GetVehicleBase())
                                                     DoCast(plr->GetVehicleBase(), spell_charge);
@@ -1153,9 +1153,9 @@ public:
                                         Player* plr = itr->GetSource();
                                         if (plr && !plr->IsGameMaster() && plr->IsAlive() && me->IsInRange(plr, 8.0f, 25.0f, false))
                                         {
-                                            DoResetThreat();
+                                            ResetThreatList();
                                             DoCast(plr, SPELL_INTERCEPT);
-                                            me->AddThreat(plr, 5.0f);
+                                            AddThreat(plr, 5.0f, me);
                                             break;
                                         }
                                         else
@@ -1257,7 +1257,7 @@ public:
                         events.ScheduleEvent(EVENT_POLYMORPH, 8000);
                         break;
                     case EVENT_BLASTWAVE:
-                        if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_MINDISTANCE, 0))
                         {
                             if (me->IsWithinDist(target, 5.0f, false))
                             {
@@ -1530,7 +1530,7 @@ public:
                 switch (eventId)
                 {
                     case EVENT_DISENGAGE:
-                        if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_MINDISTANCE, 0))
                         {
                             if (me->IsWithinDist(target, 5.0f, false))
                             {
@@ -1625,7 +1625,7 @@ public:
                         events.ScheduleEvent(EVENT_EVISCERATE, 8000);
                         break;
                     case EVENT_FAN_OF_KNIVES:
-                        if (Unit* target = SelectTarget(SELECT_TARGET_NEAREST, 0))
+                        if (Unit* target = SelectTarget(SELECT_TARGET_MINDISTANCE, 0))
                         {
                             if (me->IsWithinDist(target, 8.0f, false)) // 8 yards is minimum range
                                 DoCastAOE(SPELL_FAN_OF_KNIVES);

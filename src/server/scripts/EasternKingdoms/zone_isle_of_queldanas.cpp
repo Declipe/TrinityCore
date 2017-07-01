@@ -356,7 +356,7 @@ class npc_thalorien_dawnseeker : public CreatureScript
                         if (Creature* Morlen = ObjectAccessor::GetCreature(*me, uiMorlen))
                         {
                             Morlen->SetReactState(REACT_AGGRESSIVE);
-                            Morlen->AddThreat(Thalorien, 100);
+                            AddThreat(Thalorien, 100, Morlen);
                             Morlen->AI()->AttackStart(Thalorien);
                             Morlen->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                         }
@@ -405,7 +405,7 @@ class npc_thalorien_dawnseeker : public CreatureScript
                         if (Creature* Zombie = me->SummonCreature(entry, ZombieLoc[i], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 30000))
                         {
                             Zombie->SetPhaseMask(2, true);
-                            Zombie->AddThreat(Thalorien, 100.0f);
+                            AddThreat(Thalorien, 100.0f, Zombie);
                             Zombie->AI()->AttackStart(Thalorien);
                         }
                 }
