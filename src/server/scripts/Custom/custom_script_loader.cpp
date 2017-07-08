@@ -217,8 +217,8 @@ void AddSC_premium_commandscript();
 // start196
 // start197
 // start198
-// start199
-// start200
+void AddSC_npc_hunterpetvendor();
+void AddSC_gon_playerscripts();
 void AddSC_Mod_Tournaments();
 void AddSC_lighthardmode();
 void AddSC_orrig();
@@ -438,8 +438,8 @@ void AddCustomScripts()
 // end196
 // end197
 // end198
-// end199
-// end200
+AddSC_npc_hunterpetvendor();
+AddSC_gon_playerscripts();
 AddSC_lighthardmode();
 AddSC_orrig();
 AddSC_light();
