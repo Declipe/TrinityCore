@@ -26,10 +26,10 @@ class gon_playerscripts : public PlayerScript
         {
             uint32 GUILD_ID_ALLIANCE = sConfigMgr->GetIntDefault("StartGuild.Alliance", 0);
             uint32 GUILD_ID_HORDE = sConfigMgr->GetIntDefault("StartGuild.Horde", 0);
-            Guild* me = sGuildMgr->GetGuildById(player->GetTeam() == ALLIANCE ? GUILD_ID_ALLIANCE : GUILD_ID_HORDE);
+            Guild* guild = sGuildMgr->GetGuildById(player->GetTeam() == ALLIANCE ? GUILD_ID_ALLIANCE : GUILD_ID_HORDE);
 
-            if (me)
-                me->AddMember(player->GetGUID());
+            if (guild)
+                guild->AddMember(player->GetGUID());
         }
     }
 };
