@@ -1104,7 +1104,7 @@ public:
     struct boss_warrior_toc5AI : public boss_grand_championAI
     {
         boss_warrior_toc5AI(Creature* creature) : boss_grand_championAI(creature) { }
-
+        
         void Reset() override
         {
             boss_grand_championAI::Reset();
