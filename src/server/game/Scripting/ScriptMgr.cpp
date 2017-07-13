@@ -1819,6 +1819,11 @@ bool ScriptMgr::OnCriteriaCheck(uint32 scriptId, Player* source, Unit* target)
     return tmpscript->OnCheck(source, target);
 }
 
+void ScriptMgr::AllCreatureCode(Player* player, Creature* creature, uint32 sender, uint32 action, const char* code)
+{
+    FOREACH_SCRIPT(PlayerScript)->AllCreatureCode(player, creature, sender, action, code);
+}
+
 // Player
 void ScriptMgr::OnPVPKill(Player* killer, Player* killed)
 {
