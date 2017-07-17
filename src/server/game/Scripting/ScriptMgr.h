@@ -422,6 +422,7 @@ class TC_GAME_API CreatureScript : public UnitScript
 
         // Called when a CreatureAI object is needed for the creature.
         virtual CreatureAI* GetAI(Creature* /*creature*/) const = 0;
+        virtual void AllCreatureJustDied(Creature* /*creature*/) { }
 };
 
 class TC_GAME_API GameObjectScript : public ScriptObject
@@ -911,7 +912,7 @@ class TC_GAME_API ScriptMgr
 
         bool CanSpawn(ObjectGuid::LowType spawnId, uint32 entry, CreatureTemplate const* actTemplate, CreatureData const* cData, Map const* map);
         CreatureAI* GetCreatureAI(Creature* creature);
-
+        void AllCreatureJustDied(Creature* creature);
     public: /* GameObjectScript */
 
         GameObjectAI* GetGameObjectAI(GameObject* go);

@@ -1327,6 +1327,11 @@ void ScriptMgr::OnWorldUpdate(uint32 diff)
     FOREACH_SCRIPT(WorldScript)->OnUpdate(diff);
 }
 
+void ScriptMgr::AllCreatureJustDied(Creature* creature)
+{
+    FOREACH_SCRIPT(CreatureScript)->AllCreatureJustDied(creature);
+}
+
 void ScriptMgr::OnHonorCalculation(float& honor, uint8 level, float multiplier)
 {
     FOREACH_SCRIPT(FormulaScript)->OnHonorCalculation(honor, level, multiplier);
