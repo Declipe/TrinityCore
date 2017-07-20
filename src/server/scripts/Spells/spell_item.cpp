@@ -2736,54 +2736,6 @@ class spell_item_nitro_boosts_backfire : public AuraScript
     float lastZ = INVALID_HEIGHT;
 };
 
-class spell_item_nitro_boosts_backfire : public SpellScriptLoader
-{
-    public:
-        spell_item_nitro_boosts_backfire() : SpellScriptLoader("spell_item_nitro_boosts_backfire") { }
-
-        class spell_item_nitro_boosts_backfire_AuraScript : public AuraScript
-        {
-            PrepareAuraScript(spell_item_nitro_boosts_backfire_AuraScript);
-
-            bool Validate(SpellInfo const* /*spell*/) override
-            {
-                return ValidateSpellInfo({ SPELL_NITRO_BOOSTS_PARACHUTE });
-            }
-
-            void HandleApply(AuraEffect const* /*effect*/, AuraEffectHandleModes /*mode*/)
-            {
-                lastZ = GetTarget()->GetPositionZ();
-            }
-
-            void HandlePeriodicDummy(AuraEffect const* effect)
-            {
-                PreventDefaultAction();
-                float curZ = GetTarget()->GetPositionZ();
-                if (curZ < lastZ)
-                {
-                    if (roll_chance_i(80)) // we don't have enough sniffs to verify this, guesstimate
-                        GetTarget()->CastSpell(GetTarget(), SPELL_NITRO_BOOSTS_PARACHUTE, true, nullptr, effect);
-                    GetAura()->Remove();
-                }
-                else
-                    lastZ = curZ;
-            }
-
-            void Register() override
-            {
-                OnEffectApply += AuraEffectApplyFn(spell_item_nitro_boosts_backfire_AuraScript::HandleApply, EFFECT_1, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
-                OnEffectPeriodic += AuraEffectPeriodicFn(spell_item_nitro_boosts_backfire_AuraScript::HandlePeriodicDummy, EFFECT_1, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
-            }
-
-            float lastZ = INVALID_HEIGHT;
-        };
-
-        AuraScript* GetAuraScript() const override
-        {
-            return new spell_item_nitro_boosts_backfire_AuraScript();
-        }
-};
-
 enum TeachLanguage
 {
     SPELL_LEARN_GNOMISH_BINARY      = 50242,
