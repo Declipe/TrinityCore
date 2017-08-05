@@ -219,7 +219,7 @@ enum WorldBoolConfigs
     // 32
     // 33
     // 34
-    // 35
+    CONFIG_EXTERNAL_MAIL_ENABLE,
     // 36
     // 37
     // 38
@@ -482,6 +482,7 @@ enum WorldIntConfigs
     CONFIG_CREATURE_PICKPOCKET_REFILL,
     CONFIG_CREATURE_STOP_FOR_PLAYER,
     CONFIG_AHBOT_UPDATE_INTERVAL,
+    CONFIG_EXTERNAL_MAIL_INTERVAL,
     CONFIG_CHARTER_COST_GUILD,
     CONFIG_CHARTER_COST_ARENA_2v2,
     CONFIG_CHARTER_COST_ARENA_3v3,
@@ -942,6 +943,7 @@ class TC_GAME_API World
         bool m_isClosed;
 
         IntervalTimer m_timers[WUPDATE_COUNT];
+        IntervalTimer extmail_timer;
         time_t mail_timer;
         time_t mail_timer_expires;
 
