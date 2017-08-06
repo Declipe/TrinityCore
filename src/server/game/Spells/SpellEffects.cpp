@@ -16,6 +16,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "AnticheatMgr.h"
 #include "Spell.h"
 #include "AccountMgr.h"
 #include "Battleground.h"
