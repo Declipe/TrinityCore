@@ -21,6 +21,7 @@
 #include "AnticheatMgr.h"
 #include "World.h"
 #include "WorldSession.h"
+#include "Player.h"
 
 class anticheat_commandscript : public CommandScript
 {
@@ -37,24 +38,22 @@ public:
             { "handle",         SEC_ADMINISTRATOR,  true,  &HandleAntiCheatHandleCommand,         "" },
             { "jail",           SEC_GAMEMASTER,     true,  &HandleAnticheatJailCommand,         "" },
             { "warn",           SEC_GAMEMASTER,     true,  &HandleAnticheatWarnCommand,         "" },
-//            { NULL,             0,                     false, NULL,                                           "", NULL }
         };
 
         static std::vector<ChatCommand> commandTable =
         {
-            { "anticheat",      SEC_GAMEMASTER,     true, NULL,                     "",  anticheatCommandTable},
-//            { NULL,             0,                  false, NULL,                               "", NULL }
+            { "anticheat",      SEC_GAMEMASTER,     true, nullptr,                     "",  anticheatCommandTable},
         };
 
         return commandTable;
     }
 
-    static bool HandleAnticheatWarnCommand(ChatHandler* handler, const char* args)
+    static bool HandleAnticheatWarnCommand(ChatHandler* handler, char const* args)
     {
         if (!sWorld->getBoolConfig(CONFIG_ANTICHEAT_ENABLE))
             return false;
 
-        Player* pTarget = NULL;
+        Player* pTarget = nullptr;
 
         std::string strCommand;
 
@@ -80,7 +79,7 @@ public:
 
         while (char* line = handler->LineFromMessage(pos))
         {
-            handler->BuildChatPacket(data, CHAT_MSG_SYSTEM, LANG_UNIVERSAL, NULL, NULL, line);
+            handler->BuildChatPacket(data, CHAT_MSG_SYSTEM, LANG_UNIVERSAL, nullptr, nullptr, line);
             pTarget->GetSession()->SendPacket(&data);
         }
 
@@ -88,12 +87,12 @@ public:
         return true;
     }
 
-    static bool HandleAnticheatJailCommand(ChatHandler* handler, const char* args)
+    static bool HandleAnticheatJailCommand(ChatHandler* handler, char const* args)
     {
         if (!sWorld->getBoolConfig(CONFIG_ANTICHEAT_ENABLE))
             return false;
 
-        Player* pTarget = NULL;
+        Player* pTarget = nullptr;
 
         std::string strCommand;
 
@@ -137,7 +136,7 @@ public:
         return true;
     }
 
-    static bool HandleAntiCheatDeleteCommand(ChatHandler* handler, const char* args)
+    static bool HandleAntiCheatDeleteCommand(ChatHandler* handler, char const* args)
     {
         if (!sWorld->getBoolConfig(CONFIG_ANTICHEAT_ENABLE))
             return false;
@@ -166,7 +165,7 @@ public:
         return true;
     }
 
-    static bool HandleAntiCheatPlayerCommand(ChatHandler* handler, const char* args)
+    static bool HandleAntiCheatPlayerCommand(ChatHandler* handler, char const* args)
     {
         if (!sWorld->getBoolConfig(CONFIG_ANTICHEAT_ENABLE))
             return false;
@@ -176,7 +175,7 @@ public:
         char* command = strtok((char*)args, " ");
 
         uint32 guid = 0;
-        Player* player = NULL;
+        Player* player = nullptr;
 
         if (command)
         {
@@ -218,7 +217,7 @@ public:
         return true;
     }
 
-    static bool HandleAntiCheatHandleCommand(ChatHandler* handler, const char* args)
+    static bool HandleAntiCheatHandleCommand(ChatHandler* handler, char const* args)
     {
         std::string strCommand;
 

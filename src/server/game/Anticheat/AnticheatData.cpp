@@ -1,4 +1,19 @@
 #include "AnticheatData.h"
+#include "Common.h"
+#include "WorldPacket.h"
+#include "WorldSession.h"
+#include "Opcodes.h"
+#include "Log.h"
+#include "Corpse.h"
+#include "Player.h"
+#include "MapManager.h"
+#include "Transport.h"
+#include "Battleground.h"
+#include "WaypointMovementGenerator.h"
+#include "InstanceSaveMgr.h"
+#include "ObjectMgr.h"
+#include "Vehicle.h"
+#include "GameTime.h"
 
 AnticheatData::AnticheatData()
 {
