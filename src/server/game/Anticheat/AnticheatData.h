@@ -5,7 +5,7 @@
 
 #define MAX_REPORT_TYPES 6
 
-class AnticheatData
+class TC_GAME_API AnticheatData
 {
 public:
     AnticheatData();

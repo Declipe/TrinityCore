@@ -3,7 +3,7 @@
 
 #include "ScriptMgr.h"
 
-class AnticheatScripts: public PlayerScript
+class TC_GAME_API AnticheatScripts: public PlayerScript
 {
     public:
         AnticheatScripts();
