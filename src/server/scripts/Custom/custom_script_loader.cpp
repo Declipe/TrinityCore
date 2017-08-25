@@ -216,6 +216,7 @@ void AddSC_premium_commandscript();
 // start195
 // start196
 // start197
+void AddSC_npc_title();
 void AddSC_Mod_GuildDefault();
 void AddSC_npc_hunterpetvendor();
 void AddSC_Mod_Tournaments();
@@ -436,6 +437,7 @@ void AddCustomScripts()
 // end195
 // end196
 // end197
+AddSC_npc_title();
 AddSC_Mod_GuildDefault();
 AddSC_npc_hunterpetvendor();
 AddSC_lighthardmode();

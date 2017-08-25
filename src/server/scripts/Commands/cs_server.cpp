@@ -119,6 +119,9 @@ public:
         uint32 updateTime           = sWorldUpdateTime.GetLastUpdateTime();
 
         handler->SendSysMessage(GitRevision::GetFullVersion());
+        handler->PSendSysMessage("Core: Dk Core 3.3.5a");
+        handler->PSendSysMessage("Tdb: rev.63");
+        handler->PSendSysMessage("UP: 04.04.2017");
         handler->PSendSysMessage(LANG_CONNECTED_PLAYERS, playersNum, maxPlayersNum);
         handler->PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
         handler->PSendSysMessage(LANG_UPTIME, uptime.c_str());
