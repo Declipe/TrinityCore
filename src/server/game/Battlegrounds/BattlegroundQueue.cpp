@@ -136,7 +136,7 @@ bool BattlegroundQueue::IPExistsInQueue(std::string const& remote_addr, PvPDiffi
 
 	uint32 index = 0;
 	if (!isRated && !isPremade)
-		index += BG_TEAMS_COUNT;
+		index += PVP_TEAMS_COUNT;
 
 	for (GroupsQueueType::const_iterator queue_itr = m_QueuedGroups[bracketId][index].begin(); queue_itr != m_QueuedGroups[bracketId][index].end(); ++queue_itr)
 		for (std::map<ObjectGuid, PlayerQueueInfo*>::const_iterator group_itr = (*queue_itr)->Players.begin(); group_itr != (*queue_itr)->Players.end(); ++group_itr)
