@@ -15,8 +15,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
- /// @todo Notify kick timer to player
-
 #include "Battlefield.h"
 #include "CellImpl.h"
 #include "Creature.h"
@@ -245,6 +243,7 @@ void Battlefield::InvitePlayersInZoneToWar()
                     else // if not, kick and invite to queue
                     {
                         _playersToKick[player->GetTeamId()][guid] = time(nullptr) + 10;
+                        player->GetSession()->SendBattlefieldEjectPending(_battleId, true);
                         InvitePlayerToQueue(player);
                     }
                 }
@@ -267,30 +266,28 @@ void Battlefield::InvitePlayersInQueueToWar()
 {
     for (uint8 team = 0; team < PVP_TEAMS_COUNT; ++team)
     {
-        for (auto itr = _playerQueue[team].begin(); itr != _playerQueue[team].end();)
+        while (!_playerQueue[team].empty())
         {
-            if (Player* player = ObjectAccessor::FindConnectedPlayer(*itr))
+            ObjectGuid playerGuid = _playerQueue[team].front();
+            if (Player* player = ObjectAccessor::FindConnectedPlayer(playerGuid))
             {
                 if (!player || player->InArena() || player->GetBattleground() || player->getLevel() < _minPlayerLevel ||
                     _playersInWar[player->GetTeamId()].find(player->GetGUID()) != _playersInWar[player->GetTeamId()].end() || // already in war
                     _invitedPlayers[player->GetTeamId()].find(player->GetGUID()) != _invitedPlayers[player->GetTeamId()].end()) // already invited
                 {
-                    itr = _playerQueue[team].erase(itr);
+                    _playerQueue[team].pop_front();
                     continue;
                 }
 
                 // vacant space
                 if (_playersInWar[player->GetTeamId()].size() + _invitedPlayers[player->GetTeamId()].size() >= _maxPlayerCount)
-                {
-                    ++itr;
                     break;
-                }
 
-                itr = _playerQueue[team].erase(itr);
                 _playersToKick[player->GetTeamId()].erase(player->GetGUID());
                 _invitedPlayers[player->GetTeamId()][player->GetGUID()] = time(nullptr) + _acceptInviteTime;
                 player->GetSession()->SendBattlefieldInvitePlayerToWar(_battleId, _zoneId, _acceptInviteTime);
             }
+            _playerQueue[team].pop_front();
         }
     }
 }
@@ -348,6 +345,7 @@ void Battlefield::HandlePlayerEnterZone(Player* player, uint32 /*zone*/)
                 if (_playersToKick[player->GetTeamId()].find(player->GetGUID()) == _playersToKick[player->GetTeamId()].end())
                 {
                     _playersToKick[player->GetTeamId()][player->GetGUID()] = time(nullptr) + 10;
+                    player->GetSession()->SendBattlefieldEjectPending(_battleId, true);
                     InvitePlayerToQueue(player);
                 }
             }
