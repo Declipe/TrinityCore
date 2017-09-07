@@ -118,7 +118,6 @@
 #define CONST_ARENA_POINT_3  0//3000
 #define CONST_ARENA_POINT_4  0//5000
 
-
 class npc_buffer : public CreatureScript
 {
 public:
@@ -127,7 +126,7 @@ public:
 	struct npc_bufferAI : public ScriptedAI
 	{
 		npc_bufferAI(Creature* me) : ScriptedAI(me) { }
-
+            
 	void CompleteLearnProfession(Player *player, Creature* /*_creature*/, SkillType skill)
 	{
 		if (PlayerAlreadyHasNineProfessions(player) && !IsSecondarySkill(skill))

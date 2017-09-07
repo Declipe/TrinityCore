@@ -223,7 +223,7 @@ class go_item_upgrade : public GameObjectScript
         }
 
         if (itemEnchantSlot < PROP_ENCHANTMENT_SLOT_0 || itemEnchantSlot >= MAX_ENCHANTMENT_SLOT) {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "<< ...", senderValue(0, 0), GOSSIP_ACTION_INFO_DEF);
+            //AddGossipItemFor(player, GOSSIP_ICON_CHAT, "<< ...", senderValue(0, 0), GOSSIP_ACTION_INFO_DEF);
 
             for (uint8 i = PROP_ENCHANTMENT_SLOT_0; i < MAX_ENCHANTMENT_SLOT; ++i) {
                 std::string oldEffect = sObjectMgr->GetTrinityStringForDBCLocale(ItemUpgradeTextNoEffect);

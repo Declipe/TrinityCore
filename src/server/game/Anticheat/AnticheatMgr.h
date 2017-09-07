@@ -48,8 +48,8 @@ enum DetectionTypes
 };
 
 // GUIDLow is the key.
-//typedef std::map<uint32, AnticheatData> AnticheatPlayersDataMap;
-typedef std::unordered_map<uint32, AnticheatData> AnticheatPlayersDataMap;
+typedef std::map<uint32, AnticheatData> AnticheatPlayersDataMap;
+//typedef std::unordered_map<uint32, AnticheatData> AnticheatPlayersDataMap;
 
 class TC_GAME_API AnticheatMgr
 {
@@ -95,7 +95,7 @@ class TC_GAME_API AnticheatMgr
 
         bool MustCheckTempReports(uint8 type);
 
-        AnticheatPlayersDataMap m_Players;                        ///< Player data
+        AnticheatPlayersDataMap m_Players;
 };
 
 #define sAnticheatMgr AnticheatMgr::instance()
