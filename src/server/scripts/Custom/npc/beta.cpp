@@ -32,7 +32,6 @@
 #include "Implementation/ZynDatabase.h"
 #include "DatabaseEnvFwd.h"
 #include "Log.h"
-#include "Custom/Custom.h"
 
 #define MSG_GOSSIP_TEXT_GETTING_STARTED	"Приветствуем вас на сервере"// OneGo - World of Warcraft !"
 
@@ -122,9 +121,14 @@
 #define CONST_ARENA_POINT_3  0//3000
 #define CONST_ARENA_POINT_4  0//5000
 
-    struct npc_buffer : public ScriptedAI
+class npc_buffer : public CreatureScript
+{
+public:
+	npc_buffer() : CreatureScript("npc_buffer") { }
+
+	struct npc_bufferAI : public ScriptedAI
 	{
-		npc_buffer(Creature* me) : ScriptedAI(me) { }
+		npc_bufferAI(Creature* me) : ScriptedAI(me) { }
 
 	void CompleteLearnProfession(Player *player, Creature* /*_creature*/, SkillType skill)
 	{
@@ -1144,6 +1148,12 @@
 		}
 		return true;
 		}
+	};
+
+	CreatureAI* GetAI(Creature* me) const override
+	{
+		return new npc_bufferAI(me);
+	}
 };
 
 class channel_factions : public PlayerScript
@@ -1164,7 +1174,6 @@ public:
 
 void AddSC_Resets()
 {
-	//new npc_buffer();
-	RegisterCustomCreatureAI(npc_buffer);
+	new npc_buffer();
 	new channel_factions();
 }
