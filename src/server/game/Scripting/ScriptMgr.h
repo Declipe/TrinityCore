@@ -424,6 +424,18 @@ class TC_GAME_API CreatureScript : public UnitScript
         virtual CreatureAI* GetAI(Creature* /*creature*/) const = 0;
 };
 
+class TC_GAME_API AllCreatureScript : public ScriptObject
+{
+protected:
+
+	AllCreatureScript(char const* name);
+
+public:
+
+	// Called when die creature
+	   virtual void AllCreatureJustDied(Creature* /*creature*/) { }
+};
+
 class TC_GAME_API GameObjectScript : public ScriptObject
 {
     protected:
@@ -924,6 +936,10 @@ class TC_GAME_API ScriptMgr
 
         bool CanSpawn(ObjectGuid::LowType spawnId, uint32 entry, CreatureData const* cData, Map const* map);
         CreatureAI* GetCreatureAI(Creature* creature);
+
+    public: /* AllCreatureScript */
+
+        void AllCreatureJustDied(Creature* creature);
 
     public: /* GameObjectScript */
 
