@@ -34,14 +34,14 @@
 #include "Log.h"
 
 #define MSG_GOSSIP_TEXT_GETTING_STARTED	"Приветствуем вас на сервере"// OneGo - World of Warcraft !"
- 
+
 #define MSG_ERR_HONOR "У вас не достаточно хонора для совершения покупки!"
 #define MSG_ERR_ARENA_POINT_1 "У вас не достаточно Апа!"
 #define MSG_ERR_TITLE "У данного персонажа уже есть такое звание!"
 #define MSG_ERR_INCOMBAT "Вы находитесь в бою. Чтобы использовать данного Npc выйдите из него."
 #define MSG_COMPLETE_RENAME "Оплата Успешно Произведена Сделайте Логаут и Введите Новое Имя Персонажа.Не Забудьте После Смены Имени,Выйти Из Игры и Удалить Из Клиента Папку Cache!"
 #define MSG_CUSTOMIZE_COMPLETE "Оплата Успешно Произведена Сделайте Логаут и Измените Внешность Персонажа.Не Забудьте После Смены Внешности,Выйти Из Игры и Удалить Из Клиента Папку Cache!"
-#define MSG_CHANGE_FACTION_COMPLETE "Оплата Успешно Произведена Сделайте Логаут и Измените Фракцию Персонажа.Не Забудьте После Смены Внешности,Выйти Из Игры и Удалить Из Клиента Папку Cache!" 
+#define MSG_CHANGE_FACTION_COMPLETE "Оплата Успешно Произведена Сделайте Логаут и Измените Фракцию Персонажа.Не Забудьте После Смены Внешности,Выйти Из Игры и Удалить Из Клиента Папку Cache!"
 
 #define MSG_GOSSIP_TEXT_MAX_HEALTH "Вылечи меня!"
 #define MSG_GOSSIP_TEXT_MAX_SKILL "Выучить все навыки оружия и защиты."
@@ -62,6 +62,9 @@
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip2 "[Title] ->"
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip3 "[test] ->"
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip33 "[titlestest] ->"
+#define MSG_GOSSIP_TEXT_BUFF_MENUvip333 "[sumki] ->"
+#define MSG_GOSSIP_TEXT_BUFF_MENUvip44 "[key] ->"
+//#define MSG_GOSSIP_TEXT_BUFF_MENUvip55 "[kaput] ->"
 #define MSG_GOSSIP_TEXT_MAIN_MENU "<- [Вернутся в Главное меню]"
 #define MSG_GOSSIP_TEXT_PROFFESION_MENU "[Меню Профессий] ->"
 #define MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU "[Меню Второстепенных профессий] ->"
@@ -80,7 +83,7 @@
 
 #define MSG_GOSSIP_TEXT_TITLES_JENKINS "Получить звание Дженкинс."
 #define MSG_GOSSIP_TEXT_TITLES_THE_LOVE_FOOL "Получить звание Безумно Влюбленный."
-#define MSG_GOSSIP_TEXT_TITLES_MERRYMAKER "Получить звание Весельчак." 
+#define MSG_GOSSIP_TEXT_TITLES_MERRYMAKER "Получить звание Весельчак."
 #define MSG_GOSSIP_TEXT_TITLES_SCARAB_LORD "Получить звание Повелитель Скоробеев."
 #define MSG_GOSSIP_TEXT_TITLES_THE_NOBLE "Получить звание Чудесный."
 #define MSG_GOSSIP_TEXT_TITLES_OBSIDIAN_SLAYER "Получить звание Покоритель Обсидианового святилища."
@@ -126,7 +129,7 @@ public:
 	struct npc_bufferAI : public ScriptedAI
 	{
 		npc_bufferAI(Creature* me) : ScriptedAI(me) { }
-            
+
 	void CompleteLearnProfession(Player *player, Creature* /*_creature*/, SkillType skill)
 	{
 		if (PlayerAlreadyHasNineProfessions(player) && !IsSecondarySkill(skill))
@@ -202,7 +205,7 @@ public:
 
 		return true;
 	}
-	// See "static void HandleLearnSkillRecipesHelper(Player* player,uint32 skill_id)" from cs_learn.cpp  
+	// See "static void HandleLearnSkillRecipesHelper(Player* player,uint32 skill_id)" from cs_learn.cpp
 	void LearnSkillRecipesHelper(Player *player, uint32 skill_id)
 	{
 		uint32 classmask = player->getClassMask();
@@ -213,19 +216,19 @@ public:
 			if (!skillLine)
 				continue;
 
-			// wrong skill 
+			// wrong skill
 			if (skillLine->skillId != skill_id)
 				continue;
 
-			// not high rank 
+			// not high rank
 			if (skillLine->forward_spellid)
 				continue;
 
-			// skip racial skills 
+			// skip racial skills
 			if (skillLine->racemask != 0)
 				continue;
 
-			// skip wrong class skills 
+			// skip wrong class skills
 			if (skillLine->classmask && (skillLine->classmask & classmask) == 0)
 				continue;
 
@@ -248,6 +251,9 @@ public:
         AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip2, GOSSIP_SENDER_MAIN, 22);
 		AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
 		AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
+		AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip333, GOSSIP_SENDER_MAIN, 32333);
+		AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
+		//AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip55, GOSSIP_SENDER_MAIN, 32355);
 		AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
 		SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 		return true;
@@ -445,9 +451,54 @@ public:
             AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip2, GOSSIP_SENDER_MAIN, 22);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip333, GOSSIP_SENDER_MAIN, 32333);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
+			//AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip55, GOSSIP_SENDER_MAIN, 32355);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
 			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
+        //case 32355:
+        //player->CastSpell(player, 30110, true);
+        //player->CastSpell(player, 30113, true);
+        //player->CastSpell(player, 30127, true);
+        //player->CastSpell(player, 53094, true);
+        //player->CastSpell(player, 53317, true);
+			//CloseGossipMenuFor(player);
+        //break;
+        case 32344:
+          player->AddItem(6893, 1);
+          player->AddItem(7146, 1);
+          player->AddItem(11000, 1);
+          player->AddItem(12382, 1);
+          player->AddItem(13704, 1);
+          player->AddItem(18249, 1);
+          player->AddItem(24490, 1);
+          player->AddItem(27991, 1);
+          player->AddItem(28395, 1);
+          player->AddItem(30633, 1);
+          player->AddItem(30635, 1);
+          player->AddItem(31084, 1);
+          player->AddItem(38555, 1);
+          player->AddItem(42482, 1);
+          player->AddItem(43650, 1);
+          player->AddItem(44581, 1);
+          player->AddItem(44582, 1);
+          player->AddItem(45796, 1);
+        break;
+        case 32333:
+          if ((player->getClass() == CLASS_HUNTER))
+           {
+             player->AddItem(38082, 3);
+             player->AddItem(44448, 1);
+             player->AddItem(44447, 1);
+             return true;
+           }
+          else
+           {
+                player->AddItem(38082, 4);
+                return true;
+            }
+            break;
 		case 22333:
 			player->PlayerTalkClass->ClearMenus();
 			//AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_JENKINS, GOSSIP_SENDER_MAIN, 23);
@@ -789,7 +840,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else{
-			// Даем звание Дженкинс 
+			// Даем звание Дженкинс
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
 			CloseGossipMenuFor(player);
@@ -870,7 +921,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else{
-			// Даем звание Чудесный 
+			// Даем звание Чудесный
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
 			CloseGossipMenuFor(player);
@@ -890,7 +941,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else{
-			// Даем звание Покоритель Обсидианового святилища 
+			// Даем звание Покоритель Обсидианового святилища
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_2);
 			CloseGossipMenuFor(player);
