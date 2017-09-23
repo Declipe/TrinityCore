@@ -1668,11 +1668,6 @@ void ScriptMgr::OnWeatherUpdate(Weather* weather, uint32 diff)
     tmpscript->OnUpdate(weather, diff);
 }
 
-void ScriptMgr::AllCreatureJustDied(Creature* creature)
-{
-	FOREACH_SCRIPT(AllCreatureScript)->AllCreatureJustDied(creature);
-}
-
 void ScriptMgr::OnAuctionAdd(AuctionHouseObject* ah, AuctionEntry* entry)
 {
     ASSERT(ah);
@@ -2228,12 +2223,6 @@ CreatureScript::CreatureScript(char const* name)
     ScriptRegistry<CreatureScript>::Instance()->AddScript(this);
 }
 
-AllCreatureScript::AllCreatureScript(char const* name)
-: ScriptObject(name)
-{
-	ScriptRegistry<AllCreatureScript>::Instance()->AddScript(this);
-}
-
 GameObjectScript::GameObjectScript(char const* name)
     : ScriptObject(name)
 {
@@ -2346,7 +2335,6 @@ GroupScript::GroupScript(char const* name)
 }
 
 // Specialize for each script type class like so:
-template class TC_GAME_API ScriptRegistry<AllCreatureScript>;
 template class TC_GAME_API ScriptRegistry<SpellScriptLoader>;
 template class TC_GAME_API ScriptRegistry<ServerScript>;
 template class TC_GAME_API ScriptRegistry<WorldScript>;

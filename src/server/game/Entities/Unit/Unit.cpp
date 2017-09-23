@@ -12204,9 +12204,6 @@ void Unit::Kill(Unit* victim, bool durabilityLoss)
         if (creature->IsAIEnabled)
             creature->AI()->JustDied(this);
 
-        if (creature)
-            sScriptMgr->AllCreatureJustDied(creature);
-            
         if (TempSummon* summon = creature->ToTempSummon())
             if (Unit* summoner = summon->GetSummoner())
                 if (summoner->ToCreature() && summoner->IsAIEnabled)
