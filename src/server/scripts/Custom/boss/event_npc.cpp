@@ -11,6 +11,7 @@
 enum Spells
 {
     //===================FireSpells==========================
+    SPELL_MANA_BARRIER                               = 70842, //test
     SPELL_SUNBEAM_FIRE                               = 62872,
     SPELL_SCORCH_FIRE                                = 63474,
     SPELL_JETS_FIRE                                  = 63472,
@@ -146,6 +147,7 @@ class event_npc_firelord : public CreatureScript
             void EnterCombat(Unit* /*pWho*/)
             {
 				me->Yell(FIRE_SAY_AGGRO, LANG_UNIVERSAL);
+				DoCastSelf(SPELL_MANA_BARRIER, true);
                 summons.DespawnAll();
             }
 
@@ -165,6 +167,19 @@ class event_npc_firelord : public CreatureScript
 				me->Yell(FIRE_SAY_DIE, LANG_UNIVERSAL);
             }
 
+                void DamageTaken(Unit* /*damageDealer*/, uint32& damage) override
+                {
+                // phase transition
+                if (damage > me->GetPower(POWER_MANA))
+                {
+                    DoStartMovement(me->GetVictim());
+                    ResetThreatList();
+                    damage -= me->GetPower(POWER_MANA);
+                    me->SetPower(POWER_MANA, 0);
+                    me->RemoveAurasDueToSpell(SPELL_MANA_BARRIER);
+                 }
+                    };
+                        
             void UpdateAI(uint32 uiDiff)
             {
                 if (!UpdateVictim())
