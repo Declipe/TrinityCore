@@ -820,7 +820,7 @@ class npc_grandmother : public CreatureScript
 
         struct npc_grandmotherAI : public ScriptedAI
         {
-            npc_grandmotherAI(Creature* creature) : ScriptedAI(creature) { }
+            npc_grandmotherAI(Creature* me) : ScriptedAI(me) { }
 
             bool GossipSelect(Player* player, uint32 menuId, uint32 gossipListId) override
             {
@@ -837,9 +837,9 @@ class npc_grandmother : public CreatureScript
             }
         };
 
-        CreatureAI* GetAI(Creature* creature) const override
+        CreatureAI* GetAI(Creature* me) const override
         {
-            return GetKarazhanAI<npc_grandmotherAI>(creature);
+            return GetKarazhanAI<npc_grandmotherAI>(me);
         }
 };
 

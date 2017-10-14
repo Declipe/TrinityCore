@@ -819,6 +819,11 @@ class boss_sister_svalna : public CreatureScript
                 }
             }
 
+           void EnterEvadeMode(EvadeReason why) override 
+           { 
+	       if (_isEventInProgress) return; ScriptedAI::EnterEvadeMode(why); 
+	       }
+
             void JustReachedHome() override
             {
                 _JustReachedHome();
