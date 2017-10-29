@@ -1428,7 +1428,7 @@ void ObjectMgr::LoadLinkedRespawn()
 
     if (!result)
     {
-        TC_LOG_ERROR("server.loading", ">> Loaded 0 linked respawns. DB table `linked_respawn` is empty.");
+        TC_LOG_INFO("server.loading", ">> Loaded 0 linked respawns. DB table `linked_respawn` is empty.");
         return;
     }
 
@@ -1754,7 +1754,7 @@ void ObjectMgr::LoadCreatures()
 
     if (!result)
     {
-        TC_LOG_ERROR("server.loading", ">> Loaded 0 creatures. DB table `creature` is empty.");
+        TC_LOG_INFO("server.loading", ">> Loaded 0 creatures. DB table `creature` is empty.");
         return;
     }
 
@@ -2042,7 +2042,7 @@ void ObjectMgr::LoadGameObjects()
 
     if (!result)
     {
-        TC_LOG_ERROR("server.loading", ">> Loaded 0 gameobjects. DB table `gameobject` is empty.");
+        TC_LOG_INFO("server.loading", ">> Loaded 0 gameobjects. DB table `gameobject` is empty.");
         return;
     }
 
@@ -2215,12 +2215,12 @@ void ObjectMgr::LoadSpawnGroupTemplates()
             if (flags & ~SPAWNGROUP_FLAGS_ALL)
             {
                 flags &= SPAWNGROUP_FLAGS_ALL;
-                TC_LOG_ERROR("server.loading", "Invalid spawn group flag %u on group ID %u (%s), reduced to valid flag %u.", flags, groupId, group.name.c_str(), uint32(group.flags));
+                TC_LOG_ERROR("sql.sql", "Invalid spawn group flag %u on group ID %u (%s), reduced to valid flag %u.", flags, groupId, group.name.c_str(), uint32(group.flags));
             }
             if (flags & SPAWNGROUP_FLAG_SYSTEM && flags & SPAWNGROUP_FLAG_MANUAL_SPAWN)
             {
                 flags &= ~SPAWNGROUP_FLAG_MANUAL_SPAWN;
-                TC_LOG_ERROR("server.loading", "System spawn group %u (%s) has invalid manual spawn flag. Ignored.", groupId, group.name.c_str());
+                TC_LOG_ERROR("sql.sql", "System spawn group %u (%s) has invalid manual spawn flag. Ignored.", groupId, group.name.c_str());
             }
             group.flags = SpawnGroupFlags(flags);
         } while (result->NextRow());
@@ -2228,7 +2228,7 @@ void ObjectMgr::LoadSpawnGroupTemplates()
 
     if (_spawnGroupDataStore.find(0) == _spawnGroupDataStore.end())
     {
-        TC_LOG_ERROR("server.loading", "Default spawn group (index 0) is missing from DB! Manually inserted.");
+        TC_LOG_ERROR("sql.sql", "Default spawn group (index 0) is missing from DB! Manually inserted.");
         SpawnGroupTemplateData& data = _spawnGroupDataStore[0];
         data.groupId = 0;
         data.name = "Default Group";
@@ -2237,7 +2237,7 @@ void ObjectMgr::LoadSpawnGroupTemplates()
     }
     if (_spawnGroupDataStore.find(1) == _spawnGroupDataStore.end())
     {
-        TC_LOG_ERROR("server.loading", "Default legacy spawn group (index 1) is missing from DB! Manually inserted.");
+        TC_LOG_ERROR("sql.sql", "Default legacy spawn group (index 1) is missing from DB! Manually inserted.");
         SpawnGroupTemplateData&data = _spawnGroupDataStore[1];
         data.groupId = 1;
         data.name = "Legacy Group";
@@ -2248,7 +2248,7 @@ void ObjectMgr::LoadSpawnGroupTemplates()
     if (result)
         TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " spawn group templates in %u ms", _spawnGroupDataStore.size(), GetMSTimeDiffToNow(oldMSTime));
     else
-        TC_LOG_ERROR("server.loading", ">> Loaded 0 spawn group templates. DB table `spawn_group_template` is empty.");
+        TC_LOG_INFO("server.loading", ">> Loaded 0 spawn group templates. DB table `spawn_group_template` is empty.");
 
     return;
 }
@@ -2262,7 +2262,7 @@ void ObjectMgr::LoadSpawnGroups()
 
     if (!result)
     {
-        TC_LOG_ERROR("server.loading", ">> Loaded 0 spawn group members. DB table `spawn_group` is empty.");
+        TC_LOG_INFO("server.loading", ">> Loaded 0 spawn group members. DB table `spawn_group` is empty.");
         return;
     }
 
@@ -2276,7 +2276,7 @@ void ObjectMgr::LoadSpawnGroups()
             uint32 type = fields[1].GetUInt8();
             if (type >= SPAWN_TYPE_MAX)
             {
-                TC_LOG_ERROR("server.loading", "Spawn data with invalid type %u listed for spawn group %u. Skipped.", type, groupId);
+                TC_LOG_ERROR("sql.sql", "Spawn data with invalid type %u listed for spawn group %u. Skipped.", type, groupId);
                 continue;
             }
             spawnType = SpawnObjectType(type);
@@ -2286,18 +2286,18 @@ void ObjectMgr::LoadSpawnGroups()
         SpawnData const* data = GetSpawnData(spawnType, spawnId);
         if (!data)
         {
-            TC_LOG_ERROR("server.loading", "Spawn data with ID (%u,%u) not found, but is listed as a member of spawn group %u!", uint32(spawnType), spawnId, groupId);
+            TC_LOG_ERROR("sql.sql", "Spawn data with ID (%u,%u) not found, but is listed as a member of spawn group %u!", uint32(spawnType), spawnId, groupId);
             continue;
         }
         else if (data->spawnGroupData->groupId)
         {
-            TC_LOG_ERROR("server.loading", "Spawn with ID (%u,%u) is listed as a member of spawn group %u, but is already a member of spawn group %u. Skipping.", uint32(spawnType), spawnId, groupId, data->spawnGroupData->groupId);
+            TC_LOG_ERROR("sql.sql", "Spawn with ID (%u,%u) is listed as a member of spawn group %u, but is already a member of spawn group %u. Skipping.", uint32(spawnType), spawnId, groupId, data->spawnGroupData->groupId);
             continue;
         }
         auto it = _spawnGroupDataStore.find(groupId);
         if (it == _spawnGroupDataStore.end())
         {
-            TC_LOG_ERROR("server.loading", "Spawn group %u assigned to spawn ID (%u,%u), but group is found!", groupId, uint32(spawnType), spawnId);
+            TC_LOG_ERROR("sql.sql", "Spawn group %u assigned to spawn ID (%u,%u), but group is found!", groupId, uint32(spawnType), spawnId);
             continue;
         }
         else
@@ -2307,7 +2307,7 @@ void ObjectMgr::LoadSpawnGroups()
                 groupTemplate.mapId = data->spawnPoint.GetMapId();
             else if (groupTemplate.mapId != data->spawnPoint.GetMapId() && !(groupTemplate.flags & SPAWNGROUP_FLAG_SYSTEM))
             {
-                TC_LOG_ERROR("server.loading", "Spawn group %u has map ID %u, but spawn (%u,%u) has map id %u - spawn NOT added to group!", groupId, groupTemplate.mapId, uint32(spawnType), spawnId, data->spawnPoint.GetMapId());
+                TC_LOG_ERROR("sql.sql", "Spawn group %u has map ID %u, but spawn (%u,%u) has map id %u - spawn NOT added to group!", groupId, groupTemplate.mapId, uint32(spawnType), spawnId, data->spawnPoint.GetMapId());
                 continue;
             }
             const_cast<SpawnData*>(data)->spawnGroupData = &groupTemplate;
@@ -2329,7 +2329,7 @@ void ObjectMgr::LoadInstanceSpawnGroups()
 
     if (!result)
     {
-        TC_LOG_ERROR("server.loading", ">> Loaded 0 instance spawn groups. DB table `instance_spawn_groups` is empty.");
+        TC_LOG_INFO("server.loading", ">> Loaded 0 instance spawn groups. DB table `instance_spawn_groups` is empty.");
         return;
     }
 
@@ -2341,7 +2341,7 @@ void ObjectMgr::LoadInstanceSpawnGroups()
         auto it = _spawnGroupDataStore.find(spawnGroupId);
         if (it == _spawnGroupDataStore.end() || (it->second.flags & SPAWNGROUP_FLAG_SYSTEM))
         {
-            TC_LOG_ERROR("server.loading", "Invalid spawn group %u specified for instance %u. Skipped.", spawnGroupId, fields[0].GetUInt16());
+            TC_LOG_ERROR("sql.sql", "Invalid spawn group %u specified for instance %u. Skipped.", spawnGroupId, fields[0].GetUInt16());
             continue;
         }
 
@@ -2357,7 +2357,7 @@ void ObjectMgr::LoadInstanceSpawnGroups()
         if (states & ~ALL_STATES)
         {
             info.BossStates = states & ALL_STATES;
-            TC_LOG_ERROR("server.loading", "Instance spawn group (%u,%u) had invalid boss state mask %u - truncated to %u.", instanceMapId, spawnGroupId, states, info.BossStates);
+            TC_LOG_ERROR("sql.sql", "Instance spawn group (%u,%u) had invalid boss state mask %u - truncated to %u.", instanceMapId, spawnGroupId, states, info.BossStates);
         }
         else
             info.BossStates = states;
@@ -2366,7 +2366,7 @@ void ObjectMgr::LoadInstanceSpawnGroups()
         if (flags & ~InstanceSpawnGroupInfo::FLAG_ALL)
         {
             info.Flags = flags & InstanceSpawnGroupInfo::FLAG_ALL;
-            TC_LOG_ERROR("server.loading", "Instance spawn group (%u,%u) had invalid flags %u - truncated to %u.", instanceMapId, spawnGroupId, flags, info.Flags);
+            TC_LOG_ERROR("sql.sql", "Instance spawn group (%u,%u) had invalid flags %u - truncated to %u.", instanceMapId, spawnGroupId, flags, info.Flags);
         }
         else
             info.Flags = flags;
@@ -5980,6 +5980,134 @@ void ObjectMgr::LoadQuestAreaTriggers()
     } while (result->NextRow());
 
     TC_LOG_INFO("server.loading", ">> Loaded %u quest trigger points in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+}
+
+QuestGreeting const* ObjectMgr::GetQuestGreeting(ObjectGuid guid) const
+{
+    auto itr = _questGreetingStore.find(guid.GetTypeId());
+    if (itr == _questGreetingStore.end())
+        return nullptr;
+
+    auto questItr = itr->second.find(guid.GetEntry());
+    if (questItr == itr->second.end())
+        return nullptr;
+
+    return questItr->second;
+}
+
+void ObjectMgr::LoadQuestGreetings()
+{
+    uint32 oldMSTime = getMSTime();
+
+    _questGreetingStore.clear(); // need for reload case
+
+    //                                                0   1          2                3             4
+    QueryResult result = WorldDatabase.Query("SELECT ID, Type, GreetEmoteType, GreetEmoteDelay, Greeting FROM quest_greeting");
+    if (!result)
+    {
+        TC_LOG_INFO("server.loading", ">> Loaded 0 quest greetings. DB table `quest_greeting` is empty.");
+        return;
+    }
+
+    _questGreetingStore.rehash(result->GetRowCount());
+
+    uint32 count = 0;
+
+    do
+    {
+        Field* fields = result->Fetch();
+
+        uint32 id                   = fields[0].GetUInt32();
+        uint8 type                  = fields[1].GetUInt8();
+        // overwrite
+        switch (type) 
+        {
+            case 0: // Creature
+                type = TYPEID_UNIT;
+                if (!sObjectMgr->GetCreatureTemplate(id))
+                {
+                    TC_LOG_ERROR("sql.sql", "Table `quest_greeting`: creature template (entry: %u) does not exist.", id);
+                    continue;
+                }
+                break;
+            case 1: // GameObject
+                type = TYPEID_GAMEOBJECT;
+                if (!sObjectMgr->GetGameObjectTemplate(id))
+                {
+                    TC_LOG_ERROR("sql.sql", "Table `quest_greeting`: gameobject template (entry: %u) does not exist.", id);
+                    continue;
+                }
+                break;
+            default:
+                TC_LOG_ERROR("sql.sql", "Table `quest_greeting`: unknown type = %u for entry = %u. Skipped.", type, id);
+                continue;
+        }
+
+        uint16 greetEmoteType       = fields[2].GetUInt16();
+
+        if (greetEmoteType > 0 && !sEmotesStore.LookupEntry(greetEmoteType))
+        {
+            TC_LOG_DEBUG("sql.sql", "Table `quest_greeting`: entry %u has greetEmoteType = %u but emote does not exist. Set to 0.", id, greetEmoteType);
+            greetEmoteType = 0;
+        }
+
+        uint32 greetEmoteDelay      = fields[3].GetUInt32();
+        std::string greeting        = fields[4].GetString();
+
+        _questGreetingStore[type][id] = new QuestGreeting(greetEmoteType, greetEmoteDelay, greeting);
+
+        ++count;
+    }
+    while (result->NextRow());
+
+    TC_LOG_INFO("server.loading", ">> Loaded %u quest_greeting in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+}
+
+void ObjectMgr::LoadQuestGreetingsLocales()
+{
+    uint32 oldMSTime = getMSTime();
+
+    _questGreetingLocaleStore.clear();                              // need for reload case
+
+    //                                               0     1      2       3
+    QueryResult result = WorldDatabase.Query("SELECT ID, Type, Locale, Greeting FROM quest_greeting_locale");
+    if (!result)
+    {
+        TC_LOG_INFO("server.loading", ">> Loaded 0 quest_greeting locales. DB table `quest_greeting_locale` is empty.");
+        return;
+    }
+
+    do
+    {
+        Field* fields = result->Fetch();
+
+        uint32 id                   = fields[0].GetUInt32();
+        uint8 type                  = fields[1].GetUInt8();
+        // overwrite
+        switch (type)
+        {
+            case 0: // Creature
+                type = TYPEID_UNIT;
+                break;
+            case 1: // GameObject
+                type = TYPEID_GAMEOBJECT;
+                break;
+            default:
+                break;
+        }
+
+        std::string localeName      = fields[2].GetString();
+        std::string greeting        = fields[3].GetString();
+
+        QuestGreetingLocale& data   = _questGreetingLocaleStore[MAKE_PAIR32(id, type)];
+        LocaleConstant locale       = GetLocaleByName(localeName);
+        if (locale == LOCALE_enUS)
+            continue;
+
+        AddLocaleString(greeting, locale, data.greeting);
+    } while (result->NextRow());
+
+    TC_LOG_INFO("server.loading", ">> Loaded %u quest greeting locale strings in %u ms", uint32(_questGreetingLocaleStore.size()), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::LoadTavernAreaTriggers()
