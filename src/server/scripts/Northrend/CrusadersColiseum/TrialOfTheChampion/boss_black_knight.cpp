@@ -22,29 +22,14 @@ SDComment:
 SDCategory: Trial of the Champion
 EndScriptData */
 
-#include "ScriptMgr.h"
-#include "InstanceScript.h"
-#include "Map.h"
-#include "ObjectAccessor.h"
 #include "Player.h"
-#include "ScriptedEscortAI.h"
-#include "trial_of_the_champion.h"
-#include "Vehicle.h"
-#include "GameObject.h"
-#include "GameObjectAI.h"
-#include "MotionMaster.h"
-#include "ScriptedGossip.h"
-#include "TemporarySummon.h"
-#include "PassiveAI.h"
-#include "VehicleDefines.h"
-#include "GridNotifiers.h"
+#include "ScriptMgr.h"
 #include "ScriptedCreature.h"
+#include "ScriptedEscortAI.h"
 #include "SpellAuraEffects.h"
 #include "SpellScript.h"
-#include "Spell.h"
-#include "SpellInfo.h"
 #include "SpellMgr.h"
-#include "WorldSession.h"
+#include "trial_of_the_champion.h"
 
 enum Yells
 {
@@ -238,7 +223,7 @@ public:
                         if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 50.0f, true))
                         {
                             ResetThreatList();
-                            AddThreat(target, 10.0f, me);
+                            AddThreat(target, 10.0f);
                             me->AI()->AttackStart(target);
                         }
                         events.ScheduleEvent(EVENT_CLAW, urand(12000, 15000));
@@ -261,7 +246,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return new npc_risen_ghoulAI(creature);
+        return GetTrialOfChampionAI<npc_risen_ghoulAI>(creature);
     }
 };
 
@@ -500,7 +485,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfTheChampionAI<boss_black_knightAI>(creature);
+        return GetTrialOfChampionAI<boss_black_knightAI>(creature);
     }
 };
 
@@ -584,7 +569,7 @@ public:
 
         void UpdateAI(uint32 uiDiff) override
         {
-			EscortAI::UpdateAI(uiDiff);
+            EscortAI::UpdateAI(uiDiff);
 
             UpdateVictim();
         }
@@ -593,7 +578,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return new npc_black_knight_skeletal_gryphonAI(creature);
+        return GetTrialOfChampionAI<npc_black_knight_skeletal_gryphonAI>(creature);
     }
 };
 
@@ -608,9 +593,10 @@ class spell_black_knight_deaths_push : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-				return ValidateSpellInfo({ 
-					SPELL_DEATH_RESPITE_DND,
-					SPELL_FEIGN_DEATH });
+                if (!sSpellMgr->GetSpellInfo(SPELL_DEATH_RESPITE_DND) ||
+                    !sSpellMgr->GetSpellInfo(SPELL_FEIGN_DEATH))
+                    return false;
+                return true;
             }
 
             void HandleScript(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
@@ -645,11 +631,12 @@ class spell_black_knight_obliterate : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-				return ValidateSpellInfo({ 
-					SPELL_BLOOD_PLAGUE,
-					SPELL_FROST_FEVER,
-					SPELL_BLOOD_PLAGUE_H,
-					SPELL_BLOOD_PLAGUE_H });
+                if (!sSpellMgr->GetSpellInfo(SPELL_BLOOD_PLAGUE) ||
+                    !sSpellMgr->GetSpellInfo(SPELL_FROST_FEVER) ||
+                    !sSpellMgr->GetSpellInfo(SPELL_BLOOD_PLAGUE_H) ||
+                    !sSpellMgr->GetSpellInfo(SPELL_FROST_FEVER_H))
+                    return false;
+                return true;
             }
 
             void CalculateDamage()
@@ -726,7 +713,9 @@ class spell_black_knight_ghoul_explode : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-				return ValidateSpellInfo({ SPELL_EXPLODE });
+                if (!sSpellMgr->GetSpellInfo(SPELL_EXPLODE))
+                    return false;
+                return true;
             }
 
             void CastExplode(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)

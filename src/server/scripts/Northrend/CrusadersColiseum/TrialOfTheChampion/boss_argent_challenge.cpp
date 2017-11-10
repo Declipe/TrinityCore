@@ -22,30 +22,13 @@ SDComment:
 SDCategory: Trial of the Champion
 EndScriptData */
 
-#include "ScriptMgr.h"
-#include "InstanceScript.h"
-#include "Map.h"
-#include "ObjectAccessor.h"
 #include "Player.h"
-#include "ScriptedEscortAI.h"
-#include "trial_of_the_champion.h"
-#include "Vehicle.h"
-#include "GameObject.h"
-#include "GameObjectAI.h"
-#include "MotionMaster.h"
-#include "ScriptedGossip.h"
-#include "TemporarySummon.h"
-#include "PassiveAI.h"
-#include "VehicleDefines.h"
-#include "GridNotifiers.h"
+#include "ScriptMgr.h"
 #include "ScriptedCreature.h"
-#include "Containers.h"
-#include "GameTime.h"
 #include "SpellAuraEffects.h"
-#include "SpellHistory.h"
-#include "SpellMgr.h"
 #include "SpellScript.h"
-#include "WorldSession.h"
+#include "SpellMgr.h"
+#include "trial_of_the_champion.h"
 
 enum Yells
 {
@@ -388,7 +371,7 @@ class boss_eadric : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return GetTrialOfTheChampionAI<boss_eadricAI>(creature);
+            return GetTrialOfChampionAI<boss_eadricAI>(creature);
         }
 };
 
@@ -569,7 +552,7 @@ class boss_paletress : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return GetTrialOfTheChampionAI<boss_paletressAI>(creature);
+            return GetTrialOfChampionAI<boss_paletressAI>(creature);
         }
 };
 
@@ -847,7 +830,7 @@ class npc_argent_soldier : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return GetTrialOfTheChampionAI<npc_argent_soldierAI>(creature);
+            return GetTrialOfChampionAI<npc_argent_soldierAI>(creature);
         }
 };
 
@@ -876,7 +859,7 @@ class npc_fountain_of_light : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return GetTrialOfTheChampionAI<npc_fountain_of_lightAI>(creature);
+            return GetTrialOfChampionAI<npc_fountain_of_lightAI>(creature);
         }
 };
 
@@ -968,7 +951,7 @@ class npc_memory : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return GetTrialOfTheChampionAI<npc_memoryAI>(creature);
+            return GetTrialOfChampionAI<npc_memoryAI>(creature);
         }
 };
 
@@ -983,9 +966,10 @@ class spell_eadric_hammer_of_righteous : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-				return ValidateSpellInfo({ 
-					SPELL_HAMMER_RIGHT_DUMMY,
-					SPELL_HAMMER_JUSTICE_STUN });
+                if (!sSpellMgr->GetSpellInfo(SPELL_HAMMER_RIGHT_DUMMY) ||
+                    !sSpellMgr->GetSpellInfo(SPELL_HAMMER_JUSTICE_STUN))
+                    return false;
+                return true;
             }
 
             void HandleDamage()
@@ -1088,7 +1072,7 @@ class spell_eadric_radiance : public SpellScriptLoader
         }
 };
 
-std::vector<uint32> const memorySpells =
+uint32 const memorySpellId[25] =
 {
     SPELL_MEMORY_ALGALON,
     SPELL_MEMORY_ARCHIMONDE,
@@ -1129,33 +1113,7 @@ class spell_paletress_summon_memory : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-				return ValidateSpellInfo({
-					SPELL_MEMORY_ALGALON,
-					SPELL_MEMORY_ARCHIMONDE,
-					SPELL_MEMORY_CHROMAGGUS,
-					SPELL_MEMORY_CYANIGOSA,
-					SPELL_MEMORY_DELRISSA,
-					SPELL_MEMORY_ECK,
-					SPELL_MEMORY_ENTROPIUS,
-					SPELL_MEMORY_GRUUL,
-					SPELL_MEMORY_HAKKAR,
-					SPELL_MEMORY_HEIGAN,
-					SPELL_MEMORY_HEROD,
-					SPELL_MEMORY_HOGGER,
-					SPELL_MEMORY_IGNIS,
-					SPELL_MEMORY_ILLIDAN,
-					SPELL_MEMORY_INGVAR,
-					SPELL_MEMORY_KALITHRESH,
-					SPELL_MEMORY_LUCIFRON,
-					SPELL_MEMORY_MALCHEZAAR,
-					SPELL_MEMORY_MUTANUS,
-					SPELL_MEMORY_ONYXIA,
-					SPELL_MEMORY_THUNDERAAN,
-					SPELL_MEMORY_VANCLEEF,
-					SPELL_MEMORY_VASHJ,
-					SPELL_MEMORY_VEKNILASH,
-					SPELL_MEMORY_VEZAX
-				});
+                return ValidateSpellInfo(memorySpellId);
             }
 
             void FilterTargets(std::list<WorldObject*>& targets)
@@ -1170,7 +1128,7 @@ class spell_paletress_summon_memory : public SpellScriptLoader
 
             void HandleScript(SpellEffIndex /*effIndex*/)
             {
-                uint32 const randMemorySpellId = Trinity::Containers::SelectRandomContainerElement(memorySpells);
+                uint32 const randMemorySpellId = Trinity::Containers::SelectRandomContainerElement(memorySpellId);
                 GetHitUnit()->CastSpell(GetHitUnit(), randMemorySpellId, true, nullptr, nullptr, GetCaster()->GetGUID());
             }
 
@@ -1198,7 +1156,9 @@ class spell_paletress_reflective_shield : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-				return ValidateSpellInfo({ SPELL_SHIELD_REFLECT });
+                if (!sSpellMgr->GetSpellInfo(SPELL_SHIELD_REFLECT))
+                    return false;
+                return true;
             }
 
             void HandleScript(AuraEffect* aurEff, DamageInfo& dmgInfo, uint32& absorbAmount)

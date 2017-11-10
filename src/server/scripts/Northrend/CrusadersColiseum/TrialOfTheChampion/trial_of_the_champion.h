@@ -19,8 +19,6 @@
 #ifndef TRIAL_OF_CHAMPION_H_
 #define TRIAL_OF_CHAMPION_H_
 
-#include "CreatureAIImpl.h"
-
 #define ToCScriptName "instance_trial_of_the_champion"
 #define DataHeader "TC"
 
@@ -214,7 +212,7 @@ enum Creatures
     NPC_SPECTATOR_GNOME                             = 34910
 };
 
-enum TCGameObjects
+enum GameObjects
 {
     GO_MAIN_GATE                                    = 195647,
     GO_NORTH_PORTCULLIS                             = 195650,
@@ -229,7 +227,7 @@ enum TCGameObjects
     GO_CONFESSOR_S_CACHE_H                          = 195324
 };
 
-enum TCVehicles
+enum Vehicles
 {
     // Grand Champions Alliance Vehicles
     VEHICLE_MARSHAL_JACOB_ALERIUS_MOUNT             = 35637,
@@ -290,10 +288,10 @@ enum PennantSpells
     SPELL_PENNANT_UNDERCITY                         = 63430
 };
 
-template <class AI, class T>
-inline AI* GetTrialOfTheChampionAI(T* obj)
+template<class AI>
+AI* GetTrialOfChampionAI(Creature* creature)
 {
-	return GetInstanceAI<AI>(obj, ToCScriptName);
+    return GetInstanceAI<AI>(creature, ToCScriptName);
 }
 
 #endif // TRIAL_OF_CHAMPION_H_

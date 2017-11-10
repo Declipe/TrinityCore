@@ -23,30 +23,16 @@ SDComment: Cosmetic things missing
 SDCategory: Trial Of the Champion
 EndScriptData */
 
-#include "ScriptMgr.h"
-#include "InstanceScript.h"
-#include "Map.h"
-#include "ObjectAccessor.h"
-#include "Player.h"
-#include "ScriptedEscortAI.h"
-#include "ScriptedGossip.h"
-#include "trial_of_the_champion.h"
-#include "Vehicle.h"
-#include "GameObject.h"
-#include "GameObjectAI.h"
-#include "MotionMaster.h"
-#include "TemporarySummon.h"
-#include "PassiveAI.h"
-#include "VehicleDefines.h"
 #include "GridNotifiers.h"
+#include "Player.h"
 #include "ScriptedCreature.h"
-#include "SmartScript.h"
+#include "ScriptedEscortAI.h"
+#include "ScriptMgr.h"
 #include "SpellAuraEffects.h"
 #include "SpellScript.h"
-#include "Cell.h"
-#include "CellImpl.h"
 #include "SpellMgr.h"
-#include "WorldSession.h"
+#include "Vehicle.h"
+#include "trial_of_the_champion.h"
 
 enum Events
 {
@@ -472,10 +458,10 @@ struct boss_grand_championAI : BossAI
                 Creature* newMount = nullptr;
                 float dist = 0.0f;
                 std::list<Creature*> tempList;
+
                 Trinity::AllCreaturesOfEntryInRange check(me, newMountEntry, 100);
                 Trinity::CreatureListSearcher<Trinity::AllCreaturesOfEntryInRange> searcher(me, tempList, check);
-				Cell::VisitGridObjects(me, searcher, me->GetGridActivationRange());
-				//Cell::VisitGridObjects(me, searcher, 20.0f);
+                Cell::VisitGridObjects(me, searcher, me->GetGridActivationRange());
 
                 for (std::list<Creature*>::const_iterator itr = tempList.begin(); itr != tempList.end(); ++itr)
                 {
@@ -840,7 +826,7 @@ public:
                 me->GetEntry() == VEHICLE_ARGENT_WARHORSE_COSMETIC)
                 return;
 
-			EscortAI::EnterEvadeMode(why);
+            EscortAI::EnterEvadeMode(why);
         }
 
         void WaypointReached(uint32 waypointId, uint32 /*pathId*/) override
@@ -869,7 +855,7 @@ public:
 
         void MovementInform(uint32 type, uint32 pointId) override
         {
-			EscortAI::MovementInform(type, pointId);
+            EscortAI::MovementInform(type, pointId);
 
             if (type != POINT_MOTION_TYPE)
                 return;
@@ -953,7 +939,7 @@ public:
                         return false;
                     }
                 }
-                else if (rider->GetThreatManager().isThreatListEmpty())
+                else if (rider->GetThreatManager().IsThreatListEmpty())
                 {
                     SetGrandChampionToEvadeMode(rider->ToCreature());
                     return false;
@@ -966,7 +952,7 @@ public:
 
         void UpdateAI(uint32 uiDiff) override
         {
-			EscortAI::UpdateAI(uiDiff);
+            EscortAI::UpdateAI(uiDiff);
             events.Update(uiDiff);
 
             while (uint32 eventId = events.ExecuteEvent())
@@ -1018,9 +1004,9 @@ public:
                                                         rider->GetThreatManager().resetAllAggro();
                                                         // Setting gaze on the new player
                                                         if (plr->GetVehicleBase())
-                                                            AddThreat(plr->GetVehicleBase(), 100000.0f, rider);
+                                                            AddThreat(plr->GetVehicleBase(), 100000.0f);
                                                         else
-                                                            AddThreat(plr, 100000.0f, rider);
+                                                            AddThreat(plr, 100000.0f);
                                                         // Casting actual charge
                                                         if (plr->GetVehicleBase())
                                                             rider->CastSpell(plr->GetVehicleBase(), spell_charge);
@@ -1037,9 +1023,9 @@ public:
                                                 ResetThreatList();
                                                 // Setting gaze on the new player
                                                 if (plr->GetVehicleBase())
-                                                    AddThreat(plr->GetVehicleBase(), 100000.0f, me);
+                                                    AddThreat(plr->GetVehicleBase(), 100000.0f);
                                                 else
-                                                    AddThreat(plr, 100000.0f, me);
+                                                    AddThreat(plr, 100000.0f);
                                                 // Casting actual charge
                                                 if (plr->GetVehicleBase())
                                                     DoCast(plr->GetVehicleBase(), spell_charge);
@@ -1091,7 +1077,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfTheChampionAI<generic_vehicleAI_toc5AI>(creature);
+        return GetTrialOfChampionAI<generic_vehicleAI_toc5AI>(creature);
     }
 };
 
@@ -1104,7 +1090,7 @@ public:
     struct boss_warrior_toc5AI : public boss_grand_championAI
     {
         boss_warrior_toc5AI(Creature* creature) : boss_grand_championAI(creature) { }
-        
+
         void Reset() override
         {
             boss_grand_championAI::Reset();
@@ -1155,7 +1141,7 @@ public:
                                         {
                                             ResetThreatList();
                                             DoCast(plr, SPELL_INTERCEPT);
-                                            AddThreat(plr, 5.0f, me);
+                                            AddThreat(plr, 5.0f);
                                             break;
                                         }
                                         else
@@ -1196,7 +1182,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfTheChampionAI<boss_warrior_toc5AI>(creature);
+        return GetTrialOfChampionAI<boss_warrior_toc5AI>(creature);
     }
 };
 
@@ -1292,7 +1278,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfTheChampionAI<boss_mage_toc5AI>(creature);
+        return GetTrialOfChampionAI<boss_mage_toc5AI>(creature);
     }
 };
 
@@ -1481,7 +1467,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfTheChampionAI<boss_shaman_toc5AI>(creature);
+        return GetTrialOfChampionAI<boss_shaman_toc5AI>(creature);
     }
 };
 
@@ -1570,7 +1556,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfTheChampionAI<boss_hunter_toc5AI>(creature);
+        return GetTrialOfChampionAI<boss_hunter_toc5AI>(creature);
     }
 };
 
@@ -1647,7 +1633,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfTheChampionAI<boss_rogue_toc5AI>(creature);
+        return GetTrialOfChampionAI<boss_rogue_toc5AI>(creature);
     }
 };
 
@@ -1714,7 +1700,9 @@ class spell_toc5_lightning_arrows : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-				return ValidateSpellInfo({ SPELL_LIGHTNING_ARROWS_AURA });
+                if (!sSpellMgr->GetSpellInfo(SPELL_LIGHTNING_ARROWS_AURA))
+                    return false;
+                return true;
             }
 
             void HandleScript(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
