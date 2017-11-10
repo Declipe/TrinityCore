@@ -54,6 +54,7 @@
 #define GOSSIP_NEXT_PAGED       1004
 #define GOSSIP_PREV_PAGED       1005
 #define GOSSIP_MAIN_MENU        1006
+#define GOSSIP_MAIN_MENU7       1007
 
 #define SPELL_ID_PASSIVE_RESURRECTION_SICKNESS  15007
 #define SPELL_VISUAL_TELEPORT   35517
@@ -65,6 +66,7 @@
 #define NEXT_PAGE               "-> [Next Page]"
 #define PREV_PAGE               "<- [Previous Page]"
 #define MAIN_MENU               "<= [Main Menu]"
+#define MAIN_MENU7              " [Сброс]"
 
 using namespace nsNpcTel;
 
@@ -111,6 +113,7 @@ namespace
 
         if (PageC[player] > 0)
             AddGossipItemFor(player, 7, PREV_PAGE, GOSSIP_PREV_PAGEC, 0);
+            AddGossipItemFor(player, 7, MAIN_MENU7, GOSSIP_MAIN_MENU7, 0); //tut nada
 
         VCatDest_t i (PageC[player] * NB_ITEM_PAGE);
         for ( ; i < TabCatDest.size() && i < (NB_ITEM_PAGE * (PageC[player] + 1)); ++i)
@@ -201,7 +204,8 @@ class npc_teleport_gossip : public CreatureScript
             {
                 PageC(player) = PageD(player) = Cat(player) = 0;
 
-                if (player->IsInCombat())
+                //if (player->IsInCombat())
+                if (player->GetMap()->IsBattlegroundOrArena())
                 {
                     CloseGossipMenuFor(player);
 
@@ -252,6 +256,11 @@ class npc_teleport_gossip : public CreatureScript
                         AffichDest(player, me);
                         break;
 
+                    case GOSSIP_MAIN_MENU7:
+                        player->ClearInCombat();
+                        CloseGossipMenuFor(player);
+                        break;
+        
                     // Display main menu
                     case GOSSIP_MAIN_MENU:
                         GossipHello(player);

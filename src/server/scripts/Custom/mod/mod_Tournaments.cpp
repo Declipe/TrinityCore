@@ -610,7 +610,7 @@ void TournamentManager::stop(uint32 entry, bool win)
                 
     if (tournament->organizer)
     {
-        tournament->organizer->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+        tournament->organizer->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP); //TEST
         tournament->organizer->SetVisible(true);
     }
     

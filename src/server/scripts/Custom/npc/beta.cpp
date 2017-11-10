@@ -68,6 +68,7 @@
 #define MSG_GOSSIP_TEXT_MAIN_MENU "<- [Вернутся в Главное меню]"
 #define MSG_GOSSIP_TEXT_PROFFESION_MENU "[Меню Профессий] ->"
 #define MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU "[Меню Второстепенных профессий] ->"
+#define MSG_GOSSIP_TEXT_NEXT_3 "[страница] ->"
 
 #define MSG_GOSSIP_TEXT_RENAME "Сменить Имя персонажа."
 #define MSG_GOSSIP_TEXT_CUSTOM "Сменить Внешность персонажа."
@@ -120,6 +121,8 @@
 #define CONST_ARENA_POINT_2  0//1000
 #define CONST_ARENA_POINT_3  0//3000
 #define CONST_ARENA_POINT_4  0//5000
+#define CONST_HONOR_23 29434 //предмет который будет стоить
+#define CONST_HONOR_233 1  //сколько надо штук
 
 class npc_buffer : public CreatureScript
 {
@@ -698,26 +701,27 @@ public:
 		case 2233:
 			player->PlayerTalkClass->ClearMenus();
 			//AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_JENKINS, GOSSIP_SENDER_MAIN, 23);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Algalon", GOSSIP_SENDER_MAIN, 711);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Doomwalker", GOSSIP_SENDER_MAIN, 712);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Doomlord kazzak", GOSSIP_SENDER_MAIN, 713);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Onyxia", GOSSIP_SENDER_MAIN, 714);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Thaddius", GOSSIP_SENDER_MAIN, 715);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Gluth", GOSSIP_SENDER_MAIN, 716);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Maexxna", GOSSIP_SENDER_MAIN, 717);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Sapphiron", GOSSIP_SENDER_MAIN, 718);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Noth The Plaguebringer", GOSSIP_SENDER_MAIN, 719);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Kel'Thuzad", GOSSIP_SENDER_MAIN, 720);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Kael'thas Sunstrider", GOSSIP_SENDER_MAIN, 721);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "C'thun", GOSSIP_SENDER_MAIN, 722);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Thrall", GOSSIP_SENDER_MAIN, 723);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Sylvanas Windrunner", GOSSIP_SENDER_MAIN, 724);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Alexstrasza (Blutelf)", GOSSIP_SENDER_MAIN, 725);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Varian Wrynn", GOSSIP_SENDER_MAIN, 726);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Varimathras", GOSSIP_SENDER_MAIN, 727);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Alexstrasza (Drache)", GOSSIP_SENDER_MAIN, 728);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Mal'ganis", GOSSIP_SENDER_MAIN, 729);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Король Лич", GOSSIP_SENDER_MAIN, 711);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Огонек", GOSSIP_SENDER_MAIN, 712);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Лорд Каззак", GOSSIP_SENDER_MAIN, 713);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Леокк", GOSSIP_SENDER_MAIN, 714);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Таддиус", GOSSIP_SENDER_MAIN, 715);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Прелесть", GOSSIP_SENDER_MAIN, 716);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Паук", GOSSIP_SENDER_MAIN, 717);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сапфирон", GOSSIP_SENDER_MAIN, 718);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Нот Чумной", GOSSIP_SENDER_MAIN, 719);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Кель Тузед", GOSSIP_SENDER_MAIN, 720);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "КельТалас", GOSSIP_SENDER_MAIN, 721);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ктун", GOSSIP_SENDER_MAIN, 722);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Тралл", GOSSIP_SENDER_MAIN, 723);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сильвана", GOSSIP_SENDER_MAIN, 724);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Алекстраза(человек)", GOSSIP_SENDER_MAIN, 725);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Король Ринн", GOSSIP_SENDER_MAIN, 726);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Молганис", GOSSIP_SENDER_MAIN, 727);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Алекстраза(дракон)", GOSSIP_SENDER_MAIN, 728);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сакролаш", GOSSIP_SENDER_MAIN, 729);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
+			//AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
 			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
 		case 22:
@@ -731,102 +735,504 @@ public:
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
 			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
-       case 711: // Algalon
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(28641);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.2f);
-            break;
-       case 712: // Doomwalker
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(16630);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.1f);
-            break;
-       case 713: // Doomlord kazzak
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(17887);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.10f);
-            break;
-       case 714: // Onyxia
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(8570);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.1f);
-            break;
-       case 715: // Thaddius
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(16137);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.2f);
-            break;
-       case 716: // Gluth
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(16064);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.2f);
-            break;
-       case 717: // Maexxna
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(15928);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.15f);
-            break;
-       case 718: // Sapphiron
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(16033);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.1f);
-            break;
-       case 719: // Noth The Plaguebringer
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(16590);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.7f);
-            break;
-       case 720: // Kel'Thuzad
+       case 711: 
+	   if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(30721);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.8f);
 			CloseGossipMenuFor(player);
-            player->SetDisplayId(15945);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.2f);
+			}
+			break;
+	   case 712: 
+			if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(12432);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.1f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 713: 
+			if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(17887);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.10f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 714: 
+		   if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(20964);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 715: 
+		   if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(16137);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.4f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 716: 
+		   if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(16064);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.2f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 717:
+		   if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(15928);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.15f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 718: 
+			if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(16033);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.1f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 719:
+		   if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(16590);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.7f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 720: 
+			if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(15945);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.3f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 721:
+	   if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{       
+			player->SetDisplayId(20023);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 722:      
+	   if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{    
+			player->SetDisplayId(15786);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.1f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 723:
+	   if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(4527);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 724:
+			if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(28213);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+		case 725:
+			if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(28227);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true); 
+		   player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.9f);
+		   CloseGossipMenuFor(player);
+			}
+			break;
+	   case 726:
+		   if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(28127);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 727:
+			if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(28220);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.6f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 728:
+	  if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(27569);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.1f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 729:
+		 if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(23177);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+			case 730: 
+		 if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(26623);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
+			CloseGossipMenuFor(player);
+			}
+			break; 
+			case 731: 
+		 if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(25286);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+			CloseGossipMenuFor(player);
+			}
+			break; 
+			case 732: 
+		 if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(27511);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.5f);
+			CloseGossipMenuFor(player);
+			}
+			break; 
+			case 733: 
+		 if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(27573);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.8f);
+			CloseGossipMenuFor(player);
+			}
+			break; 
+			case 734: 
+		 if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(27537);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+			CloseGossipMenuFor(player);
+			}
+			break; 
+			case 735: 
+		 if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(12818);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
+			CloseGossipMenuFor(player);
+			}
+			break; 
+			case 736: 
+		 if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(25241);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.6f);
+			CloseGossipMenuFor(player);
+			}
+			break; 
+			case 737: 
+		 if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(775);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+			CloseGossipMenuFor(player);
+			}
+			break; 
+			case 738: 
+		 if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(29099);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+			CloseGossipMenuFor(player);
+			}
+			break; 
+			case 739: 
+		 if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(29114);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.3f);
+			CloseGossipMenuFor(player);
+			}
+			break; 
+			case 740: 
+		 if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(11650);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.5f);
+			CloseGossipMenuFor(player);
+			}
+			break; 
+			case 741: 
+		 if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(17035);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 2.0f);
+			CloseGossipMenuFor(player);
+			}
+			break; 
+			case 742: 
+		 if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(6351);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.7f);
+			CloseGossipMenuFor(player);
+			}
+			break; 
+			case 743: 
+		 if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(18038);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 2.0f);
+			CloseGossipMenuFor(player);
+			}
+			break; 
+			case 744: 
+		 if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(18058);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
+			CloseGossipMenuFor(player);
+			}
+			break; 
+		case 745: 
+		 if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(18916);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.3f);
+			CloseGossipMenuFor(player);
+			}
+			break; 
+		case 746: 
+		  if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(17715);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.7f);
+			CloseGossipMenuFor(player);
+			}
+			break; 
+			case 747:
+			player->PlayerTalkClass->ClearMenus();
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Король Лич", GOSSIP_SENDER_MAIN, 711);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Огонек", GOSSIP_SENDER_MAIN, 712);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Лорд Каззак", GOSSIP_SENDER_MAIN, 713);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Леокк", GOSSIP_SENDER_MAIN, 714);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Таддиус", GOSSIP_SENDER_MAIN, 715);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Прелесть", GOSSIP_SENDER_MAIN, 716);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Паук", GOSSIP_SENDER_MAIN, 717);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сапфирон", GOSSIP_SENDER_MAIN, 718);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Нот Чумной", GOSSIP_SENDER_MAIN, 719);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Кель Тузед", GOSSIP_SENDER_MAIN, 720);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "КельТалас", GOSSIP_SENDER_MAIN, 721);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ктун", GOSSIP_SENDER_MAIN, 722);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Тралл", GOSSIP_SENDER_MAIN, 723);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сильвана", GOSSIP_SENDER_MAIN, 724);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Алекстраза(человек)", GOSSIP_SENDER_MAIN, 725);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Король Ринн", GOSSIP_SENDER_MAIN, 726);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Молганис", GOSSIP_SENDER_MAIN, 727);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Алекстраза(дракон)", GOSSIP_SENDER_MAIN, 728);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сакролаш", GOSSIP_SENDER_MAIN, 729);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
+			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+				 break;   
+		  case 748:
+			player->PlayerTalkClass->ClearMenus();
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Утгард Воин", GOSSIP_SENDER_MAIN, 730);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Упырь", GOSSIP_SENDER_MAIN, 731);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Скелет", GOSSIP_SENDER_MAIN, 732);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Скелет 2", GOSSIP_SENDER_MAIN, 733);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Скелет 3", GOSSIP_SENDER_MAIN, 734);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Пудж", GOSSIP_SENDER_MAIN, 735);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Скелет 4", GOSSIP_SENDER_MAIN, 736);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Вестник Смерти", GOSSIP_SENDER_MAIN, 737);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Рыцарь Смерти", GOSSIP_SENDER_MAIN, 738);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Маг серебряного авангарда", GOSSIP_SENDER_MAIN, 739);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Голум", GOSSIP_SENDER_MAIN, 740);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Красный бес", GOSSIP_SENDER_MAIN, 741);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Древень", GOSSIP_SENDER_MAIN, 742);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Синий бес", GOSSIP_SENDER_MAIN, 743);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Огр", GOSSIP_SENDER_MAIN, 744);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Демон Голова", GOSSIP_SENDER_MAIN, 745);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Дреней Красные доспехи", GOSSIP_SENDER_MAIN, 746);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 749);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 747);
+			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+				 break;
+				 case 749:
+			player->PlayerTalkClass->ClearMenus();
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Гидра", GOSSIP_SENDER_MAIN, 750);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Колосс", GOSSIP_SENDER_MAIN, 751);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Бес феолетовый", GOSSIP_SENDER_MAIN, 752);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Красный Орк", GOSSIP_SENDER_MAIN, 753);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Занзилл Чумной", GOSSIP_SENDER_MAIN, 754);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Волк", GOSSIP_SENDER_MAIN, 755);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Подобие Матери БТ", GOSSIP_SENDER_MAIN, 756);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Эльф Красные доспехи", GOSSIP_SENDER_MAIN, 757);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Злобень", GOSSIP_SENDER_MAIN, 758);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Призрак человека", GOSSIP_SENDER_MAIN, 759);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Мароуз", GOSSIP_SENDER_MAIN, 760);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Злобный призрак", GOSSIP_SENDER_MAIN, 761);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+				 break;
+				 case 750: 
+	   if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(18314);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 751: 
+			if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(19687);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 752: 
+			if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(17695);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 2.0f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 753: 
+		   if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(17052);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 754: 
+		   if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(22124);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 755: 
+		   if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(20046);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.3f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 756:
+		   if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(19586);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 757: 
+			if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(22786);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 758:
+		   if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(22976);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 759: 
+			if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{
+			player->SetDisplayId(16042);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 760:
+	   if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{       
+			player->SetDisplayId(16540);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.7f);
+			CloseGossipMenuFor(player);
+			}
+			break;
+	   case 761:      
+	      if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+			{    
+			player->SetDisplayId(19329);
+			player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+			player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.4f);
+			CloseGossipMenuFor(player);
+			}
             break;
-       case 721: // Kael'thas Sunstrider
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(20023);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
-            break;
-	   case 722: // C'thun
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(15786);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.1f);
-            break;
-       case 723: // Thrall
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(4527);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
-            break;
-       case 724: // Sylvanas Windrunner
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(28213);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
-            break;
-		case 725: // Alexstrasza, BElf
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(28227);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.8f);
-            break;
-       case 726: // Varian Wrynn
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(28127);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
-            break;
-       case 727: // Varimathras
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(28220);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.7f);
-            break;
-       case 728: // Alexstrasza, dragon
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(27569);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.1f);
-            break;
-       case 729: // Mal'ganis
-            CloseGossipMenuFor(player);
-            player->SetDisplayId(26582);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
-            break;
-		case 23:
+      case 23:    
 		{CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(143);
 		if (player->HasTitle(titleInfo))
 		{
