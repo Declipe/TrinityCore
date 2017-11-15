@@ -687,7 +687,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
              if (!duplicatedMessage)
 					{
 						sScriptMgr->OnPlayerChat(_player, type, lang, msg, chn);
-						chn->Say(_player->GetGUID(), msg.c_str(), lang);
+						chn->Say(_player->GetGUID(), msg, lang);
 						messagesInChannel.push_back(std::make_pair(sender->GetGUID(), msg));
 
 						//! It's pointless to check for this if the message is never sent to the
