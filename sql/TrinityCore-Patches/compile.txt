@@ -13,4 +13,4 @@ apt-get install git cmake make gcc g++ libmysqlclient-dev libssl-dev libbz2-dev 
 debian9
 apt-get install git cmake make gcc g++ libmariadbclient-dev libssl1.0-dev libbz2-dev libreadline-dev libncurses-dev libboost-all-dev mysql-server p7zip
 
-cmake ../ -DWITH_WARNINGS=1 -DWITH_COREDEBUG=1 -DUSE_COREPCH=1 -DUSE_SCRIPTPCH=1 -DTOOLS=1 -DSCRIPTS=1 -DSERVERS=1 -DNOJEM=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=/home/declipe/work3
+cmake ../ -DWITH_WARNINGS=1 -DWITH_COREDEBUG=1 -DUSE_COREPCH=1 -DUSE_SCRIPTPCH=1 -DTOOLS=0 -DSCRIPTS=1 -DSERVERS=1 -DNOJEM=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo  -DCMAKE_INSTALL_PREFIX=/opt/server/c/release
