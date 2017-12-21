@@ -514,7 +514,7 @@ void ObjectMgr::LoadCreatureTemplate(Field* fields)
     creatureTemplate.movementId            = fields[70].GetUInt32();
     creatureTemplate.RegenHealth           = fields[71].GetBool();
     creatureTemplate.MechanicImmuneMask    = fields[72].GetUInt32();
-    creatureTemplate.SpellSchoolImmuneMask = fields[73].GetUInt8();
+    creatureTemplate.SpellSchoolImmuneMask = fields[73].GetUInt32();
     creatureTemplate.flags_extra           = fields[74].GetUInt32();
     creatureTemplate.ScriptID              = GetScriptId(fields[75].GetString());
 }
@@ -807,6 +807,13 @@ void ObjectMgr::CheckCreatureTemplate(CreatureTemplate const* cInfo)
         _hasDifficultyEntries[diff].insert(cInfo->Entry);
         _difficultyEntries[diff].insert(cInfo->DifficultyEntry[diff]);
         ok = true;
+    }
+
+    if (cInfo->mingold > cInfo->maxgold)
+    {
+        TC_LOG_ERROR("sql.sql", "Creature (Entry: %u) has `mingold` %u which is greater than `maxgold` %u, setting `maxgold` to %u.",
+            cInfo->Entry, cInfo->mingold, cInfo->maxgold, cInfo->mingold);
+        const_cast<CreatureTemplate*>(cInfo)->maxgold = cInfo->mingold;
     }
 
     if (cInfo->AIName == "TotemAI")
