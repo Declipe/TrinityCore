@@ -1499,12 +1499,44 @@ void WintergraspBuilding::Initialize(GameObject* gameObject)
             _gameObjectList[TEAM_ALLIANCE].resize(AttackTowers[towerId - 4].GameObject.size(), ObjectGuid::Empty);
 
         // Spawn associated gameobjects
+        for (size_t position = 0; position < AttackTowers[towerId - 4].GameObject.size(); ++position)
+        {
+            WintergraspGameObjectData const& gobData = AttackTowers[towerId - 4].GameObject[position];
+            if (_gameObjectList[TEAM_HORDE][position].IsEmpty())
+                if (GameObject* goHorde = _battlefield->SpawnGameObject(gobData.HordeEntry, gobData.Location, gobData.Rotation))
+                    _gameObjectList[TEAM_HORDE][position] = goHorde->GetGUID();
+
+            if (_gameObjectList[TEAM_ALLIANCE][position].IsEmpty())
+                if (GameObject* goAlliance = _battlefield->SpawnGameObject(gobData.AllianceEntry, gobData.Location, gobData.Rotation))
+                    _gameObjectList[TEAM_ALLIANCE][position] = goAlliance->GetGUID();
+        }
 
         if (_creatureList[TEAM_HORDE].size() != AttackTowers[towerId - 4].CreatureBottom.size())
             _creatureList[TEAM_HORDE].resize(AttackTowers[towerId - 4].CreatureBottom.size(), ObjectGuid::Empty);
         if (_creatureList[TEAM_ALLIANCE].size() != AttackTowers[towerId - 4].CreatureBottom.size())
             _creatureList[TEAM_ALLIANCE].resize(AttackTowers[towerId - 4].CreatureBottom.size(), ObjectGuid::Empty);
 
+        // Spawn associated NPCs
+        for (size_t position = 0; position < AttackTowers[towerId - 4].CreatureBottom.size(); ++position)
+        {
+            WintergraspObjectPositionData const& creatureData = AttackTowers[towerId - 4].CreatureBottom[position];
+            if (_creatureList[TEAM_HORDE][position].IsEmpty())
+            {
+                if (Creature* creature = _battlefield->SpawnCreature(creatureData.HordeEntry, creatureData.Location))
+                {
+                    _creatureList[TEAM_HORDE][position] = creature->GetGUID();
+                    creature->SetRespawnTime(2 * MINUTE);
+                }
+            }
+
+            if (_creatureList[TEAM_ALLIANCE][position].IsEmpty())
+            {
+                if (Creature* creature = _battlefield->SpawnCreature(creatureData.AllianceEntry, creatureData.Location))
+                {
+                    _creatureList[TEAM_ALLIANCE][position] = creature->GetGUID();
+                    creature->SetRespawnTime(2 * MINUTE);
+                }
+            }
         }
 
         UpdateCreatureAndGo();
