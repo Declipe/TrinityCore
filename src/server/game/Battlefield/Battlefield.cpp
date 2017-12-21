@@ -19,6 +19,7 @@
 #include "CellImpl.h"
 #include "Creature.h"
 #include "DBCStores.h"
+#include "GameObjectData.h"
 #include "GridNotifiers.h"
 #include "GridNotifiersImpl.h"
 #include "Group.h"
@@ -335,9 +336,6 @@ void Battlefield::InvitePlayerToQueue(Player* player)
 
 void Battlefield::HandlePlayerEnterZone(Player* player, uint32 /*zone*/)
 {
-    if (player->IsGameMaster())
-        return;
-
     if (IsEnabled())
     {
         if (IsWarTime() && !player->IsInFlight())
@@ -525,6 +523,64 @@ void Battlefield::SendAreaSpiritHealerQueryOpcode(Player* player, ObjectGuid gui
     player->SendDirectMessage(&data);
 }
 
+Creature* Battlefield::SpawnCreature(uint32 entry, Position const& pos)
+{
+    if (!_map)
+        return nullptr;
+
+    Creature* creature = new Creature();
+    if (!creature->Create(_map->GenerateLowGuid<HighGuid::Unit>(), _map, PHASEMASK_NORMAL, entry, pos))
+    {
+        TC_LOG_ERROR("battlefield", "Battlefield::SpawnCreature: can't create creature entry %u", entry);
+        delete creature;
+        return nullptr;
+    }
+
+    creature->SetHomePosition(pos);
+
+    // Add to world
+    _map->LoadGrid(pos.GetPositionX(), pos.GetPositionY());
+    _map->AddToMap(creature);
+
+    return creature;
+}
+
+GameObject* Battlefield::SpawnGameObject(uint32 entry, Position const& pos, QuaternionData const& rot)
+{
+    if (!_map)
+        return nullptr;
+
+    GameObject* go = new GameObject();
+    if (!go->Create(_map->GenerateLowGuid<HighGuid::GameObject>(), entry, _map, PHASEMASK_NORMAL, pos, rot, 255, GO_STATE_READY))
+    {
+        TC_LOG_ERROR("battlefield", "Battlefield::SpawnGameObject: can't create gameobject entry %u", entry);
+        delete go;
+        return nullptr;
+    }
+
+    // Add to world
+    _map->LoadGrid(pos.GetPositionX(), pos.GetPositionY());
+    _map->AddToMap(go);
+
+    return go;
+}
+
+void Battlefield::HideCreature(Creature* creature)
+{
+    creature->Respawn(true);
+    creature->SetReactState(REACT_PASSIVE);
+    creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+    creature->SetVisible(false);
+}
+
+void Battlefield::ShowCreature(Creature* creature, bool aggressive)
+{
+    creature->SetVisible(true);
+    creature->Respawn(true);
+    creature->SetReactState(aggressive ? REACT_AGGRESSIVE : REACT_PASSIVE);
+    creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+}
+
 void Battlefield::DoPlaySoundToAll(uint32 soundId)
 {
     WorldPacket data;
@@ -582,18 +638,6 @@ void Battlefield::TeamCastSpell(TeamId team, int32 spellId)
                 player->RemoveAuraFromStack(uint32(-spellId));
         }
     }
-}
-
-void Battlefield::SpawnGroupSpawn(uint32 groupId)
-{
-    TC_LOG_DEBUG("battlefield", "Battlefield::SpawnGroupSpawn: spawning SpawnGroup %u", groupId);
-    _map->SpawnGroupSpawn(groupId, true, true);
-}
-
-void Battlefield::SpawnGroupDespawn(uint32 groupId)
-{
-    TC_LOG_DEBUG("battlefield", "Battlefield::SpawnGroupDespawn: despawning SpawnGroup %u", groupId);
-    _map->SpawnGroupDespawn(groupId, true);
 }
 
 bool Battlefield::HasPlayer(Player* player) const

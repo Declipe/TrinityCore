@@ -31,6 +31,7 @@ class Map;
 class Player;
 class Unit;
 class WorldPacket;
+struct QuaternionData;
 struct WorldSafeLocsEntry;
 
 class BattlefieldGraveyard;
@@ -132,6 +133,10 @@ class TC_GAME_API Battlefield : public ZoneScript
         bool AddOrSetPlayerToCorrectBfGroup(Player* player);
         void RemovePlayerFromResurrectQueue(ObjectGuid playerGUID);
         void SendAreaSpiritHealerQueryOpcode(Player* player, ObjectGuid guid);
+        Creature* SpawnCreature(uint32 entry, Position const& pos);
+        GameObject* SpawnGameObject(uint32 entry, Position const& pos, QuaternionData const& rot);
+        void HideCreature(Creature* creature);
+        void ShowCreature(Creature* creature, bool aggressive);
         void DoPlaySoundToAll(uint32 soundId);
         // packet senders
         void BroadcastPacketToZone(WorldPacket& data) const;
@@ -139,10 +144,6 @@ class TC_GAME_API Battlefield : public ZoneScript
         void BroadcastPacketToWar(WorldPacket& data) const;
         void AddCapturePoint(BattlefieldCapturePoint* capturePoint) { _capturePoints.push_back(capturePoint); }
         void TeamCastSpell(TeamId team, int32 spellId);
-
-        // SpawnGroups
-        void SpawnGroupSpawn(uint32 groupId);
-        void SpawnGroupDespawn(uint32 groupId);
 
         bool IsEnabled() const { return _enabled; }
         bool IsWarTime() const { return _active; }

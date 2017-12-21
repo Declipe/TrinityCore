@@ -1283,7 +1283,6 @@ enum TrinityStrings
     // Show Ban in world
     LANG_BAN_CHARACTER_YOUBANNEDMESSAGE_WORLD = 11004,
     LANG_BAN_CHARACTER_YOUPERMBANNEDMESSAGE_WORLD = 11005,
-
     LANG_BAN_ACCOUNT_YOUBANNEDMESSAGE_WORLD       = 11006,
     LANG_BAN_ACCOUNT_YOUPERMBANNEDMESSAGE_WORLD   = 11007,
 
@@ -1307,6 +1306,6 @@ enum TrinityStrings
     LANG_VIP_DEAD                                 = 11115,
     LANG_VIP_CHANGE_RACE                          = 11116,
     LANG_VIP_CHANGE_CUSTOMIZE                     = 11117,
-    LANG_VIP_GROUP                                = 11118
+    LANG_VIP_GROUP                                = 11118,
 };
 #endif

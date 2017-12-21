@@ -22,7 +22,7 @@
 #include "DBCStores.h"
 #include "GameObject.h"
 #include "GameObjectAI.h"
-#include "GameTime.h"
+#include "GameObjectData.h"
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
 #include "Player.h"
@@ -178,7 +178,7 @@ class npc_wg_demolisher_engineer : public CreatureScript
             bool CanBuild() const
             {
                 Battlefield* wintergrasp = sBattlefieldMgr->GetBattlefield(BATTLEFIELD_BATTLEID_WINTERGRASP);
-                if (!wintergrasp || !wintergrasp->IsEnabled() || !wintergrasp->IsWarTime())
+                if (!wintergrasp)
                     return false;
 
                 switch (me->GetEntry())
@@ -211,7 +211,7 @@ class npc_wg_spirit_guide : public CreatureScript
             void InitializeAI() override
             {
                 BattlefieldWintergrasp* wintergrasp = static_cast<BattlefieldWintergrasp*>(sBattlefieldMgr->GetBattlefield(BATTLEFIELD_BATTLEID_WINTERGRASP));
-                if (wintergrasp)
+                if (wintergrasp && wintergrasp->IsEnabled())
                 {
                     for (uint8 itr = 0; itr < GRAVEYARDID_MAX && _needSearch == false; ++itr)
                     {
@@ -343,9 +343,17 @@ class npc_wg_spirit_guide : public CreatureScript
 enum WGQueueMisc
 {
     SPELL_FROST_ARMOR = 12544,
-    EVENT_FROST_ARMOR = 1,
+    GO_WINTERGRASP_PORTAL = 193772,
+    EVENT_CHECK_WINTERGRASP_DEFENDER = 1,
+    EVENT_FROST_ARMOR = 2,
     NPC_MAGISTER_SURDIEL = 32170,
     NPC_MAGISTER_BRAEDIN = 32169
+};
+
+Position const PortalPos[] =
+{
+    { 5923.220215f, 570.825317f, 661.087219f, 6.132774f }, // Horde
+    { 5686.8f,      773.175f,    647.752f,    1.83259f  }  // Alliance
 };
 
 class npc_wg_queue : public CreatureScript
@@ -359,6 +367,7 @@ class npc_wg_queue : public CreatureScript
 
             void Reset() override
             {
+                _events.ScheduleEvent(EVENT_CHECK_WINTERGRASP_DEFENDER, Seconds(5));
                 _events.ScheduleEvent(EVENT_FROST_ARMOR, Seconds(1));
             }
 
@@ -368,7 +377,7 @@ class npc_wg_queue : public CreatureScript
                     player->PrepareQuestMenu(me->GetGUID());
 
                 Battlefield* wintergrasp = sBattlefieldMgr->GetBattlefield(BATTLEFIELD_BATTLEID_WINTERGRASP);
-                if (!wintergrasp || !wintergrasp->IsEnabled())
+                if (!wintergrasp)
                     return true;
 
                 if (wintergrasp->IsWarTime())
@@ -379,7 +388,7 @@ class npc_wg_queue : public CreatureScript
                 else
                 {
                     uint32 timer = wintergrasp->GetTimer() / 1000;
-                    player->SendUpdateWorldState(4354, GameTime::GetGameTime() + timer);
+                    player->SendUpdateWorldState(4354, time(nullptr) + timer);
                     if (timer < 15 * MINUTE)
                     {
                         AddGossipItemFor(player, GOSSIP_ICON_CHAT, player->GetSession()->GetTrinityString(WG_NPCQUEUE_TEXTOPTION_JOIN), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
@@ -396,14 +405,17 @@ class npc_wg_queue : public CreatureScript
                 CloseGossipMenuFor(player);
 
                 Battlefield* wintergrasp = sBattlefieldMgr->GetBattlefield(BATTLEFIELD_BATTLEID_WINTERGRASP);
-                if (!wintergrasp || !wintergrasp->IsEnabled())
+                if (!wintergrasp)
                     return true;
 
                 if (wintergrasp->IsWarTime())
                     wintergrasp->InvitePlayerToWar(player);
-                else if (wintergrasp->GetTimer() < 15 * MINUTE * IN_MILLISECONDS)
-                    wintergrasp->InvitePlayerToQueue(player);
-
+                else
+                {
+                    uint32 timer = wintergrasp->GetTimer() / 1000;
+                    if (timer < 15 * MINUTE)
+                        wintergrasp->InvitePlayerToQueue(player);
+                }
                 return true;
             }
 
@@ -415,6 +427,38 @@ class npc_wg_queue : public CreatureScript
                 {
                     switch (eventId)
                     {
+                        case EVENT_CHECK_WINTERGRASP_DEFENDER:
+                            if (Battlefield* wintergrasp = sBattlefieldMgr->GetBattlefield(BATTLEFIELD_BATTLEID_WINTERGRASP))
+                            {
+                                if (wintergrasp->IsEnabled())
+                                {
+                                    if (GameObject* portal = me->FindNearestGameObject(GO_WINTERGRASP_PORTAL, 25.f))
+                                    {
+                                        if ((wintergrasp->GetDefenderTeam() == TEAM_HORDE && me->GetEntry() == NPC_MAGISTER_BRAEDIN) || (wintergrasp->GetDefenderTeam() == TEAM_ALLIANCE && me->GetEntry() == NPC_MAGISTER_SURDIEL))
+                                            portal->Delete();
+                                    }
+                                    else
+                                    {
+                                        if (wintergrasp->GetDefenderTeam() == TEAM_ALLIANCE && me->GetEntry() == NPC_MAGISTER_BRAEDIN)
+                                            me->SummonGameObject(GO_WINTERGRASP_PORTAL, PortalPos[1], QuaternionData(), 1000);
+                                        else if (wintergrasp->GetDefenderTeam() == TEAM_HORDE && me->GetEntry() == NPC_MAGISTER_SURDIEL)
+                                            me->SummonGameObject(GO_WINTERGRASP_PORTAL, PortalPos[0], QuaternionData(), 1000);
+                                    }
+                                    _events.Repeat(Seconds(5));
+                                }
+                                else
+                                {
+                                    if (!me->FindNearestGameObject(GO_WINTERGRASP_PORTAL, 25.f))
+                                    {
+                                        if (me->GetEntry() == NPC_MAGISTER_BRAEDIN)
+                                            me->SummonGameObject(GO_WINTERGRASP_PORTAL, PortalPos[1], QuaternionData(), 1000);
+                                        else if (me->GetEntry() == NPC_MAGISTER_SURDIEL)
+                                            me->SummonGameObject(GO_WINTERGRASP_PORTAL, PortalPos[0], QuaternionData(), 1000);
+                                    }
+                                    _events.Repeat(Minutes(5));
+                                }
+                            }
+                            break;
                         case EVENT_FROST_ARMOR:
                             DoCastSelf(SPELL_FROST_ARMOR);
                             _events.Repeat(Minutes(3));
@@ -454,7 +498,7 @@ class go_wg_vehicle_teleporter : public GameObjectScript
                 if (!vehicle->HasAura(SPELL_VEHICLE_TELEPORT))
                 {
                     if (Player* owner = vehicle->GetCharmerOrOwnerPlayerOrPlayerItself())
-                        if (me->GetFaction() == WintergraspFaction[owner->GetTeamId()])
+                        if ((me->GetFaction() == WintergraspFaction[TEAM_HORDE] && owner->GetFaction() == HORDE) || (me->GetFaction() == WintergraspFaction[TEAM_ALLIANCE] && owner->GetFaction() == ALLIANCE))
                             if (Creature* teleportTrigger = owner->SummonTrigger(me->GetPositionX() - 60.f, me->GetPositionY(), me->GetPositionZ() + 1.f, vehicle->GetOrientation(), 1000))
                                 return teleportTrigger;
                 }
@@ -503,7 +547,7 @@ class npc_wg_give_promotion_credit : public CreatureScript
                     return;
 
                 BattlefieldWintergrasp* wintergrasp = static_cast<BattlefieldWintergrasp*>(sBattlefieldMgr->GetBattlefield(BATTLEFIELD_BATTLEID_WINTERGRASP));
-                if (!wintergrasp || !wintergrasp->IsEnabled())
+                if (!wintergrasp)
                     return;
 
                 wintergrasp->HandlePromotion(killer->ToPlayer(), me);
@@ -625,7 +669,7 @@ class spell_wintergrasp_defender_teleport : public SpellScriptLoader
                 {
                     if (Player* target = GetExplTargetUnit()->ToPlayer())
                         // check if we are in Wintergrasp at all, SotA uses same teleport spells
-                        if ((target->GetZoneId() == ZONEID_WINTERGRASP && target->GetTeamId() != wintergrasp->GetDefenderTeam()) || target->HasAura(SPELL_WINTERGRASP_TELEPORT_TRIGGER))
+                        if ((target->GetZoneId() == 4197 && target->GetTeamId() != wintergrasp->GetDefenderTeam()) || target->HasAura(SPELL_WINTERGRASP_TELEPORT_TRIGGER))
                             return SPELL_FAILED_BAD_TARGETS;
                 }
                 return SPELL_CAST_OK;
