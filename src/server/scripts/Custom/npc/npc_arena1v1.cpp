@@ -222,29 +222,29 @@ public:
 
         if(sWorld->getBoolConfig(CONFIG_ARENA_1V1_ENABLE) == false)
         {
-            ChatHandler(player->GetSession()).SendSysMessage("1v1 disabled!");
+            ChatHandler(player->GetSession()).SendSysMessage("Арена 1v1 не доступна!");
             return true;
         }
 
         if(player->InBattlegroundQueueForBattlegroundQueueType(BATTLEGROUND_QUEUE_5v5))
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Leave queue 1v1 Arena", GOSSIP_SENDER_MAIN, 3, "Are you sure?", 0, false);
         else
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Sign up 1v1 Arena (unrated)", GOSSIP_SENDER_MAIN, 20);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Зарегестрироваться без Рейтинга", GOSSIP_SENDER_MAIN, 20);
 
         if(player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_5v5)) == 0)
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Create new 1v1 Arenateam", GOSSIP_SENDER_MAIN, 1, "Create 1v1 arenateam?", sWorld->getIntConfig(CONFIG_ARENA_1V1_COSTS), false);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Создать команду", GOSSIP_SENDER_MAIN, 1, "Вы уверены?", sWorld->getIntConfig(CONFIG_ARENA_1V1_COSTS), false);
         else
         {
             if(player->InBattlegroundQueueForBattlegroundQueueType(BATTLEGROUND_QUEUE_5v5) == false)
             {
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Sign up 1v1 Arena (rated)", GOSSIP_SENDER_MAIN, 2);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Disband arenateam", GOSSIP_SENDER_MAIN, 5, "Are you sure?", 0, false);
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Зарегестрироваться с Рейтингом", GOSSIP_SENDER_MAIN, 2);
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Распустить команду", GOSSIP_SENDER_MAIN, 5, "Вы уверены?", 0, false);
             }
 
             AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Покажи статистику", GOSSIP_SENDER_MAIN, 4);
         }
 
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Script Info", GOSSIP_SENDER_MAIN, 8);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Информация", GOSSIP_SENDER_MAIN, 8);
         SendGossipMenuFor(player, 68, me->GetGUID());
         return true;
     }
