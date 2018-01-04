@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -329,9 +329,13 @@ struct boss_grand_championAI : BossAI
         if (LookingForMount || !MountedPhaseDone)
             return;
 
+<<<<<<< HEAD
         // we must check if other champions have been downed and call evade for them
         // for example, if players wipe during killing the last champion
         for (int i = 0; i < 3; ++i)
+=======
+        void JustEngagedWith(Unit* /*who*/) override
+>>>>>>> e0b609a178528995959e5ea54255a3f856e62913
         {
             if (Creature* pGrandChampion = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_1 + i)))
             {
@@ -1201,7 +1205,7 @@ public:
             boss_grand_championAI::Reset();
         }
 
-        void EnterCombat(Unit* who) override
+        void JustEngagedWith(Unit* who) override
         {
             events.ScheduleEvent(EVENT_FIREBALL, 2000);
             events.ScheduleEvent(EVENT_POLYMORPH, 8000);
