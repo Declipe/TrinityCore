@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -299,7 +299,7 @@ class boss_eadric : public CreatureScript
                 }
             }
 
-            void EnterCombat(Unit* who) override
+            void JustEngagedWith(Unit* who) override
             {
                 if (instance->GetBossState(DATA_ARGENT_CHALLENGE) == SPECIAL)
                     return;
@@ -307,7 +307,7 @@ class boss_eadric : public CreatureScript
                 DoCastAOE(SPELL_VENGEANCE);
                 events.ScheduleEvent(EVENT_RADIANCE, urand(7 * IN_MILLISECONDS, 15 * IN_MILLISECONDS));
                 Talk(SAY_AGGRO_E, who);
-                _EnterCombat();
+                _JustEngagedWith();
             }
 
             void KilledUnit(Unit* who) override
@@ -464,7 +464,7 @@ class boss_paletress : public CreatureScript
                 me->GetMotionMaster()->MoveFollow(summon, 30.0f, 0.0f);
             }
 
-            void EnterCombat(Unit* who) override
+            void JustEngagedWith(Unit* who) override
             {
                 if (instance->GetBossState(DATA_ARGENT_CHALLENGE) == SPECIAL)
                     return;
@@ -473,7 +473,7 @@ class boss_paletress : public CreatureScript
                 events.ScheduleEvent(EVENT_HOLY_FIRE, urand(9 * IN_MILLISECONDS, 12 * IN_MILLISECONDS));
                 events.ScheduleEvent(EVENT_RENEW, urand(15 * IN_MILLISECONDS, 17 * IN_MILLISECONDS));
                 Talk(SAY_AGGRO_P, who);
-                _EnterCombat();
+                _JustEngagedWith();
             }
 
             void KilledUnit(Unit* who) override
@@ -717,7 +717,7 @@ class npc_argent_soldier : public CreatureScript
                 }
             }
 
-            void EnterCombat(Unit* /*who*/) override
+            void JustEngagedWith(Unit* /*who*/) override
             {
                 switch (me->GetEntry())
                 {
@@ -897,7 +897,7 @@ class npc_memory : public CreatureScript
                 me->DespawnOrUnsummon();
             }
 
-            void EnterCombat(Unit* /*who*/) override
+            void JustEngagedWith(Unit* /*who*/) override
             {
                 DoZoneInCombat();
             }
@@ -1128,12 +1128,8 @@ class spell_paletress_summon_memory : public SpellScriptLoader
 
             void HandleScript(SpellEffIndex /*effIndex*/)
             {
-<<<<<<< HEAD
                 uint32 const randMemorySpellId = Trinity::Containers::SelectRandomContainerElement(memorySpellId);
                 GetHitUnit()->CastSpell(GetHitUnit(), randMemorySpellId, true, nullptr, nullptr, GetCaster()->GetGUID());
-=======
-                GetHitUnit()->CastSpell(GetHitUnit(), memorySpellId[urand(0, 24)], GetCaster()->GetGUID());
->>>>>>> e0b609a178528995959e5ea54255a3f856e62913
             }
 
             void Register() override

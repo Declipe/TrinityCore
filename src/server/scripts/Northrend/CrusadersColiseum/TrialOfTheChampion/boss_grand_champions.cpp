@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -329,13 +329,9 @@ struct boss_grand_championAI : BossAI
         if (LookingForMount || !MountedPhaseDone)
             return;
 
-<<<<<<< HEAD
         // we must check if other champions have been downed and call evade for them
         // for example, if players wipe during killing the last champion
         for (int i = 0; i < 3; ++i)
-=======
-        void JustEngagedWith(Unit* /*who*/) override
->>>>>>> e0b609a178528995959e5ea54255a3f856e62913
         {
             if (Creature* pGrandChampion = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_GRAND_CHAMPION_1 + i)))
             {
@@ -549,7 +545,7 @@ struct boss_grand_championAI : BossAI
         }
     }
 
-    void EnterCombat(Unit* who) override
+    void JustEngagedWith(Unit* who) override
     {
         //if (MountedPhaseDone)
         //{
@@ -560,7 +556,7 @@ struct boss_grand_championAI : BossAI
                 if (pGrandChampion && !pGrandChampion->HasAura(SPELL_KNEEL) && !pGrandChampion->IsInCombat())
                     pGrandChampion->AI()->AttackStart(who);
             }
-            _EnterCombat();
+            _JustEngagedWith();
         //}
     }
 
@@ -1100,13 +1096,13 @@ public:
             boss_grand_championAI::Reset();
         }
 
-        void EnterCombat(Unit* who) override
+        void JustEngagedWith(Unit* who) override
         {
             events.ScheduleEvent(EVENT_BLADESTORM, urand(15000, 20000));
             events.ScheduleEvent(EVENT_INTERCEPT, 7000);
             events.ScheduleEvent(EVENT_MORTAL_STRIKE, urand(8000, 12000));
             events.ScheduleEvent(EVENT_ROLLING_THROW, 30000);
-            boss_grand_championAI::EnterCombat(who);
+            boss_grand_championAI::JustEngagedWith(who);
         }
 
         void UpdateAI(uint32 uiDiff) override
@@ -1211,7 +1207,7 @@ public:
             events.ScheduleEvent(EVENT_POLYMORPH, 8000);
             events.ScheduleEvent(EVENT_BLASTWAVE, 12000);
             events.ScheduleEvent(EVENT_HASTE, 22000);
-            boss_grand_championAI::EnterCombat(who);
+            boss_grand_championAI::JustEngagedWith(who);
         }
 
         void AttackStart(Unit* who) override
@@ -1315,14 +1311,14 @@ public:
             boss_grand_championAI::Reset();
         }
 
-        void EnterCombat(Unit* who) override
+        void JustEngagedWith(Unit* who) override
         {
             events.ScheduleEvent(EVENT_DEF_CHECK, 5000);
             events.ScheduleEvent(EVENT_CHAIN_LIGHTNING, 16000);
             events.ScheduleEvent(EVENT_HEALING_WAVE, 12000);
             events.ScheduleEvent(EVENT_EARTH_SHIELD, 5000);
             events.ScheduleEvent(EVENT_HEX_MENDING, 7000);
-            boss_grand_championAI::EnterCombat(who);
+            boss_grand_championAI::JustEngagedWith(who);
         }
 
         void EnterCombatMode(bool interrupt)
@@ -1490,12 +1486,12 @@ public:
             boss_grand_championAI::Reset();
         }
 
-        void EnterCombat(Unit* who) override
+        void JustEngagedWith(Unit* who) override
         {
             events.ScheduleEvent(EVENT_MULTI_SHOT, 7500);
             events.ScheduleEvent(EVENT_LIGHTNING_ARROWS, 15000);
             events.ScheduleEvent(EVENT_DISENGAGE, urand(25000, 35000));
-            boss_grand_championAI::EnterCombat(who);
+            boss_grand_championAI::JustEngagedWith(who);
         }
 
         void AttackStart(Unit* who) override
@@ -1579,13 +1575,13 @@ public:
             boss_grand_championAI::Reset();
         }
 
-        void EnterCombat(Unit* who) override
+        void JustEngagedWith(Unit* who) override
         {
             events.ScheduleEvent(EVENT_DEADLY_POISON, 500);
             events.ScheduleEvent(EVENT_EVISCERATE, 8000);
             events.ScheduleEvent(EVENT_FAN_OF_KNIVES, 14000);
             events.ScheduleEvent(EVENT_POISON_BOTTLE, 19000);
-            boss_grand_championAI::EnterCombat(who);
+            boss_grand_championAI::JustEngagedWith(who);
         }
 
         void UpdateAI(uint32 diff) override

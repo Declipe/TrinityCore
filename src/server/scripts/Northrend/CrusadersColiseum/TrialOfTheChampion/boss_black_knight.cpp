@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -181,7 +181,7 @@ public:
             }
         }
 
-        void EnterCombat(Unit* /*who*/) override
+        void JustEngagedWith(Unit* /*who*/) override
         {
             events.ScheduleEvent(EVENT_CLAW, 3000);
             events.ScheduleEvent(EVENT_LEAP, 2000);
@@ -414,11 +414,11 @@ public:
             _JustDied();
         }
 
-        void EnterCombat(Unit* who) override
+        void JustEngagedWith(Unit* who) override
         {
             LoadEvents();
             Talk(SAY_AGGRO, who);
-            _EnterCombat();
+            _JustEngagedWith();
         }
 
         void KilledUnit(Unit* who) override
