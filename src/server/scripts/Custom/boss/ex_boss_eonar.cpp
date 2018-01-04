@@ -88,7 +88,7 @@ public:
 			me->SetArmor(20);
 		}
 
-		void EnterCombat(Unit* /*who*/) override
+		void JustEngagedWith(Unit* /*who*/) override
 		{
 			_events.SetPhase(PHASE_ONE);
 			_events.ScheduleEvent(EVENT_MANA_DESTRUCTION, 1000);
@@ -281,7 +281,7 @@ public: eonaradd() : CreatureScript("eonaradd") { }
 				}
 			}
 
-			void EnterCombat(Unit*) override
+			void JustEngagedWith(Unit*) override
 			{
 				Talk(SAY_AGGRO);
 				_events.SetPhase(PHASE_ONE);

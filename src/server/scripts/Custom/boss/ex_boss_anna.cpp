@@ -86,7 +86,7 @@ public:
 			_events.Reset();
 		}
 
-		void EnterCombat(Unit* /*who*/) override
+		void JustEngagedWith(Unit* /*who*/) override
 		{
 			_events.SetPhase(PHASE_ONE);
 			_events.ScheduleEvent(EVENT_FLUCH_DER_PEIN, 1000);

@@ -1,4 +1,4 @@
-#include "ScriptMgr.h"
+﻿#include "ScriptMgr.h"
 #include "GameObject.h"
 #include "InstanceScript.h"
 #include "Map.h"
@@ -144,7 +144,7 @@ class event_npc_firelord : public CreatureScript
                 summons.Summon(summon);
             }
 
-            void EnterCombat(Unit* /*pWho*/)
+            void JustEngagedWith(Unit* /*pWho*/)
             {
 				me->Yell(FIRE_SAY_AGGRO, LANG_UNIVERSAL);
 				DoCastSelf(SPELL_MANA_BARRIER, true);
@@ -387,7 +387,7 @@ class event_npc_icelord : public CreatureScript
                 me->SetReactState(REACT_DEFENSIVE);
             }
 
-            void EnterCombat(Unit* /*pWho*/)
+            void JustEngagedWith(Unit* /*pWho*/)
             {
 				me->Yell(ICE_SAY_AGGRO, LANG_UNIVERSAL);
             }
@@ -557,7 +557,7 @@ class event_npc_earthlord : public CreatureScript
             {
             }
 
-            void EnterCombat(Unit* /*pWho*/)
+            void JustEngagedWith(Unit* /*pWho*/)
             {
                 me->Yell(EARTH_SAY_AGGRO, LANG_UNIVERSAL, 0);
                 me->RemoveAurasDueToSpell(SPELL_FURY);
@@ -741,7 +741,7 @@ class event_npc_darklord : public CreatureScript
                     summon->AI()->AttackStart(pTarget);
             }
 
-            void EnterCombat(Unit* /*pWho*/)
+            void JustEngagedWith(Unit* /*pWho*/)
             {
                 me->Yell(DARK_SAY_AGGRO, LANG_UNIVERSAL);
                 me->RemoveAurasDueToSpell(SPELL_FURY);
@@ -955,7 +955,7 @@ class event_mage_ice : public CreatureScript
             {
             }
 
-            void EnterCombat(Unit* /*pWho*/)
+            void JustEngagedWith(Unit* /*pWho*/)
             {
             }
 
@@ -1051,7 +1051,7 @@ class event_mage_fire : public CreatureScript
             {
             }
 
-            void EnterCombat(Unit* /*pWho*/)
+            void JustEngagedWith(Unit* /*pWho*/)
             {
             }
 
@@ -1149,7 +1149,7 @@ class event_dk : public CreatureScript
             {
             }
 
-            void EnterCombat(Unit* /*pWho*/)
+            void JustEngagedWith(Unit* /*pWho*/)
             {
             }
 
@@ -1254,7 +1254,7 @@ class event_warrior : public CreatureScript
             {
             }
 
-            void EnterCombat(Unit* /*pWho*/)
+            void JustEngagedWith(Unit* /*pWho*/)
             {
             }
 

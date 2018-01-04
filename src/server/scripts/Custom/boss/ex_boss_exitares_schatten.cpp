@@ -78,7 +78,7 @@ public:
 			Summons.DespawnAll();
 		}
 
-		void EnterCombat(Unit* /*who*/) override
+		void JustEngagedWith(Unit* /*who*/) override
 		{
 			me->Yell("Ich bin gerade auf Kaffee bei Kayoula. Bitte versucht es spaeter noch einmal!", LANG_UNIVERSAL, nullptr);
 			me->SetFaction(FACTION_FRIENDLY);
