@@ -17,7 +17,6 @@
  */
 
 #include "InstanceScript.h"
-#include "Map.h"
 #include "ObjectAccessor.h"
 #include "PassiveAI.h"
 #include "Player.h"

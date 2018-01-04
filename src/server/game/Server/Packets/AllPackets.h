@@ -18,7 +18,6 @@
 #ifndef AllPackets_h__
 #define AllPackets_h__
 
-#include "BattlefieldPackets.h"
 #include "QueryPackets.h"
 #include "QuestPackets.h"
 

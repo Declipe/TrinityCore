@@ -1988,11 +1988,11 @@ void WorldObject::SetZoneScript()
     if (Map* map = FindMap())
     {
         if (map->IsDungeon())
-            m_zoneScript = (ZoneScript*)map->ToInstanceMap()->GetInstanceScript();
+            m_zoneScript = (ZoneScript*)((InstanceMap*)map)->GetInstanceScript();
         else if (!map->IsBattlegroundOrArena())
         {
-            if (ZoneScript* battlefield = sBattlefieldMgr->GetZoneScript(GetZoneId()))
-                m_zoneScript = battlefield;
+            if (Battlefield* bf = sBattlefieldMgr->GetBattlefieldToZoneId(GetZoneId()))
+                m_zoneScript = bf;
             else
                 m_zoneScript = sOutdoorPvPMgr->GetZoneScript(GetZoneId());
         }
