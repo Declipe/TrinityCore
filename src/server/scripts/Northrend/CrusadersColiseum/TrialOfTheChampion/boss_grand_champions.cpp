@@ -1001,7 +1001,7 @@ public:
                                                     {
                                                         // Grand Champion
                                                         // Resetting rider's threat (DoResetThreat() cannot be used on external unit)
-                                                        rider->GetThreatManager().resetAllAggro();
+                                                        rider->GetThreatManager().ResetAllThreat();
                                                         // Setting gaze on the new player
                                                         if (plr->GetVehicleBase())
                                                             AddThreat(plr->GetVehicleBase(), 100000.0f);

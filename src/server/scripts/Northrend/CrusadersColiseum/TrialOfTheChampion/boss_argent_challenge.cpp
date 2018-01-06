@@ -1129,7 +1129,7 @@ class spell_paletress_summon_memory : public SpellScriptLoader
             void HandleScript(SpellEffIndex /*effIndex*/)
             {
                 uint32 const randMemorySpellId = Trinity::Containers::SelectRandomContainerElement(memorySpellId);
-                GetHitUnit()->CastSpell(GetHitUnit(), randMemorySpellId, true, nullptr, nullptr, GetCaster()->GetGUID());
+                GetHitUnit()->CastSpell(GetHitUnit(), randMemorySpellId, GetCaster()->GetGUID());
             }
 
             void Register() override
@@ -1167,8 +1167,11 @@ class spell_paletress_reflective_shield : public SpellScriptLoader
                 if (dmgInfo.GetAttacker() == GetTarget())
                     return;
 
-                int32 bp = CalculatePct(absorbAmount, GetSpellInfo()->Effects[EFFECT_2].CalcValue());
-                GetTarget()->CastCustomSpell(dmgInfo.GetAttacker(), SPELL_SHIELD_REFLECT, &bp, nullptr, nullptr, true, nullptr, aurEff);
+                CastSpellExtraArgs args(aurEff);
+                //args.SpellValueOverrides.AddBP0(CalculatePct(absorbAmount, talentAurEff->GetAmount()));
+                args.SpellValueOverrides.AddBP0(CalculatePct(absorbAmount, GetSpellInfo()->Effects[EFFECT_2].CalcValue()));
+                GetTarget()->CastSpell(dmgInfo.GetAttacker(), SPELL_SHIELD_REFLECT, args);
+
             }
 
             void Register() override

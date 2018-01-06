@@ -309,9 +309,9 @@ public:
                     if (Creature* announcer = instance->GetCreature(DATA_ANNOUNCER))
                     {
                         if (announcer->GetEntry() == NPC_JAEREN)
-                            announcer->CastSpell(me->GetVictim(), SPELL_RAISE_JAEREN, false, nullptr, nullptr, me->GetGUID());
+                            announcer->CastSpell(me->GetVictim(), SPELL_RAISE_JAEREN, me->GetGUID());
                         else
-                            announcer->CastSpell(me->GetVictim(), SPELL_RAISE_ARELAS, false, nullptr, nullptr, me->GetGUID());
+                            announcer->CastSpell(me->GetVictim(), SPELL_RAISE_ARELAS, me->GetGUID());
                     }
                 }
                 else
