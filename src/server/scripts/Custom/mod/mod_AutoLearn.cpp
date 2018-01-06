@@ -262,8 +262,8 @@ public:
 
         if (Player->GetSpecsCount() != 1) return;
 
-        Player->CastSpell(Player, 63680, true, nullptr, nullptr, Player->GetGUID());
-        Player->CastSpell(Player, 63624, true, nullptr, nullptr, Player->GetGUID());
+        Player->CastSpell(Player, 63680, Player->GetGUID());
+        Player->CastSpell(Player, 63624, Player->GetGUID());
     }
 };
 

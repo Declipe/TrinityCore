@@ -126,7 +126,7 @@ class TournamentManager
 		 void update(uint32 diff);
 		 void updateTournament(uint32 entry, uint32 diff);
 
-	   void clear();
+	     void clear();
 		 void reset(uint32 entry);
         
 		 bool pointExists(uint32 id);
@@ -615,7 +615,8 @@ void TournamentManager::stop(uint32 entry, bool win)
     }
     
     tournament->inProgress = false;
-    reset(tournament->entry);
+    //reset(tournament->entry);
+    reset(entry);
     
     if (!win)
     {
@@ -639,18 +640,18 @@ void TournamentManager::stop(uint32 entry, bool win)
     
     if (tournament->organizer && tournament->current->killCredit)
     {
-		ObjectVector units;
-        //ObjectList* units = new ObjectList();
+        std::list<WorldObject*> units;
         Trinity::AllWorldObjectsInRange u_check(tournament->organizer, 60.0f);
         Trinity::WorldObjectListSearcher<Trinity::AllWorldObjectsInRange> searcher(tournament->organizer, units, u_check);
-        //tournament->organizer->VisitNearbyObject(60.0f, searcher);
-		Cell::VisitAllObjects(tournament->organizer, searcher, 60.0f);
+        Cell::VisitAllObjects(tournament->organizer, searcher, 60.0f);
 
         if (!units.empty())
         for (WorldObject* unit : units)
-                if ((unit)->GetTypeId() == TYPEID_PLAYER)
-					((Player*)(unit))->KilledMonsterCredit(tournament->current->killCredit);				
-      //  delete units;
+                if (unit->GetTypeId() == TYPEID_PLAYER)
+					//(Player* units)->KilledMonsterCredit(tournament->current->killCredit);
+        ((Player*)(unit))->KilledMonsterCredit(tournament->current->killCredit);
+
+        return;
     }
 }
 
