@@ -24,9 +24,6 @@ enum ZynDatabaseStatements : uint32
 {
 	ZynDatabase1,
 	ZynDatabase2,
-    SQL_TEMPLATE,
-    SQL_CREATURE2,
-    SQL_POINTS,
 	MAX_ZYNDATABASE_STATEMENTS
 };
 
