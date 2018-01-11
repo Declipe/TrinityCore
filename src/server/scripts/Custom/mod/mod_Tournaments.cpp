@@ -40,10 +40,6 @@
 #include "TemporarySummon.h"
 #include "MotionMaster.h"
 
-#define SQL_TEMPLATE "SELECT `entry`, `level`, `time_limit`, `say_start`, `say_win`, `say_lose`, `chest_id`, `point_id`, `req_quest_id`, `kill_credit`, `menu_string` FROM `world_tournaments` ORDER BY `entry`, `level` DESC"
-#define SQL_CREATURE "SELECT `id`, `tournament_entry`, `tournament_level`, `entry`, `count`, `from_point_id`, `to_point_id`, `time` FROM `world_tournament_creature` ORDER BY `tournament_level`, `time`"
-#define SQL_POINTS "SELECT `id`, `map_id`, `x`, `y`, `z`, `o` FROM `world_tournament_points`"
-
 struct PointOnTournament
 {
     uint32 id;
@@ -368,7 +364,7 @@ void TournamentManager::load(bool reload)
     if (TournamentDebug)
 		TC_LOG_INFO("misc", "Start loadig creatures");
     oldMSTime = getMSTime();
-    result = ZynDatabase.PQuery(SQL_CREATURE);
+    result = ZynDatabase.PQuery(SQL_CREATURE2);
     count = 0;
     if (!result)
         TC_LOG_INFO("server.loading", ">> `world_tournament_creature` is empty");
@@ -523,7 +519,7 @@ void TournamentManager::start(uint32 entry, uint32 level, Player* player)
     tournament->current = tournament->levels[level];
     tournament->level = level;
     
-    reset(entry);
+    reset(tournament->entry);
     
     tournament->current->time = 0;
     tournament->inProgress = true;
@@ -592,8 +588,7 @@ void TournamentManager::updateTournament(uint32 entry, uint32 diff)
 void TournamentManager::update(uint32 diff)
 {
     if (tournaments.empty())
-        return;
-        
+        return;      
         
     for (Tournaments::const_iterator itr = tournaments.begin(); itr != tournaments.end(); ++itr)
         updateTournament((*itr).second->entry, diff);
@@ -607,17 +602,18 @@ void TournamentManager::stop(uint32 entry, bool win)
     TournamentTemplate* tournament = getTournament(entry);
     if (!tournament)
         return;
-                
+               
     if (tournament->organizer)
     {
         tournament->organizer->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP); //TEST
         tournament->organizer->SetVisible(true);
     }
     
+    reset(tournament->entry);
+
+    tournament->current->time = 0;
     tournament->inProgress = false;
-    //reset(tournament->entry);
-    reset(entry);
-    
+
     if (!win)
     {
         if (tournament->organizer && tournament->current->sayLose)
@@ -650,8 +646,6 @@ void TournamentManager::stop(uint32 entry, bool win)
                 if (unit->GetTypeId() == TYPEID_PLAYER)
 					//(Player* units)->KilledMonsterCredit(tournament->current->killCredit);
         ((Player*)(unit))->KilledMonsterCredit(tournament->current->killCredit);
-
-        return;
     }
 }
 

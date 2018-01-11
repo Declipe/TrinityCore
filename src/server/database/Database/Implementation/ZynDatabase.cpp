@@ -25,6 +25,9 @@ void ZynDatabaseConnection::DoPrepareStatements()
 
 	PrepareStatement(ZynDatabase1, "SELECT `enchant_id`, `prev_enchant_id`, `golds` FROM `world_item_upgrade`", CONNECTION_SYNCH);
 	PrepareStatement(ZynDatabase2, "SELECT SpellId, SpellMask, RequiredClassMask, RequiredRaceMask, RequiredLevel, RequiredSpellId, RequiredSkillId, RequiredSkillValue FROM `world_autolearn`", CONNECTION_SYNCH);
+    PrepareStatement(SQL_TEMPLATE, "SELECT `entry`, `level`, `time_limit`, `say_start`, `say_win`, `say_lose`, `chest_id`, `point_id`, `req_quest_id`, `kill_credit`, `menu_string` FROM `world_tournaments` ORDER BY `entry`, `level` DESC", CONNECTION_SYNCH);
+    PrepareStatement(SQL_CREATURE2, "SELECT `id`, `tournament_entry`, `tournament_level`, `entry`, `count`, `from_point_id`, `to_point_id`, `time` FROM `world_tournament_creature` ORDER BY `tournament_level`, `time`", CONNECTION_SYNCH);
+    PrepareStatement(SQL_POINTS, "SELECT `id`, `map_id`, `x`, `y`, `z`, `o` FROM `world_tournament_points`", CONNECTION_SYNCH);
 }
 ZynDatabaseConnection::ZynDatabaseConnection(MySQLConnectionInfo& connInfo) : MySQLConnection(connInfo)
 {
