@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
  #ifndef TRINITY_THREATMANAGER_H
  #define TRINITY_THREATMANAGER_H
 
@@ -22,8 +22,8 @@
 #include "IteratorPair.h"
 #include "ObjectGuid.h"
 #include "SharedDefines.h"
-#include <array>
 #include <boost/heap/fibonacci_heap.hpp>
+#include <array>
 #include <unordered_map>
 #include <vector>
 
@@ -274,5 +274,5 @@ class TC_GAME_API ThreatReference
 };
 
 inline bool CompareThreatLessThan::operator()(ThreatReference const* a, ThreatReference const* b) const { return ThreatManager::CompareReferencesLT(a, b, 1.0f); }
- 
+
  #endif
