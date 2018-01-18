@@ -139,7 +139,7 @@ class spell_hun_aspect_of_the_beast_pet : public AuraScript
     void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         Player* owner = GetUnitOwner()->GetSpellModOwner();
-        if (!owner->HasAura(SPELL_HUNTER_ASPECT_OF_THE_BEAST))
+        if (!ASSERT_NOTNULL(owner)->HasAura(SPELL_HUNTER_ASPECT_OF_THE_BEAST))
             Remove();
     }
 
@@ -253,12 +253,8 @@ class spell_hun_chimera_shot : public SpellScriptLoader
                             {
                                 spellId = SPELL_HUNTER_CHIMERA_SHOT_SERPENT;
 
-                                // first, calculate damage of basic tick (C&P from AuraEffect::HandlePeriodicDamageAurasTick)
-                                basePoint = aurEff->GetAmount();
-                                basePoint = unitTarget->SpellDamageBonusTaken(caster, aurEff->GetSpellInfo(), basePoint, DOT, aura->GetStackAmount());
-
-                                // then, multiply to get damage potential
-                                basePoint *= aurEff->GetTotalTicks();
+                                // calculate damage of basic tick (bonuses are already factored in AuraEffect)
+                                basePoint = aurEff->GetAmount() * aurEff->GetTotalTicks();
                                 ApplyPct(basePoint, 40);
                             }
                             // Viper Sting - Instantly restores mana to you equal to 60% of the total amount drained by your Viper Sting.
