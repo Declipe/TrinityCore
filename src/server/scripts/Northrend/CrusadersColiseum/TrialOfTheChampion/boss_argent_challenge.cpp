@@ -1169,7 +1169,7 @@ class spell_paletress_reflective_shield : public SpellScriptLoader
 
                 CastSpellExtraArgs args(aurEff);
                 //args.SpellValueOverrides.AddBP0(CalculatePct(absorbAmount, talentAurEff->GetAmount()));
-                args.SpellValueOverrides.AddBP0(CalculatePct(absorbAmount, GetSpellInfo()->Effects[EFFECT_2].CalcValue()));
+                args.AddSpellBP0(CalculatePct(absorbAmount, GetSpellInfo()->Effects[EFFECT_2].CalcValue()));
                 GetTarget()->CastSpell(dmgInfo.GetAttacker(), SPELL_SHIELD_REFLECT, args);
 
             }
