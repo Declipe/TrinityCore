@@ -1359,6 +1359,32 @@ void Spell::SelectImplicitCasterDestTargets(SpellEffIndex effIndex, SpellImplici
             dest = SpellDestination(x, y, liquidLevel, m_caster->GetOrientation());
             break;
         }
+        case TARGET_DEST_CASTER_FRONT_LEAP:
+        {
+            float dist = m_spellInfo->Effects[effIndex].CalcRadius(m_caster);
+            float angle = targetType.CalcDirectionAngle();
+
+            Position pos = dest._position;
+
+            m_caster->MovePositionToFirstCollision(pos, dist, angle);
+            // Generate path to that point.
+            if (!m_preGeneratedPath)
+                m_preGeneratedPath = std::make_unique<PathGenerator>(m_caster);
+
+            m_preGeneratedPath->SetPathLengthLimit(dist);
+
+            // Should we use straightline here ? What do we do when we don't have a full path ?
+            bool pathResult = m_preGeneratedPath->CalculatePath(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), false, true);
+            if (pathResult && m_preGeneratedPath->GetPathType() & (PATHFIND_NORMAL | PATHFIND_SHORTCUT))
+            {
+                pos.m_positionX = m_preGeneratedPath->GetActualEndPosition().x;
+                pos.m_positionY = m_preGeneratedPath->GetActualEndPosition().y;
+                pos.m_positionZ = m_preGeneratedPath->GetActualEndPosition().z;
+            }
+
+            dest.Relocate(pos);
+            break;
+        }
         default:
         {
             float dist = m_spellInfo->Effects[effIndex].CalcRadius(m_caster);
@@ -2921,7 +2947,7 @@ void Spell::prepare(SpellCastTargets const& targets, AuraEffect const* triggered
     m_caster->m_Events.AddEvent(_spellEvent, m_caster->m_Events.CalculateTime(1));
 
     //Prevent casting at cast another spell (ServerSide check)
-    if (!(_triggeredCastFlags & TRIGGERED_IGNORE_CAST_IN_PROGRESS) && m_caster->IsNonMeleeSpellCast(false, true, true) && m_cast_count)
+    if (!(_triggeredCastFlags & TRIGGERED_IGNORE_CAST_IN_PROGRESS) && m_caster->IsNonMeleeSpellCast(false, true, true, m_spellInfo->Id == 75) && m_cast_count)
     {
         SendCastResult(SPELL_FAILED_SPELL_IN_PROGRESS);
         finish(false);
@@ -2999,7 +3025,7 @@ void Spell::prepare(SpellCastTargets const& targets, AuraEffect const* triggered
     // focus if not controlled creature
     if (m_caster->GetTypeId() == TYPEID_UNIT && !m_caster->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED))
     {
-        if (!(m_spellInfo->IsNextMeleeSwingSpell() || IsAutoRepeat() || (_triggeredCastFlags & TRIGGERED_IGNORE_SET_FACING)))
+        if (!(m_spellInfo->IsNextMeleeSwingSpell() || IsAutoRepeat()))
         {
             if (m_targets.GetObjectTarget() && m_caster != m_targets.GetObjectTarget())
                 m_caster->ToCreature()->FocusTarget(this, m_targets.GetObjectTarget());
@@ -3039,12 +3065,11 @@ void Spell::prepare(SpellCastTargets const& targets, AuraEffect const* triggered
         if (!(_triggeredCastFlags & TRIGGERED_IGNORE_GCD))
             TriggerGlobalCooldown();
 
-        //item: first cast may destroy item and second cast causes crash
         // commented out !m_spellInfo->StartRecoveryTime, it forces instant spells with global cooldown to be processed in spell::update
         // as a result a spell that passed CheckCast and should be processed instantly may suffer from this delayed process
         // the easiest bug to observe is LoS check in AddUnitTarget, even if spell passed the CheckCast LoS check the situation can change in spell::update
         // because target could be relocated in the meantime, making the spell fly to the air (no targets can be registered, so no effects processed, nothing in combat log)
-        if (!m_casttime && /*!m_spellInfo->StartRecoveryTime && */!m_castItemGUID && GetCurrentContainer() == CURRENT_GENERIC_SPELL)
+        if (!m_casttime && /*!m_spellInfo->StartRecoveryTime && */ GetCurrentContainer() == CURRENT_GENERIC_SPELL)
             cast(true);
     }
 }
@@ -7022,6 +7047,11 @@ bool Spell::IsTriggered() const
 bool Spell::IsIgnoringCooldowns() const
 {
     return (_triggeredCastFlags & TRIGGERED_IGNORE_SPELL_AND_CATEGORY_CD) != 0;
+}
+
+bool Spell::IsFocusDisabled() const
+{
+    return ((_triggeredCastFlags & TRIGGERED_IGNORE_SET_FACING) || (m_spellInfo->IsChanneled() && !m_spellInfo->HasAttribute(SPELL_ATTR1_CHANNEL_TRACK_TARGET)));
 }
 
 bool Spell::IsProcDisabled() const
