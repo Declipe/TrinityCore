@@ -479,9 +479,9 @@ class npc_arthas_stratholme : public CreatureScript
                 // Adjust react state and npc flags based on current state
                 me->SetReactState(target.reactState);
                 if (target.reactState == REACT_PASSIVE)
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+                    me->SetImmuneToAll(true, false);
                 else
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+                    me->SetImmuneToAll(false);
 
                 // Adjust gossip flag based on whether we have a gossip menu or not
                 if (target.haveGossip)
@@ -1263,7 +1263,7 @@ class npc_arthas_stratholme : public CreatureScript
                         talkerEntry = NPC_EPOCH, talkerLine = RP3_LINE_EPOCH2;
                         if (Creature* epoch = me->FindNearestCreature(NPC_EPOCH, 100.0f, true))
                         {
-                            epoch->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
+                            epoch->SetImmuneToAll(false);
                             epoch->EngageWithTarget(me);
                         }
                         ScheduleActionOOC(RP3_ACTION_AFTER_EPOCH);
@@ -1316,7 +1316,7 @@ class npc_arthas_stratholme : public CreatureScript
                         if (Creature* malganis = me->FindNearestCreature(NPC_MALGANIS, 100.0f, true))
                         {
                             malganis->AI()->Talk(RP5_LINE_MALGANIS1, ObjectAccessor::GetPlayer(*malganis, _eventStarterGuid));
-                            malganis->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
+                            malganis->SetImmuneToAll(false);
                             malganis->EngageWithTarget(me);
                         }
                         ScheduleActionOOC(RP5_ACTION_AFTER_MALGANIS);
@@ -1421,7 +1421,7 @@ class npc_arthas_stratholme : public CreatureScript
             me->GetCreatureListWithEntryInGrid(infinites, NPC_INFINITE_HUNTER, 100.0f);
             for (Creature* target : infinites)
             {
-                target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
+                target->SetImmuneToAll(false);
                 me->EngageWithTarget(target);
             }
         }
