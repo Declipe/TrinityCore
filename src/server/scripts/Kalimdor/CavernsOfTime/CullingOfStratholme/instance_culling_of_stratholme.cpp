@@ -231,7 +231,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 time_t timediff = (infiniteGuardianTime - time(NULL));
                 if (!infiniteGuardianTime)
                     timediff = -1;
-                std::cout << "Loaded with state " << (uint32)loadState << " and guardian timeout at " << timediff/MINUTE << " minutes " << timediff%MINUTE << " seconds  from now." << std::endl;
+                printf("Loaded with state %u and guardian timeout at %zu minutes %zu seconds from now.\n", (uint32)loadState, timediff / MINUTE, timediff % MINUTE);
             }
 
             void SetData(uint32 type, uint32 data) override
@@ -392,7 +392,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
 
             void SetInstanceProgress(ProgressStates state, bool force)
             {
-                std::cout << "Instance progress is now " << Trinity::StringFormat("0x%X",(uint32)state) << std::endl;
+                printf("Instance progress is now 0x%X\n", (uint32)state);
                 ProgressStates oldState = _currentState;
                 _currentState = state;
 
@@ -531,7 +531,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                                 {
                                     corruptor->AI()->DoAction(-ACTION_CORRUPTOR_LEAVE);
                                     if (Creature* guardian = instance->GetCreature(_guardianGUID))
-                                        corruptor->Kill(guardian); // @todo is there some spell for this?
+                                        Unit::Kill(corruptor, guardian); // @todo is there some spell for this?
                                 }
                                 SetBossState(DATA_INFINITE_CORRUPTOR, FAIL);
                             }
@@ -562,7 +562,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             break;
                         }
                         case EVENT_RESPAWN_ARTHAS:
-                            std::cout << "Spawning new Arthas for instance..." << std::endl;
+                            printf("Spawning new Arthas for instance...\n");
                             instance->SummonCreature(NPC_ARTHAS, GetArthasSnapbackFor(_currentState));
                             events.CancelEvent(EVENT_RESPAWN_ARTHAS); // make sure we don't have two scheduled
                             break;
@@ -665,7 +665,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         _plagueCrates.push_back(creature->GetGUID());
                         break;
                     case NPC_ARTHAS:
-                        std::cout << "Arthas spawned at " << creature->GetPosition().ToString() << std::endl;
+                        printf("Arthas spawned at %s\n", creature->GetPosition().ToString().c_str());
                         _arthasGUID = creature->GetGUID();
                         creature->setActive(true);
                         break;
@@ -706,7 +706,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
 
             void SetWorldState(States state, uint32 value, bool immediate = true)
             {
-                std::cout << "SetWorldState " << state << " " << value << std::endl;
+                printf("SetWorldState %u %u\n", uint32(state), value);
                 _currentWorldStates[state] = value;
                 if (immediate)
                     PropagateWorldStateUpdate();
@@ -714,13 +714,13 @@ class instance_culling_of_stratholme : public InstanceMapScript
 
             void PropagateWorldStateUpdate()
             {
-                std::cout << "Propagate world states" << std::endl;
+                printf("Propagate world states\n");
                 for (WorldStateMap::const_iterator it = _currentWorldStates.begin(); it != _currentWorldStates.end(); ++it)
                 {
                     uint32& sent = _sentWorldStates[it->first];
                     if (sent != it->second)
                     {
-                        std::cout << "Sending world state " << it->first << " (" << it->second << ")" << std::endl;
+                        printf("Sending world state %u (%u)\n", it->first, it->second);
                         DoUpdateWorldState(it->first, it->second);
                         sent = it->second;
                     }

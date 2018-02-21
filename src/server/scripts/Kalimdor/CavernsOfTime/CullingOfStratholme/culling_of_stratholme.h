@@ -21,6 +21,7 @@
 #include "Creature.h"
 
 #define DataHeader "CS"
+#define CoSScriptName "instance_culling_of_stratholme"
 
 
 /***********************************************************************************************************************\
@@ -243,12 +244,6 @@ class StratholmeCreatureScript : public CreatureScript
                     bool _deathNotify;
         };
 
-template <class AI, class T>
-inline AI* GetCullingOfStratholmeAI(T* obj)
-{
-    return GetInstanceAI<AI>(obj, CoSScriptName);
-}
-
         template<class AI> AI* GetInstanceAI(Creature* creature) const { return ::GetInstanceAI<AI>(creature); }
         template<class AI>
         AI* GetInstanceAI(Creature* creature, ProgressStates respawnMask, ProgressStates despawnMask) const
@@ -277,4 +272,11 @@ inline AI* GetCullingOfStratholmeAI(T* obj)
         ProgressStates const _respawnMask; // do not respawn creature if we aren't in one of these states
         ProgressStates const _despawnMask; // despawn creature if we aren't in one of these states
 };
+
+template <class AI, class T>
+inline AI* GetCullingOfStratholmeAI(T* obj)
+{
+    return GetInstanceAI<AI>(obj, CoSScriptName);
+}
+
 #endif

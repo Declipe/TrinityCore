@@ -148,7 +148,7 @@ class npc_hearthsinger_forresten_cot : public CreatureScript
             }
 
             // Player has hit the Belfast stairs areatrigger, we are taking him over for a moment
-            void SetGUID(ObjectGuid guid, int32 /*id*/) override
+            void SetGUID(ObjectGuid const& guid, int32 /*id*/) override
             {
                 if (_hadBelfast)
                     return;
@@ -200,7 +200,7 @@ class npc_hearthsinger_forresten_cot : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return GetInstanceAI<npc_hearthsinger_forresten_cotAI>(creature);
+            return GetCullingOfStratholmeAI<npc_hearthsinger_forresten_cotAI>(creature);
         }
 };
 
@@ -405,7 +405,7 @@ class npc_chromie_start : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return GetInstanceAI<npc_chromie_startAI>(creature);
+            return GetCullingOfStratholmeAI<npc_chromie_startAI>(creature);
         }
 };
 
@@ -445,7 +445,7 @@ class npc_chromie_middle : public StratholmeCreatureScript<NullCreatureAI>
         {
             npc_chromie_middleAI(Creature* creature, ProgressStates _respawnMask, ProgressStates _despawnMask) : StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper(creature, _respawnMask, _despawnMask), _whisperDelay(0) { }
 
-            void JustRespawned() override
+            void JustAppeared() override
             {
                 if (instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE)
                     _whisperDelay = 18 * IN_MILLISECONDS;
@@ -651,13 +651,11 @@ struct npc_martha_goslin : public CreatureScript
                 }
         }
 
-        void InitializeAI() override
+        void JustAppeared() override
         {
             me->SetFlag(UNIT_NPC_EMOTESTATE, EMOTE_STATE_USE_STANDING);
             events.RescheduleEvent(EVENT_MARTHA_IDLE2, Seconds(5), Seconds(10));
         }
-
-        void JustRespawned() override { InitializeAI(); _interruptTimer = 0; _resumeInfo.Clear(); }
 
         EventMap events;
         uint32 _interruptTimer;
@@ -666,7 +664,7 @@ struct npc_martha_goslin : public CreatureScript
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<npc_martha_goslinAI>(creature);
+        return GetCullingOfStratholmeAI<npc_martha_goslinAI>(creature);
     }
 };
 struct npc_jena_anderson : public CreatureScript
@@ -777,7 +775,6 @@ struct npc_jena_anderson : public CreatureScript
                 return;
             me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT1, CHAIN_JENA_INITIAL, true);
         }
-        void JustRespawned() override { InitializeAI(); started = false; }
 
         EventMap events;
         bool started;
@@ -785,7 +782,7 @@ struct npc_jena_anderson : public CreatureScript
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<npc_jena_andersonAI>(creature);
+        return GetCullingOfStratholmeAI<npc_jena_andersonAI>(creature);
     }
 };
 
@@ -882,7 +879,7 @@ struct npc_bartleby_battson : public CreatureScript
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<npc_bartleby_battsonAI>(creature);
+        return GetCullingOfStratholmeAI<npc_bartleby_battsonAI>(creature);
     }
 };
 
@@ -1025,7 +1022,7 @@ struct npc_malcolm_moore : public CreatureScript
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<npc_malcolm_mooreAI>(creature);
+        return GetCullingOfStratholmeAI<npc_malcolm_mooreAI>(creature);
     }
 };
 
@@ -1070,7 +1067,6 @@ struct npc_sergeant_morigan : public CreatureScript
         npc_sergeant_moriganAI(Creature* creature) : NullCreatureAI(creature), started(false) { }
 
         void InitializeAI() override { events.RescheduleEvent(EVENT_SERGEANT_IDLE1, Seconds(5), Seconds(15)); }
-        void JustRespawned() override { InitializeAI(); started = false; }
 
         void DoAction(int32 id) override
         {
@@ -1161,7 +1157,7 @@ struct npc_sergeant_morigan : public CreatureScript
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<npc_sergeant_moriganAI>(creature);
+        return GetCullingOfStratholmeAI<npc_sergeant_moriganAI>(creature);
     }
 };
 
@@ -1274,7 +1270,7 @@ struct npc_roger_owens : public CreatureScript
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<npc_roger_owensAI>(creature);
+        return GetCullingOfStratholmeAI<npc_roger_owensAI>(creature);
     }
 };
 
@@ -1366,6 +1362,8 @@ struct npc_stratholme_smart_living : public StratholmeCreatureScript<SmartAI>
     npc_stratholme_smart_living() : StratholmeCreatureScript<SmartAI>("npc_stratholme_smart_living", ProgressStates(WAVES_IN_PROGRESS - 1)) { }
 };
 static const std::unique_ptr<AreaBoundary const> waveArea (new RectangleBoundary(2028.0f, 2372.0f, 1115.0f, 1355.0f));
+// this include is temporary until i refactor spawn control
+#include "CombatAI.h"
 struct npc_stratholme_fluff_undead : public StratholmeCreatureScript<AggressorAI>
 {
     npc_stratholme_fluff_undead() : StratholmeCreatureScript<AggressorAI>("npc_stratholme_fluff_undead", ProgressStates(ALL & ~(GAUNTLET_COMPLETE | MALGANIS_IN_PROGRESS | COMPLETE) & ~(WAVES_IN_PROGRESS-1))) { }
@@ -1375,7 +1373,7 @@ struct npc_stratholme_fluff_undead : public StratholmeCreatureScript<AggressorAI
         // (some creatures in gauntlet share entry, so needs explicit position check)
         if (InstanceMap const* instance = map->ToInstanceMap())
             if (InstanceScript const* script = instance->GetInstanceScript())
-                if (waveArea->IsWithinBoundary(Position(cData->posX, cData->posY, cData->posZ)) && script->GetData(DATA_INSTANCE_PROGRESS) > WAVES_IN_PROGRESS)
+                if (waveArea->IsWithinBoundary(cData->spawnPoint) && script->GetData(DATA_INSTANCE_PROGRESS) > WAVES_IN_PROGRESS)
                     return false;
         return StratholmeCreatureScript<AggressorAI>::CanSpawn(spawnId, entry, baseTemplate, actTemplate, cData, map);
     }

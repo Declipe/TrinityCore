@@ -16,8 +16,12 @@
 */
 
 #include "culling_of_stratholme.h"
+#include "GameObject.h"
+#include "Log.h"
+#include "PassiveAI.h"
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
+#include "ScriptedGossip.h"
 #include "SpellScript.h"
 #include "MoveSplineInit.h"
 #include "SplineChainMovementGenerator.h"
@@ -595,7 +599,7 @@ class npc_arthas_stratholme : public CreatureScript
             }
         }
 
-        void SetGUID(ObjectGuid guid, int32 type) override
+        void SetGUID(ObjectGuid const& guid, int32 type) override
         {
             _eventStarterGuid = guid;
             switch (type)
@@ -835,15 +839,6 @@ class npc_arthas_stratholme : public CreatureScript
 
         void UpdateAI(uint32 diff) override
         {
-            if (!_hadSetup && me->IsAlive())
-            {
-                _hadSetup = true;
-                _progressRP = true;
-                me->SetVisible(true);
-                AdvanceToState(GetCurrentProgress());
-                DoCastSelf(SPELL_DEVOTION_AURA);
-            }
-
             if (me->IsInCombat())
             {
                 UpdateAICombat(diff);
@@ -1293,10 +1288,7 @@ class npc_arthas_stratholme : public CreatureScript
                         if (Creature* epoch = me->FindNearestCreature(NPC_EPOCH, 100.0f, true))
                         {
                             epoch->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
-                            me->SetInCombatWith(epoch);
-                            epoch->SetInCombatWith(me);
-                            me->AddThreat(epoch, 0.0f);
-                            epoch->AddThreat(me, 0.0f);
+                            epoch->EngageWithTarget(me);
                         }
                         ScheduleActionOOC(RP3_ACTION_AFTER_EPOCH);
                         break;
@@ -1349,10 +1341,7 @@ class npc_arthas_stratholme : public CreatureScript
                         {
                             malganis->AI()->Talk(RP5_LINE_MALGANIS1, ObjectAccessor::GetPlayer(*malganis, _eventStarterGuid));
                             malganis->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
-                            me->SetInCombatWith(malganis);
-                            malganis->SetInCombatWith(me);
-                            me->AddThreat(malganis, 0.0f);
-                            malganis->AddThreat(me, 0.0f);
+                            malganis->EngageWithTarget(me);
                         }
                         ScheduleActionOOC(RP5_ACTION_AFTER_MALGANIS);
                         break;
@@ -1411,10 +1400,10 @@ class npc_arthas_stratholme : public CreatureScript
                         {
                             // SMOOOOOOOOOOOOOOOOTH AF custom movespline
                             Movement::MoveSplineInit init(chromie);
-                            init.Path().push_back(_positions[RP5_CHROMIE_WP1]);
+                            /*init.Path().push_back(_positions[RP5_CHROMIE_WP1]);
                             init.Path().push_back(_positions[RP5_CHROMIE_WP2]);
                             init.Path().push_back(_positions[RP5_CHROMIE_WP3]);
-                            init.Path().push_back(_positions[RP5_CHROMIE_WP3]);
+                            init.Path().push_back(_positions[RP5_CHROMIE_WP3]);*/
                             init.SetFly();
                             init.SetWalk(true);
                             init.Launch();
@@ -1457,16 +1446,13 @@ class npc_arthas_stratholme : public CreatureScript
             for (Creature* target : infinites)
             {
                 target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
-                me->SetInCombatWith(target);
-                target->SetInCombatWith(me);
-                me->AddThreat(target, 0.0f);
-                target->AddThreat(me, 0.0f);
+                me->EngageWithTarget(target);
             }
         }
 
         static void MoveInfiniteOnSpawn(Creature* infinite, SplineChains chainId)
         {
-            if (SplineChain const* chain = sScriptSystemMgr->GetSplineChain(NPC_INFINITE_ADVERSARY, chainId))
+            if (std::vector<SplineChainLink> const* chain = sScriptSystemMgr->GetSplineChain(NPC_INFINITE_ADVERSARY, chainId))
                 infinite->GetMotionMaster()->MoveAlongSplineChain(0, *chain, true);
         }
 
@@ -1489,7 +1475,7 @@ class npc_arthas_stratholme : public CreatureScript
                 else
                     std::cout << "Arthas AI: entered combat without pathing, pausing RP regardless" << std::endl;
             }
-            ScriptedAI::EnterCombat(who);
+            ScriptedAI::JustEngagedWith(who);
         }
 
         void EnterEvadeMode(EvadeReason why) override
@@ -1526,15 +1512,11 @@ class npc_arthas_stratholme : public CreatureScript
             me->DespawnOrUnsummon(Seconds(5));
         }
 
-        void JustRespawned() override
+        void JustAppeared() override
         {
-            // Reset waypoint and scheduling info
-            _afterCombat = ACTION_NONE;
-            _resumeMovement.Clear();
-
-            // Re-initialize on next tick
-            me->SetVisible(false);
-            _hadSetup = false;
+            _progressRP = true;
+            AdvanceToState(GetCurrentProgress());
+            DoCastSelf(SPELL_DEVOTION_AURA);
         }
 
         void AdvanceDungeon(Player* cause, ProgressStates from, InstanceData command)
@@ -1575,7 +1557,7 @@ class npc_arthas_stratholme : public CreatureScript
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<npc_arthas_stratholmeAI>(creature);
+        return GetCullingOfStratholmeAI<npc_arthas_stratholmeAI>(creature);
     }
 };
 Position const& GetArthasSnapbackFor(ProgressStates state)
@@ -1657,18 +1639,16 @@ const std::map<ProgressStates, npc_arthas_stratholme::npc_arthas_stratholmeAI::S
     { COMPLETE, { REACT_PASSIVE, false, &_positions[ARTHAS_FINAL_POS] } }
 };
 
-// Arthas' AI is the one controlling everything, all this AI does is report any movementinforms back to Arthas AI using SetData
-struct npc_stratholme_rp_dummy : public StratholmeCreatureScript<NullCreatureAI>
+// Arthas' AI is the one controlling everything, all this AI does is report any movementinforms back to Arthas AI
+struct npc_stratholme_rp_dummy : NullCreatureAI
 {
-    npc_stratholme_rp_dummy() : StratholmeCreatureScript<NullCreatureAI>("npc_stratholme_rp_dummy", ProgressStates(UTHER_TALK | PURGE_PENDING)) { }
-    struct npc_stratholme_rp_dummyAI : public StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper
+    npc_stratholme_rp_dummy(Creature* creature) : NullCreatureAI(creature) {}
+    void MovementInform(uint32 type, uint32 id) override
     {
-        npc_stratholme_rp_dummyAI(Creature* creature) : StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper(creature, ProgressStates(UTHER_TALK | PURGE_PENDING)) { }
-        void MovementInform(uint32 type, uint32 id) override {
-            if (type == POINT_MOTION_TYPE || type == EFFECT_MOTION_TYPE || type == SPLINE_CHAIN_MOTION_TYPE) if (TempSummon* self = me->ToTempSummon()) self->GetSummonerCreatureBase()->AI()->MovementInform(type, id);
-        }
-    };
-    CreatureAI* GetAI(Creature* creature) const override { return GetInstanceAI<npc_stratholme_rp_dummyAI>(creature); }
+        if (type == POINT_MOTION_TYPE || type == EFFECT_MOTION_TYPE || type == SPLINE_CHAIN_MOTION_TYPE)
+            if (TempSummon* self = me->ToTempSummon())
+                self->GetSummonerCreatureBase()->AI()->MovementInform(type, id);
+    }
 };
 
 class spell_stratholme_crusader_strike : public SpellScriptLoader
@@ -1684,7 +1664,7 @@ class spell_stratholme_crusader_strike : public SpellScriptLoader
             {
                 if (Unit* target = GetHitUnit())
                     if (target->GetEntry() == NPC_CITIZEN || target->GetEntry() == NPC_RESIDENT)
-                        GetCaster()->Kill(target);
+                        Unit::Kill(GetCaster(), target);
             }
 
             void Register() override
@@ -1702,6 +1682,6 @@ class spell_stratholme_crusader_strike : public SpellScriptLoader
 void AddSC_npc_arthas_stratholme()
 {
     new npc_arthas_stratholme();
-    new npc_stratholme_rp_dummy();
+    RegisterCreatureAI(npc_stratholme_rp_dummy);
     new spell_stratholme_crusader_strike();
 }
