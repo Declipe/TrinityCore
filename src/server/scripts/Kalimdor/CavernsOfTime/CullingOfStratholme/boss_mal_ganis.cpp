@@ -57,15 +57,13 @@ class boss_mal_ganis : public CreatureScript
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            if (InstanceScript* instance = creature->GetInstanceScript())
-            {
-                if (instance->GetData(DATA_INSTANCE_PROGRESS) < MALGANIS_IN_PROGRESS)
-                    return new NullCreatureAI(creature);
-                else
-                    return new boss_mal_ganisAI(creature);
-            }
-            else
+            if (!InstanceHasScript(creature, CoSScriptName))
                 return nullptr;
+
+            if (creature->GetInstanceScript()->GetData(DATA_INSTANCE_PROGRESS) < MALGANIS_IN_PROGRESS)
+                return new NullCreatureAI(creature);
+            else
+                return new boss_mal_ganisAI(creature);
         }
 
         struct boss_mal_ganisAI : public BossAI

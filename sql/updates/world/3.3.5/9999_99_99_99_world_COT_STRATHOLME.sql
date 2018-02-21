@@ -193,7 +193,7 @@ UPDATE `creature_text` SET `emote`=396 WHERE
 UPDATE `creature_text` SET `emote`=432 WHERE
 	(`creatureid`=26499 AND `groupid` IN (29));
 	
--- Blanket apply a spawn control AI to all "live stratholme" mobs that prevents them respawning after the purge begins
+-- Blanket apply a spawn group to all "live stratholme" mobs that prevents them respawning after the purge begins
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_fluff_living",`AIName`="" WHERE `entry` IN (28167,31126,31019,28169,31127,31023,31020,31018,31028);
 UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_living",`AIName`="SmartAI" WHERE `entry` IN (31057,30570,31027,31021,30994);
 -- Do the same for undead stratholme mobs, except for the other phases

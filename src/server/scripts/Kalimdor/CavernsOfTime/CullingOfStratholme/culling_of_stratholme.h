@@ -87,7 +87,7 @@
 \***********************************************************************************************************************/
 
 
-// Note: These are bitmask values to allow combining (spawn state masks on template AI), but only a single bit will ever be true in instance script
+// Note: These are bitmask values to allow combining, but only a single bit will ever be true in instance script
 enum ProgressStates : uint32
 {
     JUST_STARTED            = 0x00001, // dungeon just started, crate count not visible yet; pending chromie interaction
