@@ -403,11 +403,21 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             creature->AI()->DoAction(force ? -ACTION_PROGRESS_UPDATE_FORCE : -ACTION_PROGRESS_UPDATE);
 
                 if (state > CRATES_DONE)
-                { // there should be an Arthas instance in the dungeon somewhere
-                    // Notify Arthas of the change so he can adjust
-                    if (Creature* arthas = instance->GetCreature(_arthasGUID))
-                        arthas->AI()->DoAction(force ? -ACTION_PROGRESS_UPDATE_FORCE : -ACTION_PROGRESS_UPDATE);
-                    else // if there is currently no arthas, then we need to spawn one
+                {   // there might be an Arthas instance in the dungeon somewhere
+                    // notify him of the change so he can adjust
+                    Creature* arthas = instance->GetCreature(_arthasGUID);
+                    if (arthas)
+                    {
+                        if (force)
+                        {
+                            arthas->DespawnOrUnsummon();
+                            arthas = nullptr;
+                        }
+                        else
+                            arthas->AI()->DoAction(-ACTION_PROGRESS_UPDATE);
+                    }
+
+                    if (!arthas) // if there is currently no arthas, then we need to spawn one
                         events.ScheduleEvent(EVENT_RESPAWN_ARTHAS, Seconds(1));
                 }
                 else if (Creature* arthas = instance->GetCreature(_arthasGUID)) // there shouldn't be any Arthas around
@@ -483,6 +493,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     instance->DeleteRespawnTimes();
 
                     // Reset respawn time on all permanent spawns, despawn all temporary spawns
+                    // @todo dynspawn, this won't work
                     std::vector<Creature*> toDespawn;
                     std::unordered_map<ObjectGuid, Creature*> const& objects = instance->GetObjectsStore().GetElements()._elements._element;
                     for (std::unordered_map<ObjectGuid, Creature*>::const_iterator it = objects.cbegin(); it != objects.cend(); ++it)

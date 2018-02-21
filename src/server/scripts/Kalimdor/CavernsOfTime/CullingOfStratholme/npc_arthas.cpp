@@ -450,7 +450,7 @@ class npc_arthas_stratholme : public CreatureScript
 
     struct npc_arthas_stratholmeAI : public ScriptedAI
     {
-        npc_arthas_stratholmeAI(Creature* creature) : ScriptedAI(creature), _hadSetup(false), instance(creature->GetInstanceScript()), _exorcismCooldown(urandms(7, 14)), _progressRP(true), _afterCombat(ACTION_NONE) { me->SetVisible(false);  }
+        npc_arthas_stratholmeAI(Creature* creature) : ScriptedAI(creature), instance(creature->GetInstanceScript()), _exorcismCooldown(urandms(7, 14)), _progressRP(true), _afterCombat(ACTION_NONE) { }
 
         static const std::array<Position, NUM_POSITIONS> _positions; // all kinds of positions we'll need for RP events (there's a lot of these)
         static const float _snapbackDistanceThreshold; // how far we can be from where we're supposed at start of phase to be before we snap back
@@ -498,7 +498,6 @@ class npc_arthas_stratholme : public CreatureScript
             switch (newState)
             {
                 case WAVES_DONE:
-                    me->SetVisible(false);
                     events.ScheduleEvent(EVENT_TOWN_HALL_REACHED, Seconds(3));
                     break;
                 case UTHER_TALK:
@@ -548,27 +547,6 @@ class npc_arthas_stratholme : public CreatureScript
                 case -ACTION_PROGRESS_UPDATE:
                     AdvanceToState(GetCurrentProgress());
                     break;
-                case -ACTION_PROGRESS_UPDATE_FORCE:
-                {
-                    // turn RP off so we don't process movementinforms
-                    _progressRP = false;
-
-                    // Reset waypoint and scheduling info
-                    _afterCombat = ACTION_NONE;
-                    _resumeMovement.Clear();
-                    me->StopMoving();
-                    me->GetMotionMaster()->Clear();
-                    events.Reset();
-
-                    std::map<ProgressStates, SnapbackInfo>::const_iterator it = _snapbackPositions.find(GetCurrentProgress());
-                    if (it != _snapbackPositions.end())
-                        me->SetHomePosition(*it->second.snapbackPos);
-
-                    // Re-initialize on next tick
-                    me->SetVisible(false);
-                    _hadSetup = false;
-                    break;
-                }
                 case RP3_ACTION_AFTER_INITIAL:
                     events.ScheduleEvent(RP3_EVENT_ARTHAS4, Seconds(1));
                     events.ScheduleEvent(RP3_EVENT_ARTHAS_MOVE_1, Seconds(7));
@@ -770,7 +748,6 @@ class npc_arthas_stratholme : public CreatureScript
                     events.ScheduleEvent(RP4_EVENT_ARTHAS3, Seconds(5));
                     break;
                 case RP4_POINTID_ARTHAS2:
-                    me->SetVisible(false);
                     events.ScheduleEvent(RP4_EVENT_GAUNTLET_REACHED, Seconds(1));
                     break;
                 case RP4_POINTID_GAUNTLET1:
@@ -791,7 +768,6 @@ class npc_arthas_stratholme : public CreatureScript
                     events.ScheduleEvent(RP5_EVENT_ARTHAS_LEAVE2, Seconds(0));
                     break;
                 case RP5_POINTID_ARTHAS4:
-                    me->SetVisible(false);
                     me->NearTeleportTo(_positions[ARTHAS_FINAL_POS]);
                     break;
                 default:
@@ -1486,7 +1462,7 @@ class npc_arthas_stratholme : public CreatureScript
 
         void JustReachedHome() override
         {
-            if (_hadSetup && !me->HasAura(SPELL_DEVOTION_AURA))
+            if (!me->HasAura(SPELL_DEVOTION_AURA))
                 DoCastSelf(SPELL_DEVOTION_AURA);
             _progressRP = true;
             if (!_resumeMovement.Empty()) // WP motion was interrupted, resume
@@ -1544,7 +1520,6 @@ class npc_arthas_stratholme : public CreatureScript
         }
 
         private:
-            bool _hadSetup; // on first update tick, adjust to current progress state
             InstanceScript* const instance;
             EventMap events;
             ObjectGuid _eventStarterGuid;
