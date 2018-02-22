@@ -399,18 +399,12 @@ class instance_culling_of_stratholme : public InstanceMapScript
 
             void SetSpawnGroupState(InstanceEntries group, bool state, bool force)
             {
-                if (force)
-                { // force state changes should always spawn/despawn the entire group
-                    if (state)
-                        instance->SpawnGroupSpawn(group, true);
-                    else
-                        instance->SpawnGroupDespawn(group, true);
-                    return;
-                }
-
-                if (state == instance->IsSpawnGroupActive(group))
-                    return;
-                instance->SetSpawnGroupActive(group, state);
+                if (state)
+                    instance->SpawnGroupSpawn(group, true);
+                else if (force)
+                    instance->SpawnGroupDespawn(group, true);
+                else
+                    instance->SetSpawnGroupInactive(group);
             }
 
             void SetInstanceProgress(ProgressStates state, bool force)
