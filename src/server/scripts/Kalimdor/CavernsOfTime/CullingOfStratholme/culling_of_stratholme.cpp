@@ -436,14 +436,14 @@ enum Chromie2Misc
     WHISPER_CRATES_DONE = 0,
     WHISPER_COME_TALK   = 1
 };
-class npc_chromie_middle : public StratholmeCreatureScript<NullCreatureAI>
+class npc_chromie_middle : public CreatureScript
 {
     public:
-        npc_chromie_middle() : StratholmeCreatureScript("npc_chromie_middle", ProgressStates(ALL & ~(JUST_STARTED | CRATES_IN_PROGRESS))) { }
+        npc_chromie_middle() : CreatureScript("npc_chromie_middle") { }
 
-        struct npc_chromie_middleAI : public StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper
+        struct npc_chromie_middleAI : public NullCreatureAI
         {
-            npc_chromie_middleAI(Creature* creature, ProgressStates _respawnMask, ProgressStates _despawnMask) : StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper(creature, _respawnMask, _despawnMask), _whisperDelay(0) { }
+            npc_chromie_middleAI(Creature* creature) : NullCreatureAI(creature), instance(creature->GetInstanceScript()), _whisperDelay(0) { }
 
             void JustAppeared() override
             {
@@ -520,13 +520,14 @@ class npc_chromie_middle : public StratholmeCreatureScript<NullCreatureAI>
                 return false;
             }
 
+            InstanceScript* const instance;
             uint32 _whisperDelay;
             std::map<ObjectGuid, time_t> _whispered;
         };
 
         CreatureAI* GetAI(Creature* creature) const override
         {
-            return GetInstanceAI<npc_chromie_middleAI>(creature, _respawnMask, _despawnMask);
+            return GetCullingOfStratholmeAI<npc_chromie_middleAI>(creature);
         }
 };
 
@@ -1282,14 +1283,14 @@ enum CrateMisc
     SPELL_ARCANE_DISRUPTION = 49590,
     SPELL_CRATES_CREDIT = 58109
 };
-class npc_crate_helper : public StratholmeCreatureScript<NullCreatureAI>
+class npc_crate_helper : public CreatureScript
 {
     public:
-    npc_crate_helper() : StratholmeCreatureScript<NullCreatureAI>("npc_crate_helper_cot", ProgressStates(CRATES_IN_PROGRESS | CRATES_DONE)) { }
+    npc_crate_helper() : CreatureScript("npc_crate_helper_cot") { }
 
-    struct npc_crate_helperAI : public StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper
+    struct npc_crate_helperAI : public NullCreatureAI
     {
-        npc_crate_helperAI(Creature* creature, ProgressStates _respawnMask, ProgressStates _despawnMask) : StratholmeCreatureScript<NullCreatureAI>::StratholmeNPCAIWrapper(creature, _respawnMask, _despawnMask), _crateRevealed(false) { }
+        npc_crate_helperAI(Creature* creature) : NullCreatureAI(creature), _crateRevealed(false) { }
 
         void replaceIfCloser(Creature* candidate, Creature*& current, float& currentDist) const
         {
@@ -1348,39 +1349,8 @@ class npc_crate_helper : public StratholmeCreatureScript<NullCreatureAI>
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetInstanceAI<npc_crate_helperAI>(creature, _respawnMask, _despawnMask);
+        return GetCullingOfStratholmeAI<npc_crate_helperAI>(creature);
     }
-};
-
-// Blanket spawn control AI
-struct npc_stratholme_fluff_living : public StratholmeCreatureScript<NullCreatureAI>
-{
-    npc_stratholme_fluff_living() : StratholmeCreatureScript<NullCreatureAI>("npc_stratholme_fluff_living", ProgressStates(WAVES_IN_PROGRESS - 1)) { }
-};
-struct npc_stratholme_smart_living : public StratholmeCreatureScript<SmartAI>
-{
-    npc_stratholme_smart_living() : StratholmeCreatureScript<SmartAI>("npc_stratholme_smart_living", ProgressStates(WAVES_IN_PROGRESS - 1)) { }
-};
-static const std::unique_ptr<AreaBoundary const> waveArea (new RectangleBoundary(2028.0f, 2372.0f, 1115.0f, 1355.0f));
-// this include is temporary until i refactor spawn control
-#include "CombatAI.h"
-struct npc_stratholme_fluff_undead : public StratholmeCreatureScript<AggressorAI>
-{
-    npc_stratholme_fluff_undead() : StratholmeCreatureScript<AggressorAI>("npc_stratholme_fluff_undead", ProgressStates(ALL & ~(GAUNTLET_COMPLETE | MALGANIS_IN_PROGRESS | COMPLETE) & ~(WAVES_IN_PROGRESS-1))) { }
-    bool CanSpawn(ObjectGuid::LowType spawnId, uint32 entry, CreatureTemplate const* baseTemplate, CreatureTemplate const* actTemplate, CreatureData const* cData, Map const* map) const override
-    {
-        // make sure stuff doesn't respawn in wave area after we've advanced past it
-        // (some creatures in gauntlet share entry, so needs explicit position check)
-        if (InstanceMap const* instance = map->ToInstanceMap())
-            if (InstanceScript const* script = instance->GetInstanceScript())
-                if (waveArea->IsWithinBoundary(cData->spawnPoint) && script->GetData(DATA_INSTANCE_PROGRESS) > WAVES_IN_PROGRESS)
-                    return false;
-        return StratholmeCreatureScript<AggressorAI>::CanSpawn(spawnId, entry, baseTemplate, actTemplate, cData, map);
-    }
-};
-struct npc_stratholme_smart_undead : public StratholmeCreatureScript<SmartAI>
-{
-    npc_stratholme_smart_undead() : StratholmeCreatureScript<SmartAI>("npc_stratholme_smart_undead", ProgressStates(ALL & ~(WAVES_IN_PROGRESS - 1))) { }
 };
 
 void AddSC_culling_of_stratholme()
@@ -1398,9 +1368,4 @@ void AddSC_culling_of_stratholme()
     new npc_sergeant_morigan();
     new npc_roger_owens();
     new npc_crate_helper();
-
-    new npc_stratholme_fluff_living();
-    new npc_stratholme_smart_living();
-    new npc_stratholme_fluff_undead();
-    new npc_stratholme_smart_undead();
 }

@@ -193,11 +193,21 @@ UPDATE `creature_text` SET `emote`=396 WHERE
 UPDATE `creature_text` SET `emote`=432 WHERE
 	(`creatureid`=26499 AND `groupid` IN (29));
 	
+-- spawn group data
+DELETE FROM `spawn_group` WHERE `groupId` BETWEEN 52 and 56;
+-- middle chromie
+INSERT INTO `spawn_group` (`groupId`,`spawnType`,`spawnId`) VALUES (52, 0, 700300);
+-- crate helpers
+INSERT INTO `spawn_group` SELECT 53 as `groupId`, 0 as `spawnType`, `guid` as `spawnId` FROM `creature` WHERE `id`=27827;
 -- Blanket apply a spawn group to all "live stratholme" mobs that prevents them respawning after the purge begins
-UPDATE `creature_template` SET `ScriptName`="npc_stratholme_fluff_living",`AIName`="" WHERE `entry` IN (28167,31126,31019,28169,31127,31023,31020,31018,31028);
-UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_living",`AIName`="SmartAI" WHERE `entry` IN (31057,30570,31027,31021,30994);
--- Do the same for undead stratholme mobs, except for the other phases
-UPDATE `creature_template` SET `ScriptName`="npc_stratholme_smart_undead",`AIName`="SmartAI" WHERE `entry` IN (28249,27729,28200,27734,27731,28199,27736,28201);
+UPDATE `creature_template` SET `ScriptName`="",`AIName`="", `flags_extra`=(`flags_extra`|2) WHERE `entry` IN (28167,31126,31019,28169,31127,31023,31020,31018,31028);
+UPDATE `creature_template` SET `ScriptName`="",`AIName`="SmartAI" WHERE `entry` IN (31057,30570,31027,31021,30994);
+INSERT INTO `spawn_group` SELECT 56 as `groupId`, 0 as `spawnType`, `guid` as `spawnId` FROM `creature` WHERE `id` IN (28167,28169,30570,30994,31018,31019,31020,31021,31023,31027,31028,31057,31126,31127);
+-- Do the same for undead stratholme mobs
+UPDATE `creature_template` SET `ScriptName`="",`AIName`="SmartAI" WHERE `entry` IN (28249,27729,28200,27734,27731,28199,27736,28201);
+INSERT INTO `spawn_group` SELECT 55 as `groupId`, 0 as `spawnType`, `guid` as `spawnId` FROM `creature` WHERE `id` IN (27729,27731,27734,27736,27737,28199,28200,28201,28249);
+-- Gauntlet trash gets its own spawn group...
+UPDATE `spawn_group` sg LEFT JOIN `creature` c on sg.`spawnId`=c.`guid` SET sg.`groupId`=54 WHERE (sg.`groupId`=55) AND (c.`position_x` BETWEEN 2028.0 AND 2372.0) AND (c.`position_y` BETWEEN 1115.0 AND 1355.0);
 
 -- City fluff
 DELETE FROM `smart_scripts` WHERE `entryorguid` IN (30570,31027,31021) AND `source_type`=0;

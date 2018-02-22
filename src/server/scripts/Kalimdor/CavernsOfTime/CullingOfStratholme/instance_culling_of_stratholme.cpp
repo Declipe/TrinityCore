@@ -21,6 +21,7 @@
 #include "culling_of_stratholme.h"
 #include "EventMap.h"
 #include "GameObject.h"
+#include "GameTime.h"
 #include "InstanceScript.h"
 #include "Map.h"
 #include "MotionMaster.h"
@@ -176,16 +177,14 @@ class instance_culling_of_stratholme : public InstanceMapScript
         static const Position _guardianPos;
         static const Position _corruptorRiftPos;
 
-        typedef std::array<std::array<uint32, MAX_SPAWNS_PER_WAVE>, NUM_SCOURGE_WAVES> WaveData;
-        static const WaveData _heroicWaves;
+        static const std::array<std::array<uint32, MAX_SPAWNS_PER_WAVE>, NUM_SCOURGE_WAVES> _heroicWaves;
 
         struct WaveLocation
         {
             States const worldState;
             std::array<Position, MAX_SPAWNS_PER_WAVE> spawnPoints;
         };
-        typedef std::array<WaveLocation, WAVE_LOC_MAX-WAVE_LOC_MIN+1> WaveLocationData;
-        static const WaveLocationData _waveLocations;
+        static const std::array<WaveLocation, WAVE_LOC_MAX-WAVE_LOC_MIN+1> _waveLocations;
 
         struct instance_culling_of_stratholme_InstanceMapScript : public InstanceScript
         {
@@ -228,7 +227,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     events.ScheduleEvent(EVENT_GUARDIAN_TICK, Seconds(0));
                 }
 
-                time_t timediff = (infiniteGuardianTime - time(NULL));
+                time_t timediff = (infiniteGuardianTime - GameTime::GetGameTime());
                 if (!infiniteGuardianTime)
                     timediff = -1;
                 printf("Loaded with state %u and guardian timeout at %zu minutes %zu seconds from now.\n", (uint32)loadState, timediff / MINUTE, timediff % MINUTE);
@@ -268,27 +267,6 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         if (_currentState == PURGE_STARTING)
                             SetInstanceProgress(WAVES_IN_PROGRESS, false);
                         break;
-                    case DATA_NOTIFY_DEATH:
-                        if (_currentState == WAVES_IN_PROGRESS && !_waveSpawns.empty())
-                        {
-                            for (ObjectGuid const& guid : _waveSpawns)
-                                if (Creature* creature = instance->GetCreature(guid))
-                                    if (creature->IsAlive())
-                                        return;
-                            _waveSpawns.clear();
-
-                            // clear existing world markers
-                            for (uint32 marker = WAVE_MARKER_MIN; marker <= WAVE_MARKER_MAX; ++marker)
-                                SetWorldState(States(marker), 0, false);
-                            PropagateWorldStateUpdate();
-
-                            // schedule next wave if applicable
-                            if (_waveCount < NUM_SCOURGE_WAVES)
-                                events.ScheduleEvent(EVENT_SCOURGE_WAVE, (_waveCount == WAVE_MEATHOOK) ? Seconds(20) : Seconds(1));
-                            else
-                                SetInstanceProgress(WAVES_DONE, false);
-                        }
-                        break;
                     case DATA_REACH_TOWN_HALL:
                         if (_currentState == WAVES_DONE)
                             SetInstanceProgress(TOWN_HALL_PENDING, false);
@@ -312,6 +290,35 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     default:
                         break;
                 }
+            }
+
+            void OnUnitDeath(Unit* unit) override
+            {
+                if (_currentState != WAVES_IN_PROGRESS || _waveSpawns.empty())
+                    return;
+
+                // if this is a wave spawn...
+                auto it = _waveSpawns.find(unit->GetGUID());
+                if (it == _waveSpawns.end())
+                    return;
+
+                // ... then erase it from our list, then check if there are no more spawns alive...
+                _waveSpawns.erase(it);
+                if (!_waveSpawns.empty())
+                    return;
+
+                // ... and if there are none, the wave is done and we progress
+
+                // clear existing world markers
+                for (uint32 marker = WAVE_MARKER_MIN; marker <= WAVE_MARKER_MAX; ++marker)
+                    SetWorldState(States(marker), 0, false);
+                PropagateWorldStateUpdate();
+
+                // schedule next wave if applicable
+                if (_waveCount < NUM_SCOURGE_WAVES)
+                    events.ScheduleEvent(EVENT_SCOURGE_WAVE, (_waveCount == WAVE_MEATHOOK) ? Seconds(20) : Seconds(1));
+                else
+                    SetInstanceProgress(WAVES_DONE, false);
             }
 
             void InitiateArthasEvent(ProgressStates fromState, ProgressStates toState, InstanceActions startAction, ObjectGuid starterGUID)
@@ -390,18 +397,36 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 return true;
             }
 
+            void SetSpawnGroupState(InstanceEntries group, bool state, bool force)
+            {
+                if (force)
+                { // force state changes should always spawn/despawn the entire group
+                    if (state)
+                        instance->SpawnGroupSpawn(group, true);
+                    else
+                        instance->SpawnGroupDespawn(group, true);
+                    return;
+                }
+
+                if (state == instance->IsSpawnGroupActive(group))
+                    return;
+                instance->SetSpawnGroupActive(group, state);
+            }
+
             void SetInstanceProgress(ProgressStates state, bool force)
             {
                 printf("Instance progress is now 0x%X\n", (uint32)state);
                 ProgressStates oldState = _currentState;
                 _currentState = state;
 
-                // Notify all creatures using spawn control AI of the change so they can despawn as appropriate
-                if (oldState)
-                    for (ObjectGuid const& guid : _myCreatures[oldState])
-                        if (Creature* creature = instance->GetCreature(guid))
-                            creature->AI()->DoAction(force ? -ACTION_PROGRESS_UPDATE_FORCE : -ACTION_PROGRESS_UPDATE);
+                /* Spawn group management */
+                SetSpawnGroupState(SPAWNGRP_CHROMIE_MID, (state >= CRATES_DONE), force);
+                SetSpawnGroupState(SPAWNGRP_CRATE_HELPERS, (state == CRATES_IN_PROGRESS || state == CRATES_DONE), true);
+                SetSpawnGroupState(SPAWNGRP_GAUNTLET_TRASH, (state == WAVES_IN_PROGRESS), force);
+                SetSpawnGroupState(SPAWNGRP_UNDEAD_TRASH, (state >= WAVES_IN_PROGRESS && state < GAUNTLET_COMPLETE), force);
+                SetSpawnGroupState(SPAWNGRP_RESIDENTS, (state < WAVES_IN_PROGRESS), true);
 
+                /* Arthas management */
                 if (state > CRATES_DONE)
                 {   // there might be an Arthas instance in the dungeon somewhere
                     // notify him of the change so he can adjust
@@ -423,7 +448,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 else if (Creature* arthas = instance->GetCreature(_arthasGUID)) // there shouldn't be any Arthas around
                     arthas->DespawnOrUnsummon();
 
-                /* World state handling */
+                /* World state management */
                 // Plague crates
                 if (state == CRATES_IN_PROGRESS)
                 {
@@ -440,7 +465,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     SetWorldState(WORLDSTATE_SHOW_CRATES, 0, false);
                     SetWorldState(WORLDSTATE_CRATES_REVEALED, state == JUST_STARTED ? 0 : NUM_PLAGUE_CRATES, false);
                 }
-                // Scourge wave management
+                // Scourge wave counter
                 if (state == WAVES_DONE)
                     SetWorldState(WORLDSTATE_WAVE_COUNT, NUM_SCOURGE_WAVES, false);
                 else
@@ -459,7 +484,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                     case CRATES_DONE:
                         if (Creature* bunny = instance->GetCreature(_genericBunnyGUID))
                             bunny->CastSpell(nullptr, SPELL_CRATES_KILL_CREDIT, TRIGGERED_FULL_MASK);
-                        events.ScheduleEvent(EVENT_CRIER_CALL_TO_GATES, Seconds(5));
+                        events.ScheduleEvent(EVENT_CRIER_CALL_TO_GATES, 5s);
                         break;
                     case UTHER_TALK:
                     case PURGE_STARTING:
@@ -469,15 +494,15 @@ class instance_culling_of_stratholme : public InstanceMapScript
                         _waveCount = 0;
                         _currentSpawnLoc = 0;
                         _waveSpawns.clear();
-                        events.ScheduleEvent(EVENT_SCOURGE_WAVE, Seconds(1));
+                        events.ScheduleEvent(EVENT_SCOURGE_WAVE, 1s);
 
                         if (!_infiniteGuardianTimeout && instance->GetSpawnMode() == DUNGEON_DIFFICULTY_HEROIC && (GetBossState(DATA_INFINITE_CORRUPTOR) != DONE && GetBossState(DATA_INFINITE_CORRUPTOR) != FAIL))
                         {
                             instance->SummonCreature(NPC_TIME_RIFT, _corruptorRiftPos);
                             instance->SummonCreature(NPC_GUARDIAN_OF_TIME, _guardianPos);
                             instance->SummonCreature(NPC_INFINITE_CORRUPTOR, _corruptorPos);
-                            _infiniteGuardianTimeout = time(NULL) + 25 * MINUTE;
-                            events.ScheduleEvent(EVENT_GUARDIAN_TICK, Seconds(6));
+                            _infiniteGuardianTimeout = GameTime::GetGameTime() + 25 * MINUTE;
+                            events.ScheduleEvent(EVENT_GUARDIAN_TICK, 6s);
                         }
                         break;
                     case WAVES_DONE:
@@ -531,7 +556,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             if (instance->GetSpawnMode() != DUNGEON_DIFFICULTY_HEROIC)
                                 return;
 
-                            time_t secondsToGuardianDeath = _infiniteGuardianTimeout - time(NULL);
+                            time_t secondsToGuardianDeath = _infiniteGuardianTimeout - GameTime::GetGameTime();
                             if (secondsToGuardianDeath <= 0)
                             {
                                 _infiniteGuardianTimeout = 0;
@@ -598,17 +623,11 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             {
                                 case WAVE_MEATHOOK:
                                     if (Creature* spawn = instance->SummonCreature(NPC_MEATHOOK, spawnLocation.spawnPoints[0]))
-                                    {
-                                        _waveSpawns.push_back(spawn->GetGUID());
-                                        spawn->AI()->DoAction(-ACTION_REQUEST_NOTIFY);
-                                    }
+                                        _waveSpawns.insert(spawn->GetGUID());
                                     break;
                                 case WAVE_SALRAMM:
                                     if (Creature* spawn = instance->SummonCreature(NPC_SALRAMM, spawnLocation.spawnPoints[0]))
-                                    {
-                                        _waveSpawns.push_back(spawn->GetGUID());
-                                        spawn->AI()->DoAction(-ACTION_REQUEST_NOTIFY);
-                                    }
+                                        _waveSpawns.insert(spawn->GetGUID());
                                     break;
                                 default:
                                     if (instance->GetSpawnMode() == DUNGEON_DIFFICULTY_HEROIC)
@@ -616,19 +635,13 @@ class instance_culling_of_stratholme : public InstanceMapScript
                                         for (uint32 i = 0; i < MAX_SPAWNS_PER_WAVE; ++i)
                                             if (uint32 entry = _heroicWaves[_waveCount - 1][i])
                                                 if (Creature* spawn = instance->SummonCreature(entry, spawnLocation.spawnPoints[i]))
-                                                {
-                                                    _waveSpawns.push_back(spawn->GetGUID());
-                                                    spawn->AI()->DoAction(-ACTION_REQUEST_NOTIFY);
-                                                }
+                                                    _waveSpawns.insert(spawn->GetGUID());
                                     }
                                     else
                                     {
                                         for (uint32 i = 0; i <= 1; ++i)
                                             if (Creature* spawn = instance->SummonCreature(NPC_DEVOURING_GHOUL, spawnLocation.spawnPoints[i]))
-                                            {
-                                                _waveSpawns.push_back(spawn->GetGUID());
-                                                spawn->AI()->DoAction(-ACTION_REQUEST_NOTIFY);
-                                            }
+                                                _waveSpawns.insert(spawn->GetGUID());
                                     }
                                     break;
                             }
@@ -768,7 +781,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
             // Scourge Waves
             uint32 _waveCount;
             uint8 _currentSpawnLoc;
-            std::vector<ObjectGuid> _waveSpawns;
+            std::unordered_set<ObjectGuid> _waveSpawns;
 
             // Gauntlet
             ObjectGuid _passageGUID;
@@ -784,7 +797,7 @@ const Position instance_culling_of_stratholme::_corruptorPos     = { 2331.642f, 
 const Position instance_culling_of_stratholme::_guardianPos      = { 2321.489f, 1268.383f, 132.8507f, 0.418879f };
 const Position instance_culling_of_stratholme::_corruptorRiftPos = { 2443.626f, 1280.450f, 133.0066f, 1.727876f };
 
-const instance_culling_of_stratholme::WaveData instance_culling_of_stratholme::_heroicWaves =
+decltype(instance_culling_of_stratholme::_heroicWaves) instance_culling_of_stratholme::_heroicWaves =
 {{
     {{ NPC_DEVOURING_GHOUL, NPC_DEVOURING_GHOUL, NPC_DEVOURING_GHOUL }}, // wave 1
     {{ NPC_DEVOURING_GHOUL, NPC_ENRAGED_GHOUL, NPC_NECROMANCER }}, // wave 2
@@ -798,7 +811,7 @@ const instance_culling_of_stratholme::WaveData instance_culling_of_stratholme::_
     {{ 0 }} // wave 10, salramm (special)
 }};
 
-const instance_culling_of_stratholme::WaveLocationData instance_culling_of_stratholme::_waveLocations =
+decltype(instance_culling_of_stratholme::_waveLocations) instance_culling_of_stratholme::_waveLocations =
 {{
     { // King's Square
         WORLDSTATE_WAVE_MARKER_KS,
@@ -856,16 +869,6 @@ const instance_culling_of_stratholme::WaveLocationData instance_culling_of_strat
         }}
     }
 }};
-
-void StratholmeAIHello(InstanceScript* instance, ObjectGuid const& me, ProgressStates myStates)
-{
-    reinterpret_cast<instance_culling_of_stratholme::instance_culling_of_stratholme_InstanceMapScript*>(instance)->CreatureAIHello(me, myStates);
-
-}
-void StratholmeAIGoodbye(InstanceScript* instance, ObjectGuid const& me, ProgressStates myStates)
-{
-    reinterpret_cast<instance_culling_of_stratholme::instance_culling_of_stratholme_InstanceMapScript*>(instance)->CreatureAIGoodbye(me, myStates);
-}
 
 void AddSC_instance_culling_of_stratholme()
 {

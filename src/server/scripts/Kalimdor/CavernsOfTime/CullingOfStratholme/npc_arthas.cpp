@@ -795,6 +795,8 @@ class npc_arthas_stratholme : public CreatureScript
             if (!UpdateVictim())
                 return;
 
+            me->GetThreatManager().UpdateOnlineStates();
+
             if (HealthBelowPct(40))
                 DoCastSelf(SPELL_HOLY_LIGHT);
             if (_exorcismCooldown <= diff)

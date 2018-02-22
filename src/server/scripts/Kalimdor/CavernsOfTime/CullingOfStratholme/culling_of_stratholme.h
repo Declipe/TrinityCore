@@ -149,8 +149,6 @@ enum InstanceData
 enum InstanceActions
 {
     ACTION_PROGRESS_UPDATE = 1,
-    ACTION_PROGRESS_UPDATE_FORCE,
-    ACTION_REQUEST_NOTIFY,
     ACTION_CORRUPTOR_LEAVE,
     ACTION_START_RP_EVENT1,   // Arthas/Uther chat in front of town
     ACTION_START_RP_EVENT2,   // Arthas/Mal'ganis chat at entrance
@@ -162,115 +160,13 @@ enum InstanceActions
 
 enum InstanceEntries
 {
-    NPC_ARTHAS        =  26499,
-    GO_HIDDEN_PASSAGE = 188686
-};
-
-// These methods are implemented in instance_culling_of_stratholme.cpp so they can access internals of the instance script
-void StratholmeAIHello(InstanceScript* instance, ObjectGuid const& me, ProgressStates myStates);
-void StratholmeAIGoodbye(InstanceScript* instance, ObjectGuid const& me, ProgressStates myStates);
-
-// Spawn control creature script that controls which phases each creature may be alive in
-template <class ParentAI>
-class StratholmeCreatureScript : public CreatureScript
-{
-    public:
-        StratholmeCreatureScript(const char* name, ProgressStates respawnMask, ProgressStates despawnMask) : CreatureScript(name), _respawnMask(respawnMask), _despawnMask(despawnMask) { ASSERT(!(respawnMask & ~despawnMask)); }
-        StratholmeCreatureScript(const char* name, ProgressStates stateMask) : StratholmeCreatureScript(name, stateMask, stateMask) { }
-
-        struct StratholmeNPCAIWrapper : public ParentAI
-        {
-            public:
-                StratholmeNPCAIWrapper(Creature* creature, ProgressStates respawnMask, ProgressStates despawnMask) : ParentAI(creature), instance(creature->GetInstanceScript()), _respawnMask(respawnMask), _despawnMask(despawnMask), _deathNotify(false)
-                {
-                    StratholmeAIHello(instance, this->me->GetGUID(), _despawnMask);
-                }
-                StratholmeNPCAIWrapper(Creature* creature, ProgressStates stateMask) : StratholmeNPCAIWrapper(creature, stateMask, stateMask) { }
-                ~StratholmeNPCAIWrapper()
-                {
-                    StratholmeAIGoodbye(instance, this->me->GetGUID(), _despawnMask);
-                }
-
-                void CheckDespawn(bool force)
-                {
-                    ProgressStates statesMask = force ? _respawnMask : _despawnMask;
-                    if (!(statesMask & instance->GetData(DATA_INSTANCE_PROGRESS)))
-                        this->me->DespawnOrUnsummon(0, Seconds(1));
-                }
-
-                bool CanAIAttack(Unit const* who) const override
-                {
-                    if (Creature const* cWho = who->ToCreature())
-                        if (cWho->GetEntry() == NPC_ARTHAS)
-                            if (!cWho->AI()->CanAIAttack(this->me))
-                                return false;
-                    return ParentAI::CanAIAttack(who);
-                }
-
-                virtual void _DoAction(int32 /*action*/) { }
-                void DoAction(int32 action) final override
-                {
-                    ParentAI::DoAction(action);
-                    switch (action)
-                    {
-                        case -ACTION_PROGRESS_UPDATE:
-                            CheckDespawn(false);
-                            break;
-                        case -ACTION_PROGRESS_UPDATE_FORCE:
-                            CheckDespawn(true);
-                            break;
-                        case -ACTION_REQUEST_NOTIFY:
-                            _deathNotify = true;
-                            break;
-                        default:
-                            _DoAction(action);
-                    }
-                }
-
-                virtual void _JustDied(Unit* /*killer*/) { }
-                void JustDied(Unit* killer) final override
-                {
-                    ParentAI::JustDied(killer);
-                    if (_deathNotify)
-                        instance->SetData(DATA_NOTIFY_DEATH, 1);
-                    _JustDied(killer);
-                }
-
-                protected:
-                    InstanceScript* const instance;
-                private:
-                    ProgressStates const _respawnMask;
-                    ProgressStates const _despawnMask;
-                    bool _deathNotify;
-        };
-
-        template<class AI> AI* GetInstanceAI(Creature* creature) const { return ::GetInstanceAI<AI>(creature); }
-        template<class AI>
-        AI* GetInstanceAI(Creature* creature, ProgressStates respawnMask, ProgressStates despawnMask) const
-        {
-            if (InstanceMap* instance = creature->GetMap()->ToInstanceMap())
-                if (instance->GetInstanceScript())
-                    return new AI(creature, respawnMask, despawnMask);
-            return nullptr;
-        }
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return GetInstanceAI<StratholmeNPCAIWrapper>(creature, _respawnMask, _despawnMask);
-        }
-
-        bool CanSpawn(ObjectGuid::LowType /*spawnId*/, uint32 /*entry*/, CreatureTemplate const* /*baseTemplate*/, CreatureTemplate const* /*actTemplate*/, CreatureData const* /*cData*/, Map const* map) const override
-        {
-            if (InstanceMap const* instance = map->ToInstanceMap())
-                if (InstanceScript const* script = instance->GetInstanceScript())
-                    if (!(_respawnMask & script->GetData(DATA_INSTANCE_PROGRESS)))
-                        return false;
-            return true;
-        }
-
-    protected:
-        ProgressStates const _respawnMask; // do not respawn creature if we aren't in one of these states
-        ProgressStates const _despawnMask; // despawn creature if we aren't in one of these states
+    NPC_ARTHAS              =  26499,
+    GO_HIDDEN_PASSAGE       = 188686,
+    SPAWNGRP_CHROMIE_MID    =     52,
+    SPAWNGRP_CRATE_HELPERS  =     53,
+    SPAWNGRP_GAUNTLET_TRASH =     54,
+    SPAWNGRP_UNDEAD_TRASH   =     55,
+    SPAWNGRP_RESIDENTS      =     56
 };
 
 template <class AI, class T>
