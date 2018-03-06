@@ -3837,7 +3837,7 @@ void SpellMgr::LoadSpellInfoCorrections()
         //! HACK: This spell break quest complete for alliance and on retail not used
         spellInfo->Effects[EFFECT_0].Effect = 0;
     });
-
+	
 	// TRIAL OF THE CHAMPION SPELLS
 	//
     ApplySpellFix({ 
