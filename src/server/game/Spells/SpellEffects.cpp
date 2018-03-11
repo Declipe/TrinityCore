@@ -4795,7 +4795,7 @@ void Spell::EffectLeapBack(SpellEffIndex effIndex)
     float speedz = damage/ 10.f;
     //1891: Disengage
    //4022: Rolling Throw
-    m_caster->JumpTo(speedxy, speedz, (m_spellInfo->SpellIconID != 1891 && m_spellInfo->SpellIconID != 4022));
+    unitCaster->JumpTo(speedxy, speedz, (m_spellInfo->SpellIconID != 1891 && m_spellInfo->SpellIconID != 4022));
 	if (m_spellInfo->SpellIconID == 4022) {
 		unitTarget->JumpTo(speedxy, speedz);
 	}
