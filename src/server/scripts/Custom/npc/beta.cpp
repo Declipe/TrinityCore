@@ -487,6 +487,7 @@ public:
           player->AddItem(44581, 1);
           player->AddItem(44582, 1);
           player->AddItem(45796, 1);
+          CloseGossipMenuFor(player);
         break;
         case 32333:
           if ((player->getClass() == CLASS_HUNTER))
@@ -494,11 +495,13 @@ public:
              player->AddItem(38082, 3);
              player->AddItem(44448, 1);
              player->AddItem(44447, 1);
+             CloseGossipMenuFor(player);
              return true;
            }
           else
            {
                 player->AddItem(38082, 4);
+                CloseGossipMenuFor(player);
                 return true;
             }
             break;
