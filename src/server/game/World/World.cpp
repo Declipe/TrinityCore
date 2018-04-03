@@ -2894,7 +2894,7 @@ BanReturn World::BanCharacter(std::string const& name, std::string const& durati
     else
         guid = banned->GetGUID().GetCounter();
     //Use transaction in order to ensure the order of the queries
-    SQLTransaction trans = CharacterDatabase.BeginTransaction();    
+    SQLTransaction trans = CharacterDatabase.BeginTransaction();
     // make sure there is only one active ban
     PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_CHARACTER_BAN);
     stmt->setUInt32(0, guid);
@@ -2907,7 +2907,7 @@ BanReturn World::BanCharacter(std::string const& name, std::string const& durati
     stmt->setString(3, reason);
     trans->Append(stmt);
     CharacterDatabase.CommitTransaction(trans);
-    
+
     if (banned)
         banned->GetSession()->KickPlayer();
 
