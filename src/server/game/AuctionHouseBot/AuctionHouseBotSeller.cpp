@@ -116,8 +116,10 @@ bool AuctionBotSeller::Initialize()
         if (prototype->Quality >= MAX_AUCTION_QUALITY)
             continue;
 
-        // forced exclude filter
         if (excludeItems.count(itemId))
+            continue;
+
+        if (DisableMgr::IsDisabledFor(DISABLE_TYPE_ITEM, itemId, nullptr, ITEM_DISABLE_AUCTIONHOUSE))
             continue;
 
         // forced include filter
