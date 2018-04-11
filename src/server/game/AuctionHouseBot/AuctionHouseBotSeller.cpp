@@ -26,7 +26,6 @@
 #include "ObjectMgr.h"
 #include "Random.h"
 #include <sstream>
-#include "DisableMgr.h"
 
 AuctionBotSeller::AuctionBotSeller()
 {

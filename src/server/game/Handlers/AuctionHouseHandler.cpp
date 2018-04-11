@@ -35,7 +35,6 @@
 #include "Util.h"
 #include "World.h"
 #include "WorldPacket.h"
-#include "DisableMgr.h"
 
 //void called when player click on auctioneer npc
 void WorldSession::HandleAuctionHelloOpcode(WorldPacket& recvData)
