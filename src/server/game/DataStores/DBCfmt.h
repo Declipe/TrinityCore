@@ -78,7 +78,7 @@ char const Itemfmt[] = "niiiiiii";
 char const ItemBagFamilyfmt[] = "nxxxxxxxxxxxxxxxxx";
 char const ItemDisplayTemplateEntryfmt[] = "nxxxxsxxxxxxxxxxxxxxxxxxx";
 //char const ItemCondExtCostsEntryfmt[] = "xiii";
-char const ItemExtendedCostEntryfmt[] = "niiiiiiiiiiiiiix";
+//char const ItemExtendedCostEntryfmt[] = "niiiiiiiiiiiiiix";
 char const ItemLimitCategoryEntryfmt[] = "nxxxxxxxxxxxxxxxxxii";
 char const ItemRandomPropertiesfmt[] = "nxiiixxssssssssssssssssx";
 char const ItemRandomSuffixfmt[] = "nssssssssssssssssxxiiixxiiixx";
@@ -139,6 +139,6 @@ char const VehicleSeatEntryfmt[] = "niiffffffffffiiiiiifffffffiiifffiiiiiiiffiii
 char const WMOAreaTableEntryfmt[] = "niiixxxxxiixxxxxxxxxxxxxxxxx";
 char const WorldMapAreaEntryfmt[] = "xinxffffixx";
 char const WorldMapOverlayEntryfmt[] = "nxiiiixxxxxxxxxxx";
-char const WorldSafeLocsEntryfmt[] = "nifffxxxxxxxxxxxxxxxxx";
+//char const WorldSafeLocsEntryfmt[] = "nifffxxxxxxxxxxxxxxxxx";
 
 #endif

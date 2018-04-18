@@ -6349,7 +6349,7 @@ void ObjectMgr::LoadGraveyardZones()
         uint32 zoneId = fields[1].GetUInt32();
         uint32 team   = fields[2].GetUInt16();
 
-        WorldSafeLocsEntry const* entry = sWorldSafeLocsStore.LookupEntry(safeLocId);
+        WorldSafeLocsEntry const* entry = sDBCMgr->GetWorldSafeLocsEntry(safeLocId);
         if (!entry)
         {
             TC_LOG_ERROR("sql.sql", "Table `graveyard_zone` has a record for non-existing graveyard (WorldSafeLocsID: %u), skipped.", safeLocId);
@@ -6391,9 +6391,9 @@ WorldSafeLocsEntry const* ObjectMgr::GetDefaultGraveyard(uint32 team) const
     };
 
     if (team == HORDE)
-        return sWorldSafeLocsStore.LookupEntry(HORDE_GRAVEYARD);
+        return sDBCMgr->GetWorldSafeLocsEntry(HORDE_GRAVEYARD);
     else if (team == ALLIANCE)
-        return sWorldSafeLocsStore.LookupEntry(ALLIANCE_GRAVEYARD);
+        return sDBCMgr->GetWorldSafeLocsEntry(ALLIANCE_GRAVEYARD);
     else return nullptr;
 }
 
@@ -6448,7 +6448,7 @@ WorldSafeLocsEntry const* ObjectMgr::GetClosestGraveyard(float x, float y, float
     {
         GraveyardData const& data = range.first->second;
 
-        WorldSafeLocsEntry const* entry = sWorldSafeLocsStore.LookupEntry(data.safeLocId);
+        WorldSafeLocsEntry const* entry = sDBCMgr->GetWorldSafeLocsEntry(data.safeLocId);
         if (!entry)
         {
             TC_LOG_ERROR("sql.sql", "Table `graveyard_zone` has record for not existing graveyard (WorldSafeLocsID %u), skipped.", data.safeLocId);
@@ -9053,7 +9053,7 @@ bool ObjectMgr::IsVendorItemValid(uint32 vendor_entry, uint32 item_id, int32 max
         return false;
     }
 
-    if (ExtendedCost && !sItemExtendedCostStore.LookupEntry(ExtendedCost))
+    if (ExtendedCost && !sDBCMgr->GetItemExtendedCostEntry(ExtendedCost))
     {
         if (player)
             ChatHandler(player->GetSession()).PSendSysMessage(LANG_EXTENDED_COST_NOT_EXIST, ExtendedCost);

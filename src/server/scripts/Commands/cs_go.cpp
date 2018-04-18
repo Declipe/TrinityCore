@@ -25,6 +25,7 @@ EndScriptData */
 #include "ScriptMgr.h"
 #include "Chat.h"
 #include "DatabaseEnv.h"
+#include "DBCStore.h"
 #include "Language.h"
 #include "MapManager.h"
 #include "MotionMaster.h"
@@ -175,7 +176,7 @@ public:
         if (!graveyardId)
             return false;
 
-        WorldSafeLocsEntry const* gy = sWorldSafeLocsStore.LookupEntry(graveyardId);
+        WorldSafeLocsEntry const* gy = sDBCMgr->GetWorldSafeLocsEntry(graveyardId);
         if (!gy)
         {
             handler->PSendSysMessage(LANG_COMMAND_GRAVEYARDNOEXIST, graveyardId);
