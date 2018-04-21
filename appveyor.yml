@@ -1,0 +1,25 @@
+version: 1.0.{build}
+pull_requests:
+  do_not_increment_build_number: true
+max_jobs: 1
+configuration: Release
+platform: x64
+shallow_clone: true
+environment:
+  BOOST_ROOT: C:\Libraries\boost_1_65_1
+  OPENSSL_ROOT_DIR: C:\OpenSSL-Win64
+build_script:
+- cmd: >-
+    md build
+
+    cd build
+
+    cmake -G"Visual Studio 15 Win64" -DSCRIPTS=static -DTOOLS=False ..
+
+    "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe" /p:Configuration=RelWithDebInfo /p:Platform="X64" /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" "TrinityCore.sln"
+
+    cd bin\RelWithDebInfo\
+
+    7z a TrinityCoreWin64VS2015.zip *
+artifacts:
+- path: build\bin\RelWithDebInfo\TrinityCoreWin64VS2015.zip
