@@ -14,7 +14,7 @@ build_script:
 
     cd build
 
-    cmake -G"Visual Studio 15 Win64" -DSCRIPTS=static -DTOOLS=False ..
+    cmake -G"Visual Studio 15" -DSCRIPTS=static -DTOOLS=False ..
 
     "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe" /p:Configuration=RelWithDebInfo /p:Platform="X64" /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" "TrinityCore.sln"
 
