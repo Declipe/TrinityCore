@@ -37,7 +37,8 @@
 #include "SpellAuras.h"
 #include "SpellHistory.h"
 #include "SpellMgr.h"
-#include "TargetedMovementGenerator.h"
+#include "ChaseMovementGenerator.h"
+#include "FollowMovementGenerator.h"
 #include "Transport.h"
 #include "Weather.h"
 #include "WeatherMgr.h"
@@ -1037,7 +1038,7 @@ public:
 			// to point to see at target with same orientation
 			float x, y, z;
 			target->GetContactPoint(_player, x, y, z);
-			_player->TeleportTo(target->GetMapId(), x, y, z, _player->GetAngle(target), TELE_TO_GM_MODE);
+			_player->TeleportTo(target->GetMapId(), x, y, z, _player->GetAbsoluteAngle(target), TELE_TO_GM_MODE);
 			_player->SetPhaseMask(target->GetPhaseMask(), true);
 		}
 		else
