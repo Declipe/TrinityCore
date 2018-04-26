@@ -66,15 +66,15 @@ enum Spells
     SPELL_FRENZY                                     = 47774,  // 15% AS for 2 min. Stacks.
     SPELL_FURY                                       = 66721,  // 5% damage. Stacks
 };
-/*
-enum Texts
+
+enum Texts11
 {
 	FIRE_SAY_AGGRO = 0,
 	FIRE_SAY_FRENZY = 1,
 	FIRE_SAY_SUMMON_TITAN = 2,
 	FIRE_SAY_KILL = 3,
 	FIRE_SAY_DIE = 4,
-};*/
+};
 enum eEnums
 {
     NPC_FIRE_ELEMENTAL                               = 99007,
@@ -82,11 +82,11 @@ enum eEnums
     GO_ICE_DOOR_2                                    =201911,
 };
 
-#define FIRE_SAY_AGGRO                                "Вам нечего здесь делать. Убирайтесь, пока живы!"
-#define FIRE_SAY_FRENZY                               "Ярость наполняет меня!"
-#define FIRE_SAY_SUMMON_TITAN                         "Слуги мои, помогите!"
-#define FIRE_SAY_KILL                                 "Этим всё и закончится!"
-#define FIRE_SAY_DIE                                  "На этот раз... вам повезло...!"
+//#define FIRE_SAY_AGGRO                                "Вам нечего здесь делать. Убирайтесь, пока живы!"
+//#define FIRE_SAY_FRENZY                               "Ярость наполняет меня!"
+//#define FIRE_SAY_SUMMON_TITAN                         "Слуги мои, помогите!"
+//#define FIRE_SAY_KILL                                 "Этим всё и закончится!"
+//#define FIRE_SAY_DIE                                  "На этот раз... вам повезло...!"
 
 class event_npc_firelord : public CreatureScript
 {
@@ -146,7 +146,7 @@ class event_npc_firelord : public CreatureScript
 
             void JustEngagedWith(Unit* /*pWho*/)
             {
-				me->Yell(FIRE_SAY_AGGRO, LANG_UNIVERSAL);
+                Talk(FIRE_SAY_AGGRO);
 				DoCastSelf(SPELL_MANA_BARRIER, true);
                 summons.DespawnAll();
             }
@@ -159,12 +159,12 @@ class event_npc_firelord : public CreatureScript
             void KilledUnit(Unit *victim)
             {
                 if (victim->GetTypeId() == TYPEID_PLAYER)
-					me->Yell(FIRE_SAY_KILL, LANG_UNIVERSAL);
+                    Talk(FIRE_SAY_KILL);
             }
 			
             void JustDied(Unit* /*killer*/)
             {
-				me->Yell(FIRE_SAY_DIE, LANG_UNIVERSAL);
+                Talk(FIRE_SAY_DIE);
             }
 
                 void DamageTaken(Unit* /*damageDealer*/, uint32& damage) override
@@ -237,7 +237,7 @@ class event_npc_firelord : public CreatureScript
 
                     if (m_uiFrenzyTimer <= uiDiff)
                     {
-						me->Say(FIRE_SAY_FRENZY, LANG_UNIVERSAL);
+                        Talk(FIRE_SAY_FRENZY);
                         DoCast(me, SPELL_FRENZY);
                         m_uiFrenzyTimer = urand(20000, 40000);
                     }
@@ -262,7 +262,7 @@ class event_npc_firelord : public CreatureScript
                     if (m_uiFrenzyTimer <= uiDiff)
                     {
                         ++m_uiPhase;
-						me->Say(FIRE_SAY_FRENZY, LANG_UNIVERSAL);
+                        Talk(FIRE_SAY_FRENZY);
                         DoCast(me, SPELL_FRENZY);
                         m_uiFrenzyTimer = urand(30000, 50000);
                     }
@@ -292,7 +292,7 @@ class event_npc_firelord : public CreatureScript
                 //Summon Timer
                 if (m_uiSummonTimer <= uiDiff)
                 {
-					me->Yell(FIRE_SAY_SUMMON_TITAN, LANG_UNIVERSAL);
+                    Talk(FIRE_SAY_SUMMON_TITAN);
                     me->SummonCreature(NPC_FIRE_ELEMENTAL, me->GetPositionX()+2, me->GetPositionY()+2, me->GetPositionZ()+1, 0, TEMPSUMMON_TIMED_DESPAWN, 50000);
                     m_uiSummonTimer = 60000;
                     m_uiSummonCheck = 50000;
@@ -348,11 +348,18 @@ class event_npc_firelord : public CreatureScript
 
 };
 
-#define ICE_SAY_AGGRO                                "Я проморожу вас насквозь!"
-#define ICE_SAY_KILL                                 "Ещё одна бесполезная ледышка!"
-#define ICE_SAY_DIE                                  "Но! Я же был бессмертен..."
+enum Texts12
+{
+    ICE_SAY_AGGRO = 0,
+    ICE_SAY_KILL = 1,
+    ICE_SAY_DIE = 2,
+    EMOTE_ICE_SHIELD_ICE = 3,
+};
+//#define ICE_SAY_AGGRO                                "Я проморожу вас насквозь!"
+//#define ICE_SAY_KILL                                 "Ещё одна бесполезная ледышка!"
+//#define ICE_SAY_DIE                                  "Но! Я же был бессмертен..."
 
-#define EMOTE_ICE_SHIELD_ICE                         "Кожа Стража льда Алкида покрывается коркой льда"
+//#define EMOTE_ICE_SHIELD_ICE                         "Кожа Стража льда Алкида покрывается коркой льда"
 
 class event_npc_icelord : public CreatureScript
 {
@@ -389,7 +396,7 @@ class event_npc_icelord : public CreatureScript
 
             void JustEngagedWith(Unit* /*pWho*/)
             {
-				me->Yell(ICE_SAY_AGGRO, LANG_UNIVERSAL);
+                Talk(ICE_SAY_AGGRO);
             }
 
             void EnterEvadeMode(EvadeReason why)
@@ -400,7 +407,7 @@ class event_npc_icelord : public CreatureScript
             void KilledUnit(Unit *victim)
             {
                 if (victim->GetTypeId() == TYPEID_PLAYER)
-					me->Yell(ICE_SAY_KILL, LANG_UNIVERSAL);
+                    Talk(ICE_SAY_KILL);
             }
 			
             void JustDied(Unit* /*killer*/)
@@ -411,7 +418,7 @@ class event_npc_icelord : public CreatureScript
                 if (GameObject *pDoor2 = GetClosestGameObjectWithEntry(me, GO_ICE_DOOR_2, INTERACTION_DISTANCE*1000))
                     if (pDoor2->GetGoState() != GO_STATE_ACTIVE)
                         pDoor2->UseDoorOrButton();
-				me->Yell(ICE_SAY_DIE, LANG_UNIVERSAL);
+                Talk(ICE_SAY_DIE);
             }
 
             void UpdateAI(uint32 uiDiff)
@@ -513,10 +520,17 @@ class event_npc_icelord : public CreatureScript
 
 };
 
-#define EARTH_SAY_AGGRO                               "Вам не следовало сюда приходить! Это место станет вашей могилой!"
-#define EARTH_EMOTE_NATURE                            "Стража земли Акрилия наполняют силы земли"
-#define EARTH_SAY_KILL                                "Отправляйся в землю!"
-#define EARTH_SAY_DIE                                 "Мать земля, помо... ох..."
+enum Texts13
+{
+    EARTH_SAY_AGGRO = 0,
+    EARTH_EMOTE_NATURE = 1,
+    EARTH_SAY_KILL = 2,
+    EARTH_SAY_DIE = 3,
+};
+//#define EARTH_SAY_AGGRO                               "Вам не следовало сюда приходить! Это место станет вашей могилой!"
+//#define EARTH_EMOTE_NATURE                            "Стража земли Акрилия наполняют силы земли"
+//#define EARTH_SAY_KILL                                "Отправляйся в землю!"
+//#define EARTH_SAY_DIE                                 "Мать земля, помо... ох..."
 
 class event_npc_earthlord : public CreatureScript
 {
@@ -559,7 +573,7 @@ class event_npc_earthlord : public CreatureScript
 
             void JustEngagedWith(Unit* /*pWho*/)
             {
-                me->Yell(EARTH_SAY_AGGRO, LANG_UNIVERSAL, 0);
+                Talk(EARTH_SAY_AGGRO);
                 me->RemoveAurasDueToSpell(SPELL_FURY);
             }
 
@@ -571,12 +585,12 @@ class event_npc_earthlord : public CreatureScript
             void KilledUnit(Unit *victim)
             {
                 if (victim->GetTypeId() == TYPEID_PLAYER)
-					me->Yell(EARTH_SAY_KILL, LANG_UNIVERSAL, 0);
+                    Talk(EARTH_SAY_KILL);
             }
 			
             void JustDied(Unit* /*killer*/)
             {
-				me->Yell(EARTH_SAY_DIE, LANG_UNIVERSAL, 0);
+                Talk(EARTH_SAY_DIE);
             }
 
             void UpdateAI(uint32 uiDiff)
@@ -688,11 +702,20 @@ class event_npc_earthlord : public CreatureScript
 
 };
 
-#define DARK_SAY_AGGRO                                "Гости? Неожиданно..."
-#define DARK_SAY_FRENZY                               "О да..! Я чувствую как ваша ярость наполняет меня!"
-#define DARK_SAY_SUMMON                               "Посмотрите на души тех, кто был здесь до вас."
-#define DARK_SAY_KILL                                 "Твоя душа пополнит мою армию!"
-#define DARK_SAY_DIE                                  "Я слишком стар для таких битв..."
+enum Texts14
+{
+    DARK_SAY_AGGRO = 0,
+    DARK_SAY_FRENZY = 1,
+    DARK_SAY_SUMMON = 2,
+    DARK_SAY_KILL = 3,
+    DARK_SAY_DIE = 4,
+};
+
+//#define DARK_SAY_AGGRO                                "Гости? Неожиданно..."
+//#define DARK_SAY_FRENZY                               "О да..! Я чувствую как ваша ярость наполняет меня!"
+//#define DARK_SAY_SUMMON                               "Посмотрите на души тех, кто был здесь до вас."
+//#define DARK_SAY_KILL                                 "Твоя душа пополнит мою армию!"
+//#define DARK_SAY_DIE                                  "Я слишком стар для таких битв..."
 
 class event_npc_darklord : public CreatureScript
 {
@@ -743,7 +766,7 @@ class event_npc_darklord : public CreatureScript
 
             void JustEngagedWith(Unit* /*pWho*/)
             {
-                me->Yell(DARK_SAY_AGGRO, LANG_UNIVERSAL);
+                Talk(DARK_SAY_AGGRO);
                 me->RemoveAurasDueToSpell(SPELL_FURY);
             }
 
@@ -755,12 +778,12 @@ class event_npc_darklord : public CreatureScript
             void KilledUnit(Unit *victim)
             {
                 if (victim->GetTypeId() == TYPEID_PLAYER)
-                    me->Yell(DARK_SAY_KILL, LANG_UNIVERSAL);
+                    Talk(DARK_SAY_KILL);
             }
 
             void JustDied(Unit* /*killer*/)
             {
-                me->Yell(DARK_SAY_DIE, LANG_UNIVERSAL);
+                Talk(DARK_SAY_DIE);
             }
 
             void UpdateAI(uint32 uiDiff)
@@ -849,7 +872,7 @@ class event_npc_darklord : public CreatureScript
                         if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
                             me->CastSpell(pTarget, SPELL_SOULS_SUMMON_DARK, true);
 
-                    me->Say(DARK_SAY_SUMMON, LANG_UNIVERSAL);
+                    Talk(DARK_SAY_SUMMON);
                     m_uiSummonSoulsTimer = urand(12000,20000);
                 }
                 else
@@ -871,7 +894,7 @@ class event_npc_darklord : public CreatureScript
                     if (m_uiFrenzy <= uiDiff)
                     {
                         ++dPhase;
-                        me->Say(DARK_SAY_FRENZY, LANG_UNIVERSAL);
+                        Talk(DARK_SAY_FRENZY);
                         me->CastSpell(me, SPELL_FRENZY, true);
                         me->CastSpell(me, SPELL_SOULS_SMALL_DARK, true);
                         m_uiFrenzy = urand(40000,55000);
@@ -884,7 +907,7 @@ class event_npc_darklord : public CreatureScript
                     if (m_uiFrenzy <= uiDiff)
                     {
                         ++dPhase;
-                        me->Say(DARK_SAY_FRENZY, LANG_UNIVERSAL);
+                        Talk(DARK_SAY_FRENZY);
                         me->CastSpell(me, SPELL_FRENZY, true);
                         m_uiFrenzy = urand(40000,50000);
                     }
@@ -896,7 +919,7 @@ class event_npc_darklord : public CreatureScript
                     if (m_uiFrenzy <= uiDiff)
                     {
                         ++dPhase;
-                        me->Say(DARK_SAY_FRENZY, LANG_UNIVERSAL);
+                        Talk(DARK_SAY_FRENZY);
                         me->CastSpell(me, SPELL_FRENZY, true);
                         me->CastSpell(me, SPELL_SOULS_LARGE_DARK, true);
                         m_uiFrenzy = urand(40000,55000);
@@ -908,7 +931,7 @@ class event_npc_darklord : public CreatureScript
                     if (m_uiFrenzy <= uiDiff)
                     {
                         ++dPhase;
-                        me->Say(DARK_SAY_FRENZY, LANG_UNIVERSAL);
+                        Talk(DARK_SAY_FRENZY);
                         me->CastSpell(me, SPELL_FRENZY, true);
                         m_uiFrenzy = urand(35000,45000);
                     }
