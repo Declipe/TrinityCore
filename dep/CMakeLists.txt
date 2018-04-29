@@ -35,3 +35,7 @@ if(TOOLS)
   add_subdirectory(bzip2)
   add_subdirectory(libmpq)
 endif()
+
+if (ELUNA)
+  add_subdirectory(lualib)
+endif()

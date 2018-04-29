@@ -71,6 +71,10 @@
 #include "World.h"
 #include "WorldPacket.h"
 #include "WorldSession.h"
+#ifdef ELUNA
+#include "LuaEngine.h"
+#include "ElunaEventMgr.h"
+#endif
 #include <cmath>
 
 float baseMoveSpeed[MAX_MOVE_TYPE] =
@@ -418,6 +422,10 @@ Unit::~Unit()
 
 void Unit::Update(uint32 p_time)
 {
+#ifdef ELUNA
+    elunaEvents->Update(p_time);
+#endif
+
     // WARNING! Order of execution here is important, do not change.
     // Spells must be processed with event system BEFORE they go to _UpdateSpells.
     // Or else we may have some SPELL_STATE_FINISHED spells stalled in pointers, that is bad.
@@ -8172,6 +8180,11 @@ void Unit::EngageWithTarget(Unit* enemy)
     if (Creature* creature = ToCreature())
         if (CreatureGroup* formation = creature->GetFormation())
             formation->MemberEngagingTarget(creature, enemy);
+
+#ifdef ELUNA
+    if (Player* player = ToPlayer())
+        sEluna->OnPlayerEnterCombat(player, enemy);
+#endif
 }
 
 void Unit::AttackedTarget(Unit* target, bool canInitialAggro)
@@ -8264,6 +8277,10 @@ void Unit::SetImmuneToNPC(bool apply, bool keepCombat)
         RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
         m_threatManager.UpdateOnlineStates(true, true);
     }
+#ifdef ELUNA
+    if (Player* player = this->ToPlayer())
+        sEluna->OnPlayerLeaveCombat(player);
+#endif
 }
 
 bool Unit::IsThreatened() const
