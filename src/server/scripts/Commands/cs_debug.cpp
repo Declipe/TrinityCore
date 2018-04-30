@@ -105,7 +105,7 @@ public:
             { "loadcells",     rbac::RBAC_PERM_COMMAND_DEBUG_LOADCELLS,     false, &HandleDebugLoadCellsCommand,        "" },
             { "boundary",      rbac::RBAC_PERM_COMMAND_DEBUG_BOUNDARY,      false, &HandleDebugBoundaryCommand,         "" },
             { "raidreset",     rbac::RBAC_PERM_COMMAND_INSTANCE_UNBIND,     false, &HandleDebugRaidResetCommand,        "" },
-           // { "neargraveyard", rbac::RBAC_PERM_COMMAND_NEARGRAVEYARD,       false, &HandleDebugNearGraveyard,           "" },
+            //{ "neargraveyard", rbac::RBAC_PERM_COMMAND_NEARGRAVEYARD,       false, &HandleDebugNearGraveyard,           "" },
             { "instancespawn", rbac::RBAC_PERM_COMMAND_DEBUG_INSTANCESPAWN, false, &HandleDebugInstanceSpawns,          "" },
         };
         static std::vector<ChatCommand> commandTable =
@@ -1684,54 +1684,7 @@ public:
         }
         return true;
     }
-/*
-    static bool HandleDebugNearGraveyard(ChatHandler* handler, char const* args)
-    {
-        Player* player = handler->GetSession()->GetPlayer();
-        WorldSafeLocsEntry const* nearestLoc = nullptr;
 
-        if (stricmp(args, "linked"))
-        {
-            if (Battleground* bg = player->GetBattleground())
-                nearestLoc = bg->GetClosestGraveyard(player);
-            else
-            {
-                if (Battlefield* bf = sBattlefieldMgr->GetBattlefieldToZoneId(player->GetZoneId()))
-                    nearestLoc = bf->GetClosestGraveyard(player);
-                else
-                    nearestLoc = sObjectMgr->GetClosestGraveyard(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), player->GetMapId(), player->GetTeam());
-            }
-        }
-        else
-        {
-            float x = player->GetPositionX();
-            float y = player->GetPositionY();
-            float z = player->GetPositionZ();
-            float distNearest = std::numeric_limits<float>::max();
-
-            for (uint32 i = 0; i < sWorldSafeLocsStore.GetNumRows(); ++i)
-            {
-                WorldSafeLocsEntry const* loc = sWorldSafeLocsStore.LookupEntry(i);
-                if (loc && loc->map_id == player->GetMapId())
-                {
-                    float dist = (loc->x - x) * (loc->x - x) + (loc->y - y) * (loc->y - y) + (loc->z - z) * (loc->z - z);
-                    if (dist < distNearest)
-                    {
-                        distNearest = dist;
-                        nearestLoc = loc;
-                    }
-                }
-            }
-        }
-
-        if (nearestLoc)
-            handler->PSendSysMessage(LANG_COMMAND_NEARGRAVEYARD, nearestLoc->ID, nearestLoc->x, nearestLoc->y, nearestLoc->z);
-        else
-            handler->PSendSysMessage(LANG_COMMAND_NEARGRAVEYARD_NOTFOUND);
-
-        return true;
-    }
-    */
     static bool HandleDebugInstanceSpawns(ChatHandler* handler, char const* args)
     {
         Player const* const player = handler->GetSession()->GetPlayer();
