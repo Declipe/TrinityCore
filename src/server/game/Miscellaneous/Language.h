@@ -1063,7 +1063,19 @@ enum TrinityStrings
     LANG_LIST_RESPAWNS_CREATURES          = 5081,
     LANG_LIST_RESPAWNS_GAMEOBJECTS        = 5082,
 
-    // Room for more Trinity strings        5084-6603
+        // Battlefield
+    LANG_COMMAND_BF_START                 = 5083,
+    LANG_COMMAND_BF_ACTIVE                = 5084,
+    LANG_COMMAND_BF_STOP                  = 5085,
+    LANG_COMMAND_BF_ALREADY_STOPPED       = 5086,
+    LANG_COMMAND_BF_DISABLE               = 5087,
+    LANG_COMMAND_BF_ENABLE                = 5088,
+    LANG_COMMAND_BF_SWITCH                = 5089,
+    LANG_COMMAND_BF_TIMER                 = 5090,
+    LANG_COMMAND_BF_INCORRECT_ID          = 5091,
+    LANG_COMMAND_BF_DISABLED              = 5092,
+
+    // Room for more Trinity strings    = 5092-6603,
 
     // Level requirement notifications
     LANG_SAY_REQ                          = 6604,
