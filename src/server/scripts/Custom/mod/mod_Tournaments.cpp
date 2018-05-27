@@ -480,7 +480,7 @@ void TournamentManager::reset(uint32 entry)
     
     if (!tournament->creatures.empty())
         for (CreatureList::const_iterator itr = tournament->creatures.begin(); itr != tournament->creatures.end(); ++itr)
-            (*itr)->DespawnOrUnsummon();
+            (*itr)->DespawnOrUnsummon(Seconds(4));
 			//me->DespawnOrUnsummon();
             tournament->creatures.clear();
 }
