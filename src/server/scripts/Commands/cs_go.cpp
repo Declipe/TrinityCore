@@ -28,7 +28,6 @@ EndScriptData */
 #include "DBCStore.h"
 #include "Language.h"
 #include "MapManager.h"
-#include "MotionMaster.h"
 #include "ObjectMgr.h"
 #include "Player.h"
 #include "RBAC.h"
@@ -148,13 +147,9 @@ public:
 
         // stop flight if need
         if (player->IsInFlight())
-        {
-            player->GetMotionMaster()->MovementExpired();
-            player->CleanupAfterTaxiFlight();
-        }
-        // save only in non-flight case
+            player->FinishTaxiFlight();
         else
-            player->SaveRecallPosition();
+            player->SaveRecallPosition(); // save only in non-flight case
 
         player->TeleportTo(mapId, x, y, z, o);
         return true;
@@ -193,13 +188,9 @@ public:
 
         // stop flight if need
         if (player->IsInFlight())
-        {
-            player->GetMotionMaster()->MovementExpired();
-            player->CleanupAfterTaxiFlight();
-        }
-        // save only in non-flight case
+            player->FinishTaxiFlight();
         else
-            player->SaveRecallPosition();
+            player->SaveRecallPosition(); // save only in non-flight case
 
         player->TeleportTo(gy->map_id, gy->x, gy->y, gy->z, player->GetOrientation());
         return true;
@@ -235,13 +226,9 @@ public:
 
         // stop flight if need
         if (player->IsInFlight())
-        {
-            player->GetMotionMaster()->MovementExpired();
-            player->CleanupAfterTaxiFlight();
-        }
-        // save only in non-flight case
+            player->FinishTaxiFlight();
         else
-            player->SaveRecallPosition();
+            player->SaveRecallPosition(); // save only in non-flight case
 
         Map const* map = sMapMgr->CreateBaseMap(mapId);
         float z = std::max(map->GetHeight(x, y, MAX_HEIGHT), map->GetWaterLevel(x, y));
@@ -285,13 +272,9 @@ public:
 
         // stop flight if need
         if (player->IsInFlight())
-        {
-            player->GetMotionMaster()->MovementExpired();
-            player->CleanupAfterTaxiFlight();
-        }
-        // save only in non-flight case
+            player->FinishTaxiFlight();
         else
-            player->SaveRecallPosition();
+            player->SaveRecallPosition(); // save only in non-flight case
 
         player->TeleportTo(goData->spawnPoint);
         return true;
@@ -330,13 +313,9 @@ public:
 
         // stop flight if need
         if (player->IsInFlight())
-        {
-            player->GetMotionMaster()->MovementExpired();
-            player->CleanupAfterTaxiFlight();
-        }
-        // save only in non-flight case
+            player->FinishTaxiFlight();
         else
-            player->SaveRecallPosition();
+            player->SaveRecallPosition(); // save only in non-flight case
 
         player->TeleportTo(node->map_id, node->x, node->y, node->z, player->GetOrientation());
         return true;
@@ -375,13 +354,9 @@ public:
 
         // stop flight if need
         if (player->IsInFlight())
-        {
-            player->GetMotionMaster()->MovementExpired();
-            player->CleanupAfterTaxiFlight();
-        }
-        // save only in non-flight case
+            player->FinishTaxiFlight();
         else
-            player->SaveRecallPosition();
+            player->SaveRecallPosition(); // save only in non-flight case
 
         player->TeleportTo(at->mapid, at->x, at->y, at->z, player->GetOrientation());
         return true;
@@ -446,13 +421,9 @@ public:
 
         // stop flight if need
         if (player->IsInFlight())
-        {
-            player->GetMotionMaster()->MovementExpired();
-            player->CleanupAfterTaxiFlight();
-        }
-        // save only in non-flight case
+            player->FinishTaxiFlight();
         else
-            player->SaveRecallPosition();
+            player->SaveRecallPosition(); // save only in non-flight case
 
         float z = std::max(map->GetHeight(x, y, MAX_HEIGHT), map->GetWaterLevel(x, y));
 
@@ -507,13 +478,9 @@ public:
 
         // stop flight if need
         if (player->IsInFlight())
-        {
-            player->GetMotionMaster()->MovementExpired();
-            player->CleanupAfterTaxiFlight();
-        }
-        // save only in non-flight case
+            player->FinishTaxiFlight();
         else
-            player->SaveRecallPosition();
+            player->SaveRecallPosition(); // save only in non-flight case
 
         player->TeleportTo(mapId, x, y, z, ort);
         return true;
@@ -540,13 +507,12 @@ public:
         }
 
         Player* player = handler->GetSession()->GetPlayer();
+
+        // stop flight if need
         if (player->IsInFlight())
-        {
-            player->GetMotionMaster()->MovementExpired();
-            player->CleanupAfterTaxiFlight();
-        }
+            player->FinishTaxiFlight();
         else
-            player->SaveRecallPosition();
+            player->SaveRecallPosition(); // save only in non-flight case
 
         ticket->TeleportTo(player);
         return true;
@@ -584,13 +550,9 @@ public:
 
         // stop flight if need
         if (player->IsInFlight())
-        {
-            player->GetMotionMaster()->MovementExpired();
-            player->CleanupAfterTaxiFlight();
-        }
-        // save only in non-flight case
+            player->FinishTaxiFlight();
         else
-            player->SaveRecallPosition();
+            player->SaveRecallPosition(); // save only in non-flight case
 
         player->TeleportTo(player->GetMapId(), x, y, z, o);
         return true;
