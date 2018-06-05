@@ -1447,7 +1447,7 @@ class npc_arthas_stratholme : public CreatureScript
             {
                 _progressRP = false;
                 me->SetHomePosition(me->GetPosition());
-                SplineChainMovementGenerator::GetResumeInfo(me, _resumeMovement);
+                //SplineChainMovementGenerator::GetResumeInfo(me, _resumeMovement);
                 if (!_resumeMovement.Empty())
                     std::cout << "Arthas AI: spline chain motion paused" << std::endl;
                 else

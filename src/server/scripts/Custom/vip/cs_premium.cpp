@@ -346,7 +346,7 @@ public:
 			// stop flight if need
 			if (target->IsInFlight())
 			{
-				target->GetMotionMaster()->MovementExpired();
+				target->GetMotionMaster()->Clear();
 				target->CleanupAfterTaxiFlight();
 			}
 			// save only in non-flight case
@@ -1029,7 +1029,7 @@ public:
 			// stop flight if need
 			if (_player->IsInFlight())
 			{
-				_player->GetMotionMaster()->MovementExpired();
+				_player->GetMotionMaster()->Clear();
 				_player->CleanupAfterTaxiFlight();
 			}
 			// save only in non-flight case

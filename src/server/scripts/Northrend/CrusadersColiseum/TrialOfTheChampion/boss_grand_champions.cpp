@@ -364,7 +364,7 @@ struct boss_grand_championAI : BossAI
         if (spell->Id == SPELL_TRAMPLE_AURA && LookingForMount && uiPhase == 0 && !me->IsImmunedToSpell(spell, caster))
         {
             uiPhase = 3;
-            me->GetMotionMaster()->MovementExpired();
+            me->GetMotionMaster()->Clear();
             me->GetMotionMaster()->MoveIdle();
             Talk(EMOTE_TRAMPLE, me);
             events.ScheduleEvent(EVENT_TRAMPLE, spell->GetDuration());

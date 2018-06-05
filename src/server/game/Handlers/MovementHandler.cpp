@@ -191,13 +191,13 @@ void WorldSession::HandleMoveWorldportAck()
         if (!_player->InBattleground() && !InBattlefield)
         {
             // short preparations to continue flight
-            if (MovementGenerator* flight = GetPlayer()->GetMotionMaster()->GetMotionSlot(MOTION_SLOT_CONTROLLED))
+            if (MovementGenerator* flight = GetPlayer()->GetMotionMaster()->GetCurrentMovementGenerator())
                 flight->Initialize(GetPlayer());
             return;
         }
 
         // stop flight
-        GetPlayer()->GetMotionMaster()->Clear(MOTION_SLOT_CONTROLLED);
+        GetPlayer()->GetMotionMaster()->Remove(FLIGHT_MOTION_TYPE);
         GetPlayer()->CleanupAfterTaxiFlight();
     }
 
