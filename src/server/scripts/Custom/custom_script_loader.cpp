@@ -214,6 +214,7 @@ void AddSC_premium_commandscript();
 // start193
 // start194
 // start195
+void AddSC_test();
 void AddSC_gm_hello(); 
 void AddSC_Mod_HonorRank();
 void AddSC_Mod_BossHistory();
@@ -436,6 +437,7 @@ void AddCustomScripts()
 // end193
 // end194
 // end195
+AddSC_test();
 AddSC_gm_hello();
 AddSC_Mod_HonorRank();
 AddSC_Mod_BossHistory();
