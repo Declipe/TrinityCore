@@ -437,7 +437,6 @@ public:
 
 	// Called when die creature
 	   virtual void AllCreatureJustDied(Creature* /*creature*/) { }
-       virtual void OnBattlegroudEndReward(Battleground* /*bg*/, Player* /*player*/, uint32 /*winner*/) { }
 };
 
 class TC_GAME_API GameObjectScript : public ScriptObject
@@ -951,7 +950,6 @@ class TC_GAME_API ScriptMgr
     public: /* AllCreatureScript */
 
         void AllCreatureJustDied(Creature* creature);
-        void OnBattlegroudEndReward(Battleground* bg, Player* player, uint32 winner);
 
     public: /* GameObjectScript */
 
