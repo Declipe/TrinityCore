@@ -122,7 +122,7 @@ public:
         if (days > 0)
             handler->PSendSysMessage("Du hast keinen Elite Account.", days);
         else
-            handler->PSendSysMessage("Dein Elite Account endet in %u Tagen.");
+            handler->PSendSysMessage("Dein Elite Account endet in Tagen.");
 
         return true;
     }
