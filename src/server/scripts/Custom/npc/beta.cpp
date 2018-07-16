@@ -1443,10 +1443,12 @@ public:
 			break;
 		case 37:
 			CompleteLearnProfession(player, me, SKILL_ALCHEMY);
+			player->AddItem(40772, 1);
 			CloseGossipMenuFor(player);
 			break;
 		case 38:
 			CompleteLearnProfession(player, me, SKILL_BLACKSMITHING);
+			player->AddItem(40772, 1);
 			CloseGossipMenuFor(player);
 			break;
 		case 39:
@@ -1455,10 +1457,12 @@ public:
 			break;
 		case 40:
 			CompleteLearnProfession(player, me, SKILL_ENGINEERING);
+			player->AddItem(40772, 1);
 			CloseGossipMenuFor(player);
 			break;
 		case 41:
 			CompleteLearnProfession(player, me, SKILL_HERBALISM);
+			player->AddItem(40772, 1);
 			CloseGossipMenuFor(player);
                         break;
 		case 42:
@@ -1471,18 +1475,22 @@ public:
 			break;
 		case 44:
 			CompleteLearnProfession(player, me, SKILL_LEATHERWORKING);
+			player->AddItem(40772, 1);
 			CloseGossipMenuFor(player);
 			break;
 		case 45:
 			CompleteLearnProfession(player, me, SKILL_MINING);
+			player->AddItem(40772, 1);
 			CloseGossipMenuFor(player);
 			break;
 		case 46:
 			CompleteLearnProfession(player, me, SKILL_SKINNING);
+			player->AddItem(40772, 1);
 			CloseGossipMenuFor(player);
 			break;
 		case 47:
 			CompleteLearnProfession(player, me, SKILL_TAILORING);
+			player->AddItem(40772, 1);
 			CloseGossipMenuFor(player);
 			break;
 		case 48:
