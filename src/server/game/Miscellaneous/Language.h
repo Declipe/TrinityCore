@@ -1062,6 +1062,7 @@ enum TrinityStrings
     LANG_LIST_RESPAWNS_OVERDUE            = 5080,
     LANG_LIST_RESPAWNS_CREATURES          = 5081,
     LANG_LIST_RESPAWNS_GAMEOBJECTS        = 5082,
+    LANG_OBJECTINFO_AITYPE                = 5083,
 
         // Battlefield
     LANG_COMMAND_BF_START                 = 5083,
