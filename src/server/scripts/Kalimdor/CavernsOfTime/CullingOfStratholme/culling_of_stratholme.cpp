@@ -1315,7 +1315,11 @@ class npc_crate_helper : public CreatureScript
                     // Replace suspicious crate with plagued crate
                     if (GameObject* crate = me->FindNearestGameObject(GO_SUSPICIOUS_CRATE, 5.0f))
                     {
+<<<<<<< HEAD
                         crate->SummonGameObject(GO_PLAGUED_CRATE, *crate, crate->GetWorldRotation(), DAY);
+=======
+                        crate->SummonGameObject(GO_PLAGUED_CRATE, *crate, QuaternionData(), GO_SUMMON_MANUAL_DESPAWN);
+>>>>>>> 76b2b8ac2c074b1d1fac9d23d8cb1b326b325f16
                         crate->Delete();
                     }
                     if (GameObject* highlight = me->FindNearestGameObject(GO_CRATE_HIGHLIGHT, 5.0f))

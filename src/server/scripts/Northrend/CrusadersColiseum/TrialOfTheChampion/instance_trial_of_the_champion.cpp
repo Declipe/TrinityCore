@@ -192,6 +192,7 @@ class instance_trial_of_the_champion : public InstanceMapScript
                         {
                             if (Creature* announcer = GetCreature(DATA_ANNOUNCER))
                             {
+<<<<<<< HEAD
                                 // On heroic mode we must bind players to the instance
                                 if (instance->IsHeroic())
                                     instance->ToInstanceMap()->PermBindAllPlayers();
@@ -202,6 +203,11 @@ class instance_trial_of_the_champion : public InstanceMapScript
                                 DoRespawnGameObject(GetObjectGuid(DATA_CHAMPION_S_CACHE), 1 * DAY);
                                 if (GameObject* cache = GetGameObject(DATA_CHAMPION_S_CACHE))
                                     cache->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
+=======
+                                pAnnouncer->GetMotionMaster()->MovePoint(0, 748.309f, 619.487f, 411.171f);
+                                pAnnouncer->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                                pAnnouncer->SummonGameObject(instance->IsHeroic()? GO_CHAMPIONS_LOOT_H : GO_CHAMPIONS_LOOT, 746.59f, 618.49f, 411.09f, 1.42f, QuaternionData(), GO_SUMMON_TIMED_DESPAWN, 150min);
+>>>>>>> 76b2b8ac2c074b1d1fac9d23d8cb1b326b325f16
                             }
                         }
                         break;
@@ -221,6 +227,7 @@ class instance_trial_of_the_champion : public InstanceMapScript
                                 champion->GetMotionMaster()->MoveTargetedHome();
                             }
                         }
+<<<<<<< HEAD
                         else if (state == DONE)
                         {
                             if (Creature* announcer = GetCreature(DATA_ANNOUNCER))
@@ -262,6 +269,28 @@ class instance_trial_of_the_champion : public InstanceMapScript
                         break;
                 }
                 return true;
+=======
+                    }
+                    break;
+                case BOSS_ARGENT_CHALLENGE_E:
+                    m_auiEncounter[1] = uiData;
+                    if (Creature* pAnnouncer = instance->GetCreature(uiAnnouncerGUID))
+                    {
+                        pAnnouncer->GetMotionMaster()->MovePoint(0, 748.309f, 619.487f, 411.171f);
+                        pAnnouncer->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                        pAnnouncer->SummonGameObject(instance->IsHeroic()? GO_EADRIC_LOOT_H : GO_EADRIC_LOOT, 746.59f, 618.49f, 411.09f, 1.42f, QuaternionData(), GO_SUMMON_TIMED_DESPAWN, 150min);
+                    }
+                    break;
+                case BOSS_ARGENT_CHALLENGE_P:
+                    m_auiEncounter[2] = uiData;
+                    if (Creature* pAnnouncer = instance->GetCreature(uiAnnouncerGUID))
+                    {
+                        pAnnouncer->GetMotionMaster()->MovePoint(0, 748.309f, 619.487f, 411.171f);
+                        pAnnouncer->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                        pAnnouncer->SummonGameObject(instance->IsHeroic()? GO_PALETRESS_LOOT_H : GO_PALETRESS_LOOT, 746.59f, 618.49f, 411.09f, 1.42f, QuaternionData(), GO_SUMMON_TIMED_DESPAWN, 150min);
+                    }
+                    break;
+>>>>>>> 76b2b8ac2c074b1d1fac9d23d8cb1b326b325f16
             }
 
             void SetData(uint32 type, uint32 data) override
