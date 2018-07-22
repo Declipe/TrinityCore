@@ -2685,38 +2685,44 @@ void ObjectMgr::LoadItemTemplates()
         {
             if (itemTemplate.Class != dbcitem->Class)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct class %u, must be %u .", entry, itemTemplate.Class, dbcitem->Class);
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct class %u, must be %u .", entry, itemTemplate.Class, dbcitem->Class);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `class` = %u WHERE (entry = %u);", dbcitem->Class, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.Class = dbcitem->Class;
             }
 
             if (itemTemplate.SoundOverrideSubclass != dbcitem->SoundOverrideSubclass)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct SoundOverrideSubclass (%i), must be %i .", entry, itemTemplate.SoundOverrideSubclass, dbcitem->SoundOverrideSubclass);
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct SoundOverrideSubclass (%i), must be %i .", entry, itemTemplate.SoundOverrideSubclass, dbcitem->SoundOverrideSubclass);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `SoundOverrideSubclass` = %u WHERE (entry = %u);", dbcitem->SoundOverrideSubclass, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.SoundOverrideSubclass = dbcitem->SoundOverrideSubclass;
             }
             if (itemTemplate.Material != dbcitem->Material)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct material (%i), must be %i .", entry, itemTemplate.Material, dbcitem->Material);
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct material (%i), must be %i .", entry, itemTemplate.Material, dbcitem->Material);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `material` = %u WHERE (entry = %u);", dbcitem->Material, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.Material = dbcitem->Material;
             }
             if (itemTemplate.InventoryType != dbcitem->InventoryType)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct inventory type (%u), must be %u .", entry, itemTemplate.InventoryType, dbcitem->InventoryType);
+               // TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct inventory type (%u), must be %u .", entry, itemTemplate.InventoryType, dbcitem->InventoryType);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `InventoryType` = %u WHERE (entry = %u);", dbcitem->InventoryType, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.InventoryType = dbcitem->InventoryType;
             }
             if (itemTemplate.DisplayInfoID != dbcitem->DisplayId)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct display id (%u), must be %u .", entry, itemTemplate.DisplayInfoID, dbcitem->DisplayId);
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct display id (%u), must be %u .", entry, itemTemplate.DisplayInfoID, dbcitem->DisplayId);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `displayid` = %u WHERE (entry = %u);", dbcitem->DisplayId, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.DisplayInfoID = dbcitem->DisplayId;
             }
             if (itemTemplate.Sheath != dbcitem->Sheath)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct sheathid (%u), must be %u .", entry, itemTemplate.Sheath, dbcitem->Sheath);
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct sheathid (%u), must be %u .", entry, itemTemplate.Sheath, dbcitem->Sheath);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `sheath` = %u WHERE (entry = %u);", dbcitem->Sheath, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.Sheath = dbcitem->Sheath;
             }
