@@ -27,6 +27,7 @@
 // start09
 // start10
 // start11
+void AddSC_level_award();
 void AddSC_npc_teleport();
 // start13
 // start14
@@ -459,4 +460,5 @@ AddSC_Mod_AutoLearn();
 AddSC_npc_teleport();
 AddSC_Transmogrification();
 AddSC_mod_DefaultSpec();
+AddSC_level_award();
 }
