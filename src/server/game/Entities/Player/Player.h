@@ -928,7 +928,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
                 bool SendRealNameQuery();
                 FakePlayers m_FakePlayers;
 
-        PlayerAI* AI() const { return reinterpret_cast<PlayerAI*>(i_AI); }
+        PlayerAI* AI() const { return reinterpret_cast<PlayerAI*>(GetAI()); }
 
         void CleanupsBeforeDelete(bool finalCleanup = true) override;
 

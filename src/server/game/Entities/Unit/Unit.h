@@ -28,6 +28,7 @@
 #include "UnitDefines.h"
 #include "Util.h"
 #include <map>
+#include <memory>
 
 #define VISUAL_WAYPOINT 1 // Creature Entry ID used for waypoints show, visible only for GMs
 #define WORLD_TRIGGER 12999
@@ -763,8 +764,11 @@ class TC_GAME_API Unit : public WorldObject
 
         virtual ~Unit();
 
-        UnitAI* GetAI() { return i_AI; }
-        void SetAI(UnitAI* newAI) { i_AI = newAI; }
+        bool IsAIEnabled() const { return (i_AI != nullptr); }
+        void AIUpdateTick(uint32 diff, bool force = false);
+        UnitAI* GetAI() const { return i_AI.get(); }
+        void SetAI(UnitAI* newAI);
+        void ScheduleAIChange();
 
         void AddToWorld() override;
         void RemoveFromWorld() override;
@@ -1182,7 +1186,6 @@ class TC_GAME_API Unit : public WorldObject
         CharmInfo* GetCharmInfo() { return m_charmInfo; }
         CharmInfo* InitCharmInfo();
         void DeleteCharmInfo();
-        void UpdateCharmAI();
         // returns the unit that this player IS CONTROLLING
         Unit* GetUnitBeingMoved() const;
         // returns the player that this player IS CONTROLLING
@@ -1597,7 +1600,6 @@ class TC_GAME_API Unit : public WorldObject
         uint32 GetModelForTotem(PlayerTotemType totemType);
 
         friend class VehicleJoinEvent;
-        bool IsAIEnabled, NeedChangeAI;
         ObjectGuid LastCharmerGUID;
         bool CreateVehicleKit(uint32 id, uint32 creatureEntry);
         void RemoveVehicleKit();
@@ -1682,8 +1684,6 @@ class TC_GAME_API Unit : public WorldObject
         explicit Unit (bool isWorldObject);
 
         void BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, Player* target) const override;
-
-        UnitAI* i_AI, *i_disabledAI;
 
         void _UpdateSpells(uint32 time);
         void _DeleteRemovedAuras();
@@ -1786,6 +1786,10 @@ class TC_GAME_API Unit : public WorldObject
         CombatManager m_combatManager;
         friend class ThreatManager;
         ThreatManager m_threatManager;
+
+        void UpdateCharmAI();
+        void RestoreDisabledAI();
+        std::unique_ptr<UnitAI> i_AI, i_disabledAI;
 
         std::unordered_set<AbstractFollower*> m_followingMe;
 
