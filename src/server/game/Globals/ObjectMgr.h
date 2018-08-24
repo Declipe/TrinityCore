@@ -734,6 +734,13 @@ struct RepSpilloverTemplate
     uint32 faction_rank[MAX_SPILLOVER_FACTIONS];
 };
 
+struct CreatureSpecialRewards
+{
+    uint8 type;
+    uint32 param1;
+    uint32 param2;
+};
+
 struct PointOfInterest
 {
     uint32 ID;
@@ -930,6 +937,7 @@ class TC_GAME_API ObjectMgr
         typedef std::unordered_map<uint32, RepRewardRate > RepRewardRateContainer;
         typedef std::unordered_map<uint32, ReputationOnKillEntry> RepOnKillContainer;
         typedef std::unordered_map<uint32, RepSpilloverTemplate> RepSpilloverTemplateContainer;
+        typedef std::unordered_map<uint32, CreatureSpecialRewards> CreatureSpecialRewardContainer;
 
         typedef std::unordered_map<uint32, PointOfInterest> PointOfInterestContainer;
 
@@ -1101,6 +1109,12 @@ class TC_GAME_API ObjectMgr
         void LoadGameobjectQuestEnders();
         void LoadCreatureQuestStarters();
         void LoadCreatureQuestEnders();
+        void LoadCreatureSpecialRewards();
+
+        CreatureSpecialRewards GetSpecialReward(uint32 entry)
+        {
+            return _creatureSpecialReward[entry];
+        }
 
         QuestRelations* GetGOQuestRelationMap()
         {
@@ -1583,6 +1597,7 @@ class TC_GAME_API ObjectMgr
         RepRewardRateContainer _repRewardRateStore;
         RepOnKillContainer _repOnKillStore;
         RepSpilloverTemplateContainer _repSpilloverTemplateStore;
+        CreatureSpecialRewardContainer _creatureSpecialReward;
 
         GossipMenusContainer _gossipMenusStore;
         GossipMenuItemsContainer _gossipMenuItemsStore;

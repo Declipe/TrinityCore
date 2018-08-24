@@ -2129,6 +2129,9 @@ void World::SetInitialWorldSettings()
     TC_LOG_INFO("server.loading", "Loading Area Custom Flags...");
     sObjectMgr->LoadAreaCustomFlags();
 
+    TC_LOG_INFO("server.loading", "Loading Creature Special Rewards...");
+    sObjectMgr->LoadCreatureSpecialRewards();
+
     ///- Initialize game time and timers
     TC_LOG_INFO("server.loading", "Initialize game time and timers");
     GameTime::UpdateGameTimers();

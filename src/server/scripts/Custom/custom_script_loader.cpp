@@ -27,6 +27,7 @@
 // start09
 // start10
 // start11
+void AddSC_ZynPlayerScripts();
 void AddSC_level_award();
 void AddSC_npc_teleport();
 // start13
@@ -438,6 +439,7 @@ void AddCustomScripts()
 // end193
 // end194
 // end195
+AddSC_ZynPlayerScripts();
 AddSC_test();
 AddSC_gm_hello();
 AddSC_Mod_HonorRank();

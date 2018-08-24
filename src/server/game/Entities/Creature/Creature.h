@@ -49,6 +49,14 @@ struct VendorItemCount
 
 typedef std::list<VendorItemCount> VendorItemCounts;
 
+enum SpecialRewardTypes
+{
+    CSR_TYPE_TITLE = 0,
+    CSR_TYPE_ITEM = 1,
+    CSR_TYPE_HONOR = 2,
+    CSR_TYPE_ARENA = 3
+};
+
 // max different by z coordinate for creature aggro reaction
 #define CREATURE_Z_ATTACK_RANGE 3
 

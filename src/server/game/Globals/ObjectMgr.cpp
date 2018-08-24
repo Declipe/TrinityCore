@@ -9880,3 +9880,31 @@ void ObjectMgr::LoadAreaCustomFlags()
 
     TC_LOG_INFO("server.loading", ">> Loaded %u Area Custom Flags in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
+
+void ObjectMgr::LoadCreatureSpecialRewards()
+{
+    uint32 oldMSTime = getMSTime();
+
+    QueryResult result = ZynDatabase.Query("SELECT entry, type, param1, param2 FROM creature_special_rewards");
+
+    if (!result)
+    {
+        TC_LOG_INFO("server.loading", ">> Loaded 0 creature special rewards. DB table `creature_special_rewards` is empty.");
+        return;
+    }
+
+    uint32 count = 0;
+
+    do
+    {
+        Field* fields = result->Fetch();
+
+        _creatureSpecialReward[fields[0].GetUInt32()].type = fields[1].GetUInt8();
+        _creatureSpecialReward[fields[0].GetUInt32()].param1 = fields[2].GetUInt32();
+        _creatureSpecialReward[fields[0].GetUInt32()].param2 = fields[3].GetUInt32();
+
+        ++count;
+    } while (result->NextRow());
+
+    TC_LOG_INFO("server.loading", ">> Loaded %u creature special rewards in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+}
