@@ -360,6 +360,7 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
 
         void AtEnterCombat() override;
         void AtExitCombat() override;
+        void UpdateAreaCustomFlags();
 
     protected:
         bool CreateFromProto(ObjectGuid::LowType guidlow, uint32 entry, CreatureData const* data = nullptr, uint32 vehId = 0);

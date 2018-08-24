@@ -171,6 +171,18 @@ struct GameTele
 
 typedef std::unordered_map<uint32, GameTele> GameTeleContainer;
 
+struct AreaCustomFlagTPL
+{
+    uint32 map;
+    float x;
+    float y;
+    float z;
+    uint32 radius;
+    uint8 flag;
+};
+
+typedef std::list<AreaCustomFlagTPL> AreaCustomFlagContainer;
+
 enum ScriptsType
 {
     SCRIPTS_FIRST = 1,
@@ -990,6 +1002,13 @@ class TC_GAME_API ObjectMgr
         }
         CreatureQuestItemMap const* GetCreatureQuestItemMap() const { return &_creatureQuestItemStore; }
 
+        AreaCustomFlagContainer GetAreaCustomFlags()
+        {
+            return _areaCustomFlags;
+        }
+
+        void LoadAreaCustomFlags();
+
         uint32 GetNearestTaxiNode(float x, float y, float z, uint32 mapid, uint32 team);
         void GetTaxiPath(uint32 source, uint32 destination, uint32 &path, uint32 &cost);
         uint32 GetTaxiMountDisplayId(uint32 id, uint32 team, bool allowed_alt_team = false);
@@ -1568,6 +1587,7 @@ class TC_GAME_API ObjectMgr
         GossipMenusContainer _gossipMenusStore;
         GossipMenuItemsContainer _gossipMenuItemsStore;
         PointOfInterestContainer _pointsOfInterestStore;
+        AreaCustomFlagContainer _areaCustomFlags;
 
         QuestPOIContainer _questPOIStore;
 

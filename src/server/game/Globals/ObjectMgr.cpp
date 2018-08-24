@@ -9847,3 +9847,36 @@ ByteBuffer QuestPOIWrapper::BuildQueryData() const
 
     return tempBuffer;
 }
+void ObjectMgr::LoadAreaCustomFlags()
+{
+    uint32 oldMSTime = getMSTime();
+
+    QueryResult result = ZynDatabase.Query("SELECT id, flag, mapId, x, y, z, radius FROM area_custom_flag");
+
+    if (!result)
+    {
+        TC_LOG_INFO("server.loading", ">> Loaded 0 Area Custom Flags. DB table `area_custom_flag` is empty.");
+        return;
+    }
+
+    uint32 count = 0;
+
+    do
+    {
+        Field* fields = result->Fetch();
+
+        AreaCustomFlagTPL container;
+        container.flag = fields[1].GetUInt8();
+        container.map = fields[2].GetUInt32();
+        container.x = fields[3].GetFloat();
+        container.y = fields[4].GetFloat();
+        container.z = fields[5].GetFloat();
+        container.radius = fields[6].GetUInt32();
+
+        _areaCustomFlags.push_back(container);
+
+        ++count;
+    } while (result->NextRow());
+
+    TC_LOG_INFO("server.loading", ">> Loaded %u Area Custom Flags in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+}

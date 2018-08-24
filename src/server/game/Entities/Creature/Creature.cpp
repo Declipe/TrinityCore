@@ -3151,6 +3151,31 @@ void Creature::ReleaseFocus(Spell const* focusSpell, bool withDelay)
     m_focusDelay = (!IsPet() && withDelay) ? GameTime::GetGameTimeMS() : 0; // don't allow re-target right away to prevent visual bugs
 }
 
+void Creature::UpdateAreaCustomFlags()
+{
+    AreaCustomFlagContainer areaData = sObjectMgr->GetAreaCustomFlags();
+    AreaCustomFlagContainer::const_iterator itr;
+
+    for (itr = areaData.begin(); itr != areaData.end(); ++itr)
+    {
+        if (GetMapId() == (*itr).map)
+        {
+            if (GetDistance((*itr).x, (*itr).y, (*itr).z) <= (*itr).radius)
+            {
+                switch ((*itr).flag)
+                {
+                case AREA_CUSTOM_SANCTUARY:
+                {
+                    SetByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_SANCTUARY);
+                    SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED);
+                    break;
+                }
+                }
+            }
+        }
+    }
+}
+
 bool Creature::IsMovementPreventedByCasting() const
 {
     // first check if currently a movement allowed channel is active and we're not casting

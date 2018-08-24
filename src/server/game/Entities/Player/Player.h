@@ -762,6 +762,13 @@ enum PlayerDelayedOperations
     DELAYED_END
 };
 
+enum AreaCustomFlags
+{
+    AREA_CUSTOM_SANCTUARY,
+    AREA_CUSTOM_FFA,
+    AREA_CUSTOM_PVP
+};
+
 // Player summoning auto-decline time (in secs)
 #define MAX_PLAYER_SUMMON_DELAY                   (2*MINUTE)
 // Maximum money amount : 2^31 - 1
@@ -1056,6 +1063,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         Pet* SummonPet(uint32 entry, float x, float y, float z, float ang, PetType petType, uint32 despwtime);
         void RemovePet(Pet* pet, PetSaveMode mode, bool returnreagent = false);
         uint32 GetPhaseMaskForSpawn() const;                // used for proper set phase for DB at GM-mode creature/GO spawn
+
+        void UpdateAreaCustomFlags();
 
         // pet auras
         std::unordered_set<PetAura const*> m_petAuras;
