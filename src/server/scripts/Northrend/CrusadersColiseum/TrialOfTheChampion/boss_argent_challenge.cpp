@@ -1198,7 +1198,7 @@ public:
 
     bool OnCheck(Player* /*source*/, Unit* target) override
     {
-        if (!target || !target->IsAIEnabled)
+        if (!target || !target->IsAIEnabled())
             return false;
 
         return target->GetAI()->GetData(DATA_MEMORY_ENTRY) == Entry;
@@ -1212,7 +1212,7 @@ public:
 
     bool OnCheck(Player* /*source*/, Unit* target) override
     {
-        if (!target || !target->IsAIEnabled)
+        if (!target || !target->IsAIEnabled())
             return false;
 
         return !!target->GetAI()->GetData(DATA_FACEROLLER_ACHIEVEMENT);
