@@ -24,7 +24,6 @@
 
 ObjectData const creatureData[] =
 {
-<<<<<<< HEAD
     { NPC_ARELAS,       DATA_ANNOUNCER    },
     { NPC_JAEREN,       DATA_ANNOUNCER    },
     { NPC_TIRION,       DATA_TIRION       },
@@ -35,37 +34,6 @@ ObjectData const creatureData[] =
     { NPC_BLACK_KNIGHT, DATA_BLACK_KNIGHT },
     { 0,                0                 } // END
 };
-=======
-public:
-    instance_trial_of_the_champion() : InstanceMapScript(ToCScriptName, 650) { }
-
-    InstanceScript* GetInstanceScript(InstanceMap* map) const override
-    {
-        return new instance_trial_of_the_champion_InstanceMapScript(map);
-    }
-
-    struct instance_trial_of_the_champion_InstanceMapScript : public InstanceScript
-    {
-        instance_trial_of_the_champion_InstanceMapScript(Map* map) : InstanceScript(map)
-        {
-            SetHeaders(DataHeader);
-            uiMovementDone = 0;
-            uiGrandChampionsDeaths = 0;
-            uiArgentSoldierDeaths = 0;
-            teamInInstance = 0;
-
-            bDone = false;
-
-            memset(&m_auiEncounter, 0, sizeof(m_auiEncounter));
-        }
-
-        uint32 m_auiEncounter[MAX_ENCOUNTER];
-
-        uint32 teamInInstance;
-        uint16 uiMovementDone;
-        uint16 uiGrandChampionsDeaths;
-        uint8 uiArgentSoldierDeaths;
->>>>>>> c78f454c0ee74000ab7f77463e8b44ff7480fdec
 
 ObjectData const gameObjectData[] =
 {
@@ -103,7 +71,6 @@ class instance_trial_of_the_champion : public InstanceMapScript
                 LoadObjectData(creatureData, gameObjectData);
                 LoadDoorData(doorData);
 
-<<<<<<< HEAD
                 _teamInInstance = 0;
                 _argentSoldierDeaths = 0;
             }
@@ -130,65 +97,6 @@ class instance_trial_of_the_champion : public InstanceMapScript
                 }
 
                 return entry;
-=======
-            return false;
-        }
-
-        void OnPlayerEnter(Player* player) override
-        {
-            if (!teamInInstance)
-                teamInInstance = player->GetTeam();
-        }
-
-        void OnCreatureCreate(Creature* creature) override
-        {
-            switch (creature->GetEntry())
-            {
-                case VEHICLE_ARGENT_WARHORSE:
-                case VEHICLE_ARGENT_BATTLEWORG:
-                    VehicleList.push_back(creature->GetGUID());
-                    break;
-                case NPC_EADRIC:
-                case NPC_PALETRESS:
-                    uiArgentChampionGUID = creature->GetGUID();
-                    break;
-                case NPC_JAEREN:
-                case NPC_ARELAS:
-                    uiAnnouncerGUID = creature->GetGUID();
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        uint32 GetCreatureEntry(ObjectGuid::LowType /*guidLow*/, CreatureData const* data) override
-        {
-            if (!teamInInstance)
-            {
-                Map::PlayerList const& players = instance->GetPlayers();
-                if (!players.isEmpty())
-                    if (Player* player = players.begin()->GetSource())
-                        teamInInstance = player->GetTeam();
-            }
-
-            uint32 entry = data->id;
-            switch (entry)
-            {
-                case VEHICLE_MOKRA_SKILLCRUSHER_MOUNT:
-                    return teamInInstance == HORDE ? VEHICLE_MARSHAL_JACOB_ALERIUS_MOUNT : VEHICLE_MOKRA_SKILLCRUSHER_MOUNT;
-                case VEHICLE_ERESSEA_DAWNSINGER_MOUNT:
-                    return teamInInstance == HORDE ? VEHICLE_AMBROSE_BOLTSPARK_MOUNT : VEHICLE_ERESSEA_DAWNSINGER_MOUNT;
-                case VEHICLE_RUNOK_WILDMANE_MOUNT:
-                    return teamInInstance == HORDE ? VEHICLE_COLOSOS_MOUNT : VEHICLE_RUNOK_WILDMANE_MOUNT;
-                case VEHICLE_ZUL_TORE_MOUNT:
-                    return teamInInstance == HORDE ? VEHICLE_EVENSONG_MOUNT : VEHICLE_ZUL_TORE_MOUNT;
-                case VEHICLE_DEATHSTALKER_VESCERI_MOUNT:
-                    return teamInInstance == HORDE ? VEHICLE_LANA_STOUTHAMMER_MOUNT : VEHICLE_DEATHSTALKER_VESCERI_MOUNT;
-                case NPC_JAEREN:
-                    return teamInInstance == HORDE ? NPC_ARELAS : NPC_JAEREN;
-                default:
-                    return entry;
->>>>>>> c78f454c0ee74000ab7f77463e8b44ff7480fdec
             }
 
             void OnCreatureCreate(Creature* creature) override
