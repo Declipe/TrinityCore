@@ -83,7 +83,6 @@ class Spell;
 class SpellCastTargets;
 class SpellHistory;
 class SpellInfo;
-class SummonedGameObject;
 class Totem;
 class Transport;
 class TransportBase;
@@ -1473,8 +1472,8 @@ class TC_GAME_API Unit : public WorldObject
         void RemoveAllDynObjects();
 
         GameObject* GetGameObject(uint32 spellId) const;
-        void AddGameObject(SummonedGameObject* gameObj);
-        void UnlinkGameObject(SummonedGameObject* gameObj);
+        void AddGameObject(GameObject* gameObj);
+        void RemoveGameObject(GameObject* gameObj, bool del);
         void RemoveGameObject(uint32 spellid, bool del);
         void RemoveAllGameObjects();
 
@@ -1704,8 +1703,11 @@ class TC_GAME_API Unit : public WorldObject
 
         int32 m_procDeep;
 
-        std::list<DynamicObject*> m_dynObj;
-        std::list<SummonedGameObject*> m_gameObj;
+        typedef std::list<DynamicObject*> DynObjectList;
+        DynObjectList m_dynObj;
+
+        typedef std::list<GameObject*> GameObjectList;
+        GameObjectList m_gameObj;
 
         uint32 m_transformSpell;
 
