@@ -292,12 +292,12 @@ void Creature::AddToWorld()
         if (IsVehicle())
             GetVehicleKit()->Install();
 
+        if (GetZoneScript())
+            GetZoneScript()->OnCreatureCreate(this);
+
 #ifdef ELUNA
         sEluna->OnAddToWorld(this);
 #endif
-
-        if (GetZoneScript())
-            GetZoneScript()->OnCreatureCreate(this);
     }
 }
 

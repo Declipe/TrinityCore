@@ -8182,11 +8182,6 @@ void Unit::EngageWithTarget(Unit* enemy)
         m_threatManager.AddThreat(enemy, 0.0f, nullptr, true, true);
     else
         SetInCombatWith(enemy);
-
-#ifdef ELUNA
-    if (Player* player = ToPlayer())
-        sEluna->OnPlayerEnterCombat(player, enemy);
-#endif
 }
 
 void Unit::AttackedTarget(Unit* target, bool canInitialAggro)
@@ -8264,10 +8259,6 @@ void Unit::SetImmuneToNPC(bool apply, bool keepCombat)
     }
     else
         RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
-#ifdef ELUNA
-    if (Player* player = this->ToPlayer())
-        sEluna->OnPlayerLeaveCombat(player);
-#endif
 }
 
 bool Unit::IsThreatened() const
