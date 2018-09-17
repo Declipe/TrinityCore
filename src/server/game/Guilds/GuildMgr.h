@@ -22,6 +22,7 @@
 #include "ObjectGuid.h"
 #include <unordered_map>
 #include <vector>
+#include "Guild.h"
 
 class Guild;
 
