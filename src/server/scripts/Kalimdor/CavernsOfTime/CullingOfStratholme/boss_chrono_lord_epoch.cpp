@@ -64,7 +64,6 @@ class boss_epoch : public CreatureScript
             {
                 _JustEngagedWith();
 
-<<<<<<< HEAD
                 _stepTargetIndex = 0;
                 _stepTargets.clear();
                 events.ScheduleEvent(EVENT_WOUNDING_STRIKE, Seconds(4), Seconds(6));
@@ -72,12 +71,6 @@ class boss_epoch : public CreatureScript
                 events.ScheduleEvent(EVENT_TIME_WARP, Seconds(25));
                 if (IsHeroic())
                     events.ScheduleEvent(EVENT_TIME_STOP, Seconds(15));
-=======
-                events.ScheduleEvent(EVENT_CURSE_OF_EXERTION, 9300ms);
-                events.ScheduleEvent(EVENT_TIME_WARP, 25300);
-                events.ScheduleEvent(EVENT_TIME_STOP, 21300);
-                events.ScheduleEvent(EVENT_WOUNDING_STRIKE, 5300ms);
->>>>>>> e5d63bc5b02d0427beb2adf5571a90e92ebc1721
             }
 
             void ExecuteEvent(uint32 eventId) override
@@ -87,7 +80,7 @@ class boss_epoch : public CreatureScript
                     case EVENT_CURSE_OF_EXERTION:
                         if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
                             DoCast(target, SPELL_CURSE_OF_EXERTION);
-                        events.ScheduleEvent(EVENT_CURSE_OF_EXERTION, 9300ms);
+                        events.ScheduleEvent(EVENT_CURSE_OF_EXERTION, 9300);
                         break;
                     case EVENT_TIME_WARP:
                         Talk(SAY_TIME_WARP);
@@ -101,7 +94,6 @@ class boss_epoch : public CreatureScript
                         break;
                     case EVENT_WOUNDING_STRIKE:
                         DoCastVictim(SPELL_WOUNDING_STRIKE);
-<<<<<<< HEAD
                         events.Repeat(Seconds(12), Seconds(18));
                         break;
                     case EVENT_TIME_STEP:
@@ -125,9 +117,6 @@ class boss_epoch : public CreatureScript
 
                         if (target)
                             DoCast(target, SPELL_TIME_STEP_CHARGE, true);
-=======
-                        events.ScheduleEvent(EVENT_WOUNDING_STRIKE, 5300ms);
->>>>>>> e5d63bc5b02d0427beb2adf5571a90e92ebc1721
                         break;
                     }
                     default:

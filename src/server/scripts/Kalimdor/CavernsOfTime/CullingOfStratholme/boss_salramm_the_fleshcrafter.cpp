@@ -72,18 +72,11 @@ class boss_salramm : public CreatureScript
                 Talk(SAY_AGGRO);
                 _JustEngagedWith();
 
-<<<<<<< HEAD
                 events.ScheduleEvent(EVENT_SUMMON_GHOULS, randtime(Seconds(19),Seconds(24)));
                 events.ScheduleEvent(EVENT_SHADOW_BOLT, Seconds(2));
                 events.ScheduleEvent(EVENT_STEAL_FLESH, Seconds(25), Seconds(35));
                 if (IsHeroic())
                     events.ScheduleEvent(EVENT_CURSE_FLESH, Seconds(40));
-=======
-                events.ScheduleEvent(EVENT_CURSE_FLESH, 30s);
-                events.ScheduleEvent(EVENT_SUMMON_GHOULS, 19s, 24s);
-                events.ScheduleEvent(EVENT_SHADOW_BOLT, 8s, 12s);
-                events.ScheduleEvent(EVENT_STEAL_FLESH, 12345); /// @todo: adjust timer
->>>>>>> e5d63bc5b02d0427beb2adf5571a90e92ebc1721
             }
 
             void ExecuteEvent(uint32 eventId) override
@@ -92,7 +85,6 @@ class boss_salramm : public CreatureScript
                 {
                     case EVENT_CURSE_FLESH:
                         DoCastVictim(SPELL_CURSE_OF_TWISTED_FLESH);
-<<<<<<< HEAD
                         events.Repeat(Seconds(37));
                         break;
                     case EVENT_SUMMON_GHOULS:
@@ -100,24 +92,11 @@ class boss_salramm : public CreatureScript
                         DoCastAOE(SPELL_SUMMON_GHOULS);
                         events.ScheduleEvent(EVENT_EXPLODE_GHOUL1, Seconds(20), Seconds(24));
                         events.ScheduleEvent(EVENT_EXPLODE_GHOUL2, Seconds(25), Seconds(29));
-=======
-                        events.ScheduleEvent(EVENT_CURSE_FLESH, 35s);
-                        break;
-                    case EVENT_SUMMON_GHOULS:
-                        Talk(SAY_SUMMON_GHOULS);
-                        DoCast(me, SPELL_SUMMON_GHOULS);
-                        events.ScheduleEvent(EVENT_SUMMON_GHOULS, 10s);
-                        events.ScheduleEvent(EVENT_EXPLODE_GHOUL, 6s);
->>>>>>> e5d63bc5b02d0427beb2adf5571a90e92ebc1721
                         break;
                     case EVENT_SHADOW_BOLT:
                         if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 40.0f, true))
                             DoCast(target, SPELL_SHADOW_BOLT);
-<<<<<<< HEAD
                         events.Repeat(Seconds(3));
-=======
-                        events.ScheduleEvent(EVENT_SHADOW_BOLT, 8s, 12s);
->>>>>>> e5d63bc5b02d0427beb2adf5571a90e92ebc1721
                         break;
                     case EVENT_STEAL_FLESH:
                         Talk(SAY_STEAL_FLESH);

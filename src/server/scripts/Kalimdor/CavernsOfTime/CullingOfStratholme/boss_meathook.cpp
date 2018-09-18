@@ -61,15 +61,9 @@ class boss_meathook : public CreatureScript
             {
                 Talk(SAY_AGGRO);
                 _JustEngagedWith();
-<<<<<<< HEAD
                 events.ScheduleEvent(EVENT_CHAIN, Seconds(7), Seconds(11));
                 events.ScheduleEvent(EVENT_DISEASE, Seconds(2));
                 events.ScheduleEvent(EVENT_FRENZY, Seconds(13), Seconds(17));
-=======
-                events.ScheduleEvent(EVENT_CHAIN, 12s, 17s);
-                events.ScheduleEvent(EVENT_DISEASE, 2s, 4s);
-                events.ScheduleEvent(EVENT_FRENZY, 21s, 26s);
->>>>>>> e5d63bc5b02d0427beb2adf5571a90e92ebc1721
             }
 
             void ExecuteEvent(uint32 eventId) override
@@ -81,7 +75,6 @@ class boss_meathook : public CreatureScript
                             DoCast(target, SPELL_CONSTRICTING_CHAINS);
                         else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 100.0f, true))
                             DoCast(target, SPELL_CONSTRICTING_CHAINS);
-<<<<<<< HEAD
                         else
                             DoCastVictim(SPELL_CONSTRICTING_CHAINS);
                         events.Repeat(Seconds(10), Seconds(15));
@@ -93,17 +86,6 @@ class boss_meathook : public CreatureScript
                     case EVENT_FRENZY:
                         DoCast(me, SPELL_FRENZY);
                         events.Repeat(Seconds(13), Seconds(17));
-=======
-                        events.ScheduleEvent(EVENT_CHAIN, 2s, 4s);
-                        break;
-                    case EVENT_DISEASE:
-                        DoCastAOE(SPELL_DISEASE_EXPULSION);
-                        events.ScheduleEvent(EVENT_DISEASE, 1500ms, 4s);
-                        break;
-                    case EVENT_FRENZY:
-                        DoCast(me, SPELL_FRENZY);
-                        events.ScheduleEvent(EVENT_FRENZY, 21s, 26s);
->>>>>>> e5d63bc5b02d0427beb2adf5571a90e92ebc1721
                         break;
                     default:
                         break;
