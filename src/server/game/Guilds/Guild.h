@@ -301,7 +301,7 @@ class TC_GAME_API Guild
                 Member(ObjectGuid::LowType guildId, ObjectGuid guid, uint8 rankId);
 
                 void SetStats(Player* player);
-                void SetStats(std::string const& name, uint8 level, uint8 _class, uint32 zoneId, uint32 accountId);
+                void SetStats(std::string const& name, uint8 level, uint8 _class, uint8 gender, uint32 zoneId, uint32 accountId);
                 bool CheckStats() const;
 
                 void SetPublicNote(std::string const& publicNote);
@@ -326,6 +326,7 @@ class TC_GAME_API Guild
                 std::string GetOfficerNote() const { return m_officerNote; }
                 uint8 GetClass() const { return m_class; }
                 uint8 GetLevel() const { return m_level; }
+                uint8 GetGender() const { return m_gender; }
                 uint8 GetFlags() const { return m_flags; }
                 uint32 GetZoneId() const { return m_zoneId; }
                 bool IsOnline() const { return (m_flags & GUILDMEMBER_STATUS_ONLINE); }
@@ -352,6 +353,7 @@ class TC_GAME_API Guild
                 uint32 m_zoneId;
                 uint8 m_level;
                 uint8 m_class;
+                uint8 m_gender;
                 uint8 m_flags;
                 uint64 m_logoutTime;
                 uint32 m_accountId;
