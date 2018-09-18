@@ -639,6 +639,7 @@ class instance_culling_of_stratholme : public InstanceMapScript
                                     }
                                     break;
                             }
+<<<<<<< HEAD
 
                             for (uint32 marker = WAVE_MARKER_MIN; marker <= WAVE_MARKER_MAX; ++marker)
                                 SetWorldState(States(marker), 0, false);
@@ -652,6 +653,10 @@ class instance_culling_of_stratholme : public InstanceMapScript
                             if (_currentState == WAVES_IN_PROGRESS)
                                 if (Creature* crier = instance->GetCreature(_crierGUID))
                                     crier->AI()->Talk(_currentSpawnLoc);
+=======
+                            events.ScheduleEvent(EVENT_INFINITE_TIMER, 1min);
+                            --_eventTimer;
+>>>>>>> e5d63bc5b02d0427beb2adf5571a90e92ebc1721
                             break;
                         default:
                             break;
