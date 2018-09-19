@@ -56,19 +56,10 @@ class ZynPlayerScripts: public PlayerScript
         {
 
             CreatureSpecialRewards reward = sObjectMgr->GetSpecialReward(killed->GetEntry());
-            if (reward.type >= CSR_TYPE_TITLE && reward.type <= CSR_TYPE_ARENA)
+            if (reward.type >= CSR_TYPE_ITEM && reward.type <= CSR_TYPE_ARENA)
             {
                 switch (reward.type)
                 {
-                case CSR_TYPE_TITLE:
-                {
-                    CharTitlesEntry const* title = sCharTitlesStore.LookupEntry(reward.param1);
-
-                    if (!killer->HasTitle(title))
-                        killer->SetTitle(title);
-
-                    break;
-                }
 
                 case CSR_TYPE_ITEM:
                     killer->AddItem(reward.param1, reward.param2);
