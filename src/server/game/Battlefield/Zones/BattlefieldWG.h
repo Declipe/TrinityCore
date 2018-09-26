@@ -411,10 +411,15 @@ struct WintergraspWorkshopInfo
     } TextIds;
 };
 
+<<<<<<< HEAD
 class TC_GAME_API BattlefieldWintergrasp : public Battlefield
 {
     public:
         ~BattlefieldWintergrasp();
+=======
+    void Rebuild();
+    void RebuildGate();
+>>>>>>> 5fee6ec642e8b36ede1fc78b1afe402eab597e0b
 
         bool SetupBattlefield() override;
         void Update(uint32 diff) override;
