@@ -1198,6 +1198,9 @@ public:
 	    TC_LOG_INFO("misc", "Reloading Creature and Item_template..");
         sObjectMgr->LoadItemTemplates();
         sObjectMgr->LoadCreatureTemplates();
+        sObjectMgr->LoadGameObjectTemplate();
+        sObjectMgr->LoadAreaCustomFlags();
+        sObjectMgr->LoadCreatureSpecialRewards();
         handler->SendGlobalGMSysMessage("Creature and Item_template has been reloaded!");
         return true;
     }
