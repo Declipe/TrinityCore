@@ -5,7 +5,7 @@ UPDATE `quest_template` SET `RewardItem1`=34077, `RewardAmount1`=1 WHERE `ID` IN
 
 UPDATE `creature_template` SET `ScriptName`="npc_costumed_orphan_matron" WHERE `entry` IN (23973, 22504);
 UPDATE `creature_template` SET `ScriptName`="npc_soh_fire_trigger" WHERE `entry`=23537;
-UPDATE `creature_template` SET `ScriptName`="npc_hallows_end_soh", `InhabitType`=7 WHERE `entry`=23543;
+UPDATE `creature_template` SET `ScriptName`="npc_hallows_end_soh" WHERE `entry`=23543;
 UPDATE `creature_template_addon` SET `auras`="42096" WHERE `entry`=23537;
 
 DELETE FROM `spell_script_names` WHERE `ScriptName` IN ('spell_hallows_end_base_fire', 'spell_hallows_end_bucket_lands');
