@@ -340,7 +340,6 @@ class instance_ulduar : public InstanceMapScript
                     case NPC_AERIAL_COMMAND_UNIT:
                         MimironVehicleGUIDs[2] = creature->GetGUID();
                         break;
-
                     // Yogg-Saron
                     case NPC_FREYA_YS:
                         KeeperGUIDs[0] = creature->GetGUID();

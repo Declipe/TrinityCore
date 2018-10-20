@@ -1680,6 +1680,30 @@ class go_mimiron_hardmode_button : public GameObjectScript
             return GetUlduarAI<go_mimiron_hardmode_buttonAI>(go);
         }
 };
+class go_mimiron_activate_tram : public GameObjectScript
+{
+public:
+    go_mimiron_activate_tram() : GameObjectScript("go_mimiron_activate_tram") { }
+    struct go_mimiron_activate_tramAI : public GameObjectAI
+    {
+        go_mimiron_activate_tramAI(GameObject* go) : GameObjectAI(go) { }
+
+ bool GossipHello(Player* player) override
+ {
+ InstanceScript * instance = me->GetInstanceScript();
+ if (!instance)
+  return false;
+
+ if (GameObject* tram = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(GO_MIMIRON_TRAM)))
+ tram->SetGoState(GO_STATE_ACTIVE);
+return true;
+ }
+    };
+    GameObjectAI* GetAI(GameObject* go) const override
+    {
+        return new go_mimiron_activate_tramAI(go);
+    }
+ };
 
 // 63801 - Bomb Bot
 class spell_mimiron_bomb_bot : public SpellScriptLoader
@@ -2805,6 +2829,7 @@ void AddSC_boss_mimiron()
     new npc_mimiron_frost_bomb();
     new npc_mimiron_proximity_mine();
 
+    new go_mimiron_activate_tram();
     new go_mimiron_hardmode_button();
 
     new spell_mimiron_bomb_bot();
