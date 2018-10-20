@@ -386,7 +386,7 @@ public:
             Talk(SAY_DEFEATED);
             float x, y, z;
             GetPosToLand(x, y, z);
-            me->CastSpell(x, y, z, SPELL_SUMMON_LANTERN, true);
+            me->CastSpell({ x, y, z }, SPELL_SUMMON_LANTERN, true);
             CompleteQuest();
         }
 
