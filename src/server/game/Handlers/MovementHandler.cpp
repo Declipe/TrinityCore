@@ -16,26 +16,22 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "AnticheatMgr.h"
-#include "WorldSession.h"
-#include "Battlefield.h"
-#include "BattlefieldMgr.h"
-#include "BattlefieldWG.h"
-#include "Battleground.h"
 #include "Common.h"
-#include "Corpse.h"
-#include "GameTime.h"
-#include "InstanceSaveMgr.h"
+#include "WorldPacket.h"
+#include "WorldSession.h"
+#include "Opcodes.h"
 #include "Log.h"
+#include "Corpse.h"
+#include "Player.h"
 #include "MapManager.h"
 #include "MotionMaster.h"
 #include "MovementGenerator.h"
-#include "ObjectMgr.h"
-#include "Opcodes.h"
-#include "Player.h"
 #include "Transport.h"
+#include "Battleground.h"
+#include "InstanceSaveMgr.h"
+#include "ObjectMgr.h"
 #include "Vehicle.h"
-#include "WorldPacket.h"
+#include "GameTime.h"
 
 #define MOVEMENT_PACKET_TIME_DELAY 0
 
@@ -192,33 +188,6 @@ void WorldSession::HandleMoveWorldportAck()
     uint32 newzone, newarea;
     player->GetZoneAndAreaId(newzone, newarea);
     player->UpdateZone(newzone, newarea);
-
-    bool InBattlefield = false;
-    if (loc.GetMapId() == MAPID_WINTERGRASP && newzone == ZONEID_WINTERGRASP)
-    {
-        if (Battlefield* battlefield = sBattlefieldMgr->GetEnabledBattlefield(newzone))
-        {
-            if (battlefield->IsWarTime())
-                _player->RemoveAurasByType(SPELL_AURA_MOUNTED);
-            InBattlefield = true;
-        }
-    }
-
-    // flight fast teleport case
-    if (GetPlayer()->IsInFlight())
-    {
-        if (!_player->InBattleground() && !InBattlefield)
-        {
-            // short preparations to continue flight
-            if (MovementGenerator* flight = GetPlayer()->GetMotionMaster()->GetCurrentMovementGenerator())
-                flight->Initialize(GetPlayer());
-            return;
-        }
-
-        // stop flight
-        GetPlayer()->GetMotionMaster()->Remove(FLIGHT_MOTION_TYPE);
-        GetPlayer()->CleanupAfterTaxiFlight();
-    }
 
     // honorless target
     if (player->pvpInfo.IsHostile)
@@ -392,9 +361,6 @@ void WorldSession::HandleMovementOpcodes(WorldPacket& recvData)
         // now client not include swimming flag in case jumping under water
         plrMover->SetInWater(!plrMover->IsInWater() || plrMover->GetBaseMap()->IsUnderWater(movementInfo.pos.GetPositionX(), movementInfo.pos.GetPositionY(), movementInfo.pos.GetPositionZ()));
     }
-
-    if (plrMover)
-        sAnticheatMgr->StartHackDetection(plrMover, movementInfo, opcode);
 
     uint32 mstime = GameTime::GetGameTimeMS();
     /*----------------------*/

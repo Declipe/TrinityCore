@@ -2213,7 +2213,7 @@ void World::SetInitialWorldSettings()
 
     ///- Initialize Battlefield
     TC_LOG_INFO("server.loading", "Starting Battlefield System");
-    sBattlefieldMgr->Initialize();
+    sBattlefieldMgr->InitBattlefield();
 
     TC_LOG_INFO("server.loading", "Loading Transports...");
     sTransportMgr->SpawnContinentTransports();
