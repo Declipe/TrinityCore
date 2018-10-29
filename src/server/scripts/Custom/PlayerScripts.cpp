@@ -77,7 +77,42 @@ class ZynPlayerScripts: public PlayerScript
         }
 };
 
+class item_lvlup : public ItemScript
+{
+public: item_lvlup() : ItemScript("item_lvlup") {}
+
+        bool OnUse(Player* player, Item* item, SpellCastTargets const& /*Targets*/)
+        {
+            WorldSession* session = player->GetSession();
+            if (player->getLevel() != 255)
+            {
+                if (player->IsInFlight() || player->IsInCombat() || player->isDead())
+                {
+                    player->SendEquipError(EQUIP_ERR_NOT_IN_COMBAT, item, NULL);
+                    return true;
+                }
+                else
+                {
+                    int32 level = player->getLevel();
+                    player->GiveLevel(player->GetSession()->GetPlayer()->getLevel() + 1);
+                    player->DestroyItemCount(item->GetEntry(), 1, true);
+                   // ChatHandler(session).PSendSysMessage(LANG_SAY_LVL_UP_ITEM);
+                    return true;
+                }
+                return true;
+            }
+            else
+            {
+               // ChatHandler(session).PSendSysMessage(LANG_ERROR_LVL_UP_ITEM);
+                return true;
+            }
+            return true;
+        }
+
+};
+
 void AddSC_ZynPlayerScripts()
 {
+    new item_lvlup();
     new ZynPlayerScripts();
 }

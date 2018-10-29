@@ -1,0 +1,15 @@
+CREATE DATABASE `world3.3.5` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+CREATE DATABASE `characters3.3.5` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+CREATE DATABASE `auth3.3.5` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+CREATE DATABASE `zyn` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+GRANT ALL PRIVILEGES ON `world3.3.5` . * TO 'root'@'localhost' WITH GRANT OPTION;
+
+GRANT ALL PRIVILEGES ON `characters3.3.5` . * TO 'root'@'localhost' WITH GRANT OPTION;
+
+GRANT ALL PRIVILEGES ON `auth3.3.5` . * TO 'root'@'localhost' WITH GRANT OPTION;
+
+GRANT ALL PRIVILEGES ON `zyn` . * TO 'root'@'localhost' WITH GRANT OPTION;
