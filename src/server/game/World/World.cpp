@@ -553,6 +553,9 @@ void World::LoadConfigSettings(bool reload)
 	m_bool_configs[CONFIG_VIP6] = sConfigMgr->GetBoolDefault("Item.Disable5", false);
 	m_bool_configs[CONFIG_DEATH_KNIGHT_SKIP_QUEST] = sConfigMgr->GetBoolDefault("DeathKnight.SkipQuest", false);
 
+    m_int_configs[CONFIG_XP_BOOST_DAYMASK] = sConfigMgr->GetIntDefault("XP.Boost.Daymask", 0);
+    rate_values[RATE_XP_BOOST] = sConfigMgr->GetFloatDefault("XP.Boost.Rate", 2.0f);
+
     rate_values[RATE_REPAIRCOST]  = sConfigMgr->GetFloatDefault("Rate.RepairCost", 1.0f);
     if (rate_values[RATE_REPAIRCOST] < 0.0f)
     {
