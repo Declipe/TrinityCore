@@ -26967,6 +26967,7 @@ void Player::RemoveSocial()
     sSocialMgr->RemovePlayerSocial(GetGUID());
     m_social = nullptr;
 }
+
 void Player::BuildPlayerChat(WorldPacket* data, uint8 msgtype, const std::string& text, uint32 language) const
 {
     *data << uint8(msgtype);
@@ -26977,4 +26978,11 @@ void Player::BuildPlayerChat(WorldPacket* data, uint8 msgtype, const std::string
     *data << uint32(text.length() + 1);
     *data << text;
     *data << uint8(GetChatTag());
+}
+
+std::string Player::GetDebugInfo() const
+{
+    std::stringstream sstr;
+    sstr << Unit::GetDebugInfo();
+    return sstr.str();
 }

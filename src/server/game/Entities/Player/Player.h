@@ -2007,7 +2007,6 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         void UpdateSpeakTime();
         bool CanSpeak() const;
-        void ChangeSpeakTime(int utime);
 
 		//CHAT_FILTER
 		void SetLoggedOutWhilePunished(bool _true) { loggedOutWhilePunished = _true; }
@@ -2224,6 +2223,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         std::string GetMapAreaAndZoneString() const;
         std::string GetCoordsMapAreaAndZoneString() const;
+
+        std::string GetDebugInfo() const override;
 
     // Prepatch by LordPsyan
     // 01
