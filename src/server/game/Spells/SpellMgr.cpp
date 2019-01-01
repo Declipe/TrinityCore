@@ -297,9 +297,9 @@ uint32 SpellMgr::GetSpellWithRank(uint32 spell_id, uint32 rank, bool strict) con
     return spell_id;
 }
 
-SpellRequiredMapBounds SpellMgr::GetSpellsRequiredForSpellBounds(uint32 spell_id) const
+Trinity::IteratorPair<SpellRequiredMap::const_iterator> SpellMgr::GetSpellsRequiredForSpellBounds(uint32 spell_id) const
 {
-    return mSpellReq.equal_range(spell_id);
+    return Trinity::Containers::MapEqualRange(mSpellReq, spell_id);
 }
 
 SpellsRequiringSpellMapBounds SpellMgr::GetSpellsRequiringSpellBounds(uint32 spell_id) const
@@ -2876,6 +2876,13 @@ void SpellMgr::LoadSpellInfoCustomAttributes()
         }
 
         spellInfo->_InitializeExplicitTargetMask();
+
+        if (spellInfo->Speed > 0.0f)
+            if (SpellVisualEntry const* spellVisual = sSpellVisualStore.LookupEntry(spellInfo->SpellVisual[0]))
+                if (spellVisual->HasMissile)
+                    if (spellVisual->MissileModel == -4 || spellVisual->MissileModel == -5)
+                        spellInfo->AttributesCu |= SPELL_ATTR0_CU_NEEDS_AMMO_DATA;
+
     }
 
     // addition for binary spells, omit spells triggering other spells
