@@ -2550,7 +2550,7 @@ void ObjectMgr::LoadItemTemplates()
         itemTemplate.MaxCount                  = fields[24].GetInt32();
         itemTemplate.Stackable                 = fields[25].GetInt32();
         itemTemplate.ContainerSlots            = uint32(fields[26].GetUInt8());
-        itemTemplate.StatsCount                = uint32(fields[27].GetUInt8());
+        itemTemplate.StatsCount                = uint32(fields[27].GetUInt32());
 
         if (itemTemplate.StatsCount > MAX_ITEM_PROTO_STATS)
         {
@@ -2558,10 +2558,10 @@ void ObjectMgr::LoadItemTemplates()
             itemTemplate.StatsCount = MAX_ITEM_PROTO_STATS;
         }
 
-        for (uint8 i = 0; i < itemTemplate.StatsCount; ++i)
+        for (uint32 i = 0; i < itemTemplate.StatsCount; ++i)
         {
-            itemTemplate.ItemStat[i].ItemStatType  = uint32(fields[28 + i*2].GetUInt8());
-            itemTemplate.ItemStat[i].ItemStatValue = int32(fields[29 + i*2].GetInt16());
+            itemTemplate.ItemStat[i].ItemStatType  = uint32(fields[28 + i*2].GetUInt32());
+            itemTemplate.ItemStat[i].ItemStatValue = int32(fields[29 + i*2].GetInt32());
         }
 
         itemTemplate.ScalingStatDistribution = uint32(fields[48].GetUInt16());
@@ -2811,7 +2811,7 @@ void ObjectMgr::LoadItemTemplates()
             itemTemplate.ContainerSlots = MAX_BAG_SIZE;
         }
 
-        for (uint8 j = 0; j < itemTemplate.StatsCount; ++j)
+        for (uint32 j = 0; j < itemTemplate.StatsCount; ++j)
         {
             // for ItemStatValue != 0
             if (itemTemplate.ItemStat[j].ItemStatValue && itemTemplate.ItemStat[j].ItemStatType >= MAX_ITEM_MOD)
