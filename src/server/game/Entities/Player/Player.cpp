@@ -16216,8 +16216,9 @@ QuestGiverStatus Player::GetQuestDialogStatus(Object* questgiver)
 #ifdef ELUNA
             sEluna->GetDialogStatus(this, questgiver->ToGameObject());
 #endif
-            if (auto questStatus = questgiver->ToGameObject()->AI()->GetDialogStatus(this))
-                return *questStatus;
+            if (auto ai = questgiver->ToGameObject()->AI())
+                if (auto questStatus = ai->GetDialogStatus(this))
+                    return *questStatus;
             qr = sObjectMgr->GetGOQuestRelationBounds(questgiver->GetEntry());
             qir = sObjectMgr->GetGOQuestInvolvedRelationBounds(questgiver->GetEntry());
             break;
@@ -16227,8 +16228,9 @@ QuestGiverStatus Player::GetQuestDialogStatus(Object* questgiver)
 #ifdef ELUNA
             sEluna->GetDialogStatus(this, questgiver->ToCreature());
 #endif
-            if (auto questStatus = questgiver->ToCreature()->AI()->GetDialogStatus(this))
-                return *questStatus;
+            if (auto ai = questgiver->ToCreature()->AI())
+                if (auto questStatus = ai->GetDialogStatus(this))
+                    return *questStatus;
             qr = sObjectMgr->GetCreatureQuestRelationBounds(questgiver->GetEntry());
             qir = sObjectMgr->GetCreatureQuestInvolvedRelationBounds(questgiver->GetEntry());
             break;
