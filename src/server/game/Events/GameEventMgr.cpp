@@ -30,10 +30,10 @@
 #include "PoolMgr.h"
 #include "Player.h"
 #include "World.h"
-#include "WorldStatePackets.h"
 #ifdef ELUNA
 #include "LuaEngine.h"
 #endif
+#include "WorldStatePackets.h"
 
 GameEventMgr* GameEventMgr::instance()
 {

@@ -100,10 +100,10 @@
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include "Config.h"
-#include "WorldStatePackets.h"
 #ifdef ELUNA
 #include "LuaEngine.h"
 #endif
+#include "WorldStatePackets.h"
 
 #define ZONE_UPDATE_INTERVAL (1*IN_MILLISECONDS)
 
