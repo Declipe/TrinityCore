@@ -3092,6 +3092,7 @@ void ObjectMgr::LoadItemTemplates()
 
     TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " item templates in %u ms", _itemTemplateStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
+
 ItemTemplate const* ObjectMgr::GetItemTemplate(uint32 entry) const
 {
     return Trinity::Containers::MapGetValuePtr(_itemTemplateStore, entry);

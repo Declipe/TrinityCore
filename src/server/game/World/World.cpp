@@ -1801,9 +1801,6 @@ void World::SetInitialWorldSettings()
     TC_LOG_INFO("server.loading", "Loading Items...");                         // must be after LoadRandomEnchantmentsTable and LoadPageTexts
     sObjectMgr->LoadItemTemplates();
 
-    TC_LOG_INFO("server.loading", "Loading Items2...");                         // must be after LoadRandomEnchantmentsTable and LoadPageTexts
-    sObjectMgr->LoadItemTemplates2();
-
     TC_LOG_INFO("server.loading", "Loading Item set names...");                // must be after LoadItemPrototypes
     sObjectMgr->LoadItemSetNames();
 
