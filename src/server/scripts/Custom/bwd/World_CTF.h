@@ -2,9 +2,6 @@
 #define GRUMBOZ_WORLD_CTF_H
 
 #include <unordered_map>
-#include <iostream>
-#include <functional>
-#include <random>
 
 struct WorldFlagGps_Elements
 {
@@ -117,7 +114,6 @@ public:
 	std::unordered_map<uint8, WorldCtfFlagInfo_Elements> WorldCtfFlagInfo;
 
 	// Public Variables
-	std::default_random_engine generator;
 	bool test;
 
 private:
