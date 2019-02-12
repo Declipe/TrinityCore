@@ -395,7 +395,7 @@ void WorldCtf::UpdateGameObject(GameObject* go)
 		{
 			go->SetName(sWorldCtf->WorldCtfFlagInfo[activeteamid].name);
 
-			if (sWorldCtf->test) { TC_LOG_INFO("server.loading", "UPDATE_GO NAME:%s", sWorldCtf->WorldCtfFlagInfo[activeteamid].name); }
+			if (sWorldCtf->test) { TC_LOG_INFO("server.loading", "UPDATE_GO NAME:%s", sWorldCtf->WorldCtfFlagInfo[activeteamid].name.c_str()); }
 		}
 
 		if (go->GetObjectScale() != sWorldCtf->WorldCtfFlagInfo[activeteamid].size)
