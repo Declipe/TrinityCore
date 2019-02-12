@@ -27,6 +27,7 @@
 // start09
 // start10
 // start11
+void AddSC_Grumboz_World_Ctf();
 void AddSC_ZynPlayerScripts();
 void AddSC_level_award();
 void AddSC_npc_teleport();
@@ -439,6 +440,7 @@ void AddCustomScripts()
 // end193
 // end194
 // end195
+AddSC_Grumboz_World_Ctf();
 AddSC_ZynPlayerScripts();
 AddSC_test();
 AddSC_gm_hello();
