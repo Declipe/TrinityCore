@@ -215,7 +215,19 @@ void AddSC_premium_commandscript();
 // start192
 // start193
 // start194
-// start195
+void AddSC_death_knight_bot();
+void AddSC_druid_bot();
+void AddSC_hunter_bot();
+void AddSC_mage_bot();
+void AddSC_paladin_bot();
+void AddSC_priest_bot();
+void AddSC_rogue_bot();
+void AddSC_shaman_bot();
+void AddSC_warlock_bot();
+void AddSC_warrior_bot();
+void AddSC_blademaster_bot();
+void AddSC_script_bot_commands();
+//void AddSC_Npc_BotGiver();
 void AddSC_test();
 void AddSC_gm_hello(); 
 void AddSC_Mod_HonorRank();
@@ -438,7 +450,19 @@ void AddCustomScripts()
 // end192
 // end193
 // end194
-// end195
+AddSC_death_knight_bot();
+AddSC_druid_bot();
+AddSC_hunter_bot();
+AddSC_mage_bot();
+AddSC_paladin_bot();
+AddSC_priest_bot();
+AddSC_rogue_bot();
+AddSC_shaman_bot();
+AddSC_warlock_bot();
+AddSC_warrior_bot();
+AddSC_blademaster_bot();
+AddSC_script_bot_commands();
+//AddSC_Npc_BotGiver();
 AddSC_ZynPlayerScripts();
 AddSC_test();
 AddSC_gm_hello();

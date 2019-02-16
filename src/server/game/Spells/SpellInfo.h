@@ -532,9 +532,11 @@ class TC_GAME_API SpellInfo
 
         uint32 GetAllowedMechanicMask() const;
 
-    private:
+    /* NPC BOT
+        private:*/
         // loading helpers
         void _InitializeExplicitTargetMask();
+        bool _IsPositiveSpell() const;
         void _InitializeSpellPositivity();
         void _LoadSpellSpecific();
         void _LoadAuraState();
