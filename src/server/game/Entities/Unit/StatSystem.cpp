@@ -234,10 +234,6 @@ bool Player::UpdateAllStats()
     RecalculateRating(CR_ARMOR_PENETRATION);
     UpdateAllResistances();
 
-    //npcbot - Player::UpdateAllStats() is called on level change - update bots
-    SetBotsShouldUpdateStats();
-    //end npcbot
-
     return true;
 }
 

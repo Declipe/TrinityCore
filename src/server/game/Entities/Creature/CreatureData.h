@@ -56,12 +56,11 @@ enum CreatureFlagsExtra : uint32
     CREATURE_FLAG_EXTRA_TAUNT_DIMINISH       = 0x00080000,       // Taunt is a subject to diminishing returns on this creautre
     CREATURE_FLAG_EXTRA_ALL_DIMINISH         = 0x00100000,       // creature is subject to all diminishing returns as player are
     CREATURE_FLAG_EXTRA_NO_PLAYER_DAMAGE_REQ = 0x00200000,       // creature does not need to take player damage for kill credit
-    CREATURE_FLAG_EXTRA_NPCBOT               = 0x04000000,       // custom flag for NPCBots (not confirmed safe)
     CREATURE_FLAG_EXTRA_UNUSED_22            = 0x00400000,
     CREATURE_FLAG_EXTRA_UNUSED_23            = 0x00800000,
     CREATURE_FLAG_EXTRA_UNUSED_24            = 0x01000000,
     CREATURE_FLAG_EXTRA_UNUSED_25            = 0x02000000,
-    // CREATURE_FLAG_EXTRA_UNUSED_26            = 0x04000000,
+    CREATURE_FLAG_EXTRA_UNUSED_26            = 0x04000000,
     CREATURE_FLAG_EXTRA_UNUSED_27            = 0x08000000,
     CREATURE_FLAG_EXTRA_DUNGEON_BOSS         = 0x10000000,       // creature is a dungeon boss (SET DYNAMICALLY, DO NOT ADD IN DB)
     CREATURE_FLAG_EXTRA_IGNORE_PATHFINDING   = 0x20000000,       // creature ignore pathfinding
@@ -71,9 +70,9 @@ enum CreatureFlagsExtra : uint32
     // Masks
     CREATURE_FLAG_EXTRA_UNUSED               = (CREATURE_FLAG_EXTRA_UNUSED_13 | CREATURE_FLAG_EXTRA_UNUSED_16 | CREATURE_FLAG_EXTRA_UNUSED_22 |
                                                 CREATURE_FLAG_EXTRA_UNUSED_23 | CREATURE_FLAG_EXTRA_UNUSED_24 | CREATURE_FLAG_EXTRA_UNUSED_25 |
-                                                CREATURE_FLAG_EXTRA_UNUSED_27 | CREATURE_FLAG_EXTRA_UNUSED_31), // SKIP
+                                                CREATURE_FLAG_EXTRA_UNUSED_26 | CREATURE_FLAG_EXTRA_UNUSED_27 | CREATURE_FLAG_EXTRA_UNUSED_31), // SKIP
 
-    CREATURE_FLAG_EXTRA_DB_ALLOWED           = (0xFFFFFFFF & ~(CREATURE_FLAG_EXTRA_UNUSED | CREATURE_FLAG_EXTRA_DUNGEON_BOSS /*| CREATURE_FLAG_EXTRA_NPCBOT*/)) // SKIP
+    CREATURE_FLAG_EXTRA_DB_ALLOWED           = (0xFFFFFFFF & ~(CREATURE_FLAG_EXTRA_UNUSED | CREATURE_FLAG_EXTRA_DUNGEON_BOSS)) // SKIP
 };
 
 enum class CreatureGroundMovementType : uint8

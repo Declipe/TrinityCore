@@ -2478,13 +2478,6 @@ void Spell::TargetInfo::DoDamageAndTriggers(Spell* spell)
             if (caster->GetTypeId() == TYPEID_PLAYER && !spell->m_spellInfo->HasAttribute(SPELL_ATTR0_STOP_ATTACK_TARGET) && !spell->m_spellInfo->HasAttribute(SPELL_ATTR4_CANT_TRIGGER_ITEM_SPELLS) &&
                 (spell->m_spellInfo->DmgClass == SPELL_DAMAGE_CLASS_MELEE || spell->m_spellInfo->DmgClass == SPELL_DAMAGE_CLASS_RANGED))
                 caster->ToPlayer()->CastItemCombatSpell(*spellDamageInfo);
-
-            //npcbot - CastItemCombatSpell for bots
-            if (caster->ToCreature() && caster->GetTypeId() == TYPEID_UNIT &&
-                caster->ToCreature()->GetBotAI() && !(spell->m_spellInfo->Attributes & SPELL_ATTR0_STOP_ATTACK_TARGET) &&
-               (spell->m_spellInfo->DmgClass == SPELL_DAMAGE_CLASS_MELEE || (caster->ToCreature() && spell->m_spellInfo->DmgClass == SPELL_DAMAGE_CLASS_RANGED)))
-               caster->ToCreature()->CastCreatureItemCombatSpell(spell->unitTarget, spell->m_attackType, procVictim, 0 /* procEx */);
-            //end npcbot
         }
     }
 
@@ -2803,7 +2796,6 @@ void Spell::DoSpellEffectHit(Unit* unit, uint8 effIndex, TargetInfo& hitInfo)
                     _spellAura->SetDiminishGroup(hitInfo.DRGroup);
 
                     hitInfo.AuraDuration = caster->ModSpellDuration(hitInfo.AuraSpellInfo, unit, hitInfo.AuraDuration, hitInfo.Positive, _spellAura->GetEffectMask());
-
 
                     // Haste modifies duration of channeled spells
                     if (m_spellInfo->IsChanneled())
@@ -3341,11 +3333,6 @@ void Spell::_cast(bool skipCheck)
             if (Creature* pet = ObjectAccessor::GetCreature(*m_caster, unitCaster->GetPetGUID()))
                 pet->DespawnOrUnsummon();
 
-    //NpcBot: If we are applying crowd control aura execute caster's delayed attack immediately to prevent instant CC break
-    //if (m_targets.GetUnitTarget() && (m_spellInfo->AuraInterruptFlags & AURA_INTERRUPT_FLAG_TAKE_DAMAGE))
-        //unitCaster->ExecuteDelayedSwingHit();
-    //end NpcBot
-
     PrepareTriggersExecutedOnHit();
 
     CallScriptOnCastHandlers();
@@ -3858,9 +3845,6 @@ void Spell::finish(bool ok)
 
     // Stop Attack for some spells
     if (m_spellInfo->HasAttribute(SPELL_ATTR0_STOP_ATTACK_TARGET))
-    //npcbot - disable for npcbots
-    if (!(m_caster->ToCreature() && m_caster->GetTypeId() == TYPEID_UNIT && m_caster->ToCreature()->GetBotAI()))
-    //end npcbot
         unitCaster->AttackStop();
 }
 
@@ -4158,11 +4142,6 @@ void Spell::SendSpellStart()
 
 void Spell::SendSpellGo()
 {
-    //npcbot - hook for spellcast finish
-    if (m_caster->ToCreature() && m_caster->GetTypeId() == TYPEID_UNIT && m_caster->ToCreature()->GetBotAI())
-        m_caster->ToCreature()->OnSpellGo(this);
-    //end npcbot
-
     // not send invisible spell casting
     if (!IsNeedSendToClient())
         return;
@@ -4395,9 +4374,6 @@ void Spell::UpdateSpellCastDataTargets(WorldPackets::Spells::SpellCastData& data
 
     for (GOTargetInfo const& targetInfo : m_UniqueGOTargetInfo)
         data.HitTargets->push_back(targetInfo.TargetGUID); // Always hits
-
-
-
 
     // Reset m_needAliveTargetMask for non channeled spell
     if (!m_spellInfo->IsChanneled())
@@ -7541,13 +7517,6 @@ void Spell::DoEffectOnLaunchTarget(TargetInfo& targetInfo, float multiplier, uin
         m_damage = int32(m_damage * m_damageMultipliers[effIndex]);
         m_healing = int32(m_healing * m_damageMultipliers[effIndex]);
 
-
-
-
-
-
-
-
         m_damageMultipliers[effIndex] *= multiplier;
     }
 
@@ -7941,7 +7910,6 @@ void Spell::PrepareTriggersExecutedOnHit()
     Unit* unitCaster = m_caster->ToUnit();
     if (!unitCaster)
         return;
-
 
     // handle SPELL_AURA_ADD_TARGET_TRIGGER auras:
     // save auras which were present on spell caster on cast, to prevent triggered auras from affecting caster

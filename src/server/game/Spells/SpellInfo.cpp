@@ -3236,11 +3236,6 @@ int32 SpellInfo::CalcPowerCost(WorldObject const* caster, SpellSchoolMask school
         }
     }
 
-    //npcbot - apply bot spell cost mods
-    if (caster->ToCreature() && powerCost > 0 && caster->GetTypeId() == TYPEID_UNIT && caster->ToCreature()->GetBotAI())
-        caster->ToCreature()->ApplyCreatureSpellCostMods(this, powerCost);
-    //end npcbot
-
     // PCT mod from user auras by school
     powerCost = int32(powerCost * (1.0f + unitCaster->GetFloatValue(UNIT_FIELD_POWER_COST_MULTIPLIER + school)));
     if (powerCost < 0)
@@ -3584,7 +3579,6 @@ bool _isPositiveEffectImpl(SpellInfo const* spellInfo, uint8 effIndex, std::unor
                     break;
             }
 
-
             // also check targets
             if (!_isPositiveTarget(spellInfo, effIndex))
                 return false;
@@ -3824,16 +3818,6 @@ bool _isPositiveEffectImpl(SpellInfo const* spellInfo, uint8 effIndex, std::unor
     }
 
     // ok, positive
-    return true;
-}
-
-bool SpellInfo::_IsPositiveSpell() const
-{
-     //spells with at least one negative effect are considered negative
-     //some self-applied spells have negative effects but in self casting case negative check ignored.
-    for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
-        if (!IsPositiveEffect(i))
-            return false;
     return true;
 }
 

@@ -80,10 +80,6 @@ enum ItemClass : uint8;
 enum LootError : uint8;
 enum LootType : uint8;
 
-// NpcBot mod
-class BotMgr;
-// end NpcBot mod
-
 typedef std::deque<Mail*> PlayerMails;
 
 #define PLAYER_MAX_SKILLS           127
@@ -2092,9 +2088,6 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         uint32 DoRandomRoll(uint32 minimum, uint32 maximum);
 
-        // virtual Creature* BotSummonCreature(uint32 entry, Position const& pos, TempSummonType despawnType /*= TEMPSUMMON_MANUAL_DESPAWN*/, uint32 despawnTime /*= 0*/, uint32 /*vehId = 0*/);
-        // virtual Creature* BotSummonCreature(uint32 id, float x, float y, float z, float o /*= 0*/, TempSummonType despawnType /*= TEMPSUMMON_MANUAL_DESPAWN*/, uint32 despawnTime /*= 0*/);
-
         /*********************************************************/
         /***                 INSTANCE SYSTEM                   ***/
         /*********************************************************/
@@ -2254,44 +2247,6 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 #ifdef PRESETS
         PresetMapType presetMap; // presetMap[presetId] = presetData
 #endif
-
-    // Prepatch by LordPsyan
-    // 01
-    // 02
-    // 03
-    // 04
-    // 05
-    // 06
-    // 07
-    // 08
-    // 09
-    // 10
-        /*********************************************************/
-        /***                     BOT SYSTEM                    ***/
-        /*********************************************************/
-        void SetBotMgr(BotMgr* mgr) { ASSERT(!_botMgr); _botMgr = mgr; }
-        BotMgr* GetBotMgr() const { return _botMgr; }
-        bool HaveBot() const;
-        uint8 GetNpcBotsCount(bool inWorldOnly = false) const;
-        uint8 GetBotFollowDist() const;
-        void SetBotFollowDist(int8 dist);
-        void SetBotsShouldUpdateStats();
-        void RemoveAllBots(uint8 removetype = 0);
-        /*********************************************************/
-        /***                 END BOT SYSTEM                    ***/
-        /*********************************************************/
-    // 12
-    // 13
-    // 14
-    // 15
-    // 16
-    // 17
-    // 18
-    // 19
-    // 20
-    // Visit http://www.realmsofwarcraft.com/bb for forums and information
-    //
-    // End of prepatch
 
     protected:
         // Gamemaster whisper whitelist
@@ -2553,14 +2508,6 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         bool m_needsZoneUpdate;
 
     private:
-        /*********************************************************/
-        /***                     BOT SYSTEM                    ***/
-        /*********************************************************/
-        BotMgr* _botMgr;
-        /*********************************************************/
-        /***                END BOT SYSTEM                     ***/
-        /*********************************************************/
-
         // internal common parts for CanStore/StoreItem functions
         InventoryResult CanStoreItem_InSpecificSlot(uint8 bag, uint8 slot, ItemPosCountVec& dest, ItemTemplate const* pProto, uint32& count, bool swap, Item* pSrcItem) const;
         InventoryResult CanStoreItem_InBag(uint8 bag, ItemPosCountVec& dest, ItemTemplate const* pProto, uint32& count, bool merge, bool non_specialized, Item* pSrcItem, uint8 skip_bag, uint8 skip_slot) const;

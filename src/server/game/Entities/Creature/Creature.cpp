@@ -54,7 +54,6 @@
 #ifdef ELUNA
 #include "LuaEngine.h"
 #endif
-#include "bot_ai.h"
 #include <G3D/g3dmath.h>
 
 std::string CreatureMovementData::ToString() const
@@ -265,13 +264,6 @@ Creature::Creature(bool isWorldObject): Unit(isWorldObject), MapObject(), m_grou
 
     ResetLootMode(); // restore default loot mode
     m_isTempWorldObject = false;
-
-    //bot
-    m_creature_owner = NULL;
-    m_bots_pet = NULL;
-    bot_AI = NULL;
-    m_canUpdate = true;
-    //end bot
 }
 
 void Creature::AddToWorld()
@@ -641,15 +633,6 @@ bool Creature::UpdateEntry(uint32 entry, CreatureData const* data /*= nullptr*/,
 
 void Creature::Update(uint32 diff)
 {
-    //npcbot: update helper
-    if (bot_AI)
-    {
-        if (!m_canUpdate)
-            return;
-        bot_AI->CommonTimers(diff);
-    }
-    //end npcbot
-
     if (IsAIEnabled() && m_triggerJustAppeared && m_deathState != DEAD)
     {
         if (m_respawnCompatibilityMode && m_vehicleKit)
@@ -721,11 +704,6 @@ void Creature::Update(uint32 diff)
             if (m_deathState != CORPSE)
                 break;
 
-            //npcbot
-            if (bot_AI)
-                break;
-            //end npcbot
-
             if (m_groupLootTimer && lootingGroupLowGUID)
             {
                 if (m_groupLootTimer <= diff)
@@ -751,9 +729,6 @@ void Creature::Update(uint32 diff)
 
             // creature can be dead after Unit::Update call
             // CORPSE/DEAD state will processed at next tick (in other case death timer will be updated unexpectedly)
-            //npcbot - skip dead state for bots (handled by AI)
-            if (!bot_AI)
-            //end npcbot
             if (!IsAlive())
                 break;
 
@@ -819,9 +794,6 @@ void Creature::Update(uint32 diff)
             // do not allow the AI to be changed during update
             Unit::AIUpdateTick(diff);
 
-            if (!bot_AI)
-            else if (bot_AI)
-            bot_AI->UpdateAI(diff);
             // creature can be dead after UpdateAI call
             // CORPSE/DEAD state will processed at next tick (in other case death timer will be updated unexpectedly)
             if (!IsAlive())
@@ -868,11 +840,6 @@ void Creature::Update(uint32 diff)
 
 void Creature::Regenerate(Powers power)
 {
-    //npcbot - manual regen enabled
-    if (GetBotAI())
-        return;
-    //end npcbot
-
     uint32 curValue = GetPower(power);
     uint32 maxValue = GetMaxPower(power);
 
@@ -930,11 +897,6 @@ void Creature::Regenerate(Powers power)
 
 void Creature::RegenerateHealth()
 {
-    //npcbot - manual regen enabled
-    if (GetBotAI())
-        return;
-    //end npcbot
-
     if (!CanRegenerateHealth())
         return;
 
@@ -1663,23 +1625,6 @@ bool Creature::LoadFromDB(ObjectGuid::LowType spawnId, Map* map, bool addToMap, 
     // checked at creature_template loading
     m_defaultMovementType = MovementGeneratorType(data->movementType);
 
-    //npcbot
-    if (IsNPCBot())
-    {
-        //prevent loading npcbot twice (grid unload/load case)
-        if (sWorld->GetMaxPlayerCount() > 0)
-            return false;
-
-        TC_LOG_INFO("entities.unit", "Creature: loading npcbot %s (id: %u)", GetName().c_str(), GetEntry());
-        ASSERT(!IsInWorld());
-        SetByteValue(UNIT_FIELD_BYTES_0, 0, GetCreatureTemplate()->trainer_race); //set race
-
-        //don't allow removing dead bot's corpse
-        m_corpseDelay = std::numeric_limits<uint32>::max();
-        setActive(true);
-    }
-    //end npcbot
-
     if (addToMap && !GetMap()->AddToMap(this))
         return false;
     return true;
@@ -1693,11 +1638,6 @@ void Creature::SetCanDualWield(bool value)
 
 void Creature::LoadEquipment(int8 id, bool force /*= true*/)
 {
-    //npcbot: prevent loading equipment for bots
-    if (IsNPCBot())
-        return;
-    //end npcbot
-
     if (id == 0)
     {
         if (force)
@@ -2090,12 +2030,7 @@ void Creature::Respawn(bool force)
             InitializeReactState();
 
             if (UnitAI* ai = AI()) // reset the AI to be sure no dirty or uninitialized values will be used till next tick
-            //npcbot - not for bots
-            if (!bot_AI)
-            {
-            //end npcbot
                 ai->Reset();
-            }
 
             m_triggerJustAppeared = true;
 
@@ -2603,16 +2538,6 @@ void Creature::SendZoneUnderAttackMessage(Player* attacker)
 
 uint32 Creature::GetShieldBlockValue() const                  //dunno mob block value
 {
-    //npcbot - bot block value is fully calculated into botAI
-    if (bot_AI)
-    {
-        float blockValue = bot_AI->GetShieldBlockValue();
-        blockValue += GetTotalAuraModifier(SPELL_AURA_MOD_SHIELD_BLOCKVALUE);
-        blockValue *= GetTotalAuraMultiplier(SPELL_AURA_MOD_SHIELD_BLOCKVALUE_PCT);
-        return uint32(blockValue);
-    }
-    //end npcbot
-
     return (getLevel()/2 + uint32(GetStat(STAT_STRENGTH)/20));
 }
 
@@ -3255,570 +3180,6 @@ bool Creature::CanGeneratePickPocketLoot() const
     return _pickpocketLootRestore <= GameTime::GetGameTime();
 }
 
-//NPCBOT
-bool Creature::LoadBotCreatureFromDB(uint32 guid, Map* map, bool addToMap)
-{
-    CreatureData const* data = sObjectMgr->GetCreatureData(guid);
-
-    if (!data)
-    {
-        TC_LOG_ERROR("sql.sql", "Bot creature (GUID: %u) not found in table `creature`, can't load. ", guid);
-        return false;
-    }
-
-    m_spawnId = guid;
-    ASSERT(map->GetInstanceId() == 0);
-    if (map->GetCreature(ObjectGuid(HighGuid::Unit, data->id, guid)))
-        return false;
-
-    if (!Create(guid, map, data->phaseMask, data->id, data->spawnPoint.GetPosition(), data))
-        return false;
-
-    //We should set first home position, because then AI calls home movement
-    SetHomePosition(data->spawnPoint.GetPositionX(), data->spawnPoint.GetPositionY(), data->spawnPoint.GetPositionZ(), data->spawnPoint.GetOrientation());
-
-    m_respawnradius = data->spawndist;
-
-    m_respawnDelay = data->spawntimesecs;
-    m_deathState = ALIVE;
-
-    m_respawnTime  = GetMap()->GetCreatureRespawnTime(m_spawnId);
-    if (m_respawnTime)                          // respawn on Update
-    {
-        m_deathState = DEAD;
-        if (CanFly())
-        {
-            float tz = map->GetHeight(GetPhaseMask(), data->spawnPoint.GetPositionX(), data->spawnPoint.GetPositionY(), data->spawnPoint.GetPositionZ(), false);
-            if (data->spawnPoint.GetPositionZ() - tz > 0.1f)
-                Relocate(data->spawnPoint.GetPositionX(), data->spawnPoint.GetPositionY(), tz);
-        }
-    }
-
-    uint32 curhealth;
-
-    if (!_regenerateHealth)
-    {
-        curhealth = data->curhealth;
-        if (curhealth)
-        {
-            curhealth = uint32(curhealth*_GetHealthMod(GetCreatureTemplate()->rank));
-            if (curhealth < 1)
-                curhealth = 1;
-        }
-        SetPower(POWER_MANA, data->curmana);
-    }
-    else
-    {
-        curhealth = GetMaxHealth();
-        SetPower(POWER_MANA, GetMaxPower(POWER_MANA));
-    }
-
-    SetHealth(m_deathState == ALIVE ? curhealth : 0);
-
-    // checked at creature_template loading
-    m_defaultMovementType = MovementGeneratorType(data->movementType);
-
-    m_creatureData = data;
-
-    TC_LOG_INFO("entities.unit", "Creature: loading npcbot %s (id: %u)", GetName().c_str(), GetEntry());
-    ASSERT(!IsInWorld());
-    SetByteValue(UNIT_FIELD_BYTES_0, 0, GetCreatureTemplate()->trainer_race); //set race
-
-    //don't allow removing dead bot's corpse
-    m_corpseDelay = std::numeric_limits<uint32>::max();
-    setActive(true);
-
-    if (addToMap && !GetMap()->AddToMap(this))
-        return false;
-    return true;
-}
-
-uint8 Creature::GetBotClass() const
-{
-    return bot_AI ? bot_AI->GetBotClass() : getClass();
-}
-
-Player* Creature::GetBotOwner() const
-{
-    return bot_AI ? bot_AI->GetBotOwner() : NULL;
-}
-
-void Creature::SetBotOwner(Player* newowner)
-{
-    if (bot_AI)
-        bot_AI->SetBotOwner(newowner);
-}
-
-bool Creature::IsNPCBot() const
-{
-    return GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_NPCBOT;
-}
-
-bool Creature::IsFreeBot() const
-{
-    return bot_AI && bot_AI->IAmFree();
-}
-
-void Creature::SetIAmABot(bool bot)
-{
-    CombatStop(!bot);
-    // DeleteThreatList();
-
-    if (bot)
-    {
-        m_unitTypeMask |= (/*UNIT_MASK_SUMMON | */UNIT_MASK_MINION);
-    }
-    else
-    {
-        //SetCharmerGUID(ObjectGuid::Empty);
-        bot_AI->UnsummonAll();
-        m_unitTypeMask &= ~(/*UNIT_MASK_SUMMON | */UNIT_MASK_MINION);
-        SetGuidValue(UNIT_FIELD_CREATEDBY, ObjectGuid::Empty);
-        //if (bot_AI->IsMinionAI())
-        //    SetOwnerGUID(0);
-    }
-}
-
-void Creature::SetBotsPetDied()
-{
-    if (!m_bots_pet)
-        return;
-
-    //m_bots_pet->SetCharmerGUID(ObjectGuid::Empty);
-    m_bots_pet->SetCreatureOwner(NULL);
-    //m_bots_pet->GetBotPetAI()->SetCreatureOwner(NULL);
-    GetBotOwner()->SetMinion((Minion*)m_bots_pet, false);
-    m_bots_pet->SetIAmABot(false);
-    m_bots_pet->CleanupsBeforeDelete();
-    m_bots_pet->AddObjectToRemoveList();
-    m_bots_pet = NULL;
-}
-
-uint8 Creature::GetBotRoles() const
-{
-    return bot_AI ? bot_AI->GetBotRoles() : 0;
-}
-
-void Creature::SetBotCommandState(CommandStates st, bool force)
-{
-    if (bot_AI)
-        bot_AI->SetBotCommandState(st, force);
-}
-
-CommandStates Creature::GetBotCommandState() const
-{
-    return bot_AI ? bot_AI->GetBotCommandState() : COMMAND_ABANDON;
-}
-//Bot damage mods
-void Creature::ApplyBotDamageMultiplierMelee(uint32& damage, CalcDamageInfo& damageinfo) const
-{
-    if (bot_AI)
-        bot_AI->ApplyBotDamageMultiplierMelee(damage, damageinfo);
-}
-
-void Creature::ApplyBotDamageMultiplierMelee(int32& damage, SpellNonMeleeDamage& damageinfo, SpellInfo const* spellInfo, WeaponAttackType attackType, bool& crit) const
-{
-    if (bot_AI)
-        bot_AI->ApplyBotDamageMultiplierMelee(damage, damageinfo, spellInfo, attackType, crit);
-}
-
-void Creature::ApplyBotDamageMultiplierSpell(int32& damage, SpellNonMeleeDamage& damageinfo, SpellInfo const* spellInfo, WeaponAttackType attackType, bool& crit) const
-{
-    if (bot_AI)
-        bot_AI->ApplyBotDamageMultiplierSpell(damage, damageinfo, spellInfo, attackType, crit);
-}
-
-void Creature::ApplyBotDamageMultiplierHeal(Unit const* victim, float& heal, SpellInfo const* spellInfo, DamageEffectType damagetype, uint32 stack) const
-{
-    if (bot_AI)
-        bot_AI->ApplyBotDamageMultiplierHeal(victim, heal, spellInfo, damagetype, stack);
-}
-
-void Creature::ApplyBotCritMultiplierAll(Unit const* victim, float& crit_chance, SpellInfo const* spellInfo, SpellSchoolMask schoolMask, WeaponAttackType attackType) const
-{
-    if (bot_AI)
-        bot_AI->ApplyBotCritMultiplierAll(victim, crit_chance, spellInfo, schoolMask, attackType);
-}
-
-void Creature::ApplyCreatureSpellCostMods(SpellInfo const* spellInfo, int32& cost) const
-{
-    if (bot_AI)
-        bot_AI->ApplyBotSpellCostMods(spellInfo, cost);
-}
-
-void Creature::ApplyCreatureSpellCastTimeMods(SpellInfo const* spellInfo, int32& casttime) const
-{
-    if (bot_AI)
-        bot_AI->ApplyBotSpellCastTimeMods(spellInfo, casttime);
-}
-
-bool Creature::GetIAmABot() const
-{
-    return bot_AI && bot_AI->IsMinionAI();
-}
-
-bool Creature::GetIAmABotsPet() const
-{
-    return bot_AI && bot_AI->IsPetAI();
-}
-
-bot_minion_ai* Creature::GetBotMinionAI() const
-{
-    return bot_AI ? bot_AI->ToMinionAI() : NULL;
-}
-
-bot_pet_ai* Creature::GetBotPetAI() const
-{
-    return bot_AI ? bot_AI->ToPetAI() : NULL;
-}
-
-void Creature::SetBotShouldUpdateStats()
-{
-    if (bot_AI)
-        bot_AI->SetShouldUpdateStats();
-}
-
-void Creature::OnBotSummon(Creature* summon)
-{
-    if (bot_AI)
-        bot_AI->OnBotSummon(summon);
-}
-
-void Creature::OnBotDespawn(Creature* summon)
-{
-    if (bot_AI)
-        bot_AI->OnBotDespawn(summon);
-}
-
-void Creature::KillEvents(bool force)
-{
-    if (bot_AI)
-        bot_AI->KillEvents(force);
-}
-
-void Creature::BotStopMovement()
-{
-    if (IsInWorld())
-    {
-        GetMotionMaster()->Clear();
-        GetMotionMaster()->MoveIdle();
-    }
-    StopMoving();
-    DisableSpline();
-}
-
-void Creature::ResetBotAI(uint8 resetType)
-{
-    if (bot_AI)
-        bot_AI->ResetBotAI(resetType);
-}
-
-bool Creature::CanParry() const
-{
-    return bot_AI ? bot_AI->CanParry() : true;
-}
-
-bool Creature::CanDodge() const
-{
-    return bot_AI ? bot_AI->CanDodge() : true;
-}
-
-bool Creature::CanBlock() const
-{
-    return bot_AI ? bot_AI->CanBlock() : true;
-}
-
-bool Creature::CanCrit() const
-{
-    return bot_AI ? bot_AI->CanCrit() : true;
-}
-
-bool Creature::CanMiss() const
-{
-    return bot_AI ? bot_AI->CanMiss() : true;
-}
-
-float Creature::GetCreatureParryChance() const
-{
-    return bot_AI ? bot_AI->GetBotParryChance() : 5.0f;
-}
-
-float Creature::GetCreatureDodgeChance() const
-{
-    return bot_AI ? bot_AI->GetBotDodgeChance() : 5.0f;
-}
-
-float Creature::GetCreatureBlockChance() const
-{
-    return bot_AI ? bot_AI->GetBotBlockChance() : 5.0f;
-}
-
-float Creature::GetCreatureCritChance() const
-{
-    return bot_AI ? bot_AI->GetBotCritChance() : 0.0f;
-}
-
-float Creature::GetCreatureMissChance() const
-{
-    return bot_AI ? bot_AI->GetBotMissChance() : 5.0f;
-}
-
-float Creature::GetCreatureEvasion() const
-{
-    return bot_AI ? bot_AI->GetBotEvasion() : 0.0f;
-}
-
-float Creature::GetCreatureArmorPenetrationCoef() const
-{
-    return bot_AI ? bot_AI->GetBotArmorPenetrationCoef() : 0.0f;
-}
-
-float Creature::GetCreatureDamageTakenMod() const
-{
-    return bot_AI ? bot_AI->GetBotDamageTakenMod() : 1.0f;
-}
-
-uint32 Creature::GetCreatureExpertise() const
-{
-    return bot_AI ? bot_AI->GetBotExpertise() : 0;
-}
-
-uint32 Creature::GetCreatureSpellPenetration() const
-{
-    return bot_AI ? bot_AI->GetBotSpellPenetration() : 0;
-}
-
-uint32 Creature::GetCreatureSpellPower() const
-{
-    return bot_AI ? bot_AI->GetBotSpellPower() : 0;
-}
-
-bool Creature::IsCreatureImmuneToSpell(SpellInfo const* spellInfo) const
-{
-    return bot_AI && bot_AI->IsBotImmuneToSpell(spellInfo);
-}
-
-bool Creature::IsTempBot() const
-{
-    return bot_AI && bot_AI->IsTempBot();
-}
-
-MeleeHitOutcome Creature::BotRollMeleeOutcomeAgainst(Unit const* victim, WeaponAttackType attType) const
-{
-    return bot_AI ? bot_AI->BotRollCustomMeleeOutcomeAgainst(victim, attType) : RollMeleeOutcomeAgainst(victim, attType);
-}
-
-void Creature::CastCreatureItemCombatSpell(Unit* target, WeaponAttackType attType, uint32 procVictim, uint32 procEx, Spell const* spell)
-{
-    if (bot_AI)
-        bot_AI->CastBotItemCombatSpell(target, attType, procVictim, procEx, spell);
-}
-
-void Creature::OnSpellGo(Spell const* spell)
-{
-    if (bot_AI)
-        bot_AI->OnBotSpellGo(spell);
-}
-
-void Creature::AddBotSpellCooldown(uint32 spellId, uint32 cooldown)
-{
-    if (bot_AI)
-        bot_AI->SetSpellCooldown(sSpellMgr->GetSpellInfo(spellId)->GetFirstRankSpell()->Id, cooldown);
-}
-
-//static
-bool Creature::IsBotCustomSpell(uint32 spellId)
-{
-    return bot_ai::IsBotCustomSpell(spellId);
-}
-
-//advanced
-bool Creature::IsQuestBot() const
-{
-    return
-        m_creatureInfo->Entry >= 71000 && m_creatureInfo->Entry < 72000 &&
-        (m_creatureInfo->unit_flags2 & UNIT_FLAG2_ALLOW_ENEMY_INTERACT);
-}
-//END NPCBOT
-
-/*
-void Creature::CastItemCombatSpell(DamageInfo const& damageInfo)
-{
-    Unit* target = damageInfo.GetVictim();
-    if (!target || !target->IsAlive() || target == this)
-        return;
-
-    for (uint8 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; ++i)
-    {
-        // If usable, try to cast item spell
-        if (Item* item = GetItemByPos(INVENTORY_SLOT_BAG_0, i))
-        {
-            if (!item->IsBroken() && CanUseAttackType(damageInfo.GetAttackType()))
-            {
-                if (ItemTemplate const* proto = item->GetTemplate())
-                {
-                    // Additional check for weapons
-                    if (proto->Class == ITEM_CLASS_WEAPON)
-                    {
-                        // offhand item cannot proc from main hand hit etc
-                        EquipmentSlots slot;
-                        switch (damageInfo.GetAttackType())
-                        {
-                        case BASE_ATTACK:
-                            slot = EQUIPMENT_SLOT_MAINHAND;
-                            break;
-                        case OFF_ATTACK:
-                            slot = EQUIPMENT_SLOT_OFFHAND;
-                            break;
-                        case RANGED_ATTACK:
-                            slot = EQUIPMENT_SLOT_RANGED;
-                            break;
-                        default:
-                            slot = EQUIPMENT_SLOT_END;
-                            break;
-                        }
-                        if (slot != i)
-                            continue;
-                        // Check if item is useable (forms or disarm)
-                        if (damageInfo.GetAttackType() == BASE_ATTACK)
-                            if (!IsUseEquipedWeapon(true) && !IsInFeralForm())
-                                continue;
-                    }
-
-                    CastItemCombatSpell(damageInfo, item, proto);
-                }
-            }
-        }
-    }
-}
-
-void Creature::CastItemCombatSpell(DamageInfo const& damageInfo, Item* item, ItemTemplate const* proto)
-{
-    // Can do effect if any damage done to target
-    // for done procs allow normal + critical + absorbs by default
-    bool canTrigger = (damageInfo.GetHitMask() & (PROC_HIT_NORMAL | PROC_HIT_CRITICAL | PROC_HIT_ABSORB)) != 0;
-    if (canTrigger)
-    {
-        for (uint8 i = 0; i < MAX_ITEM_PROTO_SPELLS; ++i)
-        {
-            _Spell const& spellData = proto->Spells[i];
-
-            // no spell
-            if (spellData.SpellId <= 0)
-                continue;
-
-            // wrong triggering type
-            if (spellData.SpellTrigger != ITEM_SPELLTRIGGER_CHANCE_ON_HIT)
-                continue;
-
-            SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellData.SpellId);
-            if (!spellInfo)
-            {
-                TC_LOG_ERROR("entities.player.items", "Player::CastItemCombatSpell: Player '%s' (%s) cast unknown item spell (ID: %i)",
-                    GetName().c_str(), GetGUID().ToString().c_str(), spellData.SpellId);
-                continue;
-            }
-
-            // not allow proc extra attack spell at extra attack
-            if (m_extraAttacks && spellInfo->HasEffect(SPELL_EFFECT_ADD_EXTRA_ATTACKS))
-                return;
-
-            float chance = (float)spellInfo->ProcChance;
-
-            if (spellData.SpellPPMRate)
-            {
-                uint32 WeaponSpeed = GetAttackTime(damageInfo.GetAttackType());
-                chance = GetPPMProcChance(WeaponSpeed, spellData.SpellPPMRate, spellInfo);
-            }
-            else if (chance > 100.0f)
-                chance = GetWeaponProcChance();
-
-            if (roll_chance_f(chance) && sScriptMgr->OnCastItemCombatSpell(this, damageInfo.GetVictim(), spellInfo, item))
-                CastSpell(damageInfo.GetVictim(), spellInfo->Id, item);
-        }
-    }
-
-    // item combat enchantments
-    for (uint8 e_slot = 0; e_slot < MAX_ENCHANTMENT_SLOT; ++e_slot)
-    {
-        uint32 enchant_id = item->GetEnchantmentId(EnchantmentSlot(e_slot));
-        SpellItemEnchantmentEntry const* pEnchant = sSpellItemEnchantmentStore.LookupEntry(enchant_id);
-        if (!pEnchant)
-            continue;
-
-        for (uint8 s = 0; s < MAX_ITEM_ENCHANTMENT_EFFECTS; ++s)
-        {
-            if (pEnchant->type[s] != ITEM_ENCHANTMENT_TYPE_COMBAT_SPELL)
-                continue;
-
-            SpellEnchantProcEntry const* entry = sSpellMgr->GetSpellEnchantProcEvent(enchant_id);
-            if (entry && entry->HitMask)
-            {
-                // Check hit/crit/dodge/parry requirement
-                if ((entry->HitMask & damageInfo.GetHitMask()) == 0)
-                    continue;
-            }
-            else
-            {
-                // Can do effect if any damage done to target
-                // for done procs allow normal + critical + absorbs by default
-                if (!canTrigger)
-                    continue;
-            }
-
-            // check if enchant procs only on white hits
-            if (entry && (entry->AttributesMask & ENCHANT_PROC_ATTR_WHITE_HIT) && damageInfo.GetSpellInfo())
-                continue;
-
-            SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(pEnchant->spellid[s]);
-            if (!spellInfo)
-            {
-                TC_LOG_ERROR("entities.player.items", "Player::CastItemCombatSpell: Player '%s' (%s) cast unknown spell (EnchantID: %u, SpellID: %i), ignoring",
-                    GetName().c_str(), GetGUID().ToString().c_str(), pEnchant->ID, pEnchant->spellid[s]);
-                continue;
-            }
-
-            float chance = pEnchant->amount[s] != 0 ? float(pEnchant->amount[s]) : GetWeaponProcChance();
-            if (entry)
-            {
-                if (entry->ProcsPerMinute)
-                    chance = GetPPMProcChance(proto->Delay, entry->ProcsPerMinute, spellInfo);
-                else if (entry->Chance)
-                    chance = entry->Chance;
-            }
-
-            // Apply spell mods
-            ApplySpellMod(pEnchant->spellid[s], SPELLMOD_CHANCE_OF_SUCCESS, chance);
-
-            // Shiv has 100% chance to apply the poison
-            if (FindCurrentSpellBySpellId(5938) && e_slot == TEMP_ENCHANTMENT_SLOT)
-                chance = 100.0f;
-
-            if (roll_chance_f(chance))
-            {
-                Unit* target = spellInfo->IsPositive() ? this : damageInfo.GetVictim();
-
-                CastSpellExtraArgs args(item);
-                // reduce effect values if enchant is limited
-                if (entry && (entry->AttributesMask & ENCHANT_PROC_ATTR_LIMIT_60) && target->getLevel() > 60)
-                {
-                    int32 const lvlDifference = target->getLevel() - 60;
-                    int32 const lvlPenaltyFactor = 4; // 4% lost effectiveness per level
-
-                    int32 const effectPct = std::max(0, 100 - (lvlDifference * lvlPenaltyFactor));
-
-                    for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
-                    {
-                        if (spellInfo->Effects[i].IsEffect())
-                            args.AddSpellMod(static_cast<SpellValueMod>(SPELLVALUE_BASE_POINT0 + i), CalculatePct(spellInfo->Effects[i].CalcValue(this), effectPct));
-                    }
-                }
-                CastSpell(target, spellInfo->Id, args);
-            }
-        }
-    }
-}
-*/
 void Creature::SetTextRepeatId(uint8 textGroup, uint8 id)
 {
     CreatureTextRepeatIds& repeats = m_textRepeat[textGroup];

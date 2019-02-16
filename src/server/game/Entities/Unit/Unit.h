@@ -30,8 +30,6 @@
 #include <map>
 #include <memory>
 #include <stack>
-#include "ScriptMgr.h"
-#include "SpellDefines.h"
 
 #define VISUAL_WAYPOINT 1 // Creature Entry ID used for waypoints show, visible only for GMs
 #define WORLD_TRIGGER 12999
@@ -1675,8 +1673,6 @@ class TC_GAME_API Unit : public WorldObject
         int32 GetHighestExclusiveSameEffectSpellGroupValue(AuraEffect const* aurEff, AuraType auraType, bool checkMiscValue = false, int32 miscValue = 0) const;
         bool IsHighestExclusiveAura(Aura const* aura, bool removeOtherAuraApplications = false);
 
-        void ApplyPercentModFloatVar(float& var, float val, bool apply);
-
         virtual void Talk(std::string const& text, ChatMsg msgType, Language language, float textRange, WorldObject const* target);
         virtual void Say(std::string const& text, Language language, WorldObject const* target = nullptr);
         virtual void Yell(std::string const& text, Language language, WorldObject const* target = nullptr);
@@ -1690,19 +1686,6 @@ class TC_GAME_API Unit : public WorldObject
 
         float GetCollisionHeight() const override;
 
-        //npcbot
-         bool HasReactive(ReactiveType reactive) const { return m_reactiveTimer[reactive] > 0; }
-         void ClearReactive(ReactiveType reactive);
-
-         void SuspendDelayedSwing();
-         void ExecuteDelayedSwingHit(bool extra = false);
-         CalcDamageInfo _damageInfo;
-         ObjectGuid _delayedTargetGuid;
-         uint32 _swingDelayTimer;
-         bool _swingLanded;
-          //end npcbot
-         bool m_ControlledByPlayer;
-
         std::string GetDebugInfo() const override;
     protected:
         explicit Unit (bool isWorldObject);
@@ -1713,9 +1696,9 @@ class TC_GAME_API Unit : public WorldObject
         void _DeleteRemovedAuras();
 
         void _UpdateAutoRepeatSpell();
-/* Move above out of protection by NPCBots
+
         bool m_ControlledByPlayer;
-*/
+
         bool m_AutoRepeatFirstCast;
 
         uint32 m_attackTimer[MAX_ATTACK];
