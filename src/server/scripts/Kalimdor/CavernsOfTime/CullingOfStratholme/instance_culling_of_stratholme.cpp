@@ -15,10 +15,9 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ScriptMgr.h"
+#include "culling_of_stratholme.h"
 #include "CreatureAI.h"
 #include "CreatureTextMgr.h"
-#include "culling_of_stratholme.h"
 #include "EventMap.h"
 #include "GameObject.h"
 #include "GameTime.h"
@@ -26,9 +25,10 @@
 #include "Map.h"
 #include "MotionMaster.h"
 #include "Player.h"
+#include "ScriptMgr.h"
 #include "SpellInfo.h"
 #include "TemporarySummon.h"
-#include "Map.h"
+#include "WorldStatePackets.h"
 
 /* Culling of Stratholme encounters:
 0 - Meathook
@@ -199,10 +199,12 @@ class instance_culling_of_stratholme : public InstanceMapScript
                 _plagueCrates.reserve(NUM_PLAGUE_CRATES);
             }
 
-            void FillInitialWorldStates(WorldPacket& data) override
+            void FillInitialWorldStates(WorldPackets::WorldState::InitWorldStates& packet) override
             {
                 for (WorldStateMap::const_iterator it = _sentWorldStates.begin(); it != _sentWorldStates.end(); ++it)
-                    data << uint32(it->first) << uint32(it->second);
+                    //packet.Worldstates.emplace_back(it->first) << uint32(it->second);
+                    packet.Worldstates.emplace_back(it->first, it->second);
+
             }
 
             void WriteSaveDataMore(std::ostringstream& data) override
