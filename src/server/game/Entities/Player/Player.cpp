@@ -520,7 +520,6 @@ bool Player::Create(ObjectGuid::LowType guidlow, CharacterCreateInfo* createInfo
     }
 
     SetMap(sMapMgr->CreateMap(info->mapId, this));
-    UpdatePositionData();
 
     uint8 powertype = cEntry->powerType;
 
@@ -551,7 +550,8 @@ bool Player::Create(ObjectGuid::LowType guidlow, CharacterCreateInfo* createInfo
     SetFakeRace(); // m_team must be set before this can be used.
     setFactionForRace(getCFSRace());
 
-	InitDisplayIds();
+    InitDisplayIds();
+    UpdatePositionData();
     if (sWorld->getIntConfig(CONFIG_GAME_TYPE) == REALM_TYPE_PVP || sWorld->getIntConfig(CONFIG_GAME_TYPE) == REALM_TYPE_RPPVP)
     {
         SetByteFlag(UNIT_FIELD_BYTES_2, UNIT_BYTES_2_OFFSET_PVP_FLAG, UNIT_BYTE2_FLAG_PVP);
