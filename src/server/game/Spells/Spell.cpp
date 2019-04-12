@@ -1370,9 +1370,8 @@ void Spell::SelectImplicitCasterDestTargets(SpellEffIndex effIndex, SpellImplici
                 pos.m_positionX = m_preGeneratedPath->GetActualEndPosition().x;
                 pos.m_positionY = m_preGeneratedPath->GetActualEndPosition().y;
                 pos.m_positionZ = m_preGeneratedPath->GetActualEndPosition().z;
+                dest.Relocate(pos);
             }
-
-            dest.Relocate(pos);
             break;
         }
         default:
@@ -7456,12 +7455,12 @@ void Spell::HandleLaunchPhase()
 
             if (usesAmmo && !ammoTaken)
             {
-                for (uint8 i = 0; i < MAX_SPELL_EFFECTS; ++i)
+                for (uint8 j = 0; j < MAX_SPELL_EFFECTS; ++j)
                 {
-                    if (!(mask & 1 << i))
+                    if (!(mask & 1 << j))
                         continue;
 
-                    switch (m_spellInfo->Effects[i].Effect)
+                    switch (m_spellInfo->Effects[j].Effect)
                     {
                         case SPELL_EFFECT_SCHOOL_DAMAGE:
                         case SPELL_EFFECT_WEAPON_DAMAGE:
