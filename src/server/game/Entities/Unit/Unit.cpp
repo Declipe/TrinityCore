@@ -10961,6 +10961,7 @@ bool Unit::InitTamedPet(Pet* pet, uint8 level, uint32 spell_id)
     else                                                // creature died
     {
         TC_LOG_DEBUG("entities.unit", "DealDamageNotPlayer");
+        ASSERT_NODEBUGINFO(creature);
 
         if (!creature->IsPet())
         {
