@@ -2535,6 +2535,9 @@ void World::Update(uint32 diff)
         Player::DeleteOldCharacters();
     }
 
+    sGroupMgr->Update(diff);
+    sWorldUpdateTime.RecordUpdateTimeDuration("UpdateGroupMgr");
+
     sLFGMgr->Update(diff);
     sWorldUpdateTime.RecordUpdateTimeDuration("UpdateLFGMgr");
 
