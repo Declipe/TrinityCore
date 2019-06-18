@@ -405,7 +405,6 @@ SET @RISEN_CHAMP    := 35590;
 SET @RISEN_CHAMP_H  := 35717;
 
 -- The Black Knight's vehicle must have flight inhabit type
-UPDATE `creature_template` SET `InhabitType`=7 WHERE `entry`=@KNIGHT_VEHICLE;
 
 -- Risen Champion is missing scriptname
 UPDATE `creature_template` SET `ScriptName`='npc_risen_ghoul' WHERE `entry`=@RISEN_CHAMP;
