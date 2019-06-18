@@ -386,7 +386,7 @@ public:
             Talk(SAY_DEFEATED);
             float x, y, z;
             GetPosToLand(x, y, z);
-            me->CastSpell({ x, y, z }, SPELL_SUMMON_LANTERN, true);
+            me->CastSpell(x, y, z, SPELL_SUMMON_LANTERN, true);
             CompleteQuest();
         }
 
@@ -527,61 +527,11 @@ public:
     }
 };
 
-class npc_hallows_end_train_fire : public CreatureScript
-{
-public:
-    npc_hallows_end_train_fire() : CreatureScript("npc_hallows_end_train_fire") { }
-
-    struct npc_hallows_end_train_fireAI : public NullCreatureAI
-    {
-        npc_hallows_end_train_fireAI(Creature* creature) : NullCreatureAI(creature)
-        {
-        }
-
-        uint32 timer;
-        void Reset()
-        {
-            timer = 0;
-        }
-
-        void UpdateAI(uint32 diff)
-        {
-            timer += diff;
-            if (timer >= 5000)
-                if (!me->GetAuraEffect(SPELL_FIRE_AURA_BASE, EFFECT_0))
-                    me->CastSpell(me, SPELL_FIRE_AURA_BASE, true);
-        }
-
-        void SpellHit(Unit* caster, const SpellInfo* spellInfo)
-        {
-            if (spellInfo->Id == SPELL_WATER_SPLASH && caster->ToPlayer())
-            {
-                if (AuraEffect* aurEff = me->GetAuraEffect(SPELL_FIRE_AURA_BASE, EFFECT_0))
-                {
-                    int32 amt = aurEff->GetAmount();
-                    if (amt > 1)
-                        aurEff->SetAmount(amt - 1);
-                    else
-                        me->RemoveAllAuras();
-
-                    caster->ToPlayer()->KilledMonsterCredit(me->GetEntry());
-                }
-            }
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new npc_hallows_end_train_fireAI(creature);
-    }
-};
-
 void AddSC_event_hallows_end()
 {
     new npc_costumed_orphan_matron();
     new npc_soh_fire_trigger();
     new npc_hallows_end_soh();
-    new npc_hallows_end_train_fire();
     new spell_hallows_end_bucket_lands();
     new spell_hallows_end_base_fire();
 }
