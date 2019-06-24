@@ -2173,7 +2173,7 @@ void Group::ResetInstances(uint8 method, bool isRaid, Player* SendMsgTo)
             // do not reset the instance, just unbind if others are permanently bound to it
             if (isEmpty && instanceSave->CanReset())
             {
-                if (map && this->isRaidGroup() && map->IsDungeon() && SendMsgTo)
+                if (map && isRaidGroup() && map->IsDungeon() && SendMsgTo)
                 {
                     AreaTrigger const * const instanceEntrance = sObjectMgr->GetGoBackTrigger(map->GetId());
 
@@ -2181,10 +2181,10 @@ void Group::ResetInstances(uint8 method, bool isRaid, Player* SendMsgTo)
                         TC_LOG_DEBUG("root", "Instance entrance not found for maps %u", map->GetId());
                     else
                     {
-                        WorldSafeLocsEntry const * graveyardLocation = sObjectMgr->GetClosestGraveyard(instanceEntrance->target_X, instanceEntrance->target_Y, instanceEntrance->target_Z, instanceEntrance->target_mapId, SendMsgTo->GetTeam());;
+                        WorldSafeLocsEntry const * graveyardLocation = sObjectMgr->GetClosestGraveyard(instanceEntrance->target_X, instanceEntrance->target_Y, instanceEntrance->target_Z, instanceEntrance->target_mapId, SendMsgTo->GetTeam());
                         uint32 const zoneId = sMapMgr->GetZoneId(graveyardLocation->map_id, graveyardLocation->x, graveyardLocation->y, graveyardLocation->z);
 
-                        for (const MemberSlot &member : this->GetMemberSlots())
+                        for (MemberSlot const& member : GetMemberSlots())
                         {
                             if (!ObjectAccessor::FindConnectedPlayer(member.guid))
                             {
@@ -2196,7 +2196,7 @@ void Group::ResetInstances(uint8 method, bool isRaid, Player* SendMsgTo)
                                 stmt->setFloat(3, instanceEntrance->target_Orientation);
                                 stmt->setUInt32(4, graveyardLocation->map_id);
                                 stmt->setUInt32(5, zoneId);
-                                stmt->setUInt32(6, member.guid);
+                                stmt->setUInt32(6, member.guid.GetCounter());
                                 stmt->setUInt32(7, map->GetId());
 
                                 CharacterDatabase.Execute(stmt);
