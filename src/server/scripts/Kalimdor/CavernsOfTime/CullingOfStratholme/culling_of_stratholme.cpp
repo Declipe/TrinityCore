@@ -15,21 +15,26 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ScriptMgr.h"
 #include "culling_of_stratholme.h"
+#include "AreaBoundary.h"
+#include "DBCStructure.h"
 #include "GameObject.h"
+#include "GameTime.h"
 #include "InstanceScript.h"
+#include "Map.h"
 #include "MotionMaster.h"
 #include "ObjectAccessor.h"
 #include "PassiveAI.h"
-#include "SmartAI.h"
 #include "Player.h"
+#include "QuestDef.h"
 #include "ScriptedEscortAI.h"
 #include "ScriptedGossip.h"
+#include "SmartAI.h"
 #include "SpellInfo.h"
-#include "TemporarySummon.h"
-#include "AreaBoundary.h"
+#include "ScriptMgr.h"
 #include "SplineChainMovementGenerator.h"
+#include "TemporarySummon.h"
+#include <unordered_map>
 
 enum InnEventEntries
 {
@@ -40,6 +45,7 @@ enum InnEventEntries
     NPC_MAL     = 31017,
     NPC_GRYAN   = 30561
 };
+
 enum InnEventEvents
 {
     EVENT_FORREST_1 = 1,    // This whole situation seems a bit paranoid, don't you think?
@@ -55,6 +61,7 @@ enum InnEventEvents
     EVENT_FORREST_2,        // Thank the Light for that.
     EVENT_FRAS_2            // Fras Siabi nods.
 };
+
 enum InnEventLines
 {
     LINE_JAMES_1    = 0,
@@ -74,6 +81,7 @@ enum InnEventLines
     LINE_BELFAST_1  = 1,
     LINE_GRYAN_1    = 0,
 };
+
 enum InnEventMisc
 {
     DATA_REQUEST_FACING = 0,
@@ -87,12 +95,12 @@ class npc_hearthsinger_forresten_cot : public CreatureScript
 
         struct npc_hearthsinger_forresten_cotAI : public NullCreatureAI
         {
-            npc_hearthsinger_forresten_cotAI(Creature* creature) : NullCreatureAI(creature), instance(creature->GetInstanceScript()), _hadBelfast(false), _hadTalk(false) { }
+            npc_hearthsinger_forresten_cotAI(Creature* creature) : NullCreatureAI(creature), _instance(creature->GetInstanceScript()), _hadBelfast(false), _hadTalk(false) { }
 
             void UpdateAI(uint32 diff) override
             {
-                events.Update(diff);
-                while (uint32 eventId = events.ExecuteEvent())
+                _events.Update(diff);
+                while (uint32 eventId = _events.ExecuteEvent())
                 {
                     uint32 talkerEntry = UINT_MAX, line = 0;
                     switch (eventId)
@@ -134,6 +142,8 @@ class npc_hearthsinger_forresten_cot : public CreatureScript
                         case EVENT_FRAS_2:
                             talkerEntry = NPC_FRAS, line = LINE_FRAS_2;
                             break;
+                        default:
+                            break;
                     }
 
                     if (talkerEntry != UINT_MAX)
@@ -154,48 +164,50 @@ class npc_hearthsinger_forresten_cot : public CreatureScript
                     return;
                 _hadBelfast = true;
                 if (Creature* belfast = me->FindNearestCreature(NPC_BELFAST, 100.0f, true))
+                {
                     if (Player* invoker = ObjectAccessor::GetPlayer(*belfast, guid))
                     {
                         belfast->StopMoving();
                         belfast->SetFacingToObject(invoker);
                         belfast->AI()->Talk(LINE_BELFAST_0);
                     }
+                }
             }
 
             // Belfast SmartAI telling us it's reached the WP
             void SetData(uint32 /*data*/, uint32 /*value*/) override
             {
-                events.ScheduleEvent(EVENT_BELFAST_1, Seconds(0));
-                events.ScheduleEvent(EVENT_MAL_1, Seconds(6));
-                events.ScheduleEvent(EVENT_GRYAN_1, Seconds(12));
-                events.ScheduleEvent(EVENT_MAL_2, Seconds(18));
-                events.ScheduleEvent(EVENT_MAL_3, Seconds(20));
-                events.ScheduleEvent(EVENT_JAMES_2, Seconds(26));
-                events.ScheduleEvent(EVENT_FORREST_2, Seconds(32));
-                events.ScheduleEvent(EVENT_FRAS_2, Seconds(38));
+                _events.ScheduleEvent(EVENT_BELFAST_1, Seconds(0));
+                _events.ScheduleEvent(EVENT_MAL_1, Seconds(6));
+                _events.ScheduleEvent(EVENT_GRYAN_1, Seconds(12));
+                _events.ScheduleEvent(EVENT_MAL_2, Seconds(18));
+                _events.ScheduleEvent(EVENT_MAL_3, Seconds(20));
+                _events.ScheduleEvent(EVENT_JAMES_2, Seconds(26));
+                _events.ScheduleEvent(EVENT_FORREST_2, Seconds(32));
+                _events.ScheduleEvent(EVENT_FRAS_2, Seconds(38));
             }
 
             void MoveInLineOfSight(Unit* unit) override
             {
-                if (!_hadTalk && unit->ToPlayer() && instance->GetData(DATA_INSTANCE_PROGRESS) <= CRATES_IN_PROGRESS && me->GetDistance2d(unit) <= 10.0f)
+                if (!_hadTalk && unit->ToPlayer() && _instance->GetData(DATA_INSTANCE_PROGRESS) <= CRATES_IN_PROGRESS && me->GetDistance2d(unit) <= 10.0f)
                 {
                     _hadTalk = true;
                     _triggeringPlayer = unit->GetGUID();
                     Seconds offset = Seconds(urand(10,30));
-                    events.ScheduleEvent(EVENT_FORREST_1, offset);
-                    events.ScheduleEvent(EVENT_JAMES_1, offset+Seconds(6));
-                    events.ScheduleEvent(EVENT_FRAS_1, offset+Seconds(12));
-                    events.ScheduleEvent(EVENT_BELFAST_MOVE, offset+Seconds(12));
+                    _events.ScheduleEvent(EVENT_FORREST_1, offset);
+                    _events.ScheduleEvent(EVENT_JAMES_1, offset+Seconds(6));
+                    _events.ScheduleEvent(EVENT_FRAS_1, offset+Seconds(12));
+                    _events.ScheduleEvent(EVENT_BELFAST_MOVE, offset+Seconds(12));
                 }
             }
 
 
-            private:
-                InstanceScript const* const instance;
-                EventMap events;
-                bool _hadBelfast;
-                bool _hadTalk;
-                ObjectGuid _triggeringPlayer;
+        private:
+            InstanceScript const* const _instance;
+            EventMap _events;
+            bool _hadBelfast;
+            bool _hadTalk;
+            ObjectGuid _triggeringPlayer;
         };
 
         CreatureAI* GetAI(Creature* creature) const override
@@ -232,38 +244,39 @@ enum Chromie1Gossip
     GOSSIP_OFFSET_OPEN_GM_MENU,
     GOSSIP_OFFSET_GM_INITIAL,
 
-    GOSSIP_MENU_INITIAL         =  9586,
-    GOSSIP_TEXT_INITIAL         = 12939,
-    GOSSIP_OPTION_EXPLAIN       =     0,
-    GOSSIP_OPTION_SKIP          =     2,
+    GOSSIP_MENU_INITIAL = 9586,
+    GOSSIP_TEXT_INITIAL = 12939,
+    GOSSIP_OPTION_EXPLAIN = 0,
+    GOSSIP_OPTION_SKIP = 2,
 
-    GOSSIP_TEXT_TELEPORT        = 13470,
-    GOSSIP_OPTION_TELEPORT      =     1,
+    GOSSIP_TEXT_TELEPORT = 13470,
+    GOSSIP_OPTION_TELEPORT = 1,
 
-    GOSSIP_MENU_EXPLAIN_1       =  9594,
-    GOSSIP_TEXT_EXPLAIN_1       = 12949,
-    GOSSIP_OPTION_EXPLAIN_1     =     0,
+    GOSSIP_MENU_EXPLAIN_1 = 9594,
+    GOSSIP_TEXT_EXPLAIN_1 = 12949,
+    GOSSIP_OPTION_EXPLAIN_1 = 0,
 
-    GOSSIP_MENU_EXPLAIN_2       =  9595,
-    GOSSIP_TEXT_EXPLAIN_2       = 12950,
-    GOSSIP_OPTION_EXPLAIN_2     =     0,
+    GOSSIP_MENU_EXPLAIN_2 = 9595,
+    GOSSIP_TEXT_EXPLAIN_2 = 12950,
+    GOSSIP_OPTION_EXPLAIN_2 = 0,
 
-    GOSSIP_MENU_EXPLAIN_3       =  9596,
-    GOSSIP_TEXT_EXPLAIN_3       = 12952,
+    GOSSIP_MENU_EXPLAIN_3 = 9596,
+    GOSSIP_TEXT_EXPLAIN_3 = 12952,
 
-    GOSSIP_MENU_SKIP_1          = 11277,
-    GOSSIP_TEXT_SKIP_1          = 15704,
-    GOSSIP_OPTION_SKIP_1        =     0
+    GOSSIP_MENU_SKIP_1 = 11277,
+    GOSSIP_TEXT_SKIP_1 = 15704,
+    GOSSIP_OPTION_SKIP_1 = 0
 };
 
 enum Chromie1Misc
 {
-    ITEM_ARCANE_DISRUPTOR       = 37888,
-    QUEST_DISPELLING_ILLUSIONS  = 13149,
-    SPELL_TELEPORT_PLAYER       = 53435,
-    ACHIEVEMENT_NORMAL          =   479,
-    ACHIEVEMENT_HEROIC          =   500
+    ITEM_ARCANE_DISRUPTOR = 37888,
+    QUEST_DISPELLING_ILLUSIONS = 13149,
+    SPELL_TELEPORT_PLAYER = 53435,
+    ACHIEVEMENT_NORMAL = 479,
+    ACHIEVEMENT_HEROIC = 500
 };
+
 class npc_chromie_start : public CreatureScript
 {
     public:
@@ -271,17 +284,18 @@ class npc_chromie_start : public CreatureScript
 
         struct npc_chromie_startAI : public NullCreatureAI
         {
-            npc_chromie_startAI(Creature* creature) : NullCreatureAI(creature), instance(creature->GetInstanceScript()) { }
+            npc_chromie_startAI(Creature* creature) : NullCreatureAI(creature), _instance(creature->GetInstanceScript()) { }
+
             void AdvanceDungeon()
             {
-                if (instance->GetData(DATA_INSTANCE_PROGRESS) == JUST_STARTED)
-                    instance->SetData(DATA_CRATES_START, 1);
+                if (_instance->GetData(DATA_INSTANCE_PROGRESS) == JUST_STARTED)
+                    _instance->SetData(DATA_CRATES_START, 1);
             }
 
             void AdvanceDungeonFar()
             {
-                if (instance->GetData(DATA_INSTANCE_PROGRESS) <= CRATES_DONE)
-                    instance->SetData(DATA_SKIP_TO_PURGE, 1);
+                if (_instance->GetData(DATA_INSTANCE_PROGRESS) <= CRATES_DONE)
+                    _instance->SetData(DATA_SKIP_TO_PURGE, 1);
             }
 
             bool GossipHello(Player* player) override
@@ -365,12 +379,12 @@ class npc_chromie_start : public CreatureScript
                         AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, "Teleport all players to Arthas", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL);
                         for (uint32 state = 1; state <= COMPLETE; state = state << 1)
                         {
-                            if (GetStableStateFor(ProgressStates(state)) == state)
+                            if (GetStableStateFor(COSProgressStates(state)) == state)
                                 AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, Trinity::StringFormat("Set instance progress to 0x%05X", state).c_str(), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL + state);
                         }
                         for (uint32 state = 1; state <= COMPLETE; state = state << 1)
                         {
-                            if (GetStableStateFor(ProgressStates(state)) != state)
+                            if (GetStableStateFor(COSProgressStates(state)) != state)
                                 AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, Trinity::StringFormat("Force state to 0x%05X (UNSTABLE)", state).c_str(), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_GM_INITIAL + state);
                         }
                         SendGossipMenuFor(player, GOSSIP_TEXT_SKIP_1, me->GetGUID());
@@ -399,8 +413,8 @@ class npc_chromie_start : public CreatureScript
                     AdvanceDungeon();
             }
 
-            private:
-                InstanceScript* const instance;
+        private:
+            InstanceScript* const _instance;
         };
 
         CreatureAI* GetAI(Creature* creature) const override
@@ -427,15 +441,17 @@ enum Chromie2Gossip
     GOSSIP_MENU_STEP3   =  9612,
     GOSSIP_TEXT_STEP3   = 12994,
     GOSSIP_OPTION_STEP3 =     0,
-    
+
     GOSSIP_MENU_STEP4   =  9613,
     GOSSIP_TEXT_STEP4   = 12995
 };
+
 enum Chromie2Misc
 {
     WHISPER_CRATES_DONE = 0,
     WHISPER_COME_TALK   = 1
 };
+
 class npc_chromie_middle : public CreatureScript
 {
     public:
@@ -443,47 +459,49 @@ class npc_chromie_middle : public CreatureScript
 
         struct npc_chromie_middleAI : public NullCreatureAI
         {
-            npc_chromie_middleAI(Creature* creature) : NullCreatureAI(creature), instance(creature->GetInstanceScript()), _whisperDelay(0) { }
+            npc_chromie_middleAI(Creature* creature) : NullCreatureAI(creature), Instance(creature->GetInstanceScript()), WhisperDelay(0) { }
 
             void JustAppeared() override
             {
-                if (instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE)
-                    _whisperDelay = 18 * IN_MILLISECONDS;
+                if (Instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE)
+                    WhisperDelay = 18 * IN_MILLISECONDS;
             }
 
             void UpdateAI(uint32 diff) override
             {
-                if (!_whisperDelay)
+                if (!WhisperDelay)
                     return;
-                if (_whisperDelay > diff)
-                    _whisperDelay -= diff;
+                if (WhisperDelay > diff)
+                    WhisperDelay -= diff;
                 else
                 {
-                    if (instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE && _whispered.empty())
+                    if (Instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE && Whispered.empty())
                         Talk(WHISPER_CRATES_DONE);
-                    _whisperDelay = 0;
+                    WhisperDelay = 0;
                 }
             }
 
             void MoveInLineOfSight(Unit* unit) override
             {
                 if (Player* player = unit->ToPlayer())
-                    if (instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE && player->GetQuestStatus(QUEST_DISPELLING_ILLUSIONS) == QUEST_STATUS_COMPLETE && me->GetDistance2d(player) < 40.0f)
+                {
+                    if (Instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE && player->GetQuestStatus(QUEST_DISPELLING_ILLUSIONS) == QUEST_STATUS_COMPLETE && me->GetDistance2d(player) < 40.0f)
                     {
-                        time_t& whisperedTime = _whispered[player->GetGUID()];
-                        time_t now = time(NULL);
+                        time_t& whisperedTime = Whispered[player->GetGUID()];
+                        time_t now = GameTime::GetGameTime();
                         if (!whisperedTime || (now - whisperedTime) > 15)
                         {
                             Talk(WHISPER_COME_TALK, player);
                             whisperedTime = now;
                         }
                     }
+                }
             }
 
             void AdvanceDungeon(Player const* player)
             {
-                if (instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE)
-                    instance->SetGuidData(DATA_UTHER_START, player->GetGUID());
+                if (Instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE)
+                    Instance->SetGuidData(DATA_UTHER_START, player->GetGUID());
             }
 
             bool GossipHello(Player* player) override
@@ -491,7 +509,7 @@ class npc_chromie_middle : public CreatureScript
                 if (me->IsQuestGiver())
                     player->PrepareQuestMenu(me->GetGUID());
 
-                if (instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE)
+                if (Instance->GetData(DATA_INSTANCE_PROGRESS) == CRATES_DONE)
                     AddGossipItemFor(player, GOSSIP_MENU_STEP1, GOSSIP_OPTION_STEP1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + GOSSIP_OFFSET_STEP1);
                 SendGossipMenuFor(player, GOSSIP_TEXT_STEP1, me->GetGUID());
                 return true;
@@ -515,14 +533,15 @@ class npc_chromie_middle : public CreatureScript
                         SendGossipMenuFor(player, GOSSIP_TEXT_STEP4, me->GetGUID());
                         AdvanceDungeon(player);
                         break;
-
+                    default:
+                        break;
                 }
                 return false;
             }
 
-            InstanceScript* const instance;
-            uint32 _whisperDelay;
-            std::map<ObjectGuid, time_t> _whispered;
+            InstanceScript* const Instance;
+            uint32 WhisperDelay;
+            std::unordered_map<ObjectGuid, time_t> Whispered;
         };
 
         CreatureAI* GetAI(Creature* creature) const override
@@ -581,19 +600,22 @@ enum CrateEvent1Misc
     CHAIN_JENA_MOVE2    = 71,
     CHAIN_JENA_LEAVE    = 72
 };
-static const float marthaIdleOrientation1 = 3.159046f;
-static const float marthaIdleOrientation2 = 4.764749f;
+
+static float const marthaIdleOrientation1 = 3.159046f;
+static float const marthaIdleOrientation2 = 4.764749f;
+
 struct npc_martha_goslin : public CreatureScript
 {
     npc_martha_goslin() : CreatureScript("npc_martha_goslin") { }
+
     struct npc_martha_goslinAI : public NullCreatureAI
     {
-        npc_martha_goslinAI(Creature* creature) : NullCreatureAI(creature), _interruptTimer(0) { }
+        npc_martha_goslinAI(Creature* creature) : NullCreatureAI(creature), InterruptTimer(0) { }
 
         void DoAction(int32 /*action*/) override
         {
-            _interruptTimer = 12000;
-            SplineChainMovementGenerator::GetResumeInfo(_resumeInfo, me);
+            InterruptTimer = 12000;
+            SplineChainMovementGenerator::GetResumeInfo(ResumeInfo, me);
             me->GetMotionMaster()->Clear();
             me->SetFlag(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_NONE);
         }
@@ -601,44 +623,49 @@ struct npc_martha_goslin : public CreatureScript
         void MovementInform(uint32 type, uint32 id) override
         {
             if (type == SPLINE_CHAIN_MOTION_TYPE)
+            {
                 switch (id)
                 {
                     case MOVEID_EVENT1:
                         me->SetFlag(UNIT_NPC_EMOTESTATE, EMOTE_STATE_USE_STANDING);
                         me->SetFacingTo(marthaIdleOrientation1, true);
-                        events.ScheduleEvent(EVENT_MARTHA_IDLE2, Seconds(9), Seconds(15));
+                        Events.ScheduleEvent(EVENT_MARTHA_IDLE2, Seconds(9), Seconds(15));
                         break;
                     case MOVEID_EVENT2:
                         me->SetFlag(UNIT_NPC_EMOTESTATE, EMOTE_STATE_USE_STANDING);
                         me->SetFacingTo(marthaIdleOrientation2, true);
-                        events.ScheduleEvent(EVENT_MARTHA_IDLE1, Seconds(9), Seconds(15));
+                        Events.ScheduleEvent(EVENT_MARTHA_IDLE1, Seconds(9), Seconds(15));
+                        break;
+                    default:
                         break;
                 }
+            }
         }
 
         void UpdateAI(uint32 diff) override
         {
-            if (_interruptTimer)
+            if (InterruptTimer)
             {
-                if (_interruptTimer > diff)
+                if (InterruptTimer > diff)
                 {
-                    _interruptTimer -= diff;
+                    InterruptTimer -= diff;
                     return;
                 }
-                diff -= _interruptTimer;
-                _interruptTimer = 0;
-                if (!_resumeInfo.Empty())
+                diff -= InterruptTimer;
+                InterruptTimer = 0;
+                if (!ResumeInfo.Empty())
                 {
-                    me->GetMotionMaster()->ResumeSplineChain(_resumeInfo);
-                    _resumeInfo.Clear();
+                    me->GetMotionMaster()->ResumeSplineChain(ResumeInfo);
+                    ResumeInfo.Clear();
                 }
 
                 if (!diff)
                     return;
             }
 
-            events.Update(diff);
-            while (uint32 eventId = events.ExecuteEvent())
+            Events.Update(diff);
+            while (uint32 eventId = Events.ExecuteEvent())
+            {
                 switch (eventId)
                 {
                     case EVENT_MARTHA_IDLE1:
@@ -649,18 +676,21 @@ struct npc_martha_goslin : public CreatureScript
                         me->SetFlag(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_NONE);
                         me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT2, CHAIN_MARTHA_IDLE2, true);
                         break;
+                    default:
+                        break;
                 }
+            }
         }
 
         void JustAppeared() override
         {
             me->SetFlag(UNIT_NPC_EMOTESTATE, EMOTE_STATE_USE_STANDING);
-            events.RescheduleEvent(EVENT_MARTHA_IDLE2, Seconds(5), Seconds(10));
+            Events.RescheduleEvent(EVENT_MARTHA_IDLE2, Seconds(5), Seconds(10));
         }
 
-        EventMap events;
-        uint32 _interruptTimer;
-        SplineChainResumeInfo _resumeInfo;
+        EventMap Events;
+        uint32 InterruptTimer;
+        SplineChainResumeInfo ResumeInfo;
     };
 
     CreatureAI* GetAI(Creature* creature) const override
@@ -668,19 +698,25 @@ struct npc_martha_goslin : public CreatureScript
         return GetCullingOfStratholmeAI<npc_martha_goslinAI>(creature);
     }
 };
+
 struct npc_jena_anderson : public CreatureScript
 {
     npc_jena_anderson() : CreatureScript("npc_jena_anderson") { }
 
-    static Creature* Find(Creature* helper) { return helper->FindNearestCreature(NPC_JENA, 45.0f, true); }
+    static Creature* Find(Creature* helper)
+    {
+        return helper->FindNearestCreature(NPC_JENA, 45.0f, true);
+    }
+
     struct npc_jena_andersonAI : public NullCreatureAI
     {
-        npc_jena_andersonAI(Creature* creature) : NullCreatureAI(creature), started(false) { }
+        npc_jena_andersonAI(Creature* creature) : NullCreatureAI(creature), Started(false) { }
 
         void UpdateAI(uint32 diff) override
         {
-            events.Update(diff);
-            while (uint32 eventId = events.ExecuteEvent())
+            Events.Update(diff);
+            while (uint32 eventId = Events.ExecuteEvent())
+            {
                 switch (eventId)
                 {
                     case EVENT_JENA_IDLE1:
@@ -725,49 +761,55 @@ struct npc_jena_anderson : public CreatureScript
                         }
                         me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT5, CHAIN_JENA_LEAVE, true);
                         break;
+                    default:
+                        break;
                 }
+            }
         }
 
         void MovementInform(uint32 type, uint32 id) override
         {
             if (type == SPLINE_CHAIN_MOTION_TYPE)
+            {
                 switch (id)
                 {
                     case MOVEID_EVENT1: // IDLE1
-                        if (started)
-                            events.ScheduleEvent(EVENT_JENA_START, Seconds(1), Seconds(3));
+                        if (Started)
+                            Events.ScheduleEvent(EVENT_JENA_START, Seconds(1), Seconds(3));
                         else
-                            events.ScheduleEvent(EVENT_JENA_IDLE2, Milliseconds(200), Milliseconds(700));
+                            Events.ScheduleEvent(EVENT_JENA_IDLE2, Milliseconds(200), Milliseconds(700));
                         break;
                     case MOVEID_EVENT2: // IDLE2
-                        events.ScheduleEvent(EVENT_JENA_IDLE1, Milliseconds(200), Milliseconds(700));
+                        Events.ScheduleEvent(EVENT_JENA_IDLE1, Milliseconds(200), Milliseconds(700));
                         break;
                     case MOVEID_EVENT3:
-                    {
-                        Creature* martha = me->FindNearestCreature(NPC_MARTHA, 100.0f, true);
-                        if (martha)
+                        if (Creature* martha = me->FindNearestCreature(NPC_MARTHA, 100.0f, true))
+                        {
                             me->SetFacingToObject(martha, true);
-                        Talk(LINE_JENA6, martha);
-                        events.ScheduleEvent(EVENT_MARTHA1, Seconds(5) + Milliseconds(500));
-                        events.ScheduleEvent(EVENT_JENA7, Seconds(11));
-                        events.ScheduleEvent(EVENT_JENA_MOVE2, Seconds(16));
+                            Talk(LINE_JENA6, martha);
+                        }
+                        Events.ScheduleEvent(EVENT_MARTHA1, Seconds(5) + Milliseconds(500));
+                        Events.ScheduleEvent(EVENT_JENA7, Seconds(11));
+                        Events.ScheduleEvent(EVENT_JENA_MOVE2, Seconds(16));
                         break;
-                    }
                     case MOVEID_EVENT4:
                         me->SetStandState(UNIT_STAND_STATE_KNEEL);
-                        events.ScheduleEvent(EVENT_JENA8, Seconds(2));
-                        events.ScheduleEvent(EVENT_JENA_LEAVE, Seconds(8));
+                        Events.ScheduleEvent(EVENT_JENA8, Seconds(2));
+                        Events.ScheduleEvent(EVENT_JENA_LEAVE, Seconds(8));
                         break;
                     case MOVEID_EVENT5:
                         me->DespawnOrUnsummon(Seconds(1));
                         break;
+                    default:
+                        break;
                 }
+            }
         }
 
         void DoAction(int32 action) override
         {
             if (action == ACTION_START_FLUFF)
-                started = true;
+                Started = true;
         }
 
         void InitializeAI() override
@@ -777,8 +819,8 @@ struct npc_jena_anderson : public CreatureScript
             me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT1, CHAIN_JENA_INITIAL, true);
         }
 
-        EventMap events;
-        bool started;
+        EventMap Events;
+        bool Started;
     };
 
     CreatureAI* GetAI(Creature* creature) const override
@@ -806,55 +848,65 @@ enum CrateEvent2Misc
     CHAIN_BARTLEBY1     = 1,
     CHAIN_BARTLEBY2     = 2
 };
+
 struct npc_bartleby_battson : public CreatureScript
 {
     npc_bartleby_battson() : CreatureScript("npc_bartleby_battson") { }
 
-    static Creature* Find(Creature* helper) { return helper->FindNearestCreature(NPC_BARTLEBY, 5.0f, true); }
+    static Creature* Find(Creature* helper)
+    {
+        return helper->FindNearestCreature(NPC_BARTLEBY, 5.0f, true);
+    }
+
     struct npc_bartleby_battsonAI : public NullCreatureAI
     {
-        npc_bartleby_battsonAI(Creature* creature) : NullCreatureAI(creature), started(false) { }
+        npc_bartleby_battsonAI(Creature* creature) : NullCreatureAI(creature), Started(false) { }
 
         void InitializeAI() override
         {
-            events.ScheduleEvent(EVENT_BARTLEBY_IDLE, Minutes(1), Minutes(2));
+            Events.ScheduleEvent(EVENT_BARTLEBY_IDLE, Minutes(1), Minutes(2));
         }
 
         void DoAction(int32 action) override
         {
-            if (started || action != ACTION_START_FLUFF)
+            if (Started || action != ACTION_START_FLUFF)
                 return;
-            started = true;
-            events.CancelEvent(EVENT_BARTLEBY_IDLE);
-            events.ScheduleEvent(EVENT_BARTLEBY1, Seconds(15), Seconds(30));
+            Started = true;
+            Events.CancelEvent(EVENT_BARTLEBY_IDLE);
+            Events.ScheduleEvent(EVENT_BARTLEBY1, Seconds(15), Seconds(30));
         }
 
         void MovementInform(uint32 type, uint32 id) override
         {
             if (type == SPLINE_CHAIN_MOTION_TYPE)
+            {
                 switch (id)
                 {
                     case MOVEID_EVENT1:
                         me->SetStandState(UNIT_STAND_STATE_KNEEL);
-                        events.ScheduleEvent(EVENT_BARTLEBY2, Seconds(4));
-                        events.ScheduleEvent(EVENT_BARTLEBY2_2, Seconds(6));
-                        events.ScheduleEvent(EVENT_BARTLEBY3, Seconds(12));
+                        Events.ScheduleEvent(EVENT_BARTLEBY2, Seconds(4));
+                        Events.ScheduleEvent(EVENT_BARTLEBY2_2, Seconds(6));
+                        Events.ScheduleEvent(EVENT_BARTLEBY3, Seconds(12));
                         break;
                     case MOVEID_EVENT2:
                         me->DespawnOrUnsummon(Seconds(1));
                         break;
+                    default:
+                        break;
                 }
+            }
         }
 
         void UpdateAI(uint32 diff) override
         {
-            events.Update(diff);
-            while (uint32 eventId = events.ExecuteEvent())
+            Events.Update(diff);
+            while (uint32 eventId = Events.ExecuteEvent())
+            {
                 switch (eventId)
                 {
                     case EVENT_BARTLEBY_IDLE:
                         Talk(LINE_BARTLEBY_IDLE);
-                        events.Repeat(Minutes(2), Minutes(4));
+                        Events.Repeat(Minutes(2), Minutes(4));
                         break;
                     case EVENT_BARTLEBY1:
                         Talk(LINE_BARTLEBY1);
@@ -871,11 +923,14 @@ struct npc_bartleby_battson : public CreatureScript
                         me->SetStandState(UNIT_STAND_STATE_STAND);
                         me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT2, CHAIN_BARTLEBY2, true);
                         break;
+                    default:
+                        break;
                 }
+            }
         }
 
-        bool started;
-        EventMap events;
+        bool Started;
+        EventMap Events;
     };
 
     CreatureAI* GetAI(Creature* creature) const override
@@ -914,17 +969,23 @@ enum CrateEvent3Misc
     CHAIN_SCRUFFY2  = 2
 
 };
-static const Position malcolmSpawn = { 1605.2420f, 805.4160f, 122.9956f, 5.284148f };
-static const Position scruffySpawn = { 1601.1030f, 805.3391f, 123.7677f, 5.471561f };
-static const float scruffyFacing2 = 5.734883f;
-static const float malcolmFacing3 = 2.303835f;
-static const Position scruffyPos3 = { 1629.004f, 810.138f, 120.4927f };
-static const float scruffyFacing4 = 5.445427f;
+
+static Position const malcolmSpawn = { 1605.2420f, 805.4160f, 122.9956f, 5.284148f };
+static Position const scruffySpawn = { 1601.1030f, 805.3391f, 123.7677f, 5.471561f };
+static float const scruffyFacing2 = 5.734883f;
+static float const malcolmFacing3 = 2.303835f;
+static Position const scruffyPos3 = { 1629.004f, 810.138f, 120.4927f };
+static float const scruffyFacing4 = 5.445427f;
+
 struct npc_malcolm_moore : public CreatureScript
 {
     npc_malcolm_moore() : CreatureScript("npc_malcolm_moore") { }
 
-    static void Spawn(Map* map) { map->SummonCreature(NPC_MALCOLM, malcolmSpawn); }
+    static void Spawn(Map* map)
+    {
+        map->SummonCreature(NPC_MALCOLM, malcolmSpawn);
+    }
+
     struct npc_malcolm_mooreAI : public NullCreatureAI
     {
         npc_malcolm_mooreAI(Creature* creature) : NullCreatureAI(creature) { }
@@ -939,6 +1000,7 @@ struct npc_malcolm_moore : public CreatureScript
         void MovementInform(uint32 type, uint32 id) override
         {
             if (type == SPLINE_CHAIN_MOTION_TYPE)
+            {
                 switch (id)
                 {
                     case MOVEID_EVENT1:
@@ -946,30 +1008,34 @@ struct npc_malcolm_moore : public CreatureScript
                         me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT2, CHAIN_MALCOLM2, true);
                         break;
                     case MOVEID_EVENT2:
-                        events.ScheduleEvent(EVENT_SCRUFFY1, Seconds(0));
-                        events.ScheduleEvent(EVENT_MALCOLM2, Seconds(1));
-                        events.ScheduleEvent(EVENT_SCRUFFY_MOVE, Seconds(4));
-                        events.ScheduleEvent(EVENT_MALCOLM_MOVE, Seconds(8));
+                        Events.ScheduleEvent(EVENT_SCRUFFY1, Seconds(0));
+                        Events.ScheduleEvent(EVENT_MALCOLM2, Seconds(1));
+                        Events.ScheduleEvent(EVENT_SCRUFFY_MOVE, Seconds(4));
+                        Events.ScheduleEvent(EVENT_MALCOLM_MOVE, Seconds(8));
                         break;
                     case MOVEID_EVENT3:
-                        events.ScheduleEvent(EVENT_MALCOLM_FACE3, Seconds(0));
-                        events.ScheduleEvent(EVENT_MALCOLM3, Seconds(1));
-                        events.ScheduleEvent(EVENT_MALCOLM4, Seconds(6));
-                        events.ScheduleEvent(EVENT_MALCOLM_MOVE2, Seconds(12));
+                        Events.ScheduleEvent(EVENT_MALCOLM_FACE3, Seconds(0));
+                        Events.ScheduleEvent(EVENT_MALCOLM3, Seconds(1));
+                        Events.ScheduleEvent(EVENT_MALCOLM4, Seconds(6));
+                        Events.ScheduleEvent(EVENT_MALCOLM_MOVE2, Seconds(12));
                         break;
                     case MOVEID_EVENT4:
                         me->DespawnOrUnsummon();
                         break;
                     case MOVEID_EVENT5:
-                        events.ScheduleEvent(EVENT_SCRUFFY_EMOTE, Seconds(0));
+                        Events.ScheduleEvent(EVENT_SCRUFFY_EMOTE, Seconds(0));
+                        break;
+                    default:
                         break;
                 }
+            }
         }
 
         void UpdateAI(uint32 diff) override
         {
-            events.Update(diff);
-            while (uint32 eventId = events.ExecuteEvent())
+            Events.Update(diff);
+            while (uint32 eventId = Events.ExecuteEvent())
+            {
                 switch (eventId)
                 {
                     case EVENT_SCRUFFY1:
@@ -1015,10 +1081,13 @@ struct npc_malcolm_moore : public CreatureScript
                         if (Creature* scruffy = me->FindNearestCreature(NPC_SCRUFFY, 100.0f, true))
                             scruffy->SetFacingTo(scruffyFacing4);
                         break;
+                    default:
+                        break;
                 }
+            }
         }
 
-        EventMap events;
+        EventMap Events;
     };
 
     CreatureAI* GetAI(Creature* creature) const override
@@ -1058,21 +1127,29 @@ enum CrateEvent4Misc
     CHAIN_SERGEANT1 = 1,
     CHAIN_SERGEANT2 = 2
 };
+
 struct npc_sergeant_morigan : public CreatureScript
 {
     npc_sergeant_morigan() : CreatureScript("npc_sergeant_morigan") { }
 
-    static Creature* Find(Creature* helper) { return helper->FindNearestCreature(NPC_SERGEANT, 15.0f, true); }
+    static Creature* Find(Creature* helper)
+    {
+        return helper->FindNearestCreature(NPC_SERGEANT, 15.0f, true);
+    }
+
     struct npc_sergeant_moriganAI : public NullCreatureAI
     {
-        npc_sergeant_moriganAI(Creature* creature) : NullCreatureAI(creature), started(false) { }
+        npc_sergeant_moriganAI(Creature* creature) : NullCreatureAI(creature), Started(false) { }
 
-        void InitializeAI() override { events.RescheduleEvent(EVENT_SERGEANT_IDLE1, Seconds(5), Seconds(15)); }
+        void InitializeAI() override
+        {
+            Events.RescheduleEvent(EVENT_SERGEANT_IDLE1, Seconds(5), Seconds(15));
+        }
 
         void DoAction(int32 id) override
         {
             if (id == ACTION_START_FLUFF)
-                started = true;
+                Started = true;
         }
 
         void MovementInform(uint32 type, uint32 id) override
@@ -1082,13 +1159,13 @@ struct npc_sergeant_morigan : public CreatureScript
                 {
                     case MOVEID_EVENT1:
                         me->SetStandState(UNIT_STAND_STATE_KNEEL);
-                        events.ScheduleEvent(EVENT_SERGEANT1, Seconds(1));
-                        events.ScheduleEvent(EVENT_SERGEANT_STAND, Seconds(3));
-                        events.ScheduleEvent(EVENT_PERELLI1, Seconds(7));
-                        events.ScheduleEvent(EVENT_SERGEANT2, Seconds(12));
-                        events.ScheduleEvent(EVENT_PERELLI2, Seconds(20));
-                        events.ScheduleEvent(EVENT_SERGEANT3, Seconds(26));
-                        events.ScheduleEvent(EVENT_SERGEANT_LEAVE, Seconds(31));
+                        Events.ScheduleEvent(EVENT_SERGEANT1, Seconds(1));
+                        Events.ScheduleEvent(EVENT_SERGEANT_STAND, Seconds(3));
+                        Events.ScheduleEvent(EVENT_PERELLI1, Seconds(7));
+                        Events.ScheduleEvent(EVENT_SERGEANT2, Seconds(12));
+                        Events.ScheduleEvent(EVENT_PERELLI2, Seconds(20));
+                        Events.ScheduleEvent(EVENT_SERGEANT3, Seconds(26));
+                        Events.ScheduleEvent(EVENT_SERGEANT_LEAVE, Seconds(31));
                         break;
                     case MOVEID_EVENT2:
                         me->DespawnOrUnsummon(Seconds(1));
@@ -1096,32 +1173,42 @@ struct npc_sergeant_morigan : public CreatureScript
                 }
         }
 
-        void Perelli(uint32 line, float ori = 0.0f) { if (Creature* perelli = me->FindNearestCreature(NPC_PERELLI, 10.0f, true)) { perelli->AI()->Talk(line, me); if (ori) perelli->SetFacingTo(ori); } }
+        void Perelli(uint32 line, float ori = 0.0f)
+        {
+            if (Creature* perelli = me->FindNearestCreature(NPC_PERELLI, 10.0f, true))
+            {
+                perelli->AI()->Talk(line, me);
+                if (ori)
+                    perelli->SetFacingTo(ori);
+            }
+        }
+
         void UpdateAI(uint32 diff) override
         {
-            events.Update(diff);
-            while (uint32 eventId = events.ExecuteEvent())
+            Events.Update(diff);
+            while (uint32 eventId = Events.ExecuteEvent())
+            {
                 switch (eventId)
                 {
                     case EVENT_SERGEANT_IDLE1:
-                        if (started)
+                        if (Started)
                         {
-                            question = 2;
+                            Question = 2;
                             Talk(LINE_SERGEANT_START);
                         }
                         else
                         {
-                            question = urand(0,1); // 0 is question that's answered with "yes", 1 is question that's answered with "no"
-                            Talk(question ? LINE_SERGEANT_ASK_NO : LINE_SERGEANT_ASK_YES);
+                            Question = urand(0, 1); // 0 is question that's answered with "yes", 1 is question that's answered with "no"
+                            Talk(Question ? LINE_SERGEANT_ASK_NO : LINE_SERGEANT_ASK_YES);
                         }
-                        events.ScheduleEvent(EVENT_SERGEANT_IDLE2, Seconds(10));
+                        Events.ScheduleEvent(EVENT_SERGEANT_IDLE2, Seconds(10));
                         break;
                     case EVENT_SERGEANT_IDLE2:
-                        Perelli(question ? LINE_PERELLI_NO : LINE_PERELLI_YES);
-                        if (question == 2)
-                            events.ScheduleEvent(EVENT_SERGEANT_CHAIN1, Seconds(2));
+                        Perelli(Question ? LINE_PERELLI_NO : LINE_PERELLI_YES);
+                        if (Question == 2)
+                            Events.ScheduleEvent(EVENT_SERGEANT_CHAIN1, Seconds(2));
                         else
-                            events.ScheduleEvent(EVENT_SERGEANT_IDLE1, Seconds(15), Seconds(30));
+                            Events.ScheduleEvent(EVENT_SERGEANT_IDLE1, Seconds(15), Seconds(30));
                         break;
                     case EVENT_SERGEANT_CHAIN1:
                         me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT1, CHAIN_SERGEANT1, true);
@@ -1148,12 +1235,15 @@ struct npc_sergeant_morigan : public CreatureScript
                     case EVENT_SERGEANT_LEAVE:
                         me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT2, CHAIN_SERGEANT2, true);
                         break;
+                    default:
+                        break;
                 }
+            }
         }
 
-        EventMap events;
-        bool started;
-        uint8 question;
+        EventMap Events;
+        bool Started;
+        uint8 Question;
     };
 
     CreatureAI* GetAI(Creature* creature) const override
@@ -1187,11 +1277,16 @@ enum CrateEvent5Misc
     CHAIN_ROGER2 = 2,
     CHAIN_ROGER3 = 3
 };
+
 struct npc_roger_owens : public CreatureScript
 {
     npc_roger_owens() : CreatureScript("npc_roger_owens") { }
 
-    static Creature* Find(Creature* helper) { return helper->FindNearestCreature(NPC_ROGER, 30.0f, true); }
+    static Creature* Find(Creature* helper)
+    {
+        return helper->FindNearestCreature(NPC_ROGER, 30.0f, true);
+    }
+
     struct npc_roger_owensAI : public NullCreatureAI
     {
         npc_roger_owensAI(Creature* creature) : NullCreatureAI(creature) { }
@@ -1199,45 +1294,50 @@ struct npc_roger_owens : public CreatureScript
         void DoAction(int32 action) override
         {
             if (action == ACTION_START_FLUFF)
-                events.ScheduleEvent(EVENT_ROGER_START, Seconds(5), Seconds(12));
+                Events.ScheduleEvent(EVENT_ROGER_START, Seconds(5), Seconds(12));
         }
 
         void MovementInform(uint32 type, uint32 id) override
         {
             if (type == SPLINE_CHAIN_MOTION_TYPE)
+            {
                 switch (id)
                 {
                     case MOVEID_EVENT1:
                         Talk(LINE_ROGER2);
-                        events.ScheduleEvent(EVENT_ROGER_FACE3, Seconds(5));
-                        events.ScheduleEvent(EVENT_ROGER3, Seconds(6));
-                        events.ScheduleEvent(EVENT_ROGER_FACE4, Seconds(12));
-                        events.ScheduleEvent(EVENT_ROGER4, Seconds(14));
-                        events.ScheduleEvent(EVENT_ROGER_MOVE2, Seconds(18));
+                        Events.ScheduleEvent(EVENT_ROGER_FACE3, Seconds(5));
+                        Events.ScheduleEvent(EVENT_ROGER3, Seconds(6));
+                        Events.ScheduleEvent(EVENT_ROGER_FACE4, Seconds(12));
+                        Events.ScheduleEvent(EVENT_ROGER4, Seconds(14));
+                        Events.ScheduleEvent(EVENT_ROGER_MOVE2, Seconds(18));
                         break;
                     case MOVEID_EVENT2:
                         me->SetFacingTo(1.134464f, true);
                         Talk(LINE_ROGER5);
-                        events.ScheduleEvent(EVENT_ROGER5_2, Seconds(3));
-                        events.ScheduleEvent(EVENT_ROGER_LEAVE, Seconds(8));
+                        Events.ScheduleEvent(EVENT_ROGER5_2, Seconds(3));
+                        Events.ScheduleEvent(EVENT_ROGER_LEAVE, Seconds(8));
                         break;
                     case MOVEID_EVENT3:
                         me->DespawnOrUnsummon(Seconds(1));
                         break;
+                    default:
+                        break;
                 }
+            }
         }
 
         void UpdateAI(uint32 diff) override
         {
-            events.Update(diff);
-            while (uint32 eventId = events.ExecuteEvent())
+            Events.Update(diff);
+            while (uint32 eventId = Events.ExecuteEvent())
+            {
                 switch (eventId)
                 {
                     case EVENT_ROGER_START:
                         me->SetStandState(UNIT_STAND_STATE_STAND);
                         me->SetFacingTo(1.53589f);
                         Talk(LINE_ROGER1);
-                        events.ScheduleEvent(EVENT_ROGER_MOVE1, Seconds(6));
+                        Events.ScheduleEvent(EVENT_ROGER_MOVE1, Seconds(6));
                         break;
                     case EVENT_ROGER_MOVE1:
                         me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT1, CHAIN_ROGER1, true);
@@ -1263,10 +1363,13 @@ struct npc_roger_owens : public CreatureScript
                     case EVENT_ROGER_LEAVE:
                         me->GetMotionMaster()->MoveAlongSplineChain(MOVEID_EVENT3, CHAIN_ROGER3, true);
                         break;
+                    default:
+                        break;
                 }
+            }
         }
 
-        EventMap events;
+        EventMap Events;
     };
 
     CreatureAI* GetAI(Creature* creature) const override
@@ -1283,16 +1386,17 @@ enum CrateMisc
     SPELL_ARCANE_DISRUPTION = 49590,
     SPELL_CRATES_CREDIT = 58109
 };
+
 class npc_crate_helper : public CreatureScript
 {
-    public:
+public:
     npc_crate_helper() : CreatureScript("npc_crate_helper_cot") { }
 
     struct npc_crate_helperAI : public NullCreatureAI
     {
         npc_crate_helperAI(Creature* creature) : NullCreatureAI(creature), _crateRevealed(false) { }
 
-        void replaceIfCloser(Creature* candidate, Creature*& current, float& currentDist) const
+        void ReplaceIfCloser(Creature* candidate, Creature*& current, float& currentDist) const
         {
             if (!candidate)
                 return;
@@ -1302,6 +1406,7 @@ class npc_crate_helper : public CreatureScript
             currentDist = newDist;
             current = candidate;
         }
+
         void SpellHit(Unit* /*caster*/, SpellInfo const* spell) override
         {
             if (!_crateRevealed && spell->Id == SPELL_ARCANE_DISRUPTION)
@@ -1324,10 +1429,10 @@ class npc_crate_helper : public CreatureScript
                     // Find nearest fluff event and initiate it
                     Creature* closest = nullptr;
                     float closestDist = INFINITY;
-                    replaceIfCloser(npc_jena_anderson::Find(me), closest, closestDist);
-                    replaceIfCloser(npc_bartleby_battson::Find(me), closest, closestDist);
-                    replaceIfCloser(npc_sergeant_morigan::Find(me), closest, closestDist);
-                    replaceIfCloser(npc_roger_owens::Find(me), closest, closestDist);
+                    ReplaceIfCloser(npc_jena_anderson::Find(me), closest, closestDist);
+                    ReplaceIfCloser(npc_bartleby_battson::Find(me), closest, closestDist);
+                    ReplaceIfCloser(npc_sergeant_morigan::Find(me), closest, closestDist);
+                    ReplaceIfCloser(npc_roger_owens::Find(me), closest, closestDist);
                     if (closest)
                         closest->AI()->DoAction(ACTION_START_FLUFF);
                     else
@@ -1343,7 +1448,7 @@ class npc_crate_helper : public CreatureScript
             return 0;
         }
 
-        private:
+    private:
         bool _crateRevealed;
     };
 

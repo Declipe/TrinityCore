@@ -15,35 +15,38 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ScriptMgr.h"
-#include "ScriptedCreature.h"
 #include "culling_of_stratholme.h"
+#include "InstanceScript.h"
+#include "ScriptedCreature.h"
+#include "ScriptMgr.h"
+#include "SpellAuraEffects.h"
+#include "SpellScript.h"
 
 enum Spells
 {
-    SPELL_CURSE_OF_TWISTED_FLESH    = 58845,
-    SPELL_EXPLODE_GHOUL             = 52480,
-    SPELL_SHADOW_BOLT               = 57725,
-    SPELL_STEAL_FLESH               = 52708,
-    SPELL_STEAL_FLESH_DEBUFF        = 52711,
-    SPELL_STEAL_FLESH_BUFF          = 52712,
-    SPELL_SUMMON_GHOULS             = 52451
+    SPELL_CURSE_OF_TWISTED_FLESH = 58845,
+    SPELL_EXPLODE_GHOUL = 52480,
+    SPELL_SHADOW_BOLT = 57725,
+    SPELL_STEAL_FLESH = 52708,
+    SPELL_STEAL_FLESH_DEBUFF = 52711,
+    SPELL_STEAL_FLESH_BUFF = 52712,
+    SPELL_SUMMON_GHOULS = 52451
 };
 
 enum Yells
 {
-    SAY_AGGRO           = 0,
-    SAY_SPAWN           = 1,
-    SAY_SLAY            = 2,
-    SAY_DEATH           = 3,
-    SAY_EXPLODE_GHOUL   = 4,
-    SAY_STEAL_FLESH     = 5,
-    SAY_SUMMON_GHOULS   = 6
+    SAY_AGGRO = 0,
+    SAY_SPAWN = 1,
+    SAY_SLAY = 2,
+    SAY_DEATH = 3,
+    SAY_EXPLODE_GHOUL = 4,
+    SAY_STEAL_FLESH = 5,
+    SAY_SUMMON_GHOULS = 6
 };
 
 enum Events
 {
-    EVENT_CURSE_FLESH                           = 1,
+    EVENT_CURSE_FLESH = 1,
     EVENT_EXPLODE_GHOUL1,
     EVENT_EXPLODE_GHOUL2,
     EVENT_SHADOW_BOLT,
@@ -136,35 +139,24 @@ class boss_salramm : public CreatureScript
         }
 };
 
-class spell_salramm_steal_flesh : public SpellScriptLoader
+class spell_salramm_steal_flesh : public AuraScript
 {
-    public:
-        spell_salramm_steal_flesh() : SpellScriptLoader("spell_salramm_steal_flesh") { }
+    PrepareAuraScript(spell_salramm_steal_flesh);
 
-        class spell_salramm_steal_flesh_AuraScript : public AuraScript
-        {
-            PrepareAuraScript(spell_salramm_steal_flesh_AuraScript);
+    void HandlePeriodic(AuraEffect const* /*eff*/)
+    {
+        GetCaster()->CastSpell(GetCaster(), SPELL_STEAL_FLESH_BUFF, true);
+        GetCaster()->CastSpell(GetTarget(), SPELL_STEAL_FLESH_DEBUFF, true);
+    }
 
-            void HandlePeriodic(AuraEffect const* /*eff*/)
-            {
-                GetCaster()->CastSpell(GetCaster(), SPELL_STEAL_FLESH_BUFF, true);
-                GetCaster()->CastSpell(GetTarget(), SPELL_STEAL_FLESH_DEBUFF, true);
-            }
-
-            void Register() override
-            {
-                OnEffectPeriodic += AuraEffectPeriodicFn(spell_salramm_steal_flesh_AuraScript::HandlePeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
-            }
-        };
-
-        AuraScript* GetAuraScript() const override
-        {
-            return new spell_salramm_steal_flesh_AuraScript();
-        }
+    void Register() override
+    {
+        OnEffectPeriodic += AuraEffectPeriodicFn(spell_salramm_steal_flesh::HandlePeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+    }
 };
 
 void AddSC_boss_salramm()
 {
     new boss_salramm();
-    new spell_salramm_steal_flesh();
+    RegisterAuraScript(spell_salramm_steal_flesh);
 }

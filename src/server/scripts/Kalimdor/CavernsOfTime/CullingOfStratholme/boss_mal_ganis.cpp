@@ -15,29 +15,30 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ScriptMgr.h"
 #include "culling_of_stratholme.h"
 #include "InstanceScript.h"
+#include "Map.h"
 #include "MotionMaster.h"
 #include "ObjectAccessor.h"
 #include "PassiveAI.h"
 #include "Player.h"
 #include "ScriptedCreature.h"
+#include "ScriptMgr.h"
 #include "SpellMgr.h"
 
 enum Spells
 {
-    SPELL_CARRION_SWARM         = 52720,
-    SPELL_MIND_BLAST            = 52722,
-    SPELL_SLEEP                 = 52721,
-    SPELL_VAMPIRIC_TOUCH        = 52723
+    SPELL_CARRION_SWARM = 52720,
+    SPELL_MIND_BLAST = 52722,
+    SPELL_SLEEP = 52721,
+    SPELL_VAMPIRIC_TOUCH = 52723
 };
 
 enum Yells
 {
-    SAY_KILL     = 3,
-    SAY_SLAY     = 4,
-    SAY_SLEEP    = 5,
+    SAY_KILL = 3,
+    SAY_SLAY = 4,
+    SAY_SLEEP = 5,
     SAY_30HEALTH = 6,
     SAY_15HEALTH = 7
 };
@@ -80,10 +81,12 @@ class boss_mal_ganis : public CreatureScript
             {
                 if (damage >= me->GetHealth())
                 {
-                    damage = me->GetHealth()-1;
+                    damage = me->GetHealth() - 1;
                     if (_defeated)
                         return;
                     _defeated = true;
+
+                    // @todo hack most likely
                     if (InstanceMap* map = instance->instance->ToInstanceMap())
                         map->PermBindAllPlayers();
                 }
@@ -113,7 +116,7 @@ class boss_mal_ganis : public CreatureScript
                     if (me->IsInCombat())
                     {
                         EnterEvadeMode();
-                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
+                        me->SetImmuneToAll(true);
                     }
                     return;
                 }
@@ -134,8 +137,10 @@ class boss_mal_ganis : public CreatureScript
                 }
 
                 events.Update(diff);
+
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
+
                 while (uint32 eventId = events.ExecuteEvent())
                 {
                     switch (eventId)
@@ -162,11 +167,14 @@ class boss_mal_ganis : public CreatureScript
                                 DoCastVictim(SPELL_SLEEP);
                             events.Repeat(Seconds(10), Seconds(15));
                             break;
+                        default:
+                            break;
                     }
 
                     if (me->HasUnitState(UNIT_STATE_CASTING))
                         return;
                 }
+
                 DoMeleeAttackIfReady();
             }
 
@@ -176,11 +184,11 @@ class boss_mal_ganis : public CreatureScript
                     Talk(SAY_SLAY);
             }
 
+        private:
             bool _defeated;
             bool _hadYell30;
             bool _hadYell15;
         };
-
 };
 
 void AddSC_boss_mal_ganis()

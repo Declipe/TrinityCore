@@ -15,14 +15,15 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DEF_CULLING_OF_STRATHOLME_H
-#define DEF_CULLING_OF_STRATHOLME_H
+#ifndef CULLING_OF_STRATHOLME_H
+#define CULLING_OF_STRATHOLME_H
 
-#include "Creature.h"
+#include "CreatureAIImpl.h"
 
 #define DataHeader "CS"
 #define CoSScriptName "instance_culling_of_stratholme"
 
+uint32 constexpr EncounterCount = 5;
 
 /***********************************************************************************************************************\
 |************************* A DEVELOPER'S GUIDE TO FINDING YOUR WAY AROUND THIS INSTANCE SCRIPT *************************|
@@ -74,10 +75,6 @@
 *      - the instance script stores a std::map of all current world state values for the instance                       *
 *      - SetWorldState adjusts this map, PropagateWorldStateUpdate sends any changed values to all players              *
 *      - FillInitialWorldStates also draws upon this map to ensure all players have the same states at all times        *
-*    - CreatureAIHello/CreatureAIGoodbye:                                                                               *
-*      - Ties into the creature script wrapper (defined further down in this file)                                      *
-*      - CAIHello registers a creature as part of the progress phases specified, allowing the instance script to        *
-*        notify it of state changes away from that state (so it can properly despawn if appropriate).                   *
 |***********************************************************************************************************************|
 *   Spawn control script: (StratholmeCreatureScript<ParentAI> in culling_of_stratholme.h)                               *
 *    - CanSpawn override:                                                                                               *
@@ -86,9 +83,10 @@
 *      - gets current instance state using GetData, then checks if we should despawn ourselves (bitmask check)          *
 \***********************************************************************************************************************/
 
+struct Position;
 
 // Note: These are bitmask values to allow combining, but only a single bit will ever be true in instance script
-enum ProgressStates : uint32
+enum COSProgressStates : uint32
 {
     JUST_STARTED            = 0x00001, // dungeon just started, crate count not visible yet; pending chromie interaction
     CRATES_IN_PROGRESS      = 0x00002, // freshly started dungeon, players are revealing scourge crates
@@ -110,10 +108,10 @@ enum ProgressStates : uint32
 
     ALL                     = 0x1FFFF
 };
-ProgressStates GetStableStateFor(ProgressStates const state); // defined by instance script
-Position const& GetArthasSnapbackFor(ProgressStates state); // defined by arthas script
+COSProgressStates GetStableStateFor(COSProgressStates const state); // defined by instance script
+Position const& GetArthasSnapbackFor(COSProgressStates state); // defined by arthas script
 
-enum InstanceData
+enum COSInstanceData
 {
     DATA_MEATHOOK,
     DATA_SALRAMM,
@@ -146,7 +144,7 @@ enum InstanceData
 };
 
 // these are sent by instance AI to creatures; they are passed as negative values to avoid conflicts with creature script specific actions
-enum InstanceActions
+enum COSInstanceActions
 {
     ACTION_PROGRESS_UPDATE = 1,
     ACTION_CORRUPTOR_LEAVE,
@@ -158,15 +156,15 @@ enum InstanceActions
     ACTION_START_RP_EVENT5    // Mal'ganis encounter
 };
 
-enum InstanceEntries
+enum COSInstanceEntries
 {
-    NPC_ARTHAS              =  26499,
-    GO_HIDDEN_PASSAGE       = 188686,
-    SPAWNGRP_CHROMIE_MID    =     52,
-    SPAWNGRP_CRATE_HELPERS  =     53,
-    SPAWNGRP_GAUNTLET_TRASH =     54,
-    SPAWNGRP_UNDEAD_TRASH   =     55,
-    SPAWNGRP_RESIDENTS      =     56
+    NPC_ARTHAS = 26499,
+    GO_HIDDEN_PASSAGE = 188686,
+    SPAWNGRP_CHROMIE_MID = 52,
+    SPAWNGRP_CRATE_HELPERS = 53,
+    SPAWNGRP_GAUNTLET_TRASH = 54,
+    SPAWNGRP_UNDEAD_TRASH = 55,
+    SPAWNGRP_RESIDENTS = 56
 };
 
 template <class AI, class T>

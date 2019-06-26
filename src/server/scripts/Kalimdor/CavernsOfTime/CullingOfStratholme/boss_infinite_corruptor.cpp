@@ -15,28 +15,31 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ScriptMgr.h"
 #include "culling_of_stratholme.h"
+#include "InstanceScript.h"
+#include "MotionMaster.h"
 #include "ScriptedCreature.h"
+#include "ScriptMgr.h"
+#include "SpellInfo.h"
 
 enum Spells
 {
-    SPELL_CORRUPTING_BLIGHT                     = 60588,
-    SPELL_VOID_STRIKE                           = 60590,
-    SPELL_CORRUPTION_OF_TIME_CHANNEL            = 60422,
-    SPELL_CORRUPTION_OF_TIME_TARGET             = 60451
+    SPELL_CORRUPTING_BLIGHT = 60588,
+    SPELL_VOID_STRIKE = 60590,
+    SPELL_CORRUPTION_OF_TIME_CHANNEL = 60422,
+    SPELL_CORRUPTION_OF_TIME_TARGET = 60451
 };
 
 enum Yells
 {
-    SAY_AGGRO                                   = 0,
-    SAY_DEATH                                   = 1,
-    SAY_FAIL                                    = 2
+    SAY_AGGRO = 0,
+    SAY_DEATH = 1,
+    SAY_FAIL = 2
 };
 
 enum Events
 {
-    EVENT_CORRUPTING_BLIGHT                     = 1,
+    EVENT_CORRUPTING_BLIGHT = 1,
     EVENT_VOID_STRIKE
 };
 
@@ -65,6 +68,7 @@ class boss_infinite_corruptor : public CreatureScript
                 _Reset();
                 DoCastAOE(SPELL_CORRUPTION_OF_TIME_CHANNEL); // implicitly targets the Guardian
             }
+
             void SpellHitTarget(Unit* target, SpellInfo const* spell) override
             {
                 if (spell->Id == SPELL_CORRUPTION_OF_TIME_CHANNEL)
@@ -75,8 +79,8 @@ class boss_infinite_corruptor : public CreatureScript
             {
                 Talk(SAY_AGGRO);
                 _JustEngagedWith();
-                events.ScheduleEvent(EVENT_CORRUPTING_BLIGHT, 7000);
-                events.ScheduleEvent(EVENT_VOID_STRIKE, 5000);
+                events.ScheduleEvent(EVENT_CORRUPTING_BLIGHT, 7s);
+                events.ScheduleEvent(EVENT_VOID_STRIKE, 5s);
             }
 
             void JustDied(Unit* /*killer*/) override
@@ -101,11 +105,11 @@ class boss_infinite_corruptor : public CreatureScript
                     case EVENT_CORRUPTING_BLIGHT:
                         if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 60.0f, true))
                             DoCast(target, SPELL_CORRUPTING_BLIGHT);
-                        events.ScheduleEvent(EVENT_CORRUPTING_BLIGHT, 17000);
+                        events.ScheduleEvent(EVENT_CORRUPTING_BLIGHT, 15s);
                         break;
                     case EVENT_VOID_STRIKE:
                         DoCastVictim(SPELL_VOID_STRIKE);
-                        events.ScheduleEvent(EVENT_VOID_STRIKE, 5000);
+                        events.ScheduleEvent(EVENT_VOID_STRIKE, 5s);
                         break;
                     default:
                         break;

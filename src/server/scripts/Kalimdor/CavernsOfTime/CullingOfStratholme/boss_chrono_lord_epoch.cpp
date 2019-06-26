@@ -15,25 +15,28 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ScriptMgr.h"
 #include "culling_of_stratholme.h"
+#include "InstanceScript.h"
+#include "ObjectAccessor.h"
 #include "ScriptedCreature.h"
+#include "ScriptMgr.h"
+#include "SpellInfo.h"
+#include <vector>
 
 enum Spells
 {
-    SPELL_CURSE_OF_EXERTION     = 52772,
-    SPELL_TIME_WARP             = 52766,
-    SPELL_TIME_STOP             = 58848,
-    SPELL_WOUNDING_STRIKE       = 52771,
-    SPELL_TIME_STEP_DUMMY       = 52736,
-    SPELL_TIME_STEP_CHARGE      = 52737
+    SPELL_CURSE_OF_EXERTION = 52772,
+    SPELL_TIME_WARP = 52766,
+    SPELL_TIME_STOP = 58848,
+    SPELL_WOUNDING_STRIKE = 52771,
+    SPELL_TIME_STEP_DUMMY = 52736,
+    SPELL_TIME_STEP_CHARGE = 52737
 };
 
 enum Yells
 {
-    SAY_TIME_WARP   = 2,
-    SAY_SLAY        = 3,
-    SAY_DEATH       = 4
+    SAY_TIME_WARP = 2,
+    SAY_SLAY = 3,
 };
 
 enum Events
@@ -135,7 +138,6 @@ class boss_epoch : public CreatureScript
 
             void JustDied(Unit* /*killer*/) override
             {
-                Talk(SAY_DEATH);
                 _JustDied();
             }
 
@@ -145,6 +147,7 @@ class boss_epoch : public CreatureScript
                     Talk(SAY_SLAY);
             }
 
+        private:
             uint32 _stepTargetIndex;
             std::vector<ObjectGuid> _stepTargets;
         };

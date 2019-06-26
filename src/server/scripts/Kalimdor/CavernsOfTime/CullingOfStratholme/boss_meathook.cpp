@@ -15,21 +15,22 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ScriptMgr.h"
-#include "ScriptedCreature.h"
 #include "culling_of_stratholme.h"
+#include "InstanceScript.h"
+#include "ScriptedCreature.h"
+#include "ScriptMgr.h"
 
 enum Spells
 {
-    SPELL_CONSTRICTING_CHAINS   = 52696,
-    SPELL_DISEASE_EXPULSION     = 52666,
-    SPELL_FRENZY                = 58841
+    SPELL_CONSTRICTING_CHAINS = 52696,
+    SPELL_DISEASE_EXPULSION = 52666,
+    SPELL_FRENZY = 58841
 };
 
 enum Yells
 {
     SAY_AGGRO = 0,
-    SAY_SLAY  = 1,
+    SAY_SLAY = 1,
     SAY_SPAWN = 2,
     SAY_DEATH = 3
 };
