@@ -211,7 +211,7 @@ void SetGrandChampionToEvadeMode(Creature* me)
 {
     me->RemoveAllAuras();
     me->ApplySpellImmune(SPELL_TRAMPLE_AURA, IMMUNITY_ID, SPELL_TRAMPLE_AURA, false);
-    me->GetThreatManager().ClearAllThreat();
+    me->GetThreatManager().NotifyDisengaged();
     me->CombatStop(true);
     me->SetLootRecipient(nullptr);
     me->AI()->Reset();

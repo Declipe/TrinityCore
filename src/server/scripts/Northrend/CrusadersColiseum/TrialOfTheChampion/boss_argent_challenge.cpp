@@ -336,7 +336,7 @@ public:
                     break;
                 case EVENT_CHALLENGE_DONE:
                     me->RemoveAllAuras();
-                    me->GetThreatManager().ClearAllThreat();
+                    me->GetThreatManager().NotifyDisengaged();
                     me->SetFullHealth();
                     me->RestoreFaction();
                     DoCastAOE(SPELL_EADRIC_ACH, true);
@@ -517,7 +517,7 @@ public:
                     break;
                 case EVENT_CHALLENGE_DONE:
                     me->RemoveAllAuras();
-                    me->GetThreatManager().ClearAllThreat();
+                    me->GetThreatManager().NotifyDisengaged();
                     me->SetFullHealth();
                     DoCastAOE(SPELL_PALETRESS_ACH, true);
                     me->RestoreFaction();
