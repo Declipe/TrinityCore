@@ -697,14 +697,14 @@ bool BattlegroundWS::SetupBattleground()
         return false;
     }
 
-    WorldSafeLocsEntry const* sg = sDBCMgr->GetWorldSafeLocsEntry(WS_GRAVEYARD_MAIN_ALLIANCE);
+    WorldSafeLocsEntry const* sg = sWorldSafeLocsStore.LookupEntry(WS_GRAVEYARD_MAIN_ALLIANCE);
     if (!sg || !AddSpiritGuide(WS_SPIRIT_MAIN_ALLIANCE, sg->x, sg->y, sg->z, 3.124139f, TEAM_ALLIANCE))
     {
         TC_LOG_ERROR("sql.sql", "BatteGroundWS: Failed to spawn Alliance spirit guide! Battleground not created!");
         return false;
     }
 
-    sg = sDBCMgr->GetWorldSafeLocsEntry(WS_GRAVEYARD_MAIN_HORDE);
+    sg = sWorldSafeLocsStore.LookupEntry(WS_GRAVEYARD_MAIN_HORDE);
     if (!sg || !AddSpiritGuide(WS_SPIRIT_MAIN_HORDE, sg->x, sg->y, sg->z, 3.193953f, TEAM_HORDE))
     {
         TC_LOG_ERROR("sql.sql", "BatteGroundWS: Failed to spawn Horde spirit guide! Battleground not created!");
@@ -806,16 +806,16 @@ WorldSafeLocsEntry const* BattlegroundWS::GetClosestGraveyard(Player* player)
     if (player->GetTeam() == ALLIANCE)
     {
         if (GetStatus() == STATUS_IN_PROGRESS)
-            return sDBCMgr->GetWorldSafeLocsEntry(WS_GRAVEYARD_MAIN_ALLIANCE);
+            return sWorldSafeLocsStore.LookupEntry(WS_GRAVEYARD_MAIN_ALLIANCE);
         else
-            return sDBCMgr->GetWorldSafeLocsEntry(WS_GRAVEYARD_FLAGROOM_ALLIANCE);
+            return sWorldSafeLocsStore.LookupEntry(WS_GRAVEYARD_FLAGROOM_ALLIANCE);
     }
     else
     {
         if (GetStatus() == STATUS_IN_PROGRESS)
-            return sDBCMgr->GetWorldSafeLocsEntry(WS_GRAVEYARD_MAIN_HORDE);
+            return sWorldSafeLocsStore.LookupEntry(WS_GRAVEYARD_MAIN_HORDE);
         else
-            return sDBCMgr->GetWorldSafeLocsEntry(WS_GRAVEYARD_FLAGROOM_HORDE);
+            return sWorldSafeLocsStore.LookupEntry(WS_GRAVEYARD_FLAGROOM_HORDE);
     }
 }
 

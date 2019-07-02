@@ -1117,13 +1117,13 @@ WorldSafeLocsEntry const* BattlegroundAV::GetClosestGraveyard(Player* player)
 
     player->GetPosition(x, y);
 
-    pGraveyard = sDBCMgr->GetWorldSafeLocsEntry(BG_AV_GraveyardIds[GetTeamIndexByTeamId(player->GetTeam())+7]);
+    pGraveyard = sWorldSafeLocsStore.LookupEntry(BG_AV_GraveyardIds[GetTeamIndexByTeamId(player->GetTeam())+7]);
     minDist = (pGraveyard->x - x)*(pGraveyard->x - x)+(pGraveyard->y - y)*(pGraveyard->y - y);
 
     for (uint8 i = BG_AV_NODES_FIRSTAID_STATION; i <= BG_AV_NODES_FROSTWOLF_HUT; ++i)
         if (m_Nodes[i].Owner == player->GetTeam() && m_Nodes[i].State == POINT_CONTROLED)
         {
-            entry = sDBCMgr->GetWorldSafeLocsEntry(BG_AV_GraveyardIds[i]);
+            entry = sWorldSafeLocsStore.LookupEntry(BG_AV_GraveyardIds[i]);
             if (entry)
             {
                 dist = (entry->x - x)*(entry->x - x)+(entry->y - y)*(entry->y - y);

@@ -436,7 +436,7 @@ Battleground* BattlegroundMgr::CreateNewBattleground(BattlegroundTypeId original
                 maxPlayersPerTeam = 3;
                 break;
             case ARENA_TYPE_5v5:
-                maxPlayersPerTeam = 1; // 1v1 Arena
+                maxPlayersPerTeam = 5;
                 break;
         }
 
@@ -584,7 +584,7 @@ void BattlegroundMgr::LoadBattlegroundTemplates()
         if (bgTemplate.Id != BATTLEGROUND_AA && bgTemplate.Id != BATTLEGROUND_RB)
         {
             uint32 startId = fields[5].GetUInt32();
-            if (WorldSafeLocsEntry const* start = sDBCMgr->GetWorldSafeLocsEntry(startId))
+            if (WorldSafeLocsEntry const* start = sWorldSafeLocsStore.LookupEntry(startId))
             {
                 bgTemplate.StartLocation[TEAM_ALLIANCE].Relocate(start->x, start->y, start->z, fields[6].GetFloat());
             }
@@ -595,7 +595,7 @@ void BattlegroundMgr::LoadBattlegroundTemplates()
             }
 
             startId = fields[7].GetUInt32();
-            if (WorldSafeLocsEntry const* start = sDBCMgr->GetWorldSafeLocsEntry(startId))
+            if (WorldSafeLocsEntry const* start = sWorldSafeLocsStore.LookupEntry(startId))
             {
                 bgTemplate.StartLocation[TEAM_HORDE].Relocate(start->x, start->y, start->z, fields[8].GetFloat());
             }

@@ -514,14 +514,14 @@ bool BattlegroundEY::SetupBattleground()
             TC_LOG_ERROR("bg.battleground", "BattlegroundEY: Could not spawn Speedbuff Fel Reaver.");
     }
 
-    WorldSafeLocsEntry const* sg = sDBCMgr->GetWorldSafeLocsEntry(EY_GRAVEYARD_MAIN_ALLIANCE);
+    WorldSafeLocsEntry const* sg = sWorldSafeLocsStore.LookupEntry(EY_GRAVEYARD_MAIN_ALLIANCE);
     if (!sg || !AddSpiritGuide(EY_SPIRIT_MAIN_ALLIANCE, sg->x, sg->y, sg->z, 3.124139f, TEAM_ALLIANCE))
     {
         TC_LOG_ERROR("sql.sql", "BatteGroundEY: Failed to spawn spirit guide. The battleground was not created.");
         return false;
     }
 
-    sg = sDBCMgr->GetWorldSafeLocsEntry(EY_GRAVEYARD_MAIN_HORDE);
+    sg = sWorldSafeLocsStore.LookupEntry(EY_GRAVEYARD_MAIN_HORDE);
     if (!sg || !AddSpiritGuide(EY_SPIRIT_MAIN_HORDE, sg->x, sg->y, sg->z, 3.193953f, TEAM_HORDE))
     {
         TC_LOG_ERROR("sql.sql", "BatteGroundEY: Failed to spawn spirit guide. The battleground was not created.");
@@ -758,7 +758,7 @@ void BattlegroundEY::EventTeamCapturedPoint(Player* player, uint32 Point)
     if (BgCreatures[Point])
         DelCreature(Point);
 
-    WorldSafeLocsEntry const* sg = sDBCMgr->GetWorldSafeLocsEntry(m_CapturingPointTypes[Point].GraveyardId);
+    WorldSafeLocsEntry const* sg = sWorldSafeLocsStore.LookupEntry(m_CapturingPointTypes[Point].GraveyardId);
     if (!sg || !AddSpiritGuide(Point, sg->x, sg->y, sg->z, 3.124139f, GetTeamIndexByTeamId(Team)))
         TC_LOG_ERROR("bg.battleground", "BatteGroundEY: Failed to spawn spirit guide. point: %u, team: %u, graveyard_id: %u",
             Point, Team, m_CapturingPointTypes[Point].GraveyardId);
@@ -885,7 +885,7 @@ WorldSafeLocsEntry const* BattlegroundEY::GetClosestGraveyard(Player* player)
 
     WorldSafeLocsEntry const* entry = nullptr;
     WorldSafeLocsEntry const* nearestEntry = nullptr;
-    entry = sDBCMgr->GetWorldSafeLocsEntry(g_id);
+    entry = sWorldSafeLocsStore.LookupEntry(g_id);
     nearestEntry = entry;
 
     if (!entry)
@@ -905,7 +905,7 @@ WorldSafeLocsEntry const* BattlegroundEY::GetClosestGraveyard(Player* player)
     {
         if (m_PointOwnedByTeam[i] == player->GetTeam() && m_PointState[i] == EY_POINT_UNDER_CONTROL)
         {
-            entry = sDBCMgr->GetWorldSafeLocsEntry(m_CapturingPointTypes[i].GraveyardId);
+            entry = sWorldSafeLocsStore.LookupEntry(m_CapturingPointTypes[i].GraveyardId);
             if (!entry)
                 TC_LOG_ERROR("bg.battleground", "BattlegroundEY: Graveyard %u could not be found.", m_CapturingPointTypes[i].GraveyardId);
             else
