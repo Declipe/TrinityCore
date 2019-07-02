@@ -4592,17 +4592,6 @@ DeathKnight.SkipQuest = 0
 GuildDefault.IDA = 0
 GuildDefault.IDH = 0
 ###################################################################################################
-###################################################################################################
-#		CROSSFACTION BG CONFIG
-#			Enable Crossfaction battleground
-#			Default: 1 - on
-#					 0 - off
-#
-
-CrossfactionBG.enable = 1
-
-#
-###################################################################################################
 #
 # Prepatch by LordPsyan.
 # See http://www.realmsofwarcraft.com/bb for forums and information.
