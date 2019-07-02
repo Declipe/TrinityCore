@@ -60,7 +60,7 @@ public:
         if (!DefaultSpecEnable)
             return;
 
-        uint32 pclass = player->getClass();
+        uint32 pclass = player->GetClass();
 
         if (pclass == 1) {
             player->LearnTalent(130, 0);

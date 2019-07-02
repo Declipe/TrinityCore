@@ -66,7 +66,7 @@
 #define NEXT_PAGE               "-> [Next Page]"
 #define PREV_PAGE               "<- [Previous Page]"
 #define MAIN_MENU               "<= [Main Menu]"
-#define MAIN_MENU7              " [Сброс]"
+#define MAIN_MENU7              " [?????]"
 
 using namespace nsNpcTel;
 
@@ -164,7 +164,7 @@ namespace
     {
         Dest dest (TabCatDest[Cat[player]].GetDest(id));
 
-        if (player->getLevel() < dest.m_level && !player->IsGameMaster())
+        if (player->GetLevel() < dest.m_level && !player->IsGameMaster())
         {
             LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
             char const* text = sObjectMgr->GetTrinityString(8000, loc_idx);

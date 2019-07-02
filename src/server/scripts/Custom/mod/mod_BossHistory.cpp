@@ -119,7 +119,7 @@ class mod_BossHistory_AllCreatureScript : public AllCreatureScript
                     std::ostringstream PeopleData;
 					PeopleData << Temp->GetGUID().GetCounter() << DATA_SEPARATOR;
                     PeopleData << Temp->GetName() << DATA_SEPARATOR;
-                    PeopleData << uint32(Temp->getLevel()) << DATA_SEPARATOR;
+                    PeopleData << uint32(Temp->GetLevel()) << DATA_SEPARATOR;
                     PeopleData << playerGuildId << DATA_SEPARATOR;
                     PeopleData << uint32(Temp->IsAlive()) << DATA_SEPARATOR;
                     PeopleData << uint32(Temp->IsAtGroupRewardDistance(creature)) << PEOPLE_SEPARATOR;
@@ -146,7 +146,7 @@ class mod_BossHistory_AllCreatureScript : public AllCreatureScript
                 std::ostringstream PeopleData;
 				PeopleData << recipient->GetGUID().GetCounter() << DATA_SEPARATOR;
                 PeopleData << recipient->GetName() << DATA_SEPARATOR;
-                PeopleData << uint32(recipient->getLevel()) << DATA_SEPARATOR;
+                PeopleData << uint32(recipient->GetLevel()) << DATA_SEPARATOR;
                 PeopleData << recipient->GetGuildId() << DATA_SEPARATOR;
                 PeopleData << uint32(recipient->IsAlive()) << DATA_SEPARATOR;
                 PeopleData << uint32(1) << PEOPLE_SEPARATOR;

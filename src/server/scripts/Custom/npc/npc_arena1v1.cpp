@@ -74,7 +74,7 @@ public:
         if(!player || !me)
             return false;
 
-        if(sWorld->getIntConfig(CONFIG_ARENA_1V1_MIN_LEVEL) > player->getLevel())
+        if(sWorld->getIntConfig(CONFIG_ARENA_1V1_MIN_LEVEL) > player->GetLevel())
             return false;
 
         ObjectGuid guid = player->GetGUID();
@@ -103,7 +103,7 @@ public:
 
         BattlegroundTypeId bgTypeId = bg->GetTypeID();
         BattlegroundQueueTypeId bgQueueTypeId = BattlegroundMgr::BGQueueTypeId(bgTypeId, arenatype);
-        PvPDifficultyEntry const* bracketEntry = GetBattlegroundBracketByLevel(bg->GetMapId(), player->getLevel());
+        PvPDifficultyEntry const* bracketEntry = GetBattlegroundBracketByLevel(bg->GetMapId(), player->GetLevel());
         if (!bracketEntry)
             return false;
 
@@ -143,7 +143,7 @@ public:
 		{
 			if (bgQueue.IPExistsInQueue(player, nullptr, bracketEntry, isRated, false))
 			{
-				ChatHandler(player->GetSession()).SendSysMessage("Вы не можете присоединитьс¤ 1х1 сейчас, потому что уже есть кто - то в очереди с тем же IP");
+				ChatHandler(player->GetSession()).SendSysMessage("?? ?? ?????? ?????????????� 1?1 ??????, ?????? ??? ??? ???? ??? - ?? ? ??????? ? ??? ?? IP");
 				//ChatHandler(player->GetSession()).SendSysMessage("You cannot join 1v1 Arena now because there is already someone queued with the same IP address.");
 				return false;
 			}
@@ -222,29 +222,29 @@ public:
 
         if(sWorld->getBoolConfig(CONFIG_ARENA_1V1_ENABLE) == false)
         {
-            ChatHandler(player->GetSession()).SendSysMessage("Арена 1v1 не доступна!");
+            ChatHandler(player->GetSession()).SendSysMessage("????? 1v1 ?? ????????!");
             return true;
         }
 
         if(player->InBattlegroundQueueForBattlegroundQueueType(BATTLEGROUND_QUEUE_5v5))
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Leave queue 1v1 Arena", GOSSIP_SENDER_MAIN, 3, "Are you sure?", 0, false);
         else
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Зарегестрироваться без Рейтинга", GOSSIP_SENDER_MAIN, 20);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "?????????????????? ??? ????????", GOSSIP_SENDER_MAIN, 20);
 
         if(player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_5v5)) == 0)
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Создать команду", GOSSIP_SENDER_MAIN, 1, "Вы уверены?", sWorld->getIntConfig(CONFIG_ARENA_1V1_COSTS), false);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "??????? ???????", GOSSIP_SENDER_MAIN, 1, "?? ????????", sWorld->getIntConfig(CONFIG_ARENA_1V1_COSTS), false);
         else
         {
             if(player->InBattlegroundQueueForBattlegroundQueueType(BATTLEGROUND_QUEUE_5v5) == false)
             {
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Зарегестрироваться с Рейтингом", GOSSIP_SENDER_MAIN, 2);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Распустить команду", GOSSIP_SENDER_MAIN, 5, "Вы уверены?", 0, false);
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "?????????????????? ? ?????????", GOSSIP_SENDER_MAIN, 2);
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "?????????? ???????", GOSSIP_SENDER_MAIN, 5, "?? ????????", 0, false);
             }
 
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Покажи статистику", GOSSIP_SENDER_MAIN, 4);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "?????? ??????????", GOSSIP_SENDER_MAIN, 4);
         }
 
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Информация", GOSSIP_SENDER_MAIN, 8);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "??????????", GOSSIP_SENDER_MAIN, 8);
         SendGossipMenuFor(player, 68, me->GetGUID());
         return true;
     }
@@ -267,7 +267,7 @@ public:
         {
         case 1: // Create new Arenateam
             {
-                if(sWorld->getIntConfig(CONFIG_ARENA_1V1_MIN_LEVEL) <= player->getLevel())
+                if(sWorld->getIntConfig(CONFIG_ARENA_1V1_MIN_LEVEL) <= player->GetLevel())
                 {
                     if(player->GetMoney() >= sWorld->getIntConfig(CONFIG_ARENA_1V1_COSTS) && CreateArenateam(player, me))
                         player->ModifyMoney(sWorld->getIntConfig(CONFIG_ARENA_1V1_COSTS) * -1);

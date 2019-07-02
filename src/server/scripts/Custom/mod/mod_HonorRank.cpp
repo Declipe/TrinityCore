@@ -249,10 +249,10 @@ class Mod_CustomRewardPvP_PlayerScript : public PlayerScript
         Mod_CustomRewardPvP_PlayerScript() : PlayerScript("Mod_CustomRewardPvP_PlayerScript") { }
 
     bool CheckSelfReq(CustomRewardPvPTemplate& tpl, Player* pl) {
-        if (tpl.req_self_class_mask != 0 && !(tpl.req_self_class_mask & pl->getClassMask())) {
+        if (tpl.req_self_class_mask != 0 && !(tpl.req_self_class_mask & pl->GetClassMask())) {
             return false;
         }
-        if (tpl.req_self_race_mask != 0 && !(tpl.req_self_race_mask & pl->getRaceMask())) {
+        if (tpl.req_self_race_mask != 0 && !(tpl.req_self_race_mask & pl->GetRaceMask())) {
             return false;
         }
 		if (tpl.req_self_guid != 0 && tpl.req_self_guid != pl->GetGUID().GetCounter()) {
@@ -294,8 +294,8 @@ class Mod_CustomRewardPvP_PlayerScript : public PlayerScript
         bool isArea = killer->InArena();
         uint32 zoneId = killer->GetZoneId();
         uint32 mapId = killer->GetMapId();
-        uint32 targetRaceMask = killed->getRaceMask();
-        uint32 targetClassMask = killed->getClassMask();
+        uint32 targetRaceMask = killed->GetRaceMask();
+        uint32 targetClassMask = killed->GetClassMask();
         uint32 guildId = killed->GetGuildId();
 
         for (uint32 i = 0; i < CustomRewardPvPInfo.size(); ++i)

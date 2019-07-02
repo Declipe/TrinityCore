@@ -236,9 +236,9 @@ public:
 
         if (SpellMask == 0) return;
 
-        uint32  PlayerClassMask = Player->getClassMask();
-        uint32  PlayerRaceMask  = Player->getRaceMask();
-        uint8   PlayerLevel     = Player->getLevel();
+        uint32  PlayerClassMask = Player->GetClassMask();
+        uint32  PlayerRaceMask  = Player->GetRaceMask();
+        uint8   PlayerLevel     = Player->GetLevel();
 
         for (uint16 i = 0; i < LearnSpellForClass.size(); ++i)
         {
@@ -258,7 +258,7 @@ public:
 
     void learnDualSpec(Player* Player)
     {
-        if (Player->getLevel() < sWorld->getIntConfig(CONFIG_MIN_DUALSPEC_LEVEL)) return;
+        if (Player->GetLevel() < sWorld->getIntConfig(CONFIG_MIN_DUALSPEC_LEVEL)) return;
 
         if (Player->GetSpecsCount() != 1) return;
 

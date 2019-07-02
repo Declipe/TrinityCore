@@ -211,7 +211,7 @@ public:
 	// See "static void HandleLearnSkillRecipesHelper(Player* player,uint32 skill_id)" from cs_learn.cpp
 	void LearnSkillRecipesHelper(Player *player, uint32 skill_id)
 	{
-		uint32 classmask = player->getClassMask();
+		uint32 classmask = player->GetClassMask();
 
 		for (uint32 j = 0; j < sSkillLineAbilityStore.GetNumRows(); ++j)
 		{
@@ -490,7 +490,7 @@ public:
           CloseGossipMenuFor(player);
         break;
         case 32333:
-          if ((player->getClass() == CLASS_HUNTER))
+          if ((player->GetClass() == CLASS_HUNTER))
            {
              player->AddItem(38082, 3);
              player->AddItem(44448, 1);

@@ -84,7 +84,7 @@ public: item_lvlup() : ItemScript("item_lvlup") {}
         bool OnUse(Player* player, Item* item, SpellCastTargets const& /*Targets*/)
         {
             WorldSession* session = player->GetSession();
-            if (player->getLevel() != 255)
+            if (player->GetLevel() != 255)
             {
                 if (player->IsInFlight() || player->IsInCombat() || player->isDead())
                 {
@@ -93,8 +93,8 @@ public: item_lvlup() : ItemScript("item_lvlup") {}
                 }
                 else
                 {
-                    int32 level = player->getLevel();
-                    player->GiveLevel(player->GetSession()->GetPlayer()->getLevel() + 1);
+                    int32 level = player->GetLevel();
+                    player->GiveLevel(player->GetSession()->GetPlayer()->GetLevel() + 1);
                     player->DestroyItemCount(item->GetEntry(), 1, true);
                    // ChatHandler(session).PSendSysMessage(LANG_SAY_LVL_UP_ITEM);
                     return true;

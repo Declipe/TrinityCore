@@ -145,7 +145,7 @@ public:
 
     bool GossipHello(Player* player) override
     {
-        if ((player->getClass() == CLASS_HUNTER))
+        if ((player->GetClass() == CLASS_HUNTER))
         {
         AddGossipItemFor(player, 0, "|cff00ff00|TInterface\\icons\\Ability_Hunter_Pet_Devilsaur:30|t|r Normal Creatures (Cost 25 Gold)", GOSSIP_SENDER_MAIN, pets);
         AddGossipItemFor(player, 0, "|cff00ff00|TInterface\\icons\\Ability_Hunter_BeastMastery:30|t|r Exotic Creatures (Cost 500 Gold)", GOSSIP_SENDER_MAIN, exotic);
