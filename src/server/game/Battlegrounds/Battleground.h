@@ -202,7 +202,7 @@ enum ArenaType
 {
     ARENA_TYPE_2v2          = 2,
     ARENA_TYPE_3v3          = 3,
-    ARENA_TYPE_5v5          = 1 // 1v1 Arena - 5v5 doesn't exist anymore
+    ARENA_TYPE_5v5          = 5
 };
 
 enum BattlegroundStartingEvents
@@ -385,9 +385,8 @@ class TC_GAME_API Battleground
         void CastSpellOnTeam(uint32 SpellID, uint32 TeamID);
         void RemoveAuraOnTeam(uint32 SpellID, uint32 TeamID);
         void RewardHonorToTeam(uint32 Honor, uint32 TeamID);
-        void RewardReputationToTeam(uint32 a_faction_id, uint32 h_faction_id, uint32 Reputation, uint32 TeamID);
+        void RewardReputationToTeam(uint32 faction_id, uint32 Reputation, uint32 TeamID);
         void UpdateWorldState(uint32 variable, uint32 value);
-
         virtual void EndBattleground(uint32 winner);
         void BlockMovement(Player* player);
 
