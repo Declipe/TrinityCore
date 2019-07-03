@@ -11611,7 +11611,7 @@ void Unit::RemoveCharmedBy(Unit* charmer)
 void Unit::RestoreFaction()
 {
     if (GetTypeId() == TYPEID_PLAYER)
-        ToPlayer()->setFactionForRace(GetRace());
+        ToPlayer()->setFactionForRace(ToPlayer()->GetRace());
     else
     {
         if (HasUnitTypeMask(UNIT_MASK_MINION))
@@ -12359,6 +12359,21 @@ uint32 Unit::GetModelForTotem(PlayerTotemType totemType)
             }
             break;
         }
+    default: // One standard for other races.
+            {
+                switch (totemType)
+                {
+                    case SUMMON_TYPE_TOTEM_FIRE:    // fire
+                        return 4589;
+                        case SUMMON_TYPE_TOTEM_EARTH:   // earth
+                            return 4588;
+                            case SUMMON_TYPE_TOTEM_WATER:   // water
+                                return 4587;
+                                case SUMMON_TYPE_TOTEM_AIR:     // air
+                                    return 4590;
+                                    }
+                break;
+                }
     }
     return 0;
 }
