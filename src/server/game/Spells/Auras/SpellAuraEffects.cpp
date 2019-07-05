@@ -5034,6 +5034,11 @@ void AuraEffect::HandlePeriodicTriggerSpellAuraTick(Unit* target, Unit* caster) 
             if (GetSpellInfo()->HasAttribute(SPELL_ATTR4_INHERIT_CRIT_FROM_AURA))
                 args.AddSpellMod(SPELLVALUE_CRIT_CHANCE, int32(GetBase()->GetCritChance() * 100.0f)); // @todo: ugly x100 remove when basepoints are double
 
+#ifdef ELUNA
+            Creature* c = target->ToCreature();
+            if (c && caster && !sEluna->OnDummyEffect(triggerCaster, GetId(), SpellEffIndex(GetEffIndex()), c))
+                return;
+#endif
             triggerCaster->CastSpell(target, triggerSpellId, args);
             TC_LOG_DEBUG("spells.aura.effect", "AuraEffect::HandlePeriodicTriggerSpellAuraTick: Spell %u Trigger %u", GetId(), triggeredSpellInfo->Id);
         }
