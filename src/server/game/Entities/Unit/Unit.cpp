@@ -1590,7 +1590,7 @@ void Unit::HandleEmoteCommand(uint32 anim_id)
     damageReduction /= (1.0f + damageReduction);
 
     RoundToInterval(damageReduction, 0.f, 0.75f);
-    return std::max<uint32>(damage * (1.0f - damageReduction), 0);
+    return uint32(std::max(damage * (1.0f - damageReduction), 0.0f));
 }
 
 /*static*/ uint32 Unit::CalcSpellResistedDamage(Unit const* attacker, Unit* victim, uint32 damage, SpellSchoolMask schoolMask, SpellInfo const* spellInfo)
@@ -7896,6 +7896,9 @@ uint32 Unit::MeleeDamageBonusTaken(Unit* attacker, uint32 pdamage, WeaponAttackT
         TakenFlatBenefit += GetTotalAuraModifier(SPELL_AURA_MOD_MELEE_DAMAGE_TAKEN);
     else
         TakenFlatBenefit += GetTotalAuraModifier(SPELL_AURA_MOD_RANGED_DAMAGE_TAKEN);
+
+    if ((TakenFlatBenefit < 0) && (pdamage < static_cast<uint32>(-TakenFlatBenefit)))
+        return 0;
 
     // Taken total percent damage auras
     float TakenTotalMod = 1.0f;
