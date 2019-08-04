@@ -441,6 +441,7 @@ public:
 
 	// Called when die creature
 	   virtual void AllCreatureJustDied(Creature* /*creature*/) { }
+       virtual void AllCreatureCode(Player* /*player*/, Creature* /*creature*/, uint32 /*sender*/, uint32 /*action*/, const char* /*code*/) { }
 };
 
 class TC_GAME_API GameObjectScript : public ScriptObject
@@ -957,6 +958,7 @@ class TC_GAME_API ScriptMgr
     public: /* AllCreatureScript */
 
         void AllCreatureJustDied(Creature* creature);
+        void AllCreatureCode(Player* player, Creature* creature, uint32 sender, uint32 action, const char* code);
 
     public: /* GameObjectScript */
 

@@ -1735,6 +1735,11 @@ void ScriptMgr::OnWeatherUpdate(Weather* weather, uint32 diff)
     tmpscript->OnUpdate(weather, diff);
 }
 
+void ScriptMgr::AllCreatureCode(Player* player, Creature* creature, uint32 sender, uint32 action, const char* code)
+{
+    FOREACH_SCRIPT(AllCreatureScript)->AllCreatureCode(player, creature, sender, action, code);
+}
+
 void ScriptMgr::AllCreatureJustDied(Creature* creature)
 {
 	FOREACH_SCRIPT(AllCreatureScript)->AllCreatureJustDied(creature);
