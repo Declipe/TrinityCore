@@ -1645,8 +1645,11 @@ class spell_toc5_trample_aura : public SpellScriptLoader
                 targets.remove_if(Trinity::UnitAuraCheck(true, GetSpellInfo()->Id));
             }
 
-            void HandleStun()
+            void HandleStun(SpellMissInfo missInfo)
             {
+                if (missInfo != SPELL_MISS_NONE)
+                    return;
+
                 if (Unit* target = GetHitUnit())
                 {
                     // If target is mounted, do not apply
@@ -1669,9 +1672,8 @@ class spell_toc5_trample_aura : public SpellScriptLoader
             void Register() override
             {
                 OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_toc5_trample_aura_SpellScript::RemoveInvalidTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
-                BeforeHit += SpellHitFn(spell_toc5_trample_aura_SpellScript::HandleStun);
-                AfterHit += SpellHitFn(spell_toc5_trample_aura_SpellScript::RemoveAura);
-            }
+                BeforeHit += BeforeSpellHitFn(spell_toc5_trample_aura_SpellScript::HandleStun);
+                AfterHit += SpellHitFn(spell_toc5_trample_aura_SpellScript::RemoveAura);            }
 
             bool _removed = false;
         };
