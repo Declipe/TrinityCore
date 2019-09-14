@@ -2351,28 +2351,28 @@ Rate.ArenaPoints = 5
 #        Description: Talent point rate.
 #        Default:     1
 
-Rate.Talent = 1.5
+Rate.Talent = 1.4
 
 #
 #    Rate.Reputation.Gain
 #        Description: Reputation gain rate.
 #        Default:     1
 
-Rate.Reputation.Gain = 10
+Rate.Reputation.Gain = 3
 
 #
 #    Rate.Reputation.LowLevel.Kill
 #        Description: Reputation gain from killing low level (grey) creatures.
 #        Default:     1
 
-Rate.Reputation.LowLevel.Kill = 10
+Rate.Reputation.LowLevel.Kill = 3
 
 #
 #    Rate.Reputation.LowLevel.Quest
 #        Description: Reputation gain rate.
 #        Default:     1
 
-Rate.Reputation.LowLevel.Quest = 10
+Rate.Reputation.LowLevel.Quest = 3
 
 #
 #    Rate.Reputation.RecruitAFriendBonus
@@ -3523,30 +3523,30 @@ AuctionHouseBot.Items.Gray.Price.Ratio = 100
 AuctionHouseBot.Items.White.Price.Ratio = 100
 AuctionHouseBot.Items.Green.Price.Ratio = 100
 AuctionHouseBot.Items.Blue.Price.Ratio = 100
-AuctionHouseBot.Items.Purple.Price.Ratio = 60
-AuctionHouseBot.Items.Orange.Price.Ratio = 0
-AuctionHouseBot.Items.Yellow.Price.Ratio = 0
+AuctionHouseBot.Items.Purple.Price.Ratio = 100
+AuctionHouseBot.Items.Orange.Price.Ratio = 100
+AuctionHouseBot.Items.Yellow.Price.Ratio = 100
 
 #
 #    AuctionHouseBot.Class.CLASS.Price.Ratio
 #       Description: Percentage by which the price of items sold of each class is incremented / decreased (for all houses)
 #       Default:   100 - (No change)
 
-AuctionHouseBot.Class.Consumable.Price.Ratio = 30
-AuctionHouseBot.Class.Container.Price.Ratio = 0
-AuctionHouseBot.Class.Weapon.Price.Ratio = 40
-AuctionHouseBot.Class.Gem.Price.Ratio = 30
-AuctionHouseBot.Class.Armor.Price.Ratio = 40
-AuctionHouseBot.Class.Reagent.Price.Ratio = 10
-AuctionHouseBot.Class.Projectile.Price.Ratio = 0
-AuctionHouseBot.Class.TradeGood.Price.Ratio = 50
-AuctionHouseBot.Class.Generic.Price.Ratio = 30
-AuctionHouseBot.Class.Recipe.Price.Ratio = 10
-AuctionHouseBot.Class.Quiver.Price.Ratio = 10
-AuctionHouseBot.Class.Quest.Price.Ratio = 0
-AuctionHouseBot.Class.Key.Price.Ratio = 0
-AuctionHouseBot.Class.Misc.Price.Ratio = 30
-AuctionHouseBot.Class.Glyph.Price.Ratio = 10
+AuctionHouseBot.Class.Consumable.Price.Ratio = 100
+AuctionHouseBot.Class.Container.Price.Ratio = 100
+AuctionHouseBot.Class.Weapon.Price.Ratio = 100
+AuctionHouseBot.Class.Gem.Price.Ratio = 100
+AuctionHouseBot.Class.Armor.Price.Ratio = 100
+AuctionHouseBot.Class.Reagent.Price.Ratio = 100
+AuctionHouseBot.Class.Projectile.Price.Ratio = 100
+AuctionHouseBot.Class.TradeGood.Price.Ratio = 100
+AuctionHouseBot.Class.Generic.Price.Ratio = 100
+AuctionHouseBot.Class.Recipe.Price.Ratio = 100
+AuctionHouseBot.Class.Quiver.Price.Ratio = 100
+AuctionHouseBot.Class.Quest.Price.Ratio = 100
+AuctionHouseBot.Class.Key.Price.Ratio = 100
+AuctionHouseBot.Class.Misc.Price.Ratio = 100
+AuctionHouseBot.Class.Glyph.Price.Ratio = 100
 
 #
 #    AuctionHouseBot.Items.ItemLevel.*
@@ -3554,7 +3554,7 @@ AuctionHouseBot.Class.Glyph.Price.Ratio = 10
 #       Default:     0 - (Disabled)
 
 AuctionHouseBot.Items.ItemLevel.Min = 0
-AuctionHouseBot.Items.ItemLevel.Max = 245
+AuctionHouseBot.Items.ItemLevel.Max = 0
 
 #
 #    AuctionHouseBot.Items.ReqLevel.*
@@ -3580,13 +3580,13 @@ AuctionHouseBot.Items.ReqSkill.Max = 0
 #                    items that will finally be shown on Auction House
 #       Default:     0, 2000, 2500, 1500, 1000, 0, 0 (Gray, white, green, blue, purple, orange, yellow)
 
-AuctionHouseBot.Items.Amount.Gray = 0
-AuctionHouseBot.Items.Amount.White = 2000
-AuctionHouseBot.Items.Amount.Green = 2000
-AuctionHouseBot.Items.Amount.Blue = 2500
-AuctionHouseBot.Items.Amount.Purple = 1000
-AuctionHouseBot.Items.Amount.Orange = 0
-AuctionHouseBot.Items.Amount.Yellow = 0
+AuctionHouseBot.Items.Amount.Gray = 20000
+AuctionHouseBot.Items.Amount.White = 20000
+AuctionHouseBot.Items.Amount.Green = 25000
+AuctionHouseBot.Items.Amount.Blue = 15000
+AuctionHouseBot.Items.Amount.Purple = 10000
+AuctionHouseBot.Items.Amount.Orange = 1000
+AuctionHouseBot.Items.Amount.Yellow = 200
 
 #
 #    AuctionHouseBot.Class.*
@@ -3608,21 +3608,21 @@ AuctionHouseBot.Items.Amount.Yellow = 0
 #                    Misc: 5
 #                    Glyph: 3
 
-AuctionHouseBot.Class.Consumable = 6
-AuctionHouseBot.Class.Container = 0
-AuctionHouseBot.Class.Weapon = 9
-AuctionHouseBot.Class.Gem = 5
+AuctionHouseBot.Class.Consumable = 10
+AuctionHouseBot.Class.Container = 10
+AuctionHouseBot.Class.Weapon = 10
+AuctionHouseBot.Class.Gem = 10
 AuctionHouseBot.Class.Armor = 10
-AuctionHouseBot.Class.Reagent = 0
+AuctionHouseBot.Class.Reagent = 10
 AuctionHouseBot.Class.Projectile = 10
-AuctionHouseBot.Class.TradeGood = 0
-AuctionHouseBot.Class.Generic = 5
-AuctionHouseBot.Class.Recipe = 5
-AuctionHouseBot.Class.Quiver = 2
-AuctionHouseBot.Class.Quest = 0
-AuctionHouseBot.Class.Key = 0
-AuctionHouseBot.Class.Misc = 4
-AuctionHouseBot.Class.Glyph = 2
+AuctionHouseBot.Class.TradeGood = 10
+AuctionHouseBot.Class.Generic = 10
+AuctionHouseBot.Class.Recipe = 10
+AuctionHouseBot.Class.Quiver = 10
+AuctionHouseBot.Class.Quest = 10
+AuctionHouseBot.Class.Key = 10
+AuctionHouseBot.Class.Misc = 10
+AuctionHouseBot.Class.Glyph = 10
 
 #
 ###################################################################################################
@@ -3766,7 +3766,7 @@ AuctionHouseBot.Buyer.Neutral.Enabled = 1
 #                    It must be a decimal number in the range of (0, +infinity). The higher the number the higher chance to buy overpriced auctions
 #       Default:     2
 
-AuctionHouseBot.Buyer.ChanceFactor = 6
+AuctionHouseBot.Buyer.ChanceFactor = 2
 
 #
 #    AuctionHouseBot.Buyer.Baseprice.QUALITY
@@ -3780,13 +3780,13 @@ AuctionHouseBot.Buyer.ChanceFactor = 6
 #                    Orange 214347
 #                    Yellow 407406
 
-AuctionHouseBot.Buyer.Baseprice.Gray = 350400
-AuctionHouseBot.Buyer.Baseprice.White = 542900
-AuctionHouseBot.Buyer.Baseprice.Green = 2175200
-AuctionHouseBot.Buyer.Baseprice.Blue = 3646300
-AuctionHouseBot.Buyer.Baseprice.Purple = 87124000
-AuctionHouseBot.Buyer.Baseprice.Orange = 2143470000
-AuctionHouseBot.Buyer.Baseprice.Yellow = 4074060000
+AuctionHouseBot.Buyer.Baseprice.Gray = 3504
+AuctionHouseBot.Buyer.Baseprice.White = 5429
+AuctionHouseBot.Buyer.Baseprice.Green = 21752
+AuctionHouseBot.Buyer.Baseprice.Blue = 36463
+AuctionHouseBot.Buyer.Baseprice.Purple = 87124
+AuctionHouseBot.Buyer.Baseprice.Orange = 214347
+AuctionHouseBot.Buyer.Baseprice.Yellow = 407406
 
 #
 #    AuctionHouseBot.Buyer.ChanceMultiplier.QUALITY
@@ -3800,11 +3800,11 @@ AuctionHouseBot.Buyer.Baseprice.Yellow = 4074060000
 #                    Orange 100
 #                    Yellow 100
 
-AuctionHouseBot.Buyer.ChanceMultiplier.Gray = 20
-AuctionHouseBot.Buyer.ChanceMultiplier.White = 20
-AuctionHouseBot.Buyer.ChanceMultiplier.Green = 30
-AuctionHouseBot.Buyer.ChanceMultiplier.Blue = 30
-AuctionHouseBot.Buyer.ChanceMultiplier.Purple = 30
+AuctionHouseBot.Buyer.ChanceMultiplier.Gray = 100
+AuctionHouseBot.Buyer.ChanceMultiplier.White = 100
+AuctionHouseBot.Buyer.ChanceMultiplier.Green = 100
+AuctionHouseBot.Buyer.ChanceMultiplier.Blue = 100
+AuctionHouseBot.Buyer.ChanceMultiplier.Purple = 100
 AuctionHouseBot.Buyer.ChanceMultiplier.Orange = 100
 AuctionHouseBot.Buyer.ChanceMultiplier.Yellow = 100
 
