@@ -33,87 +33,87 @@
 #include "DatabaseEnvFwd.h"
 #include "Log.h"
 
-#define MSG_GOSSIP_TEXT_GETTING_STARTED	"Приветствуем вас на сервере"// OneGo - World of Warcraft !"
+#define MSG_GOSSIP_TEXT_GETTING_STARTED	"???????????? ??? ?? ???????"// OneGo - World of Warcraft !"
 
-#define MSG_ERR_HONOR "У вас не достаточно хонора для совершения покупки!"
-#define MSG_ERR_ARENA_POINT_1 "У вас не достаточно Апа!"
-#define MSG_ERR_TITLE "У данного персонажа уже есть такое звание!"
-#define MSG_ERR_INCOMBAT "Вы находитесь в бою. Чтобы использовать данного Npc выйдите из него."
-#define MSG_COMPLETE_RENAME "Оплата Успешно Произведена Сделайте Логаут и Введите Новое Имя Персонажа.Не Забудьте После Смены Имени,Выйти Из Игры и Удалить Из Клиента Папку Cache!"
-#define MSG_CUSTOMIZE_COMPLETE "Оплата Успешно Произведена Сделайте Логаут и Измените Внешность Персонажа.Не Забудьте После Смены Внешности,Выйти Из Игры и Удалить Из Клиента Папку Cache!"
-#define MSG_CHANGE_FACTION_COMPLETE "Оплата Успешно Произведена Сделайте Логаут и Измените Фракцию Персонажа.Не Забудьте После Смены Внешности,Выйти Из Игры и Удалить Из Клиента Папку Cache!"
+#define MSG_ERR_HONOR "? ??? ?? ?????????? ?????? ??? ?????????? ???????!"
+#define MSG_ERR_ARENA_POINT_1 "? ??? ?? ?????????? ???!"
+#define MSG_ERR_TITLE "? ??????? ????????? ??? ???? ????? ??????!"
+#define MSG_ERR_INCOMBAT "?? ?????????? ? ???. ????? ???????????? ??????? Npc ??????? ?? ????."
+#define MSG_COMPLETE_RENAME "?????? ??????? ??????????? ???????? ?????? ? ??????? ????? ??? ?????????.?? ???????? ????? ????? ?????,????? ?? ???? ? ??????? ?? ??????? ????? Cache!"
+#define MSG_CUSTOMIZE_COMPLETE "?????? ??????? ??????????? ???????? ?????? ? ???????? ????????? ?????????.?? ???????? ????? ????? ?????????,????? ?? ???? ? ??????? ?? ??????? ????? Cache!"
+#define MSG_CHANGE_FACTION_COMPLETE "?????? ??????? ??????????? ???????? ?????? ? ???????? ??????? ?????????.?? ???????? ????? ????? ?????????,????? ?? ???? ? ??????? ?? ??????? ????? Cache!"
 
-#define MSG_GOSSIP_TEXT_MAX_HEALTH "Вылечи меня!"
-#define MSG_GOSSIP_TEXT_MAX_SKILL "Выучить все навыки оружия и защиты."
+#define MSG_GOSSIP_TEXT_MAX_HEALTH "?????? ????!"
+#define MSG_GOSSIP_TEXT_MAX_SKILL "??????? ??? ?????? ?????? ? ??????."
 
-#define MSG_GOSSIP_TEXT_BUFF_POWER_WORD "[Бафнуть] Слово силы: Стойкость"
-#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_KINGS "[Бафнуть] Благословение Королей"
-#define MSG_GOSSIP_TEXT_BUFF_MARK_OF_THE_WILD "[Бафнуть] Знак дикой природы"
-#define MSG_GOSSIP_TEXT_BUFF_ARCANE_BRILLIANCE "[Бафнуть] Чародейская гениальность Даларана"
-#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_MIGHT "[Бафнуть] Великое Благословение могущества"
-#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_WISDOM "[Бафнуть] Благословение мудрости"
-#define MSG_GOSSIP_TEXT_BUFF_THORNS "[Бафнуть] Шипы"
-#define MSG_GOSSIP_TEXT_BUFF_DIVINE_SPIRIT "[Бафнуть] Божественный дух"
-#define MSG_GOSSIP_TEXT_BUFF_SHADOW_PROTECTION "[Бафнуть] Защита от темной магии"
-#define MSG_GOSSIP_TEXT_BUFF_STAMINA "[Бафнуть] Выносливость"
+#define MSG_GOSSIP_TEXT_BUFF_POWER_WORD "[???????] ????? ????: ?????????"
+#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_KINGS "[???????] ????????????? ???????"
+#define MSG_GOSSIP_TEXT_BUFF_MARK_OF_THE_WILD "[???????] ???? ????? ???????"
+#define MSG_GOSSIP_TEXT_BUFF_ARCANE_BRILLIANCE "[???????] ??????????? ???????????? ????????"
+#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_MIGHT "[???????] ??????? ????????????? ??????????"
+#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_WISDOM "[???????] ????????????? ????????"
+#define MSG_GOSSIP_TEXT_BUFF_THORNS "[???????] ????"
+#define MSG_GOSSIP_TEXT_BUFF_DIVINE_SPIRIT "[???????] ???????????? ???"
+#define MSG_GOSSIP_TEXT_BUFF_SHADOW_PROTECTION "[???????] ?????? ?? ?????? ?????"
+#define MSG_GOSSIP_TEXT_BUFF_STAMINA "[???????] ????????????"
 
-#define MSG_GOSSIP_TEXT_BUFF_MENU "[Меню бафов] ->"
-#define MSG_GOSSIP_TEXT_BUFF_MENUvip1 "[Premium buff] ->"
-#define MSG_GOSSIP_TEXT_BUFF_MENUvip2 "[Title] ->"
+#define MSG_GOSSIP_TEXT_BUFF_MENU "[???? ?????] ->"
+//#define MSG_GOSSIP_TEXT_BUFF_MENUvip1 "[Premium buff] ->"
+//#define MSG_GOSSIP_TEXT_BUFF_MENUvip2 "[Title] ->"
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip3 "[test] ->"
-#define MSG_GOSSIP_TEXT_BUFF_MENUvip33 "[titlestest] ->"
+//#define MSG_GOSSIP_TEXT_BUFF_MENUvip33 "[titlestest] ->"
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip333 "[sumki] ->"
-#define MSG_GOSSIP_TEXT_BUFF_MENUvip44 "[key] ->"
+//#define MSG_GOSSIP_TEXT_BUFF_MENUvip44 "[key] ->"
 //#define MSG_GOSSIP_TEXT_BUFF_MENUvip55 "[kaput] ->"
-#define MSG_GOSSIP_TEXT_MAIN_MENU "<- [Вернутся в Главное меню]"
-#define MSG_GOSSIP_TEXT_PROFFESION_MENU "[Меню Профессий] ->"
-#define MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU "[Меню Второстепенных профессий] ->"
-#define MSG_GOSSIP_TEXT_NEXT_3 "[страница] ->"
+#define MSG_GOSSIP_TEXT_MAIN_MENU "<- [???????? ? ??????? ????]"
+//#define MSG_GOSSIP_TEXT_PROFFESION_MENU "[???? ?????????] ->"
+#define MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU "[???? ?????????????? ?????????] ->"
+#define MSG_GOSSIP_TEXT_NEXT_3 "[????????] ->"
 
-#define MSG_GOSSIP_TEXT_RENAME "Сменить Имя персонажа."
-#define MSG_GOSSIP_TEXT_CUSTOM "Сменить Внешность персонажа."
-#define MSG_GOSSIP_TEXT_CHANGE_FACTION "Сменить Фракцию персонажа."
+#define MSG_GOSSIP_TEXT_RENAME "??????? ??? ?????????."
+#define MSG_GOSSIP_TEXT_CUSTOM "??????? ????????? ?????????."
+#define MSG_GOSSIP_TEXT_CHANGE_FACTION "??????? ??????? ?????????."
 
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BERSERK "[Бафнуть] Берсерк."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_RAGNAROS "[Бафнуть] Эгида Рагнароса."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_NELTHARION "[Бафнуть] Защита Нелтариона."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_ADALS "[Бафнуть] Благословение А'далла."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_CRIT_SPELLS "[Бафнуть] Критическое срабатывание."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_PINCHI "[Бафнуть] Благословение мистера Пинчи."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_TRANSPARENCY "[Бафнуть] Прозрачность."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BERSERK "[???????] ???????."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_RAGNAROS "[???????] ????? ?????????."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_NELTHARION "[???????] ?????? ??????????."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_ADALS "[???????] ????????????? ?'?????."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_CRIT_SPELLS "[???????] ??????????? ????????????."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_PINCHI "[???????] ????????????? ??????? ?????."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_TRANSPARENCY "[???????] ????????????."
 
-#define MSG_GOSSIP_TEXT_TITLES_JENKINS "Получить звание Дженкинс."
-#define MSG_GOSSIP_TEXT_TITLES_THE_LOVE_FOOL "Получить звание Безумно Влюбленный."
-#define MSG_GOSSIP_TEXT_TITLES_MERRYMAKER "Получить звание Весельчак."
-#define MSG_GOSSIP_TEXT_TITLES_SCARAB_LORD "Получить звание Повелитель Скоробеев."
-#define MSG_GOSSIP_TEXT_TITLES_THE_NOBLE "Получить звание Чудесный."
-#define MSG_GOSSIP_TEXT_TITLES_OBSIDIAN_SLAYER "Получить звание Покоритель Обсидианового святилища."
+#define MSG_GOSSIP_TEXT_TITLES_JENKINS "???????? ?????? ????????."
+#define MSG_GOSSIP_TEXT_TITLES_THE_LOVE_FOOL "???????? ?????? ??????? ??????????."
+#define MSG_GOSSIP_TEXT_TITLES_MERRYMAKER "???????? ?????? ?????????."
+#define MSG_GOSSIP_TEXT_TITLES_SCARAB_LORD "???????? ?????? ?????????? ?????????."
+#define MSG_GOSSIP_TEXT_TITLES_THE_NOBLE "???????? ?????? ????????."
+#define MSG_GOSSIP_TEXT_TITLES_OBSIDIAN_SLAYER "???????? ?????? ?????????? ????????????? ?????????."
 
-#define MSG_GOSSIP_TEXT_MORTH_GNOME_MALE "[Превратить] Гном, мужчина."
-#define MSG_GOSSIP_TEXT_MORTH_GNOME_FEMALE "[Превратить] Гном, женщина."
-#define MSG_GOSSIP_TEXT_MORTH_HUMAN_FEMALE "[Превратить] Человек, женщина."
-#define MSG_GOSSIP_TEXT_MORTH_HUMAN_MALE "[Превратить] Человек, мужчина."
-#define MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_MALE "[Превратить] Эльф Крови, мужчина."
-#define MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_FEMALE "[Превратить] Эльф Крови, женщина."
-#define MSG_GOSSIP_TEXT_MORTH_TAUREN_MALE "[Превратить] Таурен, мужчина."
-#define MSG_GOSSIP_TEXT_MORTH_TAUREN_FEMALE "[Превратить] Таурен, женщина."
+#define MSG_GOSSIP_TEXT_MORTH_GNOME_MALE "[??????????] ????, ???????."
+#define MSG_GOSSIP_TEXT_MORTH_GNOME_FEMALE "[??????????] ????, ???????."
+#define MSG_GOSSIP_TEXT_MORTH_HUMAN_FEMALE "[??????????] ???????, ???????."
+#define MSG_GOSSIP_TEXT_MORTH_HUMAN_MALE "[??????????] ???????, ???????."
+#define MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_MALE "[??????????] ???? ?????, ???????."
+#define MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_FEMALE "[??????????] ???? ?????, ???????."
+#define MSG_GOSSIP_TEXT_MORTH_TAUREN_MALE "[??????????] ??????, ???????."
+#define MSG_GOSSIP_TEXT_MORTH_TAUREN_FEMALE "[??????????] ??????, ???????."
 
-#define MSG_GOSSIP_TEXT_ALCHEMY "|TInterface\\icons\\Trade_Alchemy:40:40:-14|t Изучить Алхимию."
-#define MSG_GOSSIP_TEXT_BLACKSMITHING "|TInterface\\icons\\Trade_BlackSmithing:40:40:-14|t Изучить Кузнечное Дело."
-#define MSG_GOSSIP_TEXT_ENCNANTING "|TInterface\\icons\\Trade_Engraving:40:40:-14|t Изучить Наложение Чар."
-#define MSG_GOSSIP_TEXT_ENGINEERING "|TInterface\\icons\\Trade_Engineering:40:40:-14|t Изучить Инженерное дело."
-#define MSG_GOSSIP_TEXT_HERBALISM "|TInterface\\icons\\Trade_Herbalism:40:40:-14|t Изучить Травничество."
-#define MSG_GOSSIP_TEXT_INSCRIPTION "|TInterface\\icons\\INV_Inscription_Tradeskill01:40:40:-14|t Изучить Начертание."
-#define MSG_GOSSIP_TEXT_JEWELCRAFTING "|TInterface\\icons\\INV_Misc_Gem_02:40:40:-14|t Изучить Ювелирное дело."
-#define MSG_GOSSIP_TEXT_LEATHERWORKING "|TInterface\\icons\\Trade_LeatherWorking:40:40:-14|t Изучить Кожевничество."
-#define MSG_GOSSIP_TEXT_MINING "|TInterface\\icons\\Trade_Mining:40:40:-14|t Изучить Горное дело."
-#define MSG_GOSSIP_TEXT_SKINNING "|TInterface\\icons\\INV_Misc_Pelt_Wolf_01:40:40:-14|t Изучить Снятие шкур."
-#define MSG_GOSSIP_TEXT_TAILORING "|TInterface\\icons\\Trade_Tailoring:40:40:-14|t Изучить Портное дело."
+#define MSG_GOSSIP_TEXT_ALCHEMY "|TInterface\\icons\\Trade_Alchemy:40:40:-14|t ??????? ???????."
+#define MSG_GOSSIP_TEXT_BLACKSMITHING "|TInterface\\icons\\Trade_BlackSmithing:40:40:-14|t ??????? ????????? ????."
+#define MSG_GOSSIP_TEXT_ENCNANTING "|TInterface\\icons\\Trade_Engraving:40:40:-14|t ??????? ????????? ???."
+#define MSG_GOSSIP_TEXT_ENGINEERING "|TInterface\\icons\\Trade_Engineering:40:40:-14|t ??????? ?????????? ????."
+#define MSG_GOSSIP_TEXT_HERBALISM "|TInterface\\icons\\Trade_Herbalism:40:40:-14|t ??????? ????????????."
+#define MSG_GOSSIP_TEXT_INSCRIPTION "|TInterface\\icons\\INV_Inscription_Tradeskill01:40:40:-14|t ??????? ??????????."
+#define MSG_GOSSIP_TEXT_JEWELCRAFTING "|TInterface\\icons\\INV_Misc_Gem_02:40:40:-14|t ??????? ????????? ????."
+#define MSG_GOSSIP_TEXT_LEATHERWORKING "|TInterface\\icons\\Trade_LeatherWorking:40:40:-14|t ??????? ?????????????."
+#define MSG_GOSSIP_TEXT_MINING "|TInterface\\icons\\Trade_Mining:40:40:-14|t ??????? ?????? ????."
+#define MSG_GOSSIP_TEXT_SKINNING "|TInterface\\icons\\INV_Misc_Pelt_Wolf_01:40:40:-14|t ??????? ?????? ????."
+#define MSG_GOSSIP_TEXT_TAILORING "|TInterface\\icons\\Trade_Tailoring:40:40:-14|t ??????? ??????? ????."
 
-#define MSG_GOSSIP_TEXT_RIDING "Изучить Верховую Езду."
-#define MSG_GOSSIP_TEXT_COOKING	"|TInterface\\icons\\INV_Misc_Food_15:40:40:-14|t Изучить Кулинарию."
-#define MSG_GOSSIP_TEXT_FIRST_AID "|TInterface\\icons\\Spell_Holy_SealOfSacrifice:40:40:-14|t Изучить Первую помощь."
-#define MSG_GOSSIP_TEXT_FISHING	"Изучить Рыбную ловлю."
+#define MSG_GOSSIP_TEXT_RIDING "??????? ???????? ????."
+#define MSG_GOSSIP_TEXT_COOKING	"|TInterface\\icons\\INV_Misc_Food_15:40:40:-14|t ??????? ?????????."
+#define MSG_GOSSIP_TEXT_FIRST_AID "|TInterface\\icons\\Spell_Holy_SealOfSacrifice:40:40:-14|t ??????? ?????? ??????."
+#define MSG_GOSSIP_TEXT_FISHING	"??????? ?????? ?????."
 
 #define CONST_HONOR_1  0//1000000
 #define CONST_HONOR_2 0 //100000
@@ -121,8 +121,8 @@
 #define CONST_ARENA_POINT_2  0//1000
 #define CONST_ARENA_POINT_3  0//3000
 #define CONST_ARENA_POINT_4  0//5000
-#define CONST_HONOR_23 29434 //предмет который будет стоить
-#define CONST_HONOR_233 1  //сколько надо штук
+#define CONST_HONOR_23 29434 //??????? ??????? ????? ??????
+#define CONST_HONOR_233 1  //??????? ???? ????
 
 class npc_buffer : public CreatureScript
 {
@@ -136,11 +136,11 @@ public:
 	void CompleteLearnProfession(Player *player, Creature* /*_creature*/, SkillType skill)
 	{
 		if (PlayerAlreadyHasNineProfessions(player) && !IsSecondarySkill(skill))
-			me->Whisper("Вы уже выучили 11 професии!", LANG_UNIVERSAL, player);
+			me->Whisper("?? ??? ??????? 11 ????????!", LANG_UNIVERSAL, player);
 		else
 		{
 			if (!LearnAllRecipesInProfession(player, skill))
-				me->Whisper("Ошибка!", LANG_UNIVERSAL, player);
+				me->Whisper("??????!", LANG_UNIVERSAL, player);
 		}
 	}
 
@@ -250,14 +250,14 @@ public:
 		AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_HEALTH, GOSSIP_SENDER_MAIN, 33);
 		AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_SKILL, GOSSIP_SENDER_MAIN, 34);
 		AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENU, GOSSIP_SENDER_MAIN, 2);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip1, GOSSIP_SENDER_MAIN, 13);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip2, GOSSIP_SENDER_MAIN, 22);
+        //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip1, GOSSIP_SENDER_MAIN, 13);
+        //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip2, GOSSIP_SENDER_MAIN, 22);
 		AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
-		AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
+		//AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
 		AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip333, GOSSIP_SENDER_MAIN, 32333);
-		AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
+		//AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
 		//AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip55, GOSSIP_SENDER_MAIN, 32355);
-		AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
+		//AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
 		SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 		return true;
 	}
@@ -295,47 +295,47 @@ public:
 			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
 		case 3:
-			// Наложение стойкости (Исправлено)
+			// ????????? ????????? (??????????)
 			player->CastSpell(player, 69377, true);
 			CloseGossipMenuFor(player);
 			break;
 		case 4:
-			// Наложение Благословение Королей (Исправлено)
+			// ????????? ????????????? ??????? (??????????)
 			player->CastSpell(player, 56525, true);
 			CloseGossipMenuFor(player);
 			break;
 		case 5:
-			// Наложение Знак дикой природы
+			// ????????? ???? ????? ???????
 			player->CastSpell(player, 1126, true);
 			CloseGossipMenuFor(player);
 			break;
 		case 6:
-			// Наложение Чародейской гениальности Даларана (Исправлено)
+			// ????????? ??????????? ???????????? ???????? (??????????)
 			player->CastSpell(player, 61316, true);
 			CloseGossipMenuFor(player);
 			break;
 		case 7:
-			// Наложение Благословение могущества (Исправлено)
+			// ????????? ????????????? ?????????? (??????????)
 			player->CastSpell(player, 29381, true);
 			CloseGossipMenuFor(player);
 			break;
 		case 8:
-			// Наложение Благословение мудрости (Исправлено)
+			// ????????? ????????????? ???????? (??????????)
 			player->CastSpell(player, 56521, true);
 			CloseGossipMenuFor(player);
 			break;
 		case 9:
-			// Наложение Шипов (Исправлено)
+			// ????????? ????? (??????????)
 			player->CastSpell(player, 53307, true);
 			CloseGossipMenuFor(player);
 			break;
 		case 10:
-			// Наложение Божественный духа (Исправлено)
+			// ????????? ???????????? ???? (??????????)
 			player->CastSpell(player, 48074, true);
 			CloseGossipMenuFor(player);
 			break;
 		case 11:
-			// Наложение Защиты от темной магии (Исправлено)
+			// ????????? ?????? ?? ?????? ????? (??????????)
 			player->CastSpell(player, 48170, true);
 			CloseGossipMenuFor(player);
 			break;
@@ -362,7 +362,7 @@ public:
 				CloseGossipMenuFor(player);
 			}
 			else{
-				// Наложение берсерка и отнятие 1 ляма хонора (Доработано)
+				// ????????? ???????? ? ??????? 1 ???? ?????? (??????????)
 				player->CastSpell(player, 41924, true);
 				player->ModifyHonorPoints(-CONST_HONOR_1);
 				CloseGossipMenuFor(player);
@@ -375,7 +375,7 @@ public:
 				CloseGossipMenuFor(player);
 			}
 			else{
-				// Наложение Эгиды Рагнароса(Доработано)
+				// ????????? ????? ?????????(??????????)
 				player->CastSpell(player, 20620, true);
 				player->ModifyHonorPoints(-CONST_HONOR_2);
 				CloseGossipMenuFor(player);
@@ -388,7 +388,7 @@ public:
 				CloseGossipMenuFor(player);
 			}
 			else{
-				// Наложение Защита Нелтариона(Доработано)
+				// ????????? ?????? ??????????(??????????)
 				player->CastSpell(player, 51512, true);
 				player->ModifyHonorPoints(-CONST_HONOR_2);
 				CloseGossipMenuFor(player);
@@ -401,7 +401,7 @@ public:
 				CloseGossipMenuFor(player);
 			}
 			else{
-				// Наложение Благословение А'дала
+				// ????????? ????????????? ?'????
 				player->CastSpell(player, 35076, true);
 				player->ModifyHonorPoints(-CONST_HONOR_2);
 				CloseGossipMenuFor(player);
@@ -414,7 +414,7 @@ public:
 				CloseGossipMenuFor(player);
 			}
 			else{
-				// Наложение Критического срабатывания положительных эффектов
+				// ????????? ???????????? ???????????? ????????????? ????????
 				player->CastSpell(player, 31305, true);
 				player->ModifyHonorPoints(-CONST_HONOR_2);
 				CloseGossipMenuFor(player);
@@ -427,7 +427,7 @@ public:
 				CloseGossipMenuFor(player);
 			}
 			else{
-				// Наложение Благословения мистера Пинчи
+				// ????????? ????????????? ??????? ?????
 				player->CastSpell(player, 33053, true);
 				player->ModifyHonorPoints(-CONST_HONOR_2);
 				CloseGossipMenuFor(player);
@@ -440,7 +440,7 @@ public:
 				CloseGossipMenuFor(player);
 			}
 			else{
-				// Наложение Прозрачности
+				// ????????? ????????????
 				player->CastSpell(player, 37802, true);
 				player->ModifyHonorPoints(-CONST_HONOR_2);
 				CloseGossipMenuFor(player);
@@ -450,14 +450,14 @@ public:
 			AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_HEALTH, GOSSIP_SENDER_MAIN, 33);
 			AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_SKILL, GOSSIP_SENDER_MAIN, 34);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENU, GOSSIP_SENDER_MAIN, 2);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip1, GOSSIP_SENDER_MAIN, 13);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip2, GOSSIP_SENDER_MAIN, 22);
+            //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip1, GOSSIP_SENDER_MAIN, 13);
+            //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip2, GOSSIP_SENDER_MAIN, 22);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
+			//AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip333, GOSSIP_SENDER_MAIN, 32333);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
+			//AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
 			//AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip55, GOSSIP_SENDER_MAIN, 32355);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
+			//AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
 			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 			break;
         //case 32355:
@@ -533,7 +533,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else {
-			// Даем звание Весельчак
+			// ???? ?????? ?????????
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
 			CloseGossipMenuFor(player);
@@ -553,7 +553,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else {
-			// Даем звание Весельчак
+			// ???? ?????? ?????????
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
 			CloseGossipMenuFor(player);
@@ -573,7 +573,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else {
-			// Даем звание Весельчак
+			// ???? ?????? ?????????
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
 			CloseGossipMenuFor(player);
@@ -593,7 +593,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else {
-			// Даем звание Весельчак
+			// ???? ?????? ?????????
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
 			CloseGossipMenuFor(player);
@@ -613,7 +613,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else {
-			// Даем звание Весельчак
+			// ???? ?????? ?????????
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
 			CloseGossipMenuFor(player);
@@ -633,7 +633,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else {
-			// Даем звание Весельчак
+			// ???? ?????? ?????????
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
 			CloseGossipMenuFor(player);
@@ -653,7 +653,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else {
-			// Даем звание Весельчак
+			// ???? ?????? ?????????
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
 			CloseGossipMenuFor(player);
@@ -673,7 +673,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else {
-			// Даем звание Весельчак
+			// ???? ?????? ?????????
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
 			CloseGossipMenuFor(player);
@@ -693,7 +693,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else {
-			// Даем звание Весельчак
+			// ???? ?????? ?????????
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
 			CloseGossipMenuFor(player);
@@ -704,25 +704,25 @@ public:
 		case 2233:
 			player->PlayerTalkClass->ClearMenus();
 			//AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_JENKINS, GOSSIP_SENDER_MAIN, 23);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Король Лич", GOSSIP_SENDER_MAIN, 711);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Огонек", GOSSIP_SENDER_MAIN, 712);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Лорд Каззак", GOSSIP_SENDER_MAIN, 713);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Леокк", GOSSIP_SENDER_MAIN, 714);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Таддиус", GOSSIP_SENDER_MAIN, 715);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Прелесть", GOSSIP_SENDER_MAIN, 716);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Паук", GOSSIP_SENDER_MAIN, 717);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сапфирон", GOSSIP_SENDER_MAIN, 718);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Нот Чумной", GOSSIP_SENDER_MAIN, 719);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Кель Тузед", GOSSIP_SENDER_MAIN, 720);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "КельТалас", GOSSIP_SENDER_MAIN, 721);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ктун", GOSSIP_SENDER_MAIN, 722);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Тралл", GOSSIP_SENDER_MAIN, 723);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сильвана", GOSSIP_SENDER_MAIN, 724);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Алекстраза(человек)", GOSSIP_SENDER_MAIN, 725);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Король Ринн", GOSSIP_SENDER_MAIN, 726);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Молганис", GOSSIP_SENDER_MAIN, 727);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Алекстраза(дракон)", GOSSIP_SENDER_MAIN, 728);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сакролаш", GOSSIP_SENDER_MAIN, 729);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????? ???", GOSSIP_SENDER_MAIN, 711);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??????", GOSSIP_SENDER_MAIN, 712);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "???? ??????", GOSSIP_SENDER_MAIN, 713);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????", GOSSIP_SENDER_MAIN, 714);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "???????", GOSSIP_SENDER_MAIN, 715);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????????", GOSSIP_SENDER_MAIN, 716);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????", GOSSIP_SENDER_MAIN, 717);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????????", GOSSIP_SENDER_MAIN, 718);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??? ??????", GOSSIP_SENDER_MAIN, 719);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "???? ?????", GOSSIP_SENDER_MAIN, 720);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????????", GOSSIP_SENDER_MAIN, 721);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????", GOSSIP_SENDER_MAIN, 722);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????", GOSSIP_SENDER_MAIN, 723);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????????", GOSSIP_SENDER_MAIN, 724);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??????????(???????)", GOSSIP_SENDER_MAIN, 725);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????? ????", GOSSIP_SENDER_MAIN, 726);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????????", GOSSIP_SENDER_MAIN, 727);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??????????(??????)", GOSSIP_SENDER_MAIN, 728);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????????", GOSSIP_SENDER_MAIN, 729);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
 			//AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
 			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
@@ -1064,65 +1064,65 @@ public:
 			break; 
 			case 747:
 			player->PlayerTalkClass->ClearMenus();
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Король Лич", GOSSIP_SENDER_MAIN, 711);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Огонек", GOSSIP_SENDER_MAIN, 712);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Лорд Каззак", GOSSIP_SENDER_MAIN, 713);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Леокк", GOSSIP_SENDER_MAIN, 714);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Таддиус", GOSSIP_SENDER_MAIN, 715);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Прелесть", GOSSIP_SENDER_MAIN, 716);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Паук", GOSSIP_SENDER_MAIN, 717);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сапфирон", GOSSIP_SENDER_MAIN, 718);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Нот Чумной", GOSSIP_SENDER_MAIN, 719);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Кель Тузед", GOSSIP_SENDER_MAIN, 720);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "КельТалас", GOSSIP_SENDER_MAIN, 721);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ктун", GOSSIP_SENDER_MAIN, 722);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Тралл", GOSSIP_SENDER_MAIN, 723);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сильвана", GOSSIP_SENDER_MAIN, 724);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Алекстраза(человек)", GOSSIP_SENDER_MAIN, 725);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Король Ринн", GOSSIP_SENDER_MAIN, 726);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Молганис", GOSSIP_SENDER_MAIN, 727);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Алекстраза(дракон)", GOSSIP_SENDER_MAIN, 728);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сакролаш", GOSSIP_SENDER_MAIN, 729);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????? ???", GOSSIP_SENDER_MAIN, 711);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??????", GOSSIP_SENDER_MAIN, 712);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "???? ??????", GOSSIP_SENDER_MAIN, 713);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????", GOSSIP_SENDER_MAIN, 714);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "???????", GOSSIP_SENDER_MAIN, 715);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????????", GOSSIP_SENDER_MAIN, 716);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????", GOSSIP_SENDER_MAIN, 717);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????????", GOSSIP_SENDER_MAIN, 718);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??? ??????", GOSSIP_SENDER_MAIN, 719);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "???? ?????", GOSSIP_SENDER_MAIN, 720);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????????", GOSSIP_SENDER_MAIN, 721);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????", GOSSIP_SENDER_MAIN, 722);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????", GOSSIP_SENDER_MAIN, 723);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????????", GOSSIP_SENDER_MAIN, 724);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??????????(???????)", GOSSIP_SENDER_MAIN, 725);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????? ????", GOSSIP_SENDER_MAIN, 726);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????????", GOSSIP_SENDER_MAIN, 727);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??????????(??????)", GOSSIP_SENDER_MAIN, 728);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????????", GOSSIP_SENDER_MAIN, 729);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
 			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 				 break;   
 		  case 748:
 			player->PlayerTalkClass->ClearMenus();
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Утгард Воин", GOSSIP_SENDER_MAIN, 730);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Упырь", GOSSIP_SENDER_MAIN, 731);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Скелет", GOSSIP_SENDER_MAIN, 732);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Скелет 2", GOSSIP_SENDER_MAIN, 733);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Скелет 3", GOSSIP_SENDER_MAIN, 734);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Пудж", GOSSIP_SENDER_MAIN, 735);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Скелет 4", GOSSIP_SENDER_MAIN, 736);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Вестник Смерти", GOSSIP_SENDER_MAIN, 737);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Рыцарь Смерти", GOSSIP_SENDER_MAIN, 738);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Маг серебряного авангарда", GOSSIP_SENDER_MAIN, 739);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Голум", GOSSIP_SENDER_MAIN, 740);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Красный бес", GOSSIP_SENDER_MAIN, 741);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Древень", GOSSIP_SENDER_MAIN, 742);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Синий бес", GOSSIP_SENDER_MAIN, 743);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Огр", GOSSIP_SENDER_MAIN, 744);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Демон Голова", GOSSIP_SENDER_MAIN, 745);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Дреней Красные доспехи", GOSSIP_SENDER_MAIN, 746);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????? ????", GOSSIP_SENDER_MAIN, 730);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????", GOSSIP_SENDER_MAIN, 731);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??????", GOSSIP_SENDER_MAIN, 732);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????? 2", GOSSIP_SENDER_MAIN, 733);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????? 3", GOSSIP_SENDER_MAIN, 734);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????", GOSSIP_SENDER_MAIN, 735);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????? 4", GOSSIP_SENDER_MAIN, 736);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??????? ??????", GOSSIP_SENDER_MAIN, 737);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????? ??????", GOSSIP_SENDER_MAIN, 738);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??? ??????????? ?????????", GOSSIP_SENDER_MAIN, 739);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????", GOSSIP_SENDER_MAIN, 740);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??????? ???", GOSSIP_SENDER_MAIN, 741);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "???????", GOSSIP_SENDER_MAIN, 742);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????? ???", GOSSIP_SENDER_MAIN, 743);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "???", GOSSIP_SENDER_MAIN, 744);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????? ??????", GOSSIP_SENDER_MAIN, 745);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????? ??????? ???????", GOSSIP_SENDER_MAIN, 746);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 749);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 747);
 			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
 				 break;
 				 case 749:
 			player->PlayerTalkClass->ClearMenus();
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Гидра", GOSSIP_SENDER_MAIN, 750);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Колосс", GOSSIP_SENDER_MAIN, 751);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Бес феолетовый", GOSSIP_SENDER_MAIN, 752);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Красный Орк", GOSSIP_SENDER_MAIN, 753);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Занзилл Чумной", GOSSIP_SENDER_MAIN, 754);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Волк", GOSSIP_SENDER_MAIN, 755);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Подобие Матери БТ", GOSSIP_SENDER_MAIN, 756);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Эльф Красные доспехи", GOSSIP_SENDER_MAIN, 757);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Злобень", GOSSIP_SENDER_MAIN, 758);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Призрак человека", GOSSIP_SENDER_MAIN, 759);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Мароуз", GOSSIP_SENDER_MAIN, 760);
-			AddGossipItemFor(player, GOSSIP_ICON_TALK, "Злобный призрак", GOSSIP_SENDER_MAIN, 761);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "?????", GOSSIP_SENDER_MAIN, 750);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??????", GOSSIP_SENDER_MAIN, 751);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??? ??????????", GOSSIP_SENDER_MAIN, 752);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??????? ???", GOSSIP_SENDER_MAIN, 753);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??????? ??????", GOSSIP_SENDER_MAIN, 754);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "????", GOSSIP_SENDER_MAIN, 755);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??????? ?????? ??", GOSSIP_SENDER_MAIN, 756);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "???? ??????? ???????", GOSSIP_SENDER_MAIN, 757);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "???????", GOSSIP_SENDER_MAIN, 758);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??????? ????????", GOSSIP_SENDER_MAIN, 759);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??????", GOSSIP_SENDER_MAIN, 760);
+			AddGossipItemFor(player, GOSSIP_ICON_TALK, "??????? ???????", GOSSIP_SENDER_MAIN, 761);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
 			AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
 			SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
@@ -1249,7 +1249,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else{
-			// Даем звание Дженкинс
+			// ???? ?????? ????????
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
 			CloseGossipMenuFor(player);
@@ -1270,7 +1270,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else{
-			// Даем звание Безумно Влюбленный
+			// ???? ?????? ??????? ??????????
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
 			CloseGossipMenuFor(player);
@@ -1290,7 +1290,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else{
-			// Даем звание Весельчак
+			// ???? ?????? ?????????
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
 			CloseGossipMenuFor(player);
@@ -1310,7 +1310,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else{
-			// Даем звание Повелитель Скоробеев
+			// ???? ?????? ?????????? ?????????
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
 			CloseGossipMenuFor(player);
@@ -1330,7 +1330,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else{
-			// Даем звание Чудесный
+			// ???? ?????? ????????
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
 			CloseGossipMenuFor(player);
@@ -1350,7 +1350,7 @@ public:
 			CloseGossipMenuFor(player);
 		}
 		else{
-			// Даем звание Покоритель Обсидианового святилища
+			// ???? ?????? ?????????? ????????????? ?????????
 			player->SetTitle(titleInfo);
 			player->ModifyArenaPoints(-CONST_ARENA_POINT_2);
 			CloseGossipMenuFor(player);
@@ -1372,7 +1372,7 @@ public:
 				CloseGossipMenuFor(player);
 			}
 			else{
-				// Делаем Ренейм
+				// ?????? ??????
 				player->SetAtLoginFlag(AT_LOGIN_RENAME);
 				player->ModifyArenaPoints(-CONST_ARENA_POINT_3);
 				me->Whisper(MSG_COMPLETE_RENAME, LANG_UNIVERSAL, player);
@@ -1386,7 +1386,7 @@ public:
 				CloseGossipMenuFor(player);
 			}
 			else{
-				// Делаем Смену внешности
+				// ?????? ????? ?????????
 				player->SetAtLoginFlag(AT_LOGIN_CUSTOMIZE);
 				player->ModifyArenaPoints(-CONST_ARENA_POINT_3);
 				me->Whisper(MSG_CUSTOMIZE_COMPLETE, LANG_UNIVERSAL, player);
@@ -1400,7 +1400,7 @@ public:
 				CloseGossipMenuFor(player);
 			}
 			else{
-				// Делаем Смену внешности
+				// ?????? ????? ?????????
 				player->SetAtLoginFlag(AT_LOGIN_CHANGE_FACTION);
 				player->ModifyArenaPoints(-CONST_ARENA_POINT_4);
 				me->Whisper(MSG_CHANGE_FACTION_COMPLETE, LANG_UNIVERSAL, player);
