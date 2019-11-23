@@ -9482,8 +9482,11 @@ void Unit::RestoreDisabledAI()
 
 void Unit::AddToWorld()
 {
-    if (!IsInWorld())
-        WorldObject::AddToWorld();
+    if (IsInWorld())
+        return;
+
+    WorldObject::AddToWorld();
+    i_motionMaster->AddToWorld();
 }
 
 void Unit::RemoveFromWorld()
@@ -12680,7 +12683,7 @@ bool Unit::CanSwim() const
         return false;
     if (IsPet() && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PET_IN_COMBAT))
         return true;
-    return HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_RENAME | UNIT_FLAG_UNK_15);
+    return HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_RENAME | UNIT_FLAG_SWIMMING);
 }
 
 void Unit::NearTeleportTo(Position const& pos, bool casting /*= false*/)
