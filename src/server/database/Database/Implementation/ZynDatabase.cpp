@@ -16,7 +16,7 @@
  */
 
 #include "ZynDatabase.h"
-#include "PreparedStatement.h"
+#include "MySQLPreparedStatement.h"
 
 void ZynDatabaseConnection::DoPrepareStatements()
 {
