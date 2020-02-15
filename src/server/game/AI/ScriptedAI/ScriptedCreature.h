@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -190,6 +189,8 @@ struct TC_GAME_API ScriptedAI : public CreatureAI
         void ForceCombatStop(Creature* who, bool reset = true);
         // Stops combat, ignoring restrictions, for the found creatures
         void ForceCombatStopForCreatureEntry(uint32 entry, float maxSearchRange = 250.0f, bool samePhase = true, bool reset = true);
+        // Stops combat, ignoring restrictions, for the found creatures
+        void ForceCombatStopForCreatureEntry(std::vector<uint32> creatureEntries, float maxSearchRange = 250.0f, bool samePhase = true, bool reset = true);
 
         void DoTeleportTo(float x, float y, float z, uint32 time = 0);
         void DoTeleportTo(float const pos[4]);
@@ -325,7 +326,7 @@ class TC_GAME_API BossAI : public ScriptedAI
         virtual void ScheduleTasks() { }
 
         void Reset() override { _Reset(); }
-        void JustEngagedWith(Unit* /*who*/) override { _JustEngagedWith(); }
+        void JustEngagedWith(Unit* who) override { _JustEngagedWith(who); }
         void JustDied(Unit* /*killer*/) override { _JustDied(); }
         void JustReachedHome() override { _JustReachedHome(); }
 
@@ -333,7 +334,7 @@ class TC_GAME_API BossAI : public ScriptedAI
 
     protected:
         void _Reset();
-        void _JustEngagedWith();
+        void _JustEngagedWith(Unit* who);
         void _JustDied();
         void _JustReachedHome();
         void _DespawnAtEvade(Seconds delayToRespawn,  Creature* who = nullptr);

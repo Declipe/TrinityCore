@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -2408,9 +2407,12 @@ void Guild::DeleteMember(SQLTransaction& trans, ObjectGuid guid, bool isDisbandi
     // Call script on remove before member is actually removed from guild (and database)
     sScriptMgr->OnGuildRemoveMember(this, player, isDisbanding, isKicked);
 
-    if (Member* member = GetMember(guid))
-        delete member;
-    m_members.erase(lowguid);
+    auto memberItr = m_members.find(lowguid);
+    if (memberItr != m_members.end())
+    {
+        delete memberItr->second;
+        m_members.erase(memberItr);
+    }
 
     // If player not online data in data field will be loaded from guild tabs no need to update it !!
     if (player)

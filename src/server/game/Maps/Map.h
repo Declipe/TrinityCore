@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -590,6 +589,7 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         void SaveRespawnInfoDB(RespawnInfo const& info, SQLTransaction dbTrans = nullptr);
         void LoadRespawnTimes();
         void DeleteRespawnTimes() { UnloadAllRespawnInfos(); DeleteRespawnTimesInDB(GetId(), GetInstanceId()); }
+        static void DeleteRespawnTimesInDB(uint16 mapId, uint32 instanceId);
 
         void LoadCorpseData();
         void DeleteCorpseData();
@@ -597,8 +597,6 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         void RemoveCorpse(Corpse* corpse);
         Corpse* ConvertCorpseToBones(ObjectGuid const& ownerGuid, bool insignia = false);
         void RemoveOldCorpses();
-
-        static void DeleteRespawnTimesInDB(uint16 mapId, uint32 instanceId);
 
         void SendInitTransports(Player* player);
         void SendRemoveTransports(Player* player);
@@ -763,7 +761,6 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
         // if return value is false and info->respawnTime is nonzero, it is guaranteed to be greater than time(NULL)
         bool CheckRespawn(RespawnInfo* info);
         void DoRespawn(SpawnObjectType type, ObjectGuid::LowType spawnId, uint32 gridId);
-        void Respawn(RespawnInfo* info, SQLTransaction dbTrans = nullptr);
         bool AddRespawnInfo(RespawnInfo const& info);
         void UnloadAllRespawnInfos();
         void DeleteRespawnInfo(RespawnInfo* info, SQLTransaction dbTrans = nullptr);
@@ -776,11 +773,16 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
             if (RespawnInfo* info = GetRespawnInfo(type, spawnId))
                 Respawn(info, dbTrans);
         }
-        void RemoveRespawnTime(SpawnObjectType type, ObjectGuid::LowType spawnId,SQLTransaction dbTrans = nullptr)
+        void Respawn(RespawnInfo* info, SQLTransaction dbTrans = nullptr);
+        void RemoveRespawnTime(SpawnObjectType type, ObjectGuid::LowType spawnId, SQLTransaction dbTrans = nullptr)
         {
             if (RespawnInfo* info = GetRespawnInfo(type, spawnId))
                 DeleteRespawnInfo(info, dbTrans);
         }
+        size_t DespawnAll(SpawnObjectType type, ObjectGuid::LowType spawnId);
+
+        bool ShouldBeSpawnedOnGridLoad(SpawnObjectType type, ObjectGuid::LowType spawnId) const;
+        template <typename T> bool ShouldBeSpawnedOnGridLoad(ObjectGuid::LowType spawnId) const { return ShouldBeSpawnedOnGridLoad(SpawnData::TypeFor<T>, spawnId); }
 
         SpawnGroupTemplateData const* GetSpawnGroupData(uint32 groupId) const;
 

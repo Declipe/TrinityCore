@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -91,7 +90,7 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
 
         void Update(uint32 time) override;                         // overwrited Unit::Update
         void GetRespawnPosition(float &x, float &y, float &z, float* ori = nullptr, float* dist = nullptr) const;
-        bool IsSpawnedOnTransport() const { return m_creatureData && m_creatureData->spawnPoint.GetMapId() != GetMapId(); }
+        bool IsSpawnedOnTransport() const { return m_creatureData && m_creatureData->mapId != GetMapId(); }
 
         void SetCorpseDelay(uint32 delay) { m_corpseDelay = delay; }
         uint32 GetCorpseDelay() const { return m_corpseDelay; }
@@ -349,7 +348,7 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
 
         // Handling caster facing during spellcast
         void SetTarget(ObjectGuid guid) override;
-        void DoNotReacquireSpellFocusTarget() { _spellFocusInfo.Delay = 0; }
+        void DoNotReacquireSpellFocusTarget();
         void SetSpellFocus(Spell const* focusSpell, WorldObject const* target);
         bool HasSpellFocus(Spell const* focusSpell = nullptr) const override;
         void ReleaseSpellFocus(Spell const* focusSpell = nullptr, bool withDelay = true);

@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
- * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -82,7 +81,7 @@ VendorItemCount::VendorItemCount(uint32 _item, uint32 _count)
 
 bool VendorItem::IsGoldRequired(ItemTemplate const* pProto) const
 {
-    return (pProto->Flags2 & ITEM_FLAG2_DONT_IGNORE_BUY_PRICE) || !ExtendedCost;
+    return pProto->HasFlag(ITEM_FLAG2_DONT_IGNORE_BUY_PRICE) || !ExtendedCost;
 }
 
 bool VendorItemData::RemoveItem(uint32 item_id)
@@ -960,7 +959,6 @@ void Creature::DoFleeToGetAssistance()
         Cell::VisitGridObjects(this, searcher, radius);
 
         SetNoSearchAssistance(true);
-        UpdateSpeed(MOVE_RUN);
 
         if (!creature)
             /// @todo use 31365
@@ -1336,9 +1334,15 @@ void Creature::SaveToDB(uint32 mapid, uint8 spawnMask, uint32 phaseMask)
     data.displayid = displayId;
     data.equipmentId = GetCurrentEquipmentId();
     if (!GetTransport())
-        data.spawnPoint.WorldRelocate(this);
+    {
+        data.mapId = GetMapId();
+        data.spawnPoint.Relocate(this);
+    }
     else
-        data.spawnPoint.WorldRelocate(mapid, GetTransOffsetX(), GetTransOffsetY(), GetTransOffsetZ(), GetTransOffsetO());
+    {
+        data.mapId = mapid;
+        data.spawnPoint.Relocate(GetTransOffsetX(), GetTransOffsetY(), GetTransOffsetZ(), GetTransOffsetO());
+    }
     data.spawntimesecs = m_respawnDelay;
     // prevent add data integrity problems
     data.spawndist = GetDefaultMovementType() == IDLE_MOTION_TYPE ? 0.0f : m_respawnradius;
@@ -1745,7 +1749,7 @@ bool Creature::hasInvolvedQuest(uint32 quest_id) const
 
     SQLTransaction trans = CharacterDatabase.BeginTransaction();
 
-    sMapMgr->DoForAllMapsWithMapId(data->spawnPoint.GetMapId(),
+    sMapMgr->DoForAllMapsWithMapId(data->mapId,
         [spawnId, trans](Map* map) -> void
         {
             // despawn all active creatures, and remove their respawns
@@ -1967,11 +1971,7 @@ void Creature::setDeathState(DeathState s)
 
         setActive(false);
 
-        if (HasSearchedAssistance())
-        {
-            SetNoSearchAssistance(false);
-            UpdateSpeed(MOVE_RUN);
-        }
+        SetNoSearchAssistance(false);
 
         //Dismiss group if is leader
         if (m_formation && m_formation->GetLeader() == this)
@@ -3047,11 +3047,11 @@ void Creature::SetTarget(ObjectGuid guid)
 
 void Creature::SetSpellFocus(Spell const* focusSpell, WorldObject const* target)
 {
-    // already focused
-    if (_spellFocusInfo.Spell)
+    // Pointer validation and checking for a already existing focus
+    if (_spellFocusInfo.Spell || !focusSpell)
         return;
 
-    // Prevent dead/feigning death creatures from setting a focus target, so they won't turn
+    // Prevent dead / feign death creatures from setting a focus target
     if (!IsAlive() || HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH) || HasAuraType(SPELL_AURA_FEIGN_DEATH))
         return;
 
@@ -3069,7 +3069,8 @@ void Creature::SetSpellFocus(Spell const* focusSpell, WorldObject const* target)
     if (spellInfo->HasAura(SPELL_AURA_CONTROL_VEHICLE))
         return;
 
-    if ((!target || target == this) && !focusSpell->GetCastTime()) // instant cast, untargeted (or self-targeted) spell doesn't need any facing updates
+    // instant non-channeled casts and non-target spells don't need facing updates
+    if (!target && (!focusSpell->GetCastTime() && !spellInfo->IsChanneled()))
         return;
 
     // store pre-cast values for target and orientation (used to later restore)
@@ -3212,6 +3213,12 @@ void Creature::UpdateAreaCustomFlags()
             }
         }
     }
+}
+
+void Creature::DoNotReacquireSpellFocusTarget()
+{
+    _spellFocusInfo.Delay = 0;
+    _spellFocusInfo.Spell = nullptr;
 }
 
 bool Creature::IsMovementPreventedByCasting() const
