@@ -299,7 +299,7 @@ public:
             DoCastAOE(SPELL_VENGEANCE);
             events.ScheduleEvent(EVENT_RADIANCE, urand(7 * IN_MILLISECONDS, 15 * IN_MILLISECONDS));
             Talk(SAY_AGGRO_E, who);
-            _JustEngagedWith();
+            BossAI::JustEngagedWith(who);
         }
 
         void KilledUnit(Unit* who) override
@@ -463,7 +463,7 @@ public:
             events.ScheduleEvent(EVENT_HOLY_FIRE, urand(9 * IN_MILLISECONDS, 12 * IN_MILLISECONDS));
             events.ScheduleEvent(EVENT_RENEW, urand(15 * IN_MILLISECONDS, 17 * IN_MILLISECONDS));
             Talk(SAY_AGGRO_P, who);
-            _JustEngagedWith();
+            BossAI::JustEngagedWith(who);
         }
 
         void KilledUnit(Unit* who) override

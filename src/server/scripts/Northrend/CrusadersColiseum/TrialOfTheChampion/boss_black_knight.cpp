@@ -411,7 +411,7 @@ public:
         {
             LoadEvents();
             Talk(SAY_AGGRO, who);
-            _JustEngagedWith();
+            BossAI::JustEngagedWith(who);
         }
 
         void KilledUnit(Unit* who) override

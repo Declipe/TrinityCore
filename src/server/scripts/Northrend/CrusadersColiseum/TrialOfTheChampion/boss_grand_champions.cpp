@@ -548,7 +548,7 @@ struct boss_grand_championAI : BossAI
                 if (pGrandChampion && !pGrandChampion->HasAura(SPELL_KNEEL) && !pGrandChampion->IsInCombat())
                     pGrandChampion->AI()->AttackStart(who);
             }
-            _JustEngagedWith();
+            BossAI::JustEngagedWith(who);
         //}
     }
 
