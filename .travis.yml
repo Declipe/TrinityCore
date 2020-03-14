@@ -5,7 +5,7 @@ compiler:
   - clang
 
 git:
-  depth: 100
+  depth: false
 
 addons:
   apt:
@@ -26,7 +26,6 @@ services:
 
 before_install:
   - git config user.email "rochet2@post.com" && git config user.name "Rochet2"
-  - git tag -a -m "Travis build" init
 
 install:
   - mysql -uroot -e 'create database test_mysql;'
@@ -57,4 +56,4 @@ script:
   - ./worldserver --version
 
 after_success:
-  - if [ "${TRAVIS_EVENT_TYPE}" == "cron" ]; then git push https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git HEAD:${TRAVIS_BRANCH}; fi;
+  - if [ "${TRAVIS_EVENT_TYPE}" == "cron" ]; then git push https://${GITHUB_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git HEAD:${TRAVIS_BRANCH} >/dev/null 2>&1; fi;
