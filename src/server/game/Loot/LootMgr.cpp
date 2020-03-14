@@ -78,7 +78,7 @@ private:
     uint16 _lootMode;
 };
 
-struct AllowOwnerGroupInvalidSelector : public std::unary_function<LootStoreItem*, bool>
+struct AllowOwnerGroupInvalidSelector
 {
 	explicit AllowOwnerGroupInvalidSelector(Player const* owner) : _owner(owner) { }
 
