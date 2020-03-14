@@ -78,6 +78,15 @@ class RBACData;
 
 namespace WorldPackets
 {
+    namespace Chat
+    {
+        class EmoteClient;
+    }
+    namespace Combat
+    {
+        class AttackSwing;
+        class AttackStop;
+    }
     namespace NPC
     {
         class Hello;
@@ -89,6 +98,7 @@ namespace WorldPackets
         class CompleteMovie;
         class NextCinematicCamera;
         class OpeningCinematic;
+        class WorldTeleport;
     }
     namespace Query
     {
@@ -447,6 +457,7 @@ class TC_GAME_API WorldSession
         void DoLootRelease(ObjectGuid lguid);
 
         // Account mute time
+        bool CanSpeak() const;
         time_t m_muteTime;
 
         // Locales
@@ -565,7 +576,7 @@ class TC_GAME_API WorldSession
         void HandleZoneUpdateOpcode(WorldPacket& recvPacket);
         void HandleSetSelectionOpcode(WorldPacket& recvPacket);
         void HandleStandStateChangeOpcode(WorldPacket& recvPacket);
-        void HandleEmoteOpcode(WorldPacket& recvPacket);
+        void HandleEmoteOpcode(WorldPackets::Chat::EmoteClient& packet);
 
         // Social
         void HandleContactListOpcode(WorldPacket& recvPacket);
@@ -748,8 +759,8 @@ class TC_GAME_API WorldSession
         void HandleAutoStoreBankItemOpcode(WorldPacket& recvPacket);
         void HandleWrapItemOpcode(WorldPacket& recvPacket);
 
-        void HandleAttackSwingOpcode(WorldPacket& recvPacket);
-        void HandleAttackStopOpcode(WorldPacket& recvPacket);
+        void HandleAttackSwingOpcode(WorldPackets::Combat::AttackSwing& packet);
+        void HandleAttackStopOpcode(WorldPackets::Combat::AttackStop& packet);
         void HandleSetSheathedOpcode(WorldPacket& recvPacket);
 
         void HandleUseItemOpcode(WorldPacket& recvPacket);
@@ -868,7 +879,7 @@ class TC_GAME_API WorldSession
         void HandleBfExitRequest(WorldPacket& recvData);
 
         void HandleWardenDataOpcode(WorldPacket& recvData);
-        void HandleWorldTeleportOpcode(WorldPacket& recvData);
+        void HandleWorldTeleportOpcode(WorldPackets::Misc::WorldTeleport& worldTeleport);
         void HandleMinimapPingOpcode(WorldPacket& recvData);
         void HandleRandomRollOpcode(WorldPacket& recvData);
         void HandleFarSightOpcode(WorldPacket& recvData);
