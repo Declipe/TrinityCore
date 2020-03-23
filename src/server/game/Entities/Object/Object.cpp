@@ -1010,6 +1010,11 @@ void WorldObject::setActive(bool on)
     if (GetTypeId() == TYPEID_PLAYER)
         return;
 
+    //npcbot: bots should never be removed from active
+    if (on == false && GetTypeId() == TYPEID_UNIT && ToCreature()->IsNPCBot())
+        return;
+    //end npcbot
+
     m_isActive = on;
 
     if (on && !IsInWorld())
@@ -1930,6 +1935,11 @@ TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropert
             summon = new Puppet(properties, summonerUnit);
             break;
         case UNIT_MASK_TOTEM:
+            //npcbot: totem emul step 1
+            if (summoner && summoner->GetTypeId() == TYPEID_UNIT && summoner->ToCreature()->IsNPCBot())
+                summon = new Totem(properties, summoner->ToCreature()->GetBotOwner());
+            else
+            //end npcbot
             summon = new Totem(properties, summonerUnit);
             break;
         case UNIT_MASK_MINION:
@@ -1943,6 +1953,11 @@ TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropert
         return nullptr;
     }
 
+    //npcbot: totem emul step 2
+    if (summoner && summoner->GetTypeId() == TYPEID_UNIT && summoner->ToCreature()->IsNPCBot())
+        summon->SetCreatorGUID(summoner->GetGUID()); // see TempSummon::InitStats()
+    //end npcbot
+
     summon->SetUInt32Value(UNIT_CREATED_BY_SPELL, spellId);
 
     summon->SetHomePosition(pos);
@@ -1950,6 +1965,11 @@ TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropert
     summon->InitStats(duration);
     AddToMap(summon->ToCreature());
     summon->InitSummon();
+
+    //npcbot: totem emul step 3
+    if (summoner && summoner->GetTypeId() == TYPEID_UNIT && summoner->ToCreature()->IsNPCBot())
+        summoner->ToCreature()->OnBotSummon(summon);
+    //end npcbot
 
     // call MoveInLineOfSight for nearby creatures
     Trinity::AIRelocationNotifier notifier(*summon);
@@ -2269,12 +2289,23 @@ float WorldObject::ApplyEffectModifiers(SpellInfo const* spellInfo, uint8 effInd
                 break;
         }
     }
+
+    //npcbot: handle effect mods
+    if (GetTypeId() == TYPEID_UNIT && ToCreature()->IsNPCBot())
+        ToCreature()->ApplyCreatureEffectMods(spellInfo, effIndex, value);
+    //end npcbot
+
     return value;
 }
 
 int32 WorldObject::CalcSpellDuration(SpellInfo const* spellInfo) const
 {
     uint8 comboPoints = 0;
+    //npcbot
+    if (ToCreature() && ToCreature()->IsNPCBot())
+        comboPoints = ToCreature()->GetCreatureComboPoints();
+    else
+    //end npcbot
     if (Unit const* unit = ToUnit())
         comboPoints = unit->GetComboPoints();
 
@@ -2393,6 +2424,11 @@ void WorldObject::ModSpellCastTime(SpellInfo const* spellInfo, int32& castTime, 
     if (Player* modOwner = GetSpellModOwner())
         modOwner->ApplySpellMod(spellInfo->Id, SPELLMOD_CASTING_TIME, castTime, spell);
 
+    //npcbot - apply bot spell cast time mods
+    if (castTime > 0 && GetTypeId() == TYPEID_UNIT && ToCreature()->IsNPCBot())
+        ToCreature()->ApplyCreatureSpellCastTimeMods(spellInfo, castTime);
+    //end npcbot
+
     Unit const* unitCaster = ToUnit();
     if (!unitCaster)
         return;
@@ -2482,6 +2518,11 @@ SpellMissInfo WorldObject::MagicSpellHitResult(Unit* victim, SpellInfo const* sp
     // Increase hit chance from attacker SPELL_AURA_MOD_SPELL_HIT_CHANCE and attacker ratings
     if (Unit const* unit = ToUnit())
         HitChance += int32(unit->m_modSpellHitChance * 100.0f);
+
+    //npcbot: spell hit chance bonus
+    if (GetTypeId() == TYPEID_UNIT && ToCreature()->IsNPCBot())
+        HitChance -= int32(ToCreature()->GetCreatureMissChance() * 100.f);
+    //end npcbot
 
     RoundToInterval(HitChance, 0, 10000);
 
@@ -2808,6 +2849,15 @@ SpellCastResult WorldObject::CastSpell(SpellCastTargets const& targets, uint32 s
         return SPELL_FAILED_SPELL_UNAVAILABLE;
     }
 
+    //npcbot
+    if (Creature::IsBotCustomSpell(spellId) && !(ToCreature() && (ToCreature()->IsNPCBot() || ToCreature()->IsNPCBotPet())))
+    {
+        TC_LOG_ERROR("entities.unit", "CastSpell: NpcBot system custom spell %u by caster: %s %u), aborted. Please report",
+            spellId, (GetTypeId() == TYPEID_PLAYER ? "player (GUID:" : "creature (Entry:"), (GetTypeId() == TYPEID_PLAYER ? GetGUID().GetCounter() : GetEntry()));
+        return SPELL_FAILED_SPELL_UNAVAILABLE;
+    }
+    //end npcbot
+
     Spell* spell = new Spell(this, info, args.TriggerFlags, args.OriginalCaster);
     for (auto const& pair : args.SpellValueOverrides)
         spell->SetSpellValue(pair.first, pair.second);
@@ -2862,6 +2912,11 @@ bool WorldObject::IsValidAttackTarget(WorldObject const* target, SpellInfo const
     if (target->GetTypeId() == TYPEID_PLAYER && target->ToPlayer()->IsGameMaster())
         return false;
 
+    //npcbot: can't attack unit if controlled by a GM (bots, pets, possible others)
+    if (unitTarget && unitTarget->IsControlledByPlayer() && unitTarget->GetFaction() == 35)
+        return false;
+    //end npcbot
+
     Unit const* unit = ToUnit();
     // visibility checks (only units)
     if (unit)
@@ -2907,6 +2962,14 @@ bool WorldObject::IsValidAttackTarget(WorldObject const* target, SpellInfo const
         if (unitTarget->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED) && unit->IsImmuneToPC())
             return false;
     }
+
+    //npcbot: CvC case fix for bots, still a TODO
+    if (ToUnit() && target->ToUnit() && !HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED) &&
+        !target->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED) &&
+        ((GetTypeId() == TYPEID_UNIT && (ToCreature()->IsNPCBot() || ToCreature()->IsNPCBotPet())) ||
+        (target->GetTypeId() == TYPEID_UNIT && (target->ToCreature()->IsNPCBot() || target->ToCreature()->IsNPCBotPet()))))
+        return GetReactionTo(target) <= REP_NEUTRAL || target->GetReactionTo(this) <= REP_NEUTRAL;
+    //end npcbot
 
     // CvC case - can attack each other only when one of them is hostile
     if (ToUnit() && !HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED) && target->ToUnit() && !target->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED))
