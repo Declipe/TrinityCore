@@ -4189,6 +4189,7 @@ Metric.OverallStatusInterval = 1
 
 #
 ###################################################################################################
+<<<<<<< HEAD
 # TOURNAMENTS SYSTEM
 #
 #    Tournaments.Enable
@@ -4651,6 +4652,8 @@ GuildDefault.IDH = 0
 # Prepatch by LordPsyan.
 # See http://www.realmsofwarcraft.com/bb for forums and information.
 #
+=======
+
 
 ###################################################################################################
 # NPCBOT CONFIGURATION
@@ -4842,3 +4845,4 @@ NpcBot.Stats.Limits.Crit  = 95.0
 
 #
 ###################################################################################################
+>>>>>>> 67a6474040f8669fc2f2393c5de29239ea3e29d4
