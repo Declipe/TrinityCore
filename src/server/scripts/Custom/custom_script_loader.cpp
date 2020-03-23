@@ -237,6 +237,7 @@ void AddSC_Mod_ItemUpgrade();
 void AddSC_Mod_AutoLearn();
 void AddSC_Transmogrification();
 void AddSC_mod_DefaultSpec();
+void AddSC_spp_info();
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
 void AddCustomScripts()
@@ -258,7 +259,7 @@ void AddCustomScripts()
 // end15
 // end16
     // GuildHouse NPC
-	AddSC_guildmaster();
+AddSC_guildmaster();
 // end18
 // end19
 // end20
@@ -463,4 +464,5 @@ AddSC_npc_teleport();
 AddSC_Transmogrification();
 AddSC_mod_DefaultSpec();
 AddSC_level_award();
+AddSC_spp_info();
 }
