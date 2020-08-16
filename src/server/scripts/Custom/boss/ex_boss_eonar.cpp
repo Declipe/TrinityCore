@@ -136,17 +136,17 @@ public:
 
 
 
-		void SpellHit(Unit* caster, SpellInfo const* spell) override
+		void SpellHit(WorldObject* caster, SpellInfo const* spellInfo) override
 		{
 
-			if (spell->Id == 35395){
+			if (spellInfo->Id == 35395){
 				me->Yell("Eure Kreuzfahrerstoesse werden Euch nicht retten.", LANG_UNIVERSAL, nullptr);
-				me->SetInCombatWith(caster);
+				//me->SetInCombatWith(caster);
 				me->SetDisplayId(27971);
 			}
 
 
-			if (spell->Id == 49921 || spell->Id == 66992){
+			if (spellInfo->Id == 49921 || spellInfo->Id == 66992){
 				armor = me->GetArmor();
 				me->SetName("Eonar der Alte");
 				me->SetObjectScale(2);
@@ -268,15 +268,15 @@ public: eonaradd() : CreatureScript("eonaradd") { }
 				deathstate = false;
 			}
 
-			void SpellHit(Unit* caster, SpellInfo const* spell) override
+			void SpellHit(WorldObject* /*caster*/, SpellInfo const* spellInfo) override
 			{
 
-				if (spell->Id == 48638){
+				if (spellInfo->Id == 48638){
 					me->Yell("Spuert meine Macht!", LANG_UNIVERSAL, nullptr);
 					me->SelectNearestHostileUnitInAggroRange(false);
 					//me->DealHeal(healInfo);
 					me->SetObjectScale(3);
-					me->AddAura(45438, caster);
+					me->AddAura(45438,me); //, caster);
 					deathstate = true;
 				}
 			}

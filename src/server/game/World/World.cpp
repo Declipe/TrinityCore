@@ -3661,7 +3661,7 @@ void World::LoadGuildBonusInfo()
 
 uint8 World::SelectReqGuildLevelForBonus(uint8 guildBonus)
 {
-    PreparedStatement* stmt;
+    CharacterDatabasePreparedStatement* stmt;
     stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_GUILD_BONUS_INFO);
     stmt->setUInt8(0, guildBonus);
     PreparedQueryResult result = CharacterDatabase.Query(stmt);

@@ -1,4 +1,4 @@
-#include "Config.h"
+﻿#include "Config.h"
 //#include "GuildMgr.h"
 #include "Player.h"
 #include "Battleground.h"
@@ -86,7 +86,7 @@ class Mod_ItemUpgrade_WorldScript : public WorldScript
         uint32 oldMSTime = getMSTime();
 
         //QueryResult result = ZynDatabase.PQuery("SELECT `enchant_id`, `prev_enchant_id`, `golds` FROM `world_item_upgrade`");
-        PreparedStatement* stmt = ZynDatabase.GetPreparedStatement(ZynDatabase1);
+        ZynDatabasePreparedStatement* stmt = ZynDatabase.GetPreparedStatement(ZynDatabase1);
         PreparedQueryResult result = ZynDatabase.Query(stmt);
 
         if (!result)
@@ -283,7 +283,7 @@ class go_item_upgrade : public GameObjectScript
         uint32 golds = 0;
         uint32 enchantId = action - GOSSIP_ACTION_INFO_DEF;
 
-        SQLTransaction trans = CharacterDatabase.BeginTransaction();
+        CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
         if (enchantId == 1)
         {
             golds = 100 * GOLD;

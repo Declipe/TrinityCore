@@ -83,7 +83,7 @@ public:
     bool Execute(uint64 /*time*/, uint32 /*diff*/)
     {
         if (_player && _player->GetSession())
-            _player->GetSession()->KickPlayer();
+            _player->GetSession()->KickPlayer("Acc");
         return true;
     }
 

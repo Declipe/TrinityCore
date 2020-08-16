@@ -31,6 +31,7 @@ using QueryResultPromise = std::promise<QueryResult>;
 class CharacterDatabaseConnection;
 class LoginDatabaseConnection;
 class WorldDatabaseConnection;
+class ZynDatabaseConnection;
 
 class PreparedStatementBase;
 
@@ -40,6 +41,7 @@ class PreparedStatement;
 using CharacterDatabasePreparedStatement = PreparedStatement<CharacterDatabaseConnection>;
 using LoginDatabasePreparedStatement = PreparedStatement<LoginDatabaseConnection>;
 using WorldDatabasePreparedStatement = PreparedStatement<WorldDatabaseConnection>;
+using ZynDatabasePreparedStatement = PreparedStatement<ZynDatabaseConnection>;
 
 class PreparedResultSet;
 using PreparedQueryResult = std::shared_ptr<PreparedResultSet>;
@@ -69,6 +71,7 @@ using SQLTransaction = std::shared_ptr<Transaction<T>>;
 using CharacterDatabaseTransaction = SQLTransaction<CharacterDatabaseConnection>;
 using LoginDatabaseTransaction = SQLTransaction<LoginDatabaseConnection>;
 using WorldDatabaseTransaction = SQLTransaction<WorldDatabaseConnection>;
+using ZynDatabaseTransaction = SQLTransaction<ZynDatabaseConnection>;
 
 class SQLQueryHolderBase;
 using QueryResultHolderFuture = std::future<SQLQueryHolderBase*>;
@@ -80,6 +83,7 @@ class SQLQueryHolder;
 using CharacterDatabaseQueryHolder = SQLQueryHolder<CharacterDatabaseConnection>;
 using LoginDatabaseQueryHolder = SQLQueryHolder<LoginDatabaseConnection>;
 using WorldDatabaseQueryHolder = SQLQueryHolder<WorldDatabaseConnection>;
+using ZynDatabaseQueryHolder = SQLQueryHolder<ZynDatabaseConnection>;
 
 // mysql
 struct MySQLHandle;

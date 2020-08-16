@@ -441,7 +441,7 @@ public:
     void OnSave(Player* player) override
     {
         uint32 lowguid = player->GetGUID().GetCounter();
-        SQLTransaction trans = CharacterDatabase.BeginTransaction();
+        CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
         trans->PAppend("DELETE FROM `custom_transmogrification` WHERE `Owner` = %u", lowguid);
 #ifdef PRESETS
         trans->PAppend("DELETE FROM `custom_transmogrification_sets` WHERE `Owner` = %u", lowguid);

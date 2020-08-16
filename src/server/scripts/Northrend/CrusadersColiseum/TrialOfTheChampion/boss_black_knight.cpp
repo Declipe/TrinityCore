@@ -136,7 +136,7 @@ public:
             Initialize();
         }
 
-        void SpellHitTarget(Unit* target, SpellInfo const* spell) override
+        void SpellHitTarget(WorldObject* target, SpellInfo const* spell) override
         {
             if (spell->Id == SPELL_EXPLODE || spell->Id == SPELL_EXPLODE_H)
             {
@@ -327,7 +327,7 @@ public:
                 achievementCredit = false;
         }
 
-        void SpellHit(Unit* /*caster*/, SpellInfo const* spell) override
+        void SpellHit(WorldObject* /*caster*/, SpellInfo const* spell) override
         {
             if (spell->Id == SPELL_BLACK_KNIGHT_RES)
             {

@@ -3014,7 +3014,7 @@ void Guild::ResetTimes()
 //Guild-Level-System [Start]
 void Guild::LoadLevelInfo()
 {
-    PreparedStatement* stmt;
+    CharacterDatabasePreparedStatement* stmt;
     stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_GUILD_LEVEL_INFO);
     stmt->setUInt32(0, m_id);
     PreparedQueryResult result = CharacterDatabase.Query(stmt);
@@ -3105,7 +3105,7 @@ void Guild::GiveXp(uint32 value)
     else
         m_current_guildXp += value;
 
-    PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_GUILD_XP);
+    CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_GUILD_XP);
     stmt->setUInt32(0, value);
     stmt->setUInt32(1, m_id);
     CharacterDatabase.Execute(stmt);
@@ -3122,7 +3122,7 @@ void Guild::SetLevel(uint8 level, bool byCommand)
     {
         m_current_guildXp = 0;
 
-        PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_GUILD_XP);
+        CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_GUILD_XP);
         stmt->setUInt8(0, m_current_guildXp);
         stmt->setUInt32(1, m_id);
         CharacterDatabase.Execute(stmt);
@@ -3133,7 +3133,7 @@ void Guild::SetLevel(uint8 level, bool byCommand)
     sWorld->SendWorldText(SERVER_MSG_STRING, worldMsg);
 
     //Save to DB
-    PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_GUILD_LEVEL);
+    CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_GUILD_LEVEL);
     stmt->setUInt8(0, level);
     stmt->setUInt32(1, m_id);
     CharacterDatabase.Execute(stmt);

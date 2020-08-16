@@ -301,7 +301,7 @@ void WorldSession::SendExternalMails()
 {
     TC_LOG_DEBUG("entities.player.character", "External Mail> Sending mails in queue...");
 
-    PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_GET_EXTERNAL_MAIL);
+    CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_GET_EXTERNAL_MAIL);
     PreparedQueryResult result = CharacterDatabase.Query(stmt);
     if (!result)
     {
@@ -309,7 +309,7 @@ void WorldSession::SendExternalMails()
         return;
     }
 
-    SQLTransaction trans = CharacterDatabase.BeginTransaction();
+    CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
 
     MailDraft* mail = NULL;
 

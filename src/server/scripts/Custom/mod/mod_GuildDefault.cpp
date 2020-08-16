@@ -27,7 +27,7 @@ class Mod_GuildDefault_PlayerScript : public PlayerScript
     {
         if (firstLogin)
         {
-			SQLTransaction trans = CharacterDatabase.BeginTransaction();
+            CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
 			//uint32 rankId =0;
             uint32 GUILD_ID_ALLIANCE = sConfigMgr->GetIntDefault("GuildDefault.IDA", 0);
             uint32 GUILD_ID_HORDE = sConfigMgr->GetIntDefault("GuildDefault.IDH", 0);
