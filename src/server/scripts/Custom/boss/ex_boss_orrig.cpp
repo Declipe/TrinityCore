@@ -140,7 +140,7 @@ public:
 					DoCast(SPELL_ENRAGE);
 					break;
 				case EVENT_BLIZZARD:
-					if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0)){
+					if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0)){
 						DoCast(target, SPELL_BLIZZARD);
 					}
 					_events.ScheduleEvent(EVENT_BLIZZARD, 15000);

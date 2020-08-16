@@ -1,4 +1,4 @@
-﻿#include "ScriptMgr.h"
+#include "ScriptMgr.h"
 #include "GameObject.h"
 #include "InstanceScript.h"
 #include "Map.h"
@@ -82,11 +82,11 @@ enum eEnums
     GO_ICE_DOOR_2                                    =201911,
 };
 
-//#define FIRE_SAY_AGGRO                                "Вам нечего здесь делать. Убирайтесь, пока живы!"
-//#define FIRE_SAY_FRENZY                               "Ярость наполняет меня!"
-//#define FIRE_SAY_SUMMON_TITAN                         "Слуги мои, помогите!"
-//#define FIRE_SAY_KILL                                 "Этим всё и закончится!"
-//#define FIRE_SAY_DIE                                  "На этот раз... вам повезло...!"
+//#define FIRE_SAY_AGGRO                                "??? ?????? ????? ??????. ??????????, ???? ????!"
+//#define FIRE_SAY_FRENZY                               "?????? ????????? ????!"
+//#define FIRE_SAY_SUMMON_TITAN                         "????? ???, ????????!"
+//#define FIRE_SAY_KILL                                 "???? ??? ? ??????????!"
+//#define FIRE_SAY_DIE                                  "?? ???? ???... ??? ???????...!"
 
 class event_npc_firelord : public CreatureScript
 {
@@ -133,13 +133,13 @@ class event_npc_firelord : public CreatureScript
 
             void JustSummoned(Creature *summon)
             {
-                if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                 {
                     summon->CastSpell(pTarget, SPELL_CURSE_OF_FLAMES_ELEMENTAL, true);
                     summon->CastSpell(pTarget, SPELL_FLAME_BREATH_ELEMENTAL, true);
                 }
 
-                if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                     summon->AI()->AttackStart(pTarget);
                 summons.Summon(summon);
             }
@@ -209,7 +209,7 @@ class event_npc_firelord : public CreatureScript
                     //Sunbeam Timer
                     if (m_uiSunbeamTimer <= uiDiff)
                     {
-                        if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                        if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                             DoCast(pTarget, SPELL_SUNBEAM_FIRE);
 
                         m_uiSunbeamTimer = urand(10000, 20000);
@@ -247,7 +247,7 @@ class event_npc_firelord : public CreatureScript
                     //Flaming Cinder Timer
                     if (m_uiFlamingCinderTimer <= uiDiff)
                     {
-                        if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                        if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                             me->CastSpell(pTarget, SPELL_FLAMING_CINDER_FIRE, true);
 
                         m_uiFlamingCinderTimer = urand(10000, 15000);
@@ -318,7 +318,7 @@ class event_npc_firelord : public CreatureScript
                 //Burning Bite Timer
                 if (m_uiBurningBiteTimer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         me->CastSpell(pTarget, SPELL_BURNING_BITE_FIRE, true);
 
                     m_uiBurningBiteTimer = urand(12000, 25000);
@@ -355,11 +355,11 @@ enum Texts12
     ICE_SAY_DIE = 2,
     EMOTE_ICE_SHIELD_ICE = 3,
 };
-//#define ICE_SAY_AGGRO                                "Я проморожу вас насквозь!"
-//#define ICE_SAY_KILL                                 "Ещё одна бесполезная ледышка!"
-//#define ICE_SAY_DIE                                  "Но! Я же был бессмертен..."
+//#define ICE_SAY_AGGRO                                "? ????????? ??? ????????!"
+//#define ICE_SAY_KILL                                 "??? ???? ??????????? ???????!"
+//#define ICE_SAY_DIE                                  "??! ? ?? ??? ??????????..."
 
-//#define EMOTE_ICE_SHIELD_ICE                         "Кожа Стража льда Алкида покрывается коркой льда"
+//#define EMOTE_ICE_SHIELD_ICE                         "???? ?????? ???? ?????? ??????????? ?????? ????"
 
 class event_npc_icelord : public CreatureScript
 {
@@ -438,7 +438,7 @@ class event_npc_icelord : public CreatureScript
                 //Icebolt Timer
                 if (m_uiIceBoltTimer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         me->CastSpell(pTarget, SPELL_ICEBOLT_ICE, true);
 
                     m_uiIceBoltTimer = urand(5000, 15000);
@@ -449,7 +449,7 @@ class event_npc_icelord : public CreatureScript
                 //IceBlast Timer
                 if (m_uiIceBlastTimer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         me->CastSpell(pTarget, SPELL_ICEBLAST_ICE, true);
 
                     m_uiIceBlastTimer = urand(20000,40000);
@@ -460,7 +460,7 @@ class event_npc_icelord : public CreatureScript
                 //Ice Chains Timer
                 if (m_uiIceChainsTimer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         DoCast(pTarget, SPELL_ICECHAINS_ICE);
 
                     m_uiIceChainsTimer = urand(10000, 17000);
@@ -471,7 +471,7 @@ class event_npc_icelord : public CreatureScript
                 //Frost Blast (AOE) Timer
                 if (m_uiFrostBlast <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         DoCast(pTarget, SPELL_FROST_BLAST_1_ICE);
 
                     m_uiFrostBlast = urand(40000,80000);
@@ -482,7 +482,7 @@ class event_npc_icelord : public CreatureScript
                 //Frost Blast Timer
                 if (m_uiFrostBlastTimer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         DoCast(pTarget, SPELL_FROST_BLAST_ICE);
 
                     m_uiFrostBlastTimer = urand(10000,20000);
@@ -527,10 +527,10 @@ enum Texts13
     EARTH_SAY_KILL = 2,
     EARTH_SAY_DIE = 3,
 };
-//#define EARTH_SAY_AGGRO                               "Вам не следовало сюда приходить! Это место станет вашей могилой!"
-//#define EARTH_EMOTE_NATURE                            "Стража земли Акрилия наполняют силы земли"
-//#define EARTH_SAY_KILL                                "Отправляйся в землю!"
-//#define EARTH_SAY_DIE                                 "Мать земля, помо... ох..."
+//#define EARTH_SAY_AGGRO                               "??? ?? ????????? ???? ?????????! ??? ????? ?????? ????? ???????!"
+//#define EARTH_EMOTE_NATURE                            "?????? ????? ??????? ????????? ???? ?????"
+//#define EARTH_SAY_KILL                                "??????????? ? ?????!"
+//#define EARTH_SAY_DIE                                 "???? ?????, ????... ??..."
 
 class event_npc_earthlord : public CreatureScript
 {
@@ -662,7 +662,7 @@ class event_npc_earthlord : public CreatureScript
                 //Wrath Timer
                 if (m_uiWrathTimer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         me->CastSpell(pTarget, SPELL_WRATH_EARTH, true);
 
                     m_uiWrathTimer = urand(5000,  10000);
@@ -683,7 +683,7 @@ class event_npc_earthlord : public CreatureScript
                 //Stun Timer
                 if (m_uiStunTimer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         me->CastSpell(pTarget, SPELL_STUN_EARTH, true);
 
                     m_uiStunTimer = urand(10000, 20000);
@@ -711,11 +711,11 @@ enum Texts14
     DARK_SAY_DIE = 4,
 };
 
-//#define DARK_SAY_AGGRO                                "Гости? Неожиданно..."
-//#define DARK_SAY_FRENZY                               "О да..! Я чувствую как ваша ярость наполняет меня!"
-//#define DARK_SAY_SUMMON                               "Посмотрите на души тех, кто был здесь до вас."
-//#define DARK_SAY_KILL                                 "Твоя душа пополнит мою армию!"
-//#define DARK_SAY_DIE                                  "Я слишком стар для таких битв..."
+//#define DARK_SAY_AGGRO                                "?????? ??????????..."
+//#define DARK_SAY_FRENZY                               "? ??..! ? ???????? ??? ???? ?????? ????????? ????!"
+//#define DARK_SAY_SUMMON                               "?????????? ?? ???? ???, ??? ??? ????? ?? ???."
+//#define DARK_SAY_KILL                                 "???? ???? ???????? ??? ?????!"
+//#define DARK_SAY_DIE                                  "? ??????? ???? ??? ????? ????..."
 
 class event_npc_darklord : public CreatureScript
 {
@@ -760,7 +760,7 @@ class event_npc_darklord : public CreatureScript
             {
                 summon->CastSpell(summon, SPELL_FRENZY, true);
                 summon->CastSpell(summon, SPELL_FURY, true);
-                if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                     summon->AI()->AttackStart(pTarget);
             }
 
@@ -803,7 +803,7 @@ class event_npc_darklord : public CreatureScript
                 //Random 1 Timer
                 if (m_uiRandom1Timer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         me->CastSpell(pTarget, urand(0, 1) ? SPELL_SUNBEAM_FIRE : SPELL_FROST_BLAST_ICE, true);
 
                     m_uiRandom1Timer = urand(10000, 30000);
@@ -814,7 +814,7 @@ class event_npc_darklord : public CreatureScript
                 //Random 2 Timer
                 if (m_uiRandom2Timer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         me->CastSpell(pTarget, urand(0, 1) ? SPELL_STUN_EARTH : SPELL_GROUND_EARTH, true);
 
                     m_uiRandom2Timer = urand(7000, 12000);
@@ -825,7 +825,7 @@ class event_npc_darklord : public CreatureScript
                 //Random 3 Timer
                 if (m_uiRandom3Timer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         me->CastSpell(pTarget, urand(0, 1) ? SPELL_SCORCH_FIRE : SPELL_ICECHAINS_ICE, true);
 
                     m_uiRandom3Timer = urand(11000,15000);
@@ -836,7 +836,7 @@ class event_npc_darklord : public CreatureScript
                 //Mirrored Timer
                 if (m_uiMirroredTimer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         me->CastSpell(pTarget, SPELL_MIRRORED_DARK, true);
 
                     m_uiMirroredTimer = urand(20000,27000);
@@ -847,7 +847,7 @@ class event_npc_darklord : public CreatureScript
                 //Death and Decay Timer
                 if (m_uiDecayTimer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         me->CastSpell(pTarget, SPELL_DEATH_AND_DECAY_DARK, true);
 
                     m_uiDecayTimer = urand(15000,45000);
@@ -869,7 +869,7 @@ class event_npc_darklord : public CreatureScript
                 if (m_uiSummonSoulsTimer <= uiDiff)
                 {
                     for (uint8 n = 0; n < dPhase*4; ++n)
-                        if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                        if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                             me->CastSpell(pTarget, SPELL_SOULS_SUMMON_DARK, true);
 
                     Talk(DARK_SAY_SUMMON);
@@ -1005,7 +1005,7 @@ class event_mage_ice : public CreatureScript
                 //Blizzard Timer
                 if (m_uiBlizzardTimer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         DoCast(pTarget, SPELL_BLIZZARD);
 
                     m_uiBlizzardTimer = urand(15000, 30000);
@@ -1016,7 +1016,7 @@ class event_mage_ice : public CreatureScript
                 //Cone of Cold Timer
                 if (m_uiConeTimer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         DoCast(pTarget, SPELL_CONE_OF_COLD);
 
                     m_uiConeTimer = urand(10000, 15000);
@@ -1027,7 +1027,7 @@ class event_mage_ice : public CreatureScript
                 //Counterspell Timer
                 if (m_uiCounterspellTimer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         DoCast(pTarget, SPELL_COUNTERSPELL);
 
                     m_uiCounterspellTimer = urand(10000, 20000);
@@ -1112,7 +1112,7 @@ class event_mage_fire : public CreatureScript
                 //Fel Fireball Timer
                 if (m_uiFFireballTimer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         DoCast(pTarget, SPELL_FEL_FIREBALL);
 
                     m_uiFFireballTimer = urand(10000, 15000);
@@ -1199,7 +1199,7 @@ class event_dk : public CreatureScript
                 //Death Coil Timer
                 if (m_uiDeathCoilTimer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         DoCast(pTarget, SPELL_DEATH_COIL);
 
                     m_uiDeathCoilTimer = urand(5000, 15000);
@@ -1220,7 +1220,7 @@ class event_dk : public CreatureScript
                 //Glacial Strike Timer
                 if (m_uiGlacialStrikeTimer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         DoCast(pTarget, SPELL_GLACIAL_STRIKE);
 
                     m_uiGlacialStrikeTimer = urand(7000, 17000);
@@ -1304,7 +1304,7 @@ class event_warrior : public CreatureScript
                 //Shockwave Timer
                 if (m_uiShockwaveTimer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         DoCast(pTarget, SPELL_SHOCKWAVE);
 
                     m_uiShockwaveTimer = urand(8000, 10000);
@@ -1325,7 +1325,7 @@ class event_warrior : public CreatureScript
                 //Disarm Timer
                 if (m_uiDisarmTimer <= uiDiff)
                 {
-                    if (Unit *pTarget = SelectTarget(SELECT_TARGET_RANDOM))
+                    if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                         DoCast(pTarget, SPELL_DISARM);
 
                     m_uiDisarmTimer = urand(8000, 10000);

@@ -121,7 +121,7 @@ public:
 			switch (summon->GetEntry())
 			{
 			case NPC_PUSTELIGER_SCHRECKEN:
-				if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 300.0f))
+				if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 300.0f))
 					summon->AI()->AttackStart(target); 
 				break;
 			}
@@ -191,7 +191,7 @@ public:
 					_events.ScheduleEvent(EVENT_BURN, 5000);
 					break;
 				case EVENT_BREATH:
-					if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT,0)){
+					if (Unit* target = SelectTarget(SelectTargetMethod::MaxThreat,0)){
 						DoCast(target,SPELL_FLAME_BREATH);
 					}
 					

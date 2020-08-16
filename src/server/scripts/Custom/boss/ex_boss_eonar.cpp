@@ -322,7 +322,7 @@ public: eonaradd() : CreatureScript("eonaradd") { }
 					switch (eventId)
 					{
 					case EVENT_EISBLOCK:
-						if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0)){
+						if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0)){
 							DoCast(target, SPELL_EISBLOCK);
 						}
 						_events.ScheduleEvent(EVENT_EISBLOCK, 10000);

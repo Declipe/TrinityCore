@@ -213,7 +213,7 @@ public:
                 {
                     case EVENT_CLAW:
                         DoCastVictim(SPELL_CLAW);
-                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 50.0f, true))
+                        if (Unit* target = SelectTarget(SelectTargetMethod::Random, 1, 50.0f, true))
                         {
                             ResetThreatList();
                             AddThreat(target, 10.0f);
@@ -224,7 +224,7 @@ public:
                     case EVENT_LEAP:
                         if (me->GetEntry() == NPC_RISEN_ARELAS || me->GetEntry() == NPC_RISEN_JAEREN)
                         {
-                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 30.0f, true))
+                            if (Unit* target = SelectTarget(SelectTargetMethod::Random, 1, 30.0f, true))
                                 DoCast(target, SPELL_LEAP);
                             events.ScheduleEvent(EVENT_LEAP, urand(8000, 10000));
                         }
@@ -447,7 +447,7 @@ public:
                         break;
                     case EVENT_DEATH_RESPITE:
                         // TODO: fixing this later
-                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 50.0f, true))
+                        if (Unit* target = SelectTarget(SelectTargetMethod::Random, 1, 50.0f, true))
                             DoCast(target, SPELL_DEATH_RESPITE);
                         events.ScheduleEvent(EVENT_DEATH_RESPITE, urand(15000, 16000));
                         break;
@@ -464,7 +464,7 @@ public:
                         events.ScheduleEvent(EVENT_DEATH_BITE, 3000);
                         break;
                     case EVENT_MARKED_DEATH:
-                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f))
+                        if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 50.0f))
                             DoCast(target, SPELL_MARKED_DEATH);
                         events.ScheduleEvent(EVENT_MARKED_DEATH, urand(13000, 15000));
                         break;

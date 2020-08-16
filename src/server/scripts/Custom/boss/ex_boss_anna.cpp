@@ -161,21 +161,21 @@ public:
 				{
 
 				case EVENT_HEX:
-					if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 4)){
+					if (Unit* target = SelectTarget(SelectTargetMethod::Random, 4)){
 						DoCast(target, SPELL_HEX);
 					}
 					_events.ScheduleEvent(EVENT_HEX, 16000);
 					break;
 
 				case EVENT_SHEEP:
-					if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 2)){
+					if (Unit* target = SelectTarget(SelectTargetMethod::Random, 2)){
 						DoCast(target, SPELL_SHEEP);
 					}
 					_events.ScheduleEvent(EVENT_SHEEP, 20000);
 					break;
 
 				case EVENT_FLUCH_DER_PEIN:
-					if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0)){	
+					if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0)){
 						DoCast(target, SPELL_FLUCH_DER_PEIN);
 					}
 					_events.ScheduleEvent(EVENT_FLUCH_DER_PEIN, 12000);
@@ -197,28 +197,28 @@ public:
 					break;
 
 				case EVENT_VERDERBNIS:
-					if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0)){
+					if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0)){
 						DoCast(target, SPELL_VERDERBNIS);
 					}
 					_events.ScheduleEvent(EVENT_VERDERBNIS, 15000);
 					break;
 
 				case EVENT_FLEISCH_EINAESCHERN:
-					if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0)){
+					if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0)){
 						DoCast(target, SPELL_FLEISCH_EINAESCHERN);
 					}
 					_events.ScheduleEvent(EVENT_FLEISCH_EINAESCHERN, 15000);
 					break;
 
 				case EVENT_WIRBELWIND:
-					if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1)){
+					if (Unit* target = SelectTarget(SelectTargetMethod::Random, 1)){
 						DoCast(target, SPELL_WIRBELWIND);
 					}
 					_events.ScheduleEvent(EVENT_WIRBELWIND, 30000);
 					break;
 
 				case EVENT_VERDERBENDE_SEUCHE:
-					if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0)){
+					if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0)){
 						DoCast(target, SPELL_VERDERBENDE_SEUCHE);
 					}
 					_events.ScheduleEvent(EVENT_VERDERBENDE_SEUCHE, 30000);
@@ -230,7 +230,7 @@ public:
 					break;
 
 				case EVENT_HAMMER_DER_GERECHTIGKEIT:
-					if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1)){
+					if (Unit* target = SelectTarget(SelectTargetMethod::Random, 1)){
 						DoCast(target, SPELL_HAMMER_DER_GERECHTIGKEIT);
 					}
 					_events.ScheduleEvent(EVENT_HAMMER_DER_GERECHTIGKEIT, 12000);
