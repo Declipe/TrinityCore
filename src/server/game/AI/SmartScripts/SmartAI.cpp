@@ -521,9 +521,6 @@ void SmartAI::InitializeAI()
     _despawnTime = 0;
     _despawnState = 0;
     _escortState = SMART_ESCORT_NONE;
-
-    me->SetVisible(true);
-
     _followGUID.Clear(); // do not reset follower on Reset(), we need it after combat evade
     _followDistance = 0;
     _followAngle = 0;
@@ -588,6 +585,11 @@ void SmartAI::KilledUnit(Unit* victim)
 void SmartAI::JustSummoned(Creature* creature)
 {
     GetScript()->ProcessEventsFor(SMART_EVENT_SUMMONED_UNIT, creature);
+}
+
+void SmartAI::SummonedCreatureDies(Creature* summon, Unit* /*killer*/)
+{
+    GetScript()->ProcessEventsFor(SMART_EVENT_SUMMONED_UNIT_DIES, summon);
 }
 
 void SmartAI::AttackStart(Unit* who)
@@ -933,13 +935,13 @@ void SmartAI::UpdatePath(uint32 diff)
     // handle pause
     if (HasEscortState(SMART_ESCORT_PAUSED) && (_waypointReached || _waypointPauseForced))
     {
-        if (_waypointPauseTimer <= diff)
+        if (!me->IsInCombat() && !HasEscortState(SMART_ESCORT_RETURNING))
         {
-            if (!me->IsInCombat() && !HasEscortState(SMART_ESCORT_RETURNING))
+            if (_waypointPauseTimer <= diff)
                 ResumePath();
+            else
+                _waypointPauseTimer -= diff;
         }
-        else
-            _waypointPauseTimer -= diff;
     }
     else if (_waypointPathEnded) // end path
     {
@@ -1100,6 +1102,11 @@ void SmartGameObjectAI::JustSummoned(Creature* creature)
     GetScript()->ProcessEventsFor(SMART_EVENT_SUMMONED_UNIT, creature);
 }
 
+void SmartGameObjectAI::SummonedCreatureDies(Creature* summon, Unit* /*killer*/)
+{
+    GetScript()->ProcessEventsFor(SMART_EVENT_SUMMONED_UNIT_DIES, summon);
+}
+
 void SmartGameObjectAI::SummonedCreatureDespawn(Creature* unit)
 {
     GetScript()->ProcessEventsFor(SMART_EVENT_SUMMON_DESPAWNED, unit, unit->GetEntry());
@@ -1118,7 +1125,7 @@ class SmartTrigger : public AreaTriggerScript
 
             TC_LOG_DEBUG("scripts.ai", "AreaTrigger %u is using SmartTrigger script", trigger->id);
             SmartScript script;
-            script.OnInitialize(nullptr, trigger);
+            script.OnInitialize(player, trigger);
             script.ProcessEventsFor(SMART_EVENT_AREATRIGGER_ONTRIGGER, player, trigger->id);
             return true;
         }

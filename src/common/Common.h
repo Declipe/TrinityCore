@@ -132,9 +132,4 @@ TC_COMMON_API LocaleConstant GetLocaleByName(std::string const& name);
 
 #define MAX_QUERY_LEN 32*1024
 
-namespace Trinity
-{
-    using std::make_unique;
-}
-
 #endif
