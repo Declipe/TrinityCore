@@ -199,8 +199,8 @@ void GameObject::RemoveFromOwner()
     }
 
     // This happens when a mage portal is despawned after the caster changes map (for example using the portal)
-    TC_LOG_DEBUG("misc", "Removed GameObject (GUID: %u Entry: %u SpellId: %u LinkedGO: %u) that just lost any reference to the owner (%s) GO list",
-        GetGUID().GetCounter(), GetGOInfo()->entry, m_spellId, GetGOInfo()->GetLinkedGameObjectEntry(), ownerGUID.ToString().c_str());
+    TC_LOG_DEBUG("misc", "Removed GameObject (%s Entry: %u SpellId: %u LinkedGO: %u) that just lost any reference to the owner (%s) GO list",
+        GetGUID().ToString().c_str(), GetGOInfo()->entry, m_spellId, GetGOInfo()->GetLinkedGameObjectEntry(), ownerGUID.ToString().c_str());
     SetOwnerGUID(ObjectGuid::Empty);
 }
 
@@ -250,6 +250,10 @@ void GameObject::RemoveFromWorld()
         if (m_model)
             if (GetMap()->ContainsGameObjectModel(*m_model))
                 GetMap()->RemoveGameObjectModel(*m_model);
+
+        // If linked trap exists, despawn it
+        if (GameObject* linkedTrap = GetLinkedTrap())
+            linkedTrap->DespawnOrUnsummon();
 
         WorldObject::RemoveFromWorld();
 
@@ -541,7 +545,6 @@ void GameObject::Update(uint32 diff)
                     m_lootState = GO_READY;                         // for other GOis same switched without delay to GO_READY
                     break;
             }
-            // NO BREAK for switch (m_lootState)
         }
         /* fallthrough */
         case GO_READY:
@@ -662,7 +665,7 @@ void GameObject::Update(uint32 diff)
                     if (Unit* owner = GetOwner())
                     {
                         // Hunter trap: Search units which are unfriendly to the trap's owner
-                        Trinity::NearestAttackableNoTotemUnitInObjectRangeCheck checker(this, owner, radius);
+                        Trinity::NearestAttackableNoTotemUnitInObjectRangeCheck checker(this, radius);
                         Trinity::UnitLastSearcher<Trinity::NearestAttackableNoTotemUnitInObjectRangeCheck> searcher(this, target, checker);
                         Cell::VisitAllObjects(this, searcher, radius);
                     }
@@ -920,10 +923,6 @@ void GameObject::DespawnOrUnsummon(Milliseconds delay, Seconds forceRespawnTime)
 
 void GameObject::Delete()
 {
-    // If nearby linked trap exists, despawn it
-    if (GameObject* linkedTrap = GetLinkedTrap())
-        linkedTrap->DespawnOrUnsummon();
-
     SetLootState(GO_NOT_READY);
     RemoveFromOwner();
 
@@ -1024,11 +1023,11 @@ void GameObject::SaveToDB(uint32 mapid, uint8 spawnMask, uint32 phaseMask)
         data.spawnGroupData = sObjectMgr->GetDefaultSpawnGroup();
 
     // Update in DB
-    SQLTransaction trans = WorldDatabase.BeginTransaction();
+    WorldDatabaseTransaction trans = WorldDatabase.BeginTransaction();
 
     uint8 index = 0;
 
-    PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_DEL_GAMEOBJECT);
+    WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_DEL_GAMEOBJECT);
     stmt->setUInt32(0, m_spawnId);
     trans->Append(stmt);
 
@@ -1127,10 +1126,10 @@ bool GameObject::LoadFromDB(ObjectGuid::LowType spawnId, Map* map, bool addToMap
     if (!data)
         return false;
 
-    SQLTransaction trans = CharacterDatabase.BeginTransaction();
+    CharacterDatabaseTransaction charTrans = CharacterDatabase.BeginTransaction();
 
     sMapMgr->DoForAllMapsWithMapId(data->mapId,
-        [spawnId, trans](Map* map) -> void
+        [spawnId, charTrans](Map* map) -> void
         {
             // despawn all active objects, and remove their respawns
             std::vector<GameObject*> toUnload;
@@ -1138,19 +1137,19 @@ bool GameObject::LoadFromDB(ObjectGuid::LowType spawnId, Map* map, bool addToMap
                 toUnload.push_back(pair.second);
             for (GameObject* obj : toUnload)
                 map->AddObjectToRemoveList(obj);
-            map->RemoveRespawnTime(SPAWN_TYPE_GAMEOBJECT, spawnId, trans);
+            map->RemoveRespawnTime(SPAWN_TYPE_GAMEOBJECT, spawnId, charTrans);
         }
     );
 
     // delete data from memory
     sObjectMgr->DeleteGameObjectData(spawnId);
 
-    CharacterDatabase.CommitTransaction(trans);
+    CharacterDatabase.CommitTransaction(charTrans);
 
-    trans = WorldDatabase.BeginTransaction();
+    WorldDatabaseTransaction trans = WorldDatabase.BeginTransaction();
 
     // ... and the database
-    PreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_DEL_GAMEOBJECT);
+    WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_DEL_GAMEOBJECT);
     stmt->setUInt32(0, spawnId);
     trans->Append(stmt);
 
@@ -1370,7 +1369,7 @@ bool GameObject::ActivateToQuest(Player* target) const
                 return false;
 
             // scan GO chest with loot including quest items
-            if (LootTemplates_Gameobject.HaveQuestLootForPlayer(GetGOInfo()->GetLootId(), target))
+            if (target->GetQuestStatus(GetGOInfo()->chest.questId) == QUEST_STATUS_INCOMPLETE || LootTemplates_Gameobject.HaveQuestLootForPlayer(GetGOInfo()->GetLootId(), target))
             {
                 if (Battleground const* bg = target->GetBattleground())
                     return bg->CanActivateGO(GetEntry(), target->GetTeam());
@@ -2068,8 +2067,8 @@ void GameObject::Use(Unit* user)
         }
         default:
             if (GetGoType() >= MAX_GAMEOBJECT_TYPE)
-                TC_LOG_ERROR("misc", "GameObject::Use(): unit (type: %u, guid: %u, name: %s) tries to use object (guid: %u, entry: %u, name: %s) of unknown type (%u)",
-                    user->GetTypeId(), user->GetGUID().GetCounter(), user->GetName().c_str(), GetGUID().GetCounter(), GetEntry(), GetGOInfo()->name.c_str(), GetGoType());
+                TC_LOG_ERROR("misc", "GameObject::Use(): unit (%s, name: %s) tries to use object (%s, name: %s) of unknown type (%u)",
+                    user->GetGUID().ToString().c_str(), user->GetName().c_str(), GetGUID().ToString().c_str(), GetGOInfo()->name.c_str(), GetGoType());
             break;
     }
 
@@ -2759,7 +2758,7 @@ bool GameObject::IsAtInteractDistance(Position const& pos, float radius) const
 
 bool GameObject::IsWithinDistInMap(Player const* player) const
 {
-    return IsInMap(this) && InSamePhase(this) && IsAtInteractDistance(player);
+    return IsInMap(player) && InSamePhase(player) && IsAtInteractDistance(player);
 }
 
 SpellInfo const* GameObject::GetSpellForLock(Player const* player) const

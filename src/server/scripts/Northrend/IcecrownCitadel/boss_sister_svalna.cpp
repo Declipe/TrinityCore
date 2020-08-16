@@ -402,11 +402,14 @@ struct boss_sister_svalna : public BossAI
                 DoCastSelf(SPELL_CARESS_OF_DEATH, CastSpellExtraArgs(TRIGGERED_FULL_MASK).AddSpellMod(SPELLVALUE_MAX_TARGETS, 1));
                 break;
             case ACTION_START_GAUNTLET:
-                me->setActive(true);
-                me->SetFarVisible(true);
-                _isEventInProgress = true;
-                me->SetImmuneToAll(true);
-                events.ScheduleEvent(EVENT_SVALNA_START, 25s);
+                if (me->IsAlive())
+                {
+                    me->setActive(true);
+                    me->SetFarVisible(true);
+                    _isEventInProgress = true;
+                    me->SetImmuneToAll(true);
+                    events.ScheduleEvent(EVENT_SVALNA_START, 25s);
+                }
                 break;
             case ACTION_RESURRECT_CAPTAINS:
                 events.ScheduleEvent(EVENT_SVALNA_RESURRECT, 7s);
@@ -424,9 +427,9 @@ struct boss_sister_svalna : public BossAI
         }
     }
 
-    void SpellHit(Unit* caster, SpellInfo const* spell) override
+    void SpellHit(WorldObject* caster, SpellInfo const* spellInfo) override
     {
-        if (spell->Id == SPELL_HURL_SPEAR && me->HasAura(SPELL_AETHER_SHIELD))
+        if (spellInfo->Id == SPELL_HURL_SPEAR && me->HasAura(SPELL_AETHER_SHIELD))
         {
             me->RemoveAurasDueToSpell(SPELL_AETHER_SHIELD);
             Talk(EMOTE_SVALNA_BROKEN_SHIELD, caster);
@@ -446,17 +449,21 @@ struct boss_sister_svalna : public BossAI
         me->SetHover(false);
     }
 
-    void SpellHitTarget(Unit* target, SpellInfo const* spell) override
+    void SpellHitTarget(WorldObject* target, SpellInfo const* spellInfo) override
     {
-        switch (spell->Id)
+        Unit* unitTarget = target->ToUnit();
+        if (!unitTarget)
+            return;
+
+        switch (spellInfo->Id)
         {
             case SPELL_IMPALING_SPEAR_KILL:
-                Unit::Kill(me, target);
+                Unit::Kill(me, unitTarget);
                 break;
             case SPELL_IMPALING_SPEAR:
-                if (TempSummon* summon = target->SummonCreature(NPC_IMPALING_SPEAR, *target))
+                if (TempSummon* summon = unitTarget->SummonCreature(NPC_IMPALING_SPEAR, *unitTarget))
                 {
-                    Talk(EMOTE_SVALNA_IMPALE, target);
+                    Talk(EMOTE_SVALNA_IMPALE, unitTarget);
                     CastSpellExtraArgs args;
                     args.AddSpellBP0(1);
                     summon->CastSpell(target, VEHICLE_SPELL_RIDE_HARDCODED, args);
@@ -884,9 +891,9 @@ public:
         Reset();
     }
 
-    void SpellHit(Unit* /*caster*/, SpellInfo const* spell) override
+    void SpellHit(WorldObject* /*caster*/, SpellInfo const* spellInfo) override
     {
-        if (spell->Id == SPELL_REVIVE_CHAMPION && !IsUndead)
+        if (spellInfo->Id == SPELL_REVIVE_CHAMPION && !IsUndead)
         {
             IsUndead = true;
             me->setDeathState(JUST_RESPAWNED);
@@ -911,7 +918,7 @@ public:
 
             Talk(SAY_CAPTAIN_RESURRECTED);
             me->UpdateEntry(newEntry, me->GetCreatureData());
-            DoCast(me, SPELL_UNDEATH, true);
+            DoCastSelf(SPELL_UNDEATH, true);
         }
     }
 
