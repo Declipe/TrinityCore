@@ -23,10 +23,10 @@
 #define __WORLD_H
 
 #include "Common.h"
+#include "AsyncCallbackProcessor.h"
 #include "DatabaseEnvFwd.h"
 #include "LockedQueue.h"
 #include "ObjectGuid.h"
-#include "QueryCallbackProcessor.h"
 #include "SharedDefines.h"
 #include "Timer.h"
 
@@ -245,6 +245,7 @@ enum WorldBoolConfigs
     CONFIG_CHECK_GOBJECT_LOS,
     CONFIG_RESPAWN_DYNAMIC_ESCORTNPC,
     BATTLEGROUND_CROSSFACTION_ENABLED,
+    CONFIG_REGEN_HP_CANNOT_REACH_TARGET_IN_RAID,
     BOOL_CONFIG_VALUE_COUNT
 };
 

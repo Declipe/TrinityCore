@@ -2279,6 +2279,9 @@ void SpellInfo::_LoadSpellDiminishInfo()
 				// The Black Knight's Death's Respite (Heroic ToC 5)
 				else if (Id == 68306)
 					return DIMINISHING_NONE;
+                // Crystallize (Keristrasza heroic)
+                else if (Id == 48179)
+                    return DIMINISHING_NONE;
                 break;
             }
             // Event spells
