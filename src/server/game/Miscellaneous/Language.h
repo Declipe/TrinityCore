@@ -1164,7 +1164,5 @@ enum TrinityStrings
     LANG_VIP_CHANGE_RACE                          = 11116,
     LANG_VIP_CHANGE_CUSTOMIZE                     = 11117,
     LANG_VIP_GROUP                                = 11118,
-    LANG_GUILDINFO_LEVEL                          = 13000,
-    LANG_GUILDINFO_XP_INFO                        = 13001,
 };
 #endif
