@@ -28,6 +28,10 @@
 #include "RBAC.h"
 #include "Realm.h"
 #include "ScriptMgr.h"
+#include "SHA1.h"
+#ifdef ELUNA
+#include "LuaEngine.h"
+#endif
 #include "World.h"
 #include "WorldSession.h"
 #include <memory>
