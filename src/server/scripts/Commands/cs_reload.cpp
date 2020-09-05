@@ -162,6 +162,9 @@ public:
             { "waypoint_data",                 rbac::RBAC_PERM_COMMAND_RELOAD_WAYPOINT_DATA,                    true,  &HandleReloadWpCommand,                         "" },
             { "vehicle_accessory",             rbac::RBAC_PERM_COMMAND_RELOAD_VEHICLE_ACCESORY,                 true,  &HandleReloadVehicleAccessoryCommand,           "" },
             { "vehicle_template_accessory",    rbac::RBAC_PERM_COMMAND_RELOAD_VEHICLE_TEMPLATE_ACCESSORY,       true,  &HandleReloadVehicleTemplateAccessoryCommand,   "" },
+			//CHAT_FILTER
+			{ "chat_filter",                   rbac::RBAC_PERM_COMMAND_RELOAD_CHAT_FILTER,                      true, &HandleReloadLoadChatFilterCommand,              "" },
+			{ "full",                          rbac::RBAC_PERM_COMMAND_RELOAD_full,                             true, &HandleReloadItemTemplateCommand,                "" },
         };
         static std::vector<ChatCommand> commandTable =
         {
@@ -203,6 +206,9 @@ public:
 
         HandleReloadVehicleAccessoryCommand(handler, "");
         HandleReloadVehicleTemplateAccessoryCommand(handler, "");
+
+        //CHAT_FILTER
+		HandleReloadLoadChatFilterCommand(handler, "");
 
         HandleReloadAutobroadcastCommand(handler, "");
         HandleReloadBattlegroundTemplate(handler, "");
@@ -1182,7 +1188,28 @@ public:
         return true;
     }
 
-    static bool HandleReloadRBACCommand(ChatHandler* handler, char const* /*args*/)
+	//CHAT_FILTER
+	static bool HandleReloadLoadChatFilterCommand(ChatHandler* handler, char const* /*args*/)
+	{
+		TC_LOG_INFO("misc", "Reloading chat_filter table...");
+		sObjectMgr->LoadChatFilter();
+		handler->SendGlobalGMSysMessage("Chat Filter words reloaded.");
+		return true;
+	}
+	
+	static bool HandleReloadItemTemplateCommand(ChatHandler* handler, const char* /*args*/)
+	{
+	    TC_LOG_INFO("misc", "Reloading Creature and Item_template..");
+        sObjectMgr->LoadItemTemplates();
+        sObjectMgr->LoadCreatureTemplates();
+        sObjectMgr->LoadGameObjectTemplate();
+        sObjectMgr->LoadAreaCustomFlags();
+        sObjectMgr->LoadCreatureSpecialRewards();
+        handler->SendGlobalGMSysMessage("Creature and Item_template has been reloaded!");
+        return true;
+    }
+    
+    static bool HandleReloadRBACCommand(ChatHandler* handler, const char* /*args*/)
     {
         TC_LOG_INFO("misc", "Reloading RBAC tables...");
         sAccountMgr->LoadRBAC();

@@ -172,6 +172,18 @@ struct GameTele
 
 typedef std::unordered_map<uint32, GameTele> GameTeleContainer;
 
+struct AreaCustomFlagTPL
+{
+    uint32 map;
+    float x;
+    float y;
+    float z;
+    uint32 radius;
+    uint8 flag;
+};
+
+typedef std::list<AreaCustomFlagTPL> AreaCustomFlagContainer;
+
 enum ScriptsType
 {
     SCRIPTS_FIRST = 1,
@@ -768,6 +780,13 @@ struct RepSpilloverTemplate
     uint32 faction_rank[MAX_SPILLOVER_FACTIONS];
 };
 
+struct CreatureSpecialRewards
+{
+    uint8 type;
+    uint32 param1;
+    uint32 param2;
+};
+
 struct PointOfInterest
 {
     uint32 ID;
@@ -966,10 +985,14 @@ class TC_GAME_API ObjectMgr
         typedef std::unordered_map<uint32, RepRewardRate > RepRewardRateContainer;
         typedef std::unordered_map<uint32, ReputationOnKillEntry> RepOnKillContainer;
         typedef std::unordered_map<uint32, RepSpilloverTemplate> RepSpilloverTemplateContainer;
+        typedef std::unordered_map<uint32, CreatureSpecialRewards> CreatureSpecialRewardContainer;
 
         typedef std::unordered_map<uint32, PointOfInterest> PointOfInterestContainer;
 
         typedef std::vector<std::string> ScriptNameContainer;
+
+		//CHAT_FILTER
+		typedef std::vector<std::pair<std::string, uint32> > ChatFilterContainer;
 
         typedef std::map<uint32, uint32> CharacterConversionMap;
 
@@ -1037,6 +1060,13 @@ class TC_GAME_API ObjectMgr
             return nullptr;
         }
         CreatureQuestItemMap const* GetCreatureQuestItemMap() const { return &_creatureQuestItemStore; }
+
+        AreaCustomFlagContainer GetAreaCustomFlags()
+        {
+            return _areaCustomFlags;
+        }
+
+        void LoadAreaCustomFlags();
 
         uint32 GetNearestTaxiNode(float x, float y, float z, uint32 mapid, uint32 team);
         void GetTaxiPath(uint32 source, uint32 destination, uint32 &path, uint32 &cost);
@@ -1130,6 +1160,12 @@ class TC_GAME_API ObjectMgr
         void LoadGameobjectQuestEnders();
         void LoadCreatureQuestStarters();
         void LoadCreatureQuestEnders();
+        void LoadCreatureSpecialRewards();
+
+        CreatureSpecialRewards GetSpecialReward(uint32 entry)
+        {
+            return _creatureSpecialReward[entry];
+        }
 
         QuestRelations* GetGOQuestRelationMapHACK() { return &_goQuestRelations; }
         QuestRelationResult GetGOQuestRelations(uint32 entry) const { return GetQuestRelationsFrom(_goQuestRelations, entry, true); }
@@ -1181,6 +1217,7 @@ class TC_GAME_API ObjectMgr
         void LoadSpawnGroups();
         void LoadInstanceSpawnGroups();
         void LoadItemTemplates();
+        void LoadItemTemplates2();
         void LoadItemLocales();
         void LoadItemSetNames();
         void LoadItemSetNameLocales();
@@ -1227,6 +1264,10 @@ class TC_GAME_API ObjectMgr
         void LoadQuestPOI();
 
         void LoadNPCSpellClickSpells();
+
+		//CHAT_FILTER
+		void LoadChatFilter();
+		ChatFilterContainer& GetCensoredWords() { return _chatFilterStore; }
 
         void LoadGameTele();
 
@@ -1616,10 +1657,12 @@ class TC_GAME_API ObjectMgr
         RepRewardRateContainer _repRewardRateStore;
         RepOnKillContainer _repOnKillStore;
         RepSpilloverTemplateContainer _repSpilloverTemplateStore;
+        CreatureSpecialRewardContainer _creatureSpecialReward;
 
         GossipMenusContainer _gossipMenusStore;
         GossipMenuItemsContainer _gossipMenuItemsStore;
         PointOfInterestContainer _pointsOfInterestStore;
+        AreaCustomFlagContainer _areaCustomFlags;
 
         QuestPOIContainer _questPOIStore;
 
@@ -1639,6 +1682,9 @@ class TC_GAME_API ObjectMgr
         ScriptNameContainer _scriptNamesStore;
 
         SpellClickInfoContainer _spellClickInfoStore;
+        
+		//CHAT_FILTER
+		ChatFilterContainer _chatFilterStore;
 
         SpellScriptsContainer _spellScriptsStore;
 

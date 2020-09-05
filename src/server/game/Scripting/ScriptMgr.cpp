@@ -42,6 +42,7 @@
 #include "Weather.h"
 #include "WorldPacket.h"
 #include "WorldSession.h"
+#include "sc_npc_teleport.h"
 
 // Trait which indicates whether this script type
 // must be assigned in the database.
@@ -1654,6 +1655,11 @@ void ScriptMgr::OnWeatherUpdate(Weather* weather, uint32 diff)
     tmpscript->OnUpdate(weather, diff);
 }
 
+void ScriptMgr::AllCreatureJustDied(Creature* creature)
+{
+	FOREACH_SCRIPT(AllCreatureScript)->AllCreatureJustDied(creature);
+}
+
 void ScriptMgr::OnAuctionAdd(AuctionHouseObject* ah, AuctionEntry* entry)
 {
     ASSERT(ah);
@@ -2016,6 +2022,11 @@ void ScriptMgr::OnFailedPasswordChange(uint32 accountId)
     FOREACH_SCRIPT(AccountScript)->OnFailedPasswordChange(accountId);
 }
 
+void ScriptMgr::OnPlayerSkillUpdate(Player* player, uint16 SkillId, uint16 SkillValue, uint16 SkillNewValue)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnPlayerSkillUpdate(player, SkillId, SkillValue, SkillNewValue);
+}
+
 // Guild
 void ScriptMgr::OnGuildAddMember(Guild* guild, Player* player, uint8& plRank)
 {
@@ -2214,6 +2225,12 @@ CreatureScript::CreatureScript(char const* name)
     ScriptRegistry<CreatureScript>::Instance()->AddScript(this);
 }
 
+AllCreatureScript::AllCreatureScript(char const* name)
+: ScriptObject(name)
+{
+	ScriptRegistry<AllCreatureScript>::Instance()->AddScript(this);
+}
+
 GameObjectScript::GameObjectScript(char const* name)
     : ScriptObject(name)
 {
@@ -2332,6 +2349,7 @@ GroupScript::GroupScript(char const* name)
 }
 
 // Specialize for each script type class like so:
+template class TC_GAME_API ScriptRegistry<AllCreatureScript>;
 template class TC_GAME_API ScriptRegistry<SpellScriptLoader>;
 template class TC_GAME_API ScriptRegistry<ServerScript>;
 template class TC_GAME_API ScriptRegistry<WorldScript>;

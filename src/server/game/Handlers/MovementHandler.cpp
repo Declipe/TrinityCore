@@ -15,6 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "AnticheatMgr.h"
 #include "Common.h"
 #include "WorldPacket.h"
 #include "WorldSession.h"
@@ -368,6 +369,9 @@ void WorldSession::HandleMovementOpcodes(WorldPacket& recvData)
         // now client not include swimming flag in case jumping under water
         plrMover->SetInWater(!plrMover->IsInWater() || plrMover->GetMap()->IsUnderWater(plrMover->GetPhaseMask(), movementInfo.pos.GetPositionX(), movementInfo.pos.GetPositionY(), movementInfo.pos.GetPositionZ()));
     }
+
+    if (plrMover)
+        sAnticheatMgr->StartHackDetection(plrMover, movementInfo, opcode);
 
     /* process position-change */
     WorldPacket data(opcode, recvData.size());

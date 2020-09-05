@@ -144,8 +144,8 @@ TC_GAME_API extern DBCStorage <GtRegenMPPerSptEntry>         sGtRegenMPPerSptSto
 TC_GAME_API extern DBCStorage <HolidaysEntry>                sHolidaysStore;
 TC_GAME_API extern DBCStorage <ItemEntry>                    sItemStore;
 TC_GAME_API extern DBCStorage <ItemBagFamilyEntry>           sItemBagFamilyStore;
-//TC_GAME_API extern DBCStorage <ItemDisplayInfoEntry>      sItemDisplayInfoStore; -- not used currently
-TC_GAME_API extern DBCStorage <ItemExtendedCostEntry>        sItemExtendedCostStore;
+TC_GAME_API extern DBCStorage <ItemDisplayInfoEntry>         sItemDisplayInfoStore;
+//TC_GAME_API extern DBCStorage <ItemExtendedCostEntry>        sItemExtendedCostStore;
 TC_GAME_API extern DBCStorage <ItemLimitCategoryEntry>       sItemLimitCategoryStore;
 TC_GAME_API extern DBCStorage <ItemRandomPropertiesEntry>    sItemRandomPropertiesStore;
 TC_GAME_API extern DBCStorage <ItemRandomSuffixEntry>        sItemRandomSuffixStore;
@@ -208,8 +208,32 @@ TC_GAME_API extern DBCStorage <VehicleSeatEntry>             sVehicleSeatStore;
 TC_GAME_API extern DBCStorage <WMOAreaTableEntry>            sWMOAreaTableStore;
 //TC_GAME_API extern DBCStorage <WorldMapAreaEntry>           sWorldMapAreaStore; -- use Zone2MapCoordinates and Map2ZoneCoordinates
 TC_GAME_API extern DBCStorage <WorldMapOverlayEntry>         sWorldMapOverlayStore;
-TC_GAME_API extern DBCStorage <WorldSafeLocsEntry>           sWorldSafeLocsStore;
+//TC_GAME_API extern DBCStorage <WorldSafeLocsEntry>           sWorldSafeLocsStore;
 
 TC_GAME_API void LoadDBCStores(const std::string& dataPath);
 
+typedef std::unordered_map<uint32, const WorldSafeLocsEntry*> WorldSafeLocsContainer;
+typedef std::unordered_map<uint32, const ItemExtendedCostEntry*> ItemExtendedCostContainer;
+
+class DBCMgr
+{
+public:
+    static DBCMgr* instance()
+    {
+        static DBCMgr instance;
+        return &instance;
+    }
+
+public:
+    void LoadWorldSafeLocsStore();
+    void LoadItemExtendedCostStore();
+
+    const ItemExtendedCostEntry* GetItemExtendedCostEntry(uint32 ID) const { ItemExtendedCostContainer::const_iterator itr = ItemExtendedCostStore.find(ID); if (itr != ItemExtendedCostStore.end()) return itr->second; return nullptr; }
+    const WorldSafeLocsEntry* GetWorldSafeLocsEntry(uint32 Id) const { WorldSafeLocsContainer::const_iterator itr = WorldSafeLocsStore.find(Id); if (itr != WorldSafeLocsStore.end()) return itr->second; return nullptr; }
+
+    WorldSafeLocsContainer WorldSafeLocsStore;
+    ItemExtendedCostContainer ItemExtendedCostStore;
+};
+
+#define sDBCMgr DBCMgr::instance()
 #endif

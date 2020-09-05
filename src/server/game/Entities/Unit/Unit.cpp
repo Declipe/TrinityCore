@@ -15,6 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "AnticheatMgr.h"
 #include "Unit.h"
 #include "AbstractFollower.h"
 #include "Battlefield.h"
@@ -11062,6 +11063,9 @@ bool Unit::InitTamedPet(Pet* pet, uint8 level, uint32 spell_id)
         // Call creature just died function
         if (CreatureAI* ai = creature->AI())
             ai->JustDied(attacker);
+
+        if (creature)
+            sScriptMgr->AllCreatureJustDied(creature);
 
         if (TempSummon * summon = creature->ToTempSummon())
         {

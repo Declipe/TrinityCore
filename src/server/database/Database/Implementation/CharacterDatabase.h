@@ -125,6 +125,8 @@ enum CharacterDatabaseStatements : uint32
     CHAR_UPD_MAIL_RETURNED,
     CHAR_UPD_MAIL_ITEM_RECEIVER,
     CHAR_UPD_ITEM_OWNER,
+    CHAR_GET_EXTERNAL_MAIL,
+    CHAR_DEL_EXTERNAL_MAIL,
     CHAR_SEL_ITEM_REFUNDS,
     CHAR_SEL_ITEM_BOP_TRADE,
     CHAR_DEL_ITEM_BOP_TRADE,
@@ -509,6 +511,30 @@ enum CharacterDatabaseStatements : uint32
     CHAR_UPD_QUEST_TRACK_ABANDON_TIME,
 
     CHAR_INS_DESERTER_TRACK,
+    // Prepatch by LordPsyan
+    // 01
+    // 02
+    // 03
+    // 04
+    // 05
+    // 06
+    // 07
+    // 08
+    // 09
+    // 10
+    // 11
+    // 12
+    // 13
+    // 14
+    // 15
+    // 16
+    // 17
+    // 18
+    // 19
+    // 20
+    // Visit http://www.realmsofwarcraft.com/bb for forums and information
+    //
+    // End of prepatch
 
     MAX_CHARACTERDATABASE_STATEMENTS
 };

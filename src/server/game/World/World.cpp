@@ -28,6 +28,7 @@
 #include "AuctionHouseMgr.h"
 #include "BattlefieldMgr.h"
 #include "BattlegroundMgr.h"
+#include "AnticheatMgr.h"
 #include "CalendarMgr.h"
 #include "ChannelMgr.h"
 #include "CharacterCache.h"
@@ -543,6 +544,30 @@ void World::LoadConfigSettings(bool reload)
     rate_values[RATE_XP_BG_KILL]  = sConfigMgr->GetFloatDefault("Rate.XP.BattlegroundKill", 1.0f);
     rate_values[RATE_XP_QUEST]    = sConfigMgr->GetFloatDefault("Rate.XP.Quest", 1.0f);
     rate_values[RATE_XP_EXPLORE]  = sConfigMgr->GetFloatDefault("Rate.XP.Explore", 1.0f);
+
+    rate_values[RATE_XP_KILL_PREMIUM]    = sConfigMgr->GetFloatDefault("Rate.XP.Kill.Premium", 1.0f);
+    rate_values[RATE_XP_QUEST_PREMIUM]   = sConfigMgr->GetFloatDefault("Rate.XP.Quest.Premium", 1.0f);
+    rate_values[RATE_XP_EXPLORE_PREMIUM] = sConfigMgr->GetFloatDefault("Rate.XP.Explore.Premium", 1.0f);
+    rate_values[RATE_REPUTATION_PREMIUM] = sConfigMgr->GetFloatDefault("Rate.Reputation.Premium", 1.0f);
+    rate_values[RATE_HONOR_PREMIUM]      = sConfigMgr->GetFloatDefault("Rate.Honor.Premium", 1.0f);
+    m_bool_configs[COMMAND_BANK_PREMIUM] = sConfigMgr->GetBoolDefault("Command.Bank.Premium", false);
+    m_bool_configs[COMMAND_MAIL_PREMIUM] = sConfigMgr->GetBoolDefault("Command.Mail.Premium", false);
+    m_bool_configs[CONFIG_VIP_DEBUFF_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Debuff.Command", false);
+    m_bool_configs[CONFIG_VIP_REPAIR_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Repair.Command", false);
+    m_bool_configs[CONFIG_VIP_RESET_TALENTS_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Reset.Talents.Command", false);
+    m_bool_configs[CONFIG_VIP_TAXI_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Taxi.Command", false);
+    m_bool_configs[CONFIG_VIP_HOME_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Home.Command", false);
+    m_bool_configs[CONFIG_VIP_CAPITAL_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Capital.Command", false);
+    m_bool_configs[CONFIG_VIP_CUSTOMIZE_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Customize.Command", false);
+    m_bool_configs[CONFIG_VIP_CHANGERACE_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Changerace.Command", false);
+    m_bool_configs[CONFIG_VIP_APPEAR_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Appear.Command", false);
+	m_bool_configs[CONFIG_VIP1] = sConfigMgr->GetBoolDefault("Item.Disableall", false);
+	m_bool_configs[CONFIG_VIP2] = sConfigMgr->GetBoolDefault("Item.Disable1", false);
+	m_bool_configs[CONFIG_VIP3] = sConfigMgr->GetBoolDefault("Item.Disable2", false);
+	m_bool_configs[CONFIG_VIP4] = sConfigMgr->GetBoolDefault("Item.Disable3", false);
+	m_bool_configs[CONFIG_VIP5] = sConfigMgr->GetBoolDefault("Item.Disable4", false);
+	m_bool_configs[CONFIG_VIP6] = sConfigMgr->GetBoolDefault("Item.Disable5", false);
+	m_bool_configs[CONFIG_DEATH_KNIGHT_SKIP_QUEST] = sConfigMgr->GetBoolDefault("DeathKnight.SkipQuest", false);
 
     m_int_configs[CONFIG_XP_BOOST_DAYMASK] = sConfigMgr->GetIntDefault("XP.Boost.Daymask", 0);
     rate_values[RATE_XP_BOOST] = sConfigMgr->GetFloatDefault("XP.Boost.Rate", 2.0f);
@@ -1217,6 +1242,14 @@ void World::LoadConfigSettings(bool reload)
     m_float_configs[CONFIG_ARENA_LOSE_RATING_MODIFIER]               = sConfigMgr->GetFloatDefault("Arena.ArenaLoseRatingModifier", 24.0f);
     m_float_configs[CONFIG_ARENA_MATCHMAKER_RATING_MODIFIER]         = sConfigMgr->GetFloatDefault("Arena.ArenaMatchmakerRatingModifier", 24.0f);
 
+    m_bool_configs[CONFIG_ARENA_1V1_ENABLE]                             = sConfigMgr->GetBoolDefault("Arena.1v1.Enable", true);
+    m_bool_configs[CONFIG_ARENA_1V1_ANNOUNCER]                         = sConfigMgr->GetBoolDefault("Arena.1v1.Announcer", false);
+    m_int_configs[CONFIG_ARENA_1V1_MIN_LEVEL]                         = sConfigMgr->GetIntDefault("Arena.1v1.MinLevel", 80);
+    m_int_configs[CONFIG_ARENA_1V1_COSTS]                             = sConfigMgr->GetIntDefault("Arena.1v1.Costs", 400000);
+    m_bool_configs[CONFIG_ARENA_1V1_VENDOR_RATING]                     = sConfigMgr->GetBoolDefault("Arena.1v1.VendorRating", false);
+    m_float_configs[CONFIG_ARENA_1V1_ARENAPOINTS_MULTI]                 = sConfigMgr->GetFloatDefault("Arena.1v1.ArenaPointsMulti", 0.64f);
+    m_bool_configs[CONFIG_ARENA_1V1_BLOCK_FORBIDDEN_TALENTS]         = sConfigMgr->GetBoolDefault("Arena.1v1.BlockForbiddenTalents", true);
+
     m_bool_configs[CONFIG_OFFHAND_CHECK_AT_SPELL_UNLEARN]            = sConfigMgr->GetBoolDefault("OffhandCheckAtSpellUnlearn", true);
 
     m_int_configs[CONFIG_CREATURE_PICKPOCKET_REFILL] = sConfigMgr->GetIntDefault("Creature.PickPocketRefillDelay", 10 * MINUTE);
@@ -1281,7 +1314,30 @@ void World::LoadConfigSettings(bool reload)
     m_visibility_notify_periodOnContinents = sConfigMgr->GetIntDefault("Visibility.Notify.Period.OnContinents", DEFAULT_VISIBILITY_NOTIFY_PERIOD);
     m_visibility_notify_periodInInstances = sConfigMgr->GetIntDefault("Visibility.Notify.Period.InInstances",   DEFAULT_VISIBILITY_NOTIFY_PERIOD);
     m_visibility_notify_periodInBGArenas = sConfigMgr->GetIntDefault("Visibility.Notify.Period.InBGArenas",    DEFAULT_VISIBILITY_NOTIFY_PERIOD);
-
+    // Prepatch by LordPsyan
+    // 01
+    // 02
+    // 03
+    // 04
+    // 05
+    // 06
+    // 07
+    // 08
+    // 09
+    // 10
+    // 11
+    // 12
+    // 13
+    // 14
+    // 15
+    // 16
+    // 17
+    // 18
+    // 19
+    // 20
+    // Visit http://www.realmsofwarcraft.com/bb for forums and information
+    //
+    // End of prepatch
     ///- Load the CharDelete related config options
     m_int_configs[CONFIG_CHARDELETE_METHOD] = sConfigMgr->GetIntDefault("CharDelete.Method", 0);
     m_int_configs[CONFIG_CHARDELETE_MIN_LEVEL] = sConfigMgr->GetIntDefault("CharDelete.MinLevel", 0);
@@ -1461,9 +1517,18 @@ void World::LoadConfigSettings(bool reload)
     // MySQL ping time interval
     m_int_configs[CONFIG_DB_PING_INTERVAL] = sConfigMgr->GetIntDefault("MaxPingTime", 30);
 
+     // External Mail
+    m_bool_configs[CONFIG_EXTERNAL_MAIL_ENABLE] = sConfigMgr->GetBoolDefault("External.Mail.Enable", false);
+    m_int_configs[CONFIG_EXTERNAL_MAIL_INTERVAL] = sConfigMgr->GetIntDefault("External.Mail.Interval", 1);
+
     // misc
     m_bool_configs[CONFIG_PDUMP_NO_PATHS] = sConfigMgr->GetBoolDefault("PlayerDump.DisallowPaths", true);
     m_bool_configs[CONFIG_PDUMP_NO_OVERWRITE] = sConfigMgr->GetBoolDefault("PlayerDump.DisallowOverwrite", true);
+
+    m_bool_configs[CONFIG_ANTICHEAT_ENABLE] = sConfigMgr->GetBoolDefault("Anticheat.Enable", true);
+    m_int_configs[CONFIG_ANTICHEAT_REPORTS_INGAME_NOTIFICATION] = sConfigMgr->GetIntDefault("Anticheat.ReportsForIngameWarnings", 70);
+    m_int_configs[CONFIG_ANTICHEAT_DETECTIONS_ENABLED] = sConfigMgr->GetIntDefault("Anticheat.DetectionsEnabled",31);
+    m_int_configs[CONFIG_ANTICHEAT_MAX_REPORTS_FOR_DAILY_REPORT] = sConfigMgr->GetIntDefault("Anticheat.MaxReportsForDailyReport",70);
 
     // Wintergrasp battlefield
     m_bool_configs[CONFIG_WINTERGRASP_ENABLE] = sConfigMgr->GetBoolDefault("Wintergrasp.Enable", false);
@@ -1512,6 +1577,30 @@ void World::LoadConfigSettings(bool reload)
     // prevent character rename on character customization
     m_bool_configs[CONFIG_PREVENT_RENAME_CUSTOMIZATION] = sConfigMgr->GetBoolDefault("PreventRenameCharacterOnCustomization", false);
 
+// Prepatch by LordPsyan
+// 01
+// 02
+// 03
+// 04
+// 05
+// 06
+// 07
+// 08
+// 09
+// 10
+// 11
+// 12
+// 13
+// 14
+// 15
+// 16
+// 17
+// 18
+// 19
+// 20
+// Visit http://www.realmsofwarcraft.com/bb for forums and information
+//
+// End of prepatch
     // Allow 5-man parties to use raid warnings
     m_bool_configs[CONFIG_CHAT_PARTY_RAID_WARNINGS] = sConfigMgr->GetBoolDefault("PartyRaidWarnings", false);
 
@@ -1741,6 +1830,9 @@ void World::SetInitialWorldSettings()
     TC_LOG_INFO("server.loading", "Loading Items...");                         // must be after LoadRandomEnchantmentsTable and LoadPageTexts
     sObjectMgr->LoadItemTemplates();
 
+    TC_LOG_INFO("server.loading", "Loading Items2...");                         // must be after LoadRandomEnchantmentsTable and LoadPageTexts
+    sObjectMgr->LoadItemTemplates2();
+
     TC_LOG_INFO("server.loading", "Loading Item set names...");                // must be after LoadItemPrototypes
     sObjectMgr->LoadItemSetNames();
 
@@ -1845,6 +1937,10 @@ void World::SetInitialWorldSettings()
 
     TC_LOG_INFO("server.loading", "Loading UNIT_NPC_FLAG_SPELLCLICK Data..."); // must be after LoadQuests
     sObjectMgr->LoadNPCSpellClickSpells();
+
+	//CHAT_FILTER
+	TC_LOG_INFO("server.loading", "Loading Chat Filter Words...");
+	sObjectMgr->LoadChatFilter();
 
     TC_LOG_INFO("server.loading", "Loading Vehicle Template Accessories...");
     sObjectMgr->LoadVehicleTemplateAccessories();                // must be after LoadCreatureTemplates() and LoadNPCSpellClickSpells()
@@ -2079,6 +2175,12 @@ void World::SetInitialWorldSettings()
     TC_LOG_INFO("server.loading", "Initialize commands...");
     ChatHandler::InitializeCommandTable();
 
+    TC_LOG_INFO("server.loading", "Loading Area Custom Flags...");
+    sObjectMgr->LoadAreaCustomFlags();
+
+    TC_LOG_INFO("server.loading", "Loading Creature Special Rewards...");
+    sObjectMgr->LoadCreatureSpecialRewards();
+
     ///- Initialize game time and timers
     TC_LOG_INFO("server.loading", "Initialize game time and timers");
     GameTime::UpdateGameTimers();
@@ -2118,6 +2220,7 @@ void World::SetInitialWorldSettings()
     uint8 CleanOldMailsTime = getIntConfig(CONFIG_CLEAN_OLD_MAIL_TIME);
     mail_timer = ((((localTm.tm_hour + (24 - CleanOldMailsTime)) % 24)* HOUR * IN_MILLISECONDS) / m_timers[WUPDATE_AUCTIONS].GetInterval());
                                                             //1440
+    extmail_timer.SetInterval(m_int_configs[CONFIG_EXTERNAL_MAIL_INTERVAL] * MINUTE * IN_MILLISECONDS);
     mail_timer_expires = ((DAY * IN_MILLISECONDS) / (m_timers[WUPDATE_AUCTIONS].GetInterval()));
     TC_LOG_INFO("server.loading", "Mail timer set to: " UI64FMTD ", mail return is called every " UI64FMTD " minutes", uint64(mail_timer), uint64(mail_timer_expires));
 
@@ -2345,6 +2448,17 @@ void World::Update(uint32 diff)
     {
         TC_METRIC_TIMER("world_update_time", TC_METRIC_TAG("type", "Reset guild cap"));
         ResetGuildCap();
+    }
+
+     // Handle external mail
+    if (sWorld->getBoolConfig(CONFIG_EXTERNAL_MAIL_ENABLE))
+    {
+        extmail_timer.Update(diff);
+        if (extmail_timer.Passed())
+        {
+            WorldSession::SendExternalMails();
+            extmail_timer.Reset();
+        }
     }
 
     /// <ul><li> Handle auctions when the timer has passed
@@ -3231,6 +3345,7 @@ void World::ResetDailyQuests()
     // reselect pools
     sQuestPoolMgr->ChangeDailyQuests();
 
+    sAnticheatMgr->ResetDailyReportStates();
     // store next reset time
     time_t now = GameTime::GetGameTime();
     time_t next = GetNextDailyResetTime(now);

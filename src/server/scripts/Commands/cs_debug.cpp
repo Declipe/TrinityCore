@@ -120,7 +120,7 @@ public:
             { "loadcells",     rbac::RBAC_PERM_COMMAND_DEBUG_LOADCELLS,     false, &HandleDebugLoadCellsCommand,        "" },
             { "boundary",      rbac::RBAC_PERM_COMMAND_DEBUG_BOUNDARY,      false, &HandleDebugBoundaryCommand,         "" },
             { "raidreset",     rbac::RBAC_PERM_COMMAND_INSTANCE_UNBIND,     false, &HandleDebugRaidResetCommand,        "" },
-            { "neargraveyard", rbac::RBAC_PERM_COMMAND_NEARGRAVEYARD,       false, &HandleDebugNearGraveyard,           "" },
+           // { "neargraveyard", rbac::RBAC_PERM_COMMAND_NEARGRAVEYARD,       false, &HandleDebugNearGraveyard,           "" },
             { "instancespawn", rbac::RBAC_PERM_COMMAND_DEBUG_INSTANCESPAWN, false, &HandleDebugInstanceSpawns,          "" },
             { "dummy",         rbac::RBAC_PERM_COMMAND_DEBUG_DUMMY,         false, &HandleDebugDummyCommand,            "" },
             { "asan",          rbac::RBAC_PERM_COMMAND_DEBUG_ASAN,          true,  nullptr,                             "", debugAsanCommandTable },
@@ -1550,6 +1550,7 @@ public:
         return true;
     }
 
+/*
     static bool HandleDebugNearGraveyard(ChatHandler* handler, Optional<ExactSequence<'l', 'i', 'n', 'k', 'e', 'd'>> linked)
     {
         Player* player = handler->GetSession()->GetPlayer();
@@ -1596,7 +1597,7 @@ public:
 
         return true;
     }
-
+    */
     static bool HandleDebugInstanceSpawns(ChatHandler* handler, char const* args)
     {
         Player const* const player = handler->GetSession()->GetPlayer();

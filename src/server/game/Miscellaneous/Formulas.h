@@ -26,6 +26,7 @@
 #include "ScriptMgr.h"
 #include "SharedDefines.h"
 #include "World.h"
+#include "Config.h"
 
 namespace Trinity
 {
@@ -192,12 +193,42 @@ namespace Trinity
 
                     xpMod *= creature->GetCreatureTemplate()->ModExperience;
                 }
-
+            if(sConfigMgr->GetBoolDefault("PrepatchGI.Added", false))
+                {
+                    // Prepatch by LordPsyan
+                    // 21
+                    // 22
+                    // 23
+                    // 24
+                    // 25
+                    // 26
+                    // 27
+                    // 28
+                    // 29
+                    // 30
+                    // 31
+                    // 32
+                    // 33
+                    // 34
+                    // 35
+                    // 36
+                    // 37
+                    // 38
+                    // 39
+                    // 40
+                    // Visit http://www.realmsofwarcraft.com/bb for forums and information
+                    //
+                    // End of prepatch
+                } else {
                 xpMod *= isBattleGround ? sWorld->getRate(RATE_XP_BG_KILL) : sWorld->getRate(RATE_XP_KILL);
                 if (creature && creature->m_PlayerDamageReq) // if players dealt less than 50% of the damage and were credited anyway (due to CREATURE_FLAG_EXTRA_NO_PLAYER_DAMAGE_REQ), scale XP gained appropriately (linear scaling)
                     xpMod *= 1.0f - 2.0f * creature->m_PlayerDamageReq / creature->GetMaxHealth();
 
+                if(player->GetSession()->IsPremium())
+                    xpMod *= sWorld->getRate(RATE_XP_KILL_PREMIUM);
+
                 gain = uint32(gain * xpMod);
+            }
             }
 
             sScriptMgr->OnGainCalculation(gain, player, u);

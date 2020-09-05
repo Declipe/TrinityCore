@@ -1130,11 +1130,10 @@ enum TrinityStrings
     LANG_OPVP_ZM_GOSSIP_HORDE             = 10055,
 
     // 10056-10066 - free
-
+    LANG_PREMIUM_CANT_DO                = 12009,
     // Use for custom patches               11000-11999
     LANG_AUTO_BROADCAST                   = 11000,
     LANG_INVALID_REALMID                  = 11001,
-
     // Show Kick in world
     LANG_COMMAND_KICKMESSAGE_WORLD        = 11002,
 
@@ -1158,6 +1157,15 @@ enum TrinityStrings
     LANG_CREATURE_NOT_AI_ENABLED                  = 11015,
     LANG_SELECT_PLAYER_OR_PET                     = 11016,
     LANG_SHUTDOWN_DELAYED                         = 11017,
-    LANG_SHUTDOWN_CANCELLED                       = 11018
+    LANG_SHUTDOWN_CANCELLED                       = 11018,
+    LANG_PLAYER_NOT_VIP                           = 11110,
+    LANG_VIP_COMMAND_DISABLED                     = 11111,
+    LANG_VIP_ERROR                                = 11112,
+    LANG_VIP_BG                                   = 11113,
+    LANG_VIP_STEALTH                              = 11114,
+    LANG_VIP_DEAD                                 = 11115,
+    LANG_VIP_CHANGE_RACE                          = 11116,
+    LANG_VIP_CHANGE_CUSTOMIZE                     = 11117,
+    LANG_VIP_GROUP                                = 11118,
 };
 #endif

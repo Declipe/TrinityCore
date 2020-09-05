@@ -243,7 +243,7 @@ class npc_wg_spirit_guide : public CreatureScript
                     GraveyardVect gy = wintergrasp->GetGraveyardVector();
                     for (uint8 i = 0; i < gy.size(); i++)
                         if (action - GOSSIP_ACTION_INFO_DEF == i && gy[i]->GetControlTeamId() == player->GetTeamId())
-                            if (WorldSafeLocsEntry const* safeLoc = sWorldSafeLocsStore.LookupEntry(gy[i]->GetGraveyardId()))
+                            if (WorldSafeLocsEntry const* safeLoc = sDBCMgr->GetWorldSafeLocsEntry(gy[i]->GetGraveyardId()))
                                 player->TeleportTo(safeLoc->Continent, safeLoc->Loc.X, safeLoc->Loc.Y, safeLoc->Loc.Z, 0);
                 }
                 return true;

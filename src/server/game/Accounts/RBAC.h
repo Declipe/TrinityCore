@@ -785,6 +785,53 @@ enum RBACPermissions
     // IF YOU ADD NEW PERMISSIONS, ADD THEM IN MASTER BRANCH AS WELL!
     //
     // custom permissions 1000+
+    // Prepatch by LordPsyan
+    // 01
+    // 02
+    // 03
+    // 04
+    // 05
+    // 06
+    // 07
+    // 08
+    // 09
+    // 10
+    // 11
+    // 12
+    // 13
+    // 14
+    // 15
+    // 16
+    // 17
+    // 18
+    // 19
+    // 20
+    RBAC_PERM_COMMAND_VIP                                      = 1000,
+    RBAC_PERM_COMMAND_VIP_DEBUFF                               = 1001,
+    RBAC_PERM_COMMAND_VIP_BANK                                 = 1002,
+    RBAC_PERM_COMMAND_VIP_REPAIR                               = 1003,
+    RBAC_PERM_COMMAND_VIP_RESETTALENTS                         = 1004,
+    RBAC_PERM_COMMAND_VIP_TAXI                                 = 1005,
+    RBAC_PERM_COMMAND_VIP_HOME                                 = 1006,
+    RBAC_PERM_COMMAND_VIP_CAPITAL                              = 1007,
+    RBAC_PERM_COMMAND_VIP_MAIL                                 = 1008,
+    RBAC_PERM_COMMAND_VIP_CHANGERACE                           = 1009,
+    RBAC_PERM_COMMAND_VIP_CUSTOMIZE                            = 1010,
+    RBAC_PERM_COMMAND_VIP_ARPPEAR                              = 1011,
+    RBAC_PERM_COMMAND_VIP_MAP                                  = 1012,
+    RBAC_PERM_COMMAND_VIP_buffs                                = 1013,
+    RBAC_PERM_COMMAND_VIP_arena                                = 1014,
+    RBAC_PERM_COMMAND_VIP_warsong                              = 1015,
+    RBAC_PERM_COMMAND_VIP_arathi                               = 1016,
+    RBAC_PERM_COMMAND_VIP_eye                                  = 1017,
+    RBAC_PERM_COMMAND_VIP_alterac                              = 1018,
+    RBAC_PERM_COMMAND_VIP_HOMEs                                = 1019,
+    RBAC_PERM_COMMAND_RELOAD_CHAT_FILTER                       = 1590,
+    //RBAC_PERM_COMMAND_VIP_qcomplete                          = 1020,
+    RBAC_PERM_COMMAND_RELOAD_full                              = 1021,
+    // Visit http://www.realmsofwarcraft.com/bb for forums and information
+    //
+    // End of prepatch
     RBAC_PERM_MAX
 };
 

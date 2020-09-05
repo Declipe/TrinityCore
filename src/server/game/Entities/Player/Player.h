@@ -18,6 +18,7 @@
 #ifndef _PLAYER_H
 #define _PLAYER_H
 
+#include "Transmogrification.h"
 #include "Unit.h"
 #include "DatabaseEnvFwd.h"
 #include "DBCEnums.h"
@@ -148,6 +149,18 @@ struct SpellModifier
     uint32 spellId;
     Aura* const ownerAura;
 };
+
+typedef std::unordered_map<ObjectGuid, uint32> TransmogMapType;
+
+#ifdef PRESETS
+typedef std::map<uint8, uint32> PresetslotMapType;
+struct PresetData
+{
+    std::string name;
+    PresetslotMapType slotMap; // slotMap[slotId] = entry
+};
+typedef std::map<uint8, PresetData> PresetMapType;
+#endif
 
 typedef std::unordered_map<uint32, PlayerTalent*> PlayerTalentMap;
 typedef std::unordered_map<uint32, PlayerSpell*> PlayerSpellMap;
@@ -748,6 +761,13 @@ enum PlayerDelayedOperations
     DELAYED_END
 };
 
+enum AreaCustomFlags
+{
+    AREA_CUSTOM_SANCTUARY,
+    AREA_CUSTOM_FFA,
+    AREA_CUSTOM_PVP
+};
+
 // Player summoning auto-decline time (in secs)
 #define MAX_PLAYER_SUMMON_DELAY                   (2*MINUTE)
 // Maximum money amount : 2^31 - 1
@@ -979,6 +999,22 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void SetCommandStatusOn(uint32 command) { _activeCheats |= command; }
         void SetCommandStatusOff(uint32 command) { _activeCheats &= ~command; }
 
+        // PlayedTimeReward
+        uint32 ptr_Interval;
+        uint32 ptr_Money;
+        uint32 ptr_Honor;
+        uint32 ptr_Arena;
+        uint32 ptr_item1;
+        uint32 ptr_item2;
+        uint32 ptr_item3;
+        uint32 ptr_item4;
+        uint32 ptr_item5;
+        uint32 ptr_item1id;
+        uint32 ptr_item2id;
+        uint32 ptr_item3id;
+        uint32 ptr_item4id;
+        uint32 ptr_item5id;
+
         // Played Time Stuff
         time_t m_logintime;
         time_t m_Last_tick;
@@ -1022,6 +1058,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         Pet* SummonPet(uint32 entry, float x, float y, float z, float ang, PetType petType, uint32 despwtime);
         void RemovePet(Pet* pet, PetSaveMode mode, bool returnreagent = false);
         uint32 GetPhaseMaskForSpawn() const;                // used for proper set phase for DB at GM-mode creature/GO spawn
+
+        void UpdateAreaCustomFlags();
 
         // pet auras
         std::unordered_set<PetAura const*> m_petAuras;
@@ -1961,6 +1999,12 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         void UpdateSpeakTime();
 
+		//CHAT_FILTER
+		void SetLoggedOutWhilePunished(bool _true) { loggedOutWhilePunished = _true; }
+		bool LoggedOutWhilePunished() { return loggedOutWhilePunished; }
+		void SetFreezeStunTimer(bool freeze, uint32 _timer) { freeze ? freezeTimer = _timer : stunTimer = _timer; }
+		uint32 GetFreezeStunTimer(bool freeze) { return freeze ? freezeTimer : stunTimer; }
+
         /*********************************************************/
         /***                 VARIOUS SYSTEMS                   ***/
         /*********************************************************/
@@ -2173,6 +2217,35 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
 
         std::string GetDebugInfo() const override;
 
+    // Prepatch by LordPsyan
+    // 01
+    // 02
+    // 03
+    // 04
+    // 05
+    // 06
+    // 07
+    // 08
+    // 09
+    // 10
+    // 11
+    // 12
+    // 13
+    // 14
+    // 15
+    // 16
+    // 17
+    // 18
+    // 19
+    // 20
+    // Visit http://www.realmsofwarcraft.com/bb for forums and information
+    //
+    // End of prepatch
+        TransmogMapType transmogMap; // transmogMap[iGUID] = entry
+#ifdef PRESETS
+        PresetMapType presetMap; // presetMap[presetId] = presetData
+#endif
+
     protected:
         // Gamemaster whisper whitelist
         GuidList WhisperList;
@@ -2368,6 +2441,11 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         uint32 m_zoneUpdateTimer;
         uint32 m_areaUpdateId;
 
+		//CHAT_FILTER
+		uint32 freezeTimer;
+		uint32 stunTimer;
+		bool loggedOutWhilePunished;
+
         uint32 m_deathTimer;
         time_t m_deathExpireTime;
 
@@ -2501,6 +2579,30 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         uint32 manaBeforeDuel;
 
         WorldLocation _corpseLocation;
+        // Prepatch by LordPsyan
+        // 21
+        // 22
+        // 23
+        // 24
+        // 25
+        // 26
+        // 27
+        // 28
+        // 29
+        // 30
+        // 31
+        // 32
+        // 33
+        // 34
+        // 35
+        // 36
+        // 37
+        // 38
+        // 39
+        // 40
+        // Visit http://www.realmsofwarcraft.com/bb for forums and information
+        //
+        // End of prepatch
 };
 
 TC_GAME_API void AddItemsSetItem(Player* player, Item* item);

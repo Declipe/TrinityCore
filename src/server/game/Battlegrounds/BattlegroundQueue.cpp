@@ -129,6 +129,46 @@ bool BattlegroundQueue::SelectionPool::AddGroup(GroupQueueInfo* ginfo, uint32 de
 /***               BATTLEGROUND QUEUES                 ***/
 /*********************************************************/
 
+bool BattlegroundQueue::IPExistsInQueue(std::string const& remote_addr, PvPDifficultyEntry const* bracketEntry, bool isRated, bool isPremade)
+{
+	BattlegroundBracketId bracketId = bracketEntry->GetBracketId();
+
+	uint32 index = 0;
+	if (!isRated && !isPremade)
+		index += PVP_TEAMS_COUNT;
+
+	for (GroupsQueueType::const_iterator queue_itr = m_QueuedGroups[bracketId][index].begin(); queue_itr != m_QueuedGroups[bracketId][index].end(); ++queue_itr)
+		for (std::map<ObjectGuid, PlayerQueueInfo*>::const_iterator group_itr = (*queue_itr)->Players.begin(); group_itr != (*queue_itr)->Players.end(); ++group_itr)
+			if (Player* player = ObjectAccessor::FindPlayer(group_itr->first))
+				if (player->GetSession()->GetRemoteAddress() == remote_addr)
+					return true;
+
+	index++;
+
+	for (GroupsQueueType::const_iterator queue_itr = m_QueuedGroups[bracketId][index].begin(); queue_itr != m_QueuedGroups[bracketId][index].end(); ++queue_itr)
+		for (std::map<ObjectGuid, PlayerQueueInfo*>::const_iterator group_itr = (*queue_itr)->Players.begin(); group_itr != (*queue_itr)->Players.end(); ++group_itr)
+			if (Player* player = ObjectAccessor::FindPlayer(group_itr->first))
+				if (player->GetSession()->GetRemoteAddress() == remote_addr)
+					return true;
+
+	return false;
+}
+
+bool BattlegroundQueue::IPExistsInQueue(Player* leader, Group* group, PvPDifficultyEntry const* bracketEntry, bool isRated, bool isPremade)
+{
+	if (group)
+	{
+		for (GroupReference* itr = group->GetFirstMember(); itr != NULL; itr = itr->next())
+			if (Player* player = itr->GetSource())
+				if (IPExistsInQueue(player->GetSession()->GetRemoteAddress(), bracketEntry, isRated, isPremade))
+					return true;
+	}
+	else
+		return IPExistsInQueue(leader->GetSession()->GetRemoteAddress(), bracketEntry, isRated, isPremade);
+
+	return false;
+}
+
 // add group or player (grp == NULL) to bg queue with the given leader and bg specifications
 GroupQueueInfo* BattlegroundQueue::AddGroup(Player* leader, Group* grp, BattlegroundTypeId BgTypeId, PvPDifficultyEntry const* bracketEntry, uint8 ArenaType, bool isRated, bool isPremade, uint32 ArenaRating, uint32 MatchmakerRating, uint32 arenateamid, uint32 PreviousOpponentsArenaTeamId)
 {
@@ -167,6 +207,7 @@ GroupQueueInfo* BattlegroundQueue::AddGroup(Player* leader, Group* grp, Battlegr
     {
         ArenaTeam* team = sArenaTeamMgr->GetArenaTeamById(arenateamid);
         if (team)
+    if ((team->GetType() == ARENA_TYPE_5v5 && sWorld->getBoolConfig(CONFIG_ARENA_1V1_ANNOUNCER)) || team->GetType() != ARENA_TYPE_5v5)
             sWorld->SendWorldText(LANG_ARENA_QUEUE_ANNOUNCE_WORLD_JOIN, team->GetName().c_str(), ginfo->ArenaType, ginfo->ArenaType, ginfo->ArenaTeamRating);
     }
 
@@ -359,6 +400,7 @@ void BattlegroundQueue::RemovePlayer(ObjectGuid guid, bool decreaseInvitedCount)
     // announce to world if arena team left queue for rated match, show only once
     if (group->ArenaType && group->IsRated && group->Players.empty() && sWorld->getBoolConfig(CONFIG_ARENA_QUEUE_ANNOUNCER_ENABLE))
         if (ArenaTeam* team = sArenaTeamMgr->GetArenaTeamById(group->ArenaTeamId))
+			if (team && ((team->GetType() == ARENA_TYPE_5v5 && sWorld->getBoolConfig(CONFIG_ARENA_1V1_ANNOUNCER)) || team->GetType() != ARENA_TYPE_5v5))
             sWorld->SendWorldText(LANG_ARENA_QUEUE_ANNOUNCE_WORLD_EXIT, team->GetName().c_str(), group->ArenaType, group->ArenaType, group->ArenaTeamRating);
 
     // if player leaves queue and he is invited to rated arena match, then he have to lose

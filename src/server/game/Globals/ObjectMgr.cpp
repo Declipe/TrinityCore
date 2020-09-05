@@ -2880,7 +2880,7 @@ void ObjectMgr::LoadItemTemplates()
         itemTemplate.MaxCount                  = fields[24].GetInt32();
         itemTemplate.Stackable                 = fields[25].GetInt32();
         itemTemplate.ContainerSlots            = uint32(fields[26].GetUInt8());
-        itemTemplate.StatsCount                = uint32(fields[27].GetUInt8());
+        itemTemplate.StatsCount                = uint32(fields[27].GetUInt32());
 
         if (itemTemplate.StatsCount > MAX_ITEM_PROTO_STATS)
         {
@@ -2888,10 +2888,10 @@ void ObjectMgr::LoadItemTemplates()
             itemTemplate.StatsCount = MAX_ITEM_PROTO_STATS;
         }
 
-        for (uint8 i = 0; i < itemTemplate.StatsCount; ++i)
+        for (uint32 i = 0; i < itemTemplate.StatsCount; ++i)
         {
-            itemTemplate.ItemStat[i].ItemStatType  = uint32(fields[28 + i*2].GetUInt8());
-            itemTemplate.ItemStat[i].ItemStatValue = int32(fields[29 + i*2].GetInt16());
+            itemTemplate.ItemStat[i].ItemStatType  = uint32(fields[28 + i*2].GetUInt32());
+            itemTemplate.ItemStat[i].ItemStatValue = int32(fields[29 + i*2].GetInt32());
         }
 
         itemTemplate.ScalingStatDistribution = uint32(fields[48].GetUInt16());
@@ -2973,38 +2973,44 @@ void ObjectMgr::LoadItemTemplates()
         {
             if (itemTemplate.Class != dbcitem->ClassID)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct class %u, must be %u .", entry, itemTemplate.Class, dbcitem->ClassID);
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct class %u, must be %u .", entry, itemTemplate.Class, dbcitem->Class);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `class` = %u WHERE (entry = %u);", dbcitem->ClassID, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.Class = dbcitem->ClassID;
             }
 
             if (itemTemplate.SoundOverrideSubclass != dbcitem->SoundOverrideSubclassID)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct SoundOverrideSubclass (%i), must be %i .", entry, itemTemplate.SoundOverrideSubclass, dbcitem->SoundOverrideSubclassID);
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct SoundOverrideSubclass (%i), must be %i .", entry, itemTemplate.SoundOverrideSubclass, dbcitem->SoundOverrideSubclass);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `SoundOverrideSubclass` = %u WHERE (entry = %u);", dbcitem->SoundOverrideSubclassID, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.SoundOverrideSubclass = dbcitem->SoundOverrideSubclassID;
             }
             if (itemTemplate.Material != dbcitem->Material)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct material (%i), must be %i .", entry, itemTemplate.Material, dbcitem->Material);
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct material (%i), must be %i .", entry, itemTemplate.Material, dbcitem->Material);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `material` = %u WHERE (entry = %u);", dbcitem->Material, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.Material = dbcitem->Material;
             }
             if (itemTemplate.InventoryType != dbcitem->InventoryType)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct inventory type (%u), must be %u .", entry, itemTemplate.InventoryType, dbcitem->InventoryType);
+               // TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct inventory type (%u), must be %u .", entry, itemTemplate.InventoryType, dbcitem->InventoryType);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `InventoryType` = %u WHERE (entry = %u);", dbcitem->InventoryType, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.InventoryType = dbcitem->InventoryType;
             }
             if (itemTemplate.DisplayInfoID != dbcitem->DisplayInfoID)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct display id (%u), must be %u .", entry, itemTemplate.DisplayInfoID, dbcitem->DisplayInfoID);
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct display id (%u), must be %u .", entry, itemTemplate.DisplayInfoID, dbcitem->DisplayId);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `displayid` = %u WHERE (entry = %u);", dbcitem->DisplayInfoID, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.DisplayInfoID = dbcitem->DisplayInfoID;
             }
             if (itemTemplate.Sheath != dbcitem->SheatheType)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct sheathid (%u), must be %u .", entry, itemTemplate.Sheath, dbcitem->SheatheType);
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct sheathid (%u), must be %u .", entry, itemTemplate.Sheath, dbcitem->Sheath);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `sheath` = %u WHERE (entry = %u);", dbcitem->SheatheType, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.Sheath = dbcitem->SheatheType;
             }
@@ -3135,7 +3141,7 @@ void ObjectMgr::LoadItemTemplates()
             itemTemplate.ContainerSlots = MAX_BAG_SIZE;
         }
 
-        for (uint8 j = 0; j < itemTemplate.StatsCount; ++j)
+        for (uint32 j = 0; j < itemTemplate.StatsCount; ++j)
         {
             // for ItemStatValue != 0
             if (itemTemplate.ItemStat[j].ItemStatValue && itemTemplate.ItemStat[j].ItemStatType >= MAX_ITEM_MOD)
@@ -3400,7 +3406,6 @@ void ObjectMgr::LoadItemTemplates()
 
     TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " item templates in %u ms", _itemTemplateStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
-
 ItemTemplate const* ObjectMgr::GetItemTemplate(uint32 entry) const
 {
     return Trinity::Containers::MapGetValuePtr(_itemTemplateStore, entry);
@@ -6802,7 +6807,7 @@ void ObjectMgr::LoadGraveyardZones()
         uint32 zoneId = fields[1].GetUInt32();
         uint32 team   = fields[2].GetUInt16();
 
-        WorldSafeLocsEntry const* entry = sWorldSafeLocsStore.LookupEntry(safeLocId);
+        WorldSafeLocsEntry const* entry = sDBCMgr->GetWorldSafeLocsEntry(safeLocId);
         if (!entry)
         {
             TC_LOG_ERROR("sql.sql", "Table `graveyard_zone` has a record for non-existing graveyard (WorldSafeLocsID: %u), skipped.", safeLocId);
@@ -6844,9 +6849,9 @@ WorldSafeLocsEntry const* ObjectMgr::GetDefaultGraveyard(uint32 team) const
     };
 
     if (team == HORDE)
-        return sWorldSafeLocsStore.LookupEntry(HORDE_GRAVEYARD);
+        return sDBCMgr->GetWorldSafeLocsEntry(HORDE_GRAVEYARD);
     else if (team == ALLIANCE)
-        return sWorldSafeLocsStore.LookupEntry(ALLIANCE_GRAVEYARD);
+        return sDBCMgr->GetWorldSafeLocsEntry(ALLIANCE_GRAVEYARD);
     else return nullptr;
 }
 
@@ -6901,7 +6906,7 @@ WorldSafeLocsEntry const* ObjectMgr::GetClosestGraveyard(float x, float y, float
     {
         GraveyardData const& data = range.first->second;
 
-        WorldSafeLocsEntry const* entry = sWorldSafeLocsStore.LookupEntry(data.safeLocId);
+        WorldSafeLocsEntry const* entry = sDBCMgr->GetWorldSafeLocsEntry(data.safeLocId);
         if (!entry)
         {
             TC_LOG_ERROR("sql.sql", "Table `graveyard_zone` has record for not existing graveyard (WorldSafeLocsID %u), skipped.", data.safeLocId);
@@ -8269,6 +8274,32 @@ void ObjectMgr::LoadQuestPOI()
 
     TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " quest POI definitions in %u ms", _questPOIStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
+//CHAT_FILTER
+void ObjectMgr::LoadChatFilter()
+{
+	uint32 oldMSTime = getMSTime();
+
+	_chatFilterStore.clear();
+
+	QueryResult result = ZynDatabase.Query("SELECT word, punishment FROM chat_filter");
+
+	if (!result)
+	{
+		TC_LOG_ERROR("server.loading", ">> Loaded 0 ChatFilter words. DB table `chat_filter` is empty.");
+		return;
+	}
+
+	uint32 count = 0;
+
+	do
+	{
+		_chatFilterStore.push_back(std::make_pair((*result)[0].GetString(), (*result)[1].GetUInt32()));
+		count++;
+	} while (result->NextRow());
+
+	TC_LOG_ERROR("server.loading", ">> Loaded %u chat filter words in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+
+}
 
 void ObjectMgr::LoadNPCSpellClickSpells()
 {
@@ -9560,7 +9591,7 @@ bool ObjectMgr::IsVendorItemValid(uint32 vendor_entry, uint32 item_id, int32 max
         return false;
     }
 
-    if (ExtendedCost && !sItemExtendedCostStore.LookupEntry(ExtendedCost))
+    if (ExtendedCost && !sDBCMgr->GetItemExtendedCostEntry(ExtendedCost))
     {
         if (player)
             ChatHandler(player->GetSession()).PSendSysMessage(LANG_EXTENDED_COST_NOT_EXIST, ExtendedCost);
@@ -10336,4 +10367,65 @@ ByteBuffer QuestPOIWrapper::BuildQueryData() const
     }
 
     return tempBuffer;
+}
+void ObjectMgr::LoadAreaCustomFlags()
+{
+    uint32 oldMSTime = getMSTime();
+
+    QueryResult result = ZynDatabase.Query("SELECT id, flag, mapId, x, y, z, radius FROM area_custom_flag");
+
+    if (!result)
+    {
+        TC_LOG_INFO("server.loading", ">> Loaded 0 Area Custom Flags. DB table `area_custom_flag` is empty.");
+        return;
+    }
+
+    uint32 count = 0;
+
+    do
+    {
+        Field* fields = result->Fetch();
+
+        AreaCustomFlagTPL container;
+        container.flag = fields[1].GetUInt8();
+        container.map = fields[2].GetUInt32();
+        container.x = fields[3].GetFloat();
+        container.y = fields[4].GetFloat();
+        container.z = fields[5].GetFloat();
+        container.radius = fields[6].GetUInt32();
+
+        _areaCustomFlags.push_back(container);
+
+        ++count;
+    } while (result->NextRow());
+
+    TC_LOG_INFO("server.loading", ">> Loaded %u Area Custom Flags in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+}
+
+void ObjectMgr::LoadCreatureSpecialRewards()
+{
+    uint32 oldMSTime = getMSTime();
+
+    QueryResult result = ZynDatabase.Query("SELECT entry, type, param1, param2 FROM creature_special_rewards");
+
+    if (!result)
+    {
+        TC_LOG_INFO("server.loading", ">> Loaded 0 creature special rewards. DB table `creature_special_rewards` is empty.");
+        return;
+    }
+
+    uint32 count = 0;
+
+    do
+    {
+        Field* fields = result->Fetch();
+
+        _creatureSpecialReward[fields[0].GetUInt32()].type = fields[1].GetUInt8();
+        _creatureSpecialReward[fields[0].GetUInt32()].param1 = fields[2].GetUInt32();
+        _creatureSpecialReward[fields[0].GetUInt32()].param2 = fields[3].GetUInt32();
+
+        ++count;
+    } while (result->NextRow());
+
+    TC_LOG_INFO("server.loading", ">> Loaded %u creature special rewards in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }

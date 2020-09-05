@@ -114,8 +114,8 @@ DBCStorage <HolidaysEntry>                sHolidaysStore(Holidaysfmt);
 DBCStorage <ItemEntry>                    sItemStore(Itemfmt);
 DBCStorage <ItemBagFamilyEntry>           sItemBagFamilyStore(ItemBagFamilyfmt);
 //DBCStorage <ItemCondExtCostsEntry> sItemCondExtCostsStore(ItemCondExtCostsEntryfmt);
-//DBCStorage <ItemDisplayInfoEntry> sItemDisplayInfoStore(ItemDisplayTemplateEntryfmt); -- not used currently
-DBCStorage <ItemExtendedCostEntry> sItemExtendedCostStore(ItemExtendedCostEntryfmt);
+DBCStorage <ItemDisplayInfoEntry> sItemDisplayInfoStore(ItemDisplayTemplateEntryfmt);
+//DBCStorage <ItemExtendedCostEntry> sItemExtendedCostStore(ItemExtendedCostEntryfmt);
 DBCStorage <ItemLimitCategoryEntry> sItemLimitCategoryStore(ItemLimitCategoryEntryfmt);
 DBCStorage <ItemRandomPropertiesEntry> sItemRandomPropertiesStore(ItemRandomPropertiesfmt);
 DBCStorage <ItemRandomSuffixEntry> sItemRandomSuffixStore(ItemRandomSuffixfmt);
@@ -210,7 +210,7 @@ DBCStorage <VehicleSeatEntry> sVehicleSeatStore(VehicleSeatEntryfmt);
 DBCStorage <WMOAreaTableEntry> sWMOAreaTableStore(WMOAreaTableEntryfmt);
 DBCStorage <WorldMapAreaEntry> sWorldMapAreaStore(WorldMapAreaEntryfmt);
 DBCStorage <WorldMapOverlayEntry> sWorldMapOverlayStore(WorldMapOverlayEntryfmt);
-DBCStorage <WorldSafeLocsEntry> sWorldSafeLocsStore(WorldSafeLocsEntryfmt);
+//DBCStorage <WorldSafeLocsEntry> sWorldSafeLocsStore(WorldSafeLocsEntryfmt);
 
 typedef std::list<std::string> StoreProblemList;
 
@@ -335,9 +335,10 @@ void LoadDBCStores(const std::string& dataPath)
     LOAD_DBC(sHolidaysStore,                      "Holidays.dbc");
     LOAD_DBC(sItemStore,                          "Item.dbc");
     LOAD_DBC(sItemBagFamilyStore,                 "ItemBagFamily.dbc");
-    //LOAD_DBC(sItemDisplayInfoStore,               "ItemDisplayInfo.dbc");     -- not used currently
+    LOAD_DBC(sItemDisplayInfoStore,               "ItemDisplayInfo.dbc");
     //LOAD_DBC(sItemCondExtCostsStore,              "ItemCondExtCosts.dbc");
-    LOAD_DBC(sItemExtendedCostStore,              "ItemExtendedCost.dbc");
+    //LOAD_DBC(sItemExtendedCostStore,              "ItemExtendedCost.dbc");
+    sDBCMgr->LoadItemExtendedCostStore();
     LOAD_DBC(sItemLimitCategoryStore,             "ItemLimitCategory.dbc");
     LOAD_DBC(sItemRandomPropertiesStore,          "ItemRandomProperties.dbc");
     LOAD_DBC(sItemRandomSuffixStore,              "ItemRandomSuffix.dbc");
@@ -393,7 +394,8 @@ void LoadDBCStores(const std::string& dataPath)
     LOAD_DBC(sWMOAreaTableStore,                  "WMOAreaTable.dbc");
     LOAD_DBC(sWorldMapAreaStore,                  "WorldMapArea.dbc");
     LOAD_DBC(sWorldMapOverlayStore,               "WorldMapOverlay.dbc");
-    LOAD_DBC(sWorldSafeLocsStore,                 "WorldSafeLocs.dbc");
+    //LOAD_DBC(sWorldSafeLocsStore,                 "WorldSafeLocs.dbc");
+    sDBCMgr->LoadWorldSafeLocsStore();
 
 #undef LOAD_DBC
 
@@ -655,7 +657,7 @@ void LoadDBCStores(const std::string& dataPath)
         !sCharTitlesStore.LookupEntry(177)         ||       // last char title added in 3.3.5a
         !sGemPropertiesStore.LookupEntry(1629)     ||       // last gem property added in 3.3.5a
         !sItemStore.LookupEntry(56806)             ||       // last client known item added in 3.3.5a
-        !sItemExtendedCostStore.LookupEntry(2997)  ||       // last item extended cost added in 3.3.5a
+        !sDBCMgr->GetItemExtendedCostEntry(2997)  ||       // last item extended cost added in 3.3.5a
         !sMapStore.LookupEntry(724)                ||       // last map added in 3.3.5a
         !sSpellStore.LookupEntry(80864)            )        // last added spell in 3.3.5a
     {
@@ -974,4 +976,64 @@ EmotesTextSoundEntry const* FindTextSoundEmoteFor(uint32 emote, uint32 race, uin
 {
     auto itr = sEmotesTextSoundMap.find(EmotesTextSoundKey(emote, race, gender));
     return itr != sEmotesTextSoundMap.end() ? itr->second : nullptr;
+}
+
+void DBCMgr::LoadItemExtendedCostStore()
+{
+    uint32 oldMSTime = getMSTime();
+    ItemExtendedCostStore.clear();
+
+    QueryResult result = WorldDatabase.Query("SELECT Id, ReqHonorPoints, ReqArenaPoints, ReqArenaSlot, ReqItem1, ReqItem2, ReqItem3, ReqItem4, ReqItem5, "
+        "ReqItemCount1, ReqItemCount2, ReqItemCount3, ReqItemCount4, ReqItemCount5, ReqPersonalArenaRating FROM itemextendedcostdbc");
+    if (!result)
+    {
+        TC_LOG_ERROR("server.loading", ">> Loaded 0 itemextendedcost entry. DB table `itemextendedcostdbc` is empty.");
+        return;
+    }
+
+    do {
+        Field* fields = result->Fetch();
+
+        ItemExtendedCostEntry* newItemExtendedCost = new ItemExtendedCostEntry;
+        newItemExtendedCost->ID = fields[0].GetUInt32();
+        newItemExtendedCost->HonorPoints = fields[1].GetUInt32();
+        newItemExtendedCost->ArenaPoints = fields[2].GetUInt32();
+        newItemExtendedCost->ArenaBracket = fields[3].GetUInt32();
+        for (uint8 i = 0; i < 5; i++)
+            newItemExtendedCost->ItemID[i] = fields[4 + i].GetUInt32();
+        for (uint8 i = 0; i < 4; i++)
+            newItemExtendedCost->ItemCount[i] = fields[9 + i].GetUInt32();
+        newItemExtendedCost->RequiredArenaRating = fields[14].GetUInt32();
+        ItemExtendedCostStore[newItemExtendedCost->ID] = newItemExtendedCost;
+
+    } while (result->NextRow());
+
+    TC_LOG_ERROR("misc", ">> Loaded %lu itemextendedcost entries in %u ms", (unsigned long)ItemExtendedCostStore.size(), GetMSTimeDiffToNow(oldMSTime));
+}
+
+void DBCMgr::LoadWorldSafeLocsStore()
+{
+    uint32 oldMSTime = getMSTime();
+    WorldSafeLocsStore.clear();
+
+    QueryResult result = WorldDatabase.Query("SELECT Id, MapId, X, Y, Z FROM worldsafelocsdbc");
+    if (!result)
+    {
+        TC_LOG_ERROR("server.loading", ">> Loaded 0 WorldSafeLocs entry. DB table `WorldSafeLocs dbc` is empty.");
+        return;
+    }
+
+    do {
+        Field* fields = result->Fetch();
+
+        WorldSafeLocsEntry* newWorldSafeLocs = new WorldSafeLocsEntry;
+        newWorldSafeLocs->ID = fields[0].GetUInt32();
+        newWorldSafeLocs->Continent = fields[1].GetUInt32();
+        newWorldSafeLocs->Loc.X = fields[2].GetFloat();
+        newWorldSafeLocs->Loc.Y = fields[3].GetFloat();
+        newWorldSafeLocs->Loc.Z = fields[4].GetFloat();
+        WorldSafeLocsStore[newWorldSafeLocs->ID] = newWorldSafeLocs;
+    } while (result->NextRow());
+
+    TC_LOG_ERROR("misc", ">> Loaded %lu WorldSafeLocs entries in %u ms", (unsigned long)WorldSafeLocsStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }

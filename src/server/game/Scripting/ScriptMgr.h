@@ -430,6 +430,18 @@ class TC_GAME_API CreatureScript : public ScriptObject
         virtual CreatureAI* GetAI(Creature* /*creature*/) const = 0;
 };
 
+class TC_GAME_API AllCreatureScript : public ScriptObject
+{
+protected:
+
+	AllCreatureScript(char const* name);
+
+public:
+
+	// Called when die creature
+	   virtual void AllCreatureJustDied(Creature* /*creature*/) { }
+};
+
 class TC_GAME_API GameObjectScript : public ScriptObject
 {
     protected:
@@ -713,6 +725,8 @@ class TC_GAME_API PlayerScript : public ScriptObject
         // Called when a player is bound to an instance
         virtual void OnBindToInstance(Player* /*player*/, Difficulty /*difficulty*/, uint32 /*mapId*/, bool /*permanent*/, uint8 /*extendState*/) { }
 
+        virtual void OnPlayerSkillUpdate(Player* /*player*/, uint16 /*SkillId*/, uint16 /*SkillValue*/, uint16 /*SkillNewValue*/) { }
+
         // Called when a player switches to a new zone
         virtual void OnUpdateZone(Player* /*player*/, uint32 /*newZone*/, uint32 /*newArea*/) { }
 
@@ -945,6 +959,10 @@ class TC_GAME_API ScriptMgr
 
         CreatureAI* GetCreatureAI(Creature* creature);
 
+    public: /* AllCreatureScript */
+
+        void AllCreatureJustDied(Creature* creature);
+
     public: /* GameObjectScript */
 
         GameObjectAI* GetGameObjectAI(GameObject* go);
@@ -1039,6 +1057,7 @@ class TC_GAME_API ScriptMgr
         void OnPlayerDelete(ObjectGuid guid, uint32 accountId);
         void OnPlayerFailedDelete(ObjectGuid guid, uint32 accountId);
         void OnPlayerSave(Player* player);
+        void OnPlayerSkillUpdate(Player* player, uint16 SkillId, uint16 SkillValue, uint16 SkillNewValue);
         void OnPlayerBindToInstance(Player* player, Difficulty difficulty, uint32 mapid, bool permanent, uint8 extendState);
         void OnPlayerUpdateZone(Player* player, uint32 newZone, uint32 newArea);
         void OnQuestObjectiveProgress(Player* player, Quest const* quest, uint32 objectiveIndex, uint16 progress);
