@@ -47,6 +47,7 @@
 #ifdef ELUNA
 #include "LuaEngine.h"
 #endif
+#include "VMapManager2.h"
 #include "Weather.h"
 #include "WeatherMgr.h"
 #include "World.h"
@@ -3753,10 +3754,10 @@ template TC_GAME_API void Map::RemoveFromMap(DynamicObject*, bool);
 
 /* ******* Dungeon Instance Maps ******* */
 
-InstanceMap::InstanceMap(uint32 id, time_t expiry, uint32 InstanceId, uint8 SpawnMode, Map* _parent)
+InstanceMap::InstanceMap(uint32 id, time_t expiry, uint32 InstanceId, uint8 SpawnMode, Map* _parent, TeamId InstanceTeam)
   : Map(id, expiry, InstanceId, SpawnMode, _parent),
     m_resetAfterUnload(false), m_unloadWhenEmpty(false),
-    i_data(nullptr), i_script_id(0)
+    i_data(nullptr), i_script_id(0), i_script_team(InstanceTeam)
 {
     //lets initialize visibility distance for dungeons
     InstanceMap::InitVisibilityDistance();

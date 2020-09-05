@@ -1707,7 +1707,7 @@ public:
         return true;
     }
 
-    static bool HandleDebugOutOfBounds([[maybe_unused]] ChatHandler* handler, CommandArgs* /*args*/)
+    static bool HandleDebugOutOfBounds([[maybe_unused]] ChatHandler* handler)
     {
 #ifdef ASAN
         uint8 stack_array[10] = {};
@@ -1853,7 +1853,7 @@ public:
             handler->PSendSysMessage("Entry: %u Count: %u", p.first, p.second);
     }
 
-    static bool HandleDebugDummyCommand(ChatHandler* handler, CommandArgs* /*args*/)
+    static bool HandleDebugDummyCommand(ChatHandler* handler)
     {
         handler->SendSysMessage("This command does nothing right now. Edit your local core (cs_debug.cpp) to make it do whatever you need for testing.");
         return true;
