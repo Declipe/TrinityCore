@@ -21,6 +21,7 @@
 #include "WorldSession.h"
 #include <sstream>
 #include <string>
+#include "StringConvert.h"
 
 #ifdef PRESETS
 void Transmogrification::PresetTransmog(Player* player, Item* itemTransmogrified, uint32 fakeEntry, uint8 slot)
@@ -198,32 +199,6 @@ std::string Transmogrification::GetItemLink(Item* item, WorldSession* session) c
     std::string name = temp->Name1;
     if (ItemLocale const* il = sObjectMgr->GetItemLocale(temp->ItemId))
         ObjectMgr::GetLocaleString(il->Name, loc_idx, name);
-
-    if (int32 itemRandPropId = item->GetItemRandomPropertyId())
-    {
-        char* const* suffix = NULL;
-        if (itemRandPropId < 0)
-        {
-            const ItemRandomSuffixEntry* itemRandEntry = sItemRandomSuffixStore.LookupEntry(-item->GetItemRandomPropertyId());
-            if (itemRandEntry)
-                suffix = itemRandEntry->Name;
-        }
-        else
-        {
-            const ItemRandomPropertiesEntry* itemRandEntry = sItemRandomPropertiesStore.LookupEntry(item->GetItemRandomPropertyId());
-            if (itemRandEntry)
-                suffix = itemRandEntry->Name;
-        }
-        if (suffix)
-        {
-            std::string test(suffix[(name != temp->Name1) ? loc_idx : DEFAULT_LOCALE]);
-            if (!test.empty())
-            {
-                name += ' ';
-                name += test;
-            }
-        }
-    }
 
     std::ostringstream oss;
     oss << "|c" << std::hex << ItemQualityColors[temp->Quality] << std::dec <<
