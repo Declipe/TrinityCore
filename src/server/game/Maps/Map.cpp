@@ -3992,8 +3992,8 @@ void InstanceMap::CreateInstanceData(bool load)
 
     // use mangos behavior if we are dealing with Eluna AI
     // initialize should then be called only if load is false
-    if (!isElunaAI || !load)
-        i_data->Initialize();
+    //if (!isElunaAI || !load)
+      //  i_data->Initialize();
 
     if (load)
     {
