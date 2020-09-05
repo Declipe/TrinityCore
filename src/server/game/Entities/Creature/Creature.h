@@ -48,6 +48,14 @@ struct VendorItemCount
 
 typedef std::list<VendorItemCount> VendorItemCounts;
 
+enum SpecialRewardTypes
+{
+    CSR_TYPE_TITLE = 0,
+    CSR_TYPE_ITEM = 1,
+    CSR_TYPE_HONOR = 2,
+    CSR_TYPE_ARENA = 3
+};
+
 // max different by z coordinate for creature aggro reaction
 #define CREATURE_Z_ATTACK_RANGE 3
 
@@ -355,6 +363,7 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         bool IsEngaged() const override;
         void AtEngage(Unit* target) override;
         void AtDisengage() override;
+        void UpdateAreaCustomFlags();
 
         std::string GetDebugInfo() const override;
 

@@ -26,6 +26,7 @@ EndScriptData */
 #include "Chat.h"
 #include "Containers.h"
 #include "DatabaseEnv.h"
+#include "DBCStore.h"
 #include "Language.h"
 #include "MapManager.h"
 #include "ObjectMgr.h"
@@ -184,7 +185,7 @@ public:
 
     static bool HandleGoGraveyardCommand(ChatHandler* handler, uint32 gyId)
     {
-        WorldSafeLocsEntry const* gy = sWorldSafeLocsStore.LookupEntry(gyId);
+        WorldSafeLocsEntry const* gy = sDBCMgr->GetWorldSafeLocsEntry(gyId);
         if (!gy)
         {
             handler->PSendSysMessage(LANG_COMMAND_GRAVEYARDNOEXIST, gyId);

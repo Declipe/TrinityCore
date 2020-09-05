@@ -99,6 +99,24 @@ enum WorldBoolConfigs
     CONFIG_ALLOW_TWO_SIDE_INTERACTION_GUILD,
     CONFIG_ALLOW_TWO_SIDE_INTERACTION_AUCTION,
     CONFIG_ALLOW_TWO_SIDE_TRADE,
+    COMMAND_BANK_PREMIUM,
+    COMMAND_MAIL_PREMIUM,
+    CONFIG_VIP_DEBUFF_COMMAND,
+    CONFIG_VIP_REPAIR_COMMAND,
+    CONFIG_VIP_RESET_TALENTS_COMMAND,
+    CONFIG_VIP_TAXI_COMMAND,
+    CONFIG_VIP_HOME_COMMAND,
+    CONFIG_VIP_CAPITAL_COMMAND,
+    CONFIG_VIP_CHANGERACE_COMMAND,
+    CONFIG_VIP_CUSTOMIZE_COMMAND,
+    CONFIG_VIP_APPEAR_COMMAND,
+	CONFIG_VIP1,
+	CONFIG_VIP2,
+	CONFIG_VIP3,
+	CONFIG_VIP4,
+	CONFIG_VIP5,
+	CONFIG_VIP6,
+	CONFIG_DEATH_KNIGHT_SKIP_QUEST,
     CONFIG_ALL_TAXI_PATHS,
     CONFIG_INSTANT_TAXI,
     CONFIG_INSTANCE_IGNORE_LEVEL,
@@ -131,6 +149,10 @@ enum WorldBoolConfigs
     CONFIG_ARENA_QUEUE_ANNOUNCER_ENABLE,
     CONFIG_ARENA_SEASON_IN_PROGRESS,
     CONFIG_ARENA_LOG_EXTENDED_INFO,
+    CONFIG_ARENA_1V1_ENABLE,
+    CONFIG_ARENA_1V1_ANNOUNCER,
+    CONFIG_ARENA_1V1_VENDOR_RATING,
+    CONFIG_ARENA_1V1_BLOCK_FORBIDDEN_TALENTS,
     CONFIG_OFFHAND_CHECK_AT_SPELL_UNLEARN,
     CONFIG_VMAP_INDOOR_CHECK,
     CONFIG_START_ALL_SPELLS,
@@ -147,6 +169,7 @@ enum WorldBoolConfigs
     CONFIG_DELETE_CHARACTER_TICKET_TRACE,
     CONFIG_DBC_ENFORCE_ITEM_ATTRIBUTES,
     CONFIG_PRESERVE_CUSTOM_CHANNELS,
+    CONFIG_ANTICHEAT_ENABLE,
     CONFIG_PDUMP_NO_PATHS,
     CONFIG_PDUMP_NO_OVERWRITE,
     CONFIG_QUEST_IGNORE_AUTO_ACCEPT,
@@ -161,6 +184,50 @@ enum WorldBoolConfigs
     CONFIG_INSTANCES_RESET_ANNOUNCE,
     CONFIG_SET_SHAPASSHASH,
     CONFIG_IP_BASED_ACTION_LOGGING,
+    // Prepatch by LordPsyan
+    // 01
+    // 02
+    // 03
+    // 04
+    // 05
+    // 06
+    // 07
+    // 08
+    // 09
+    // 10
+    // 11
+    // 12
+    // 13
+    // 14
+    // 15
+    // 16
+    // 17
+    // 18
+    // 19
+    // 20
+    // 21
+    // 22
+    // 23
+    // 24
+    // 25
+    // 26
+    // 27
+    // 28
+    // 29
+    // 30
+    // 31
+    // 32
+    // 33
+    // 34
+    CONFIG_EXTERNAL_MAIL_ENABLE,
+    // 36
+    // 37
+    // 38
+    // 39
+    // 40
+    // Visit http://www.realmsofwarcraft.com/bb for forums and information
+    //
+    // End of prepatch
     CONFIG_ALLOW_TRACK_BOTH_RESOURCES,
     CONFIG_CALCULATE_CREATURE_ZONE_AREA_DATA,
     CONFIG_CALCULATE_GAMEOBJECT_ZONE_AREA_DATA,
@@ -204,6 +271,51 @@ enum WorldFloatConfigs
     CONFIG_ARENA_MATCHMAKER_RATING_MODIFIER,
     CONFIG_RESPAWN_DYNAMICRATE_CREATURE,
     CONFIG_RESPAWN_DYNAMICRATE_GAMEOBJECT,
+
+    // Prepatch by LordPsyan
+    // 41
+    // 42
+    // 43
+    // 44
+    // 45
+    // 46
+    // 47
+    // 48
+    // 49
+    // 50
+    // 51
+    // 52
+    // 53
+    // 54
+    // 55
+    // 56
+    // 57
+    // 58
+    // 59
+    CONFIG_ARENA_1V1_ARENAPOINTS_MULTI,
+    // 61
+    // 62
+    // 63
+    // 64
+    // 65
+    // 66
+    // 67
+    // 68
+    // 69
+    // 70
+    // 71
+    // 72
+    // 73
+    // 74
+    // 75
+    // 76
+    // 77
+    // 78
+    // 79
+    // 80
+    // Visit http://www.realmsofwarcraft.com/bb for forums and information
+    //
+    // End of prepatch
     FLOAT_CONFIG_VALUE_COUNT
 };
 
@@ -321,6 +433,8 @@ enum WorldIntConfigs
     CONFIG_ARENA_START_RATING,
     CONFIG_ARENA_START_PERSONAL_RATING,
     CONFIG_ARENA_START_MATCHMAKER_RATING,
+    CONFIG_ARENA_1V1_MIN_LEVEL,
+    CONFIG_ARENA_1V1_COSTS,
     CONFIG_MAX_WHO,
     CONFIG_HONOR_AFTER_DUEL,
     CONFIG_PVP_TOKEN_MAP_TYPE,
@@ -350,7 +464,10 @@ enum WorldIntConfigs
     CONFIG_PRESERVE_CUSTOM_CHANNEL_INTERVAL,
     CONFIG_PERSISTENT_CHARACTER_CLEAN_FLAGS,
     CONFIG_LFG_OPTIONSMASK,
+    CONFIG_ANTICHEAT_REPORTS_INGAME_NOTIFICATION,
+    CONFIG_ANTICHEAT_MAX_REPORTS_FOR_DAILY_REPORT,
     CONFIG_MAX_INSTANCES_PER_HOUR,
+    CONFIG_ANTICHEAT_DETECTIONS_ENABLED,
     CONFIG_XP_BOOST_DAYMASK,
     CONFIG_WARDEN_CLIENT_RESPONSE_DELAY,
     CONFIG_WARDEN_CLIENT_CHECK_HOLDOFF,
@@ -378,6 +495,7 @@ enum WorldIntConfigs
     CONFIG_CREATURE_PICKPOCKET_REFILL,
     CONFIG_CREATURE_STOP_FOR_PLAYER,
     CONFIG_AHBOT_UPDATE_INTERVAL,
+    CONFIG_EXTERNAL_MAIL_INTERVAL,
     CONFIG_CHARTER_COST_GUILD,
     CONFIG_CHARTER_COST_ARENA_2v2,
     CONFIG_CHARTER_COST_ARENA_3v3,
@@ -395,6 +513,31 @@ enum WorldIntConfigs
     CONFIG_RESPAWN_DYNAMICMINIMUM_CREATURE,
     CONFIG_RESPAWN_DYNAMICMINIMUM_GAMEOBJECT,
     CONFIG_RESPAWN_GUIDWARNING_FREQUENCY,
+
+    // Prepatch by LordPsyan
+    // 81
+    // 82
+    // 83
+    // 84
+    // 85
+    // 86
+    // 87
+    // 88
+    // 89
+    // 90
+    // 91
+    // 92
+    // 93
+    // 94
+    // 95
+    // 96
+    // 97
+    // 98
+    // 99
+    // 100
+    // Visit http://www.realmsofwarcraft.com/bb for forums and information
+    //
+    // End of prepatch
     CONFIG_SOCKET_TIMEOUTTIME_ACTIVE,
     INT_CONFIG_VALUE_COUNT
 };
@@ -425,6 +568,13 @@ enum Rates
     RATE_XP_BG_KILL,
     RATE_XP_QUEST,
     RATE_XP_EXPLORE,
+
+    RATE_XP_KILL_PREMIUM,
+    RATE_XP_QUEST_PREMIUM,
+    RATE_XP_EXPLORE_PREMIUM,
+    RATE_REPUTATION_PREMIUM,
+    RATE_HONOR_PREMIUM,
+
     RATE_REPAIRCOST,
     RATE_REPUTATION_GAIN,
     RATE_REPUTATION_LOWLEVEL_KILL,
@@ -798,6 +948,7 @@ class TC_GAME_API World
         bool m_isClosed;
 
         IntervalTimer m_timers[WUPDATE_COUNT];
+        IntervalTimer extmail_timer;
         time_t mail_timer;
         time_t mail_timer_expires;
 

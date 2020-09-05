@@ -15,6 +15,9 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "Transmogrification.h"
+#include "AnticheatMgr.h"
+
 #include "Player.h"
 #include "AccountMgr.h"
 #include "AchievementMgr.h"
@@ -99,6 +102,7 @@
 #include "World.h"
 #include "WorldPacket.h"
 #include "WorldSession.h"
+#include "Config.h"
 #ifdef ELUNA
 #include "LuaEngine.h"
 #endif
@@ -273,6 +277,22 @@ Player::Player(WorldSession* session): Unit(true)
         m_bgBattlegroundQueueID[j].bgQueueTypeId = BATTLEGROUND_QUEUE_NONE;
         m_bgBattlegroundQueueID[j].invitedToInstance = 0;
     }
+
+	// PlayedTimeReward
+    ptr_Interval = sConfigMgr->GetIntDefault("PlayedTimeReward.Interval", 0);
+    ptr_Money = sConfigMgr->GetIntDefault("PlayedTimeReward.Money", 0);
+    ptr_Honor = sConfigMgr->GetIntDefault("PlayedTimeReward.Honor", 0);
+    ptr_Arena = sConfigMgr->GetIntDefault("PlayedTimeReward.Arena", 0);
+    ptr_item1 = sConfigMgr->GetIntDefault("PlayedTimeReward.item1", 0);
+    ptr_item2 = sConfigMgr->GetIntDefault("PlayedTimeReward.item2", 0);
+    ptr_item3 = sConfigMgr->GetIntDefault("PlayedTimeReward.item3", 0);
+    ptr_item4 = sConfigMgr->GetIntDefault("PlayedTimeReward.item4", 0);
+    ptr_item5 = sConfigMgr->GetIntDefault("PlayedTimeReward.item5", 0);
+    ptr_item1id = sConfigMgr->GetIntDefault("PlayedTimeReward.item1id", 0);
+    ptr_item2id = sConfigMgr->GetIntDefault("PlayedTimeReward.item2id", 0);
+    ptr_item3id = sConfigMgr->GetIntDefault("PlayedTimeReward.item3id", 0);
+    ptr_item4id = sConfigMgr->GetIntDefault("PlayedTimeReward.item4id", 0);
+    ptr_item5id = sConfigMgr->GetIntDefault("PlayedTimeReward.item5id", 0);
 
     m_logintime = GameTime::GetGameTime();
     m_Last_tick = m_logintime;
@@ -520,6 +540,7 @@ bool Player::Create(ObjectGuid::LowType guidlow, CharacterCreateInfo* createInfo
     SetGender(createInfo->Gender);
     SetPowerType(Powers(powertype), false);
     InitDisplayIds();
+
     if (sWorld->getIntConfig(CONFIG_GAME_TYPE) == REALM_TYPE_PVP || sWorld->getIntConfig(CONFIG_GAME_TYPE) == REALM_TYPE_RPPVP)
     {
         SetByteFlag(UNIT_FIELD_BYTES_2, UNIT_BYTES_2_OFFSET_PVP_FLAG, UNIT_BYTE2_FLAG_PVP);
@@ -1051,6 +1072,8 @@ void Player::Update(uint32 p_time)
 
     UpdateAfkReport(now);
 
+    UpdateAreaCustomFlags();
+
     Unit::AIUpdateTick(p_time);
 
     // Update items that have just a limited lifetime
@@ -1071,6 +1094,44 @@ void Player::Update(uint32 p_time)
         stmt->setString(2, "");
         stmt->setUInt32(3, GetSession()->GetAccountId());
         LoginDatabase.Execute(stmt);
+    }
+
+    // PlayedTimeReward
+    if (ptr_Interval > 0)
+    {
+        if (ptr_Interval <= p_time)
+        {
+            GetSession()->SendAreaTriggerMessage("Bonus for played time.");
+            ModifyMoney(ptr_Money);
+            ModifyHonorPoints(ptr_Honor);
+            ModifyArenaPoints(ptr_Arena);
+    if (!sWorld->getBoolConfig(CONFIG_VIP1))
+            {
+				if (!sWorld->getBoolConfig(CONFIG_VIP2))
+                 {
+                   AddItem(ptr_item1id, ptr_item1);
+                 }
+				if (!sWorld->getBoolConfig(CONFIG_VIP3))
+                 {
+                   AddItem(ptr_item2id, ptr_item2);
+                 }
+				if (!sWorld->getBoolConfig(CONFIG_VIP4))
+                 {
+                   AddItem(ptr_item3id, ptr_item3);
+                 }
+				if (!sWorld->getBoolConfig(CONFIG_VIP5))
+                 {
+                   AddItem(ptr_item4id, ptr_item4);
+                 }
+				if (!sWorld->getBoolConfig(CONFIG_VIP6))
+                 {
+                   AddItem(ptr_item5id, ptr_item5);
+                 }
+             }
+            ptr_Interval = sConfigMgr->GetIntDefault("PlayedTimeReward.Interval", 0);
+        }
+        else
+            ptr_Interval -= p_time;
     }
 
     if (!m_timedquests.empty())
@@ -1186,7 +1247,29 @@ void Player::Update(uint32 p_time)
             }
         }
     }
+	//CHAT_FILTER
+	if (freezeTimer > 0)
+	{
+		if (p_time >= freezeTimer)
+		{
+			if (HasAura(9454))
+				RemoveAurasDueToSpell(9454);
+		}
+		else
+			freezeTimer -= p_time;
+	}
 
+	if (stunTimer > 0)
+	{
+		if (p_time >= stunTimer)
+		{
+			if (HasAura(31539))
+				RemoveAurasDueToSpell(31539);
+		}
+		else
+			stunTimer -= p_time;
+	}
+	
     if (m_weaponChangeTimer > 0)
     {
         if (p_time >= m_weaponChangeTimer)
@@ -1356,6 +1439,30 @@ void Player::Update(uint32 p_time)
     if (IsHasDelayedTeleport() && IsAlive())
         TeleportTo(m_teleport_dest, m_teleport_options);
 
+    // Prepatch by LordPsyan
+    // 81
+    // 82
+    // 83
+    // 84
+    // 85
+    // 86
+    // 87
+    // 88
+    // 89
+    // 90
+    // 91
+    // 92
+    // 93
+    // 94
+    // 95
+    // 96
+    // 97
+    // 98
+    // 99
+    // 100
+    // Visit http://www.realmsofwarcraft.com/bb for forums and information
+    //
+    // End of prepatch
 }
 
 void Player::setDeathState(DeathState s)
@@ -1720,7 +1827,7 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
     }
     else
     {
-        if (GetClass() == CLASS_DEATH_KNIGHT && GetMapId() == 609 && !IsGameMaster() && !HasSpell(50977))
+        if (GetClass() == CLASS_DEATH_KNIGHT && GetMapId() == 609 && !IsGameMaster() && !HasSpell(50977) && !sWorld->getBoolConfig(CONFIG_DEATH_KNIGHT_SKIP_QUEST))
             return false;
 
         // far teleport to another map
@@ -5038,6 +5145,9 @@ void Player::RepopAtGraveyard()
 
 bool Player::CanJoinConstantChannelInZone(ChatChannelsEntry const* channel, AreaTableEntry const* zone) const
 {
+    if (channel->Flags & CHANNEL_DBC_FLAG_LFG)
+        return true;
+	
     if (channel->Flags & CHANNEL_DBC_FLAG_ZONE_DEP && zone->Flags & AREA_FLAG_ARENA_INSTANCE)
         return false;
 
@@ -5800,26 +5910,27 @@ bool Player::UpdateSkillPro(uint16 SkillId, int32 Chance, uint32 step)
 
     if (Roll <= Chance)
     {
-        uint32 new_value = SkillValue+step;
-        if (new_value > MaxValue)
-            new_value = MaxValue;
+        uint16 SkillNewValue = SkillValue+step;
+        if (SkillNewValue > MaxValue)
+			SkillNewValue = MaxValue;
 
-        SetUInt32Value(valueIndex, MAKE_SKILL_VALUE(new_value, MaxValue));
+        SetUInt32Value(valueIndex, MAKE_SKILL_VALUE(SkillNewValue, MaxValue));
         if (itr->second.uState != SKILL_NEW)
             itr->second.uState = SKILL_CHANGED;
         for (size_t i = 0; i < bonusSkillLevelsSize; ++i)
         {
             uint32 bsl = bonusSkillLevels[i];
-            if (SkillValue < bsl && new_value >= bsl)
+            if (SkillValue < bsl && SkillNewValue >= bsl)
             {
-                LearnSkillRewardedSpells(SkillId, new_value);
+                LearnSkillRewardedSpells(SkillId, SkillNewValue);
                 break;
             }
         }
-        UpdateSkillEnchantments(SkillId, SkillValue, new_value);
+        UpdateSkillEnchantments(SkillId, SkillValue, SkillNewValue);
         UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL, SkillId);
         TC_LOG_DEBUG("entities.player.skills", "Player::UpdateSkillPro: Player '%s' (%s), SkillID: %u, Chance: %3.1f%% taken",
             GetName().c_str(), GetGUID().ToString().c_str(), SkillId, Chance / 10.0f);
+        sScriptMgr->OnPlayerSkillUpdate(this, SkillId, SkillValue, SkillNewValue);
         return true;
     }
 
@@ -6481,13 +6592,16 @@ void Player::CheckAreaExploreAndOutdoor()
                 {
                     XP = uint32(sObjectMgr->GetBaseXP(areaEntry->ExplorationLevel)*sWorld->getRate(RATE_XP_EXPLORE));
                 }
-
+                
+                if (GetSession()->IsPremium())
+                      XP *= sWorld->getRate(RATE_XP_EXPLORE_PREMIUM);
+                      
                 if (sWorld->getIntConfig(CONFIG_MIN_DISCOVERED_SCALED_XP_RATIO))
                 {
                     uint32 minScaledXP = uint32(sObjectMgr->GetBaseXP(areaEntry->ExplorationLevel)*sWorld->getRate(RATE_XP_EXPLORE)) * sWorld->getIntConfig(CONFIG_MIN_DISCOVERED_SCALED_XP_RATIO) / 100;
                     XP = std::max(minScaledXP, XP);
                 }
-
+                
                 GiveXP(XP, nullptr);
                 SendExplorationExperience(areaId, XP);
             }
@@ -6846,6 +6960,31 @@ bool Player::RewardHonor(Unit* victim, uint32 groupsize, int32 honor, bool pvpto
     }
 
     honor_f *= sWorld->getRate(RATE_HONOR);
+    // Prepatch by LordPsyan
+    // 21
+    // 22
+    // 23
+    // 24
+    // 25
+    // 26
+    // 27
+    // 28
+    // 29
+    // 30
+    // 31
+    // 32
+    // 33
+    // 34
+    // 35
+    // 36
+    if(GetSession()->IsPremium())
+        honor_f *= sWorld->getRate(RATE_HONOR_PREMIUM);
+    // 38
+    // 39
+    // 40
+    // Visit http://www.realmsofwarcraft.com/bb for forums and information
+    //
+    // End of prepatch
     // Back to int now
     honor = int32(honor_f);
     // honor - for show honor points in log
@@ -12283,7 +12422,10 @@ void Player::SetVisibleItemSlot(uint8 slot, Item* pItem)
 {
     if (pItem)
     {
-        SetUInt32Value(PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * 2), pItem->GetEntry());
+        if (uint32 entry = sTransmogrification->GetFakeEntry(pItem))
+            SetUInt32Value(PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * 2), entry);
+        else
+            SetUInt32Value(PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * 2), pItem->GetEntry());
         SetUInt16Value(PLAYER_VISIBLE_ITEM_1_ENCHANTMENT + (slot * 2), 0, pItem->GetEnchantmentId(PERM_ENCHANTMENT_SLOT));
         SetUInt16Value(PLAYER_VISIBLE_ITEM_1_ENCHANTMENT + (slot * 2), 1, pItem->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT));
     }
@@ -12413,6 +12555,32 @@ void Player::MoveItemFromInventory(uint8 bag, uint8 slot, bool update)
 {
     if (Item* it = GetItemByPos(bag, slot))
     {
+    // Prepatch by LordPsyan
+    // 01
+    // 02
+    // 03
+    // 04
+    // 05
+    // 06
+    // 07
+    // 08
+    // 09
+    // 10
+    // 11
+    // 12
+    // 13
+    // 14
+    // 15
+    // 16
+    // 17
+    // 18
+    // 19
+    // 20
+    // Visit http://www.realmsofwarcraft.com/bb for forums and information
+    //
+    // End of prepatch
+        sTransmogrification->DeleteFakeEntry(this, it);
+
         RemoveItem(bag, slot, update);
         ItemRemovedQuestCheck(it->GetEntry(), it->GetCount());
         it->SetNotRefundable(this, false);
@@ -15223,7 +15391,32 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
     uint32 XP = rewarded ? 0 : uint32(quest->GetXPReward(this)*sWorld->getRate(RATE_XP_QUEST));
 
     // handle SPELL_AURA_MOD_XP_QUEST_PCT auras
-    XP *= GetTotalAuraMultiplier(SPELL_AURA_MOD_XP_QUEST_PCT);
+	XP *= GetTotalAuraMultiplier(SPELL_AURA_MOD_XP_QUEST_PCT);
+    // Prepatch by LordPsyan
+    // 41
+    // 42
+    // 43
+    // 44
+    // 45
+    // 46
+    // 47
+    // 48
+    // 49
+    // 50
+    // 51
+    if (GetSession()->IsPremium())
+        XP *= sWorld->getRate(RATE_XP_QUEST_PREMIUM);
+    // 53
+    // 54
+    // 55
+    // 56
+    // 57
+    // 58
+    // 59
+    // 60
+    // Visit http://www.realmsofwarcraft.com/bb for forums and information
+    //
+    // End of prepatch
 
     if (!IsMaxLevel())
         GiveXP(XP, nullptr);
@@ -19650,6 +19843,12 @@ void Player::SaveToDB(CharacterDatabaseTransaction trans, bool create /* = false
     if (m_session->isLogingOut() || !sWorld->getBoolConfig(CONFIG_STATS_SAVE_ONLY_ON_LOGOUT))
         _SaveStats(trans);
 
+    // we save the data here to prevent spamming
+    sAnticheatMgr->SavePlayerData(this);
+
+    // in this way we prevent to spam the db by each report made!
+    // sAnticheatMgr->SavePlayerData(this);
+
     // save pet (hunter pet level and experience and all type pets health/mana).
     if (Pet* pet = GetPet())
         pet->SavePetToDB(PET_SAVE_AS_CURRENT);
@@ -21664,7 +21863,7 @@ inline bool Player::_StoreOrEquipNewItem(uint32 vendorslot, uint32 item, uint8 c
 
     if (crItem->ExtendedCost)                            // case for new honor system
     {
-        ItemExtendedCostEntry const* iece = sItemExtendedCostStore.LookupEntry(crItem->ExtendedCost);
+        ItemExtendedCostEntry const* iece = sDBCMgr->GetItemExtendedCostEntry(crItem->ExtendedCost);
         ASSERT(iece);
         if (iece->HonorPoints)
             ModifyHonorPoints(-int32(iece->HonorPoints * count));
@@ -21795,7 +21994,7 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorguid, uint32 vendorslot, uin
 
     if (crItem->ExtendedCost)
     {
-        ItemExtendedCostEntry const* iece = sItemExtendedCostStore.LookupEntry(crItem->ExtendedCost);
+        ItemExtendedCostEntry const* iece = sDBCMgr->GetItemExtendedCostEntry(crItem->ExtendedCost);
         if (!iece)
         {
             TC_LOG_ERROR("entities.player", "Player::BuyItemFromVendorSlot: Item %u has wrong ExtendedCost field value %u", pProto->ItemId, crItem->ExtendedCost);
@@ -21889,6 +22088,7 @@ uint32 Player::GetMaxPersonalArenaRatingRequirement(uint32 minarenaslot) const
     uint32 max_personal_rating = 0;
     for (uint8 i = minarenaslot; i < MAX_ARENA_SLOT; ++i)
     {
+        if(i == 2 && sWorld->getBoolConfig(CONFIG_ARENA_1V1_VENDOR_RATING) == false) continue;
         if (ArenaTeam* at = sArenaTeamMgr->GetArenaTeamById(GetArenaTeamId(i)))
         {
             uint32 p_rating = GetArenaPersonalRating(i);
@@ -22340,7 +22540,7 @@ WorldLocation Player::GetStartPosition() const
     PlayerInfo const* info = sObjectMgr->GetPlayerInfo(GetRace(), GetClass());
     ASSERT(info);
     uint32 mapId = info->mapId;
-    if (GetClass() == CLASS_DEATH_KNIGHT && HasSpell(50977))
+    if (GetClass() == CLASS_DEATH_KNIGHT && HasSpell(HasSpell(50977) || sWorld->getBoolConfig(CONFIG_DEATH_KNIGHT_SKIP_QUEST)))
         mapId = 0;
     return WorldLocation(mapId, info->positionX, info->positionY, info->positionZ, 0);
 }
@@ -24936,7 +25136,7 @@ uint32 Player::CalculateTalentsPoints() const
 {
     uint32 base_talent = GetLevel() < 10 ? 0 : GetLevel()-9;
 
-    if (GetClass() != CLASS_DEATH_KNIGHT || GetMapId() != 609)
+    if (GetClass() != CLASS_DEATH_KNIGHT || GetMapId() != 609 || sWorld->getBoolConfig(CONFIG_DEATH_KNIGHT_SKIP_QUEST))
         return uint32(base_talent * sWorld->getRate(RATE_TALENT));
 
     uint32 talentPointsForLevel = GetLevel() < 56 ? 0 : GetLevel() - 55;
@@ -26314,7 +26514,7 @@ void Player::SendRefundInfo(Item* item)
         return;
     }
 
-    ItemExtendedCostEntry const* iece = sItemExtendedCostStore.LookupEntry(item->GetPaidExtendedCost());
+    ItemExtendedCostEntry const* iece = sDBCMgr->GetItemExtendedCostEntry(item->GetPaidExtendedCost());
     if (!iece)
     {
         TC_LOG_DEBUG("entities.player.items", "Item refund: cannot find extendedcost data.");
@@ -26392,7 +26592,7 @@ void Player::RefundItem(Item* item)
         return;
     }
 
-    ItemExtendedCostEntry const* iece = sItemExtendedCostStore.LookupEntry(item->GetPaidExtendedCost());
+    ItemExtendedCostEntry const* iece = sDBCMgr->GetItemExtendedCostEntry(item->GetPaidExtendedCost());
     if (!iece)
     {
         TC_LOG_DEBUG("entities.player.items", "Item refund: cannot find extendedcost data.");
@@ -26878,6 +27078,50 @@ Pet* Player::SummonPet(uint32 entry, float x, float y, float z, float ang, PetTy
     //ObjectAccessor::UpdateObjectVisibility(pet);
 
     return pet;
+}
+void Player::UpdateAreaCustomFlags()
+{
+    AreaCustomFlagContainer areaData = sObjectMgr->GetAreaCustomFlags();
+    AreaCustomFlagContainer::const_iterator itr;
+
+    for (itr = areaData.begin(); itr != areaData.end(); ++itr)
+    {
+        if (GetMapId() == (*itr).map)
+        {
+            if (GetDistance((*itr).x, (*itr).y, (*itr).z) <= (*itr).radius)
+            {
+            switch ((*itr).flag)
+            {
+                case AREA_CUSTOM_SANCTUARY:
+                {
+                    RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_PVP);
+                    RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP);
+                    RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_SANCTUARY);
+                    SetByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_SANCTUARY);
+                    break;
+                }
+
+                case AREA_CUSTOM_FFA:
+                {
+                    RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_PVP);
+                    RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP);
+                    RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_SANCTUARY);
+                    SetByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP);
+                    break;
+                }
+
+                case AREA_CUSTOM_PVP:
+                {
+                    RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_PVP);
+                    RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP);
+                    RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_SANCTUARY);
+                    SetByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_PVP);
+                    break;
+                }
+            }
+            }
+        }
+    }
 }
 
 void Player::SendSupercededSpell(uint32 oldSpell, uint32 newSpell) const

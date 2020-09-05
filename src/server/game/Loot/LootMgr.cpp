@@ -78,6 +78,19 @@ private:
     uint16 _lootMode;
 };
 
+struct AllowOwnerGroupInvalidSelector
+{
+	explicit AllowOwnerGroupInvalidSelector(Player const* owner) : _owner(owner) { }
+
+	bool operator()(LootStoreItem* item) const
+	{
+		return (!_owner || !item->AllowedForGroupOwner(_owner));
+	}
+
+private:
+	Player const* _owner;
+};
+
 class LootTemplate::LootGroup                               // A set of loot definitions for items (refs are not allowed)
 {
     public:
@@ -88,7 +101,7 @@ class LootTemplate::LootGroup                               // A set of loot def
         bool HasQuestDrop() const;                          // True if group includes at least 1 quest drop entry
         bool HasQuestDropForPlayer(Player const* player) const;
                                                             // The same for active quests of the player
-        void Process(Loot& loot, uint16 lootMode) const;    // Rolls an item from the group (if any) and adds the item to the loot
+        void Process(Loot& loot, uint16 lootMode, Player const* owner = nullptr) const;    // Rolls an item from the group (if any) and adds the item to the loot
         float RawTotalChance() const;                       // Overall chance for the group (without equal chanced items)
         float TotalChance() const;                          // Overall chance for the group
 
@@ -101,7 +114,7 @@ class LootTemplate::LootGroup                               // A set of loot def
         LootStoreItemList ExplicitlyChanced;                // Entries with chances defined in DB
         LootStoreItemList EqualChanced;                     // Zero chances - every entry takes the same chance
 
-        LootStoreItem const* Roll(Loot& loot, uint16 lootMode) const;   // Rolls an item from the group, returns NULL if all miss their chances
+        LootStoreItem const* Roll(Loot& loot, uint16 lootMode, Player const* owner = NULL) const;   // Rolls an item from the group, returns NULL if all miss their chances
 
         // This class must never be copied - storing pointers
         LootGroup(LootGroup const&) = delete;
@@ -276,6 +289,56 @@ void LootStore::ReportNonExistingId(uint32 lootId, char const* ownerType, uint32
 // --------- LootStoreItem ---------
 //
 
+bool LootStoreItem::AllowedForGroupOwner(Player const* owner) const
+{
+	if (!owner) {
+		return false;
+	}
+	// Setting access rights for group loot case
+	Group const* group = owner->GetGroup();
+	if (group)
+	{
+		for (GroupReference const* itr = group->GetFirstMember(); itr != NULL; itr = itr->next())
+			if (Player const* player = itr->GetSource())
+				if (AllowedForPlayer(player))
+					return true;
+		return false;
+	}
+	else
+		return AllowedForPlayer(owner);
+}
+
+bool LootStoreItem::AllowedForPlayer(Player const* player) const
+{
+	if (!player) {
+		return false;
+	}
+	// DB conditions check
+	if (!sConditionMgr->IsObjectMeetToConditions(const_cast<Player*>(player), conditions))
+		return false;
+
+	ItemTemplate const* pProto = sObjectMgr->GetItemTemplate(itemid);
+	if (!pProto)
+		return false;
+
+	// not show loot for players without profession or those who already know the recipe
+	if ((pProto->Flags & ITEM_FLAG_HIDE_UNUSABLE_RECIPE) && (!player->HasSkill(pProto->RequiredSkill) || player->HasSpell(pProto->Spells[1].SpellId)))
+		return false;
+
+	// not show loot for not own team
+	if ((pProto->Flags2 & ITEM_FLAG2_FACTION_HORDE) && player->GetTeam() != HORDE)
+		return false;
+
+	if ((pProto->Flags2 & ITEM_FLAG2_FACTION_ALLIANCE) && player->GetTeam() != ALLIANCE)
+		return false;
+
+	// check quest requirements
+	if (!(pProto->FlagsCu & ITEM_FLAGS_CU_IGNORE_QUEST_STATUS) && ((needs_quest || (pProto->StartQuest && player->GetQuestStatus(pProto->StartQuest) != QUEST_STATUS_NONE)) && !player->HasQuestForItem(itemid)))
+		return false;
+
+	return true;
+}
+
 // Checks if the entry (quest, non-quest, reference) takes it's chance (at loot generation)
 // RATE_DROP_ITEMS is no longer used for all types of entries
 bool LootStoreItem::Roll(bool rate) const
@@ -372,10 +435,14 @@ void LootTemplate::LootGroup::AddEntry(LootStoreItem* item)
 }
 
 // Rolls an item from the group, returns NULL if all miss their chances
-LootStoreItem const* LootTemplate::LootGroup::Roll(Loot& loot, uint16 lootMode) const
+LootStoreItem const* LootTemplate::LootGroup::Roll(Loot& loot, uint16 lootMode, Player const* owner) const
 {
     LootStoreItemList possibleLoot = ExplicitlyChanced;
     possibleLoot.remove_if(LootGroupInvalidSelector(loot, lootMode));
+	//TrinityNya: check conditions for full group players AllowedForGroupOwner
+	if (owner) {
+		possibleLoot.remove_if(AllowOwnerGroupInvalidSelector(owner));
+	}
 
     if (!possibleLoot.empty())                             // First explicitly chanced entries are checked
     {
@@ -395,6 +462,10 @@ LootStoreItem const* LootTemplate::LootGroup::Roll(Loot& loot, uint16 lootMode) 
 
     possibleLoot = EqualChanced;
     possibleLoot.remove_if(LootGroupInvalidSelector(loot, lootMode));
+	//TrinityNya: check conditions for full group players AllowedForGroupOwner
+	if (owner) {
+		possibleLoot.remove_if(AllowOwnerGroupInvalidSelector(owner));
+	}
     if (!possibleLoot.empty())                              // If nothing selected yet - an item is taken from equal-chanced part
         return Trinity::Containers::SelectRandomContainerElement(possibleLoot);
 
@@ -439,9 +510,9 @@ void LootTemplate::LootGroup::CopyConditions(ConditionContainer /*conditions*/)
 }
 
 // Rolls an item from the group (if any takes its chance) and adds the item to the loot
-void LootTemplate::LootGroup::Process(Loot& loot, uint16 lootMode) const
+void LootTemplate::LootGroup::Process(Loot& loot, uint16 lootMode, Player const* owner) const
 {
-    if (LootStoreItem const* item = Roll(loot, lootMode))
+    if (LootStoreItem const* item = Roll(loot, lootMode, owner))
         loot.AddItem(*item);
 }
 
@@ -559,7 +630,7 @@ void LootTemplate::CopyConditions(LootItem* li) const
 }
 
 // Rolls for every item in the template and adds the rolled items the the loot
-void LootTemplate::Process(Loot& loot, bool rate, uint16 lootMode, uint8 groupId) const
+void LootTemplate::Process(Loot& loot, bool rate, uint16 lootMode, uint8 groupId, Player const* owner) const
 {
     if (groupId)                                            // Group reference uses own processing of the group
     {
@@ -569,7 +640,7 @@ void LootTemplate::Process(Loot& loot, bool rate, uint16 lootMode, uint8 groupId
         if (!Groups[groupId - 1])
             return;
 
-        Groups[groupId - 1]->Process(loot, lootMode);
+        Groups[groupId - 1]->Process(loot, lootMode, owner);
         return;
     }
 
@@ -579,6 +650,10 @@ void LootTemplate::Process(Loot& loot, bool rate, uint16 lootMode, uint8 groupId
         LootStoreItem* item = *i;
         if (!(item->lootmode & lootMode))                       // Do not add if mode mismatch
             continue;
+
+		// TRINITY NYA: check conditions for full group players
+		if (owner && !item->AllowedForGroupOwner(owner))
+			continue;
 
         if (!item->Roll(rate))
             continue;                                           // Bad luck for the entry
@@ -591,7 +666,7 @@ void LootTemplate::Process(Loot& loot, bool rate, uint16 lootMode, uint8 groupId
 
             uint32 maxcount = uint32(float(item->maxcount) * sWorld->getRate(RATE_DROP_ITEM_REFERENCED_AMOUNT));
             for (uint32 loop = 0; loop < maxcount; ++loop)      // Ref multiplicator
-                Referenced->Process(loot, rate, lootMode, item->groupid);
+				Referenced->Process(loot, rate, lootMode, item->groupid, owner);
         }
         else                                                    // Plain entries (not a reference, not grouped)
             loot.AddItem(*item);                                // Chance is already checked, just add
@@ -600,7 +675,7 @@ void LootTemplate::Process(Loot& loot, bool rate, uint16 lootMode, uint8 groupId
     // Now processing groups
     for (LootGroups::const_iterator i = Groups.begin(); i != Groups.end(); ++i)
         if (LootGroup* group = *i)
-            group->Process(loot, lootMode);
+            group->Process(loot, lootMode, owner);
 }
 
 // True if template includes at least 1 quest drop entry

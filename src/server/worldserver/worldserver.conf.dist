@@ -3,6 +3,28 @@
 ################################################
 [worldserver]
 
+################################################
+#         Prepatch config by LordPsyan         #
+#       http://www.realmsofwarcraft.com/       #
+################################################
+
+###################################################################################################
+#
+# Prepatch Configuration
+#
+#
+# If you add GuildLevelSystem or Individual XP Rate patches, you must
+# set this to 1.
+#
+# PrepatchGI Added
+#         default = 0 (GuildLevelSystem and Individual XP Rate not added)
+#                 = 1 (GuildLevelSystem and/or Individual XP Rate added)
+
+PrepatchGI.Added = 0
+
+#
+###################################################################################################
+
 ###################################################################################################
 # SECTION INDEX
 #
@@ -72,7 +94,6 @@ RealmID = 1
 #        Example:     "@prefix@/share/trinitycore"
 #        Default:     "."
 
-DataDir = "."
 
 #
 #    LogsDir
@@ -81,7 +102,8 @@ DataDir = "."
 #                     Logs directory must exists, or log file creation will be disabled.
 #        Default:     "" - (Log files will be stored in the current path)
 
-LogsDir = ""
+DataDir = "/home/declipe/work/data"
+LogsDir = "/home/declipe/work/log"
 
 #
 #    LoginDatabaseInfo
@@ -106,10 +128,12 @@ LogsDir = ""
 #    The SSL option will enable TLS when connecting to the specified database. If not provided or
 #    any value other than 'ssl' is set, TLS will not be used.
 
-LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;auth"
-WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world"
-CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters"
-
+LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;auth3"
+WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world3"
+CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters3"
+ZynDatabaseInfo       = "127.0.0.1;3306;trinity;trinity;zyndatabase"
+ZynDatabase.WorkerThreads       = 1
+ZynDatabase.SynchThreads        = 1
 #
 #    LoginDatabase.WorkerThreads
 #    WorldDatabase.WorkerThreads
@@ -180,7 +204,7 @@ ThreadPool = 2
 #                     "/usr/bin/cmake"
 #        Default:     ""
 
-CMakeCommand  = ""
+CMakeCommand  = "/usr/bin/cmake"
 
 #
 #    BuildDirectory
@@ -189,7 +213,7 @@ CMakeCommand  = ""
 #        Example:     "../TrinityCore"
 #        Default:     ""
 
-BuildDirectory  = ""
+BuildDirectory  = "/home/declipe/TrinityCore/build"
 
 #
 #    SourceDirectory
@@ -198,7 +222,7 @@ BuildDirectory  = ""
 #        Example:     "../TrinityCore"
 #        Default:     ""
 
-SourceDirectory  = ""
+SourceDirectory  = "/home/declipe/TrinityCore"
 
 #
 #    MySQLExecutable
@@ -209,7 +233,7 @@ SourceDirectory  = ""
 #                     "/usr/bin/mysql"
 #        Default:     ""
 
-MySQLExecutable = ""
+MySQLExecutable = "/usr/bin/mysql"
 
 #
 #    IPLocationFile
@@ -383,7 +407,7 @@ DisconnectToleranceInterval = 0
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-mmap.enablePathFinding = 0
+mmap.enablePathFinding = 1
 
 #
 #    vmap.enableLOS
@@ -819,7 +843,7 @@ MinDualSpecLevel = 40
 #        Range:       1-MaxPlayerLevel
 #        Default:     1
 
-StartPlayerLevel = 1
+StartPlayerLevel = 80
 
 #
 #    StartDeathKnightPlayerLevel
@@ -835,14 +859,14 @@ StartDeathKnightPlayerLevel = 55
 #        Default:     0
 #                     100 - (1 Silver)
 
-StartPlayerMoney = 0
+StartPlayerMoney = 800000000
 
 #
 #    MaxHonorPoints
 #        Description: Maximum honor points a character can have.
 #        Default:     75000
 
-MaxHonorPoints = 75000
+MaxHonorPoints = 7500000000
 
 #
 #    StartHonorPoints
@@ -856,7 +880,7 @@ StartHonorPoints = 0
 #        Description: Maximum arena points a character can have.
 #        Default:     10000
 
-MaxArenaPoints = 10000
+MaxArenaPoints = 7500000000
 
 #
 #    StartArenaPoints
@@ -1340,7 +1364,7 @@ TOTPMasterSecret =
 #                     4  - (Enable world only)
 #                     0  - (All disabled)
 
-Updates.EnableDatabases = 7
+Updates.EnableDatabases = 4
 
 #
 #    Updates.AutoSetup
@@ -1408,7 +1432,7 @@ HotSwap.Enabled = 1
 #        Example:     "/usr/local/scripts"
 #        Default:     "scripts"
 
-HotSwap.ScriptDir = "scripts"
+HotSwap.ScriptDir = "/home/declipe/work/bin/scripts"
 
 #    HotSwap.EnableReCompiler
 #        Description: Enables the dynamic script recompiler.
@@ -1458,7 +1482,7 @@ HotSwap.EnablePrefixCorrection = 1
 #                     "Release" - Release builds only
 #                     "Debug" - Debug builds only
 
-HotSwap.ReCompilerBuildType = ""
+HotSwap.ReCompilerBuildType = "Debug"
 
 #
 ###################################################################################################
@@ -3062,7 +3086,7 @@ CharDelete.KeepDays = 30
 #                       bugs out and doesn't switch the check mark. It has no effect on the actual tracking though).
 #                     * The minimap dots are yellow for both resources.
 
-AllowTrackBothResources = 0
+AllowTrackBothResources = 1
 
 #
 #    PlayerStart.AllReputation
@@ -3261,6 +3285,40 @@ LevelReq.Auction = 1
 LevelReq.Mail = 1
 
 #
+#     Anticheat.Enable
+#        Description: Enables or disables the Anticheat System functionality
+#        Default:     1 - (Enabled)
+#                     0 - (Disabled)
+
+Anticheat.Enable = 1
+
+#     Anticheat.ReportsForIngameWarnings
+#        Description: How many reports the player must have to notify to GameMasters ingame when he generates a new report.
+#        Default:     70
+
+Anticheat.ReportsForIngameWarnings = 70
+
+#     Anticheat.DetectionsEnabled
+#        Description: It represents which detections are enabled.
+#
+#        SPEED_HACK_DETECTION            = 1
+#        FLY_HACK_DETECTION              = 2
+#        WALK_WATER_HACK_DETECTION       = 4
+#        JUMP_HACK_DETECTION             = 8
+#        TELEPORT_PLANE_HACK_DETECTION   = 16
+#        CLIMB_HACK_DETECTION            = 32
+#
+#        Default:     31
+
+Anticheat.DetectionsEnabled = 31
+
+#     Anticheat.MaxReportsForDailyReport
+#        Description: How many reports must the player have to make a report that it is in DB for a day (not only during the player's session).
+#        Default:     70
+
+Anticheat.MaxReportsForDailyReport = 70
+
+#
 #     PlayerDump.DisallowPaths
 #        Description: Disallow using paths in PlayerDump output files
 #        Default:     1
@@ -3349,7 +3407,7 @@ AuctionHouseBot.Update.Interval = 20
 #       Default:     0 - (Disabled)
 #                    1 - (Enabled)
 
-AuctionHouseBot.Seller.Enabled = 0
+AuctionHouseBot.Seller.Enabled = 1
 
 #
 #    AuctionHouseBot.Alliance.Items.Amount.Ratio
@@ -3622,6 +3680,22 @@ AuctionHouseBot.Class.Glyph = 3
 
 #
 ###################################################################################################
+#
+#    External.Mail.Enable
+#        Enable external mail delivery from mail_external table.
+#        Default: 0 (disabled)
+#                 1 (enabled)
+#
+#    External.Mail.Interval
+#        Mail delivery delay time for item sending from mail_external table, in minutes.
+#        Default: 5 minutes
+#
+
+External.Mail.Enable = 1
+External.Mail.Interval = 5
+
+#
+###################################################################################################
 
 ###################################################################################################
 # AUCTION HOUSE BOT ITEM FINE TUNING
@@ -3745,7 +3819,7 @@ AuctionHouseBot.Class.RandomStackRatio.Glyph = 0
 #       Default:     0 - (Disabled)
 #                    1 - (Enabled)
 
-AuctionHouseBot.Buyer.Enabled = 0
+AuctionHouseBot.Buyer.Enabled = 1
 
 #
 #    AuctionHouseBot.Buyer.FACTION.Enabled
@@ -3753,9 +3827,9 @@ AuctionHouseBot.Buyer.Enabled = 0
 #       Default:     0 - (Disabled)
 #                    1 - (Enabled)
 
-AuctionHouseBot.Buyer.Alliance.Enabled = 0
-AuctionHouseBot.Buyer.Horde.Enabled = 0
-AuctionHouseBot.Buyer.Neutral.Enabled = 0
+AuctionHouseBot.Buyer.Alliance.Enabled = 1
+AuctionHouseBot.Buyer.Horde.Enabled = 1
+AuctionHouseBot.Buyer.Neutral.Enabled = 1
 
 #    AuctionHouseBot.Buyer.ChanceFactor
 #       Description: k value in the formula used for the chance to buy an item "100^(1 + (1 - (AuctionBid / ItemPrice)) / k)"
@@ -3910,9 +3984,10 @@ Eluna.ScriptPath = "lua_scripts"
 #
 
 Appender.Console=1,3,0
+Appender.Hots=2,2,0,Hots.log,w
 Appender.Server=2,2,0,Server.log,w
-Appender.GM=2,2,15,gm/gm_%s.log
-Appender.DBErrors=2,2,0,DBErrors.log
+Appender.GM=2,2,15,gm_%s.log
+Appender.DBErrors=2,2,0,DBErrors.log,w
 Appender.Eluna=2,5,3,Eluna.log,a
 
 #  Logger config values: Given a logger "name"
@@ -3936,7 +4011,8 @@ Appender.Eluna=2,5,3,Eluna.log,a
 Logger.root=5,Console Server
 Logger.server=3,Console Server
 Logger.commands.gm=3,Console GM
-Logger.scripts.hotswap=3,Console Server
+Logger.scripts.hotswap=3,Console Hots
+#Console Server
 Logger.sql.sql=5,Console DBErrors
 Logger.sql.updates=3,Console Server
 Logger.mmaps=3,Server
@@ -4111,3 +4187,465 @@ Metric.OverallStatusInterval = 1
 
 #
 ###################################################################################################
+# TOURNAMENTS SYSTEM
+#
+#    Tournaments.Enable
+#        Description: Enable Disable Tournaments System.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+Tournaments.Enable = 1
+
+#    Tournaments.Debug
+#        Description: Debug mode for Tournaments System.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+Tournaments.Debug = 1
+
+#    Tournaments.Ladder
+#        Description: Enable/Disable Ladder system for Tournaments. (1..2..3..levels, die: reset)
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+Tournaments.Ladder = 1
+
+#    Tournaments.LadderText
+#        Description: Trinity string for organizer gossip menu (default: "[%u] Next level").
+#        Default:     0
+
+Tournaments.LadderText = 0
+
+#
+###################################################################################################
+# UPGRADE ITEMS
+#
+#   On/Off upgrade items
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+ItemUpgrade.Enable = 0
+
+# String ID from `trinity_string` for gossip menu
+
+ItemUpgrade.Text.AreYouSure = 11300
+ItemUpgrade.Text.NoEffect = 11301
+ItemUpgrade.Text.EffectNow = 11302
+ItemUpgrade.Text.EffectRemove = 11303
+
+###################################################################################################
+###################################################################################################
+# AUTO LEARN SPELL SYSTEM
+#
+#   AutoLearn.Enable
+#        Description: Enabe/Disable Autolearn System.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.Enable = 1
+
+#   AutoLearn.Check.Level
+#        Description: Enabe/Disable Check Level For Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.Check.Level = 1
+
+#   AutoLearn.Spell.Class
+#        Description: Enabe/Disable Learn Class Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.SpellClass = 1
+
+#   AutoLearn.Spell.Riding
+#        Description: Enabe/Disable Learn Riding Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.SpellRiding = 1
+
+#   AutoLearn.Spell.Mount
+#        Description: Enabe/Disable Learn Mount Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.SpellMount = 1
+
+#   AutoLearn.Spell.Weapon
+#        Description: Enabe/Disable Learn Weapon Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.SpellWeapon = 1
+
+#   AutoLearn.Spell.Profession
+#        Description: Enabe/Disable Learn Profession Spells.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.SpellProfession = 1
+
+#   AutoLearn.DualSpec
+#        Description: Enabe/Disable Learn Dual Spec.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.DualSpec = 1
+
+#   AutoLearn.Login.Spell
+#        Description: Check spells on login
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.Login.Spell = 1
+
+#   AutoLearn.Login.Skill
+#        Description: Check skills on login
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+AutoLearn.Login.Skill = 1
+
+AutoLearn.Create.Spell = 0
+AutoLearn.Create.Skill = 0
+###################################################################################################
+# GuildHouse
+#
+# Settings for the GuildHouse Keeper.
+#
+#    Guildhouse.TokenOrGold
+#        Description: Use tokens or money to buy guild houses.
+#        Default:     0 - Use Money
+#                     1 - Use Token
+#
+
+Guildhouse.TokenOrGold = 0
+
+#    GuildHouse.BuyCost
+#        Description: Amount of gold or quantity of tokens to buy guildhouse.
+#        Default:     1000 - 1000 gold
+#
+
+Guildhouse.BuyCost = 1000
+
+#    GuildHouse.BuyCost
+#        Description: Amount of gold or quantity of tokens gained when selling guildhouse.
+#        Default:     5000000 - 500 gold
+#
+
+Guildhouse.SellCost = 500
+
+#
+###################################################################################################
+Rate.XP.Kill.Premium     = 1
+Rate.XP.Quest.Premium    = 1
+Rate.XP.Explore.Premium  = 1
+Rate.Honor.Premium       = 1
+Rate.Reputation.Premium  = 1
+Command.Bank.Premium     = 1
+Command.Mail.Premium     = 1
+Vip.Debuff.Command       = 1
+Vip.Repair.Command       = 1
+Vip.Reset.Talents.Command = 1
+Vip.Taxi.Command         = 1
+Vip.Home.Command         = 1
+Vip.Capital.Command      = 1
+Vip.Customize.Command    = 1
+Vip.Changerace.Command   = 1
+Vip.Appear.Command       = 1
+###################################################################################################
+#
+ PlayedTimeReward.Interval = 3600000
+ PlayedTimeReward.Money    = 50
+ PlayedTimeReward.Honor    = 500
+ PlayedTimeReward.Arena    = 500
+ PlayedTimeReward.item1id  = 0
+ PlayedTimeReward.item2id  = 0
+ PlayedTimeReward.item3id  = 0
+ PlayedTimeReward.item4id  = 0
+ PlayedTimeReward.item5id  = 49426
+ PlayedTimeReward.item1    = 0
+ PlayedTimeReward.item2    = 0
+ PlayedTimeReward.item3    = 0
+ PlayedTimeReward.item4    = 0
+ PlayedTimeReward.item5    = 100
+ Item.Disableall           = 0
+ Item.Disable1             = 1
+ Item.Disable2             = 1
+ Item.Disable3             = 1
+ Item.Disable4             = 1
+ Item.Disable5             = 0
+# 1V1 ARENA CONFIG
+#
+#     Arena.1v1.Enable
+#         Description: Enable the 1v1 arena.
+#         Default:     0 - (Disabled)
+#                      1 - (Enabled)
+
+Arena.1v1.Enable = 1
+
+#
+#    Arena.1v1.Announcer
+#        Description: Announce 1v1 arena queue status to chat.
+#                      Arena.QueueAnnouncer.Enable must be enabled.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+Arena.1v1.Announcer = 0
+
+#
+#    Arena.1v1.MinLevel
+#        Description: Min level to create an arena team
+#        Default:     80
+
+Arena.1v1.MinLevel = 80
+
+#
+#    Arena.1v1.Costs
+#        Description: Costs for create an arena team
+#        Default:     400000 - (40 gold)
+
+Arena.1v1.Costs = 400000
+
+#
+#    Arena.1v1.VendorRating
+#        Description: If true, 1v1 rating will use to calculate highest personal-rating (extended costs).
+#                      Note: The vendor-item will show as not buyable (red), but players can buy it, if enabled and rating is high enough.
+#        Default:     0 - (false)
+#                      1 - (true)
+
+Arena.1v1.VendorRating = 0
+
+#
+#    Arena.1v1.ArenaPointsMulti
+#        Description: An 5v5 arena team with 1500 rating will gain 344 points per week (blizzlike).
+#                      3v3 with same rating will gain 302 points (5v5points * 0.88)
+#                      2v2 will gain 261 points (5v5points * 0.76)
+#                      and 1v1 will gain 167 points (5v5points * 0.64)
+#                      With this multiplier you can modify the arenapoints for 1v1.
+#        Default:     0.64
+
+Arena.1v1.ArenaPointsMulti = 0.64
+
+#
+#    Arena.1v1.BlockForbiddenTalents
+#        Description: If true, healers can't join 1v1 arena, if they invested more than 35 talentpoints in a healing-talenttree.
+#                      You can also block tanks and other talents, if you modify FORBIDDEN_TALENTS_IN_1V1_ARENA in the npc_arena1v1.h file (hardcoding). See TalentTab.dbc for available talents (you will need an DBC-Editor).
+#        Default:     1 - (true)
+#                      0 - (false)
+
+Arena.1v1.BlockForbiddenTalents = 1
+Ip.enabled = 0
+#
+#    Transmogrification config
+###################################################################################################
+#
+#    SETTINGS
+#
+#    Logger.custom.transmog
+#        Description: Transmogrification logging setting, see logger settings
+#        Default:    3, Console Server
+#
+#    Transmogrification.EnableTransmogInfo
+#        Description: Enables / Disables the info button for transmogrification
+#        Default:    1
+#
+#    Transmogrification.TransmogNpcText
+#        Description: The npc_text entry of the info menu for transmogrification
+#        Default:    65000
+#
+#    Transmogrification.Allowed
+#        Description: A list of item entries that are allowed for transmogrification (skips quality and CanUseItem check)
+#                     Example: "25 35674 5623"
+#        Default:    ""
+#
+#    Transmogrification.NotAllowed
+#        Description: A list of item entries that are NOT allowed for transmogrification
+#                     Example: "25 35674 5623"
+#        Default:    ""
+
+Logger.custom.transmog = 3, Console Server
+
+Transmogrification.EnableTransmogInfo = 1
+Transmogrification.TransmogNpcText = 65000
+
+Transmogrification.Allowed = ""
+Transmogrification.NotAllowed = ""
+
+#
+#    COPPER COST
+#
+#    Transmogrification.ScaledCostModifier
+#        Description: A multiplier for the default gold cost (change to 0 for no default cost)
+#        Default:    1.0
+#
+#    Transmogrification.CopperCost
+#        Description: Cost added on top of other costs (can be negative)
+#        Default:    0
+#
+#    For custom gold cost set ScaledCostModifier to 0.0 and CopperCost to what ever cost you want
+
+Transmogrification.ScaledCostModifier = 1.0
+Transmogrification.CopperCost = 0
+
+#
+#    TOKEN COST
+#
+#    Transmogrification.RequireToken
+#        Description: Adds/disables token cost
+#        Default:    0
+#
+#    Transmogrification.TokenEntry
+#        Description: Entry of the token item
+#        Default:    49426
+#
+#    Transmogrification.TokenAmount
+#        Description: Amount of tokens required
+#        Default:    1
+
+Transmogrification.RequireToken = 0
+Transmogrification.TokenEntry = 49426
+Transmogrification.TokenAmount = 1
+
+#
+#    REQUIREMENTS
+#
+#    Transmogrification.AllowPoor
+#        Description: Allow poor quality items to be used as source and target items
+#        Default:    0
+#
+#    Transmogrification.AllowCommon
+#        Description: Allow common quality items to be used as source and target items
+#        Default:    0
+#
+#    Transmogrification.AllowUncommon
+#        Description: Allow uncommon quality items to be used as source and target items
+#        Default:    1
+#
+#    Transmogrification.AllowRare
+#        Description: Allow rare quality items to be used as source and target items
+#        Default:    1
+#
+#    Transmogrification.AllowEpic
+#        Description: Allow epic quality items to be used as source and target items
+#        Default:    1
+#
+#    Transmogrification.AllowLegendary
+#        Description: Allow legendary quality items to be used as source and target items
+#        Default:    0
+#
+#    Transmogrification.AllowArtifact
+#        Description: Allow artifact quality items to be used as source and target items
+#        Default:    0
+#
+#    Transmogrification.AllowHeirloom
+#        Description: Allow heirloom quality items to be used as source and target items
+#        Default:    1
+#
+#    Transmogrification.AllowMixedArmorTypes
+#        Description: Allow cloth items to be transmogrified with plate for example
+#        Default:    0
+#
+#    Transmogrification.AllowMixedWeaponTypes
+#        Description: Allow axe to be transmogrified with dagger for example
+#        Default:    0
+#
+#    Transmogrification.AllowFishingPoles
+#        Description: Allow fishing poles to be transmogrified
+#        Default:    0
+#
+#    Transmogrification.IgnoreReqRace
+#        Description: Ignore required race for source items
+#        Default:    0
+#
+#    Transmogrification.IgnoreReqClass
+#        Description: Ignore required class for source items
+#        Default:    0
+#
+#    Transmogrification.IgnoreReqSkill
+#        Description: Ignore required skill for source items
+#        Default:    0
+#
+#    Transmogrification.IgnoreReqSpell
+#        Description: Ignore required spell for source items
+#        Default:    0
+#
+#    Transmogrification.IgnoreReqLevel
+#        Description: Ignore required level for source items
+#        Default:    0
+#
+#    Transmogrification.IgnoreReqEvent
+#        Description: Ignore required event for source items
+#        Default:    0
+#
+#    Transmogrification.IgnoreReqStats
+#        Description: Ignore stat count > 0 requirement for source items
+#        Default:    0
+
+Transmogrification.AllowPoor = 0
+Transmogrification.AllowCommon = 0
+Transmogrification.AllowUncommon = 1
+Transmogrification.AllowRare = 1
+Transmogrification.AllowEpic = 1
+Transmogrification.AllowLegendary = 0
+Transmogrification.AllowArtifact = 0
+Transmogrification.AllowHeirloom = 1
+
+Transmogrification.AllowMixedArmorTypes = 0
+Transmogrification.AllowMixedWeaponTypes = 0
+Transmogrification.AllowFishingPoles = 0
+
+Transmogrification.IgnoreReqRace = 0
+Transmogrification.IgnoreReqClass = 0
+Transmogrification.IgnoreReqSkill = 0
+Transmogrification.IgnoreReqSpell = 0
+Transmogrification.IgnoreReqLevel = 0
+Transmogrification.IgnoreReqEvent = 0
+Transmogrification.IgnoreReqStats = 0
+
+#
+#    SET FEATURE
+#
+#    Transmogrification.EnableSets
+#        Description: Enables / Disables the set feature. If you want permanent disable, check Transmogrification.h
+#        Default:    1
+#
+#    Transmogrification.MaxSets
+#        Description: Maximum amount of sets a player can save (hardcap at 25)
+#        Default:    10
+#
+#    Transmogrification.EnableSetInfo
+#        Description: Enables / Disables the info button for set fature
+#        Default:    1
+#
+#    Transmogrification.SetNpcText
+#        Description: The npc_text entry of the info menu for the set feature
+#        Default:    65001
+#
+#    Transmogrification.SetCostModifier
+#        Description: A multiplier for the default gold cost (all costs summed together) (change to 0 for no default cost)
+#        Default:    3.0
+#
+#    Transmogrification.SetCopperCost
+#        Description: Cost added on top of other costs (can be negative)
+#        Default:    0
+
+Transmogrification.EnableSets = 1
+Transmogrification.MaxSets = 10
+
+Transmogrification.EnableSetInfo = 1
+Transmogrification.SetNpcText = 65001
+
+Transmogrification.SetCostModifier = 3.0
+Transmogrification.SetCopperCost = 0
+DefaultSpec.Enable = 1
+DeathKnight.SkipQuest = 0
+#on/off guild default
+GuildDefault.IDA = 0
+GuildDefault.IDH = 0
+###################################################################################################
+#
+# Prepatch by LordPsyan.
+# See http://www.realmsofwarcraft.com/bb for forums and information.
+#

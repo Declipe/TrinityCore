@@ -3880,7 +3880,43 @@ void SpellMgr::LoadSpellInfoCorrections()
         //! HACK: This spell break quest complete for alliance and on retail not used
         spellInfo->Effects[EFFECT_0].Effect = 0;
     });
-
+	
+	// TRIAL OF THE CHAMPION SPELLS
+	//
+    ApplySpellFix({ 
+        67546 // Warrior Grand Champion - Rolling Throw
+    }, [](SpellInfo* spellInfo)
+    {
+        spellInfo->Effects[EFFECT_0].TargetB = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ENEMY);
+    });
+    ApplySpellFix({ 
+        66797 // The Black Knight - Death's Push (casted on announcer)
+              // The duration is correct otherwise but announcer dies currently in mid-air
+             // this happens because blizzard has 100-200ms delay before applying an aura
+             // so in retail announcer makes it on the ground before dying
+    }, [](SpellInfo* spellInfo)
+    {
+        spellInfo->DurationEntry = sSpellDurationStore.LookupEntry(39); // 2 seconds instead of 1.7 seconds
+	});
+    ApplySpellFix({ 
+        67779 // The Black Knight - Desecration
+              // According to several videos the desecration players lose the desecration debuff in 12 seconds of cast
+             // There is an invisible stalker triggering every 2 seconds a desecration debuff
+            // so setting 10 second duration is correct
+            // besides the visual desecration on the ground disappears in 10 seconds of cast
+    }, [](SpellInfo* spellInfo)
+    {
+        spellInfo->DurationEntry = sSpellDurationStore.LookupEntry(1); // 10 seconds instead of 15 seconds
+	});
+    ApplySpellFix({ 
+		67802 // The Black Knight - Desecration Arm
+              // in 3.3.5 there is only one radius in dbc which is 0 yards in this case
+              // use max radius from 4.3.4
+    }, [](SpellInfo* spellInfo)
+    {
+        spellInfo->Effects[EFFECT_0].RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_7_YARDS);
+    });
+// ENDOF TRIAL OF THE CHAMPION SPELLS
     ApplySpellFix({
         47476, // Deathknight - Strangulate
         15487, // Priest - Silence
@@ -4948,6 +4984,12 @@ void SpellMgr::LoadSpellInfoCorrections()
                 case SPELL_EFFECT_LEAP_BACK:
                     if (!spellInfo->Speed && !spellInfo->SpellFamilyName)
                         spellInfo->Speed = SPEED_CHARGE;
+                    break;
+                case SPELL_EFFECT_APPLY_GLYPH:
+                        spellInfo->CastTimeEntry = sSpellCastTimesStore.LookupEntry(1);
+                    break;
+				case SPELL_EFFECT_ENCHANT_ITEM:
+                         spellInfo->CastTimeEntry = sSpellCastTimesStore.LookupEntry(1);
                     break;
                 case SPELL_EFFECT_APPLY_AURA:
                     // special aura updates each 30 seconds

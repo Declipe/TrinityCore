@@ -53,6 +53,8 @@ struct TC_GAME_API LootStoreItem
     bool Roll(bool rate) const;                             // Checks if the entry takes it's chance (at loot generation)
     bool IsValid(LootStore const& store, uint32 entry) const;
                                                             // Checks correctness of values
+    bool AllowedForGroupOwner(Player const* owner) const;
+    bool AllowedForPlayer(Player const* player) const;
 };
 
 typedef std::list<LootStoreItem*> LootStoreItemList;
@@ -108,8 +110,8 @@ class TC_GAME_API LootTemplate
         // Adds an entry to the group (at loading stage)
         void AddEntry(LootStoreItem* item);
         // Rolls for every item in the template and adds the rolled items the the loot
-        void Process(Loot& loot, bool rate, uint16 lootMode, uint8 groupId = 0) const;
-        void CopyConditions(ConditionContainer const& conditions);
+        void Process(Loot& loot, bool rate, uint16 lootMode, uint8 groupId = 0, Player const* owner = NULL) const;
+        void CopyConditions(const ConditionContainer& conditions);
         void CopyConditions(LootItem* li) const;
 
         // True if template includes at least 1 quest drop entry

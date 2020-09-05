@@ -76,9 +76,9 @@ char constexpr GtRegenMPPerSptfmt[] = "f";
 char constexpr Holidaysfmt[] = "niiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiixxsiix";
 char constexpr Itemfmt[] = "niiiiiii";
 char constexpr ItemBagFamilyfmt[] = "nxxxxxxxxxxxxxxxxx";
-//char constexpr ItemDisplayTemplateEntryfmt[] = "nxxxxxxxxxxixxxxxxxxxxx";
+char constexpr ItemDisplayTemplateEntryfmt[] = "nxxxxsxxxxxxxxxxxxxxxxxxx";
 //char constexpr ItemCondExtCostsEntryfmt[] = "xiii";
-char constexpr ItemExtendedCostEntryfmt[] = "niiiiiiiiiiiiiix";
+//char constexpr ItemExtendedCostEntryfmt[] = "niiiiiiiiiiiiiix";
 char constexpr ItemLimitCategoryEntryfmt[] = "nxxxxxxxxxxxxxxxxxii";
 char constexpr ItemRandomPropertiesfmt[] = "nxiiixxssssssssssssssssx";
 char constexpr ItemRandomSuffixfmt[] = "nssssssssssssssssxxiiixxiiixx";
@@ -140,6 +140,6 @@ char constexpr VehicleSeatEntryfmt[] = "niiffffffffffiiiiiifffffffiiifffiiiiiiif
 char constexpr WMOAreaTableEntryfmt[] = "niiixxxxxiixxxxxxxxxxxxxxxxx";
 char constexpr WorldMapAreaEntryfmt[] = "xinxffffixx";
 char constexpr WorldMapOverlayEntryfmt[] = "nxiiiixxxxxxxxxxx";
-char constexpr WorldSafeLocsEntryfmt[] = "nifffxxxxxxxxxxxxxxxxx";
+//char constexpr WorldSafeLocsEntryfmt[] = "nifffxxxxxxxxxxxxxxxxx";
 
 #endif

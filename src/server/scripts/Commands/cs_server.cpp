@@ -147,21 +147,22 @@ public:
             handler->SendSysMessage("Automatic database updates are disabled for all databases!");
         else
         {
-            static char const* const databaseNames[3 /*TOTAL_DATABASES*/] =
+            static char const* const databaseNames[4 /*TOTAL_DATABASES*/] =
             {
                 "Auth",
                 "Characters",
-                "World"
+                "World",
+                "Zyn"
             };
 
             std::string availableUpdateDatabases;
-            for (uint32 i = 0; i < 3 /* TOTAL_DATABASES*/; ++i)
+            for (uint32 i = 0; i < 4 /* TOTAL_DATABASES*/; ++i)
             {
                 if (!(updateFlags & (1 << i)))
                     continue;
 
                 availableUpdateDatabases += databaseNames[i];
-                if (i != 3 /*TOTAL_DATABASES*/ - 1)
+                if (i != 4 /*TOTAL_DATABASES*/ - 1)
                     availableUpdateDatabases += ", ";
             }
 
@@ -260,6 +261,9 @@ public:
         uint32 updateTime           = sWorldUpdateTime.GetLastUpdateTime();
 
         handler->PSendSysMessage("%s", GitRevision::GetFullVersion());
+        handler->PSendSysMessage("Core: Dk Core 3.3.5a");
+        handler->PSendSysMessage("Tdb: rev.64");
+        handler->PSendSysMessage("UP: 11.10.2018");
         handler->PSendSysMessage(LANG_CONNECTED_PLAYERS, playersNum, maxPlayersNum);
         handler->PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
         handler->PSendSysMessage(LANG_UPTIME, uptime.c_str());

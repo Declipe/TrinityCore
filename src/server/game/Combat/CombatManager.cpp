@@ -337,6 +337,7 @@ void CombatManager::EndAllPvPCombat()
     if (Player* player = me->ToPlayer())
         sEluna->OnPlayerEnterCombat(player, other);
 #endif
+
     if (UnitAI* ai = me->GetAI())
         ai->JustEnteredCombat(other);
 }

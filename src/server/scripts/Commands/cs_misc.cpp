@@ -1027,7 +1027,7 @@ public:
         else
             return false;
 
-        WorldSafeLocsEntry const* graveyard = sWorldSafeLocsStore.LookupEntry(graveyardId);
+        WorldSafeLocsEntry const* graveyard = sDBCMgr->GetWorldSafeLocsEntry(graveyardId);
 
         if (!graveyard)
         {
