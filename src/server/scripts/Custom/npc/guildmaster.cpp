@@ -47,20 +47,20 @@
 #include "ItemEnchantmentMgr.h"
 #include "ItemTemplate.h"
 
-#define MSG_GOSSIP_TELE          "Ð¢ÐµÐ»ÐµÐ¿Ð¾Ñ€Ñ‚Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒÑÑ Ð² Ð´Ð¾Ð¼ Ð³Ð¸Ð»ÑŒÐ´Ð¸Ð¸"
-#define MSG_GOSSIP_BUY           "ÐšÑƒÐ¿Ð¸Ñ‚ÑŒ Ð´Ð¾Ð¼ Ð³Ð¸Ð»ÑŒÐ´Ð¸Ð¸"
-#define MSG_GOSSIP_SELL          "ÐŸÑ€Ð¾Ð´Ð°Ñ‚ÑŒ Ð´Ð¾Ð¼ Ð³Ð¸Ð»ÑŒÐ´Ð¸Ð¸"
-#define MSG_GOSSIP_NEXTPAGE      "Ð”Ð°Ð»ÐµÐµ -->"
-#define MSG_INCOMBAT             "Ð’Ñ‹ Ð² Ñ€ÐµÐ¶Ð¸Ð¼Ðµ Ð±Ð¾Ñ."
-#define MSG_NOGUILDHOUSE         "Ð’Ð°ÑˆÐ° Ð³Ð¸Ð»ÑŒÐ´Ð¸Ñ Ð½Ðµ Ð²Ð»Ð°Ð´ÐµÐµÑ‚ Ð´Ð¾Ð¼Ð¾Ð¼ Ð³Ð¸Ð»ÑŒÐ´Ð¸Ð¸."
-#define MSG_NOFREEGH             "Ð’ÑÐµ Ð´Ð¾Ð¼Ð° Ð³Ð¸Ð»ÑŒÐ´Ð¸Ð¹ Ð·Ð°Ð½ÑÑ‚Ñ‹."
-#define MSG_ALREADYHAVEGH        "Ð’Ñ‹ ÑƒÐ¶Ðµ Ð²Ð»Ð°Ð´ÐµÐµÑ‚Ðµ Ð´Ð¾Ð¼Ð¾Ð¼ Ð³Ð¸Ð»ÑŒÐ´Ð¸Ð¸ (%s)."
-#define MSG_NOTENOUGHMONEY       "Ð£ Ð²Ð°Ñ Ð½ÐµÑ…Ð²Ð°Ñ‚Ð°ÐµÑ‚ %u Ð·Ð¾Ð»Ð¾Ñ‚Ð° Ð´Ð»Ñ Ð¿Ð¾ÐºÑƒÐ¿ÐºÐ¸ Ð´Ð¾Ð¼Ð° Ð³Ð¸Ð»ÑŒÐ´Ð¸Ð¸."
-#define MSG_GHOCCUPIED           "Ð­Ñ‚Ð¾Ñ‚ Ð´Ð¾Ð¼ Ð³Ð¸Ð»ÑŒÐ´Ð¸Ð¸ Ð½ÐµÐ´Ð¾ÑÑ‚ÑƒÐ¿ÐµÐ½ Ð´Ð»Ñ Ð¿Ð¾ÐºÑƒÐ¿ÐºÐ¸. ÐžÐ½ ÑƒÐ¶Ðµ Ð·Ð°Ð½ÑÑ‚."
-#define MSG_CONGRATULATIONS      "ÐŸÐ¾Ð·Ð´Ñ€Ð°Ð²Ð»ÑÑŽ! Ð’Ñ‹ ÑƒÑÐ¿ÐµÑˆÐ½Ð¾ ÐºÑƒÐ¿Ð¸Ð»Ð¸ Ð´Ð¾Ð¼ Ð³Ð¸Ð»ÑŒÐ´Ð¸Ð¸."
-#define MSG_SOLD                 "Ð’Ñ‹ Ð¿Ñ€Ð¾Ð´Ð°Ð»Ð¸ ÑÐ²Ð¾Ð¹ Ð´Ð¾Ð¼ Ð³Ð¸Ð»ÑŒÐ´Ð¸Ð¸ Ð·Ð° %u Ð·Ð¾Ð»Ð¾Ñ‚Ð°."
-#define MSG_NOTINGUILD           "Ð’Ñ‹ Ð´Ð¾Ð»Ð¶Ð½Ñ‹ Ð²ÑÑ‚ÑƒÐ¿Ð¸Ñ‚ÑŒ Ð² Ð³Ð¸Ð»ÑŒÐ´Ð¸ÑŽ, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÑŒ Ð´Ð¾Ð¼ Ð³Ð¸Ð»ÑŒÐ´Ð¸Ð¸."
-#define MSG_SELL_CONFIRM         "Ð’Ñ‹ ÑƒÐ²ÐµÑ€ÐµÐ½Ñ‹, Ñ‡Ñ‚Ð¾ Ñ…Ð¾Ñ‚Ð¸Ñ‚Ðµ Ð¿Ñ€Ð¾Ð´Ð°Ñ‚ÑŒ Ð´Ð¾Ð¼ Ð³Ð¸Ð»ÑŒÐ´Ð¸Ð¸?"
+#define MSG_GOSSIP_TELE          "Òåëåïîðòèðîâàòüñÿ â äîì ãèëüäèè"
+#define MSG_GOSSIP_BUY           "Êóïèòü äîì ãèëüäèè"
+#define MSG_GOSSIP_SELL          "Ïðîäàòü äîì ãèëüäèè"
+#define MSG_GOSSIP_NEXTPAGE      "Äàëåå -->"
+#define MSG_INCOMBAT             "Âû â ðåæèìå áîÿ."
+#define MSG_NOGUILDHOUSE         "Âàøà ãèëüäèÿ íå âëàäååò äîìîì ãèëüäèè."
+#define MSG_NOFREEGH             "Âñå äîìà ãèëüäèé çàíÿòû."
+#define MSG_ALREADYHAVEGH        "Âû óæå âëàäååòå äîìîì ãèëüäèè (%s)."
+#define MSG_NOTENOUGHMONEY       "Ó âàñ íåõâàòàåò %u çîëîòà äëÿ ïîêóïêè äîìà ãèëüäèè."
+#define MSG_GHOCCUPIED           "Ýòîò äîì ãèëüäèè íåäîñòóïåí äëÿ ïîêóïêè. Îí óæå çàíÿò."
+#define MSG_CONGRATULATIONS      "Ïîçäðàâëÿþ! Âû óñïåøíî êóïèëè äîì ãèëüäèè."
+#define MSG_SOLD                 "Âû ïðîäàëè ñâîé äîì ãèëüäèè çà %u çîëîòà."
+#define MSG_NOTINGUILD           "Âû äîëæíû âñòóïèòü â ãèëüäèþ, ÷òîáû èñïîëüçîâàòü äîì ãèëüäèè."
+#define MSG_SELL_CONFIRM         "Âû óâåðåíû, ÷òî õîòèòå ïðîäàòü äîì ãèëüäèè?"
 
 #define OFFSET_GH_ID_TO_ACTION 1500
 #define OFFSET_SHOWBUY_FROM 10000
@@ -286,14 +286,14 @@ void sellGuildhouse(Player *player, Creature *_creature)
  }
 }
 
-bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
 {
 	uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
 	uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
-	return OnGossipSelect(player, sender, action);
+	return GossipSelect(player, sender, action);
 }
 
-bool OnGossipSelect(Player* player, uint32 sender, uint32 action)
+bool GossipSelect(Player* player, uint32 sender, uint32 action)
  {
  player->PlayerTalkClass->ClearMenus();
  if (sender != GOSSIP_SENDER_MAIN)
@@ -334,7 +334,7 @@ bool OnGossipSelect(Player* player, uint32 sender, uint32 action)
  return true;
  }
 
- bool GossipHello(Player *player) override
+ bool OnGossipHello(Player *player) override
  {
  AddGossipItemFor(player, ICON_GOSSIP_BALOON, MSG_GOSSIP_TELE, GOSSIP_SENDER_MAIN, ACTION_TELE);
 

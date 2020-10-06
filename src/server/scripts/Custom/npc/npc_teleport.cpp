@@ -1,4 +1,4 @@
-ï»¿/*
+/*
  * Copyright (C) 20??-2008 Wilibald09
  * Copyright (C) 2011-2015 ArkCORE <http://www.arkania.net/>
  * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
@@ -66,7 +66,7 @@
 #define NEXT_PAGE               "-> [Next Page]"
 #define PREV_PAGE               "<- [Previous Page]"
 #define MAIN_MENU               "<= [Main Menu]"
-#define MAIN_MENU7              " [ÑÐ±Ñ€Ð¾Ñ]"
+#define MAIN_MENU7              " [ñáðîñ]"
 
 using namespace nsNpcTel;
 
@@ -200,7 +200,7 @@ class npc_teleport_gossip : public CreatureScript
         {
             npc_teleport_gossipAI(Creature* creature) : ScriptedAI(creature) { }
 
-            bool GossipHello(Player* player) override
+            bool OnGossipHello(Player* player) override
             {
                 PageC(player) = PageD(player) = Cat(player) = 0;
 
@@ -219,7 +219,7 @@ class npc_teleport_gossip : public CreatureScript
                 return true;
             }
 
-            bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
+            bool OnGossipSelect(Player* player, uint32 /*menuId*/, uint32 gossipListId) override
             {
                 uint32 const sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
                 uint32 const action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
@@ -263,7 +263,7 @@ class npc_teleport_gossip : public CreatureScript
         
                     // Display main menu
                     case GOSSIP_MAIN_MENU:
-                        GossipHello(player);
+                        OnGossipHello(player);
                         break;
 
                     // Teleportation

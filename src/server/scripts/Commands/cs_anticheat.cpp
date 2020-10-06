@@ -23,26 +23,30 @@
 #include "WorldSession.h"
 #include "Player.h"
 
+
+using namespace Trinity::ChatCommands;
+
 class anticheat_commandscript : public CommandScript
 {
 public:
     anticheat_commandscript() : CommandScript("anticheat_commandscript") { }
 
-    std::vector<ChatCommand> GetCommands() const override
+    ChatCommandTable GetCommands() const override
     {
-        static std::vector<ChatCommand> anticheatCommandTable =
+        static ChatCommandTable anticheatCommandTable =
         {
-            { "global",         SEC_GAMEMASTER,     true,  &HandleAntiCheatGlobalCommand,         "" },
-            { "player",         SEC_GAMEMASTER,     true,  &HandleAntiCheatPlayerCommand,         "" },
-            { "delete",         SEC_ADMINISTRATOR,  true,  &HandleAntiCheatDeleteCommand,         "" },
-            { "handle",         SEC_ADMINISTRATOR,  true,  &HandleAntiCheatHandleCommand,         "" },
-            { "jail",           SEC_GAMEMASTER,     true,  &HandleAnticheatJailCommand,         "" },
-            { "warn",           SEC_GAMEMASTER,     true,  &HandleAnticheatWarnCommand,         "" },
+            //{ "account",          HandleAntiCheatGlobalCommand, rbac::RBAC_HandleAntiCheatGlobal,          Console::Yes },
+            { "global",         HandleAntiCheatGlobalCommand,  rbac::RBAC_HandleAntiCheatGlobal,       Console::Yes },
+            { "player",         HandleAntiCheatPlayerCommand,  rbac::RBAC_HandleAntiCheatPlayerCommand,      Console::Yes },
+            { "delete",         HandleAntiCheatDeleteCommand,  rbac::RBAC_HandleAntiCheatDeleteCommand,       Console::Yes },
+            { "handle",         HandleAntiCheatHandleCommand,  rbac::RBAC_HandleAntiCheatHandleCommand,       Console::Yes },
+            { "jail",           HandleAnticheatJailCommand,  rbac::RBAC_HandleAnticheatJailCommand,        Console::Yes },
+            { "warn",           HandleAnticheatWarnCommand,  rbac::RBAC_HandleAnticheatWarnCommand,         Console::Yes },
         };
 
-        static std::vector<ChatCommand> commandTable =
+        static ChatCommandTable commandTable =
         {
-            { "anticheat",      SEC_GAMEMASTER,     true, nullptr,                     "",  anticheatCommandTable},
+            { "anticheat", anticheatCommandTable},
         };
 
         return commandTable;

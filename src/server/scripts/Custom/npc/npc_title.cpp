@@ -38,481 +38,481 @@ REPLACE INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_ent
 #include "DatabaseEnvFwd.h"
 #include "Log.h"
 
-#define MSG_GOSSIP_TEXT_GETTING_STARTED	"ÐŸÑ€Ð¸Ð²ÐµÑ‚ÑÑ‚Ð²ÑƒÐµÐ¼ Ð²Ð°Ñ Ð½Ð° ÑÐµÑ€Ð²ÐµÑ€Ðµ!"
+#define MSG_GOSSIP_TEXT_GETTING_STARTED	"Ïðèâåòñòâóåì âàñ íà ñåðâåðå!"
 
-#define MSG_ERR_ARENA_POINT "Ð£ Ð²Ð°Ñ Ð½Ðµ Ð´Ð¾ÑÑ‚Ð°Ñ‚Ð¾Ñ‡Ð½Ð¾ ÐÐ¿Ð°!"
-#define MSG_ERR_TITLE "Ð£ Ð´Ð°Ð½Ð½Ð¾Ð³Ð¾ Ð¿ÐµÑ€ÑÐ¾Ð½Ð°Ð¶Ð° ÑƒÐ¶Ðµ ÐµÑÑ‚ÑŒ Ñ‚Ð°ÐºÐ¾Ðµ Ð·Ð²Ð°Ð½Ð¸Ðµ!"
-#define MSG_ERR_INCOMBAT "Ð’Ñ‹ Ð½Ð°Ñ…Ð¾Ð´Ð¸Ñ‚ÐµÑÑŒ Ð² Ð±Ð¾ÑŽ. Ð§Ñ‚Ð¾Ð±Ñ‹ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÑŒ Ð´Ð°Ð½Ð½Ð¾Ð³Ð¾ Npc Ð²Ñ‹Ð¹Ð´Ð¸Ñ‚Ðµ Ð¸Ð· Ð½ÐµÐ³Ð¾."
+#define MSG_ERR_ARENA_POINT "Ó âàñ íå äîñòàòî÷íî Àïà!"
+#define MSG_ERR_TITLE "Ó äàííîãî ïåðñîíàæà óæå åñòü òàêîå çâàíèå!"
+#define MSG_ERR_INCOMBAT "Âû íàõîäèòåñü â áîþ. ×òîáû èñïîëüçîâàòü äàííîãî Npc âûéäèòå èç íåãî."
 
-#define MSG_GOSSIP_TEXT_NEXT_2 "[Ð’Ñ‚Ð¾Ñ€Ð°Ñ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ð°] ->"
-#define MSG_GOSSIP_TEXT_NEXT_3 "[Ð¢Ñ€ÐµÑ‚ÑŒÑ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ð°] ->"
-#define MSG_GOSSIP_TEXT_NEXT_4 "[Ð§ÐµÑ‚Ð²ÐµÑ€Ñ‚Ð°Ñ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ð°] ->"
-#define MSG_GOSSIP_TEXT_NEXT_5 "[ÐŸÑÑ‚Ð°Ñ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ð°] ->"
+#define MSG_GOSSIP_TEXT_NEXT_2 "[Âòîðàÿ ñòðàíèöà] ->"
+#define MSG_GOSSIP_TEXT_NEXT_3 "[Òðåòüÿ ñòðàíèöà] ->"
+#define MSG_GOSSIP_TEXT_NEXT_4 "[×åòâåðòàÿ ñòðàíèöà] ->"
+#define MSG_GOSSIP_TEXT_NEXT_5 "[Ïÿòàÿ ñòðàíèöà] ->"
 
-#define MSG_GOSSIP_TEXT_BACK_4 "<- [Ð§ÐµÑ‚Ð²ÐµÑ€Ñ‚Ð°Ñ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ð°] "
-#define MSG_GOSSIP_TEXT_BACK_3 "<- [Ð¢Ñ€ÐµÑ‚ÑŒÑ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ð°] "
-#define MSG_GOSSIP_TEXT_BACK_2 "<- [Ð’Ñ‚Ð¾Ñ€Ð°Ñ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ð°] "
-#define MSG_GOSSIP_TEXT_BACK_1 "<- [ÐŸÐµÑ€Ð²Ð°Ñ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ð°] "
+#define MSG_GOSSIP_TEXT_BACK_4 "<- [×åòâåðòàÿ ñòðàíèöà] "
+#define MSG_GOSSIP_TEXT_BACK_3 "<- [Òðåòüÿ ñòðàíèöà] "
+#define MSG_GOSSIP_TEXT_BACK_2 "<- [Âòîðàÿ ñòðàíèöà] "
+#define MSG_GOSSIP_TEXT_BACK_1 "<- [Ïåðâàÿ ñòðàíèöà] "
 
-
-#define MSG_GOSSIP_TEXT_144 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ ÐÐ´Ð¼Ð¸Ñ€Ð°Ð» ÐšÑ€Ð¾Ð²Ð°Ð²Ð¾Ð³Ð¾ ÐŸÐ°Ñ€ÑƒÑÐ°"
-#define MSG_GOSSIP_TEXT_62 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð‘ÐµÐ·Ð¶Ð°Ð»Ð¾ÑÑ‚Ð½Ñ‹Ð¹ Ð³Ð»Ð°Ð´Ð¸Ð°Ñ‚Ð¾Ñ€"
-#define MSG_GOSSIP_TEXT_135 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð‘ÐµÐ·ÑƒÐ¼Ð½Ð¾ Ð²Ð»ÑŽÐ±Ð»ÐµÐ½Ð½Ñ‹Ð¹"
-#define MSG_GOSSIP_TEXT_141 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð‘ÐµÑÑÐ¼ÐµÑ€Ñ‚Ð½Ñ‹Ð¹"
-#define MSG_GOSSIP_TEXT_138 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð‘Ð»Ð°Ð³Ð¾Ð´ÐµÑ‚ÐµÐ»ÑŒ"
-#define MSG_GOSSIP_TEXT_170 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð’ÐµÐ»Ð¸ÐºÐ¸Ð¹ ÐºÑ€ÐµÑÑ‚Ð¾Ð½Ð¾ÑÐµÑ†"
-#define MSG_GOSSIP_TEXT_28 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð’ÐµÑ€Ñ…Ð¾Ð²Ð½Ñ‹Ð¹ Ð²Ð¾Ð¶Ð´ÑŒ"
-#define MSG_GOSSIP_TEXT_48 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð’ÐµÑ€ÑˆÐ¸Ñ‚ÐµÐ»ÑŒ Ð¿Ñ€Ð°Ð²Ð¾ÑÑƒÐ´Ð¸Ñ"
-#define MSG_GOSSIP_TEXT_134 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð’ÐµÑÐµÐ»ÑŒÑ‡Ð°Ðº"
-#define MSG_GOSSIP_TEXT_72 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð’Ð¾ÐµÐ½Ð°Ñ‡Ð°Ð»ÑŒÐ½Ð¸Ðº"
-#define MSG_GOSSIP_TEXT_42 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð“Ð»Ð°Ð´Ð¸Ð°Ñ‚Ð¾Ñ€"
-#define MSG_GOSSIP_TEXT_113 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð“Ð½Ð¾Ð¼Ñ€ÐµÐ³Ð°Ð½ÑÐºÐ¸Ð¹"
-#define MSG_GOSSIP_TEXT_147 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð”Ð°Ñ€Ð½Ð°ÑÑÐºÐ¸Ð¹"
-#define MSG_GOSSIP_TEXT_143 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð”Ð¶ÐµÐ½ÐºÐ¸Ð½Ñ"
-#define MSG_GOSSIP_TEXT_79 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð”Ð¸Ð¿Ð»Ð¾Ð¼Ð°Ñ‚"
-#define MSG_GOSSIP_TEXT_64 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð”Ð»Ð°Ð½ÑŒ Ð'Ð´Ð°Ð»Ð°"
-#define MSG_GOSSIP_TEXT_43 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð”ÑƒÑÐ»ÑÐ½Ñ‚"
-#define MSG_GOSSIP_TEXT_80 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð–ÐµÑÑ‚Ð¾ÐºÐ¸Ð¹ Ð“Ð»Ð°Ð´Ð¸Ð°Ñ‚Ð¾Ñ€"
-#define MSG_GOSSIP_TEXT_47 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð—Ð°Ð²Ð¾ÐµÐ²Ð°Ñ‚ÐµÐ»ÑŒ"
-#define MSG_GOSSIP_TEXT_122 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð—Ð°Ð²Ð¾ÐµÐ²Ð°Ñ‚ÐµÐ»ÑŒ ÐÐ°ÐºÑÑ€Ð°Ð¼Ð°ÑÐ°"
-#define MSG_GOSSIP_TEXT_81 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð˜ÑÐºÐ°Ñ‚ÐµÐ»ÑŒ"
-#define MSG_GOSSIP_TEXT_78 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð˜ÑÑÐ»ÐµÐ´Ð¾Ð²Ð°Ñ‚ÐµÐ»ÑŒ"
-#define MSG_GOSSIP_TEXT_156 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ ÐšÑ€ÐµÑÑ‚Ð¾Ð½Ð¾ÑÐµÑ†"
-#define MSG_GOSSIP_TEXT_83 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ ÐœÐ¾Ñ€ÑÐºÐ¾Ð¹ Ð´ÑŒÑÐ²Ð¾Ð»"
-#define MSG_GOSSIP_TEXT_71 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ ÐœÑÑ‚Ð¸Ñ‚ÐµÐ»ÑŒÐ½Ñ‹Ð¹ Ð³Ð»Ð°Ð´Ð¸Ð°Ñ‚Ð¾Ñ€"
-#define MSG_GOSSIP_TEXT_142 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ ÐÐµÑƒÐ¼Ð¸Ñ€Ð°ÑŽÑ‰Ð¸Ð¹"
-#define MSG_GOSSIP_TEXT_146 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ ÐÐµÑƒÐ¼Ð¾Ð»Ð¸Ð¼Ñ‹Ð¹ Ð³Ð»Ð°Ð´Ð¸Ð°Ñ‚Ð¾Ñ€"
-#define MSG_GOSSIP_TEXT_150 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ ÐžÑ€Ð³Ñ€Ð¸Ð¼Ð¼Ð°Ñ€ÑÐºÐ¸Ð¹"
-#define MSG_GOSSIP_TEXT_46 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ ÐŸÐ¾Ð²ÐµÐ»Ð¸Ñ‚ÐµÐ»ÑŒ Ð¡ÐºÐ°Ñ€Ð°Ð±ÐµÐµÐ²"
-#define MSG_GOSSIP_TEXT_278 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ ÐŸÐ¾Ð²ÐµÐ»Ð¸Ñ‚ÐµÐ»ÑŒ ÐžÐ³Ð½Ñ"
-#define MSG_GOSSIP_TEXT_139 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ ÐŸÐ¾ÐºÐ¾Ñ€Ð¸Ñ‚ÐµÐ»ÑŒ ÐžÐ±ÑÐ¸Ð´Ð¸Ð°Ð½Ð¾Ð²Ð¾Ð³Ð¾ ÑÐ²ÑÑ‚Ð¸Ð»Ð¸Ñ‰Ð°"
-#define MSG_GOSSIP_TEXT_77 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ ÐŸÑ€ÐµÐ²Ð¾Ð·Ð½Ð¾ÑÐ¸Ð¼Ñ‹Ð¹"
-#define MSG_GOSSIP_TEXT_74 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ ÐŸÑ€ÐµÐ¼ÑƒÐ´Ñ€Ñ‹Ð¹"
-#define MSG_GOSSIP_TEXT_45 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ ÐŸÑ€ÐµÑ‚ÐµÐ½Ð´ÐµÐ½Ñ‚"
-#define MSG_GOSSIP_TEXT_177 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð Ð°Ð·Ð³Ð½ÐµÐ²Ð°Ð½Ð½Ñ‹Ð¹ Ð³Ð»Ð°Ð´Ð¸Ð°Ñ‚Ð¾Ñ€"
-#define MSG_GOSSIP_TEXT_151 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð¡ÐµÐ½'Ð´Ð¶Ð¸Ð½ÑÐºÐ¸Ð¹"
-#define MSG_GOSSIP_TEXT_171 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð¡ÐµÑ€ÐµÐ±Ñ€ÑÐ½Ñ‹Ð¹ Ð·Ð°ÑÑ‚ÑƒÐ¿Ð½Ð¸Ðº"
-#define MSG_GOSSIP_TEXT_131 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð¡ÐµÑ€ÐµÐ±Ñ€ÑÐ½Ñ‹Ð¹ Ð·Ð°Ñ‰Ð¸Ñ‚Ð½Ð¸Ðº"
-#define MSG_GOSSIP_TEXT_173 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð¡Ð¸ÑÐ½Ð¸Ðµ Ð Ð°ÑÑÐ²ÐµÑ‚Ð°"
-#define MSG_GOSSIP_TEXT_157 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð¡Ð¼ÐµÑ€Ñ‚Ð¾Ð½Ð¾ÑÐ½Ñ‹Ð¹ Ð³Ð»Ð°Ð´Ð¸Ð°Ñ‚Ð¾Ñ€"
-#define MSG_GOSSIP_TEXT_75 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð¡Ñ‚Ñ€Ð°Ð¶ Ð¾Ð³Ð½Ñ"
-#define MSG_GOSSIP_TEXT_140 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð¡ÑƒÐ¼ÐµÑ€ÐµÑ‡Ð½Ñ‹Ð¹"
-#define MSG_GOSSIP_TEXT_172 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð¢ÐµÑ€Ð¿ÐµÐ»Ð¸Ð²Ñ‹Ð¹"
-#define MSG_GOSSIP_TEXT_124 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð¢Ñ‹ÐºÐ²ÐµÑ€"
-#define MSG_GOSSIP_TEXT_133 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð¥Ð¼ÐµÐ»ÐµÐ²Ð°Ñ€"
-#define MSG_GOSSIP_TEXT_125 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð¥Ñ€Ð°Ð½Ð¸Ñ‚ÐµÐ»ÑŒ Ð¼ÑƒÐ´Ñ€Ð¾ÑÑ‚Ð¸"
-#define MSG_GOSSIP_TEXT_76 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð¥Ñ€Ð°Ð½Ð¸Ñ‚ÐµÐ»ÑŒ Ð¾Ð³Ð½Ñ"
-#define MSG_GOSSIP_TEXT_145 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð§Ð¾ÐºÐ½ÑƒÑ‚Ñ‹Ð¹"
-#define MSG_GOSSIP_TEXT_155 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð§ÑƒÐ´ÐµÑÐ½Ñ‹Ð¹"
-#define MSG_GOSSIP_TEXT_84 "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð¨ÐµÑ„-Ð¿Ð¾Ð²Ð°Ñ€"
+#define MSG_GOSSIP_TEXT_144 "Ïîëó÷èòü çâàíèå Àäìèðàë Êðîâàâîãî Ïàðóñà"
+#define MSG_GOSSIP_TEXT_62 "Ïîëó÷èòü çâàíèå Áåçæàëîñòíûé ãëàäèàòîð"
+#define MSG_GOSSIP_TEXT_135 "Ïîëó÷èòü çâàíèå Áåçóìíî âëþáëåííûé"
+#define MSG_GOSSIP_TEXT_141 "Ïîëó÷èòü çâàíèå Áåññìåðòíûé"
+#define MSG_GOSSIP_TEXT_138 "Ïîëó÷èòü çâàíèå Áëàãîäåòåëü"
+#define MSG_GOSSIP_TEXT_170 "Ïîëó÷èòü çâàíèå Âåëèêèé êðåñòîíîñåö"
+#define MSG_GOSSIP_TEXT_28 "Ïîëó÷èòü çâàíèå Âåðõîâíûé âîæäü"
+#define MSG_GOSSIP_TEXT_48 "Ïîëó÷èòü çâàíèå Âåðøèòåëü ïðàâîñóäèÿ"
+#define MSG_GOSSIP_TEXT_134 "Ïîëó÷èòü çâàíèå Âåñåëü÷àê"
+#define MSG_GOSSIP_TEXT_72 "Ïîëó÷èòü çâàíèå Âîåíà÷àëüíèê"
+#define MSG_GOSSIP_TEXT_42 "Ïîëó÷èòü çâàíèå Ãëàäèàòîð"
+#define MSG_GOSSIP_TEXT_113 "Ïîëó÷èòü çâàíèå Ãíîìðåãàíñêèé"
+#define MSG_GOSSIP_TEXT_147 "Ïîëó÷èòü çâàíèå Äàðíàññêèé"
+#define MSG_GOSSIP_TEXT_143 "Ïîëó÷èòü çâàíèå Äæåíêèíñ"
+#define MSG_GOSSIP_TEXT_79 "Ïîëó÷èòü çâàíèå Äèïëîìàò"
+#define MSG_GOSSIP_TEXT_64 "Ïîëó÷èòü çâàíèå Äëàíü À'äàëà"
+#define MSG_GOSSIP_TEXT_43 "Ïîëó÷èòü çâàíèå Äóýëÿíò"
+#define MSG_GOSSIP_TEXT_80 "Ïîëó÷èòü çâàíèå Æåñòîêèé Ãëàäèàòîð"
+#define MSG_GOSSIP_TEXT_47 "Ïîëó÷èòü çâàíèå Çàâîåâàòåëü"
+#define MSG_GOSSIP_TEXT_122 "Ïîëó÷èòü çâàíèå Çàâîåâàòåëü Íàêñðàìàñà"
+#define MSG_GOSSIP_TEXT_81 "Ïîëó÷èòü çâàíèå Èñêàòåëü"
+#define MSG_GOSSIP_TEXT_78 "Ïîëó÷èòü çâàíèå Èññëåäîâàòåëü"
+#define MSG_GOSSIP_TEXT_156 "Ïîëó÷èòü çâàíèå Êðåñòîíîñåö"
+#define MSG_GOSSIP_TEXT_83 "Ïîëó÷èòü çâàíèå Ìîðñêîé äüÿâîë"
+#define MSG_GOSSIP_TEXT_71 "Ïîëó÷èòü çâàíèå Ìñòèòåëüíûé ãëàäèàòîð"
+#define MSG_GOSSIP_TEXT_142 "Ïîëó÷èòü çâàíèå Íåóìèðàþùèé"
+#define MSG_GOSSIP_TEXT_146 "Ïîëó÷èòü çâàíèå Íåóìîëèìûé ãëàäèàòîð"
+#define MSG_GOSSIP_TEXT_150 "Ïîëó÷èòü çâàíèå Îðãðèììàðñêèé"
+#define MSG_GOSSIP_TEXT_46 "Ïîëó÷èòü çâàíèå Ïîâåëèòåëü Ñêàðàáååâ"
+#define MSG_GOSSIP_TEXT_278 "Ïîëó÷èòü çâàíèå Ïîâåëèòåëü Îãíÿ"
+#define MSG_GOSSIP_TEXT_139 "Ïîëó÷èòü çâàíèå Ïîêîðèòåëü Îáñèäèàíîâîãî ñâÿòèëèùà"
+#define MSG_GOSSIP_TEXT_77 "Ïîëó÷èòü çâàíèå Ïðåâîçíîñèìûé"
+#define MSG_GOSSIP_TEXT_74 "Ïîëó÷èòü çâàíèå Ïðåìóäðûé"
+#define MSG_GOSSIP_TEXT_45 "Ïîëó÷èòü çâàíèå Ïðåòåíäåíò"
+#define MSG_GOSSIP_TEXT_177 "Ïîëó÷èòü çâàíèå Ðàçãíåâàííûé ãëàäèàòîð"
+#define MSG_GOSSIP_TEXT_151 "Ïîëó÷èòü çâàíèå Ñåí'äæèíñêèé"
+#define MSG_GOSSIP_TEXT_171 "Ïîëó÷èòü çâàíèå Ñåðåáðÿíûé çàñòóïíèê"
+#define MSG_GOSSIP_TEXT_131 "Ïîëó÷èòü çâàíèå Ñåðåáðÿíûé çàùèòíèê"
+#define MSG_GOSSIP_TEXT_173 "Ïîëó÷èòü çâàíèå Ñèÿíèå Ðàññâåòà"
+#define MSG_GOSSIP_TEXT_157 "Ïîëó÷èòü çâàíèå Ñìåðòîíîñíûé ãëàäèàòîð"
+#define MSG_GOSSIP_TEXT_75 "Ïîëó÷èòü çâàíèå Ñòðàæ îãíÿ"
+#define MSG_GOSSIP_TEXT_140 "Ïîëó÷èòü çâàíèå Ñóìåðå÷íûé"
+#define MSG_GOSSIP_TEXT_172 "Ïîëó÷èòü çâàíèå Òåðïåëèâûé"
+#define MSG_GOSSIP_TEXT_124 "Ïîëó÷èòü çâàíèå Òûêâåð"
+#define MSG_GOSSIP_TEXT_133 "Ïîëó÷èòü çâàíèå Õìåëåâàð"
+#define MSG_GOSSIP_TEXT_125 "Ïîëó÷èòü çâàíèå Õðàíèòåëü ìóäðîñòè"
+#define MSG_GOSSIP_TEXT_76 "Ïîëó÷èòü çâàíèå Õðàíèòåëü îãíÿ"
+#define MSG_GOSSIP_TEXT_145 "Ïîëó÷èòü çâàíèå ×îêíóòûé"
+#define MSG_GOSSIP_TEXT_155 "Ïîëó÷èòü çâàíèå ×óäåñíûé"
+#define MSG_GOSSIP_TEXT_84 "Ïîëó÷èòü çâàíèå Øåô-ïîâàð"
 
 #define CONST_ARENA_POINT 200
 
 class npc_title : public CreatureScript
 {
-    public: 
+public:
     npc_title() : CreatureScript("npc_title") { }
 
-	struct npc_titleAI : public ScriptedAI
-	{
+    struct npc_titleAI : public ScriptedAI
+    {
 
-		npc_titleAI(Creature* me) : ScriptedAI(me) { }
+        npc_titleAI(Creature* me) : ScriptedAI(me) { }
 
-	bool AddTitle(Player* player , CharTitlesEntry const* titleInfo) 
-{ 
-     if (player->HasTitle(titleInfo)) { 
-         me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
-         CloseGossipMenuFor(player); 
-         return false; 
-     } 
+        bool AddTitle(Player* player, CharTitlesEntry const* titleInfo)
+        {
+            if (player->HasTitle(titleInfo)) {
+                me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+                CloseGossipMenuFor(player);
+                return false;
+            }
 
-     if (player->GetArenaPoints() < CONST_ARENA_POINT) { 
-         //me->Whisper(MSG_ERR_ARENA_POINT, player->GetGUID()); 
-		 me->Whisper(MSG_ERR_ARENA_POINT, LANG_UNIVERSAL, player);
-         CloseGossipMenuFor(player); 
-         
-	 } else{
+            if (player->GetArenaPoints() < CONST_ARENA_POINT) {
+                //me->Whisper(MSG_ERR_ARENA_POINT, player->GetGUID()); 
+                me->Whisper(MSG_ERR_ARENA_POINT, LANG_UNIVERSAL, player);
+                CloseGossipMenuFor(player);
 
-     player->SetTitle(titleInfo); 
-     player->ModifyArenaPoints(-CONST_ARENA_POINT); 
-     CloseGossipMenuFor(player); 
-	 }
-	 return true;
-} 
+            }
+            else {
 
-	bool GossipHello(Player *player) override
-		{ 
-			  me->Whisper(MSG_GOSSIP_TEXT_GETTING_STARTED, LANG_UNIVERSAL, player);
-			  player->PlayerTalkClass->ClearMenus();
-			  AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_144, GOSSIP_SENDER_MAIN, 2);
-			  AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_62, GOSSIP_SENDER_MAIN, 3);
-			  AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_135, GOSSIP_SENDER_MAIN, 4);
-			  AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_141, GOSSIP_SENDER_MAIN, 5);
-			  AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_138, GOSSIP_SENDER_MAIN, 6);
-			  AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_170, GOSSIP_SENDER_MAIN, 7);
-			  AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_28, GOSSIP_SENDER_MAIN, 8);
-			  AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_48, GOSSIP_SENDER_MAIN, 9);
-			  AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_134, GOSSIP_SENDER_MAIN, 10);
-			  AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_72, GOSSIP_SENDER_MAIN, 11);
-			  AddGossipItemFor(player,GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_2, GOSSIP_SENDER_MAIN, 12);
-			  SendGossipMenuFor(player,DEFAULT_GOSSIP_MESSAGE,me->GetGUID());
-			  return true;
+                player->SetTitle(titleInfo);
+                player->ModifyArenaPoints(-CONST_ARENA_POINT);
+                CloseGossipMenuFor(player);
+            }
+            return true;
+        }
 
-}
+        bool OnGossipHello(Player* player) override
+        {
+            me->Whisper(MSG_GOSSIP_TEXT_GETTING_STARTED, LANG_UNIVERSAL, player);
+            player->PlayerTalkClass->ClearMenus();
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_144, GOSSIP_SENDER_MAIN, 2);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_62, GOSSIP_SENDER_MAIN, 3);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_135, GOSSIP_SENDER_MAIN, 4);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_141, GOSSIP_SENDER_MAIN, 5);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_138, GOSSIP_SENDER_MAIN, 6);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_170, GOSSIP_SENDER_MAIN, 7);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_28, GOSSIP_SENDER_MAIN, 8);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_48, GOSSIP_SENDER_MAIN, 9);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_134, GOSSIP_SENDER_MAIN, 10);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_72, GOSSIP_SENDER_MAIN, 11);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_2, GOSSIP_SENDER_MAIN, 12);
+            SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+            return true;
 
-	bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
-	{
-		uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
-		uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
-		return OnGossipSelect(player, sender, action);
-	}
+        }
 
-	bool OnGossipSelect(Player* player, uint32 sender, uint32 action)
-		{
-		  if (!player->getAttackers().empty())
-	{
-		me->Whisper(MSG_ERR_INCOMBAT, LANG_UNIVERSAL, player);
-		CloseGossipMenuFor(player);
-        return false;
-		  }
+        bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+        {
+            uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+            uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+            return GossipSelect(player, sender, action);
+        }
 
-		  switch (action)
-	{
-		 case 2:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(144);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 3:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(62);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 4:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(135);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 5:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(141);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 6:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(138);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 7:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(170);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 8:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(28);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 9:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(48);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 10:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(134);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 11:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(72);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 12:
-			   player->PlayerTalkClass->ClearMenus();
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_42, GOSSIP_SENDER_MAIN, 13);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_113, GOSSIP_SENDER_MAIN, 14);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_147, GOSSIP_SENDER_MAIN, 15);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_143, GOSSIP_SENDER_MAIN, 16);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_79, GOSSIP_SENDER_MAIN, 17);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_64, GOSSIP_SENDER_MAIN, 18);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_43, GOSSIP_SENDER_MAIN, 19);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_80, GOSSIP_SENDER_MAIN, 20);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_47, GOSSIP_SENDER_MAIN, 21);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_122, GOSSIP_SENDER_MAIN, 22);
-			   AddGossipItemFor(player,GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BACK_1, GOSSIP_SENDER_MAIN, 56);
-			   AddGossipItemFor(player,GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 23);
-			   SendGossipMenuFor(player,DEFAULT_GOSSIP_MESSAGE,me->GetGUID());
-			   break;
-		 case 13:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(42);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-	     case 14:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(113);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-	     case 15:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(147);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 16:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(143);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 17:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(79);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-	     case 18:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(64);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 19:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(43);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-	     case 20:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(80);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 21:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(47);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-	     case 22:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(122);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 23:
-			   player->PlayerTalkClass->ClearMenus();
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_81, GOSSIP_SENDER_MAIN, 24);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_78, GOSSIP_SENDER_MAIN, 25);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_156, GOSSIP_SENDER_MAIN, 26);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_83, GOSSIP_SENDER_MAIN, 27);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_71, GOSSIP_SENDER_MAIN, 28);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_142, GOSSIP_SENDER_MAIN, 29);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_146, GOSSIP_SENDER_MAIN, 30);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_150, GOSSIP_SENDER_MAIN, 31);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_46, GOSSIP_SENDER_MAIN, 32);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_278, GOSSIP_SENDER_MAIN, 33);
-			   AddGossipItemFor(player,GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BACK_2, GOSSIP_SENDER_MAIN, 57);
-			   AddGossipItemFor(player,GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_4, GOSSIP_SENDER_MAIN, 34);
-			   SendGossipMenuFor(player,DEFAULT_GOSSIP_MESSAGE,me->GetGUID());
-			   break;
-		 case 24:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(81);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 25:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(78);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 26:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(156);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 27:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(83);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 28:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(71);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 29:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(142);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 30:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(146);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 31:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(150);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 32:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(46);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 33:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(278);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 34:
-			   player->PlayerTalkClass->ClearMenus();
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_139, GOSSIP_SENDER_MAIN, 35);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_77, GOSSIP_SENDER_MAIN, 36);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_74, GOSSIP_SENDER_MAIN, 37);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_45, GOSSIP_SENDER_MAIN, 38);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_177, GOSSIP_SENDER_MAIN, 39);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_151, GOSSIP_SENDER_MAIN, 40);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_171, GOSSIP_SENDER_MAIN, 41);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_131, GOSSIP_SENDER_MAIN, 42);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_173, GOSSIP_SENDER_MAIN, 43);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_157, GOSSIP_SENDER_MAIN, 44);
-			   AddGossipItemFor(player,GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BACK_3, GOSSIP_SENDER_MAIN, 58);
-			   AddGossipItemFor(player,GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_5, GOSSIP_SENDER_MAIN, 45);
-			   SendGossipMenuFor(player,DEFAULT_GOSSIP_MESSAGE,me->GetGUID());
-			   break;
-		 case 35:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(139);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 36:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(77);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 37:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(74);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 38:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(45);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 39:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(177);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 40:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(151);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 41:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(171);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 42:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(131);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 43:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(173);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 44:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(157);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 45:
-			   player->PlayerTalkClass->ClearMenus();
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_75, GOSSIP_SENDER_MAIN, 46);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_140, GOSSIP_SENDER_MAIN, 47);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_172, GOSSIP_SENDER_MAIN, 48);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_124, GOSSIP_SENDER_MAIN, 49);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_133, GOSSIP_SENDER_MAIN, 50);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_76, GOSSIP_SENDER_MAIN, 51);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_125, GOSSIP_SENDER_MAIN, 52);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_145, GOSSIP_SENDER_MAIN, 53);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_155, GOSSIP_SENDER_MAIN, 54);
-			   AddGossipItemFor(player,GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_84, GOSSIP_SENDER_MAIN, 55);
-			   AddGossipItemFor(player,GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BACK_4, GOSSIP_SENDER_MAIN, 59);
-			   SendGossipMenuFor(player,DEFAULT_GOSSIP_MESSAGE,me->GetGUID());
-			   break;
-		 case 46:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(75);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 47:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(140);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		case 48:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(172);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-	     case 49:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(124);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-	     case 50:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(133);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 51:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(125);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 52:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(76);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 53:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(145);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 54:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(155);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 55:
-			   {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(84);
-			   AddTitle(player, titleInfo);
-			   }
-			   break;
-		 case 56:
-			 GossipHello(player);
-			   break;
-		 case 57:
-			 OnGossipSelect(player, sender, 12);
-			 break;
-		 case 58:
-			 OnGossipSelect(player, sender, 23);
-			 break;
-		 case 59:
-			 OnGossipSelect(player, sender, 34);
-			 break;
-}
-	
-		  return true;
-	}
-	};
+        bool GossipSelect(Player* player, uint32 sender, uint32 action)
+        {
+            if (!player->getAttackers().empty())
+            {
+                me->Whisper(MSG_ERR_INCOMBAT, LANG_UNIVERSAL, player);
+                CloseGossipMenuFor(player);
+                return false;
+            }
 
-	CreatureAI* GetAI(Creature* me) const override
-	{
-		return new npc_titleAI(me);
-	}
+            switch (action)
+            {
+            case 2:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(144);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 3:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(62);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 4:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(135);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 5:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(141);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 6:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(138);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 7:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(170);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 8:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(28);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 9:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(48);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 10:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(134);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 11:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(72);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 12:
+                player->PlayerTalkClass->ClearMenus();
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_42, GOSSIP_SENDER_MAIN, 13);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_113, GOSSIP_SENDER_MAIN, 14);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_147, GOSSIP_SENDER_MAIN, 15);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_143, GOSSIP_SENDER_MAIN, 16);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_79, GOSSIP_SENDER_MAIN, 17);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_64, GOSSIP_SENDER_MAIN, 18);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_43, GOSSIP_SENDER_MAIN, 19);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_80, GOSSIP_SENDER_MAIN, 20);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_47, GOSSIP_SENDER_MAIN, 21);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_122, GOSSIP_SENDER_MAIN, 22);
+                AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BACK_1, GOSSIP_SENDER_MAIN, 56);
+                AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 23);
+                SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+                break;
+            case 13:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(42);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 14:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(113);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 15:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(147);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 16:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(143);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 17:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(79);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 18:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(64);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 19:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(43);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 20:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(80);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 21:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(47);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 22:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(122);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 23:
+                player->PlayerTalkClass->ClearMenus();
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_81, GOSSIP_SENDER_MAIN, 24);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_78, GOSSIP_SENDER_MAIN, 25);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_156, GOSSIP_SENDER_MAIN, 26);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_83, GOSSIP_SENDER_MAIN, 27);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_71, GOSSIP_SENDER_MAIN, 28);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_142, GOSSIP_SENDER_MAIN, 29);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_146, GOSSIP_SENDER_MAIN, 30);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_150, GOSSIP_SENDER_MAIN, 31);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_46, GOSSIP_SENDER_MAIN, 32);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_278, GOSSIP_SENDER_MAIN, 33);
+                AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BACK_2, GOSSIP_SENDER_MAIN, 57);
+                AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_4, GOSSIP_SENDER_MAIN, 34);
+                SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+                break;
+            case 24:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(81);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 25:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(78);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 26:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(156);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 27:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(83);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 28:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(71);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 29:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(142);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 30:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(146);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 31:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(150);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 32:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(46);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 33:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(278);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 34:
+                player->PlayerTalkClass->ClearMenus();
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_139, GOSSIP_SENDER_MAIN, 35);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_77, GOSSIP_SENDER_MAIN, 36);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_74, GOSSIP_SENDER_MAIN, 37);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_45, GOSSIP_SENDER_MAIN, 38);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_177, GOSSIP_SENDER_MAIN, 39);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_151, GOSSIP_SENDER_MAIN, 40);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_171, GOSSIP_SENDER_MAIN, 41);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_131, GOSSIP_SENDER_MAIN, 42);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_173, GOSSIP_SENDER_MAIN, 43);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_157, GOSSIP_SENDER_MAIN, 44);
+                AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BACK_3, GOSSIP_SENDER_MAIN, 58);
+                AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_5, GOSSIP_SENDER_MAIN, 45);
+                SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+                break;
+            case 35:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(139);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 36:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(77);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 37:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(74);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 38:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(45);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 39:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(177);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 40:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(151);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 41:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(171);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 42:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(131);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 43:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(173);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 44:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(157);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 45:
+                player->PlayerTalkClass->ClearMenus();
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_75, GOSSIP_SENDER_MAIN, 46);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_140, GOSSIP_SENDER_MAIN, 47);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_172, GOSSIP_SENDER_MAIN, 48);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_124, GOSSIP_SENDER_MAIN, 49);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_133, GOSSIP_SENDER_MAIN, 50);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_76, GOSSIP_SENDER_MAIN, 51);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_125, GOSSIP_SENDER_MAIN, 52);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_145, GOSSIP_SENDER_MAIN, 53);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_155, GOSSIP_SENDER_MAIN, 54);
+                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_84, GOSSIP_SENDER_MAIN, 55);
+                AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BACK_4, GOSSIP_SENDER_MAIN, 59);
+                SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+                break;
+            case 46:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(75);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 47:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(140);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 48:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(172);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 49:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(124);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 50:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(133);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 51:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(125);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 52:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(76);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 53:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(145);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 54:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(155);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 55:
+            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(84);
+            AddTitle(player, titleInfo);
+            }
+            break;
+            case 56:
+                OnGossipHello(player);
+                break;
+            case 57:
+                OnGossipSelect(player, sender, 12);
+                break;
+            case 58:
+                OnGossipSelect(player, sender, 23);
+                break;
+            case 59:
+                OnGossipSelect(player, sender, 34);
+                break;
+            }
+
+            return true;
+        }
+    };
+
+    CreatureAI* GetAI(Creature* me) const override
+    {
+        return new npc_titleAI(me);
+    }
 };
 void AddSC_npc_title()
 {

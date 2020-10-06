@@ -1,4 +1,4 @@
-﻿#include "Config.h"
+#include "Config.h"
 //#include "GuildMgr.h"
 #include "Player.h"
 #include "Battleground.h"
@@ -52,7 +52,7 @@ enum ItemUpgradeStrings
 {
     ARE_YOU_SURE    = 11300, // Are you sure you want to remove the effect?
     NO_EFFECT       = 11301, // no effect
-    EFFECT_NOW      = 11302, // Effect №%i (now: %s)
+    EFFECT_NOW      = 11302, // Effect ?%i (now: %s)
     EFFECT_REMOVE   = 11303, // Remove effect
 };
 
@@ -160,7 +160,7 @@ class go_item_upgrade : public GameObjectScript
         return (uint32) (GOSSIP_SENDER_MAIN + ((slot << 16) | (enchant & 0xFFFF)));
     }
  
-	bool GossipHello(Player* player) override
+	bool OnGossipHello(Player* player) override
     {
         if (!ItemUpgradeEnable) {
             SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
@@ -188,14 +188,14 @@ class go_item_upgrade : public GameObjectScript
         return true;
     }
 
-    bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+    bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
     {
            uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
            uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
-           return OnGossipSelect(player, sender, action);
+           return GossipSelect(player, sender, action);
     }
 
-    bool OnGossipSelect(Player* player, uint32 sender, uint32 action)
+    bool GossipSelect(Player* player, uint32 sender, uint32 action)
 	//bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
     {
 		//uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);

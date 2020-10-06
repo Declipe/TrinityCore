@@ -143,7 +143,7 @@ public:
 	{
 		npc_hunterpetvendorAI(Creature* me) : ScriptedAI(me) { }
 
-    bool GossipHello(Player* player) override
+    bool OnGossipHello(Player* player) override
     {
         if ((player->GetClass() == CLASS_HUNTER))
         {
@@ -159,7 +159,7 @@ public:
         }
 }
  
-bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
     {
 		uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
 		uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
@@ -646,14 +646,14 @@ public:
     {
         go_dedication_of_honorAI(GameObject* go) : GameObjectAI(go) { }
 
-	bool GossipHello(Player* player) override
+	bool OnGossipHello(Player* player) override
 	{
 		AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_TEXT_SEE_FALL_OF_THE_LICH_KING, GOSSIP_SENDER_MAIN, FALL_OF_THE_LICH_KING);
 		SendGossipMenuFor(player, GOSSIP_MESSAGE_MEMORIAL, me->GetGUID());
 		return true;
 	}
 
-	bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+	bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
     {
 		uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
 		uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);

@@ -54,7 +54,7 @@ public:
     public:
         TransmogAI(Creature* me) : ScriptedAI(me) {}
 
-        bool GossipHello(Player* player) override
+        bool OnGossipHello(Player* player) override
         {
             WorldSession* session = player->GetSession();
             if (sTransmogrification->EnableTransmogInfo)
@@ -79,14 +79,14 @@ public:
             return true;
         }
 
-        bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+        bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
         {
             uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
             uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
-            return OnGossipSelect(player, sender, action);
+            return GossipSelect(player, sender, action);
         }
 
-        bool OnGossipSelect(Player* player, uint32 sender, uint32 action)
+        bool GossipSelect(Player* player, uint32 sender, uint32 action)
         {
             ClearGossipMenuFor(player);
             WorldSession* session = player->GetSession();
@@ -96,7 +96,7 @@ public:
                     ShowTransmogItems(player, action);
                     break;
                 case EQUIPMENT_SLOT_END + 1: // Main menu
-                    GossipHello(player);
+                    OnGossipHello(player);
                     break;
                 case EQUIPMENT_SLOT_END + 2: // Remove Transmogrifications
                     {
@@ -115,7 +115,7 @@ public:
                             session->SendAreaTriggerMessage("%s", GTS(LANG_ERR_UNTRANSMOG_OK));
                         else
                             session->SendNotification(LANG_ERR_UNTRANSMOG_NO_TRANSMOGS);
-                        GossipHello(player);
+                        OnGossipHello(player);
                     } break;
                 case EQUIPMENT_SLOT_END + 3: // Remove Transmogrification from single item
                     {
@@ -136,7 +136,7 @@ public:
                     {
                         if (!sTransmogrification->EnableSets)
                         {
-                            GossipHello(player);
+                            OnGossipHello(player);
                             return true;
                         }
                         if (sTransmogrification->EnableSetInfo)
@@ -159,7 +159,7 @@ public:
                     {
                         if (!sTransmogrification->EnableSets)
                         {
-                            GossipHello(player);
+                            OnGossipHello(player);
                             return true;
                         }
                         // action = presetID
@@ -177,7 +177,7 @@ public:
                     {
                         if (!sTransmogrification->EnableSets)
                         {
-                            GossipHello(player);
+                            OnGossipHello(player);
                             return true;
                         }
                         // action = presetID
@@ -201,7 +201,7 @@ public:
                     {
                         if (!sTransmogrification->EnableSets)
                         {
-                            GossipHello(player);
+                            OnGossipHello(player);
                             return true;
                         }
                         // action = presetID
@@ -214,13 +214,13 @@ public:
                     {
                         if (!sTransmogrification->EnableSets)
                         {
-                            GossipHello(player);
+                            OnGossipHello(player);
                             return true;
                         }
 
                         if (player->presetMap.size() >= sTransmogrification->MaxSets)
                         {
-                            GossipHello(player);
+                            OnGossipHello(player);
                             return true;
                         }
 
@@ -266,7 +266,7 @@ public:
                     {
                         if (!sender && !action)
                         {
-                            GossipHello(player);
+                            OnGossipHello(player);
                             return true;
                         }
                         // sender = slot, action = display
@@ -282,7 +282,7 @@ public:
         }
 
 #ifdef PRESETS
-        bool GossipSelectCode(Player* player, uint32 /*menu_id*/, uint32 gossipListId, const char* code) override
+        bool OnGossipSelectCode(Player* player, uint32 /*menu_id*/, uint32 gossipListId, const char* code) override
         {
             uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
             uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
@@ -291,7 +291,7 @@ public:
                 return true; // should never happen
             if (!sTransmogrification->EnableSets)
             {
-                GossipHello(player);
+                OnGossipHello(player);
                 return true;
             }
 

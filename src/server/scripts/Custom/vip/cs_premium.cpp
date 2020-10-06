@@ -46,41 +46,43 @@
 #include "WorldSession.h"
 #include <boost/asio/ip/address_v4.hpp>
 
+using namespace Trinity::ChatCommands;
+
 class premium_commandscript : public CommandScript
 {
 public:
     premium_commandscript() : CommandScript("premium_commandscript") { }
 
-    std::vector<ChatCommand> GetCommands() const override
+    ChatCommandTable GetCommands() const override
     {
-        static std::vector<ChatCommand> premiumCommandTable =
+        static ChatCommandTable premiumCommandTable =
         {
-            { "bank",             rbac::RBAC_PERM_COMMAND_VIP_BANK,         false, &HandlePremiumBankCommand,    "" },
-            { "mail",             rbac::RBAC_PERM_COMMAND_VIP_MAIL,         false, &HandlePremiumMailCommand,    "" },
-			{ "buffs", rbac::RBAC_PERM_COMMAND_VIP_buffs, false, &HandleVipbuffsCommand, "" },
-			{ "arena", rbac::RBAC_PERM_COMMAND_VIP_arena, false, &HandleVipjoinArenaCommand, "" },
-			{ "warsong", rbac::RBAC_PERM_COMMAND_VIP_warsong, false, &HandleVipjoinWarsongCommand, "" },
-			{ "arathi", rbac::RBAC_PERM_COMMAND_VIP_arathi, false, &HandleVipjoinArathiCommand, "" },
-			{ "eye", rbac::RBAC_PERM_COMMAND_VIP_eye, false, &HandleVipjoinEyeCommand, "" },
-			{ "alterac", rbac::RBAC_PERM_COMMAND_VIP_alterac, false, &HandleVipjoinAlteracCommand, "" },
-			{ "debuff", rbac::RBAC_PERM_COMMAND_VIP_DEBUFF, false, &HandleVipDebuffCommand, "" },
-			{ "map", rbac::RBAC_PERM_COMMAND_VIP_MAP, false, &HandleVipMapCommand, "" },
-			{ "resettalents", rbac::RBAC_PERM_COMMAND_VIP_RESETTALENTS, false, &HandleVipResetTalentsCommand, "" },
-			{ "repair", rbac::RBAC_PERM_COMMAND_VIP_REPAIR, false, &HandleVipRepairCommand, "" },
-			{ "capital", rbac::RBAC_PERM_COMMAND_VIP_CAPITAL, false, &HandleVipCapitalCommand, "" },
-			{ "changerace", rbac::RBAC_PERM_COMMAND_VIP_CHANGERACE, false, &HandleChangeRaceCommand,"" },
-			{ "customize", rbac::RBAC_PERM_COMMAND_VIP_CUSTOMIZE, false, &HandleCustomizeCommand, "" },
-			{ "app", rbac::RBAC_PERM_COMMAND_VIP_ARPPEAR, false, &HandleAppearCommand, "" },
-			{ "taxi", rbac::RBAC_PERM_COMMAND_VIP_TAXI, false, &HandleVipTaxiCommand, "" },
-			{ "home", rbac::RBAC_PERM_COMMAND_VIP_HOME, false, &HandleVipHomeCommand, "" },
-			{ "teles", rbac::RBAC_PERM_COMMAND_VIP_HOMEs, false, &HandleTelesNameCommand, "" },
-            { "status", SEC_ADMINISTRATOR, false, &HandleVipStatusCommand, "" },
+            { "bank",          HandlePremiumBankCommand,     rbac::RBAC_PERM_COMMAND_VIP_BANK, Console::No},
+            { "mail",          HandlePremiumMailCommand,     rbac::RBAC_PERM_COMMAND_VIP_MAIL, Console::No },
+			{ "buffs",         HandleVipbuffsCommand,        rbac::RBAC_PERM_COMMAND_VIP_buffs, Console::No },
+			{ "arena",         HandleVipjoinArenaCommand,    rbac::RBAC_PERM_COMMAND_VIP_arena, Console::No },
+			{ "warsong",       HandleVipjoinWarsongCommand,  rbac::RBAC_PERM_COMMAND_VIP_warsong, Console::No },
+			{ "arathi",        HandleVipjoinArathiCommand,   rbac::RBAC_PERM_COMMAND_VIP_arathi, Console::No },
+			{ "eye",           HandleVipjoinEyeCommand,      rbac::RBAC_PERM_COMMAND_VIP_eye, Console::No },
+			{ "alterac",       HandleVipjoinAlteracCommand,  rbac::RBAC_PERM_COMMAND_VIP_alterac, Console::No },
+			{ "debuff",        HandleVipDebuffCommand,       rbac::RBAC_PERM_COMMAND_VIP_DEBUFF, Console::No },
+			{ "map",           HandleVipMapCommand,          rbac::RBAC_PERM_COMMAND_VIP_MAP, Console::No },
+			{ "resettalents",  HandleVipResetTalentsCommand, rbac::RBAC_PERM_COMMAND_VIP_RESETTALENTS, Console::No },
+			{ "repair",        HandleVipRepairCommand,       rbac::RBAC_PERM_COMMAND_VIP_REPAIR, Console::No },
+			{ "capital",       HandleVipCapitalCommand,      rbac::RBAC_PERM_COMMAND_VIP_CAPITAL, Console::No },
+			{ "changerace",    HandleChangeRaceCommand,      rbac::RBAC_PERM_COMMAND_VIP_CHANGERACE, Console::No },
+			{ "customize",     HandleCustomizeCommand,       rbac::RBAC_PERM_COMMAND_VIP_CUSTOMIZE, Console::No },
+			{ "app",           HandleAppearCommand,          rbac::RBAC_PERM_COMMAND_VIP_ARPPEAR, Console::No },
+			{ "taxi",          HandleVipTaxiCommand,         rbac::RBAC_PERM_COMMAND_VIP_TAXI,  Console::No },
+			{ "home",          HandleVipHomeCommand,         rbac::RBAC_PERM_COMMAND_VIP_HOME,  Console::No },
+			{ "teles",         HandleTelesNameCommand,       rbac::RBAC_PERM_COMMAND_VIP_HOMEs,  Console::No },
+            { "status",        HandleVipStatusCommand,       rbac::RBAC_HandleVipStatusCommand,  Console::No },
 			//{ "qcomplete", rbac::RBAC_PERM_COMMAND_VIP_qcomplete, false, &HandleQuestCompletes, "" },
         };
 
-        static std::vector<ChatCommand> commandTable =
+        static ChatCommandTable commandTable =
         {
-            { "vip", rbac::RBAC_PERM_COMMAND_VIP, false, nullptr, "", premiumCommandTable },
+            { "vip", premiumCommandTable },
         };
 
         return commandTable;
@@ -267,7 +269,7 @@ public:
 		return true;
 	}*/
 
-	static bool HandleTelesNameCommand(ChatHandler* handler, char const* args)
+	static bool HandleTelesNameCommand(ChatHandler* handler, Optional<PlayerIdentifier> player, Variant<GameTele const*, EXACT_SEQUENCE("$home")> where)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -320,26 +322,19 @@ public:
 			return false;
 		}
 
-		char* nameStr;
-		char* teleStr;
-		handler->extractOptFirstArg((char*)args, &nameStr, &teleStr);
-		if (!teleStr)
+        if (!player)
+            player = PlayerIdentifier::FromTargetOrSelf(handler);
+        if (!player)
 			return false;
 
-		Player* target;
-		ObjectGuid target_guid;
-		std::string target_name;
-		if (!handler->extractPlayerTarget(nameStr, &target, &target_guid, &target_name))
-			return false;
-
-		if (strcmp(teleStr, "$home") == 0)    // References target's homebind
+        if (where.index() == 1)    // References target's homebind
 		{
-			if (target)
+            if (Player* target = player->GetConnectedPlayer())
 				target->TeleportTo(target->m_homebindMapId, target->m_homebindX, target->m_homebindY, target->m_homebindZ, target->GetOrientation());
 			else
 			{
                 CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_CHAR_HOMEBIND);
-				stmt->setUInt32(0, target_guid.GetCounter());
+                stmt->setUInt32(0, player->GetGUID().GetCounter());
 				PreparedQueryResult resultDB = CharacterDatabase.Query(stmt);
 
 				if (resultDB)
@@ -348,30 +343,22 @@ public:
 					WorldLocation loc(fieldsDB[0].GetUInt16(), fieldsDB[2].GetFloat(), fieldsDB[3].GetFloat(), fieldsDB[4].GetFloat(), 0.0f);
 					uint32 zoneId = fieldsDB[1].GetUInt16();
 
-                    CharacterDatabaseTransaction dummy;
-					Player::SavePositionInDB(loc, zoneId, target_guid, dummy);
+                    Player::SavePositionInDB(loc, zoneId, player->GetGUID(), nullptr);
 				}
 			}
 
 			return true;
 		}
 
-		// id, or string, or [name] Shift-click form |color|Htele:id|h[name]|h|r
-		GameTele const* tele = handler->extractGameTeleFromLink(teleStr);
-		if (!tele)
-		{
-			handler->SendSysMessage(LANG_COMMAND_TELE_NOTFOUND);
-			handler->SetSentErrorMessage(true);
-			return false;
-		}
+        GameTele const* tele = where.get<GameTele const*>();
+        if (Player* target = player->GetConnectedPlayer())
 
-		if (target)
 		{
 			// check online security
 			if (handler->HasLowerSecurity(target, ObjectGuid::Empty))
 				return false;
 
-			std::string chrNameLink = handler->playerLink(target_name);
+            std::string chrNameLink = handler->playerLink(target->GetName());
 
 			if (target->IsBeingTeleported() == true)
 			{
@@ -399,16 +386,15 @@ public:
 		else
 		{
 			// check offline security
-			if (handler->HasLowerSecurity(nullptr, target_guid))
+            if (handler->HasLowerSecurity(nullptr, player->GetGUID()))
 				return false;
 
-			std::string nameLink = handler->playerLink(target_name);
+            std::string nameLink = handler->playerLink(player->GetName());
 
 			handler->PSendSysMessage(LANG_TELEPORTING_TO, nameLink.c_str(), handler->GetTrinityString(LANG_OFFLINE), tele->name.c_str());
 
-            CharacterDatabaseTransaction dummy;
 			Player::SavePositionInDB(WorldLocation(tele->mapId, tele->position_x, tele->position_y, tele->position_z, tele->orientation),
-				sMapMgr->GetZoneId(PHASEMASK_NORMAL, tele->mapId, tele->position_x, tele->position_y, tele->position_z), target_guid, dummy);
+                sMapMgr->GetZoneId(PHASEMASK_NORMAL, tele->mapId, tele->position_x, tele->position_y, tele->position_z), player->GetGUID(), nullptr);
 		}
 
 		return true;

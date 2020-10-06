@@ -767,7 +767,7 @@ class npc_tournaments_organizer : public CreatureScript
             TournamentMgr.setTournamentOrganizer(me->GetOriginalEntry(), me);
         }
 
-    bool GossipHello(Player *player) override
+    bool OnGossipHello(Player *player) override
     {
         if (TournamentEnable)
             TournamentMgr.addGossip(me, player);
@@ -776,7 +776,7 @@ class npc_tournaments_organizer : public CreatureScript
         return true;
     }
 
-    bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+    bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
     {
 		//uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
 		uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
@@ -824,16 +824,19 @@ class ModTournamentsWorldScript : public WorldScript
     }
 };
 
+using namespace Trinity::ChatCommands;
+
 class ModTournamentsCommandScript : public CommandScript
 {
 public:
     ModTournamentsCommandScript() : CommandScript("ModTournamentsCommandScript") { }
 
-	std::vector<ChatCommand> GetCommands() const
+    ChatCommandTable GetCommands() const override
     {
-		std::vector<ChatCommand> commandTable =
+        static ChatCommandTable commandTable =
         {
-            { "gladiator",      SEC_ADMINISTRATOR,  false, &HandleGladiatorsChatCommand,       "" }
+            //{ "gladiator",      SEC_ADMINISTRATOR,  false, &HandleGladiatorsChatCommand,       "" }
+            { "gladiator",           HandleGladiatorsChatCommand,  rbac::RBAC_HandleGladiatorsChatCommand,         Console::Yes },
         };
         return commandTable;
     }
