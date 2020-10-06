@@ -902,15 +902,15 @@ public:
     }
 };
 
-class boss_rouge_toc5 : public CreatureScript
+class boss_rogue_toc5 : public CreatureScript
 {
 public:
-    boss_rouge_toc5() : CreatureScript("boss_rouge_toc5") { }
+    boss_rogue_toc5() : CreatureScript("boss_rogue_toc5") { }
 
     // Lana Stouthammer Evensong && Deathstalker Visceri || Rouge
-    struct boss_rouge_toc5AI : public ScriptedAI
+    struct boss_rogue_toc5AI : public ScriptedAI
     {
-        boss_rouge_toc5AI(Creature* creature) : ScriptedAI(creature)
+        boss_rogue_toc5AI(Creature* creature) : ScriptedAI(creature)
         {
             Initialize();
             instance = creature->GetInstanceScript();
@@ -1024,7 +1024,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfTheChampionAI<boss_rouge_toc5AI>(creature);
+        return GetTrialOfTheChampionAI<boss_rogue_toc5AI>(creature);
     }
 };
 
@@ -1035,5 +1035,5 @@ void AddSC_boss_grand_champions()
     new boss_mage_toc5();
     new boss_shaman_toc5();
     new boss_hunter_toc5();
-    new boss_rouge_toc5();
+    new boss_rogue_toc5();
 }

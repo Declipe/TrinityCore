@@ -32,7 +32,6 @@ class Battlefield;
 class Battleground;
 class BattlegroundMap;
 class Channel;
-class ChatCommand;
 class Creature;
 class CreatureAI;
 class DynamicObject;
@@ -73,6 +72,8 @@ struct CreatureData;
 struct ItemTemplate;
 struct MapEntry;
 struct Position;
+
+namespace Trinity::ChatCommands { struct ChatCommandBuilder; }
 
 enum BattlegroundTypeId : uint32;
 enum ContentLevels : uint8;
@@ -474,7 +475,8 @@ class TC_GAME_API OnlyOnceAreaTriggerScript : public AreaTriggerScript
         bool OnTrigger(Player* /*player*/, AreaTriggerEntry const* /*trigger*/) final override;
 
     protected:
-        virtual bool _OnTrigger(Player* /*player*/, AreaTriggerEntry const* /*trigger*/) = 0;
+        // returns true if the trigger was successfully handled, false if we should try again next time
+        virtual bool TryHandleOnce(Player* /*player*/, AreaTriggerEntry const* /*trigger*/) = 0;
         void ResetAreaTriggerDone(InstanceScript* /*instance*/, uint32 /*triggerId*/);
         void ResetAreaTriggerDone(Player const* /*player*/, AreaTriggerEntry const* /*trigger*/);
 };
@@ -523,7 +525,7 @@ class TC_GAME_API CommandScript : public ScriptObject
     public:
 
         // Should return a pointer to a valid command table (ChatCommand array) to be used by ChatHandler.
-        virtual std::vector<ChatCommand> GetCommands() const = 0;
+        virtual std::vector<Trinity::ChatCommands::ChatCommandBuilder> GetCommands() const = 0;
 };
 
 class TC_GAME_API WeatherScript : public ScriptObject, public UpdatableScript<Weather>
@@ -985,7 +987,7 @@ class TC_GAME_API ScriptMgr
 
     public: /* CommandScript */
 
-        std::vector<ChatCommand> GetChatCommands();
+        std::vector<Trinity::ChatCommands::ChatCommandBuilder> GetChatCommands();
 
     public: /* WeatherScript */
 

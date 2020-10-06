@@ -31,6 +31,7 @@ class GameObject;
 class PlayerAI;
 class WorldObject;
 struct Position;
+enum SpellFinishReason : uint8;
 
 typedef std::vector<AreaBoundary const*> CreatureBoundary;
 
@@ -144,11 +145,8 @@ class TC_GAME_API CreatureAI : public UnitAI
         // Called when spell hits a target
         virtual void SpellHitTarget(WorldObject* /*target*/, SpellInfo const* /*spellInfo*/) { }
 
-        // Called when a spell cast gets interrupted
-        virtual void OnSpellCastInterrupt(SpellInfo const* /*spell*/) { }
-
-        // Called when a spell cast has been successfully finished
-        virtual void OnSuccessfulSpellCast(SpellInfo const* /*spell*/) { }
+        // Called when a spell either finishes, interrupts or cancels a spell cast
+        virtual void OnSpellCastFinished(SpellInfo const* /*spell*/, SpellFinishReason /*reason*/) { }
 
         // Should return true if the NPC is currently being escorted
         virtual bool IsEscorted() const { return false; }
@@ -200,23 +198,22 @@ class TC_GAME_API CreatureAI : public UnitAI
         virtual Optional<QuestGiverStatus> GetDialogStatus(Player* /*player*/) { return {}; }
 
         // Called when a player opens a gossip dialog with the creature.
-        virtual bool GossipHello(Player* /*player*/) { return false; }
+        virtual bool OnGossipHello(Player* /*player*/) { return false; }
 
         // Called when a player selects a gossip item in the creature's gossip menu.
-        virtual bool GossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/) { return false; }
+        virtual bool OnGossipSelect(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/) { return false; }
 
         // Called when a player selects a gossip with a code in the creature's gossip menu.
-        virtual bool GossipSelectCode(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/, char const* /*code*/) { return false; }
+        virtual bool OnGossipSelectCode(Player* /*player*/, uint32 /*menuId*/, uint32 /*gossipListId*/, char const* /*code*/) { return false; }
 
         // Called when a player accepts a quest from the creature.
-        virtual void QuestAccept(Player* /*player*/, Quest const* /*quest*/) { }
+        virtual void OnQuestAccept(Player* /*player*/, Quest const* /*quest*/) { }
 
         // Called when a player completes a quest and is rewarded, opt is the selected item's index or 0
-        virtual void QuestReward(Player* /*player*/, Quest const* /*quest*/, uint32 /*opt*/) { }
+        virtual void OnQuestReward(Player* /*player*/, Quest const* /*quest*/, uint32 /*opt*/) { }
 
         /// == Waypoints system =============================
 
-        virtual void WaypointPathStarted(uint32 /*pathId*/) { }
         virtual void WaypointStarted(uint32 /*nodeId*/, uint32 /*pathId*/) { }
         virtual void WaypointReached(uint32 /*nodeId*/, uint32 /*pathId*/) { }
         virtual void WaypointPathEnded(uint32 /*nodeId*/, uint32 /*pathId*/) { }
