@@ -15,9 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Transmogrification.h"
 #include "AnticheatMgr.h"
-
 #include "Player.h"
 #include "AccountMgr.h"
 #include "AchievementMgr.h"
@@ -94,6 +92,7 @@
 #include "TicketMgr.h"
 #include "TradeData.h"
 #include "Trainer.h"
+#include "Transmogrification.h"
 #include "Transport.h"
 #include "UpdateData.h"
 #include "UpdateFieldFlags.h"
@@ -4361,6 +4360,9 @@ void Player::DeleteFromDB(ObjectGuid playerguid, uint32 accountId, bool updateRe
             stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHARACTER);
             stmt->setUInt32(0, guid);
             trans->Append(stmt);
+#ifdef PRESETS
+            trans->PAppend("DELETE FROM `custom_transmogrification_sets` WHERE `Owner` = %u", guid);
+#endif
 
             stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_PLAYER_ACCOUNT_DATA);
             stmt->setUInt32(0, guid);
@@ -12407,7 +12409,7 @@ void Player::SetVisibleItemSlot(uint8 slot, Item* pItem)
 {
     if (pItem)
     {
-        if (uint32 entry = sTransmogrification->GetFakeEntry(pItem))
+        if (uint32 entry = pItem->transmog)
             SetUInt32Value(PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * 2), entry);
         else
             SetUInt32Value(PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * 2), pItem->GetEntry());
@@ -12564,9 +12566,9 @@ void Player::MoveItemFromInventory(uint8 bag, uint8 slot, bool update)
     // Visit http://www.realmsofwarcraft.com/bb for forums and information
     //
     // End of prepatch
-        sTransmogrification->DeleteFakeEntry(this, it);
 
         RemoveItem(bag, slot, update);
+        it->transmog = 0;
         ItemRemovedQuestCheck(it->GetEntry(), it->GetCount());
         it->SetNotRefundable(this, false);
         RemoveItemFromUpdateQueueOf(it, this);
@@ -23874,7 +23876,10 @@ void Player::AutoUnequipOffhandIfNeed(bool force /*= false*/)
     }
     else
     {
+        uint32 transmog = offItem->transmog;
         MoveItemFromInventory(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND, true);
+        offItem->transmog = transmog;
+
         CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
         offItem->DeleteFromInventoryDB(trans);                   // deletes item from character's inventory
         offItem->SaveToDB(trans);                                // recursive and not have transaction guard into self, item not in inventory and can be save standalone

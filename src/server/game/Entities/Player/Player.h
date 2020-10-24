@@ -150,8 +150,6 @@ struct SpellModifier
     Aura* const ownerAura;
 };
 
-typedef std::unordered_map<ObjectGuid, uint32> TransmogMapType;
-
 #ifdef PRESETS
 typedef std::map<uint8, uint32> PresetslotMapType;
 struct PresetData
@@ -2215,36 +2213,11 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         std::string GetMapAreaAndZoneString() const;
         std::string GetCoordsMapAreaAndZoneString() const;
 
-        std::string GetDebugInfo() const override;
-
-    // Prepatch by LordPsyan
-    // 01
-    // 02
-    // 03
-    // 04
-    // 05
-    // 06
-    // 07
-    // 08
-    // 09
-    // 10
-    // 11
-    // 12
-    // 13
-    // 14
-    // 15
-    // 16
-    // 17
-    // 18
-    // 19
-    // 20
-    // Visit http://www.realmsofwarcraft.com/bb for forums and information
-    //
-    // End of prepatch
-        TransmogMapType transmogMap; // transmogMap[iGUID] = entry
 #ifdef PRESETS
         PresetMapType presetMap; // presetMap[presetId] = presetData
 #endif
+
+        std::string GetDebugInfo() const override;
 
     protected:
         // Gamemaster whisper whitelist
