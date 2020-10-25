@@ -236,6 +236,7 @@ void AddSC_Resets();
 void AddSC_Mod_ItemUpgrade();
 void AddSC_Mod_AutoLearn();
 void AddSC_Transmogrification();
+void AddSC_NPC_TransmogDisplayVendor();
 void AddSC_mod_DefaultSpec();
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
@@ -258,7 +259,7 @@ void AddCustomScripts()
 // end15
 // end16
     // GuildHouse NPC
-	AddSC_guildmaster();
+AddSC_guildmaster();
 // end18
 // end19
 // end20
@@ -303,7 +304,7 @@ void AddCustomScripts()
 // end59
 // end60
 // 1v1 Arena
-    AddSC_npc_1v1arena();
+AddSC_npc_1v1arena();
 // end62
 // end63
 // end64
@@ -395,7 +396,7 @@ void AddCustomScripts()
 // end150
 // end151
 // VIP
-    AddSC_premium_commandscript();
+AddSC_premium_commandscript();
 // end153
 // end154
 // end155
@@ -461,6 +462,7 @@ AddSC_Mod_ItemUpgrade();
 AddSC_Mod_AutoLearn();
 AddSC_npc_teleport();
 AddSC_Transmogrification();
+AddSC_NPC_TransmogDisplayVendor();
 AddSC_mod_DefaultSpec();
 AddSC_level_award();
 }
