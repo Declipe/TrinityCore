@@ -1937,6 +1937,9 @@ void World::SetInitialWorldSettings()
 	TC_LOG_INFO("server.loading", "Loading Chat Filter Words...");
 	sObjectMgr->LoadChatFilter();
 
+    TC_LOG_INFO("server.loading", "Loading Vehicle Templates...");
+    sObjectMgr->LoadVehicleTemplate();                          // must be after LoadCreatureTemplates()
+
     TC_LOG_INFO("server.loading", "Loading Vehicle Template Accessories...");
     sObjectMgr->LoadVehicleTemplateAccessories();                // must be after LoadCreatureTemplates() and LoadNPCSpellClickSpells()
 

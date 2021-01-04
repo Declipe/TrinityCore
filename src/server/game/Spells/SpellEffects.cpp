@@ -1443,7 +1443,6 @@ void Spell::DoCreateItem(uint32 /*i*/, uint32 itemtype)
 
     /* == gem perfection handling over == */
 
-
     /* == profession specialization handling == */
 
     // init items_count to 1, since 1 item will be created regardless of specialization
@@ -1462,7 +1461,6 @@ void Spell::DoCreateItem(uint32 /*i*/, uint32 itemtype)
     num_to_add *= items_count;
 
     /* == profession specialization handling over == */
-
 
     // can the player store the new item?
     ItemPosCountVec dest;
@@ -2043,7 +2041,6 @@ void Spell::EffectSummonType(SpellEffIndex effIndex)
     WorldObject* caster = m_caster;
     if (m_originalCaster)
         caster = m_originalCaster;
-
 
     bool personalSpawn = (properties->Flags & SUMMON_PROP_FLAG_PERSONAL_SPAWN) != 0;
     int32 duration = m_spellInfo->GetDuration();
