@@ -77,6 +77,7 @@ char constexpr Holidaysfmt[] = "niiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
 char constexpr Itemfmt[] = "niiiiiii";
 char constexpr ItemBagFamilyfmt[] = "nxxxxxxxxxxxxxxxxx";
 char constexpr ItemDisplayTemplateEntryfmt[] = "nssssssiiiiiiiissssssssii";
+//char constexpr ItemDisplayTemplateEntryfmt[] = "nxxxxsxxxxxxxxxxxxxxxxxxx";
 //char constexpr ItemCondExtCostsEntryfmt[] = "xiii";
 //char constexpr ItemExtendedCostEntryfmt[] = "niiiiiiiiiiiiiix";
 char constexpr ItemLimitCategoryEntryfmt[] = "nxxxxxxxxxxxxxxxxxii";
