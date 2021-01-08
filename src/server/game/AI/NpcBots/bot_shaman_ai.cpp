@@ -513,7 +513,7 @@ public:
                             erase = true;
                         else if (u->isMoving())
                         {
-                            if (me->GetDistance(u) > 10.f && !u->HasInArc(M_PI / 2.0f, me))
+                            if (me->GetDistance(u) > 10.f && !u->HasInArc(M_PI/2, me))
                                 erase = true;
                         }
                         else if (me->GetDistance(u) > 9.f)
@@ -575,7 +575,7 @@ public:
                     bool erase = false;
                     if (u->isMoving())
                     {
-                        if (me->GetDistance(u) > 10.f && !u->HasInArc(M_PI / 2.0f, me))
+                        if (me->GetDistance(u) > 10.f && !u->HasInArc(M_PI/2, me))
                             erase = true;
                     }
                     else if (me->GetDistance(u) > 7.f)

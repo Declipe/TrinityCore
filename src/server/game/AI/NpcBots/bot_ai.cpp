@@ -847,17 +847,17 @@ void bot_ai::_calculatePos(Position& pos) const
         angle = M_PI / 7.5f; //max bias (left of right) //total arc is angle * 2
         angle = (angle / dpss) * (slot); //bias
         if (slot % 2) angle *= -1.f; //bias interchange
-        angle += ((slot % 4) < 2) ? (M_PI/2.0f) : -(M_PI/2.0f); //sides
+        angle += ((slot % 4) < 2) ? (M_PI/2.f) : -(M_PI/2.f); //sides
         mydist = 2.0f;
     }
     else
     {
-        angle = (me->GetEntry() % 2) ? (M_PI/2.0f) : -(M_PI/2.0f);
+        angle = (me->GetEntry() % 2) ? (M_PI/2.f) : -(M_PI/2.f);
         mydist = 0.5f;
     }
 
     mydist += std::max<float>(int8(followdist) - 30, 5) / 7.f; //1.f-10.f
-    mydist = std::max<float>(mydist - 2.0f, 0.0f); //get bots closer
+    mydist = std::max<float>(mydist - 2.f, 0.0f); //get bots closer
     angle += master->GetOrientation();
 
     float x(0),y(0),z(master->GetPositionZ());

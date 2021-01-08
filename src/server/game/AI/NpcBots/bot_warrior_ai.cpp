@@ -620,7 +620,7 @@ public:
             //SHOCKWAVE - frontal cone
             if (IsSpellReady(SHOCKWAVE_1, diff) && HasRole(BOT_ROLE_DPS) && dist < 8.f && !CCed(opponent) &&
                 rage >= rcost(SHOCKWAVE_1) && Rand() < (70 + 70 * opponent->IsNonMeleeSpellCast(false)) &&
-                me->HasInArc(M_PI / 2.0f, opponent) && opponent->IsWithinLOSInMap(me))
+                me->HasInArc(M_PI/2, opponent) && opponent->IsWithinLOSInMap(me))
             {
                 if (doCast(me, GetSpell(SHOCKWAVE_1)))
                     return;

@@ -301,7 +301,7 @@ public:
 
             if (IsSpellReady(BULLHEADED_1, diff, false) && GetHealthPCT(me) < 90 &&
                 ((!me->getAttackers().empty() && me->GetDistance(*me->getAttackers().begin()) < 7) ||
-                (dist > 3 && !opponent->HasInArc(M_PI / 2.0f, me) &&
+                (dist > 3 && !opponent->HasInArc(M_PI/2, me) &&
                 (CCed(me, true) || me->HasAuraWithMechanic(1<<MECHANIC_SNARE)))))
             {
                 me->CastSpell(me, GetSpell(BULLHEADED_1), false);
