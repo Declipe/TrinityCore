@@ -336,10 +336,6 @@ class TC_GAME_API Group
         // FG: evil hacks
         void BroadcastGroupUpdate(void);
 
-        //npcbots
-        ObjectGuid const* GetTargetIcons() const { return m_targetIcons; }
-        //end npcbots
-
     protected:
         bool _setMembersGroup(ObjectGuid guid, uint8 group);
         void _homebindIfInstance(Player* player);

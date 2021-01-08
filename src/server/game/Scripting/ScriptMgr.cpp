@@ -44,10 +44,6 @@
 #include "WorldSession.h"
 #include "sc_npc_teleport.h"
 
-//npcbot
-#include "botmgr.h"
-//end npcbot
-
 // Trait which indicates whether this script type
 // must be assigned in the database.
 template<typename>
@@ -1047,10 +1043,6 @@ void ScriptMgr::Initialize()
 
     // LFGScripts
     lfg::AddSC_LFGScripts();
-
-    //npcbot: load bot scripts here
-    AddNpcBotScripts();
-    //end npcbot
 
     // Load all static linked scripts through the script loader function.
     ASSERT(_script_loader_callback,
