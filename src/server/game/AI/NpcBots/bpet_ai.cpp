@@ -20,7 +20,7 @@ float const ShamanPetPositionAnglesByPosNumber[SHAMAN_MAX_PET_POSITIONS] =
 float const DruidPetPositionAnglesByPosNumber[DRUID_MAX_PET_POSITIONS] =
 {
     0.f,//left
-    M_PI/2,//back
+    M_PI / 2.0f,//back
     M_PI//right
 };
 float const DKPetPositionAnglesByPosNumber[DK_MAX_PET_POSITIONS] =
@@ -1356,7 +1356,7 @@ void bot_pet_ai::CalculateAttackPos(Unit const* target, Position& pos) const
         dist = std::min<float>(dist, petOwner->GetBotAI()->HasRole(BOT_ROLE_DPS) ? GetSpellAttackRange(rangeMode == BOT_ATTACK_RANGE_LONG) - 4.f : 30.f);
 
     float clockwise = (me->GetEntry() % 2) ? 1.f : -1.f;
-    float angleDelta = frand(0.0f, M_PI*0.10f) * clockwise;
+    float angleDelta = frand(0.0f, M_PI * 0.10f) * clockwise;
 
     for (uint8 i = 0; i != 5; ++i)
     {

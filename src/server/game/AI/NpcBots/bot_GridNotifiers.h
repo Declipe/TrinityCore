@@ -785,9 +785,9 @@ class NearbyHostileUnitInConeCheck
 {
     public:
         explicit NearbyHostileUnitInConeCheck(Unit const* unit, float maxdist, bot_ai const* m_ai) :
-        me(unit), max_range(maxdist), ai(m_ai), cone(M_PI/2)
+        me(unit), max_range(maxdist), ai(m_ai), cone(M_PI / 2.0f)
         {
-            free = ai->IAmFree();
+            float free = ai->IAmFree();
         }
         bool operator()(Unit const* u) const
         {
@@ -955,7 +955,7 @@ class ManaDrainUnitCheck
                 return false;
             if (u->GetPower(POWER_MANA)*10/(u->GetMaxPower(POWER_MANA)/10) < 15)
                 return false;
-            if (!me->HasInArc(M_PI*0.5f, u))
+            if (!me->HasInArc(M_PI *0.5f, u))
                 return false;
             if (me->GetDistance(u) > max_range)
                 return false;
