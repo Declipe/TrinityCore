@@ -247,7 +247,7 @@ inline void Battleground::_CheckSafePositions(uint32 diff)
                     continue;
 
                 Position pos = player->GetPosition();
-                Position const* startPos = GetTeamStartPosition(Battleground::GetTeamIndexByTeamId(player->GetBGTeam()));
+                Position const* startPos = GetTeamStartPosition(Battleground::GetTeamIndexByTeamId(player->GetTeam()));
                 if (pos.GetExactDistSq(startPos) > maxDist)
                 {
                     TC_LOG_DEBUG("bg.battleground", "BATTLEGROUND: Sending %s back to start location (map: %u) (possible exploit)", player->GetName().c_str(), GetMapId());
