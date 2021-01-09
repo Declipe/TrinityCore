@@ -661,6 +661,20 @@ void WorldSession::HandleMoveTimeSkippedOpcode(WorldPacket& recvData)
 
 void WorldSession::HandleTimeSyncResponse(WorldPacket& recvData)
 {
+    Battleground* bg = _player->GetBattleground();
+    if (bg)
+    {
+        if (_player->ShouldForgetBGPlayers() && bg)
+        {
+            _player->DoForgetPlayersInBG(bg);
+            _player->SetForgetBGPlayers(false);
+        }
+    }
+    else if (_player->ShouldForgetInListPlayers())
+    {
+        _player->DoForgetPlayersInList();
+        _player->SetForgetInListPlayers(false);
+    }
     TC_LOG_DEBUG("network", "CMSG_TIME_SYNC_RESP");
 
     uint32 counter, clientTimestamp;

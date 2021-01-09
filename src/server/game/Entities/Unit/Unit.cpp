@@ -11734,7 +11734,7 @@ void Unit::RemoveCharmedBy(Unit* charmer)
 void Unit::RestoreFaction()
 {
     if (GetTypeId() == TYPEID_PLAYER)
-        ToPlayer()->SetFactionForRace(GetRace());
+        ToPlayer()->SetFactionForRace(ToPlayer()->GetRace());
     else
     {
         if (HasUnitTypeMask(UNIT_MASK_MINION))

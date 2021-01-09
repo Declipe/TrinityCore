@@ -38,6 +38,7 @@
 #include "World.h"
 #include "WorldPacket.h"
 #include "../../scripts/Custom/npc/npc_arena1v1.h"
+#include "Custom/Custom.h"
 
 void WorldSession::HandleBattlemasterHelloOpcode(WorldPacket& recvData)
 {
@@ -296,14 +297,22 @@ void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket& /*recvDa
     data << flagCarrierCount;
     if (allianceFlagCarrier)
     {
-        data << uint64(allianceFlagCarrier->GetGUID());
+        if (allianceFlagCarrier->SendRealNameQuery())
+            data << uint64(allianceFlagCarrier->GetGUID() + LIMIT_UINT32);
+        else
+            data << uint64(allianceFlagCarrier->GetGUID());
+
         data << float(allianceFlagCarrier->GetPositionX());
         data << float(allianceFlagCarrier->GetPositionY());
     }
 
     if (hordeFlagCarrier)
     {
-        data << uint64(hordeFlagCarrier->GetGUID());
+            if (hordeFlagCarrier->SendRealNameQuery())
+            data << uint64(hordeFlagCarrier->GetGUID() + LIMIT_UINT32);
+        else
+            data << uint64(hordeFlagCarrier->GetGUID());
+
         data << float(hordeFlagCarrier->GetPositionX());
         data << float(hordeFlagCarrier->GetPositionY());
     }
@@ -572,7 +581,7 @@ void WorldSession::HandleBattlefieldStatusOpcode(WorldPacket & /*recvData*/)
             {
                 // this line is checked, i only don't know if GetStartTime is changing itself after bg end!
                 // send status in Battleground
-                sBattlegroundMgr->BuildBattlegroundStatusPacket(&data, bg, i, STATUS_IN_PROGRESS, bg->GetEndTime(), bg->GetStartTime(), arenaType, _player->GetBGTeam());
+                sBattlegroundMgr->BuildBattlegroundStatusPacket(&data, bg, i, STATUS_IN_PROGRESS, bg->GetEndTime(), bg->GetStartTime(), arenaType, _player->GetTeam());
                 SendPacket(&data);
                 continue;
             }

@@ -4058,6 +4058,17 @@ Logger.mmaps=3,Server
 #Logger.sql.driver=3,Console Server
 #Logger.warden=3,Console Server
 
+#        CROSSFACTION BG CONFIG
+#            Enable Crossfaction battleground
+#            Default: 1 - on
+#                     0 - off
+#
+
+CrossfactionBG.enable = 1
+
+#
+###################################################################################################
+
 #
 #    Log.Async.Enable
 #        Description: Enables asynchronous message logging.

@@ -844,9 +844,12 @@ class TC_GAME_API Unit : public WorldObject
         uint8 GetLevel() const { return uint8(GetUInt32Value(UNIT_FIELD_LEVEL)); }
         uint8 GetLevelForTarget(WorldObject const* /*target*/) const override { return GetLevel(); }
         void SetLevel(uint8 lvl, bool sendUpdate = true);
-        uint8 GetRace() const { return GetByteValue(UNIT_FIELD_BYTES_0, UNIT_BYTES_0_OFFSET_RACE); }
+        uint8 GetRace(bool forceoriginal = false) const;
+        uint8 getCFSRace() { return GetRace(true); }
+        //uint8 GetRace() const { return GetByteValue(UNIT_FIELD_BYTES_0, UNIT_BYTES_0_OFFSET_RACE); }
         void SetRace(uint8 race) { SetByteValue(UNIT_FIELD_BYTES_0, UNIT_BYTES_0_OFFSET_RACE, race); }
         uint32 GetRaceMask() const { return 1 << (GetRace() - 1); }
+        uint32 getCFSRaceMask() const { return 1 << (GetRace(true) - 1); }
         uint8 GetClass() const { return GetByteValue(UNIT_FIELD_BYTES_0, UNIT_BYTES_0_OFFSET_CLASS); }
         void SetClass(uint8 unitClass) { SetByteValue(UNIT_FIELD_BYTES_0, UNIT_BYTES_0_OFFSET_CLASS, unitClass); }
         uint32 GetClassMask() const { return 1 << (GetClass() - 1); }

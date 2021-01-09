@@ -901,6 +901,35 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
     public:
         explicit Player(WorldSession* session);
         ~Player();
+    private:
+            bool m_ForgetBGPlayers;
+            bool m_ForgetInListPlayers;
+            uint8 m_FakeRace;
+            uint8 m_RealRace;
+            uint32 m_FakeMorph;
+            public:
+                typedef std::vector<uint64> FakePlayers;
+                void SendChatMessage(const char *format, ...);
+                void FitPlayerInTeam(bool action, Battleground* pBattleGround = NULL);          // void FitPlayerInTeam(bool action, Battleground* bg = NULL);
+                void DoForgetPlayersInList();
+                void DoForgetPlayersInBG(Battleground* pBattleGround);                                          // void DoForgetPlayersInBG(Battleground* bg);
+                uint8 getCFSRace() const { return m_RealRace; }
+                void SetCFSRace() { m_RealRace = GetByteValue(UNIT_FIELD_BYTES_0, 0); }; // SHOULD ONLY BE CALLED ON LOGIN
+                void SetFakeRace(); // SHOULD ONLY BE CALLED ON LOGIN
+                void SetFakeRaceAndMorph(); // SHOULD ONLY BE CALLED ON LOGIN
+                uint32 GetFakeMorph() { return m_FakeMorph; };
+                uint8 getFRace() const { return m_FakeRace; }
+                void SetForgetBGPlayers(bool value) { m_ForgetBGPlayers = value; }
+                bool ShouldForgetBGPlayers() { return m_ForgetBGPlayers; }
+                void SetForgetInListPlayers(bool value) { m_ForgetInListPlayers = value; }
+                bool ShouldForgetInListPlayers() { return m_ForgetInListPlayers; }
+                bool SendBattleGroundChat(uint32 msgtype, std::string message);
+                void MorphFit(bool value);
+                bool IsPlayingNative() const { return GetTeam() == m_team; }
+                uint32 GetCFSTeam() const { return m_team; }
+                uint32 GetTeam() const { return m_bgData.bgTeam && GetBattleground() ? m_bgData.bgTeam : m_team; }
+                bool SendRealNameQuery();
+                FakePlayers m_FakePlayers;
 
         PlayerAI* AI() const { return reinterpret_cast<PlayerAI*>(GetAI()); }
 
@@ -957,7 +986,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void RemoveSocial();
 
         PlayerTaxi m_taxi;
-        void InitTaxiNodesForLevel() { m_taxi.InitTaxiNodesForLevel(GetRace(), GetClass(), GetLevel()); }
+        void InitTaxiNodesForLevel() { m_taxi.InitTaxiNodesForLevel(getCFSRace(), GetClass(), GetLevel()); }
         bool ActivateTaxiPathTo(std::vector<uint32> const& nodes, Creature* npc = nullptr, uint32 spellid = 0);
         bool ActivateTaxiPathTo(uint32 taxi_path_id, uint32 spellid = 0);
         void FinishTaxiFlight();
@@ -1075,6 +1104,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         /// Handles whispers from Addons and players based on sender, receiver's guid and language.
         void Whisper(std::string_view text, Language language, Player* receiver, bool = false) override;
         void Whisper(uint32 textId, Player* target, bool isBossWhisper = false) override;
+        void BuildPlayerChat(WorldPacket* data, uint8 msgtype, std::string const& text, uint32 language) const;
+
 
         /*********************************************************/
         /***                    STORAGE SYSTEM                 ***/
@@ -1786,8 +1817,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void CheckAreaExploreAndOutdoor(void);
 
         static uint32 TeamForRace(uint8 race);
-        uint32 GetTeam() const { return m_team; }
-        TeamId GetTeamId() const { return m_team == ALLIANCE ? TEAM_ALLIANCE : TEAM_HORDE; }
+
+        TeamId GetTeamId() const { return GetTeam() == ALLIANCE ? TEAM_ALLIANCE : TEAM_HORDE; }
         void SetFactionForRace(uint8 race);
 
         void InitDisplayIds();
@@ -1958,7 +1989,6 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void SetBattlegroundEntryPoint();
 
         void SetBGTeam(uint32 team);
-        uint32 GetBGTeam() const;
 
         void LeaveBattleground(bool teleportToEntryPoint = true);
         bool CanJoinToBattleground(Battleground const* bg) const;
