@@ -105,7 +105,6 @@
 #include "WorldSession.h"
 #include "Config.h"
 #include "WorldStatePackets.h"
-#include "CFBGData.h"
 
 #define ZONE_UPDATE_INTERVAL (1*IN_MILLISECONDS)
 
@@ -176,8 +175,6 @@ uint32 const MAX_MONEY_AMOUNT = static_cast<uint32>(std::numeric_limits<int32>::
 
 Player::Player(WorldSession* session): Unit(true)
 {
-    cfbgdata = std::make_unique<CFBGData>(this);
-
     m_speakTime = 0;
     m_speakCount = 0;
 
@@ -535,7 +532,6 @@ bool Player::Create(ObjectGuid::LowType guidlow, CharacterCreateInfo* createInfo
 
     SetRace(createInfo->Race);
     SetClass(createInfo->Class);
-    cfbgdata->InitializeCFData();
     SetGender(createInfo->Gender);
     SetPowerType(Powers(powertype), false);
     InitDisplayIds();
@@ -6109,7 +6105,7 @@ void Player::UpdateWeaponsSkillsToMaxSkillsForLevel()
 
 // This functions sets a skill line value (and adds if doesn't exist yet)
 // To "remove" a skill line, set it's values to zero
-void Player::SetSkill(uint32 id, uint16 step, uint16 newVal, uint16 maxVal, bool defskill)
+void Player::SetSkill(uint32 id, uint16 step, uint16 newVal, uint16 maxVal)
 {
     if (!id)
         return;
@@ -6120,9 +6116,6 @@ void Player::SetSkill(uint32 id, uint16 step, uint16 newVal, uint16 maxVal, bool
     //has skill
     if (itr != mSkillStatus.end() && itr->second.uState != SKILL_DELETED)
     {
-        if (itr->second.defskill)
-            itr->second.defskill = defskill;
-
         currVal = SKILL_VALUE(GetUInt32Value(PLAYER_SKILL_VALUE_INDEX(itr->second.pos)));
         if (newVal)
         {
@@ -17432,16 +17425,7 @@ bool Player::LoadFromDB(ObjectGuid guid, CharacterDatabaseQueryHolder const& hol
 
     SetRace(fields[3].GetUInt8());
     SetClass(fields[4].GetUInt8());
-    cfbgdata->InitializeCFData();
-    _LoadBGData(holder.GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_BG_DATA));
     SetGender(gender);
-
-    if (m_bgData.bgTeam &&
-        sBattlegroundMgr->GetBattleground(m_bgData.bgInstanceID, m_bgData.bgTypeID) &&
-        !cfbgdata->NativeTeam())
-    {
-        SetRace(cfbgdata->GetFRace());
-    }
 
     // check if race/class combination is valid
     PlayerInfo const* info = sObjectMgr->GetPlayerInfo(GetRace(), GetClass());
@@ -17577,6 +17561,7 @@ bool Player::LoadFromDB(ObjectGuid guid, CharacterDatabaseQueryHolder const& hol
 
     _LoadBoundInstances(holder.GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_BOUND_INSTANCES));
     _LoadInstanceTimeRestrictions(holder.GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_INSTANCE_LOCK_TIMES));
+    _LoadBGData(holder.GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_BG_DATA));
 
     GetSession()->SetPlayer(this);
     MapEntry const* mapEntry = sMapStore.LookupEntry(mapId);
@@ -17983,8 +17968,6 @@ bool Player::LoadFromDB(ObjectGuid guid, CharacterDatabaseQueryHolder const& hol
     InitTalentForLevel();
     LearnDefaultSkills();
     LearnCustomSpells();
-
-    cfbgdata->ReplaceRacials();
 
     // must be before inventory (some items required reputation check)
     m_reputationMgr->LoadFromDB(holder.GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_REPUTATION));
@@ -19549,7 +19532,7 @@ void Player::SaveToDB(CharacterDatabaseTransaction trans, bool create /* = false
         stmt->setUInt32(index++, GetGUID().GetCounter());
         stmt->setUInt32(index++, GetSession()->GetAccountId());
         stmt->setString(index++, GetName());
-        stmt->setUInt8(index++, cfbgdata->GetORace());
+        stmt->setUInt8(index++, GetRace());
         stmt->setUInt8(index++, GetClass());
         stmt->setUInt8(index++, GetNativeGender());   // save gender from PLAYER_BYTES_3, UNIT_BYTES_0 changes with every transform effect
         stmt->setUInt8(index++, GetLevel());
@@ -19659,7 +19642,7 @@ void Player::SaveToDB(CharacterDatabaseTransaction trans, bool create /* = false
         // Update query
         stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_CHARACTER);
         stmt->setString(index++, GetName());
-        stmt->setUInt8(index++, cfbgdata->GetORace());
+        stmt->setUInt8(index++, GetRace());
         stmt->setUInt8(index++, GetClass());
         stmt->setUInt8(index++, GetNativeGender());   // save gender from PLAYER_BYTES_3, UNIT_BYTES_0 changes with every transform effect
         stmt->setUInt8(index++, GetLevel());
@@ -20385,31 +20368,28 @@ void Player::_SaveSkills(CharacterDatabaseTransaction trans)
         uint16 value = SKILL_VALUE(valueData);
         uint16 max = SKILL_MAX(valueData);
 
-        if (!itr->second.defskill)
+        switch (itr->second.uState)
         {
-            switch (itr->second.uState)
-            {
-                case SKILL_NEW:
-                    stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_CHAR_SKILLS);
-                    stmt->setUInt32(0, GetGUID().GetCounter());
-                    stmt->setUInt16(1, uint16(itr->first));
-                    stmt->setUInt16(2, value);
-                    stmt->setUInt16(3, max);
-                    trans->Append(stmt);
+            case SKILL_NEW:
+                stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_CHAR_SKILLS);
+                stmt->setUInt32(0, GetGUID().GetCounter());
+                stmt->setUInt16(1, uint16(itr->first));
+                stmt->setUInt16(2, value);
+                stmt->setUInt16(3, max);
+                trans->Append(stmt);
 
-                    break;
-                case SKILL_CHANGED:
-                    stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_CHAR_SKILLS);
-                    stmt->setUInt16(0, value);
-                    stmt->setUInt16(1, max);
-                    stmt->setUInt32(2, GetGUID().GetCounter());
-                    stmt->setUInt16(3, uint16(itr->first));
-                    trans->Append(stmt);
+                break;
+            case SKILL_CHANGED:
+                stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_CHAR_SKILLS);
+                stmt->setUInt16(0, value);
+                stmt->setUInt16(1, max);
+                stmt->setUInt32(2, GetGUID().GetCounter());
+                stmt->setUInt16(3, uint16(itr->first));
+                trans->Append(stmt);
 
-                    break;
-                default:
-                    break;
-            }
+                break;
+            default:
+                break;
         }
         itr->second.uState = SKILL_UNCHANGED;
 
@@ -20992,13 +20972,7 @@ void Player::Say(std::string_view text, Language language, WorldObject const* /*
 
     WorldPacket data;
     ChatHandler::BuildChatPacket(data, CHAT_MSG_SAY, language, this, this, _text);
-    SendMessageToSetInRange(&data, sWorld->getFloatConfig(CONFIG_LISTEN_RANGE_SAY), !sWorld->getBoolConfig(CONFIG_CFBG_ENABLED));
-
-    if (sWorld->getBoolConfig(CONFIG_CFBG_ENABLED))
-    {
-       ChatHandler::BuildChatPacket(data, CHAT_MSG_SAY, LANG_UNIVERSAL, this, nullptr, _text);
-       SendDirectMessage(&data);
-    }
+    SendMessageToSetInRange(&data, sWorld->getFloatConfig(CONFIG_LISTEN_RANGE_SAY), true);
 }
 
 void Player::Say(uint32 textId, WorldObject const* target /*= nullptr*/)
@@ -21013,13 +20987,7 @@ void Player::Yell(std::string_view text, Language language, WorldObject const* /
 
     WorldPacket data;
     ChatHandler::BuildChatPacket(data, CHAT_MSG_YELL, language, this, this, _text);
-    SendMessageToSetInRange(&data, sWorld->getFloatConfig(CONFIG_LISTEN_RANGE_YELL), !sWorld->getBoolConfig(CONFIG_CFBG_ENABLED));
-
-    if (sWorld->getBoolConfig(CONFIG_CFBG_ENABLED))
-    {
-       ChatHandler::BuildChatPacket(data, CHAT_MSG_YELL, LANG_UNIVERSAL, this, nullptr, _text);
-       SendDirectMessage(&data);
-    }
+    SendMessageToSetInRange(&data, sWorld->getFloatConfig(CONFIG_LISTEN_RANGE_YELL), true);
 }
 
 void Player::Yell(uint32 textId, WorldObject const* target /*= nullptr*/)
@@ -21034,13 +21002,7 @@ void Player::TextEmote(std::string_view text, WorldObject const* /*= nullptr*/, 
 
     WorldPacket data;
     ChatHandler::BuildChatPacket(data, CHAT_MSG_EMOTE, LANG_UNIVERSAL, this, this, _text);
-    SendMessageToSetInRange(&data, sWorld->getFloatConfig(CONFIG_LISTEN_RANGE_TEXTEMOTE), !sWorld->getBoolConfig(CONFIG_CFBG_ENABLED), !GetSession()->HasPermission(rbac::RBAC_PERM_TWO_SIDE_INTERACTION_CHAT));
-
-    if (sWorld->getBoolConfig(CONFIG_CFBG_ENABLED))
-    {
-       ChatHandler::BuildChatPacket(data, CHAT_MSG_EMOTE, LANG_UNIVERSAL, this, nullptr, _text);
-       SendDirectMessage(&data);
-    }
+    SendMessageToSetInRange(&data, sWorld->getFloatConfig(CONFIG_LISTEN_RANGE_TEXTEMOTE), true, !GetSession()->HasPermission(rbac::RBAC_PERM_TWO_SIDE_INTERACTION_CHAT));
 }
 
 void Player::TextEmote(uint32 textId, WorldObject const* target /*= nullptr*/, bool /*isBossEmote = false*/)
@@ -22474,12 +22436,11 @@ void Player::SetBGTeam(uint32 team)
 {
     m_bgData.bgTeam = team;
     SetArenaFaction(uint8(team == ALLIANCE ? 1 : 0));
-    cfbgdata->SetCFBGData();
 }
 
 uint32 Player::GetBGTeam() const
 {
-    return m_bgData.bgTeam ? m_bgData.bgTeam : m_team;
+    return m_bgData.bgTeam ? m_bgData.bgTeam : GetTeam();
 }
 
 void Player::LeaveBattleground(bool teleportToEntryPoint)
@@ -23271,7 +23232,7 @@ void Player::LearnDefaultSkill(uint32 skillId, uint16 rank)
     switch (GetSkillRangeType(rcInfo))
     {
         case SKILL_RANGE_LANGUAGE:
-            SetSkill(skillId, 0, 300, 300, true);
+            SetSkill(skillId, 0, 300, 300);
             break;
         case SKILL_RANGE_LEVEL:
         {
@@ -23288,11 +23249,11 @@ void Player::LearnDefaultSkill(uint32 skillId, uint16 rank)
             else if (skillId == SKILL_LOCKPICKING)
                 skillValue = std::max<uint16>(1, GetSkillValue(SKILL_LOCKPICKING));
 
-            SetSkill(skillId, 0, skillValue, maxValue, true);
+            SetSkill(skillId, 0, skillValue, maxValue);
             break;
         }
         case SKILL_RANGE_MONO:
-            SetSkill(skillId, 0, 1, 1, true);
+            SetSkill(skillId, 0, 1, 1);
             break;
         case SKILL_RANGE_RANK:
         {
@@ -23307,7 +23268,7 @@ void Player::LearnDefaultSkill(uint32 skillId, uint16 rank)
             else if (GetClass() == CLASS_DEATH_KNIGHT)
                 skillValue = std::min(std::max<uint16>({ uint16(1), uint16((GetLevel() - 1) * 5) }), maxValue);
 
-            SetSkill(skillId, rank, skillValue, maxValue, true);
+            SetSkill(skillId, rank, skillValue, maxValue);
             break;
         }
         default:
@@ -25199,7 +25160,6 @@ void Player::_LoadSkills(PreparedQueryResult result)
             uint16 max      = fields[2].GetUInt16();
 
             SkillRaceClassInfoEntry const* rcEntry = GetSkillRaceClassInfo(skill, GetRace(), GetClass());
-
             if (!rcEntry)
             {
                 TC_LOG_ERROR("entities.player", "Player::_LoadSkills: Player '%s' (%s, Race: %u, Class: %u) has forbidden skill %u for his race/class combination",

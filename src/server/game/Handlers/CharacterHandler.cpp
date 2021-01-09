@@ -53,8 +53,6 @@
 #include "QueryHolder.h"
 #include "World.h"
 
-#include "CFBGData.h"
-
 class LoginQueryHolder : public CharacterDatabaseQueryHolder
 {
     private:

@@ -46,11 +46,12 @@ void AddSC_Mod_ItemUpgrade();
 void AddSC_Mod_AutoLearn();
 void AddSC_Transmogrification();
 void AddSC_mod_DefaultSpec();
-void AddSC_CrossfactionBattlegrounds();
 
+// The name of this function should match:
+// void Add${NameOfDirectory}Scripts()
 void AddCustomScripts()
 {
-// GuildHouse NPC
+    // GuildHouse NPC
 AddSC_guildmaster();
 // 1v1 Arena
 AddSC_npc_1v1arena();
@@ -80,5 +81,4 @@ AddSC_npc_teleport();
 AddSC_Transmogrification();
 AddSC_mod_DefaultSpec();
 AddSC_level_award();
-AddSC_CrossfactionBattlegrounds();
 }
