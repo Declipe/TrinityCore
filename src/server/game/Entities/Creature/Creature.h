@@ -105,7 +105,8 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
 
         CreatureMovementData const& GetMovementTemplate() const;
         bool CanWalk() const { return GetMovementTemplate().IsGroundAllowed(); }
-        bool CanSwim() const override { return GetMovementTemplate().IsSwimAllowed() || IsPet(); }
+        bool CanSwim() const override;
+        bool CanEnterWater() const override;
         bool CanFly()  const override { return GetMovementTemplate().IsFlightAllowed() || IsFlying(); }
         bool CanHover() const { return GetMovementTemplate().Ground == CreatureGroundMovementType::Hover || IsHovering(); }
 
@@ -365,6 +366,12 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         void AtDisengage() override;
         void UpdateAreaCustomFlags();
 
+        bool HasSwimmingFlagOutOfCombat() const
+        {
+            return !_isMissingSwimmingFlagOutOfCombat;
+        }
+        void RefreshSwimmingFlag(bool recheck = false);
+
         std::string GetDebugInfo() const override;
 
     protected:
@@ -448,6 +455,8 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         // Regenerate health
         bool _regenerateHealth; // Set on creation
         bool _regenerateHealthLock; // Dynamically set
+
+        bool _isMissingSwimmingFlagOutOfCombat;
 };
 
 class TC_GAME_API AssistDelayEvent : public BasicEvent
