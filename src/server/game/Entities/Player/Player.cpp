@@ -1443,6 +1443,31 @@ void Player::Update(uint32 p_time)
     //because we don't want player's ghost teleported from graveyard
     if (IsHasDelayedTeleport() && IsAlive())
         TeleportTo(m_teleport_dest, m_teleport_options);
+
+    // Prepatch by LordPsyan
+    // 81
+    // 82
+    // 83
+    // 84
+    // 85
+    // 86
+    // 87
+    // 88
+    // 89
+    // 90
+    // 91
+    // 92
+    // 93
+    // 94
+    // 95
+    // 96
+    // 97
+    // 98
+    // 99
+    // 100
+    // Visit http://www.realmsofwarcraft.com/bb for forums and information
+    //
+    // End of prepatch
 }
 
 void Player::setDeathState(DeathState s)
@@ -6970,10 +6995,31 @@ bool Player::RewardHonor(Unit* victim, uint32 groupsize, int32 honor, bool pvpto
     }
 
     honor_f *= sWorld->getRate(RATE_HONOR);
-
+    // Prepatch by LordPsyan
+    // 21
+    // 22
+    // 23
+    // 24
+    // 25
+    // 26
+    // 27
+    // 28
+    // 29
+    // 30
+    // 31
+    // 32
+    // 33
+    // 34
+    // 35
+    // 36
     if(GetSession()->IsPremium())
         honor_f *= sWorld->getRate(RATE_HONOR_PREMIUM);
-
+    // 38
+    // 39
+    // 40
+    // Visit http://www.realmsofwarcraft.com/bb for forums and information
+    //
+    // End of prepatch
     // Back to int now
     honor = int32(honor_f);
     // honor - for show honor points in log
@@ -12527,6 +12573,31 @@ void Player::MoveItemFromInventory(uint8 bag, uint8 slot, bool update)
 {
     if (Item* it = GetItemByPos(bag, slot))
     {
+    // Prepatch by LordPsyan
+    // 01
+    // 02
+    // 03
+    // 04
+    // 05
+    // 06
+    // 07
+    // 08
+    // 09
+    // 10
+    // 11
+    // 12
+    // 13
+    // 14
+    // 15
+    // 16
+    // 17
+    // 18
+    // 19
+    // 20
+    // Visit http://www.realmsofwarcraft.com/bb for forums and information
+    //
+    // End of prepatch
+
         RemoveItem(bag, slot, update);
         it->transmog = 0;
         ItemRemovedQuestCheck(it->GetEntry(), it->GetCount());
@@ -15333,9 +15404,31 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
 
     // handle SPELL_AURA_MOD_XP_QUEST_PCT auras
 	XP *= GetTotalAuraMultiplier(SPELL_AURA_MOD_XP_QUEST_PCT);
-
+    // Prepatch by LordPsyan
+    // 41
+    // 42
+    // 43
+    // 44
+    // 45
+    // 46
+    // 47
+    // 48
+    // 49
+    // 50
+    // 51
     if (GetSession()->IsPremium())
         XP *= sWorld->getRate(RATE_XP_QUEST_PREMIUM);
+    // 53
+    // 54
+    // 55
+    // 56
+    // 57
+    // 58
+    // 59
+    // 60
+    // Visit http://www.realmsofwarcraft.com/bb for forums and information
+    //
+    // End of prepatch
 
     if (!IsMaxLevel())
         GiveXP(XP, nullptr);
