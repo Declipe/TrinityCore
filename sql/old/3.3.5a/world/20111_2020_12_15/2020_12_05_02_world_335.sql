@@ -38,7 +38,6 @@ INSERT INTO `creature_text` (`CreatureID`,`GroupID`,`ID`,`Text`,`Type`,`Language
 -- Polly
 UPDATE `creature_template` SET `minlevel` = 50, `maxlevel` = 50, `BaseAttackTime` = 2000, `RangeAttackTime` = 2000, `lootid` = 0 WHERE `entry` = 7167;
 UPDATE `creature_template` SET `BaseAttackTime` = 2000, `RangeAttackTime` = 2000, `lootid` = 7168, `AIName` = "SmartAI" WHERE `entry` = 7168;
-UPDATE `creature_loot_template` SET `Entry` = 7168 WHERE `entry` = 7167;
 
 UPDATE `event_scripts` SET `delay` = 1, `datalong2` = 300000, `x` = -1463.676, `y` = -3924.07, `z` = 0.24124, `o` = 4.6273, `Comment` = "Event (Object 'The Jewel of the Southsea' (123462)) - On Event - Summon Creature 'Polly'" WHERE `id` = 2153;
 
