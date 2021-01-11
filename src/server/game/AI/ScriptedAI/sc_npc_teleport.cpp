@@ -120,11 +120,12 @@ bool TELE::IsAllowedToTeleport(Player * const player) const
     switch (m_catvalue.flag)
     {
       case FLAG_TEAM:
-        switch (m_catvalue.data0)
+       switch (m_catvalue.data0)
         {
           case TEAM_HORDE:      return player->GetTeam() == HORDE;
           case TEAM_ALLIANCE:   return player->GetTeam() == ALLIANCE;
           case TEAM_ALL:        return true;
+          default: TC_LOG_ERROR("misc", "Invalid m_catvalue.data0 . Important problem..."); return false;
         }
 
       case FLAG_GUILD:
@@ -165,7 +166,7 @@ bool TELE::IsAllowedToTeleport(Player * const player) const
       case FLAG_PLAYER:
         return player->GetGUID() == m_catvalue.data0;
 
-      default: TC_LOG_ERROR("misc", "Invalid flag (category: %u). Important problem...", GetCatID());
+      default: TC_LOG_ERROR("misc", "Invalid flag (category: %u). Important problem...", GetCatID()); return false;
     }
 
     TC_LOG_ERROR("misc", "Invalid flag (category: %u). Important problem...", GetCatID());
@@ -426,6 +427,4 @@ void LoadNpcTele(void)
     else
         TC_LOG_ERROR("misc", "WARNING >> Loaded 0 npc_teleport.");
 }
-
-
 #undef TELE
