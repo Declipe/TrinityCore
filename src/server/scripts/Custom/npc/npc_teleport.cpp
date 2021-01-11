@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (C) 20??-2008 Wilibald09
  * Copyright (C) 2011-2015 ArkCORE <http://www.arkania.net/>
  * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
@@ -66,7 +66,7 @@
 #define NEXT_PAGE               "-> [Next Page]"
 #define PREV_PAGE               "<- [Previous Page]"
 #define MAIN_MENU               "<= [Main Menu]"
-#define MAIN_MENU7              "[сброс]"
+#define MAIN_MENU7              "[sbros]"
 
 using namespace nsNpcTel;
 
