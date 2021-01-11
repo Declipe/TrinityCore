@@ -91,7 +91,7 @@ class guildmaster : public CreatureScript
 
  struct guildmasterAI : public ScriptedAI
  {
-	    guildmasterAI(Creature* me) : ScriptedAI(me) { }
+        guildmasterAI(Creature* me) : ScriptedAI(me) { }
 
 bool isPlayerGuildLeader(Player *player)
 {
@@ -288,9 +288,9 @@ void sellGuildhouse(Player *player, Creature *_creature)
 
 bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
 {
-	uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
-	uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
-	return GossipSelect(player, sender, action);
+    uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+    uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+    return GossipSelect(player, sender, action);
 }
 
 bool GossipSelect(Player* player, uint32 sender, uint32 action)
@@ -361,7 +361,7 @@ bool GossipSelect(Player* player, uint32 sender, uint32 action)
 
  CreatureAI* GetAI(Creature* me) const override
  {
-	 return new guildmasterAI(me);
+     return new guildmasterAI(me);
  }
 };
 

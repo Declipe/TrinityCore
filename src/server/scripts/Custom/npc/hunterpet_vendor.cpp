@@ -140,8 +140,8 @@ public:
      npc_hunterpetvendor() : CreatureScript("npc_hunterpetvendor") { }
         
      struct npc_hunterpetvendorAI : public ScriptedAI
-	{
-		npc_hunterpetvendorAI(Creature* me) : ScriptedAI(me) { }
+    {
+        npc_hunterpetvendorAI(Creature* me) : ScriptedAI(me) { }
 
     bool OnGossipHello(Player* player) override
     {
@@ -161,8 +161,8 @@ public:
  
 bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
     {
-		uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
-		uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+        uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+        uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
 player->PlayerTalkClass->ClearMenus();
     switch(action)
     {
@@ -221,406 +221,406 @@ player->PlayerTalkClass->ClearMenus();
                         CloseGossipMenuFor(player); break;
                 */
                 case fledermaus:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
-						me->SummonCreature(CREATURE_FLEDERMAUS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;				
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
+                        me->SummonCreature(CREATURE_FLEDERMAUS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
+                    }
+                    CloseGossipMenuFor(player);
+                    break;				
 
-				case netherrochen:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                case netherrochen:
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_NETHERROCHEN, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;				
+                    }
+                    CloseGossipMenuFor(player);
+                    break;				
 
                 case raubvogelrot:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_RAUBVOGELROT, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;				
+                    }
+                    CloseGossipMenuFor(player);
+                    break;				
 
                 case raubvogelschwarz:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_RAUBVOGELSCHWARZ, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;						
+                    }
+                    CloseGossipMenuFor(player);
+                    break;						
                        
                 case raubvogelweiss:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_RAUBVOGELWEISS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;					
+                    }
+                    CloseGossipMenuFor(player);
+                    break;					
                 /*      
                 case schlange:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_SCHLANGE, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;						
+                    }
+                    CloseGossipMenuFor(player);
+                    break;						
                 */      
                 case spinne:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_SPINNE, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;				
+                    }
+                    CloseGossipMenuFor(player);
+                    break;				
                        
                 case gorillaschwarz:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_GORILLASCHWARZ, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;							
+                    }
+                    CloseGossipMenuFor(player);
+                    break;							
                        
                 case gorillaweiss:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_GORILLAWEISS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;					
+                    }
+                    CloseGossipMenuFor(player);
+                    break;					
                        
                 case krebs:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_KREBS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;						
+                    }
+                    CloseGossipMenuFor(player);
+                    break;						
                        
                 case hyaene:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_HYAENE, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;						
+                    }
+                    CloseGossipMenuFor(player);
+                    break;						
                        
                 case katzetiger:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_KATZETIGER, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;						
+                    }
+                    CloseGossipMenuFor(player);
+                    break;						
                        
                 case katzeloewe:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_KATZELOEWE, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;						
+                    }
+                    CloseGossipMenuFor(player);
+                    break;						
                         /*
                 case katzeluchs:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_KATZELUCHS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;						
+                    }
+                    CloseGossipMenuFor(player);
+                    break;						
                         */
                 case raptorgruen:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_RAPTORGRUEN, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;							
+                    }
+                    CloseGossipMenuFor(player);
+                    break;							
                        
                 case raptorrot:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_RAPTORROT, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;							
+                    }
+                    CloseGossipMenuFor(player);
+                    break;							
                        
                 case weitschreiter:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_WEITSCHREITER, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;						
+                    }
+                    CloseGossipMenuFor(player);
+                    break;						
                        
                 case wesperot:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_WESPEROT, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;						
+                    }
+                    CloseGossipMenuFor(player);
+                    break;						
                        
                 case wespeblau:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_WESPEBLAU, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;						
+                    }
+                    CloseGossipMenuFor(player);
+                    break;						
                        
                 case wolfruestung:
-					if (player->GetMoney() < PRICE_PET_TYP_1)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_1);
+                    if (player->GetMoney() < PRICE_PET_TYP_1)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_1);
                         me->SummonCreature(CREATURE_WOLFRUESTUNG, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;					
+                    }
+                    CloseGossipMenuFor(player);
+                    break;					
                        
                         // -- Exotics -- //
                        
                 case schimaere:
-					if (player->GetMoney() < PRICE_PET_TYP_2)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_2);
+                    if (player->GetMoney() < PRICE_PET_TYP_2)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_2);
                         me->SummonCreature(CREATURE_SCHIMAERE, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;						
+                    }
+                    CloseGossipMenuFor(player);
+                    break;						
                        
                 case silithidgelb:
-					if (player->GetMoney() < PRICE_PET_TYP_2)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_2);
+                    if (player->GetMoney() < PRICE_PET_TYP_2)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_2);
                         me->SummonCreature(CREATURE_SILITHIDGELB, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;							
+                    }
+                    CloseGossipMenuFor(player);
+                    break;							
                        
                 case silithidrot:
-					if (player->GetMoney() < PRICE_PET_TYP_2)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_2);
+                    if (player->GetMoney() < PRICE_PET_TYP_2)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_2);
                         me->SummonCreature(CREATURE_SILITHIDROT, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;						
+                    }
+                    CloseGossipMenuFor(player);
+                    break;						
                        
                 case rhinozeros:
-					if (player->GetMoney() < PRICE_PET_TYP_2)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_2);
+                    if (player->GetMoney() < PRICE_PET_TYP_2)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_2);
                         me->SummonCreature(CREATURE_RHINOZEROS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;								
+                    }
+                    CloseGossipMenuFor(player);
+                    break;								
        
                 case wurmgelb:
-					if (player->GetMoney() < PRICE_PET_TYP_2)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_2);
+                    if (player->GetMoney() < PRICE_PET_TYP_2)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_2);
                         me->SummonCreature(CREATURE_WURMGELB, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;								
+                    }
+                    CloseGossipMenuFor(player);
+                    break;								
                        
                 case kernhundweiss:
-					if (player->GetMoney() < PRICE_PET_TYP_2)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_2);
+                    if (player->GetMoney() < PRICE_PET_TYP_2)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_2);
                         me->SummonCreature(CREATURE_KERNHUNDWEISS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;						
+                    }
+                    CloseGossipMenuFor(player);
+                    break;						
                        
                 case kernhundrot:
-					if (player->GetMoney() < PRICE_PET_TYP_2)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_2);
+                    if (player->GetMoney() < PRICE_PET_TYP_2)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_2);
                         me->SummonCreature(CREATURE_KERNHUNDROT, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;						
+                    }
+                    CloseGossipMenuFor(player);
+                    break;						
                        
                 case teufelssaurierweiss:
-					if (player->GetMoney() < PRICE_PET_TYP_2)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_2);
+                    if (player->GetMoney() < PRICE_PET_TYP_2)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_2);
                         me->SummonCreature(CREATURE_TEUFELSSAURIERWEISS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;							
+                    }
+                    CloseGossipMenuFor(player);
+                    break;							
                        
                 case teufelssaurierschwarz:
-					if (player->GetMoney() < PRICE_PET_TYP_2)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_2);
+                    if (player->GetMoney() < PRICE_PET_TYP_2)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_2);
                         me->SummonCreature(CREATURE_TEUFELSSAURIERSCHWARZ, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;					
+                    }
+                    CloseGossipMenuFor(player);
+                    break;					
                        
                 case skoll:
-					if (player->GetMoney() < PRICE_PET_TYP_2)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_2);
+                    if (player->GetMoney() < PRICE_PET_TYP_2)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_2);
                         me->SummonCreature(CREATURE_SKOLL, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;						
+                    }
+                    CloseGossipMenuFor(player);
+                    break;						
                        
                 case loque:
-					if (player->GetMoney() < PRICE_PET_TYP_2)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_2);
+                    if (player->GetMoney() < PRICE_PET_TYP_2)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_2);
                         me->SummonCreature(CREATURE_LOQUE, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;					
+                    }
+                    CloseGossipMenuFor(player);
+                    break;					
                        
                 case gondria:
-					if (player->GetMoney() < PRICE_PET_TYP_2)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_2);
+                    if (player->GetMoney() < PRICE_PET_TYP_2)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_2);
                         me->SummonCreature(CREATURE_GONDRIA, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;							
+                    }
+                    CloseGossipMenuFor(player);
+                    break;							
                        
                 case arcturis:
-					if (player->GetMoney() < PRICE_PET_TYP_2)
-					{
-						me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
-					}else{
-						me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
-						player->ModifyMoney(-PRICE_PET_TYP_2);
+                    if (player->GetMoney() < PRICE_PET_TYP_2)
+                    {
+                        me->Whisper(MSG_NOT_MONEY, LANG_UNIVERSAL, player);
+                    }else{
+                        me->Whisper(MSG_PET_SUMMON, LANG_UNIVERSAL, player);
+                        player->ModifyMoney(-PRICE_PET_TYP_2);
                         me->SummonCreature(CREATURE_ARCTURIS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
-					}
-					CloseGossipMenuFor(player);
-					break;						
+                    }
+                    CloseGossipMenuFor(player);
+                    break;						
     }
  
     return true;
-	 }
+     }
 };
     
     CreatureAI* GetAI(Creature* me) const
@@ -631,7 +631,7 @@ player->PlayerTalkClass->ClearMenus();
 
 enum GOSSIPS
 {
-	FALL_OF_THE_LICH_KING,
+    FALL_OF_THE_LICH_KING,
 };
 
 #define GOSSIP_TEXT_SEE_FALL_OF_THE_LICH_KING  "See the fall of the Lich King."
@@ -640,32 +640,32 @@ enum GOSSIPS
 class go_dedication_of_honor : public GameObjectScript
 {
 public:
-	go_dedication_of_honor() : GameObjectScript("go_dedication_of_honor") { }
-	
+    go_dedication_of_honor() : GameObjectScript("go_dedication_of_honor") { }
+    
     struct  go_dedication_of_honorAI : public GameObjectAI
     {
         go_dedication_of_honorAI(GameObject* go) : GameObjectAI(go) { }
 
-	bool OnGossipHello(Player* player) override
-	{
-		AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_TEXT_SEE_FALL_OF_THE_LICH_KING, GOSSIP_SENDER_MAIN, FALL_OF_THE_LICH_KING);
-		SendGossipMenuFor(player, GOSSIP_MESSAGE_MEMORIAL, me->GetGUID());
-		return true;
-	}
-
-	bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+    bool OnGossipHello(Player* player) override
     {
-		uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
-		uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
-		player->PlayerTalkClass->ClearMenus();
-		switch (action)
-		{
-		case FALL_OF_THE_LICH_KING:
-			player->SendMovieStart(16);
-			CloseGossipMenuFor(player);
-			break;
-		}
-		return true;
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GOSSIP_TEXT_SEE_FALL_OF_THE_LICH_KING, GOSSIP_SENDER_MAIN, FALL_OF_THE_LICH_KING);
+        SendGossipMenuFor(player, GOSSIP_MESSAGE_MEMORIAL, me->GetGUID());
+        return true;
+    }
+
+    bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+    {
+        uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+        uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+        player->PlayerTalkClass->ClearMenus();
+        switch (action)
+        {
+        case FALL_OF_THE_LICH_KING:
+            player->SendMovieStart(16);
+            CloseGossipMenuFor(player);
+            break;
+        }
+        return true;
 }
     };
 

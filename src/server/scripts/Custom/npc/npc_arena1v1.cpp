@@ -65,8 +65,8 @@ class npc_1v1arena : public CreatureScript
 public:
     npc_1v1arena() : CreatureScript("npc_1v1arena") { }
 
-	struct npc_1v1arenaAI : public ScriptedAI
-	{
+    struct npc_1v1arenaAI : public ScriptedAI
+    {
       npc_1v1arenaAI(Creature* me) : ScriptedAI(me) { }
 
     bool JoinQueueArena(Player* player, Creature* me, bool isRated)
@@ -139,15 +139,15 @@ public:
         }
 
         BattlegroundQueue &bgQueue = sBattlegroundMgr->GetBattlegroundQueue(bgQueueTypeId);
-		if (sConfigMgr->GetBoolDefault("Ip.enabled", false)) // If "fatigue.enabled" is enabled
-		{
-			if (bgQueue.IPExistsInQueue(player, nullptr, bracketEntry, isRated, false))
-			{
-				ChatHandler(player->GetSession()).SendSysMessage("¬ы не можете присоединитьс§ 1х1 сейчас, потому что уже есть кто - то в очереди с тем же IP");
-				//ChatHandler(player->GetSession()).SendSysMessage("You cannot join 1v1 Arena now because there is already someone queued with the same IP address.");
-				return false;
-			}
-		}
+        if (sConfigMgr->GetBoolDefault("Ip.enabled", false)) // If "fatigue.enabled" is enabled
+        {
+            if (bgQueue.IPExistsInQueue(player, nullptr, bracketEntry, isRated, false))
+            {
+                ChatHandler(player->GetSession()).SendSysMessage("¬ы не можете присоединитьс§ 1х1 сейчас, потому что уже есть кто - то в очереди с тем же IP");
+                //ChatHandler(player->GetSession()).SendSysMessage("You cannot join 1v1 Arena now because there is already someone queued with the same IP address.");
+                return false;
+            }
+        }
         bg->SetRated(isRated);
 
         GroupQueueInfo* ginfo = bgQueue.AddGroup(player, nullptr, bgTypeId, bracketEntry, arenatype, isRated, false, arenaRating, matchmakerRating, ateamId);
@@ -249,14 +249,14 @@ public:
         return true;
     }
 
-	bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
-	{
-		uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
-		uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
-		return GossipSelect(player, sender, action);
-	}
+    bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+    {
+        uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+        uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+        return GossipSelect(player, sender, action);
+    }
 
-	bool GossipSelect(Player* player, uint32 sender, uint32 action)
+    bool GossipSelect(Player* player, uint32 sender, uint32 action)
     {
         if(!player || !me)
             return true;
@@ -354,13 +354,13 @@ public:
 
         OnGossipHello(player);
         return true;
-	}
-	};
+    }
+    };
 
-	CreatureAI* GetAI(Creature* me) const override
-	{
-		return new npc_1v1arenaAI(me);
-	}
+    CreatureAI* GetAI(Creature* me) const override
+    {
+        return new npc_1v1arenaAI(me);
+    }
 };
 
 void AddSC_npc_1v1arena()

@@ -22,24 +22,21 @@
 
 enum ZynDatabaseStatements : uint32
 {
-	ZynDatabase1,
-	ZynDatabase2,
-	MAX_ZYNDATABASE_STATEMENTS
+    ZynDatabase1,
+    ZynDatabase2,
+    MAX_ZYNDATABASE_STATEMENTS
 };
 
 class TC_DATABASE_API ZynDatabaseConnection : public MySQLConnection
 {
 public:
-	typedef ZynDatabaseStatements Statements;
+    typedef ZynDatabaseStatements Statements;
 
-	//- Constructors for sync and async connections
-	ZynDatabaseConnection(MySQLConnectionInfo& connInfo);
-	ZynDatabaseConnection(ProducerConsumerQueue<SQLOperation*>* q, MySQLConnectionInfo& connInfo);
-	~ZynDatabaseConnection();
-	//- Loads database type specific prepared statements
-	void DoPrepareStatements() override;
+    //- Constructors for sync and async connections
+    ZynDatabaseConnection(MySQLConnectionInfo& connInfo);
+    ZynDatabaseConnection(ProducerConsumerQueue<SQLOperation*>* q, MySQLConnectionInfo& connInfo);
+    ~ZynDatabaseConnection();
+    //- Loads database type specific prepared statements
+    void DoPrepareStatements() override;
 };
-
-//typedef DatabaseWorkerPool<ZynDatabaseConnection> ZynDatabaseWorkerPool;
-//typedef DatabaseWorkerPool<ZynDatabaseConnection> ZynDatabaseWorkerPool;
 #endif
