@@ -82,7 +82,7 @@ class Mod_ItemUpgrade_WorldScript : public WorldScript
     {
         ItemUpgradeInfo.clear();
 
-		TC_LOG_ERROR("misc", "Loading ItemUpgrade...");
+        TC_LOG_ERROR("misc", "Loading ItemUpgrade...");
         uint32 oldMSTime = getMSTime();
 
         //QueryResult result = ZynDatabase.PQuery("SELECT `enchant_id`, `prev_enchant_id`, `golds` FROM `world_item_upgrade`");
@@ -91,7 +91,7 @@ class Mod_ItemUpgrade_WorldScript : public WorldScript
 
         if (!result)
         {
-			TC_LOG_ERROR("misc", ">> `world_item_upgrade` is empty");
+            TC_LOG_ERROR("misc", ">> `world_item_upgrade` is empty");
             return;
         }
 
@@ -111,7 +111,7 @@ class Mod_ItemUpgrade_WorldScript : public WorldScript
 
             SpellItemEnchantmentEntry const* enchantEntry = sSpellItemEnchantmentStore.LookupEntry(ItemUpgradeTemp.enchantId);
             if (!enchantEntry) {
-				TC_LOG_ERROR("misc", "Item Upgrade: not exists enchantment id %u", ItemUpgradeTemp.enchantId);
+                TC_LOG_ERROR("misc", "Item Upgrade: not exists enchantment id %u", ItemUpgradeTemp.enchantId);
                 continue;
             }
 
@@ -124,16 +124,16 @@ class Mod_ItemUpgrade_WorldScript : public WorldScript
         }
         while (result->NextRow());
 
-		TC_LOG_ERROR("misc", ">> Loaded %u count for ItemUpgrade in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+        TC_LOG_ERROR("misc", ">> Loaded %u count for ItemUpgrade in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
     }
 
     void OnConfigLoad(bool /*reload*/)
     {
-		ItemUpgradeTextAreYouSure    = sConfigMgr->GetIntDefault("ItemUpgrade.Text.AreYouSure", ARE_YOU_SURE);
-		ItemUpgradeTextNoEffect      = sConfigMgr->GetIntDefault("ItemUpgrade.Text.NoEffect", NO_EFFECT);
-		ItemUpgradeTextEffectNow     = sConfigMgr->GetIntDefault("ItemUpgrade.Text.EffectNow", EFFECT_NOW);
-		ItemUpgradeTextEffectRemove  = sConfigMgr->GetIntDefault("ItemUpgrade.Text.EffectRemove", EFFECT_REMOVE);
-		ItemUpgradeEnable            = sConfigMgr->GetBoolDefault("ItemUpgrade.Enable", false);
+        ItemUpgradeTextAreYouSure    = sConfigMgr->GetIntDefault("ItemUpgrade.Text.AreYouSure", ARE_YOU_SURE);
+        ItemUpgradeTextNoEffect      = sConfigMgr->GetIntDefault("ItemUpgrade.Text.NoEffect", NO_EFFECT);
+        ItemUpgradeTextEffectNow     = sConfigMgr->GetIntDefault("ItemUpgrade.Text.EffectNow", EFFECT_NOW);
+        ItemUpgradeTextEffectRemove  = sConfigMgr->GetIntDefault("ItemUpgrade.Text.EffectRemove", EFFECT_REMOVE);
+        ItemUpgradeEnable            = sConfigMgr->GetBoolDefault("ItemUpgrade.Enable", false);
 
         if (ItemUpgradeEnable)
             LoadDataFromDataBase();
@@ -146,10 +146,10 @@ class go_item_upgrade : public GameObjectScript
     public:
         go_item_upgrade() : GameObjectScript("go_item_upgrade") { }
 
-		struct go_item_upgradeAI : public GameObjectAI
-		{
-			go_item_upgradeAI(GameObject* go) : GameObjectAI(go) { }
-			
+        struct go_item_upgradeAI : public GameObjectAI
+        {
+            go_item_upgradeAI(GameObject* go) : GameObjectAI(go) { }
+            
     uint16 getSlot(uint32 sender) {
         return (uint16) ((sender - GOSSIP_SENDER_MAIN) >> 16);
     }
@@ -160,14 +160,14 @@ class go_item_upgrade : public GameObjectScript
         return (uint32) (GOSSIP_SENDER_MAIN + ((slot << 16) | (enchant & 0xFFFF)));
     }
  
-	bool OnGossipHello(Player* player) override
+    bool OnGossipHello(Player* player) override
     {
         if (!ItemUpgradeEnable) {
             SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
             return true;
         }
         
-		LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
+        LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
 
         for (uint8 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; i++)
         {
@@ -177,7 +177,7 @@ class go_item_upgrade : public GameObjectScript
             {
                 ItemTemplate const *itemTemplate = item->GetTemplate();
                 std::string Name = itemTemplate->Name1;
-				if (loc_idx >= 0)
+                if (loc_idx >= 0)
                     if (ItemLocale const* il = sObjectMgr->GetItemLocale(itemTemplate->ItemId))
                         ObjectMgr::GetLocaleString(il->Name, loc_idx, Name);
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, Name.c_str(), senderValue(i,0), GOSSIP_ACTION_INFO_DEF);
@@ -196,10 +196,10 @@ class go_item_upgrade : public GameObjectScript
     }
 
     bool GossipSelect(Player* player, uint32 sender, uint32 action)
-	//bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+    //bool GossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
     {
-		//uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
-		//uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+        //uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+        //uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
         if (!ItemUpgradeEnable) {
             CloseGossipMenuFor(player);
             return true;
@@ -327,13 +327,13 @@ class go_item_upgrade : public GameObjectScript
         CharacterDatabase.CommitTransaction(trans);
         CloseGossipMenuFor(player);
         return true;
-	  }
-	};
+      }
+    };
 
-	GameObjectAI* GetAI(GameObject* go) const override
-	{
-		return new go_item_upgradeAI(go);
-	}
+    GameObjectAI* GetAI(GameObject* go) const override
+    {
+        return new go_item_upgradeAI(go);
+    }
 };
 
 void AddSC_Mod_ItemUpgrade()

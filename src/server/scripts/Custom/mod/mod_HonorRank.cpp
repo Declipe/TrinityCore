@@ -180,7 +180,7 @@ class Mod_CustomRewardPvP_WorldScript : public WorldScript
     {
         CustomRewardPvPInfo.clear();
 
-		TC_LOG_ERROR("misc", "Loading CustomRewardPvPInfo...");
+        TC_LOG_ERROR("misc", "Loading CustomRewardPvPInfo...");
         uint32 oldMSTime = getMSTime();
 
         QueryResult result = ZynDatabase.PQuery("SELECT `id`, `req_type_is_battleground`, `req_type_is_arena`, `req_zone_id`, `req_map_id`, `req_target_race_mask`, `req_target_class_mask`, `req_self_race_mask`, "
@@ -189,7 +189,7 @@ class Mod_CustomRewardPvP_WorldScript : public WorldScript
 
         if (!result)
         {
-			TC_LOG_ERROR("misc", ">> `world_custom_reward_pvp` is empty");
+            TC_LOG_ERROR("misc", ">> `world_custom_reward_pvp` is empty");
             return;
         }
 
@@ -228,12 +228,12 @@ class Mod_CustomRewardPvP_WorldScript : public WorldScript
         }
         while (result->NextRow());
 
-		TC_LOG_ERROR("misc", ">> Loaded %u count for CustomRewardPvP in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+        TC_LOG_ERROR("misc", ">> Loaded %u count for CustomRewardPvP in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
     }
 
     void OnConfigLoad(bool /*reload*/)
     {
-		CustomRewardPvPEnable = sConfigMgr->GetBoolDefault("CustomRewardPvP.Enable", false);
+        CustomRewardPvPEnable = sConfigMgr->GetBoolDefault("CustomRewardPvP.Enable", false);
 
         if (!CustomRewardPvPEnable)
             return;
@@ -255,7 +255,7 @@ class Mod_CustomRewardPvP_PlayerScript : public PlayerScript
         if (tpl.req_self_race_mask != 0 && !(tpl.req_self_race_mask & pl->GetRaceMask())) {
             return false;
         }
-		if (tpl.req_self_guid != 0 && tpl.req_self_guid != pl->GetGUID().GetCounter()) {
+        if (tpl.req_self_guid != 0 && tpl.req_self_guid != pl->GetGUID().GetCounter()) {
             return false;
         }
         if (tpl.req_self_guild_id != 0 && tpl.req_self_guild_id != pl->GetGuildId()) {
@@ -285,11 +285,11 @@ class Mod_CustomRewardPvP_PlayerScript : public PlayerScript
 
     void OnPVPKill(Player* killer, Player* killed)
     {
-		if (!CustomRewardPvPEnable || killed->HasAura(15007) || killer->GetGUID().GetCounter() == killed->GetGUID().GetCounter())
+        if (!CustomRewardPvPEnable || killed->HasAura(15007) || killer->GetGUID().GetCounter() == killed->GetGUID().GetCounter())
             return;
 
-		uint32 killerGuid = killer->GetGUID().GetCounter();
-		uint32 killedGuid = killed->GetGUID().GetCounter();
+        uint32 killerGuid = killer->GetGUID().GetCounter();
+        uint32 killedGuid = killed->GetGUID().GetCounter();
         bool isBattleground = killer->InBattleground();
         bool isArea = killer->InArena();
         uint32 zoneId = killer->GetZoneId();

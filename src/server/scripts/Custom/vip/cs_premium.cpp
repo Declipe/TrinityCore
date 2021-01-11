@@ -1,14 +1,3 @@
-//#include "CreatureAI.h"
-//#include "CreatureGroups.h"
-//#include "Map.h"
-//#include "RBAC.h"
-//#include "InstanceScript.h"
-//#include "Config.h"
-//#include "Spell.h"
-//#include "SpellInfo.h"
-//#include "SkillDiscovery.h"
-//#include "SpellScript.h"
-
 #include "ScriptMgr.h"
 #include "AccountMgr.h"
 #include "ArenaTeamMgr.h"
@@ -51,14 +40,14 @@ using namespace Trinity::ChatCommands;
 class premium_commandscript : public CommandScript
 {
 public:
-    premium_commandscript() : CommandScript("premium_commandscript") { }
+	premium_commandscript() : CommandScript("premium_commandscript") { }
 
-    ChatCommandTable GetCommands() const override
-    {
-        static ChatCommandTable premiumCommandTable =
-        {
-            { "bank",          HandlePremiumBankCommand,     rbac::RBAC_PERM_COMMAND_VIP_BANK, Console::No},
-            { "mail",          HandlePremiumMailCommand,     rbac::RBAC_PERM_COMMAND_VIP_MAIL, Console::No },
+	ChatCommandTable GetCommands() const override
+	{
+		static ChatCommandTable premiumCommandTable =
+		{
+			{ "bank",          HandlePremiumBankCommand,     rbac::RBAC_PERM_COMMAND_VIP_BANK, Console::No},
+			{ "mail",          HandlePremiumMailCommand,     rbac::RBAC_PERM_COMMAND_VIP_MAIL, Console::No },
 			{ "buffs",         HandleVipbuffsCommand,        rbac::RBAC_PERM_COMMAND_VIP_buffs, Console::No },
 			{ "arena",         HandleVipjoinArenaCommand,    rbac::RBAC_PERM_COMMAND_VIP_arena, Console::No },
 			{ "warsong",       HandleVipjoinWarsongCommand,  rbac::RBAC_PERM_COMMAND_VIP_warsong, Console::No },
@@ -76,58 +65,58 @@ public:
 			{ "taxi",          HandleVipTaxiCommand,         rbac::RBAC_PERM_COMMAND_VIP_TAXI,  Console::No },
 			{ "home",          HandleVipHomeCommand,         rbac::RBAC_PERM_COMMAND_VIP_HOME,  Console::No },
 			{ "teles",         HandleTelesNameCommand,       rbac::RBAC_PERM_COMMAND_VIP_HOMEs,  Console::No },
-            { "status",        HandleVipStatusCommand,       rbac::RBAC_HandleVipStatusCommand,  Console::No },
+			{ "status",        HandleVipStatusCommand,       rbac::RBAC_HandleVipStatusCommand,  Console::No },
 			//{ "qcomplete", rbac::RBAC_PERM_COMMAND_VIP_qcomplete, false, &HandleQuestCompletes, "" },
-        };
+		};
 
-        static ChatCommandTable commandTable =
-        {
-            { "vip", premiumCommandTable },
-        };
+		static ChatCommandTable commandTable =
+		{
+			{ "vip", premiumCommandTable },
+		};
 
-        return commandTable;
-    }
+		return commandTable;
+	}
 
-    static bool HandleVipStatusCommand(ChatHandler* handler, char const* args)
-    {
-        uint32 accountId;
+	static bool HandleVipStatusCommand(ChatHandler* handler, char const* args)
+	{
+		uint32 accountId;
 
-        AccountTypes level = handler->GetSession()->GetSecurity();
-        if (uint32(level) > 0)
-        {
-            if (!*args)
-                return false;
+		AccountTypes level = handler->GetSession()->GetSecurity();
+		if (uint32(level) > 0)
+		{
+			if (!*args)
+				return false;
 
-            std::string accountName = strtok((char*)args, " ");
-            // Fix?!
-            uint32 accountid = AccountMgr::GetId(accountName);
-            if (!AccountMgr::GetName(accountid, accountName))
-            {
-                handler->PSendSysMessage(LANG_ACCOUNT_NOT_EXIST, accountName.c_str());
-                handler->SetSentErrorMessage(true);
-                return false;
-            }
+			std::string accountName = strtok((char*)args, " ");
+			// Fix?!
+			uint32 accountid = AccountMgr::GetId(accountName);
+			if (!AccountMgr::GetName(accountid, accountName))
+			{
+				handler->PSendSysMessage(LANG_ACCOUNT_NOT_EXIST, accountName.c_str());
+				handler->SetSentErrorMessage(true);
+				return false;
+			}
 
-            accountId = AccountMgr::GetId(accountName);
-            if (!accountId)
-            {
-                handler->PSendSysMessage(LANG_ACCOUNT_NOT_EXIST, accountName.c_str());
-                handler->SetSentErrorMessage(true);
-                return false;
-            }
-        }
-        else
-            accountId = handler->GetSession()->GetAccountId();
+			accountId = AccountMgr::GetId(accountName);
+			if (!accountId)
+			{
+				handler->PSendSysMessage(LANG_ACCOUNT_NOT_EXIST, accountName.c_str());
+				handler->SetSentErrorMessage(true);
+				return false;
+			}
+		}
+		else
+			accountId = handler->GetSession()->GetAccountId();
 
-        uint32 days = AccountMgr::VipDaysLeft(accountId);
+		uint32 days = AccountMgr::VipDaysLeft(accountId);
 
-        if (days > 0)
-            handler->PSendSysMessage("Du hast keinen Elite Account.", days);
-        else
-            handler->PSendSysMessage("Dein Elite Account endet in Tagen.");
+		if (days > 0)
+			handler->PSendSysMessage("Du hast keinen Elite Account.", days);
+		else
+			handler->PSendSysMessage("Dein Elite Account endet in Tagen.");
 
-        return true;
-    }
+		return true;
+	}
 	/* static bool HandleQuestCompletes(ChatHandler* handler, char const* args)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
@@ -322,19 +311,19 @@ public:
 			return false;
 		}
 
-        if (!player)
-            player = PlayerIdentifier::FromTargetOrSelf(handler);
-        if (!player)
+		if (!player)
+			player = PlayerIdentifier::FromTargetOrSelf(handler);
+		if (!player)
 			return false;
 
-        if (where.index() == 1)    // References target's homebind
+		if (where.index() == 1)    // References target's homebind
 		{
-            if (Player* target = player->GetConnectedPlayer())
+			if (Player* target = player->GetConnectedPlayer())
 				target->TeleportTo(target->m_homebindMapId, target->m_homebindX, target->m_homebindY, target->m_homebindZ, target->GetOrientation());
 			else
 			{
-                CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_CHAR_HOMEBIND);
-                stmt->setUInt32(0, player->GetGUID().GetCounter());
+				CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_CHAR_HOMEBIND);
+				stmt->setUInt32(0, player->GetGUID().GetCounter());
 				PreparedQueryResult resultDB = CharacterDatabase.Query(stmt);
 
 				if (resultDB)
@@ -343,22 +332,22 @@ public:
 					WorldLocation loc(fieldsDB[0].GetUInt16(), fieldsDB[2].GetFloat(), fieldsDB[3].GetFloat(), fieldsDB[4].GetFloat(), 0.0f);
 					uint32 zoneId = fieldsDB[1].GetUInt16();
 
-                    Player::SavePositionInDB(loc, zoneId, player->GetGUID(), nullptr);
+					Player::SavePositionInDB(loc, zoneId, player->GetGUID(), nullptr);
 				}
 			}
 
 			return true;
 		}
 
-        GameTele const* tele = where.get<GameTele const*>();
-        if (Player* target = player->GetConnectedPlayer())
+		GameTele const* tele = where.get<GameTele const*>();
+		if (Player* target = player->GetConnectedPlayer())
 
 		{
 			// check online security
 			if (handler->HasLowerSecurity(target, ObjectGuid::Empty))
 				return false;
 
-            std::string chrNameLink = handler->playerLink(target->GetName());
+			std::string chrNameLink = handler->playerLink(target->GetName());
 
 			if (target->IsBeingTeleported() == true)
 			{
@@ -386,22 +375,22 @@ public:
 		else
 		{
 			// check offline security
-            if (handler->HasLowerSecurity(nullptr, player->GetGUID()))
+			if (handler->HasLowerSecurity(nullptr, player->GetGUID()))
 				return false;
 
-            std::string nameLink = handler->playerLink(player->GetName());
+			std::string nameLink = handler->playerLink(player->GetName());
 
 			handler->PSendSysMessage(LANG_TELEPORTING_TO, nameLink.c_str(), handler->GetTrinityString(LANG_OFFLINE), tele->name.c_str());
 
 			Player::SavePositionInDB(WorldLocation(tele->mapId, tele->position_x, tele->position_y, tele->position_z, tele->orientation),
-                sMapMgr->GetZoneId(PHASEMASK_NORMAL, tele->mapId, tele->position_x, tele->position_y, tele->position_z), player->GetGUID(), nullptr);
+				sMapMgr->GetZoneId(PHASEMASK_NORMAL, tele->mapId, tele->position_x, tele->position_y, tele->position_z), player->GetGUID(), nullptr);
 		}
 
 		return true;
 	}
 
-    static bool HandlePremiumBankCommand(ChatHandler* handler, char const* /*args*/)
-    {
+	static bool HandlePremiumBankCommand(ChatHandler* handler, char const* /*args*/)
+	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
 		if (!handler->GetSession()->IsPremium())
@@ -453,9 +442,9 @@ public:
 			return false;
 		}
 
-            handler->GetSession()->SendShowBank(handler->GetSession()->GetPlayer()->GetGUID());
-        return true;
-    }
+			handler->GetSession()->SendShowBank(handler->GetSession()->GetPlayer()->GetGUID());
+		return true;
+	}
 
 	static bool HandleVipResetTalentsCommand(ChatHandler* handler, char const* /*args*/)
 	{
@@ -1331,12 +1320,12 @@ public:
 			return false;
 		}
 
-        if (!sWorld->getBoolConfig(CONFIG_VIP_DEBUFF_COMMAND))
-        {
-            handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
-            handler->SetSentErrorMessage(true);
-            return false;
-        }
+		if (!sWorld->getBoolConfig(CONFIG_VIP_DEBUFF_COMMAND))
+		{
+			handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
+			handler->SetSentErrorMessage(true);
+			return false;
+		}
 
 		if (_player->IsInCombat())
 		{
@@ -1445,12 +1434,12 @@ public:
 			return false;
 		}
 
-        if (!sWorld->getBoolConfig(CONFIG_VIP_REPAIR_COMMAND))
-        {
-            handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
-            handler->SetSentErrorMessage(true);
-            return false;
-        }
+		if (!sWorld->getBoolConfig(CONFIG_VIP_REPAIR_COMMAND))
+		{
+			handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
+			handler->SetSentErrorMessage(true);
+			return false;
+		}
 
 		if (_player->IsInCombat())
 		{
@@ -1558,5 +1547,5 @@ public:
 
 void AddSC_premium_commandscript()
 {
-    new premium_commandscript();
+	new premium_commandscript();
 }

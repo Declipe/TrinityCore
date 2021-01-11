@@ -116,35 +116,35 @@ class TournamentManager
         TournamentManager() { loaded = false; }
         ~TournamentManager() { clear(); }
         
-		 void load(bool reload = false);
+         void load(bool reload = false);
         
-		 void start(uint32 entry, uint32 level, Player* player = nullptr);
-		 void stop(uint32 entry, bool win = false);
-		 bool checkEnd(uint32 entry);
-		 void addGossip(Creature* creature, Player* player);
+         void start(uint32 entry, uint32 level, Player* player = nullptr);
+         void stop(uint32 entry, bool win = false);
+         bool checkEnd(uint32 entry);
+         void addGossip(Creature* creature, Player* player);
         
-		 void update(uint32 diff);
-		 void updateTournament(uint32 entry, uint32 diff);
+         void update(uint32 diff);
+         void updateTournament(uint32 entry, uint32 diff);
 
-	     void clear();
-		 void reset(uint32 entry);
+         void clear();
+         void reset(uint32 entry);
         
-		 bool pointExists(uint32 id);
+         bool pointExists(uint32 id);
         
-		 bool existsLevelTournament(uint32 entry, uint32 level);
-		 bool existsTournament(uint32 entry);
+         bool existsLevelTournament(uint32 entry, uint32 level);
+         bool existsTournament(uint32 entry);
         
-		 bool existsAlive(uint32 entry);
+         bool existsAlive(uint32 entry);
         
-		 PointOnTournament const* getPoint(uint32 id);
-		 TournamentTemplate* getTournament(uint32 entry);
-		 TournamentLevel* getTournamentLevel(uint32 entry, uint32 level);
-		 void createTournament(uint32 entry);
+         PointOnTournament const* getPoint(uint32 id);
+         TournamentTemplate* getTournament(uint32 entry);
+         TournamentLevel* getTournamentLevel(uint32 entry, uint32 level);
+         void createTournament(uint32 entry);
         
-		 bool isProgress(uint32 entry);
-		 uint32 getLevel(uint32 entry);
+         bool isProgress(uint32 entry);
+         uint32 getLevel(uint32 entry);
         
-		 void setTournamentOrganizer(uint32 entry, Creature* npc);
+         void setTournamentOrganizer(uint32 entry, Creature* npc);
 
     private:
         Tournaments tournaments;
@@ -263,7 +263,7 @@ void TournamentManager::load(bool reload)
     
     /*============ POINTS ============*/
     if (TournamentDebug)
-		TC_LOG_INFO("misc", "Start loadig points");
+        TC_LOG_INFO("misc", "Start loadig points");
     oldMSTime = getMSTime();
     result = ZynDatabase.PQuery(SQL_POINTS);
     count = 0;
@@ -294,12 +294,12 @@ void TournamentManager::load(bool reload)
     while (result->NextRow());
     TC_LOG_INFO("server.loading", ">> Loaded %u points for TournamentManager in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
     if (TournamentDebug)
-		TC_LOG_INFO("misc", "End loadig points");
+        TC_LOG_INFO("misc", "End loadig points");
      /*============ POINTS ============*/
     
     /*============ TEMPLATES ============*/
     if (TournamentDebug)
-		TC_LOG_INFO("misc", "Start loadig templates");
+        TC_LOG_INFO("misc", "Start loadig templates");
     oldMSTime = getMSTime();
     result = ZynDatabase.PQuery(SQL_TEMPLATE);
     count = 0;
@@ -361,12 +361,12 @@ void TournamentManager::load(bool reload)
     while (result->NextRow());
     TC_LOG_INFO("server.loading", ">> Loaded %u templates for TournamentManager in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
     if (TournamentDebug)
-		TC_LOG_INFO("misc", "End loadig templates");
+        TC_LOG_INFO("misc", "End loadig templates");
      /*============ TEMPLATES ============*/
 
     /*============ CREATURES ============*/
     if (TournamentDebug)
-		TC_LOG_INFO("misc", "Start loadig creatures");
+        TC_LOG_INFO("misc", "Start loadig creatures");
     oldMSTime = getMSTime();
     result = ZynDatabase.PQuery(SQL_CREATURE);
     count = 0;
@@ -388,7 +388,7 @@ void TournamentManager::load(bool reload)
         creature->spawn               = false;
         
         if (TournamentDebug)
-			TC_LOG_INFO("misc", "TournamentManager::load -> check creature %u", creature->id);
+            TC_LOG_INFO("misc", "TournamentManager::load -> check creature %u", creature->id);
         
         if (!existsLevelTournament(creature->tournament, creature->level))
         {
@@ -418,19 +418,19 @@ void TournamentManager::load(bool reload)
         }
         
         if (TournamentDebug)
-			TC_LOG_INFO("misc", "TournamentManager::load -> end check creature %u", creature->id);
+            TC_LOG_INFO("misc", "TournamentManager::load -> end check creature %u", creature->id);
         
         tournaments[creature->tournament]->levels[creature->level]->creatures.push_back(creature);
         
         if (TournamentDebug)
-			TC_LOG_INFO("misc", "TournamentManager::load -> creature %u added", creature->id);
+            TC_LOG_INFO("misc", "TournamentManager::load -> creature %u added", creature->id);
             
         ++count;
     }
     while (result->NextRow());
     TC_LOG_INFO("server.loading", ">> Loaded %u creatures for TournamentManager in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
     if (TournamentDebug)
-		TC_LOG_INFO("misc", "end loadig creatures");
+        TC_LOG_INFO("misc", "end loadig creatures");
      /*============ CREATURES ============*/
 }
 
@@ -467,7 +467,7 @@ void TournamentManager::clear()
 void TournamentManager::reset(uint32 entry)
 {
     if (TournamentDebug)
-		TC_LOG_INFO("misc", "TournamentManager::reset: %u", entry);
+        TC_LOG_INFO("misc", "TournamentManager::reset: %u", entry);
         
         
     TournamentTemplate* tournament = getTournament(entry);
@@ -481,19 +481,19 @@ void TournamentManager::reset(uint32 entry)
     if (!tournament->creatures.empty())
         for (CreatureList::const_iterator itr = tournament->creatures.begin(); itr != tournament->creatures.end(); ++itr)
             (*itr)->DespawnOrUnsummon(Seconds(4));
-			//me->DespawnOrUnsummon();
+            //me->DespawnOrUnsummon();
             tournament->creatures.clear();
 }
 
 void TournamentManager::start(uint32 entry, uint32 level, Player* player)
 {
     if (TournamentDebug)
-		TC_LOG_INFO("misc", "TournamentManager::start tournament: %u level: %u", entry, level);
+        TC_LOG_INFO("misc", "TournamentManager::start tournament: %u level: %u", entry, level);
         
     if (!existsLevelTournament(entry, level))
     {
         if (TournamentDebug)
-			TC_LOG_INFO("misc", "TournamentManager::start, not exists tournament/level: %u/%u", entry, level);
+            TC_LOG_INFO("misc", "TournamentManager::start, not exists tournament/level: %u/%u", entry, level);
         return;
     }
         
@@ -508,7 +508,7 @@ void TournamentManager::start(uint32 entry, uint32 level, Player* player)
     if (tournament->inProgress)
     {
         if (TournamentDebug)
-			TC_LOG_INFO("misc", "TournamentManager::start, tournament: %u in progress!!", entry);
+            TC_LOG_INFO("misc", "TournamentManager::start, tournament: %u in progress!!", entry);
         return;
     }
     
@@ -559,7 +559,7 @@ void TournamentManager::updateTournament(uint32 entry, uint32 diff)
         if (!(*itr)->spawn && tournament->current->time >= (*itr)->time)
         {
             if (TournamentDebug)
-				TC_LOG_INFO("misc", "TournamentManager::update -> spawn %u", (*itr)->entry);
+                TC_LOG_INFO("misc", "TournamentManager::update -> spawn %u", (*itr)->entry);
                 
             PointOnTournament const* point = getPoint((*itr)->point);
             PointOnTournament const* move = nullptr;
@@ -575,7 +575,7 @@ void TournamentManager::updateTournament(uint32 entry, uint32 diff)
                     {
                         summon->SetHomePosition(move->x, move->y, move->z, move->o);
                         //summon->GetMotionMaster()->MovePoint(0, move->x, move->y, move->z);
-						summon->GetMotionMaster()->MovePoint(0, move->x, move->y, move->z);
+                        summon->GetMotionMaster()->MovePoint(0, move->x, move->y, move->z);
                     }
                     else if (tournament->starter && tournament->starter->IsAlive())
                     {
@@ -602,7 +602,7 @@ void TournamentManager::update(uint32 diff)
 void TournamentManager::stop(uint32 entry, bool win)
 {
     if (TournamentDebug)
-		TC_LOG_INFO("misc", "TournamentManager::stop win: %i", int(win));
+        TC_LOG_INFO("misc", "TournamentManager::stop win: %i", int(win));
                 
     TournamentTemplate* tournament = getTournament(entry);
     if (!tournament)
@@ -635,7 +635,7 @@ void TournamentManager::stop(uint32 entry, bool win)
     {
         PointOnTournament const* point = getPoint(tournament->current->point);
         if (tournament->organizer && point)
-			tournament->organizer->SummonGameObject(tournament->current->chest, point->x, point->y, point->z, point->o, QuaternionData(), Seconds::max());
+            tournament->organizer->SummonGameObject(tournament->current->chest, point->x, point->y, point->z, point->o, QuaternionData(), Seconds::max());
     }
     
     if (tournament->organizer && tournament->current->killCredit)
@@ -648,7 +648,7 @@ void TournamentManager::stop(uint32 entry, bool win)
         if (!units.empty())
         for (WorldObject* unit : units)
                 if (unit->GetTypeId() == TYPEID_PLAYER)
-					//(Player* units)->KilledMonsterCredit(tournament->current->killCredit);
+                    //(Player* units)->KilledMonsterCredit(tournament->current->killCredit);
         ((Player*)(unit))->KilledMonsterCredit(tournament->current->killCredit);
 
         return;
@@ -706,14 +706,14 @@ void TournamentManager::addGossip(Creature* creature, Player* player)
         return;
         
     if (TournamentDebug)
-		TC_LOG_INFO("misc", "TournamentManager::addGossip");
+        TC_LOG_INFO("misc", "TournamentManager::addGossip");
         
     char gossipTextFormat[100];
         
     if (TournamentLadder)
     {
         if (TournamentDebug)
-			TC_LOG_INFO("misc", "TournamentManager::addGossip -> TournamentLadder: level %u", tournament->level);
+            TC_LOG_INFO("misc", "TournamentManager::addGossip -> TournamentLadder: level %u", tournament->level);
             
         uint32 newLevel = tournament->level + 1;
             
@@ -778,8 +778,8 @@ class npc_tournaments_organizer : public CreatureScript
 
     bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
     {
-		//uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
-		uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+        //uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+        uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
         player->PlayerTalkClass->ClearMenus();
         
         if (TournamentEnable && action > GOSSIP_ACTION_INFO_DEF)

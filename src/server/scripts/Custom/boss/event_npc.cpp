@@ -25,7 +25,7 @@ enum Spells
     SPELL_FROST_BLAST_1_ICE                          = 27808,
     SPELL_FROST_SHIELD_ICE                           = 62650,
     SPELL_ICEBLAST_ICE                               = 28522,
-	//SPELL_ICE                                        = 45573,
+    //SPELL_ICE                                        = 45573,
     //===================EarthSpells=========================
     SPELL_NATURE_EARTH                               = 62519, //Stacks
     SPELL_GROUND_EARTH                               = 62859,
@@ -69,11 +69,11 @@ enum Spells
 
 enum Texts11
 {
-	FIRE_SAY_AGGRO = 0,
-	FIRE_SAY_FRENZY = 1,
-	FIRE_SAY_SUMMON_TITAN = 2,
-	FIRE_SAY_KILL = 3,
-	FIRE_SAY_DIE = 4,
+    FIRE_SAY_AGGRO = 0,
+    FIRE_SAY_FRENZY = 1,
+    FIRE_SAY_SUMMON_TITAN = 2,
+    FIRE_SAY_KILL = 3,
+    FIRE_SAY_DIE = 4,
 };
 enum eEnums
 {
@@ -100,7 +100,7 @@ class event_npc_firelord : public CreatureScript
         struct event_npc_firelordAI : public ScriptedAI
         {
             event_npc_firelordAI(Creature *c) : ScriptedAI(c),  summons(c) {}
-			
+            
             SummonList summons;
 
             uint32 m_uiSunbeamTimer;
@@ -147,7 +147,7 @@ class event_npc_firelord : public CreatureScript
             void JustEngagedWith(Unit* /*pWho*/)
             {
                 Talk(FIRE_SAY_AGGRO);
-				DoCastSelf(SPELL_MANA_BARRIER, true);
+                DoCastSelf(SPELL_MANA_BARRIER, true);
                 summons.DespawnAll();
             }
 
@@ -155,13 +155,13 @@ class event_npc_firelord : public CreatureScript
             {
                 ScriptedAI::EnterEvadeMode(why);
             }
-			
+            
             void KilledUnit(Unit *victim)
             {
                 if (victim->GetTypeId() == TYPEID_PLAYER)
                     Talk(FIRE_SAY_KILL);
             }
-			
+            
             void JustDied(Unit* /*killer*/)
             {
                 Talk(FIRE_SAY_DIE);
@@ -184,7 +184,7 @@ class event_npc_firelord : public CreatureScript
             {
                 if (!UpdateVictim())
                     return;
-					
+                    
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
@@ -288,7 +288,7 @@ class event_npc_firelord : public CreatureScript
                     else
                         m_uiScorchTimer -= uiDiff;
                 }
-				
+                
                 //Summon Timer
                 if (m_uiSummonTimer <= uiDiff)
                 {
@@ -299,7 +299,7 @@ class event_npc_firelord : public CreatureScript
                 }
                 else
                     m_uiSummonTimer -= uiDiff;
-					
+                    
                 //Summon Heal
                 if (m_uiSummonCheck <= uiDiff)
                 {
@@ -403,13 +403,13 @@ class event_npc_icelord : public CreatureScript
             {
                 ScriptedAI::EnterEvadeMode(why);
             }
-			
+            
             void KilledUnit(Unit *victim)
             {
                 if (victim->GetTypeId() == TYPEID_PLAYER)
                     Talk(ICE_SAY_KILL);
             }
-			
+            
             void JustDied(Unit* /*killer*/)
             {
                 if (GameObject *pDoor1 = GetClosestGameObjectWithEntry(me, GO_ICE_DOOR_1, INTERACTION_DISTANCE*1000))
@@ -425,7 +425,7 @@ class event_npc_icelord : public CreatureScript
             {
                 if (!UpdateVictim())
                     return;
-					
+                    
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
@@ -581,13 +581,13 @@ class event_npc_earthlord : public CreatureScript
             {
                 ScriptedAI::EnterEvadeMode(why);
             }
-			
+            
             void KilledUnit(Unit *victim)
             {
                 if (victim->GetTypeId() == TYPEID_PLAYER)
                     Talk(EARTH_SAY_KILL);
             }
-			
+            
             void JustDied(Unit* /*killer*/)
             {
                 Talk(EARTH_SAY_DIE);
@@ -597,7 +597,7 @@ class event_npc_earthlord : public CreatureScript
             {
                 if (!UpdateVictim())
                     return;
-					
+                    
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
@@ -606,7 +606,7 @@ class event_npc_earthlord : public CreatureScript
                     me->CombatStop(true);
                     EnterEvadeMode(EVADE_REASON_OTHER);
                 }
-				
+                
                 //Attuned to Nature Timer
                 if (m_uiNatureTimer <= uiDiff)
                 {
@@ -617,7 +617,7 @@ class event_npc_earthlord : public CreatureScript
                 }
                 else
                     m_uiNatureTimer -= uiDiff;
-					
+                    
                 //Fury Timer
                 if (m_uiFuryTimer <= uiDiff)
                 {
@@ -679,7 +679,7 @@ class event_npc_earthlord : public CreatureScript
                 }
                 else
                     m_uiPetrifyingBreathTimer -= uiDiff;
-					
+                    
                 //Stun Timer
                 if (m_uiStunTimer <= uiDiff)
                 {
@@ -790,7 +790,7 @@ class event_npc_darklord : public CreatureScript
             {
                 if (!UpdateVictim())
                     return;
-					
+                    
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
@@ -985,11 +985,11 @@ class event_mage_ice : public CreatureScript
             void EnterEvadeMode(EvadeReason /*why*/)
             {
             }
-			
+            
             void KilledUnit(Unit* /*victim*/)
             {
             }
-			
+            
             void JustDied(Unit* /*killer*/)
             {
             }
@@ -998,10 +998,10 @@ class event_mage_ice : public CreatureScript
             {
                 if (!UpdateVictim())
                     return;
-					
+                    
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-				
+                
                 //Blizzard Timer
                 if (m_uiBlizzardTimer <= uiDiff)
                 {
@@ -1081,11 +1081,11 @@ class event_mage_fire : public CreatureScript
             void EnterEvadeMode(EvadeReason /*why*/)
             {
             }
-			
+            
             void KilledUnit(Unit* /*victim*/)
             {
             }
-			
+            
             void JustDied(Unit* /*killer*/)
             {
             }
@@ -1094,10 +1094,10 @@ class event_mage_fire : public CreatureScript
             {
                 if (!UpdateVictim())
                     return;
-					
+                    
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-				
+                
                 //Chain heal Timer
                 if (m_uiHealTimer <= uiDiff)
                 {
@@ -1179,11 +1179,11 @@ class event_dk : public CreatureScript
             void EnterEvadeMode(EvadeReason /*why*/)
             {
             }
-			
+            
             void KilledUnit(Unit *victim)
             {
             }
-			
+            
             void JustDied(Unit* /*killer*/)
             {
             }
@@ -1192,10 +1192,10 @@ class event_dk : public CreatureScript
             {
                 if (!UpdateVictim())
                     return;
-					
+                    
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-				
+                
                 //Death Coil Timer
                 if (m_uiDeathCoilTimer <= uiDiff)
                 {
@@ -1227,7 +1227,7 @@ class event_dk : public CreatureScript
                 }
                 else
                     m_uiGlacialStrikeTimer -= uiDiff;
-					
+                    
                 // Rune Tap Timer
                 if (m_uiTapTimer <= uiDiff && !HealthAbovePct(35))
                 {
@@ -1284,11 +1284,11 @@ class event_warrior : public CreatureScript
             void EnterEvadeMode(EvadeReason /*why*/)
             {
             }
-			
+            
             void KilledUnit(Unit* /*victim*/)
             {
             }
-			
+            
             void JustDied(Unit* /*killer*/)
             {
             }
@@ -1297,10 +1297,10 @@ class event_warrior : public CreatureScript
             {
                 if (!UpdateVictim())
                     return;
-					
+                    
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
-				
+                
                 //Shockwave Timer
                 if (m_uiShockwaveTimer <= uiDiff)
                 {
