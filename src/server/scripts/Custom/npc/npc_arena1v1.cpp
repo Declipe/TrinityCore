@@ -143,7 +143,7 @@ public:
         {
             if (bgQueue.IPExistsInQueue(player, nullptr, bracketEntry, isRated, false))
             {
-                ChatHandler(player->GetSession()).SendSysMessage("Âû íå ìîæåòå ïðèñîåäèíèòüñ¤ 1õ1 ñåé÷àñ, ïîòîìó ÷òî óæå åñòü êòî - òî â î÷åðåäè ñ òåì æå IP");
+                ChatHandler(player->GetSession()).SendSysMessage("Ð’Ñ‹ Ð½Ðµ Ð¼Ð¾Ð¶ÐµÑ‚Ðµ Ð¿Ñ€Ð¸ÑÐ¾ÐµÐ´Ð¸Ð½Ð¸Ñ‚ÑŒÑÂ¤ 1Ñ…1 ÑÐµÐ¹Ñ‡Ð°Ñ, Ð¿Ð¾Ñ‚Ð¾Ð¼Ñƒ Ñ‡Ñ‚Ð¾ ÑƒÐ¶Ðµ ÐµÑÑ‚ÑŒ ÐºÑ‚Ð¾ - Ñ‚Ð¾ Ð² Ð¾Ñ‡ÐµÑ€ÐµÐ´Ð¸ Ñ Ñ‚ÐµÐ¼ Ð¶Ðµ IP");
                 //ChatHandler(player->GetSession()).SendSysMessage("You cannot join 1v1 Arena now because there is already someone queued with the same IP address.");
                 return false;
             }
@@ -222,29 +222,29 @@ public:
 
         if(sWorld->getBoolConfig(CONFIG_ARENA_1V1_ENABLE) == false)
         {
-            ChatHandler(player->GetSession()).SendSysMessage("Àðåíà 1v1 íå äîñòóïíà!");
+            ChatHandler(player->GetSession()).SendSysMessage("ÐÑ€ÐµÐ½Ð° 1v1 Ð½Ðµ Ð´Ð¾ÑÑ‚ÑƒÐ¿Ð½Ð°!");
             return true;
         }
 
         if(player->InBattlegroundQueueForBattlegroundQueueType(BATTLEGROUND_QUEUE_5v5))
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Leave queue 1v1 Arena", GOSSIP_SENDER_MAIN, 3, "Are you sure?", 0, false);
         else
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Çàðåãåñòðèðîâàòüñÿ áåç Ðåéòèíãà", GOSSIP_SENDER_MAIN, 20);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Ð—Ð°Ñ€ÐµÐ³ÐµÑÑ‚Ñ€Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒÑÑ Ð±ÐµÐ· Ð ÐµÐ¹Ñ‚Ð¸Ð½Ð³Ð°", GOSSIP_SENDER_MAIN, 20);
 
         if(player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_5v5)) == 0)
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Ñîçäàòü êîìàíäó", GOSSIP_SENDER_MAIN, 1, "Âû óâåðåíû?", sWorld->getIntConfig(CONFIG_ARENA_1V1_COSTS), false);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Ð¡Ð¾Ð·Ð´Ð°Ñ‚ÑŒ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñƒ", GOSSIP_SENDER_MAIN, 1, "Ð’Ñ‹ ÑƒÐ²ÐµÑ€ÐµÐ½Ñ‹?", sWorld->getIntConfig(CONFIG_ARENA_1V1_COSTS), false);
         else
         {
             if(player->InBattlegroundQueueForBattlegroundQueueType(BATTLEGROUND_QUEUE_5v5) == false)
             {
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Çàðåãåñòðèðîâàòüñÿ ñ Ðåéòèíãîì", GOSSIP_SENDER_MAIN, 2);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Ðàñïóñòèòü êîìàíäó", GOSSIP_SENDER_MAIN, 5, "Âû óâåðåíû?", 0, false);
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Ð—Ð°Ñ€ÐµÐ³ÐµÑÑ‚Ñ€Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒÑÑ Ñ Ð ÐµÐ¹Ñ‚Ð¸Ð½Ð³Ð¾Ð¼", GOSSIP_SENDER_MAIN, 2);
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Ð Ð°ÑÐ¿ÑƒÑÑ‚Ð¸Ñ‚ÑŒ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñƒ", GOSSIP_SENDER_MAIN, 5, "Ð’Ñ‹ ÑƒÐ²ÐµÑ€ÐµÐ½Ñ‹?", 0, false);
             }
 
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Ïîêàæè ñòàòèñòèêó", GOSSIP_SENDER_MAIN, 4);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "ÐŸÐ¾ÐºÐ°Ð¶Ð¸ ÑÑ‚Ð°Ñ‚Ð¸ÑÑ‚Ð¸ÐºÑƒ", GOSSIP_SENDER_MAIN, 4);
         }
 
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Èíôîðìàöèÿ", GOSSIP_SENDER_MAIN, 8);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Ð˜Ð½Ñ„Ð¾Ñ€Ð¼Ð°Ñ†Ð¸Ñ", GOSSIP_SENDER_MAIN, 8);
         SendGossipMenuFor(player, 68, me->GetGUID());
         return true;
     }
