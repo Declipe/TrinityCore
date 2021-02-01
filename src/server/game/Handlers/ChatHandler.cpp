@@ -38,11 +38,11 @@
 #include "Player.h"
 #include "ScriptMgr.h"
 #include "SpellAuraEffects.h"
+#include "Util.h"
 #ifdef ELUNA
 #include "LuaEngine.h"
 #endif
 #include "Warden.h"
-#include "Util.h"
 #include "World.h"
 #include "WorldPacket.h"
 #include <algorithm>
