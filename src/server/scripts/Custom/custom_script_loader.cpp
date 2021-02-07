@@ -16,6 +16,7 @@
  */
 
 // This is where scripts' loading functions should be declared:
+void AddSC_BGReward();
 void AddSC_ZynPlayerScripts();
 void AddSC_level_award();
 void AddSC_npc_teleport();
@@ -51,7 +52,8 @@ void AddSC_mod_DefaultSpec();
 // void Add${NameOfDirectory}Scripts()
 void AddCustomScripts()
 {
-    // GuildHouse NPC
+AddSC_BGReward();
+// GuildHouse NPC
 AddSC_guildmaster();
 // 1v1 Arena
 AddSC_npc_1v1arena();
