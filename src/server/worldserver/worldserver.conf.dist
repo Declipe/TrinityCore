@@ -4634,3 +4634,15 @@ Eluna.ScriptPath = "lua_scripts"
 
 #
 ###################################################################################################
+BGReward.Enable = 1
+
+BGReward.ItemID.WSG = 20558
+BGReward.ItemID.Arathi = 20559
+BGReward.ItemID.Alterac = 20560
+BGReward.ItemID.Isle = 47395
+BGReward.ItemID.Ancients = 42425
+BGReward.ItemID.Eye = 29024
+
+BGReward.WinnerTeam.Count = 30
+BGReward.LoserTeam.Count = 1
+###################################################################################################

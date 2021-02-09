@@ -34,6 +34,7 @@
 #include "Player.h"
 #include "ReputationMgr.h"
 #include "SpellAuras.h"
+#include "ScriptMgr.h"
 #include "TemporarySummon.h"
 #include "Transport.h"
 #include "Util.h"
@@ -223,6 +224,8 @@ void Battleground::Update(uint32 diff)
     m_ResetStatTimer += diff;
 
     PostUpdateImpl(diff);
+
+    sScriptMgr->OnBattlegroundUpdate(this, diff);
 }
 
 inline void Battleground::_CheckSafePositions(uint32 diff)
@@ -504,6 +507,8 @@ inline void Battleground::_ProcessJoin(uint32 diff)
             // Announce BG starting
             if (sWorld->getBoolConfig(CONFIG_BATTLEGROUND_QUEUE_ANNOUNCER_ENABLE))
                 sWorld->SendWorldText(LANG_BG_STARTED_ANNOUNCE_WORLD, GetName().c_str(), GetMinLevel(), GetMaxLevel());
+
+            sScriptMgr->OnBattlegroundStart(this);
         }
     }
 }
@@ -821,6 +826,8 @@ void Battleground::EndBattleground(uint32 winner)
         player->SendDirectMessage(&data);
         player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_BATTLEGROUND, player->GetMapId());
     }
+
+    sScriptMgr->OnBattlegroundEnd(this, winner);
 }
 
 uint32 Battleground::GetBonusHonorFromKill(uint32 kills) const
@@ -949,6 +956,8 @@ void Battleground::RemovePlayerAtLeave(ObjectGuid guid, bool Transport, bool Sen
         TC_LOG_DEBUG("bg.battleground", "Removed player %s from Battleground.", player->GetName().c_str());
     }
 
+    sScriptMgr->OnBattlegroundRemovePlayerAtLeave(this, guid, Transport, SendPacket);
+
     //battleground object will be deleted next Battleground::Update() call
 }
 
@@ -1004,6 +1013,8 @@ void Battleground::AddPlayer(Player* player)
     if (player->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_AFK))
         player->ToggleAFK();
 
+    sScriptMgr->OnBattlegroundBeforeAddPlayer(this, player);
+
     // score struct must be created in inherited class
 
     uint32 team = player->GetTeam();
@@ -1049,6 +1060,8 @@ void Battleground::AddPlayer(Player* player)
     PlayerAddedToBGCheckIfBGIsRunning(player);
     AddOrSetPlayerToCorrectBgGroup(player, team);
     player->FitPlayerInTeam(true, this);
+
+    sScriptMgr->OnBattlegroundAddPlayer(this, player);
 }
 
 // this method adds player to his team's bg group, or sets his correct group if player is already in bg group
