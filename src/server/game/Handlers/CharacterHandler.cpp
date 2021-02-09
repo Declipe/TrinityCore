@@ -17,6 +17,7 @@
 
 #include "WorldSession.h"
 #include "ArenaTeamMgr.h"
+#include "Battleground.h"
 #include "CalendarMgr.h"
 #include "CharacterCache.h"
 #include "CharacterPackets.h"
@@ -1017,6 +1018,9 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder const& holder)
     sScriptMgr->OnPlayerLogin(pCurrChar, firstLogin);
 
     TC_METRIC_EVENT("player_events", "Login", pCurrChar->GetName());
+
+    if (pCurrChar->GetTeam() != pCurrChar->GetCFSTeam())
+        pCurrChar->FitPlayerInTeam(pCurrChar->GetBattleground() && !pCurrChar->GetBattleground()->isArena() ? true : false, pCurrChar->GetBattleground());
 }
 
 void WorldSession::SendFeatureSystemStatus()
