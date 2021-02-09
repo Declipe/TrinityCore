@@ -792,14 +792,14 @@ enum RBACPermissions
     RBAC_PERM_COMMAND_RELOAD_CHAT_FILTER                       = 1590,
     //RBAC_PERM_COMMAND_VIP_qcomplete                          = 1020,
     RBAC_PERM_COMMAND_RELOAD_full                              = 1021,
-    RBAC_HandleAntiCheatGlobal = 1022,
-    RBAC_HandleAntiCheatPlayerCommand = 1023,
-    RBAC_HandleAntiCheatDeleteCommand = 1024,
-    RBAC_HandleAntiCheatHandleCommand = 1025,
-    RBAC_HandleAnticheatJailCommand = 1026,
-    RBAC_HandleAnticheatWarnCommand = 1027,
-    RBAC_HandleGladiatorsChatCommand =1028,
-    RBAC_HandleVipStatusCommand=1029,
+    RBAC_HandleAntiCheatGlobal                                 = 1022,
+    RBAC_HandleAntiCheatPlayerCommand                          = 1023,
+    RBAC_HandleAntiCheatDeleteCommand                          = 1024,
+    RBAC_HandleAntiCheatHandleCommand                          = 1025,
+    RBAC_HandleAnticheatJailCommand                            = 1026,
+    RBAC_HandleAnticheatWarnCommand                            = 1027,
+    RBAC_HandleGladiatorsChatCommand                           = 1028,
+    RBAC_HandleVipStatusCommand                                = 1029,
 
 
 
