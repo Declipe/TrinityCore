@@ -16,6 +16,7 @@
  */
 
 // This is where scripts' loading functions should be declared:
+void AddSC_NPC_TransmogDisplayVendor();
 void AddSC_BGReward();
 void AddSC_ZynPlayerScripts();
 void AddSC_level_award();
@@ -52,6 +53,7 @@ void AddSC_mod_DefaultSpec();
 // void Add${NameOfDirectory}Scripts()
 void AddCustomScripts()
 {
+AddSC_NPC_TransmogDisplayVendor();
 AddSC_BGReward();
 // GuildHouse NPC
 AddSC_guildmaster();
