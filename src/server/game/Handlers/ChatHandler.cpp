@@ -482,15 +482,15 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
             if (!sender->IsAlive())
                 return;
 
+            if (!GetPlayer()->IsGameMaster())
+                  if (GetPlayer()->SendBattleGroundChat(type, msg))
+                  return;
+
             if (sender->GetLevel() < sWorld->getIntConfig(CONFIG_CHAT_SAY_LEVEL_REQ))
             {
                 SendNotification(GetTrinityString(LANG_SAY_REQ), sWorld->getIntConfig(CONFIG_CHAT_SAY_LEVEL_REQ));
                 return;
             }
-
-            if (!GetPlayer()->IsGameMaster())
-                if (GetPlayer()->SendBattleGroundChat(type, msg))
-                    return;
 
 #ifdef ELUNA
             if (!sEluna->OnChat(sender, type, lang, msg))
@@ -506,15 +506,15 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
             if (!sender->IsAlive())
                 return;
 
+            if (!GetPlayer()->IsGameMaster())
+               if (GetPlayer()->SendBattleGroundChat(type, msg))
+                return;
+
             if (sender->GetLevel() < sWorld->getIntConfig(CONFIG_CHAT_EMOTE_LEVEL_REQ))
             {
                 SendNotification(GetTrinityString(LANG_SAY_REQ), sWorld->getIntConfig(CONFIG_CHAT_EMOTE_LEVEL_REQ));
                 return;
             }
-
-            if (!GetPlayer()->IsGameMaster())
-                if (GetPlayer()->SendBattleGroundChat(type, msg))
-                    return;
 
 #ifdef ELUNA
             if (!sEluna->OnChat(sender, type, LANG_UNIVERSAL, msg))
@@ -530,15 +530,15 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
             if (!sender->IsAlive())
                 return;
 
+            if (!GetPlayer()->IsGameMaster())
+               if (GetPlayer()->SendBattleGroundChat(type, msg))
+                 return;
+
             if (sender->GetLevel() < sWorld->getIntConfig(CONFIG_CHAT_YELL_LEVEL_REQ))
             {
                 SendNotification(GetTrinityString(LANG_SAY_REQ), sWorld->getIntConfig(CONFIG_CHAT_YELL_LEVEL_REQ));
                 return;
             }
-
-            if (!GetPlayer()->IsGameMaster())
-                if (GetPlayer()->SendBattleGroundChat(type, msg))
-                    return;
 
 #ifdef ELUNA
             if (!sEluna->OnChat(sender, type, lang, msg))
