@@ -152,7 +152,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
     recvData >> type;
     recvData >> lang;
 
-    if (sWorld->getBoolConfig(BATTLEGROUND_CROSSFACTION_ENABLED) /*&& lang != LANG_ADDON*/)
+  /*  if (sWorld->getBoolConfig(BATTLEGROUND_CROSSFACTION_ENABLED) /*&& lang != LANG_ADDON)
     {
         switch (type)
         {
@@ -162,8 +162,8 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
         default:
             break;
         }
-    }
-
+    }*/
+    
     if (type >= MAX_CHAT_MSG_TYPE)
     {
         TC_LOG_ERROR("network", "CHAT: Wrong message type received: %u", type);
