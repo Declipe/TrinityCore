@@ -983,7 +983,7 @@ void DBCMgr::LoadItemExtendedCostStore()
     uint32 oldMSTime = getMSTime();
     ItemExtendedCostStore.clear();
 
-    QueryResult result = WorldDatabase.Query("SELECT Id, ReqHonorPoints, ReqArenaPoints, ReqArenaSlot, ReqItem1, ReqItem2, ReqItem3, ReqItem4, ReqItem5, "
+    QueryResult result = ZynDatabase.Query("SELECT Id, ReqHonorPoints, ReqArenaPoints, ReqArenaSlot, ReqItem1, ReqItem2, ReqItem3, ReqItem4, ReqItem5, "
         "ReqItemCount1, ReqItemCount2, ReqItemCount3, ReqItemCount4, ReqItemCount5, ReqPersonalArenaRating FROM itemextendedcostdbc");
     if (!result)
     {
@@ -1016,7 +1016,7 @@ void DBCMgr::LoadWorldSafeLocsStore()
     uint32 oldMSTime = getMSTime();
     WorldSafeLocsStore.clear();
 
-    QueryResult result = WorldDatabase.Query("SELECT Id, MapId, X, Y, Z FROM worldsafelocsdbc");
+    QueryResult result = ZynDatabase.Query("SELECT Id, MapId, X, Y, Z FROM worldsafelocsdbc");
     if (!result)
     {
         TC_LOG_ERROR("server.loading", ">> Loaded 0 WorldSafeLocs entry. DB table `WorldSafeLocs dbc` is empty.");
