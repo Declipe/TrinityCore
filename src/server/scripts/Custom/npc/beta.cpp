@@ -33,31 +33,31 @@
 #include "DatabaseEnvFwd.h"
 #include "Log.h"
 
-#define MSG_GOSSIP_TEXT_GETTING_STARTED	"ÐŸÑ€Ð¸Ð²ÐµÑ‚ÑÑ‚Ð²ÑƒÐµÐ¼ Ð²Ð°Ñ Ð½Ð° ÑÐµÑ€Ð²ÐµÑ€Ðµ"// OneGo - World of Warcraft !"
+#define MSG_GOSSIP_TEXT_GETTING_STARTED	"Ïðèâåòñòâóåì âàñ íà ñåðâåðå"// OneGo - World of Warcraft !"
 
-#define MSG_ERR_HONOR "Ð£ Ð²Ð°Ñ Ð½Ðµ Ð´Ð¾ÑÑ‚Ð°Ñ‚Ð¾Ñ‡Ð½Ð¾ Ñ…Ð¾Ð½Ð¾Ñ€Ð° Ð´Ð»Ñ ÑÐ¾Ð²ÐµÑ€ÑˆÐµÐ½Ð¸Ñ Ð¿Ð¾ÐºÑƒÐ¿ÐºÐ¸!"
-#define MSG_ERR_ARENA_POINT_1 "Ð£ Ð²Ð°Ñ Ð½Ðµ Ð´Ð¾ÑÑ‚Ð°Ñ‚Ð¾Ñ‡Ð½Ð¾ ÐÐ¿Ð°!"
-#define MSG_ERR_TITLE "Ð£ Ð´Ð°Ð½Ð½Ð¾Ð³Ð¾ Ð¿ÐµÑ€ÑÐ¾Ð½Ð°Ð¶Ð° ÑƒÐ¶Ðµ ÐµÑÑ‚ÑŒ Ñ‚Ð°ÐºÐ¾Ðµ Ð·Ð²Ð°Ð½Ð¸Ðµ!"
-#define MSG_ERR_INCOMBAT "Ð’Ñ‹ Ð½Ð°Ñ…Ð¾Ð´Ð¸Ñ‚ÐµÑÑŒ Ð² Ð±Ð¾ÑŽ. Ð§Ñ‚Ð¾Ð±Ñ‹ Ð¸ÑÐ¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÑŒ Ð´Ð°Ð½Ð½Ð¾Ð³Ð¾ Npc Ð²Ñ‹Ð¹Ð´Ð¸Ñ‚Ðµ Ð¸Ð· Ð½ÐµÐ³Ð¾."
-#define MSG_COMPLETE_RENAME "ÐžÐ¿Ð»Ð°Ñ‚Ð° Ð£ÑÐ¿ÐµÑˆÐ½Ð¾ ÐŸÑ€Ð¾Ð¸Ð·Ð²ÐµÐ´ÐµÐ½Ð° Ð¡Ð´ÐµÐ»Ð°Ð¹Ñ‚Ðµ Ð›Ð¾Ð³Ð°ÑƒÑ‚ Ð¸ Ð’Ð²ÐµÐ´Ð¸Ñ‚Ðµ ÐÐ¾Ð²Ð¾Ðµ Ð˜Ð¼Ñ ÐŸÐµÑ€ÑÐ¾Ð½Ð°Ð¶Ð°.ÐÐµ Ð—Ð°Ð±ÑƒÐ´ÑŒÑ‚Ðµ ÐŸÐ¾ÑÐ»Ðµ Ð¡Ð¼ÐµÐ½Ñ‹ Ð˜Ð¼ÐµÐ½Ð¸,Ð’Ñ‹Ð¹Ñ‚Ð¸ Ð˜Ð· Ð˜Ð³Ñ€Ñ‹ Ð¸ Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ Ð˜Ð· ÐšÐ»Ð¸ÐµÐ½Ñ‚Ð° ÐŸÐ°Ð¿ÐºÑƒ Cache!"
-#define MSG_CUSTOMIZE_COMPLETE "ÐžÐ¿Ð»Ð°Ñ‚Ð° Ð£ÑÐ¿ÐµÑˆÐ½Ð¾ ÐŸÑ€Ð¾Ð¸Ð·Ð²ÐµÐ´ÐµÐ½Ð° Ð¡Ð´ÐµÐ»Ð°Ð¹Ñ‚Ðµ Ð›Ð¾Ð³Ð°ÑƒÑ‚ Ð¸ Ð˜Ð·Ð¼ÐµÐ½Ð¸Ñ‚Ðµ Ð’Ð½ÐµÑˆÐ½Ð¾ÑÑ‚ÑŒ ÐŸÐµÑ€ÑÐ¾Ð½Ð°Ð¶Ð°.ÐÐµ Ð—Ð°Ð±ÑƒÐ´ÑŒÑ‚Ðµ ÐŸÐ¾ÑÐ»Ðµ Ð¡Ð¼ÐµÐ½Ñ‹ Ð’Ð½ÐµÑˆÐ½Ð¾ÑÑ‚Ð¸,Ð’Ñ‹Ð¹Ñ‚Ð¸ Ð˜Ð· Ð˜Ð³Ñ€Ñ‹ Ð¸ Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ Ð˜Ð· ÐšÐ»Ð¸ÐµÐ½Ñ‚Ð° ÐŸÐ°Ð¿ÐºÑƒ Cache!"
-#define MSG_CHANGE_FACTION_COMPLETE "ÐžÐ¿Ð»Ð°Ñ‚Ð° Ð£ÑÐ¿ÐµÑˆÐ½Ð¾ ÐŸÑ€Ð¾Ð¸Ð·Ð²ÐµÐ´ÐµÐ½Ð° Ð¡Ð´ÐµÐ»Ð°Ð¹Ñ‚Ðµ Ð›Ð¾Ð³Ð°ÑƒÑ‚ Ð¸ Ð˜Ð·Ð¼ÐµÐ½Ð¸Ñ‚Ðµ Ð¤Ñ€Ð°ÐºÑ†Ð¸ÑŽ ÐŸÐµÑ€ÑÐ¾Ð½Ð°Ð¶Ð°.ÐÐµ Ð—Ð°Ð±ÑƒÐ´ÑŒÑ‚Ðµ ÐŸÐ¾ÑÐ»Ðµ Ð¡Ð¼ÐµÐ½Ñ‹ Ð’Ð½ÐµÑˆÐ½Ð¾ÑÑ‚Ð¸,Ð’Ñ‹Ð¹Ñ‚Ð¸ Ð˜Ð· Ð˜Ð³Ñ€Ñ‹ Ð¸ Ð£Ð´Ð°Ð»Ð¸Ñ‚ÑŒ Ð˜Ð· ÐšÐ»Ð¸ÐµÐ½Ñ‚Ð° ÐŸÐ°Ð¿ÐºÑƒ Cache!"
+#define MSG_ERR_HONOR "Ó âàñ íå äîñòàòî÷íî õîíîðà äëÿ ñîâåðøåíèÿ ïîêóïêè!"
+#define MSG_ERR_ARENA_POINT_1 "Ó âàñ íå äîñòàòî÷íî Àïà!"
+#define MSG_ERR_TITLE "Ó äàííîãî ïåðñîíàæà óæå åñòü òàêîå çâàíèå!"
+#define MSG_ERR_INCOMBAT "Âû íàõîäèòåñü â áîþ. ×òîáû èñïîëüçîâàòü äàííîãî Npc âûéäèòå èç íåãî."
+#define MSG_COMPLETE_RENAME "Îïëàòà Óñïåøíî Ïðîèçâåäåíà Ñäåëàéòå Ëîãàóò è Ââåäèòå Íîâîå Èìÿ Ïåðñîíàæà.Íå Çàáóäüòå Ïîñëå Ñìåíû Èìåíè,Âûéòè Èç Èãðû è Óäàëèòü Èç Êëèåíòà Ïàïêó Cache!"
+#define MSG_CUSTOMIZE_COMPLETE "Îïëàòà Óñïåøíî Ïðîèçâåäåíà Ñäåëàéòå Ëîãàóò è Èçìåíèòå Âíåøíîñòü Ïåðñîíàæà.Íå Çàáóäüòå Ïîñëå Ñìåíû Âíåøíîñòè,Âûéòè Èç Èãðû è Óäàëèòü Èç Êëèåíòà Ïàïêó Cache!"
+#define MSG_CHANGE_FACTION_COMPLETE "Îïëàòà Óñïåøíî Ïðîèçâåäåíà Ñäåëàéòå Ëîãàóò è Èçìåíèòå Ôðàêöèþ Ïåðñîíàæà.Íå Çàáóäüòå Ïîñëå Ñìåíû Âíåøíîñòè,Âûéòè Èç Èãðû è Óäàëèòü Èç Êëèåíòà Ïàïêó Cache!"
 
-#define MSG_GOSSIP_TEXT_MAX_HEALTH "Ð’Ñ‹Ð»ÐµÑ‡Ð¸ Ð¼ÐµÐ½Ñ!"
-#define MSG_GOSSIP_TEXT_MAX_SKILL "Ð’Ñ‹ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð²ÑÐµ Ð½Ð°Ð²Ñ‹ÐºÐ¸ Ð¾Ñ€ÑƒÐ¶Ð¸Ñ Ð¸ Ð·Ð°Ñ‰Ð¸Ñ‚Ñ‹."
+#define MSG_GOSSIP_TEXT_MAX_HEALTH "Âûëå÷è ìåíÿ!"
+#define MSG_GOSSIP_TEXT_MAX_SKILL "Âûó÷èòü âñå íàâûêè îðóæèÿ è çàùèòû."
 
-#define MSG_GOSSIP_TEXT_BUFF_POWER_WORD "[Ð‘Ð°Ñ„Ð½ÑƒÑ‚ÑŒ] Ð¡Ð»Ð¾Ð²Ð¾ ÑÐ¸Ð»Ñ‹: Ð¡Ñ‚Ð¾Ð¹ÐºÐ¾ÑÑ‚ÑŒ"
-#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_KINGS "[Ð‘Ð°Ñ„Ð½ÑƒÑ‚ÑŒ] Ð‘Ð»Ð°Ð³Ð¾ÑÐ»Ð¾Ð²ÐµÐ½Ð¸Ðµ ÐšÐ¾Ñ€Ð¾Ð»ÐµÐ¹"
-#define MSG_GOSSIP_TEXT_BUFF_MARK_OF_THE_WILD "[Ð‘Ð°Ñ„Ð½ÑƒÑ‚ÑŒ] Ð—Ð½Ð°Ðº Ð´Ð¸ÐºÐ¾Ð¹ Ð¿Ñ€Ð¸Ñ€Ð¾Ð´Ñ‹"
-#define MSG_GOSSIP_TEXT_BUFF_ARCANE_BRILLIANCE "[Ð‘Ð°Ñ„Ð½ÑƒÑ‚ÑŒ] Ð§Ð°Ñ€Ð¾Ð´ÐµÐ¹ÑÐºÐ°Ñ Ð³ÐµÐ½Ð¸Ð°Ð»ÑŒÐ½Ð¾ÑÑ‚ÑŒ Ð”Ð°Ð»Ð°Ñ€Ð°Ð½Ð°"
-#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_MIGHT "[Ð‘Ð°Ñ„Ð½ÑƒÑ‚ÑŒ] Ð’ÐµÐ»Ð¸ÐºÐ¾Ðµ Ð‘Ð»Ð°Ð³Ð¾ÑÐ»Ð¾Ð²ÐµÐ½Ð¸Ðµ Ð¼Ð¾Ð³ÑƒÑ‰ÐµÑÑ‚Ð²Ð°"
-#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_WISDOM "[Ð‘Ð°Ñ„Ð½ÑƒÑ‚ÑŒ] Ð‘Ð»Ð°Ð³Ð¾ÑÐ»Ð¾Ð²ÐµÐ½Ð¸Ðµ Ð¼ÑƒÐ´Ñ€Ð¾ÑÑ‚Ð¸"
-#define MSG_GOSSIP_TEXT_BUFF_THORNS "[Ð‘Ð°Ñ„Ð½ÑƒÑ‚ÑŒ] Ð¨Ð¸Ð¿Ñ‹"
-#define MSG_GOSSIP_TEXT_BUFF_DIVINE_SPIRIT "[Ð‘Ð°Ñ„Ð½ÑƒÑ‚ÑŒ] Ð‘Ð¾Ð¶ÐµÑÑ‚Ð²ÐµÐ½Ð½Ñ‹Ð¹ Ð´ÑƒÑ…"
-#define MSG_GOSSIP_TEXT_BUFF_SHADOW_PROTECTION "[Ð‘Ð°Ñ„Ð½ÑƒÑ‚ÑŒ] Ð—Ð°Ñ‰Ð¸Ñ‚Ð° Ð¾Ñ‚ Ñ‚ÐµÐ¼Ð½Ð¾Ð¹ Ð¼Ð°Ð³Ð¸Ð¸"
-#define MSG_GOSSIP_TEXT_BUFF_STAMINA "[Ð‘Ð°Ñ„Ð½ÑƒÑ‚ÑŒ] Ð’Ñ‹Ð½Ð¾ÑÐ»Ð¸Ð²Ð¾ÑÑ‚ÑŒ"
+#define MSG_GOSSIP_TEXT_BUFF_POWER_WORD "[Áàôíóòü] Ñëîâî ñèëû: Ñòîéêîñòü"
+#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_KINGS "[Áàôíóòü] Áëàãîñëîâåíèå Êîðîëåé"
+#define MSG_GOSSIP_TEXT_BUFF_MARK_OF_THE_WILD "[Áàôíóòü] Çíàê äèêîé ïðèðîäû"
+#define MSG_GOSSIP_TEXT_BUFF_ARCANE_BRILLIANCE "[Áàôíóòü] ×àðîäåéñêàÿ ãåíèàëüíîñòü Äàëàðàíà"
+#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_MIGHT "[Áàôíóòü] Âåëèêîå Áëàãîñëîâåíèå ìîãóùåñòâà"
+#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_WISDOM "[Áàôíóòü] Áëàãîñëîâåíèå ìóäðîñòè"
+#define MSG_GOSSIP_TEXT_BUFF_THORNS "[Áàôíóòü] Øèïû"
+#define MSG_GOSSIP_TEXT_BUFF_DIVINE_SPIRIT "[Áàôíóòü] Áîæåñòâåííûé äóõ"
+#define MSG_GOSSIP_TEXT_BUFF_SHADOW_PROTECTION "[Áàôíóòü] Çàùèòà îò òåìíîé ìàãèè"
+#define MSG_GOSSIP_TEXT_BUFF_STAMINA "[Áàôíóòü] Âûíîñëèâîñòü"
 
-#define MSG_GOSSIP_TEXT_BUFF_MENU "[ÐœÐµÐ½ÑŽ Ð±Ð°Ñ„Ð¾Ð²] ->"
+#define MSG_GOSSIP_TEXT_BUFF_MENU "[Ìåíþ áàôîâ] ->"
 //#define MSG_GOSSIP_TEXT_BUFF_MENUvip1 "[Premium buff] ->"
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip2 "[Title] ->"
 //#define MSG_GOSSIP_TEXT_BUFF_MENUvip3 "[test] ->"
@@ -65,55 +65,55 @@
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip333 "[sumki] ->"
 //#define MSG_GOSSIP_TEXT_BUFF_MENUvip44 "[key] ->"
 //#define MSG_GOSSIP_TEXT_BUFF_MENUvip55 "[kaput] ->"
-#define MSG_GOSSIP_TEXT_MAIN_MENU "<- [Ð’ÐµÑ€Ð½ÑƒÑ‚ÑÑ Ð² Ð“Ð»Ð°Ð²Ð½Ð¾Ðµ Ð¼ÐµÐ½ÑŽ]"
-//#define MSG_GOSSIP_TEXT_PROFFESION_MENU "[ÐœÐµÐ½ÑŽ ÐŸÑ€Ð¾Ñ„ÐµÑÑÐ¸Ð¹] ->"
-//#define MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU "[ÐœÐµÐ½ÑŽ Ð’Ñ‚Ð¾Ñ€Ð¾ÑÑ‚ÐµÐ¿ÐµÐ½Ð½Ñ‹Ñ… Ð¿Ñ€Ð¾Ñ„ÐµÑÑÐ¸Ð¹] ->"
-#define MSG_GOSSIP_TEXT_NEXT_3 "[ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ð°] ->"
+#define MSG_GOSSIP_TEXT_MAIN_MENU "<- [Âåðíóòñÿ â Ãëàâíîå ìåíþ]"
+#define MSG_GOSSIP_TEXT_PROFFESION_MENU "[Ìåíþ Ïðîôåññèé] ->"
+#define MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU "[Ìåíþ Âòîðîñòåïåííûõ ïðîôåññèé] ->"
+#define MSG_GOSSIP_TEXT_NEXT_3 "[ñòðàíèöà] ->"
 
-#define MSG_GOSSIP_TEXT_RENAME "Ð¡Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ð˜Ð¼Ñ Ð¿ÐµÑ€ÑÐ¾Ð½Ð°Ð¶Ð°."
-#define MSG_GOSSIP_TEXT_CUSTOM "Ð¡Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ð’Ð½ÐµÑˆÐ½Ð¾ÑÑ‚ÑŒ Ð¿ÐµÑ€ÑÐ¾Ð½Ð°Ð¶Ð°."
-#define MSG_GOSSIP_TEXT_CHANGE_FACTION "Ð¡Ð¼ÐµÐ½Ð¸Ñ‚ÑŒ Ð¤Ñ€Ð°ÐºÑ†Ð¸ÑŽ Ð¿ÐµÑ€ÑÐ¾Ð½Ð°Ð¶Ð°."
+#define MSG_GOSSIP_TEXT_RENAME "Ñìåíèòü Èìÿ ïåðñîíàæà."
+#define MSG_GOSSIP_TEXT_CUSTOM "Ñìåíèòü Âíåøíîñòü ïåðñîíàæà."
+#define MSG_GOSSIP_TEXT_CHANGE_FACTION "Ñìåíèòü Ôðàêöèþ ïåðñîíàæà."
 
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BERSERK "[Ð‘Ð°Ñ„Ð½ÑƒÑ‚ÑŒ] Ð‘ÐµÑ€ÑÐµÑ€Ðº."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_RAGNAROS "[Ð‘Ð°Ñ„Ð½ÑƒÑ‚ÑŒ] Ð­Ð³Ð¸Ð´Ð° Ð Ð°Ð³Ð½Ð°Ñ€Ð¾ÑÐ°."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_NELTHARION "[Ð‘Ð°Ñ„Ð½ÑƒÑ‚ÑŒ] Ð—Ð°Ñ‰Ð¸Ñ‚Ð° ÐÐµÐ»Ñ‚Ð°Ñ€Ð¸Ð¾Ð½Ð°."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_ADALS "[Ð‘Ð°Ñ„Ð½ÑƒÑ‚ÑŒ] Ð‘Ð»Ð°Ð³Ð¾ÑÐ»Ð¾Ð²ÐµÐ½Ð¸Ðµ Ð'Ð´Ð°Ð»Ð»Ð°."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_CRIT_SPELLS "[Ð‘Ð°Ñ„Ð½ÑƒÑ‚ÑŒ] ÐšÑ€Ð¸Ñ‚Ð¸Ñ‡ÐµÑÐºÐ¾Ðµ ÑÑ€Ð°Ð±Ð°Ñ‚Ñ‹Ð²Ð°Ð½Ð¸Ðµ."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_PINCHI "[Ð‘Ð°Ñ„Ð½ÑƒÑ‚ÑŒ] Ð‘Ð»Ð°Ð³Ð¾ÑÐ»Ð¾Ð²ÐµÐ½Ð¸Ðµ Ð¼Ð¸ÑÑ‚ÐµÑ€Ð° ÐŸÐ¸Ð½Ñ‡Ð¸."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_TRANSPARENCY "[Ð‘Ð°Ñ„Ð½ÑƒÑ‚ÑŒ] ÐŸÑ€Ð¾Ð·Ñ€Ð°Ñ‡Ð½Ð¾ÑÑ‚ÑŒ."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BERSERK "[Áàôíóòü] Áåðñåðê."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_RAGNAROS "[Áàôíóòü] Ýãèäà Ðàãíàðîñà."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_NELTHARION "[Áàôíóòü] Çàùèòà Íåëòàðèîíà."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_ADALS "[Áàôíóòü] Áëàãîñëîâåíèå À'äàëëà."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_CRIT_SPELLS "[Áàôíóòü] Êðèòè÷åñêîå ñðàáàòûâàíèå."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_PINCHI "[Áàôíóòü] Áëàãîñëîâåíèå ìèñòåðà Ïèí÷è."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_TRANSPARENCY "[Áàôíóòü] Ïðîçðà÷íîñòü."
 
-#define MSG_GOSSIP_TEXT_TITLES_JENKINS "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð”Ð¶ÐµÐ½ÐºÐ¸Ð½Ñ."
-#define MSG_GOSSIP_TEXT_TITLES_THE_LOVE_FOOL "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð‘ÐµÐ·ÑƒÐ¼Ð½Ð¾ Ð’Ð»ÑŽÐ±Ð»ÐµÐ½Ð½Ñ‹Ð¹."
-#define MSG_GOSSIP_TEXT_TITLES_MERRYMAKER "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð’ÐµÑÐµÐ»ÑŒÑ‡Ð°Ðº."
-#define MSG_GOSSIP_TEXT_TITLES_SCARAB_LORD "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ ÐŸÐ¾Ð²ÐµÐ»Ð¸Ñ‚ÐµÐ»ÑŒ Ð¡ÐºÐ¾Ñ€Ð¾Ð±ÐµÐµÐ²."
-#define MSG_GOSSIP_TEXT_TITLES_THE_NOBLE "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ Ð§ÑƒÐ´ÐµÑÐ½Ñ‹Ð¹."
-#define MSG_GOSSIP_TEXT_TITLES_OBSIDIAN_SLAYER "ÐŸÐ¾Ð»ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð·Ð²Ð°Ð½Ð¸Ðµ ÐŸÐ¾ÐºÐ¾Ñ€Ð¸Ñ‚ÐµÐ»ÑŒ ÐžÐ±ÑÐ¸Ð´Ð¸Ð°Ð½Ð¾Ð²Ð¾Ð³Ð¾ ÑÐ²ÑÑ‚Ð¸Ð»Ð¸Ñ‰Ð°."
+#define MSG_GOSSIP_TEXT_TITLES_JENKINS "Ïîëó÷èòü çâàíèå Äæåíêèíñ."
+#define MSG_GOSSIP_TEXT_TITLES_THE_LOVE_FOOL "Ïîëó÷èòü çâàíèå Áåçóìíî Âëþáëåííûé."
+#define MSG_GOSSIP_TEXT_TITLES_MERRYMAKER "Ïîëó÷èòü çâàíèå Âåñåëü÷àê."
+#define MSG_GOSSIP_TEXT_TITLES_SCARAB_LORD "Ïîëó÷èòü çâàíèå Ïîâåëèòåëü Ñêîðîáååâ."
+#define MSG_GOSSIP_TEXT_TITLES_THE_NOBLE "Ïîëó÷èòü çâàíèå ×óäåñíûé."
+#define MSG_GOSSIP_TEXT_TITLES_OBSIDIAN_SLAYER "Ïîëó÷èòü çâàíèå Ïîêîðèòåëü Îáñèäèàíîâîãî ñâÿòèëèùà."
 
-#define MSG_GOSSIP_TEXT_MORTH_GNOME_MALE "[ÐŸÑ€ÐµÐ²Ñ€Ð°Ñ‚Ð¸Ñ‚ÑŒ] Ð“Ð½Ð¾Ð¼, Ð¼ÑƒÐ¶Ñ‡Ð¸Ð½Ð°."
-#define MSG_GOSSIP_TEXT_MORTH_GNOME_FEMALE "[ÐŸÑ€ÐµÐ²Ñ€Ð°Ñ‚Ð¸Ñ‚ÑŒ] Ð“Ð½Ð¾Ð¼, Ð¶ÐµÐ½Ñ‰Ð¸Ð½Ð°."
-#define MSG_GOSSIP_TEXT_MORTH_HUMAN_FEMALE "[ÐŸÑ€ÐµÐ²Ñ€Ð°Ñ‚Ð¸Ñ‚ÑŒ] Ð§ÐµÐ»Ð¾Ð²ÐµÐº, Ð¶ÐµÐ½Ñ‰Ð¸Ð½Ð°."
-#define MSG_GOSSIP_TEXT_MORTH_HUMAN_MALE "[ÐŸÑ€ÐµÐ²Ñ€Ð°Ñ‚Ð¸Ñ‚ÑŒ] Ð§ÐµÐ»Ð¾Ð²ÐµÐº, Ð¼ÑƒÐ¶Ñ‡Ð¸Ð½Ð°."
-#define MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_MALE "[ÐŸÑ€ÐµÐ²Ñ€Ð°Ñ‚Ð¸Ñ‚ÑŒ] Ð­Ð»ÑŒÑ„ ÐšÑ€Ð¾Ð²Ð¸, Ð¼ÑƒÐ¶Ñ‡Ð¸Ð½Ð°."
-#define MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_FEMALE "[ÐŸÑ€ÐµÐ²Ñ€Ð°Ñ‚Ð¸Ñ‚ÑŒ] Ð­Ð»ÑŒÑ„ ÐšÑ€Ð¾Ð²Ð¸, Ð¶ÐµÐ½Ñ‰Ð¸Ð½Ð°."
-#define MSG_GOSSIP_TEXT_MORTH_TAUREN_MALE "[ÐŸÑ€ÐµÐ²Ñ€Ð°Ñ‚Ð¸Ñ‚ÑŒ] Ð¢Ð°ÑƒÑ€ÐµÐ½, Ð¼ÑƒÐ¶Ñ‡Ð¸Ð½Ð°."
-#define MSG_GOSSIP_TEXT_MORTH_TAUREN_FEMALE "[ÐŸÑ€ÐµÐ²Ñ€Ð°Ñ‚Ð¸Ñ‚ÑŒ] Ð¢Ð°ÑƒÑ€ÐµÐ½, Ð¶ÐµÐ½Ñ‰Ð¸Ð½Ð°."
+#define MSG_GOSSIP_TEXT_MORTH_GNOME_MALE "[Ïðåâðàòèòü] Ãíîì, ìóæ÷èíà."
+#define MSG_GOSSIP_TEXT_MORTH_GNOME_FEMALE "[Ïðåâðàòèòü] Ãíîì, æåíùèíà."
+#define MSG_GOSSIP_TEXT_MORTH_HUMAN_FEMALE "[Ïðåâðàòèòü] ×åëîâåê, æåíùèíà."
+#define MSG_GOSSIP_TEXT_MORTH_HUMAN_MALE "[Ïðåâðàòèòü] ×åëîâåê, ìóæ÷èíà."
+#define MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_MALE "[Ïðåâðàòèòü] Ýëüô Êðîâè, ìóæ÷èíà."
+#define MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_FEMALE "[Ïðåâðàòèòü] Ýëüô Êðîâè, æåíùèíà."
+#define MSG_GOSSIP_TEXT_MORTH_TAUREN_MALE "[Ïðåâðàòèòü] Òàóðåí, ìóæ÷èíà."
+#define MSG_GOSSIP_TEXT_MORTH_TAUREN_FEMALE "[Ïðåâðàòèòü] Òàóðåí, æåíùèíà."
 
-#define MSG_GOSSIP_TEXT_ALCHEMY "|TInterface\\icons\\Trade_Alchemy:40:40:-14|t Ð˜Ð·ÑƒÑ‡Ð¸Ñ‚ÑŒ ÐÐ»Ñ…Ð¸Ð¼Ð¸ÑŽ."
-#define MSG_GOSSIP_TEXT_BLACKSMITHING "|TInterface\\icons\\Trade_BlackSmithing:40:40:-14|t Ð˜Ð·ÑƒÑ‡Ð¸Ñ‚ÑŒ ÐšÑƒÐ·Ð½ÐµÑ‡Ð½Ð¾Ðµ Ð”ÐµÐ»Ð¾."
-#define MSG_GOSSIP_TEXT_ENCNANTING "|TInterface\\icons\\Trade_Engraving:40:40:-14|t Ð˜Ð·ÑƒÑ‡Ð¸Ñ‚ÑŒ ÐÐ°Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ Ð§Ð°Ñ€."
-#define MSG_GOSSIP_TEXT_ENGINEERING "|TInterface\\icons\\Trade_Engineering:40:40:-14|t Ð˜Ð·ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð˜Ð½Ð¶ÐµÐ½ÐµÑ€Ð½Ð¾Ðµ Ð´ÐµÐ»Ð¾."
-#define MSG_GOSSIP_TEXT_HERBALISM "|TInterface\\icons\\Trade_Herbalism:40:40:-14|t Ð˜Ð·ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð¢Ñ€Ð°Ð²Ð½Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾."
-#define MSG_GOSSIP_TEXT_INSCRIPTION "|TInterface\\icons\\INV_Inscription_Tradeskill01:40:40:-14|t Ð˜Ð·ÑƒÑ‡Ð¸Ñ‚ÑŒ ÐÐ°Ñ‡ÐµÑ€Ñ‚Ð°Ð½Ð¸Ðµ."
-#define MSG_GOSSIP_TEXT_JEWELCRAFTING "|TInterface\\icons\\INV_Misc_Gem_02:40:40:-14|t Ð˜Ð·ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð®Ð²ÐµÐ»Ð¸Ñ€Ð½Ð¾Ðµ Ð´ÐµÐ»Ð¾."
-#define MSG_GOSSIP_TEXT_LEATHERWORKING "|TInterface\\icons\\Trade_LeatherWorking:40:40:-14|t Ð˜Ð·ÑƒÑ‡Ð¸Ñ‚ÑŒ ÐšÐ¾Ð¶ÐµÐ²Ð½Ð¸Ñ‡ÐµÑÑ‚Ð²Ð¾."
-#define MSG_GOSSIP_TEXT_MINING "|TInterface\\icons\\Trade_Mining:40:40:-14|t Ð˜Ð·ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð“Ð¾Ñ€Ð½Ð¾Ðµ Ð´ÐµÐ»Ð¾."
-#define MSG_GOSSIP_TEXT_SKINNING "|TInterface\\icons\\INV_Misc_Pelt_Wolf_01:40:40:-14|t Ð˜Ð·ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð¡Ð½ÑÑ‚Ð¸Ðµ ÑˆÐºÑƒÑ€."
-#define MSG_GOSSIP_TEXT_TAILORING "|TInterface\\icons\\Trade_Tailoring:40:40:-14|t Ð˜Ð·ÑƒÑ‡Ð¸Ñ‚ÑŒ ÐŸÐ¾Ñ€Ñ‚Ð½Ð¾Ðµ Ð´ÐµÐ»Ð¾."
+#define MSG_GOSSIP_TEXT_ALCHEMY "|TInterface\\icons\\Trade_Alchemy:40:40:-14|t Èçó÷èòü Àëõèìèþ."
+#define MSG_GOSSIP_TEXT_BLACKSMITHING "|TInterface\\icons\\Trade_BlackSmithing:40:40:-14|t Èçó÷èòü Êóçíå÷íîå Äåëî."
+#define MSG_GOSSIP_TEXT_ENCNANTING "|TInterface\\icons\\Trade_Engraving:40:40:-14|t Èçó÷èòü Íàëîæåíèå ×àð."
+#define MSG_GOSSIP_TEXT_ENGINEERING "|TInterface\\icons\\Trade_Engineering:40:40:-14|t Èçó÷èòü Èíæåíåðíîå äåëî."
+#define MSG_GOSSIP_TEXT_HERBALISM "|TInterface\\icons\\Trade_Herbalism:40:40:-14|t Èçó÷èòü Òðàâíè÷åñòâî."
+#define MSG_GOSSIP_TEXT_INSCRIPTION "|TInterface\\icons\\INV_Inscription_Tradeskill01:40:40:-14|t Èçó÷èòü Íà÷åðòàíèå."
+#define MSG_GOSSIP_TEXT_JEWELCRAFTING "|TInterface\\icons\\INV_Misc_Gem_02:40:40:-14|t Èçó÷èòü Þâåëèðíîå äåëî."
+#define MSG_GOSSIP_TEXT_LEATHERWORKING "|TInterface\\icons\\Trade_LeatherWorking:40:40:-14|t Èçó÷èòü Êîæåâíè÷åñòâî."
+#define MSG_GOSSIP_TEXT_MINING "|TInterface\\icons\\Trade_Mining:40:40:-14|t Èçó÷èòü Ãîðíîå äåëî."
+#define MSG_GOSSIP_TEXT_SKINNING "|TInterface\\icons\\INV_Misc_Pelt_Wolf_01:40:40:-14|t Èçó÷èòü Ñíÿòèå øêóð."
+#define MSG_GOSSIP_TEXT_TAILORING "|TInterface\\icons\\Trade_Tailoring:40:40:-14|t Èçó÷èòü Ïîðòíîå äåëî."
 
-#define MSG_GOSSIP_TEXT_RIDING "Ð˜Ð·ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð’ÐµÑ€Ñ…Ð¾Ð²ÑƒÑŽ Ð•Ð·Ð´Ñƒ."
-#define MSG_GOSSIP_TEXT_COOKING	"|TInterface\\icons\\INV_Misc_Food_15:40:40:-14|t Ð˜Ð·ÑƒÑ‡Ð¸Ñ‚ÑŒ ÐšÑƒÐ»Ð¸Ð½Ð°Ñ€Ð¸ÑŽ."
-#define MSG_GOSSIP_TEXT_FIRST_AID "|TInterface\\icons\\Spell_Holy_SealOfSacrifice:40:40:-14|t Ð˜Ð·ÑƒÑ‡Ð¸Ñ‚ÑŒ ÐŸÐµÑ€Ð²ÑƒÑŽ Ð¿Ð¾Ð¼Ð¾Ñ‰ÑŒ."
-#define MSG_GOSSIP_TEXT_FISHING	"Ð˜Ð·ÑƒÑ‡Ð¸Ñ‚ÑŒ Ð Ñ‹Ð±Ð½ÑƒÑŽ Ð»Ð¾Ð²Ð»ÑŽ."
+#define MSG_GOSSIP_TEXT_RIDING "Èçó÷èòü Âåðõîâóþ Åçäó."
+#define MSG_GOSSIP_TEXT_COOKING	"|TInterface\\icons\\INV_Misc_Food_15:40:40:-14|t Èçó÷èòü Êóëèíàðèþ."
+#define MSG_GOSSIP_TEXT_FIRST_AID "|TInterface\\icons\\Spell_Holy_SealOfSacrifice:40:40:-14|t Èçó÷èòü Ïåðâóþ ïîìîùü."
+#define MSG_GOSSIP_TEXT_FISHING	"Èçó÷èòü Ðûáíóþ ëîâëþ."
 
 #define CONST_HONOR_1  0//1000000
 #define CONST_HONOR_2 0 //100000
@@ -121,8 +121,8 @@
 #define CONST_ARENA_POINT_2  0//1000
 #define CONST_ARENA_POINT_3  0//3000
 #define CONST_ARENA_POINT_4  0//5000
-#define CONST_HONOR_23 29434 //Ð¿Ñ€ÐµÐ´Ð¼ÐµÑ‚ ÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ð¹ Ð±ÑƒÐ´ÐµÑ‚ ÑÑ‚Ð¾Ð¸Ñ‚ÑŒ
-#define CONST_HONOR_233 1  //ÑÐºÐ¾Ð»ÑŒÐºÐ¾ Ð½Ð°Ð´Ð¾ ÑˆÑ‚ÑƒÐº
+#define CONST_HONOR_23 29434 //ïðåäìåò êîòîðûé áóäåò ñòîèòü
+#define CONST_HONOR_233 1  //ñêîëüêî íàäî øòóê
 
 class npc_buffer : public CreatureScript
 {
@@ -257,7 +257,7 @@ public:
         AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip333, GOSSIP_SENDER_MAIN, 32333);
         //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
         //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip55, GOSSIP_SENDER_MAIN, 32355);
-        //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
         return true;
     }
@@ -457,7 +457,7 @@ public:
             AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip333, GOSSIP_SENDER_MAIN, 32333);
             //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
             //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip55, GOSSIP_SENDER_MAIN, 32355);
-            //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
         //case 32355:
@@ -704,25 +704,25 @@ public:
         case 2233:
             player->PlayerTalkClass->ClearMenus();
             //AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_JENKINS, GOSSIP_SENDER_MAIN, 23);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐšÐ¾Ñ€Ð¾Ð»ÑŒ Ð›Ð¸Ñ‡", GOSSIP_SENDER_MAIN, 711);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐžÐ³Ð¾Ð½ÐµÐº", GOSSIP_SENDER_MAIN, 712);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð›Ð¾Ñ€Ð´ ÐšÐ°Ð·Ð·Ð°Ðº", GOSSIP_SENDER_MAIN, 713);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð›ÐµÐ¾ÐºÐº", GOSSIP_SENDER_MAIN, 714);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð¢Ð°Ð´Ð´Ð¸ÑƒÑ", GOSSIP_SENDER_MAIN, 715);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐŸÑ€ÐµÐ»ÐµÑÑ‚ÑŒ", GOSSIP_SENDER_MAIN, 716);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐŸÐ°ÑƒÐº", GOSSIP_SENDER_MAIN, 717);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð¡Ð°Ð¿Ñ„Ð¸Ñ€Ð¾Ð½", GOSSIP_SENDER_MAIN, 718);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐÐ¾Ñ‚ Ð§ÑƒÐ¼Ð½Ð¾Ð¹", GOSSIP_SENDER_MAIN, 719);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐšÐµÐ»ÑŒ Ð¢ÑƒÐ·ÐµÐ´", GOSSIP_SENDER_MAIN, 720);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐšÐµÐ»ÑŒÐ¢Ð°Ð»Ð°Ñ", GOSSIP_SENDER_MAIN, 721);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐšÑ‚ÑƒÐ½", GOSSIP_SENDER_MAIN, 722);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð¢Ñ€Ð°Ð»Ð»", GOSSIP_SENDER_MAIN, 723);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð¡Ð¸Ð»ÑŒÐ²Ð°Ð½Ð°", GOSSIP_SENDER_MAIN, 724);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐÐ»ÐµÐºÑÑ‚Ñ€Ð°Ð·Ð°(Ñ‡ÐµÐ»Ð¾Ð²ÐµÐº)", GOSSIP_SENDER_MAIN, 725);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐšÐ¾Ñ€Ð¾Ð»ÑŒ Ð Ð¸Ð½Ð½", GOSSIP_SENDER_MAIN, 726);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐœÐ¾Ð»Ð³Ð°Ð½Ð¸Ñ", GOSSIP_SENDER_MAIN, 727);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐÐ»ÐµÐºÑÑ‚Ñ€Ð°Ð·Ð°(Ð´Ñ€Ð°ÐºÐ¾Ð½)", GOSSIP_SENDER_MAIN, 728);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð¡Ð°ÐºÑ€Ð¾Ð»Ð°Ñˆ", GOSSIP_SENDER_MAIN, 729);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Êîðîëü Ëè÷", GOSSIP_SENDER_MAIN, 711);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Îãîíåê", GOSSIP_SENDER_MAIN, 712);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ëîðä Êàççàê", GOSSIP_SENDER_MAIN, 713);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ëåîêê", GOSSIP_SENDER_MAIN, 714);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Òàääèóñ", GOSSIP_SENDER_MAIN, 715);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ïðåëåñòü", GOSSIP_SENDER_MAIN, 716);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ïàóê", GOSSIP_SENDER_MAIN, 717);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ñàïôèðîí", GOSSIP_SENDER_MAIN, 718);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Íîò ×óìíîé", GOSSIP_SENDER_MAIN, 719);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Êåëü Òóçåä", GOSSIP_SENDER_MAIN, 720);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÊåëüÒàëàñ", GOSSIP_SENDER_MAIN, 721);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Êòóí", GOSSIP_SENDER_MAIN, 722);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Òðàëë", GOSSIP_SENDER_MAIN, 723);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ñèëüâàíà", GOSSIP_SENDER_MAIN, 724);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Àëåêñòðàçà(÷åëîâåê)", GOSSIP_SENDER_MAIN, 725);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Êîðîëü Ðèíí", GOSSIP_SENDER_MAIN, 726);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ìîëãàíèñ", GOSSIP_SENDER_MAIN, 727);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Àëåêñòðàçà(äðàêîí)", GOSSIP_SENDER_MAIN, 728);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ñàêðîëàø", GOSSIP_SENDER_MAIN, 729);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
             //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
@@ -1064,65 +1064,65 @@ public:
             break; 
             case 747:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐšÐ¾Ñ€Ð¾Ð»ÑŒ Ð›Ð¸Ñ‡", GOSSIP_SENDER_MAIN, 711);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐžÐ³Ð¾Ð½ÐµÐº", GOSSIP_SENDER_MAIN, 712);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð›Ð¾Ñ€Ð´ ÐšÐ°Ð·Ð·Ð°Ðº", GOSSIP_SENDER_MAIN, 713);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð›ÐµÐ¾ÐºÐº", GOSSIP_SENDER_MAIN, 714);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð¢Ð°Ð´Ð´Ð¸ÑƒÑ", GOSSIP_SENDER_MAIN, 715);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐŸÑ€ÐµÐ»ÐµÑÑ‚ÑŒ", GOSSIP_SENDER_MAIN, 716);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐŸÐ°ÑƒÐº", GOSSIP_SENDER_MAIN, 717);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð¡Ð°Ð¿Ñ„Ð¸Ñ€Ð¾Ð½", GOSSIP_SENDER_MAIN, 718);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐÐ¾Ñ‚ Ð§ÑƒÐ¼Ð½Ð¾Ð¹", GOSSIP_SENDER_MAIN, 719);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐšÐµÐ»ÑŒ Ð¢ÑƒÐ·ÐµÐ´", GOSSIP_SENDER_MAIN, 720);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐšÐµÐ»ÑŒÐ¢Ð°Ð»Ð°Ñ", GOSSIP_SENDER_MAIN, 721);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐšÑ‚ÑƒÐ½", GOSSIP_SENDER_MAIN, 722);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð¢Ñ€Ð°Ð»Ð»", GOSSIP_SENDER_MAIN, 723);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð¡Ð¸Ð»ÑŒÐ²Ð°Ð½Ð°", GOSSIP_SENDER_MAIN, 724);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐÐ»ÐµÐºÑÑ‚Ñ€Ð°Ð·Ð°(Ñ‡ÐµÐ»Ð¾Ð²ÐµÐº)", GOSSIP_SENDER_MAIN, 725);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐšÐ¾Ñ€Ð¾Ð»ÑŒ Ð Ð¸Ð½Ð½", GOSSIP_SENDER_MAIN, 726);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐœÐ¾Ð»Ð³Ð°Ð½Ð¸Ñ", GOSSIP_SENDER_MAIN, 727);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐÐ»ÐµÐºÑÑ‚Ñ€Ð°Ð·Ð°(Ð´Ñ€Ð°ÐºÐ¾Ð½)", GOSSIP_SENDER_MAIN, 728);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð¡Ð°ÐºÑ€Ð¾Ð»Ð°Ñˆ", GOSSIP_SENDER_MAIN, 729);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Êîðîëü Ëè÷", GOSSIP_SENDER_MAIN, 711);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Îãîíåê", GOSSIP_SENDER_MAIN, 712);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ëîðä Êàççàê", GOSSIP_SENDER_MAIN, 713);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ëåîêê", GOSSIP_SENDER_MAIN, 714);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Òàääèóñ", GOSSIP_SENDER_MAIN, 715);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ïðåëåñòü", GOSSIP_SENDER_MAIN, 716);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ïàóê", GOSSIP_SENDER_MAIN, 717);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ñàïôèðîí", GOSSIP_SENDER_MAIN, 718);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Íîò ×óìíîé", GOSSIP_SENDER_MAIN, 719);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Êåëü Òóçåä", GOSSIP_SENDER_MAIN, 720);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÊåëüÒàëàñ", GOSSIP_SENDER_MAIN, 721);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Êòóí", GOSSIP_SENDER_MAIN, 722);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Òðàëë", GOSSIP_SENDER_MAIN, 723);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ñèëüâàíà", GOSSIP_SENDER_MAIN, 724);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Àëåêñòðàçà(÷åëîâåê)", GOSSIP_SENDER_MAIN, 725);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Êîðîëü Ðèíí", GOSSIP_SENDER_MAIN, 726);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ìîëãàíèñ", GOSSIP_SENDER_MAIN, 727);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Àëåêñòðàçà(äðàêîí)", GOSSIP_SENDER_MAIN, 728);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ñàêðîëàø", GOSSIP_SENDER_MAIN, 729);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                  break;   
           case 748:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð£Ñ‚Ð³Ð°Ñ€Ð´ Ð’Ð¾Ð¸Ð½", GOSSIP_SENDER_MAIN, 730);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð£Ð¿Ñ‹Ñ€ÑŒ", GOSSIP_SENDER_MAIN, 731);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð¡ÐºÐµÐ»ÐµÑ‚", GOSSIP_SENDER_MAIN, 732);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð¡ÐºÐµÐ»ÐµÑ‚ 2", GOSSIP_SENDER_MAIN, 733);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð¡ÐºÐµÐ»ÐµÑ‚ 3", GOSSIP_SENDER_MAIN, 734);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐŸÑƒÐ´Ð¶", GOSSIP_SENDER_MAIN, 735);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð¡ÐºÐµÐ»ÐµÑ‚ 4", GOSSIP_SENDER_MAIN, 736);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð’ÐµÑÑ‚Ð½Ð¸Ðº Ð¡Ð¼ÐµÑ€Ñ‚Ð¸", GOSSIP_SENDER_MAIN, 737);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð Ñ‹Ñ†Ð°Ñ€ÑŒ Ð¡Ð¼ÐµÑ€Ñ‚Ð¸", GOSSIP_SENDER_MAIN, 738);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐœÐ°Ð³ ÑÐµÑ€ÐµÐ±Ñ€ÑÐ½Ð¾Ð³Ð¾ Ð°Ð²Ð°Ð½Ð³Ð°Ñ€Ð´Ð°", GOSSIP_SENDER_MAIN, 739);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð“Ð¾Ð»ÑƒÐ¼", GOSSIP_SENDER_MAIN, 740);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐšÑ€Ð°ÑÐ½Ñ‹Ð¹ Ð±ÐµÑ", GOSSIP_SENDER_MAIN, 741);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð”Ñ€ÐµÐ²ÐµÐ½ÑŒ", GOSSIP_SENDER_MAIN, 742);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð¡Ð¸Ð½Ð¸Ð¹ Ð±ÐµÑ", GOSSIP_SENDER_MAIN, 743);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐžÐ³Ñ€", GOSSIP_SENDER_MAIN, 744);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð”ÐµÐ¼Ð¾Ð½ Ð“Ð¾Ð»Ð¾Ð²Ð°", GOSSIP_SENDER_MAIN, 745);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð”Ñ€ÐµÐ½ÐµÐ¹ ÐšÑ€Ð°ÑÐ½Ñ‹Ðµ Ð´Ð¾ÑÐ¿ÐµÑ…Ð¸", GOSSIP_SENDER_MAIN, 746);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Óòãàðä Âîèí", GOSSIP_SENDER_MAIN, 730);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Óïûðü", GOSSIP_SENDER_MAIN, 731);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ñêåëåò", GOSSIP_SENDER_MAIN, 732);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ñêåëåò 2", GOSSIP_SENDER_MAIN, 733);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ñêåëåò 3", GOSSIP_SENDER_MAIN, 734);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ïóäæ", GOSSIP_SENDER_MAIN, 735);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ñêåëåò 4", GOSSIP_SENDER_MAIN, 736);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Âåñòíèê Ñìåðòè", GOSSIP_SENDER_MAIN, 737);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ðûöàðü Ñìåðòè", GOSSIP_SENDER_MAIN, 738);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ìàã ñåðåáðÿíîãî àâàíãàðäà", GOSSIP_SENDER_MAIN, 739);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ãîëóì", GOSSIP_SENDER_MAIN, 740);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Êðàñíûé áåñ", GOSSIP_SENDER_MAIN, 741);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Äðåâåíü", GOSSIP_SENDER_MAIN, 742);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ñèíèé áåñ", GOSSIP_SENDER_MAIN, 743);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Îãð", GOSSIP_SENDER_MAIN, 744);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Äåìîí Ãîëîâà", GOSSIP_SENDER_MAIN, 745);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Äðåíåé Êðàñíûå äîñïåõè", GOSSIP_SENDER_MAIN, 746);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 749);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 747);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                  break;
                  case 749:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð“Ð¸Ð´Ñ€Ð°", GOSSIP_SENDER_MAIN, 750);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐšÐ¾Ð»Ð¾ÑÑ", GOSSIP_SENDER_MAIN, 751);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð‘ÐµÑ Ñ„ÐµÐ¾Ð»ÐµÑ‚Ð¾Ð²Ñ‹Ð¹", GOSSIP_SENDER_MAIN, 752);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐšÑ€Ð°ÑÐ½Ñ‹Ð¹ ÐžÑ€Ðº", GOSSIP_SENDER_MAIN, 753);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð—Ð°Ð½Ð·Ð¸Ð»Ð» Ð§ÑƒÐ¼Ð½Ð¾Ð¹", GOSSIP_SENDER_MAIN, 754);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð’Ð¾Ð»Ðº", GOSSIP_SENDER_MAIN, 755);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐŸÐ¾Ð´Ð¾Ð±Ð¸Ðµ ÐœÐ°Ñ‚ÐµÑ€Ð¸ Ð‘Ð¢", GOSSIP_SENDER_MAIN, 756);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð­Ð»ÑŒÑ„ ÐšÑ€Ð°ÑÐ½Ñ‹Ðµ Ð´Ð¾ÑÐ¿ÐµÑ…Ð¸", GOSSIP_SENDER_MAIN, 757);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð—Ð»Ð¾Ð±ÐµÐ½ÑŒ", GOSSIP_SENDER_MAIN, 758);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐŸÑ€Ð¸Ð·Ñ€Ð°Ðº Ñ‡ÐµÐ»Ð¾Ð²ÐµÐºÐ°", GOSSIP_SENDER_MAIN, 759);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "ÐœÐ°Ñ€Ð¾ÑƒÐ·", GOSSIP_SENDER_MAIN, 760);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ð—Ð»Ð¾Ð±Ð½Ñ‹Ð¹ Ð¿Ñ€Ð¸Ð·Ñ€Ð°Ðº", GOSSIP_SENDER_MAIN, 761);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ãèäðà", GOSSIP_SENDER_MAIN, 750);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Êîëîññ", GOSSIP_SENDER_MAIN, 751);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Áåñ ôåîëåòîâûé", GOSSIP_SENDER_MAIN, 752);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Êðàñíûé Îðê", GOSSIP_SENDER_MAIN, 753);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Çàíçèëë ×óìíîé", GOSSIP_SENDER_MAIN, 754);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Âîëê", GOSSIP_SENDER_MAIN, 755);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ïîäîáèå Ìàòåðè ÁÒ", GOSSIP_SENDER_MAIN, 756);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ýëüô Êðàñíûå äîñïåõè", GOSSIP_SENDER_MAIN, 757);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Çëîáåíü", GOSSIP_SENDER_MAIN, 758);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ïðèçðàê ÷åëîâåêà", GOSSIP_SENDER_MAIN, 759);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ìàðîóç", GOSSIP_SENDER_MAIN, 760);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Çëîáíûé ïðèçðàê", GOSSIP_SENDER_MAIN, 761);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
@@ -1437,7 +1437,7 @@ public:
             AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_MINING, GOSSIP_SENDER_MAIN, 45);
             AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_SKINNING, GOSSIP_SENDER_MAIN, 46);
             AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_TAILORING, GOSSIP_SENDER_MAIN, 47);
-            //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU, GOSSIP_SENDER_MAIN, 48);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU, GOSSIP_SENDER_MAIN, 48);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
            SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
