@@ -133,14 +133,14 @@ public:
     {
         npc_bufferAI(Creature* me) : ScriptedAI(me) { }
 
-    void CompleteLearnProfession(Player *player, Creature* /*_creature*/, SkillType skill)
+    void CompleteLearnProfession(Player *player, Creature* creature, SkillType skill)
     {
         if (PlayerAlreadyHasNineProfessions(player) && !IsSecondarySkill(skill))
-            me->Whisper("?? ??? ??????? 11 ????????!", LANG_UNIVERSAL, player);
+            creature->Whisper("?? ??? ??????? 11 ????????!", LANG_UNIVERSAL, player);
         else
         {
             if (!LearnAllRecipesInProfession(player, skill))
-                me->Whisper("??????!", LANG_UNIVERSAL, player);
+                creature->Whisper("??????!", LANG_UNIVERSAL, player);
         }
     }
 
