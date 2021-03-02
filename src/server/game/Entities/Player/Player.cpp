@@ -4665,12 +4665,6 @@ void Player::BuildPlayerRepop()
     setDeathState(DEAD);
     SetHealth(1);
 
-    //Guild-Level-System (Bonus: Faster spirit)
-    if (!GetMap()->IsBattlegroundOrArena())
-        if (Guild* guild = GetGuild())
-            if (guild->HasLevelForBonus(GUILD_BONUS_SCHNELLER_GEIST))
-                SetSpeed(MOVE_RUN, 2.0f);
-
     SetMovement(MOVE_WATER_WALK);
     if (!GetSession()->isLogingOut())
         SetMovement(MOVE_UNROOT);
@@ -4714,9 +4708,6 @@ void Player::ResurrectPlayer(float restore_percent, bool applySickness)
 
     SetMovement(MOVE_LAND_WALK);
     SetMovement(MOVE_UNROOT);
-
-    //Guild-Level-System (Bonus: Faster spirit)
-    SetSpeed(MOVE_RUN, 1.0f);
 
     m_deathTimer = 0;
 
@@ -5083,15 +5074,6 @@ uint32 Player::DurabilityRepair(uint16 pos, bool cost, float discountMod, bool g
             uint32 costs = uint32(LostDurability*dmultiplier*double(dQualitymodEntry->Data));
 
             costs = uint32(costs * discountMod * sWorld->getRate(RATE_REPAIRCOST));
-
-            //Guild-Level-System (Bonus: Guenstige Reperatur)
-            if (Guild* guild = GetGuild())
-            {
-                if (guild->HasLevelForBonus(GUILD_BONUS_REPERATUR_1))
-                    costs -= uint32(costs*0.25f);
-                if (guild->HasLevelForBonus(GUILD_BONUS_REPERATUR_2))
-                    costs -= uint32(costs*0.5f);
-            }
 
             if (costs == 0)                                   //fix for ITEM_QUALITY_ARTIFACT
                 costs = 1;
@@ -7024,16 +7006,7 @@ bool Player::RewardHonor(Unit* victim, uint32 groupsize, int32 honor, bool pvpto
     // 21
     // 22
     // 23
-
-    //Guild-Level-System (Bonus: Ehre)
-    if (Guild* guild = GetGuild())
-    {
-        if (guild->HasLevelForBonus(GUILD_BONUS_EHRE_1))
-            honor_f *= 0.05f;
-        if (guild->HasLevelForBonus(GUILD_BONUS_EHRE_2))
-            honor_f *= 0.1f;
-    }
-
+    // 24
     // 25
     // 26
     // 27
@@ -15471,18 +15444,7 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
     // Prepatch by LordPsyan
     // 41
     // 42
-    //Guild-Level-System (Bonus: QuestXP)
-    if (Guild* guild = GetGuild())
-    {
-        //QuestXP for the Guild
-        guild->GiveXp(50000);
-
-        //GuildXP-Bonus
-        if (guild->HasLevelForBonus(GUILD_BONUS_XP_1))
-            XP += uint32(XP*0.05f);
-        if (guild->HasLevelForBonus(GUILD_BONUS_XP_2))
-            XP += uint32(XP*0.1f);
-    }
+    // 43
     // 44
     // 45
     // 46

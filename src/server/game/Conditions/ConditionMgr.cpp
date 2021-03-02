@@ -32,8 +32,6 @@
 #include "SpellAuras.h"
 #include "SpellMgr.h"
 #include "World.h"
-#include "Guild.h"
-
 
 char const* const ConditionMgr::StaticSourceTypeData[CONDITION_SOURCE_TYPE_MAX] =
 {
@@ -505,13 +503,6 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo) const
             }
             break;
         }
-        case CONDITION_GUILD_LEVEL:
-        {
-            if (Player* player = object->ToPlayer())
-                if (Guild* guild = player->GetGuild())
-                    condMeets = CompareValues(static_cast<ComparisionType>(ConditionValue2), static_cast<uint32>(guild->GetLevel()), ConditionValue1);
-            break;
-         }
         case CONDITION_QUEST_OBJECTIVE_PROGRESS:
         {
             if (Player* player = object->ToPlayer())
@@ -726,9 +717,6 @@ uint32 Condition::GetSearcherTypeMaskForCondition() const
             mask |= GRID_MAP_TYPE_MASK_PLAYER;
             break;
         case CONDITION_QUESTSTATE:
-            mask |= GRID_MAP_TYPE_MASK_PLAYER;
-            break;
-        case CONDITION_GUILD_LEVEL:
             mask |= GRID_MAP_TYPE_MASK_PLAYER;
             break;
         case CONDITION_QUEST_OBJECTIVE_PROGRESS:
@@ -1889,17 +1877,6 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond) const
                 return false;
             }
             break;
-        }
-       case CONDITION_GUILD_LEVEL:
-        {
-            if (cond->ConditionValue2 >= COMP_TYPE_MAX)
-            {
-                TC_LOG_ERROR("sql.sql", "Guildlevel condition has invalid option (%u), skipped", cond->ConditionValue2);
-                return false;
-             }
-            if (cond->ConditionValue3)
-                 TC_LOG_ERROR("sql.sql", "Guildlevel condition has useless data in value3 (%u)!", cond->ConditionValue3);
-             break;
         }
         case CONDITION_ITEM_EQUIPPED:
         {
