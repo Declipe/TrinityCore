@@ -711,6 +711,24 @@ bool ChatHandler::extractPlayerTarget(char* args, Player** player, ObjectGuid* p
     return true;
 }
 
+void ChatHandler::extractOptFirstArg(char* args, char** arg1, char** arg2)
+{
+    char* p1 = strtok(args, " ");
+    char* p2 = strtok(nullptr, " ");
+
+    if (!p2)
+    {
+        p2 = p1;
+        p1 = nullptr;
+    }
+
+    if (arg1)
+        *arg1 = p1;
+
+    if (arg2)
+        *arg2 = p2;
+}
+
 char* ChatHandler::extractQuotedArg(char* args)
 {
     if (!args || !*args)

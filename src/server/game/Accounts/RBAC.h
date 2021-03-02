@@ -749,7 +749,9 @@ enum RBACPermissions
     //
     // custom permissions 1000+
     // Prepatch by LordPsyan
-    // 01
+    RBAC_PERM_COMMAND_GUILD_LINFO                            = 1024,
+    RBAC_PERM_COMMAND_GUILD_SET_LEVEL                        = 1025,
+    RBAC_PERM_COMMAND_GUILD_GIVE_XP                          = 1026,
     // 02
     // 03
     // 04
