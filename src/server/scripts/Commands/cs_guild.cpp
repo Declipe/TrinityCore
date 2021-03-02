@@ -371,9 +371,9 @@ public:
         if (!*args)
             return false;
 
-       // char* guildNameStr;
-       // char* levelStr;
-       // handler->extractOptFirstArg((char*)args, &guildNameStr, &levelStr);
+        char* guildNameStr;
+        char* levelStr;
+        handler->extractOptFirstArg((char*)args, &guildNameStr, &levelStr);
 
         if (!levelStr)
             return false;
@@ -405,9 +405,9 @@ public:
         if (!*args)
             return false;
 
-        //char* guildNameStr;
-       // char* xpStr;
-       // handler->extractOptFirstArg((char*)args, &guildNameStr, &xpStr);
+        char* guildNameStr;
+        char* xpStr;
+        handler->extractOptFirstArg((char*)args, &guildNameStr, &xpStr);
 
         if (!xpStr)
             return false;
