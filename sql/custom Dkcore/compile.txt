@@ -14,3 +14,19 @@ debian9
 apt-get install git cmake make gcc g++ libmariadbclient-dev libssl1.0-dev libbz2-dev libreadline-dev libncurses-dev libboost-all-dev mysql-server p7zip
 
 cmake ../ -DWITH_WARNINGS=1 -DWITH_COREDEBUG=1 -DUSE_COREPCH=1 -DUSE_SCRIPTPCH=1 -DTOOLS=0 -DSCRIPTS=1 -DSERVERS=1 -DNOJEM=1 -DCMAKE_BUILD_TYPE=RelWithDebInfo  -DCMAKE_INSTALL_PREFIX=/opt/server/c/release
+
+ERROR 1698 (28000): Access denied for user 'root'@'localhost'
+This error is caused by the auth_socket plugin. Simple solution: let’s just disable it. Here the commands you’ll need:
+1. Login to MySQL as root (sudo will bypass password prompt)
+$ sudo mysql -u root
+2. Change to the mysql database and set the plugin to mysql_native_password for the root user.
+mysql> USE mysql;
+mysql> UPDATE user SET plugin='mysql_native_password' WHERE User='root';
+mysql> FLUSH PRIVILEGES;
+3. You have to change the root password for this to work. Even just specifying the current password is fine too, but this command must be executed:
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password_here';
+mysql> exit;
+4. Lastly, restart MySQL for the changes to take effect.
+$ sudo systemctl restart mysql
+You can now login to MySQL root as normal.
+$ mysql -u root -p
