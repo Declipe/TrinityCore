@@ -19,6 +19,7 @@
 #define _PLAYER_H
 
 #include "Transmogrification.h"
+#include "GridObject.h"
 #include "Unit.h"
 #include "DatabaseEnvFwd.h"
 #include "DBCEnums.h"
