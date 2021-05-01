@@ -58,7 +58,7 @@ DBCStorage <CharSectionsEntry> sCharSectionsStore(CharSectionsEntryfmt);
 std::unordered_multimap<uint32, CharSectionsEntry const*> sCharSectionMap;
 DBCStorage <CharStartOutfitEntry> sCharStartOutfitStore(CharStartOutfitEntryfmt);
 std::map<uint32, CharStartOutfitEntry const*> sCharStartOutfitMap;
-DBCStorage <CharTitlesEntry> sCharTitlesStore(CharTitlesEntryfmt);
+//DBCStorage <CharTitlesEntry> sCharTitlesStore(CharTitlesEntryfmt);
 DBCStorage <ChatChannelsEntry> sChatChannelsStore(ChatChannelsEntryfmt);
 DBCStorage <ChrClassesEntry> sChrClassesStore(ChrClassesEntryfmt);
 DBCStorage <ChrRacesEntry> sChrRacesStore(ChrRacesEntryfmt);
@@ -293,7 +293,7 @@ void LoadDBCStores(const std::string& dataPath)
     LOAD_DBC(sCharacterFacialHairStylesStore,     "CharacterFacialHairStyles.dbc");
     LOAD_DBC(sCharSectionsStore,                  "CharSections.dbc");
     LOAD_DBC(sCharStartOutfitStore,               "CharStartOutfit.dbc");
-    LOAD_DBC(sCharTitlesStore,                    "CharTitles.dbc");
+   // LOAD_DBC(sCharTitlesStore,                    "CharTitles.dbc");
     LOAD_DBC(sChatChannelsStore,                  "ChatChannels.dbc");
     LOAD_DBC(sChrClassesStore,                    "ChrClasses.dbc");
     LOAD_DBC(sChrRacesStore,                      "ChrRaces.dbc");
@@ -396,6 +396,7 @@ void LoadDBCStores(const std::string& dataPath)
     LOAD_DBC(sWorldMapOverlayStore,               "WorldMapOverlay.dbc");
     //LOAD_DBC(sWorldSafeLocsStore,                 "WorldSafeLocs.dbc");
     sDBCMgr->LoadWorldSafeLocsStore();
+    sDBCMgr->LoadCharTitlesStore();
 
 #undef LOAD_DBC
 
@@ -654,7 +655,7 @@ void LoadDBCStores(const std::string& dataPath)
 
     // Check loaded DBC files proper version
     if (!sAreaTableStore.LookupEntry(4987)         ||       // last area added in 3.3.5a
-        !sCharTitlesStore.LookupEntry(177)         ||       // last char title added in 3.3.5a
+        !sDBCMgr->GetCharTitlesEntry(177)         ||       // last char title added in 3.3.5a
         !sGemPropertiesStore.LookupEntry(1629)     ||       // last gem property added in 3.3.5a
         !sItemStore.LookupEntry(56806)             ||       // last client known item added in 3.3.5a
         !sDBCMgr->GetItemExtendedCostEntry(2997)  ||       // last item extended cost added in 3.3.5a
@@ -1036,4 +1037,36 @@ void DBCMgr::LoadWorldSafeLocsStore()
     } while (result->NextRow());
 
     TC_LOG_ERROR("misc", ">> Loaded %lu WorldSafeLocs entries in %u ms", (unsigned long)WorldSafeLocsStore.size(), GetMSTimeDiffToNow(oldMSTime));
+}
+void DBCMgr::LoadCharTitlesStore()
+{
+    uint32 oldMSTime = getMSTime();
+    CharTitlesStore.clear();
+
+    QueryResult result = WorldDatabase.Query("SELECT Id, Male, Male_loc2, Female, Female_loc2, InGameOrder FROM chartitlesdbc");
+    if (!result)
+    {
+        TC_LOG_ERROR("server.loading", ">> Loaded 0 chartitles entry. DB table `battlemasterlistdbc` is empty.");
+        return;
+    }
+
+    do {
+        Field* fields = result->Fetch();
+
+        CharTitlesEntry* newCharTitles = new CharTitlesEntry;
+        newCharTitles->ID = fields[0].GetUInt32();
+        for (uint8 i = 0; i < 16; i++)
+            newCharTitles->Name[i] = "";
+        newCharTitles->Name[0] = (char*)fields[1].GetCString();
+        newCharTitles->Name[2] = (char*)fields[2].GetCString();
+        for (uint8 i = 0; i < 16; i++)
+            newCharTitles->Name1[i] = "";
+        newCharTitles->Name1[0] = (char*)fields[3].GetCString();
+        newCharTitles->Name1[2] = (char*)fields[4].GetCString();
+        newCharTitles->bit_index = fields[5].GetUInt32();
+        CharTitlesStore[newCharTitles->ID] = newCharTitles;
+
+    } while (result->NextRow());
+
+    TC_LOG_ERROR("misc", ">> Loaded %lu chartitles entries in %u ms", (unsigned long)CharTitlesStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }

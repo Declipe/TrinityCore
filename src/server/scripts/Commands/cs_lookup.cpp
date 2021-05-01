@@ -1246,9 +1246,10 @@ public:
         uint32 maxResults = sWorld->getIntConfig(CONFIG_MAX_RESULTS_LOOKUP_COMMANDS);
 
         // Search in CharTitles.dbc
-        for (uint32 id = 0; id < sCharTitlesStore.GetNumRows(); id++)
+        //for (uint32 id = 0; id < sCharTitlesStore.GetNumRows(); id++)
+        for (uint32 id = 0; id < sDBCMgr->CharTitlesStore.size(); id++)
         {
-            CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(id);
+            CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(id);
             if (titleInfo)
             {
                 /// @todo: implement female support
