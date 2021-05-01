@@ -4939,7 +4939,7 @@ void ObjectMgr::LoadQuests()
             // warning
         }
 
-        if (qinfo->_rewardTitleId && !sDBCMgr->GetCharTitlesEntry(qinfo->_rewardTitleId))
+        if (qinfo->_rewardTitleId && !sCharTitlesStore.LookupEntry(qinfo->_rewardTitleId))
         {
             TC_LOG_ERROR("sql.sql", "Quest %u has `RewardTitleId` = %u but CharTitle Id %u does not exist, quest can't be rewarded with title.",
                 qinfo->GetQuestId(), qinfo->GetCharTitleId(), qinfo->GetCharTitleId());
@@ -10191,9 +10191,9 @@ void ObjectMgr::LoadFactionChangeTitles()
         uint32 alliance = fields[0].GetUInt32();
         uint32 horde = fields[1].GetUInt32();
 
-        if (!sDBCMgr->GetCharTitlesEntry(alliance))
+        if (!sCharTitlesStore.LookupEntry(alliance))
             TC_LOG_ERROR("sql.sql", "Title %u (alliance_id) referenced in `player_factionchange_title` does not exist, pair skipped!", alliance);
-        else if (!sDBCMgr->GetCharTitlesEntry(horde))
+        else if (!sCharTitlesStore.LookupEntry(horde))
             TC_LOG_ERROR("sql.sql", "Title %u (horde_id) referenced in `player_factionchange_title` does not exist, pair skipped!", horde);
         else
             FactionChangeTitles[alliance] = horde;
