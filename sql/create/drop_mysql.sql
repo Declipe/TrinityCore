@@ -11,9 +11,12 @@ REVOKE GRANT OPTION ON `characters` . * FROM 'trinity'@'localhost';
 REVOKE ALL PRIVILEGES ON `auth` . * FROM 'trinity'@'localhost';
 
 REVOKE GRANT OPTION ON `auth` . * FROM 'trinity'@'localhost';
+REVOKE GRANT OPTION ON `zyn` . * FROM 'trinity'@'localhost';
+REVOKE ALL PRIVILEGES ON `zyn` . * FROM 'trinity'@'localhost';
 
 DROP USER 'trinity'@'localhost';
 
+DROP DATABASE IF EXISTS `zyn`;
 DROP DATABASE IF EXISTS `world`;
 
 DROP DATABASE IF EXISTS `characters`;
