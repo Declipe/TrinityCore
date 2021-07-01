@@ -1266,6 +1266,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 break;
 
             bool personalSpawn = flags.HasFlag(SmartActionSummonCreatureFlags::PersonalSpawn);
+            uint32 spawnsCount = std::max(e.action.summonCreature.count, 1u);
 
             float x, y, z, o;
             for (WorldObject* target : targets)
@@ -1275,17 +1276,23 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 y += e.target.y;
                 z += e.target.z;
                 o += e.target.o;
-                if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature, x, y, z, o, (TempSummonType)e.action.summonCreature.type, Milliseconds(e.action.summonCreature.duration), personalSpawn))
-                    if (e.action.summonCreature.attackInvoker)
-                        summon->AI()->AttackStart(target->ToUnit());
+                for (uint32 counter = 0; counter < spawnsCount; counter++)
+                {
+                    if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature, x, y, z, o, (TempSummonType)e.action.summonCreature.type, Milliseconds(e.action.summonCreature.duration), personalSpawn))
+                        if (e.action.summonCreature.attackInvoker)
+                            summon->AI()->AttackStart(target->ToUnit());
+                }
             }
 
             if (e.GetTargetType() != SMART_TARGET_POSITION)
                 break;
 
-            if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature, e.target.x, e.target.y, e.target.z, e.target.o, (TempSummonType)e.action.summonCreature.type, Milliseconds(e.action.summonCreature.duration), personalSpawn))
-                if (unit && e.action.summonCreature.attackInvoker)
-                    summon->AI()->AttackStart(unit);
+            for (uint32 counter = 0; counter < spawnsCount; counter++)
+            {
+                if (Creature* summon = summoner->SummonCreature(e.action.summonCreature.creature, e.target.x, e.target.y, e.target.z, e.target.o, (TempSummonType)e.action.summonCreature.type, Milliseconds(e.action.summonCreature.duration), personalSpawn))
+                    if (unit && e.action.summonCreature.attackInvoker)
+                        summon->AI()->AttackStart(unit);
+            }
             break;
         }
         case SMART_ACTION_SUMMON_GO:
@@ -1523,19 +1530,19 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             if (!target)
             {
                 G3D::Vector3 dest(e.target.x, e.target.y, e.target.z);
-                if (e.action.MoveToPos.transport)
+                if (e.action.moveToPos.transport)
                     if (TransportBase* trans = me->GetDirectTransport())
                         trans->CalculatePassengerPosition(dest.x, dest.y, dest.z);
 
-                me->GetMotionMaster()->MovePoint(e.action.MoveToPos.pointId, dest.x, dest.y, dest.z, e.action.MoveToPos.disablePathfinding == 0);
+                me->GetMotionMaster()->MovePoint(e.action.moveToPos.pointId, dest.x, dest.y, dest.z, e.action.moveToPos.disablePathfinding == 0);
             }
             else
             {
                 float x, y, z;
                 target->GetPosition(x, y, z);
-                if (e.action.MoveToPos.ContactDistance > 0)
-                    target->GetContactPoint(me, x, y, z, e.action.MoveToPos.ContactDistance);
-                me->GetMotionMaster()->MovePoint(e.action.MoveToPos.pointId, x + e.target.x, y + e.target.y, z + e.target.z, e.action.MoveToPos.disablePathfinding == 0);
+                if (e.action.moveToPos.ContactDistance > 0)
+                    target->GetContactPoint(me, x, y, z, e.action.moveToPos.ContactDistance);
+                me->GetMotionMaster()->MovePoint(e.action.moveToPos.pointId, x + e.target.x, y + e.target.y, z + e.target.z, e.action.moveToPos.disablePathfinding == 0);
             }
             break;
         }
@@ -3091,7 +3098,7 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
         case SMART_EVENT_TRANSPORT_ADDPLAYER:
         case SMART_EVENT_TRANSPORT_REMOVE_PLAYER:
         case SMART_EVENT_QUEST_ACCEPTED:
-        case SMART_EVENT_QUEST_OBJ_COPLETETION:
+        case SMART_EVENT_QUEST_OBJ_COMPLETION:
         case SMART_EVENT_QUEST_COMPLETION:
         case SMART_EVENT_QUEST_REWARDED:
         case SMART_EVENT_QUEST_FAIL:
@@ -3179,9 +3186,11 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
             //if range is ok and we are actually in LOS
             if (me->IsWithinDistInMap(unit, range) && me->IsWithinLOSInMap(unit))
             {
+                SmartEvent::LOSHostilityMode hostilityMode = static_cast<SmartEvent::LOSHostilityMode>(e.event.los.hostilityMode);
                 //if friendly event&&who is not hostile OR hostile event&&who is hostile
-                if ((e.event.los.noHostile && !me->IsHostileTo(unit)) ||
-                    (!e.event.los.noHostile && me->IsHostileTo(unit)))
+                if ((hostilityMode == SmartEvent::LOSHostilityMode::Any) ||
+                    (hostilityMode == SmartEvent::LOSHostilityMode::NotHostile && !me->IsHostileTo(unit)) ||
+                    (hostilityMode == SmartEvent::LOSHostilityMode::Hostile && me->IsHostileTo(unit)))
                 {
                     if (e.event.los.playerOnly && unit->GetTypeId() != TYPEID_PLAYER)
                         return;
@@ -3201,9 +3210,11 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
             //if range is ok and we are actually in LOS
             if (me->IsWithinDistInMap(unit, range) && me->IsWithinLOSInMap(unit))
             {
+                SmartEvent::LOSHostilityMode hostilityMode = static_cast<SmartEvent::LOSHostilityMode>(e.event.los.hostilityMode);
                 //if friendly event&&who is not hostile OR hostile event&&who is hostile
-                if ((e.event.los.noHostile && !me->IsHostileTo(unit)) ||
-                    (!e.event.los.noHostile && me->IsHostileTo(unit)))
+                if ((hostilityMode == SmartEvent::LOSHostilityMode::Any) ||
+                    (hostilityMode == SmartEvent::LOSHostilityMode::NotHostile && !me->IsHostileTo(unit)) ||
+                    (hostilityMode == SmartEvent::LOSHostilityMode::Hostile && me->IsHostileTo(unit)))
                 {
                     if (e.event.los.playerOnly && unit->GetTypeId() != TYPEID_PLAYER)
                         return;
