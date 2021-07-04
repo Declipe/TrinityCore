@@ -1,6 +1,4 @@
 UPDATE `item_template` SET `itemset` = 0 WHERE (entry = 51093);
-
-
 UPDATE `item_template` SET `itemset` = 0 WHERE (entry = 20268);
 UPDATE `item_template` SET `itemset` = 0 WHERE (entry = 20270);
 UPDATE `item_template` SET `itemset` = 0 WHERE (entry = 20271);

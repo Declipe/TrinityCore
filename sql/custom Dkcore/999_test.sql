@@ -4,9 +4,6 @@ UPDATE `item_template` SET `maxcount` = 0 WHERE (entry = 38644);
 
 UPDATE `item_template` SET `maxcount` = 0, `stackable` = 1000 WHERE (entry = 6265);
 
-
-
-
 -- Table creature_template
 UPDATE `creature_template` SET `AIName` = 'SmartAI' WHERE `entry` = 29856;
 
