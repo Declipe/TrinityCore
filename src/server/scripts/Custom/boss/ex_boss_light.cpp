@@ -139,7 +139,7 @@ public:
             _events.ScheduleEvent(EVENT_DURCHDRINGENDE_KAELTE, 18s);
         }
 
-        void DamageTaken(Unit* /*attacker*/, uint32& damage) override
+        void DamageTaken(Unit* /*attacker*/, uint32& damage, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
         {
             if (me->HealthBelowPctDamaged(75, damage) && _events.IsInPhase(PHASE_ONE))
             {

@@ -77,7 +77,7 @@ public:
                         
         }
 
-        void DamageTaken(Unit* /*attacker*/, uint32& damage) override
+        void DamageTaken(Unit* /*attacker*/, uint32& damage, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
         {
             if (me->HealthBelowPctDamaged(75, damage) && _events.IsInPhase(PHASE_ONE))
             {

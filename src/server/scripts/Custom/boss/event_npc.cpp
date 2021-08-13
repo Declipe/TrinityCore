@@ -167,7 +167,7 @@ class event_npc_firelord : public CreatureScript
                 Talk(FIRE_SAY_DIE);
             }
 
-                void DamageTaken(Unit* /*damageDealer*/, uint32& damage) override
+                void DamageTaken(Unit* /*attacker*/, uint32& damage, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
                 {
                 // phase transition
                 if (damage > me->GetPower(POWER_MANA))
