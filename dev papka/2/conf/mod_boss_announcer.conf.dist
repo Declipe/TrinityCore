@@ -1,0 +1,17 @@
+[worldserver]
+
+###################################################################################################
+#	Announce if a world boss killed by someone
+###################################################################################################
+
+# Enable the module? (1: true | 0: false)
+
+Boss.Announcer.Enable = 1
+
+BossHistory.Enable = 1
+
+BossHistory.InstanceOnly = 0
+BossHistory.Announce = 1
+BossHistory.Log = 1
+BossHistory.NormalTextId = 31006
+BossHistory.HeroicTextId = 31007

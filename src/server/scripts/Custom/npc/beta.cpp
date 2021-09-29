@@ -136,11 +136,11 @@ public:
     void CompleteLearnProfession(Player *player, Creature* creature, SkillType skill)
     {
         if (PlayerAlreadyHasNineProfessions(player) && !IsSecondarySkill(skill))
-            creature->Whisper("?? ??? ??????? 11 ????????!", LANG_UNIVERSAL, player);
+            creature->Whisper("Вы уже выучили 11 професии!", LANG_UNIVERSAL, player);
         else
         {
             if (!LearnAllRecipesInProfession(player, skill))
-                creature->Whisper("??????!", LANG_UNIVERSAL, player);
+                creature->Whisper("Ошибка!", LANG_UNIVERSAL, player);
         }
     }
 
@@ -196,7 +196,7 @@ public:
 
         if (!SkillInfo)
         {
-            TC_LOG_ERROR("scripts", "Teleport NPC: received non-valid skill ID (LearnAllRecipesInProfession)");
+          //  TC_LOG_ERROR("scripts", "Teleport NPC: received non-valid skill ID (LearnAllRecipesInProfession)");
             return false;
         }
 

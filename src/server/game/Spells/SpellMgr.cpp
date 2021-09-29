@@ -3915,7 +3915,7 @@ void SpellMgr::LoadSpellInfoCorrections()
         67546 // Warrior Grand Champion - Rolling Throw
     }, [](SpellInfo* spellInfo)
     {
-        spellInfo->Effects[EFFECT_0].TargetB = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ENEMY);
+        spellInfo->_GetEffect(EFFECT_0).TargetB = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ENEMY);
     });
     ApplySpellFix({ 
         66797 // The Black Knight - Death's Push (casted on announcer)
@@ -3942,7 +3942,7 @@ void SpellMgr::LoadSpellInfoCorrections()
               // use max radius from 4.3.4
     }, [](SpellInfo* spellInfo)
     {
-        spellInfo->Effects[EFFECT_0].RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_7_YARDS);
+        spellInfo->_GetEffect(EFFECT_0).RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_7_YARDS);
     });
 // ENDOF TRIAL OF THE CHAMPION SPELLS
     ApplySpellFix({
