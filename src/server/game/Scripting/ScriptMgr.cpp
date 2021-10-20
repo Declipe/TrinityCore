@@ -2398,12 +2398,6 @@ void ScriptMgr::ModifySpellDamageTaken(Unit* target, Unit* attacker, int32& dama
     FOREACH_SCRIPT(UnitScript)->ModifySpellDamageTaken(target, attacker, damage);
 }
 
-void ScriptMgr::ModifyVehiclePassengerExitPos(Unit* passenger, Vehicle* vehicle, Position& pos)
-{
-    FOREACH_SCRIPT(UnitScript)->ModifyVehiclePassengerExitPos(passenger, vehicle, pos);
-    FOREACH_SCRIPT(CreatureScript)->ModifyVehiclePassengerExitPos(passenger, vehicle, pos);
-}
-
 // BGScript
 void ScriptMgr::OnBattlegroundStart(Battleground* bg)
 {
