@@ -1845,6 +1845,16 @@ bool ConditionMgr::isSourceTypeValid(Condition* cond) const
             TC_LOG_ERROR("sql.sql", "CONDITION_SOURCE_TYPE_GRAVEYARD: is only for master branch, skipped");
             return false;
         }
+        case CONDITION_SOURCE_TYPE_AREATRIGGER:
+        {
+            TC_LOG_ERROR("sql.sql", "CONDITION_SOURCE_TYPE_AREATRIGGER: is only for master branch, skipped");
+            return false;
+        }
+        case CONDITION_SOURCE_TYPE_CONVERSATION_LINE:
+        {
+            TC_LOG_ERROR("sql.sql", "CONDITION_SOURCE_TYPE_CONVERSATION_LINE: is only for master branch, skipped");
+            return false;
+        }
         case CONDITION_SOURCE_TYPE_GOSSIP_MENU:
         case CONDITION_SOURCE_TYPE_GOSSIP_MENU_OPTION:
         case CONDITION_SOURCE_TYPE_SMART_EVENT:
