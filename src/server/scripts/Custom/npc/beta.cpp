@@ -204,7 +204,7 @@ public:
 
         uint16 maxLevel = player->GetPureMaxSkillValue(SkillInfo->ID);
         player->SetSkill(SkillInfo->ID, player->GetSkillStep(SkillInfo->ID), maxLevel, maxLevel);
-        handler.PSendSysMessage(LANG_COMMAND_LEARN_ALL_RECIPES, skill_name);
+        //handler.PSendSysMessage(LANG_COMMAND_LEARN_ALL_RECIPES, skill_name);
 
         return true;
     }
