@@ -74,6 +74,27 @@ jobs:
             cd bin/check_install/bin
             ./authserver --version
             ./worldserver --version
+      - setup_remote_docker:
+          version: 19.03.13
+      - run:
+          name: Create docker images
+          command: |
+            cd bin/check_install/bin
+            cp -r ../../../contrib/Docker/* .
+            cp -r ../../../sql ./sql
+            image_prefix=$(echo $CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME | tr '[:upper:]' '[:lower:]')
+            echo $image_prefix
+            docker build --file Dockerfile --force-rm --tag $image_prefix:$CIRCLE_SHA1 --tag $image_prefix:$(echo $CIRCLE_BRANCH | tr '/' '-' | tr '[:upper:]' '[:lower:]') .
+            docker save $image_prefix | gzip > ../../../docker.tar.gz
+            if [ "$DOCKERHUB_PUSH_IMAGES" == "TRUE" ]; then
+              if [ "$CIRCLE_BRANCH" == "3.3.5" ] || [ "$CIRCLE_BRANCH" == "master" ]; then
+                docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+                echo "Pushing docker image to dockerhub"
+                docker push $image_prefix
+              fi
+            fi
+      - store_artifacts:
+          path: docker.tar.gz
   nopch:
     docker:
       - image: trinitycore/circle-ci:3.3.5-buildpacks-hirsute
