@@ -33,10 +33,6 @@
 #include "SpellMgr.h"
 #include "SpellScript.h"
 
-//npcbot
-#include "Creature.h"
-//end npcbot
-
 enum RogueSpells
 {
     SPELL_ROGUE_BLADE_FLURRY_EXTRA_ATTACK       = 22482,
@@ -114,10 +110,6 @@ class spell_rog_cheat_death : public AuraScript
     bool Load() override
     {
         absorbChance = GetEffectInfo(EFFECT_0).CalcValue();
-        //npcbot
-        if (GetUnitOwner()->GetTypeId() == TYPEID_UNIT && GetUnitOwner()->ToCreature()->IsNPCBot())
-            return true;
-        //end npcbot
         return GetUnitOwner()->GetTypeId() == TYPEID_PLAYER;
     }
 
@@ -129,27 +121,6 @@ class spell_rog_cheat_death : public AuraScript
 
     void Absorb(AuraEffect* /*aurEff*/, DamageInfo & dmgInfo, uint32 & absorbAmount)
     {
-        //npcbot
-        if (Creature* bot = GetTarget()->ToCreature())
-        {
-            if (dmgInfo.GetDamage() < bot->GetHealth() || bot->HasSpellCooldown(SPELL_ROGUE_CHEAT_DEATH_COOLDOWN) ||
-                bot->GetSpellHistory()->HasCooldown(SPELL_ROGUE_CHEAT_DEATH_COOLDOWN) || !roll_chance_i(absorbChance))
-                return;
-
-            bot->CastSpell(bot, SPELL_ROGUE_CHEAT_DEATH_COOLDOWN, true);
-            bot->GetSpellHistory()->AddCooldown(SPELL_ROGUE_CHEAT_DEATH_COOLDOWN, 0, std::chrono::minutes(1));
-
-            uint32 health10 = bot->CountPctFromMaxHealth(10);
-
-            if (bot->GetHealth() > health10)
-                absorbAmount = dmgInfo.GetDamage() - bot->GetHealth() + health10;
-            else
-                absorbAmount = dmgInfo.GetDamage();
-
-            return;
-        }
-        //end npcbot
-
         Player* target = GetTarget()->ToPlayer();
         if (dmgInfo.GetDamage() < target->GetHealth() || target->GetSpellHistory()->HasCooldown(SPELL_ROGUE_CHEAT_DEATH_COOLDOWN) || !roll_chance_i(absorbChance))
             return;
@@ -592,10 +563,6 @@ class spell_rog_rupture : public SpellScriptLoader
             {
                 Unit* caster = GetCaster();
                 BonusDuration = 0;
-                //npcbot
-                if (caster && caster->GetTypeId() == TYPEID_UNIT && caster->ToCreature()->IsNPCBot())
-                    return true;
-                //end npcbot
                 return caster && caster->GetTypeId() == TYPEID_PLAYER;
             }
 
@@ -614,18 +581,6 @@ class spell_rog_rupture : public SpellScriptLoader
                         0.03428571f,    // 4 points: ${($m1 + $b1*4 + 0.03428571 * $AP) * 7} damage over 14 secs
                         0.0375f         // 5 points: ${($m1 + $b1*5 + 0.0375 * $AP) * 8} damage over 16 secs
                     };
-
-                    //npcbot
-                    if (caster->GetTypeId() == TYPEID_UNIT)
-                    {
-                        uint8 cp = caster->ToCreature()->GetCreatureComboPoints();
-                        if (cp > 5)
-                            cp = 5;
-
-                        amount += int32(caster->GetTotalAttackPowerValue(BASE_ATTACK) * attackpowerPerCombo[cp]);
-                        return;
-                    }
-                    //end npcbot
 
                     uint8 cp = caster->ToPlayer()->GetComboPoints();
                     if (cp > 5)
@@ -746,12 +701,6 @@ class spell_rog_setup : public AuraScript
         if (Player* target = GetTarget()->ToPlayer())
             if (eventInfo.GetActor() == target->GetSelectedUnit())
                 return true;
-
-        //npcbot
-        if (Creature* creature = GetTarget()->ToCreature())
-            if (creature->IsNPCBot())
-                return true;
-        //end npcbot
 
         return false;
     }
@@ -952,11 +901,6 @@ class spell_rog_honor_among_thieves_proc_aura : public AuraScript
         Unit* caster = GetCaster();
         if (!caster)
             return;
-
-        //npcbot
-        if (Creature* bot = caster->ToCreature())
-            bot->CastSpell(nullptr, SPELL_ROGUE_HONOR_AMONG_THIEVES_2, true);
-        //end npcbot
 
         if (Player* player = caster->ToPlayer())
             player->CastSpell(nullptr, SPELL_ROGUE_HONOR_AMONG_THIEVES_2, true);
