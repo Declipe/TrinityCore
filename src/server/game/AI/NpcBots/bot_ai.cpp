@@ -12568,7 +12568,7 @@ void bot_ai::_AddItemLink(Player const* forPlayer, Item const* item, std::ostrin
     {
         ItemDisplayInfoEntry const* itemDisplayEntry = sItemDisplayInfoStore.LookupEntry(item->GetTemplate()->DisplayInfoID);
         if (itemDisplayEntry)
-            str << "|TInterface\\Icons\\" << itemDisplayEntry->InventoryIcon << ":16|t";
+            str << "|TInterface\\Icons\\" << itemDisplayEntry->InventoryIcon[0] << ":16|t";
     }
 
     //color

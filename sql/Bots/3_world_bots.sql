@@ -9,7 +9,7 @@ SET @BOT_END   = 71000;
 
 -- TOTAL BOT ENTRIES: 352 (348)
 
-delete from `creature_template` where entry between @BOT_START and @BOT_END;
+-- delete from `creature_template` where entry between @BOT_START and @BOT_END;
 
 insert into `creature_template`
 (`entry`,`difficulty_entry_1`,`difficulty_entry_2`,`difficulty_entry_3`,`KillCredit1`,`KillCredit2`,
