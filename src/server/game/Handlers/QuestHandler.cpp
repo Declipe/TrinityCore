@@ -32,9 +32,6 @@
 #include "QuestDef.h"
 #include "QuestPackets.h"
 #include "ScriptMgr.h"
-#ifdef ELUNA
-#include "LuaEngine.h"
-#endif
 #include "World.h"
 #include "WorldPacket.h"
 
@@ -100,12 +97,6 @@ void WorldSession::HandleQuestgiverHelloOpcode(WorldPacket& recvData)
     creature->SetHomePosition(creature->GetPosition());
 
     _player->PlayerTalkClass->ClearMenus();
-
-#ifdef ELUNA
-    if (sEluna->OnGossipHello(_player, creature))
-        return;
-#endif
-
     if (creature->AI()->OnGossipHello(_player))
         return;
 
@@ -327,11 +318,7 @@ void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket& recvData)
                         }
 
                         _player->PlayerTalkClass->ClearMenus();
-#ifdef ELUNA
-                        sEluna->OnQuestReward(_player, questgiver, quest, reward);
-#endif
                         questgiver->AI()->OnQuestReward(_player, quest, reward);
-
                         break;
                     }
                     case TYPEID_GAMEOBJECT:
@@ -351,9 +338,6 @@ void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket& recvData)
                         }
 
                         _player->PlayerTalkClass->ClearMenus();
-#ifdef ELUNA
-                        sEluna->OnQuestReward(_player, questGiver, quest, reward);
-#endif
                         questGiver->AI()->OnQuestReward(_player, quest, reward);
                         break;
                     }
@@ -443,10 +427,6 @@ void WorldSession::HandleQuestLogRemoveQuest(WorldPacket& recvData)
             _player->AbandonQuest(questId); // remove all quest items player received before abandoning quest. Note, this does not remove normal drop items that happen to be quest requirements.
             _player->RemoveActiveQuest(questId);
             _player->RemoveTimedAchievement(ACHIEVEMENT_TIMED_TYPE_QUEST, questId);
-
-#ifdef ELUNA
-            sEluna->OnQuestAbandon(_player, questId);
-#endif
 
             TC_LOG_INFO("network", "Player %s abandoned quest %u", _player->GetGUID().ToString().c_str(), questId);
 

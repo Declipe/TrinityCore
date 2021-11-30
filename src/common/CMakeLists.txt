@@ -74,13 +74,6 @@ target_link_libraries(common
     threads
     jemalloc)
 
-
-if (ELUNA)
-  target_link_libraries(common
-    PUBLIC
-      lualib)
-endif()
-
 add_dependencies(common revision_data.h)
 
 set_target_properties(common

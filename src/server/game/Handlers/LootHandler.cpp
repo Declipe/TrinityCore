@@ -208,9 +208,6 @@ void WorldSession::HandleLootMoneyOpcode(WorldPacket& /*recvData*/)
             SendPacket(&data);
         }
 
-#ifdef ELUNA
-        sEluna->OnLootMoney(player, loot->gold);
-#endif
         //Guild-Level-System (Bonus: Gold)
   if (Guild* guild = player->GetGuild())
       {
@@ -492,9 +489,6 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recvData)
     target->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_TYPE, loot->loot_type, item.count);
     target->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_EPIC_ITEM, item.itemid, item.count);
 
-#ifdef ELUNA
-    sEluna->OnLootItem(target, newitem, item.count, lootguid);
-#endif
     // mark as looted
     item.count = 0;
     item.is_looted = true;

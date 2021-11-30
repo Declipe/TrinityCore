@@ -44,7 +44,3 @@ if(BUILD_TESTING)
     GIT_SHALLOW    1)
   FetchContent_MakeAvailable(Catch2)
 endif()
-
-if (ELUNA)
-  add_subdirectory(lualib)
-endif()
