@@ -9,10 +9,6 @@ environment:
 build_script:
 - cmd: >-
     git config user.email "appveyor@build.bot" && git config user.name "AppVeyor"
-
-    git submodule init
-    
-    git submodule update
     
     md build && cd build
 
