@@ -102,7 +102,7 @@ TC_GAME_API extern DBCStorage <ChatChannelsEntry>            sChatChannelsStore;
 TC_GAME_API extern DBCStorage <CharacterFacialHairStylesEntry> sCharacterFacialHairStylesStore;
 TC_GAME_API extern DBCStorage <CharSectionsEntry>            sCharSectionsStore;
 TC_GAME_API extern DBCStorage <CharStartOutfitEntry>         sCharStartOutfitStore;
-TC_GAME_API extern DBCStorage <CharTitlesEntry>              sCharTitlesStore;
+//TC_GAME_API extern DBCStorage <CharTitlesEntry>              sCharTitlesStore;
 TC_GAME_API extern DBCStorage <ChrClassesEntry>              sChrClassesStore;
 TC_GAME_API extern DBCStorage <ChrRacesEntry>                sChrRacesStore;
 TC_GAME_API extern DBCStorage <CinematicCameraEntry>         sCinematicCameraStore;
@@ -214,6 +214,7 @@ TC_GAME_API void LoadDBCStores(const std::string& dataPath);
 
 typedef std::unordered_map<uint32, const WorldSafeLocsEntry*> WorldSafeLocsContainer;
 typedef std::unordered_map<uint32, const ItemExtendedCostEntry*> ItemExtendedCostContainer;
+typedef std::unordered_map<uint32, const CharTitlesEntry*> CharTitlesContainer;
 
 class DBCMgr
 {
@@ -227,12 +228,15 @@ public:
 public:
     void LoadWorldSafeLocsStore();
     void LoadItemExtendedCostStore();
+    void LoadCharTitlesStore();
 
     const ItemExtendedCostEntry* GetItemExtendedCostEntry(uint32 ID) const { ItemExtendedCostContainer::const_iterator itr = ItemExtendedCostStore.find(ID); if (itr != ItemExtendedCostStore.end()) return itr->second; return nullptr; }
     const WorldSafeLocsEntry* GetWorldSafeLocsEntry(uint32 Id) const { WorldSafeLocsContainer::const_iterator itr = WorldSafeLocsStore.find(Id); if (itr != WorldSafeLocsStore.end()) return itr->second; return nullptr; }
+    const CharTitlesEntry* GetCharTitlesEntry(uint32 ID) const { CharTitlesContainer::const_iterator itr = CharTitlesStore.find(ID); if (itr != CharTitlesStore.end()) return itr->second; return nullptr; }
 
     WorldSafeLocsContainer WorldSafeLocsStore;
     ItemExtendedCostContainer ItemExtendedCostStore;
+    CharTitlesContainer CharTitlesStore;
 };
 
 #define sDBCMgr DBCMgr::instance()

@@ -15523,7 +15523,7 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
     // title reward
     if (quest->GetCharTitleId())
     {
-        if (CharTitlesEntry const* titleEntry = sCharTitlesStore.LookupEntry(quest->GetCharTitleId()))
+        if (CharTitlesEntry const* titleEntry = sDBCMgr->GetCharTitlesEntry(quest->GetCharTitleId()))
             SetTitle(titleEntry);
     }
 
@@ -18906,7 +18906,7 @@ void Player::_LoadQuestStatusRewarded(PreparedQueryResult result)
                 // set rewarded title if any
                 if (quest->GetCharTitleId())
                 {
-                    if (CharTitlesEntry const* titleEntry = sCharTitlesStore.LookupEntry(quest->GetCharTitleId()))
+                    if (CharTitlesEntry const* titleEntry = sDBCMgr->GetCharTitlesEntry(quest->GetCharTitleId()))
                         SetTitle(titleEntry);
                 }
 

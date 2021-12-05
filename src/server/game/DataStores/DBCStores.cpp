@@ -58,7 +58,7 @@ DBCStorage <CharSectionsEntry> sCharSectionsStore(CharSectionsEntryfmt);
 std::unordered_multimap<uint32, CharSectionsEntry const*> sCharSectionMap;
 DBCStorage <CharStartOutfitEntry> sCharStartOutfitStore(CharStartOutfitEntryfmt);
 std::map<uint32, CharStartOutfitEntry const*> sCharStartOutfitMap;
-DBCStorage <CharTitlesEntry> sCharTitlesStore(CharTitlesEntryfmt);
+//DBCStorage <CharTitlesEntry> sCharTitlesStore(CharTitlesEntryfmt);
 DBCStorage <ChatChannelsEntry> sChatChannelsStore(ChatChannelsEntryfmt);
 DBCStorage <ChrClassesEntry> sChrClassesStore(ChrClassesEntryfmt);
 DBCStorage <ChrRacesEntry> sChrRacesStore(ChrRacesEntryfmt);
@@ -293,7 +293,7 @@ void LoadDBCStores(const std::string& dataPath)
     LOAD_DBC(sCharacterFacialHairStylesStore,     "CharacterFacialHairStyles.dbc");
     LOAD_DBC(sCharSectionsStore,                  "CharSections.dbc");
     LOAD_DBC(sCharStartOutfitStore,               "CharStartOutfit.dbc");
-    LOAD_DBC(sCharTitlesStore,                    "CharTitles.dbc");
+    //LOAD_DBC(sCharTitlesStore,                    "CharTitles.dbc");
     LOAD_DBC(sChatChannelsStore,                  "ChatChannels.dbc");
     LOAD_DBC(sChrClassesStore,                    "ChrClasses.dbc");
     LOAD_DBC(sChrRacesStore,                      "ChrRaces.dbc");
@@ -338,6 +338,7 @@ void LoadDBCStores(const std::string& dataPath)
     LOAD_DBC(sItemDisplayInfoStore,               "ItemDisplayInfo.dbc");
     //LOAD_DBC(sItemCondExtCostsStore,              "ItemCondExtCosts.dbc");
     //LOAD_DBC(sItemExtendedCostStore,              "ItemExtendedCost.dbc");
+    sDBCMgr->LoadCharTitlesStore();
     sDBCMgr->LoadItemExtendedCostStore();
     LOAD_DBC(sItemLimitCategoryStore,             "ItemLimitCategory.dbc");
     LOAD_DBC(sItemRandomPropertiesStore,          "ItemRandomProperties.dbc");
@@ -651,7 +652,7 @@ void LoadDBCStores(const std::string& dataPath)
         TC_LOG_ERROR("misc", "Some required *.dbc files (%u from %d) not found or not compatible:\n%s", (uint32)bad_dbc_files.size(), DBCFileCount, str.c_str());
         exit(1);
     }
-
+    /*
     // Check loaded DBC files proper version
     if (!sAreaTableStore.LookupEntry(4987)         ||       // last area added in 3.3.5a
         !sCharTitlesStore.LookupEntry(177)         ||       // last char title added in 3.3.5a
@@ -664,7 +665,7 @@ void LoadDBCStores(const std::string& dataPath)
         TC_LOG_ERROR("misc", "You have _outdated_ DBC files. Please extract correct versions from current using client.");
         exit(1);
     }
-
+    */
     TC_LOG_INFO("server.loading", ">> Initialized %d data stores in %u ms", DBCFileCount, GetMSTimeDiffToNow(oldMSTime));
 
 }
@@ -976,6 +977,39 @@ EmotesTextSoundEntry const* FindTextSoundEmoteFor(uint32 emote, uint32 race, uin
 {
     auto itr = sEmotesTextSoundMap.find(EmotesTextSoundKey(emote, race, gender));
     return itr != sEmotesTextSoundMap.end() ? itr->second : nullptr;
+}
+
+void DBCMgr::LoadCharTitlesStore()
+{
+    uint32 oldMSTime = getMSTime();
+    CharTitlesStore.clear();
+
+    QueryResult result = WorldDatabase.Query("SELECT Id, Male, Male_loc2, Female, Female_loc2, InGameOrder FROM dbc_chartitles");
+    if (!result)
+    {
+        TC_LOG_ERROR("server.loading", ">> Loaded 0 chartitles entry. DB table `dbc_chartitles` is empty.");
+        return;
+    }
+
+    do {
+        Field* fields = result->Fetch();
+
+        CharTitlesEntry* newCharTitles = new CharTitlesEntry;
+        newCharTitles->ID = fields[0].GetUInt32();
+        for (uint8 i = 0; i < 16; i++)
+            newCharTitles->Name[i] = "";
+        newCharTitles->Name[0] = (char*)fields[1].GetCString();
+        newCharTitles->Name[2] = (char*)fields[2].GetCString();
+        for (uint8 i = 0; i < 16; i++)
+            newCharTitles->Name1[i] = "";
+        newCharTitles->Name1[0] = (char*)fields[3].GetCString();
+        newCharTitles->Name1[2] = (char*)fields[4].GetCString();
+        newCharTitles->MaskID = fields[5].GetUInt32();
+        CharTitlesStore[newCharTitles->ID] = newCharTitles;
+
+    } while (result->NextRow());
+
+    TC_LOG_ERROR("misc", ">> Loaded %lu chartitles entries in %u ms", (unsigned long)CharTitlesStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void DBCMgr::LoadItemExtendedCostStore()
