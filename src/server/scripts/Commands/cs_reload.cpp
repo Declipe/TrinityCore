@@ -96,6 +96,7 @@ public:
             { "creature_queststarter",         rbac::RBAC_PERM_COMMAND_RELOAD_CREATURE_QUESTSTARTER,            true,  &HandleReloadCreatureQuestStarterCommand,       "" },
             { "creature_summon_groups",        rbac::RBAC_PERM_COMMAND_RELOAD_CREATURE_SUMMON_GROUPS,           true,  &HandleReloadCreatureSummonGroupsCommand,       "" },
             { "creature_template",             rbac::RBAC_PERM_COMMAND_RELOAD_CREATURE_TEMPLATE,                true,  &HandleReloadCreatureTemplateCommand,           "" },
+            { "creature_template2",            rbac::RBAC_PERM_COMMAND_RELOAD_CREATURE_TEMPLATE2,               true,  &HandleReloadCreatureTemplateCommand2,           "" },
             { "disables",                      rbac::RBAC_PERM_COMMAND_RELOAD_DISABLES,                         true,  &HandleReloadDisablesCommand,                   "" },
             { "disenchant_loot_template",      rbac::RBAC_PERM_COMMAND_RELOAD_DISENCHANT_LOOT_TEMPLATE,         true,  &HandleReloadLootTemplatesDisenchantCommand,    "" },
             { "event_scripts",                 rbac::RBAC_PERM_COMMAND_RELOAD_EVENT_SCRIPTS,                    true,  &HandleReloadEventScriptsCommand,               "" },
@@ -456,6 +457,44 @@ public:
 
             Field* fields = result->Fetch();
             sObjectMgr->LoadCreatureTemplate(fields);
+            sObjectMgr->CheckCreatureTemplate(cInfo);
+        }
+
+        sObjectMgr->InitializeQueriesData(QUERY_DATA_CREATURES);
+        handler->SendGlobalGMSysMessage("Creature template reloaded.");
+        return true;
+    }
+
+    static bool HandleReloadCreatureTemplateCommand2(ChatHandler* handler, char const* args)
+    {
+        if (!*args)
+            return false;
+
+        for (std::string_view entryStr : Trinity::Tokenize(args, ' ', false))
+        {
+            uint32 entry = Trinity::StringTo<uint32>(entryStr).value_or(0);
+
+            WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_CREATURE_TEMPLATE2);
+            stmt->setUInt32(0, entry);
+            PreparedQueryResult result = WorldDatabase.Query(stmt);
+
+            if (!result)
+            {
+                handler->PSendSysMessage(LANG_COMMAND_CREATURETEMPLATE_NOTFOUND, entry);
+                continue;
+            }
+
+            CreatureTemplate const* cInfo = sObjectMgr->GetCreatureTemplate(entry);
+            if (!cInfo)
+            {
+                handler->PSendSysMessage(LANG_COMMAND_CREATURESTORAGE_NOTFOUND, entry);
+                continue;
+            }
+
+            TC_LOG_INFO("misc", "Reloading creature template entry %u", entry);
+
+            Field* fields = result->Fetch();
+            sObjectMgr->LoadCreatureTemplate2(fields);
             sObjectMgr->CheckCreatureTemplate(cInfo);
         }
 
@@ -1206,6 +1245,7 @@ public:
 	    TC_LOG_INFO("misc", "Reloading Creature and Item_template..");
         sObjectMgr->LoadItemTemplates();
         sObjectMgr->LoadCreatureTemplates();
+        sObjectMgr->LoadCreatureTemplates2();
         sObjectMgr->LoadGameObjectTemplate();
         sObjectMgr->LoadAreaCustomFlags();
         sObjectMgr->LoadCreatureSpecialRewards();

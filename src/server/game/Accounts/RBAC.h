@@ -802,6 +802,7 @@ enum RBACPermissions
     RBAC_HandleAnticheatWarnCommand                            = 1027,
     RBAC_HandleGladiatorsChatCommand                           = 1028,
     RBAC_HandleVipStatusCommand                                = 1029,
+    RBAC_PERM_COMMAND_RELOAD_CREATURE_TEMPLATE2                = 639555,
 
 
 

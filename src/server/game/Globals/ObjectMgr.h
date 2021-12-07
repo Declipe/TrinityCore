@@ -1189,7 +1189,9 @@ class TC_GAME_API ObjectMgr
         void LoadCreatureClassLevelStats();
         void LoadCreatureLocales();
         void LoadCreatureTemplates();
+        void LoadCreatureTemplates2();
         void LoadCreatureTemplateAddons();
+        void LoadCreatureTemplate2(Field* fields);
         void LoadCreatureTemplate(Field* fields);
         void LoadCreatureTemplateResistances();
         void LoadCreatureTemplateSpells();
