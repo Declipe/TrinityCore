@@ -1747,6 +1747,11 @@ void ScriptMgr::AllCreatureJustDied(Creature* creature)
 	FOREACH_SCRIPT(AllCreatureScript)->AllCreatureJustDied(creature);
 }
 
+void ScriptMgr::AllCreatureCode(Player* player, Creature* creature, uint32 sender, uint32 action, const char* code)
+{
+    FOREACH_SCRIPT(AllCreatureScript)->AllCreatureCode(player, creature, sender, action, code);
+}
+
 void ScriptMgr::OnAuctionAdd(AuctionHouseObject* ah, AuctionEntry* entry)
 {
     ASSERT(ah);

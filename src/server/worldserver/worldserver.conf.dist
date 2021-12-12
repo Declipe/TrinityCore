@@ -4674,3 +4674,5 @@ BGReward.ItemID.Eye = 29024
 BGReward.WinnerTeam.Count = 30
 BGReward.LoserTeam.Count = 1
 ###################################################################################################
+#on/off special code
+SpecialCode.Enable = 0
