@@ -73,8 +73,10 @@ Arena::Arena()
 
 void Arena::AddPlayer(Player* player)
 {
+    bool const isInBattleground = IsPlayerInBattleground(player->GetGUID());
     Battleground::AddPlayer(player);
-    PlayerScores[player->GetGUID().GetCounter()] = new ArenaScore(player->GetGUID(), player->GetTeam());
+    if (!isInBattleground)
+        PlayerScores[player->GetGUID().GetCounter()] = new ArenaScore(player->GetGUID(), player->GetTeam());
 
     if (player->GetTeam() == ALLIANCE)        // gold
     {
