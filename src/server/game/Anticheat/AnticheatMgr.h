@@ -21,6 +21,7 @@
 #include "ScriptMgr.h"
 #include "AnticheatData.h"
 #include "Chat.h"
+#include "Player.h"
 
 class Player;
 class AnticheatData;
@@ -49,11 +50,9 @@ enum DetectionTypes
 
 // GUIDLow is the key.
 typedef std::map<uint32, AnticheatData> AnticheatPlayersDataMap;
-//typedef std::unordered_map<uint32, AnticheatData> AnticheatPlayersDataMap;
 
 class TC_GAME_API AnticheatMgr
 {
-//    friend class ACE_Singleton<AnticheatMgr, ACE_Null_Mutex>;
     AnticheatMgr();
     ~AnticheatMgr();
 
@@ -95,7 +94,7 @@ class TC_GAME_API AnticheatMgr
 
         bool MustCheckTempReports(uint8 type);
 
-        AnticheatPlayersDataMap m_Players;
+        AnticheatPlayersDataMap m_Players;                        ///< Player data
 };
 
 #define sAnticheatMgr AnticheatMgr::instance()
