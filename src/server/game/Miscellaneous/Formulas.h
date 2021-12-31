@@ -26,7 +26,6 @@
 #include "ScriptMgr.h"
 #include "SharedDefines.h"
 #include "World.h"
-#include "Guild.h"
 #include "Config.h"
 
 namespace Trinity
@@ -208,15 +207,7 @@ namespace Trinity
                     // 29
                     // 30
                     // 31
-                    //Guild-Level-System (Bonus: MonsterKillXp)
-                    if (Guild* guild = player->GetGuild())
-                    {
-                        //GuildXP-Bonus
-                        if (guild->HasLevelForBonus(GUILD_BONUS_XP_1))
-                            gain += uint32(gain*0.05f);
-                        if (guild->HasLevelForBonus(GUILD_BONUS_XP_2))
-                            gain += uint32(gain*0.1f);
-                    }
+                    // 32
                     // 33
                     // 34
                     // 35

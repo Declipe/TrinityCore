@@ -88,7 +88,6 @@ enum ConditionTypes
     CONDITION_GAMEMASTER               = 50,                   // canBeGM          0              0                  true if player is gamemaster (or can be gamemaster)
     CONDITION_OBJECT_ENTRY_GUID_MASTER = 51,                   // TypeID           entry          guid               true if object is type TypeID and the entry is 0 or matches entry of the object or matches guid of the object using master branch TypeID
     CONDITION_TYPE_MASK_MASTER         = 52,                   // TypeMask         0              0                  true if object is type object's TypeMask matches provided TypeMask using master branch TypeMask
-    CONDITION_GUILD_LEVEL              = 53,                   // Guildlevel       Level          match_type
     CONDITION_MAX
 };
 
