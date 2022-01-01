@@ -125,7 +125,7 @@ class TC_GAME_API Object
         void ApplyModPositiveFloatValue(uint16 index, float val, bool apply);
         void ApplyModSignedFloatValue(uint16 index, float val, bool apply);
 
-        void SetFlag(uint16 index, uint32 newFlag);
+        void SetFlag(uint32 index, uint32 newFlag);
         void RemoveFlag(uint16 index, uint32 oldFlag);
         void ToggleFlag(uint16 index, uint32 flag);
         bool HasFlag(uint16 index, uint32 flag) const;

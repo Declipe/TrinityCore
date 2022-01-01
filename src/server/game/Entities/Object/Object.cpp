@@ -798,17 +798,16 @@ void Object::ApplyModPositiveFloatValue(uint16 index, float val, bool apply)
     SetFloatValue(index, cur);
 }
 
-void Object::SetFlag(uint16 index, uint32 newFlag)
+void Object::SetFlag(uint32 index, uint32 newFlag)
 {
-   // ASSERT(index < m_valuesCount || PrintIndexError(index, true));
-    uint32 oldval = m_uint32Values[index];
-    uint32 newval = oldval | newFlag;
+    //ASSERT(index < m_valuesCount || PrintIndexError(index, true));
+    uint64 oldval = m_uint32Values[index];
+    uint64 newval = oldval | newFlag;
 
     if (oldval != newval)
     {
         m_uint32Values[index] = newval;
         _changesMask.SetBit(index);
-
         AddToObjectUpdateIfNeeded();
     }
 }
