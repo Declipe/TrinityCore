@@ -1116,7 +1116,7 @@ class TC_GAME_API Unit : public WorldObject
 
         bool isTargetableForAttack(bool checkFakeDeath = true) const;
 
-        virtual bool IsInWater() const;
+        bool IsInWater() const;
         bool IsUnderWater() const;
         bool isInAccessiblePlaceFor(Creature const* c) const;
 
@@ -1831,7 +1831,7 @@ class TC_GAME_API Unit : public WorldObject
         void DisableSpline();
 
         void ProcessPositionDataChanged(PositionFullTerrainStatus const& data) override;
-        virtual void ProcessTerrainStatusUpdate(ZLiquidStatus status, Optional<LiquidData> const& liquidData);
+        virtual void ProcessTerrainStatusUpdate(ZLiquidStatus oldLiquidStatus, Optional<LiquidData> const& newLiquidData);
 
         // notifiers
         virtual void AtEnterCombat() { }
