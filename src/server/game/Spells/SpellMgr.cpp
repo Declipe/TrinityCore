@@ -520,22 +520,6 @@ bool SpellMgr::CanSpellTriggerProcOnEvent(SpellProcEntry const& procEntry, ProcE
     if (eventInfo.GetTypeMask() & (PROC_FLAG_KILLED | PROC_FLAG_KILL | PROC_FLAG_DEATH))
         return true;
 
-    // do triggered cast checks
-    // Do not consider autoattacks as triggered spells
-    if (!(procEntry.AttributesMask & PROC_ATTR_TRIGGERED_CAN_PROC) && !(eventInfo.GetTypeMask() & AUTO_ATTACK_PROC_FLAG_MASK))
-    {
-        if (Spell const* spell = eventInfo.GetProcSpell())
-        {
-            if (spell->IsTriggered())
-            {
-                SpellInfo const* spellInfo = spell->GetSpellInfo();
-                if (!spellInfo->HasAttribute(SPELL_ATTR3_TRIGGERED_CAN_TRIGGER_PROC_2) &&
-                    !spellInfo->HasAttribute(SPELL_ATTR2_TRIGGERED_CAN_TRIGGER_PROC))
-                    return false;
-            }
-        }
-    }
-
     // check school mask (if set) for other trigger types
     if (procEntry.SchoolMask && !(eventInfo.GetSchoolMask() & procEntry.SchoolMask))
         return false;
@@ -3237,12 +3221,12 @@ void SpellMgr::LoadSpellInfoCorrections()
         51530, // (Rank 3)
         51531, // (Rank 4)
         51532  // (Rank 5)
-        }, [](SpellInfo* spellInfo)
-        {
-            // due to discrepancies between ranks
-            spellInfo->EquippedItemSubClassMask = 0x0000FC33;
-            spellInfo->AttributesEx3 |= SPELL_ATTR3_CAN_PROC_WITH_TRIGGERED;
-        });
+    }, [](SpellInfo* spellInfo)
+    {
+        // due to discrepancies between ranks
+        spellInfo->EquippedItemSubClassMask = 0x0000FC33;
+        spellInfo->AttributesEx3 |= SPELL_ATTR3_CAN_PROC_FROM_PROCS;
+    });
 
     ApplySpellFix({
         20335, // Heart of the Crusader
@@ -3251,11 +3235,11 @@ void SpellMgr::LoadSpellInfoCorrections()
         53228, // Rapid Killing (Rank 1)
         53232, // Rapid Killing (Rank 2)
         63320  // Glyph of Life Tap
-        }, [](SpellInfo* spellInfo)
-        {
-            // Entries were not updated after spell effect change, we have to do that manually :/
-            spellInfo->AttributesEx3 |= SPELL_ATTR3_CAN_PROC_WITH_TRIGGERED;
-        });
+    }, [](SpellInfo* spellInfo)
+    {
+        // Entries were not updated after spell effect change, we have to do that manually :/
+        spellInfo->AttributesEx3 |= SPELL_ATTR3_CAN_PROC_FROM_PROCS;
+    });
 
     ApplySpellFix({
         51627, // Turn the Tables (Rank 1)
