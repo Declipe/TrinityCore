@@ -1096,8 +1096,8 @@ class spell_gen_consumption : public SpellScript
 
     void HandleDamageCalc(SpellEffIndex /*effIndex*/)
     {
-        Unit* caster = GetCaster();
-        if (!caster || caster->GetTypeId() != TYPEID_UNIT)
+        Creature* caster = GetCaster()->ToCreature();
+        if (!caster)
             return;
 
         uint32 damage = 0;
@@ -1429,6 +1429,7 @@ class spell_gen_despawn_aura : public AuraScript
     }
 };
 
+/// @todo: migrate spells to spell_gen_despawn_target, then remove this
 class spell_gen_despawn_self : public SpellScript
 {
     PrepareSpellScript(spell_gen_despawn_self);
@@ -1447,6 +1448,23 @@ class spell_gen_despawn_self : public SpellScript
     void Register() override
     {
         OnEffectHitTarget += SpellEffectFn(spell_gen_despawn_self::HandleDummy, EFFECT_ALL, SPELL_EFFECT_ANY);
+    }
+};
+
+class spell_gen_despawn_target : public SpellScript
+{
+    PrepareSpellScript(spell_gen_despawn_target);
+
+    void HandleDespawn(SpellEffIndex /*effIndex*/)
+    {
+        if (GetEffectInfo().IsEffect(SPELL_EFFECT_DUMMY) || GetEffectInfo().IsEffect(SPELL_EFFECT_SCRIPT_EFFECT))
+            if (Creature* target = GetHitCreature())
+                target->DespawnOrUnsummon();
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_gen_despawn_target::HandleDespawn, EFFECT_ALL, SPELL_EFFECT_ANY);
     }
 };
 
@@ -1966,7 +1984,7 @@ class spell_gen_injured : public SpellScript
 
     void Register() override
     {
-        OnEffectHitTarget += SpellEffectFn(spell_gen_injured::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+        OnEffectHit += SpellEffectFn(spell_gen_injured::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
     }
 };
 
@@ -3255,49 +3273,6 @@ class spell_gen_spirit_healer_res : public SpellScript
     }
 };
 
-enum SummonElemental
-{
-    SPELL_SUMMON_FIRE_ELEMENTAL  = 8985,
-    SPELL_SUMMON_EARTH_ELEMENTAL = 19704
-};
-
-class spell_gen_summon_elemental : public AuraScript
-{
-    PrepareAuraScript(spell_gen_summon_elemental);
-
-public:
-    spell_gen_summon_elemental(uint32 spellId) : AuraScript(), _spellId(spellId) { }
-
-private:
-    bool Validate(SpellInfo const* /*spellInfo*/) override
-    {
-        return ValidateSpellInfo({ _spellId });
-    }
-
-    void AfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-    {
-        if (GetCaster())
-            if (Unit* owner = GetCaster()->GetOwner())
-                owner->CastSpell(owner, _spellId, true);
-    }
-
-    void AfterRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-    {
-        if (GetCaster())
-            if (Unit* owner = GetCaster()->GetOwner())
-                if (owner->GetTypeId() == TYPEID_PLAYER) /// @todo this check is maybe wrong
-                    owner->ToPlayer()->RemovePet(nullptr, PET_SAVE_NOT_IN_SLOT, true);
-    }
-
-    void Register() override
-    {
-        AfterEffectApply += AuraEffectApplyFn(spell_gen_summon_elemental::AfterApply, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-        AfterEffectRemove += AuraEffectRemoveFn(spell_gen_summon_elemental::AfterRemove, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-    }
-
-    uint32 _spellId;
-};
-
 enum TournamentMountsSpells
 {
     SPELL_LANCE_EQUIPPED     = 62853
@@ -3731,10 +3706,9 @@ class spell_gen_whisper_to_controller : public SpellScript
 
     void HandleScript(SpellEffIndex /*effIndex*/)
     {
-        if (Unit* caster = GetCaster())
-            if (TempSummon* casterSummon = caster->ToTempSummon())
-                if (Player* target = casterSummon->GetSummonerUnit()->ToPlayer())
-                    casterSummon->Unit::Whisper(uint32(GetEffectValue()), target, false);
+        if (TempSummon* casterSummon = GetCaster()->ToTempSummon())
+            if (Player* target = casterSummon->GetSummonerUnit()->ToPlayer())
+                casterSummon->Unit::Whisper(uint32(GetEffectValue()), target, false);
     }
 
     void Register() override
@@ -4592,6 +4566,7 @@ void AddSC_generic_spell_scripts()
     RegisterSpellScript(spell_gen_defend);
     RegisterSpellScript(spell_gen_despawn_aura);
     RegisterSpellScript(spell_gen_despawn_self);
+    RegisterSpellScript(spell_gen_despawn_target);
     RegisterSpellScript(spell_gen_divine_storm_cd_reset);
     RegisterSpellScript(spell_gen_ds_flush_knockback);
     RegisterSpellScript(spell_gen_dungeon_credit);
@@ -4658,8 +4633,6 @@ void AddSC_generic_spell_scripts()
     RegisterSpellScript(spell_gen_seaforium_blast);
     RegisterSpellScript(spell_gen_spectator_cheer_trigger);
     RegisterSpellScript(spell_gen_spirit_healer_res);
-    RegisterSpellScriptWithArgs(spell_gen_summon_elemental, "spell_gen_summon_fire_elemental", SPELL_SUMMON_FIRE_ELEMENTAL);
-    RegisterSpellScriptWithArgs(spell_gen_summon_elemental, "spell_gen_summon_earth_elemental", SPELL_SUMMON_EARTH_ELEMENTAL);
     RegisterSpellScript(spell_gen_summon_tournament_mount);
     RegisterSpellScript(spell_gen_throw_shield);
     RegisterSpellScript(spell_gen_tournament_duel);
