@@ -967,64 +967,64 @@ class spell_gen_clone_weapon_aura : public AuraScript
             case SPELL_COPY_WEAPON_2_AURA:
             case SPELL_COPY_WEAPON_3_AURA:
             {
-                prevItem = target->GetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID);
+                prevItem = target->GetVirtualItemId(0);
 
                 if (Player* player = caster->ToPlayer())
                 {
                     if (Item* mainItem = player->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_MAINHAND))
                     {
                         if (mainItem->transmog)
-                            target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, mainItem->transmog);
+                            target->SetVirtualItem(0, mainItem->transmog);
                         else  if (uint32 entry = TransmogDisplayVendorMgr::GetFakeEntry(mainItem))
-                             target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, entry);
+                            target->SetVirtualItem(0, entry);
                         else
-                            target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, mainItem->GetEntry());
+                            target->SetVirtualItem(0, mainItem->GetEntry());
                     }
                 }
                 else
-                    target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, caster->GetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID));
+                    target->SetVirtualItem(0, caster->GetVirtualItemId(0));
                 break;
             }
             case SPELL_COPY_OFFHAND_AURA:
             case SPELL_COPY_OFFHAND_2_AURA:
             {
-                prevItem = target->GetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 1);
+                prevItem = target->GetVirtualItemId(1);
 
                 if (Player* player = caster->ToPlayer())
                 {
                     if (Item* offItem = player->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND))
                     {
                         if (offItem->transmog)
-                            target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, offItem->transmog);
+                            target->SetVirtualItem(0, offItem->transmog);
                         else
                             if (uint32 entry = TransmogDisplayVendorMgr::GetFakeEntry(offItem))
-                            target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, entry);
+                                target->SetVirtualItem(0, entry);
                         else
-                            target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 1, offItem->GetEntry());
+                            target->SetVirtualItem(1, offItem->GetEntry());
                     }
                 }
                 else
-                    target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 1, caster->GetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 1));
+                    target->SetVirtualItem(1, caster->GetVirtualItemId(1));
                 break;
             }
             case SPELL_COPY_RANGED_AURA:
             {
-                prevItem = target->GetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 2);
+                prevItem = target->GetVirtualItemId(2);
 
                 if (Player* player = caster->ToPlayer())
                 {
                     if (Item* rangedItem = player->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_RANGED))
                     {
                         if (rangedItem->transmog)
-                            target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, rangedItem->transmog);
+                        target->SetVirtualItem(0, rangedItem->transmog);
                         else if (uint32 entry = TransmogDisplayVendorMgr::GetFakeEntry(rangedItem))
-                             target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, entry);
+                            target->SetVirtualItem(0, entry);
                         else
-                            target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 2, rangedItem->GetEntry());
+                            target->SetVirtualItem(2, rangedItem->GetEntry());
                     }
                 }
                 else
-                    target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 2, caster->GetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 2));
+                    target->SetVirtualItem(2, caster->GetVirtualItemId(2));
                 break;
             }
             default:
@@ -1041,14 +1041,14 @@ class spell_gen_clone_weapon_aura : public AuraScript
             case SPELL_COPY_WEAPON_AURA:
             case SPELL_COPY_WEAPON_2_AURA:
             case SPELL_COPY_WEAPON_3_AURA:
-                target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, prevItem);
+                target->SetVirtualItem(0, prevItem);
                 break;
             case SPELL_COPY_OFFHAND_AURA:
             case SPELL_COPY_OFFHAND_2_AURA:
-                target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 1, prevItem);
+                target->SetVirtualItem(1, prevItem);
                 break;
             case SPELL_COPY_RANGED_AURA:
-                target->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 2, prevItem);
+                target->SetVirtualItem(2, prevItem);
                 break;
             default:
                 break;
@@ -1202,10 +1202,10 @@ class spell_gen_dalaran_disguise : public SpellScript
             switch (spellId)
             {
                 case SPELL_SUNREAVER_DISGUISE_TRIGGER:
-                    spellId = gender ? SPELL_SUNREAVER_DISGUISE_FEMALE : SPELL_SUNREAVER_DISGUISE_MALE;
+                    spellId = gender == GENDER_FEMALE ? SPELL_SUNREAVER_DISGUISE_FEMALE : SPELL_SUNREAVER_DISGUISE_MALE;
                     break;
                 case SPELL_SILVER_COVENANT_DISGUISE_TRIGGER:
-                    spellId = gender ? SPELL_SILVER_COVENANT_DISGUISE_FEMALE : SPELL_SILVER_COVENANT_DISGUISE_MALE;
+                    spellId = gender == GENDER_FEMALE ? SPELL_SILVER_COVENANT_DISGUISE_FEMALE : SPELL_SILVER_COVENANT_DISGUISE_MALE;
                     break;
                 default:
                     break;
@@ -1688,9 +1688,9 @@ class spell_gen_feign_death_all_flags : public AuraScript
     void HandleEffectApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         Unit* target = GetTarget();
-        target->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_DEAD);
-        target->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
-        target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PREVENT_EMOTES_FROM_CHAT_TEXT);
+        target->SetDynamicFlag(UNIT_DYNFLAG_DEAD);
+        target->SetUnitFlag2(UNIT_FLAG2_FEIGN_DEATH);
+        target->SetUnitFlag(UNIT_FLAG_PREVENT_EMOTES_FROM_CHAT_TEXT);
 
         if (Creature* creature = target->ToCreature())
             creature->SetReactState(REACT_PASSIVE);
@@ -1699,9 +1699,9 @@ class spell_gen_feign_death_all_flags : public AuraScript
     void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         Unit* target = GetTarget();
-        target->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_DEAD);
-        target->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
-        target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PREVENT_EMOTES_FROM_CHAT_TEXT);
+        target->RemoveDynamicFlag(UNIT_DYNFLAG_DEAD);
+        target->RemoveUnitFlag2(UNIT_FLAG2_FEIGN_DEATH);
+        target->RemoveUnitFlag(UNIT_FLAG_PREVENT_EMOTES_FROM_CHAT_TEXT);
 
         if (Creature* creature = target->ToCreature())
             creature->InitializeReactState();
@@ -1723,8 +1723,8 @@ class spell_gen_feign_death_no_dyn_flag : public AuraScript
     void HandleEffectApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         Unit* target = GetTarget();
-        target->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
-        target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PREVENT_EMOTES_FROM_CHAT_TEXT);
+        target->SetUnitFlag2(UNIT_FLAG2_FEIGN_DEATH);
+        target->SetUnitFlag(UNIT_FLAG_PREVENT_EMOTES_FROM_CHAT_TEXT);
 
         if (Creature* creature = target->ToCreature())
             creature->SetReactState(REACT_PASSIVE);
@@ -1733,8 +1733,8 @@ class spell_gen_feign_death_no_dyn_flag : public AuraScript
     void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         Unit* target = GetTarget();
-        target->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
-        target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PREVENT_EMOTES_FROM_CHAT_TEXT);
+        target->RemoveUnitFlag2(UNIT_FLAG2_FEIGN_DEATH);
+        target->RemoveUnitFlag(UNIT_FLAG_PREVENT_EMOTES_FROM_CHAT_TEXT);
 
         if (Creature* creature = target->ToCreature())
             creature->InitializeReactState();
@@ -1755,8 +1755,8 @@ class spell_gen_feign_death_no_prevent_emotes : public AuraScript
     void HandleEffectApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         Unit* target = GetTarget();
-        target->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_DEAD);
-        target->SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+        target->SetDynamicFlag(UNIT_DYNFLAG_DEAD);
+        target->SetUnitFlag2(UNIT_FLAG2_FEIGN_DEATH);
 
         if (Creature* creature = target->ToCreature())
             creature->SetReactState(REACT_PASSIVE);
@@ -1765,8 +1765,8 @@ class spell_gen_feign_death_no_prevent_emotes : public AuraScript
     void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         Unit* target = GetTarget();
-        target->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_DEAD);
-        target->RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH);
+        target->RemoveDynamicFlag(UNIT_DYNFLAG_DEAD);
+        target->RemoveUnitFlag2(UNIT_FLAG2_FEIGN_DEATH);
 
         if (Creature* creature = target->ToCreature())
             creature->InitializeReactState();
@@ -2752,13 +2752,13 @@ class spell_gen_prevent_emotes : public AuraScript
     void HandleEffectApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         Unit* target = GetTarget();
-        target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PREVENT_EMOTES_FROM_CHAT_TEXT);
+        target->SetUnitFlag(UNIT_FLAG_PREVENT_EMOTES_FROM_CHAT_TEXT);
     }
 
     void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
     {
         Unit* target = GetTarget();
-        target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PREVENT_EMOTES_FROM_CHAT_TEXT);
+        target->RemoveUnitFlag(UNIT_FLAG_PREVENT_EMOTES_FROM_CHAT_TEXT);
     }
 
     void Register() override
@@ -3847,7 +3847,7 @@ class spell_gen_gm_freeze : public AuraScript
             player->CombatStop();
             if (player->IsNonMeleeSpellCast(true))
                 player->InterruptNonMeleeSpells(true);
-            player->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            player->SetUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
 
             // if player class = hunter || warlock remove pet if alive
             if ((player->GetClass() == CLASS_HUNTER) || (player->GetClass() == CLASS_WARLOCK))
@@ -3870,7 +3870,7 @@ class spell_gen_gm_freeze : public AuraScript
         {
             // Reset player faction + allow combat + allow duels
             player->SetFactionForRace(player->GetRace());
-            player->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            player->RemoveUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
             // save player
             player->SaveToDB();
         }
