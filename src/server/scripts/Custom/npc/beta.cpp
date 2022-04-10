@@ -1,4 +1,4 @@
-﻿#include "Config.h"
+#include "Config.h"
 #include "GuildMgr.h"
 #include "Player.h"
 #include "Battleground.h"
@@ -58,13 +58,13 @@
 #define MSG_GOSSIP_TEXT_BUFF_STAMINA "[Бафнуть] Выносливость"
 
 #define MSG_GOSSIP_TEXT_BUFF_MENU "[Меню бафов] ->"
-//#define MSG_GOSSIP_TEXT_BUFF_MENUvip1 "[Premium buff] ->"
+#define MSG_GOSSIP_TEXT_BUFF_MENUvip1 "[Premium buff] ->"
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip2 "[Title] ->"
-//#define MSG_GOSSIP_TEXT_BUFF_MENUvip3 "[test] ->"
-//#define MSG_GOSSIP_TEXT_BUFF_MENUvip33 "[titlestest] ->"
+#define MSG_GOSSIP_TEXT_BUFF_MENUvip3 "[test] ->"
+#define MSG_GOSSIP_TEXT_BUFF_MENUvip33 "[titlestest] ->"
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip333 "[sumki] ->"
-//#define MSG_GOSSIP_TEXT_BUFF_MENUvip44 "[key] ->"
-//#define MSG_GOSSIP_TEXT_BUFF_MENUvip55 "[kaput] ->"
+#define MSG_GOSSIP_TEXT_BUFF_MENUvip44 "[key] ->"
+#define MSG_GOSSIP_TEXT_BUFF_MENUvip55 "[kaput] ->"
 #define MSG_GOSSIP_TEXT_MAIN_MENU "<- [Вернутся в Главное меню]"
 #define MSG_GOSSIP_TEXT_PROFFESION_MENU "[Меню Профессий] ->"
 #define MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU "[Меню Второстепенных профессий] ->"
@@ -254,15 +254,15 @@ public:
         AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_RIDING, GOSSIP_SENDER_MAIN, 35);
         AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_HEALTH, GOSSIP_SENDER_MAIN, 33);
         AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_SKILL, GOSSIP_SENDER_MAIN, 34);
-        AddGossipItemFor(player, NPC_buba, 0, GOSSIP_SENDER_MAIN, 2);
-       // AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENU, GOSSIP_SENDER_MAIN, 2);
-       // AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip1, GOSSIP_SENDER_MAIN, 13);
+        //AddGossipItemFor(player, NPC_buba, 0, GOSSIP_SENDER_MAIN, 2);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENU, GOSSIP_SENDER_MAIN, 2);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip1, GOSSIP_SENDER_MAIN, 13);
         AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip2, GOSSIP_SENDER_MAIN, 22);
-        //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
-        //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
         AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip333, GOSSIP_SENDER_MAIN, 32333);
-        //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
-        //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip55, GOSSIP_SENDER_MAIN, 32355);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip55, GOSSIP_SENDER_MAIN, 32355);
         AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
         return true;
@@ -455,26 +455,26 @@ public:
             AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_RIDING, GOSSIP_SENDER_MAIN, 35);
             AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_HEALTH, GOSSIP_SENDER_MAIN, 33);
             AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_SKILL, GOSSIP_SENDER_MAIN, 34);
-            //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENU, GOSSIP_SENDER_MAIN, 2);
-             AddGossipItemFor(player, NPC_buba, 0, GOSSIP_SENDER_MAIN, 2);
-           // AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip1, GOSSIP_SENDER_MAIN, 13);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENU, GOSSIP_SENDER_MAIN, 2);
+             //AddGossipItemFor(player, NPC_buba, 0, GOSSIP_SENDER_MAIN, 2);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip1, GOSSIP_SENDER_MAIN, 13);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip2, GOSSIP_SENDER_MAIN, 22);
-            //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
-            //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip333, GOSSIP_SENDER_MAIN, 32333);
-            //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
-            //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip55, GOSSIP_SENDER_MAIN, 32355);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip55, GOSSIP_SENDER_MAIN, 32355);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
-        //case 32355:
-        //player->CastSpell(player, 30110, true);
-        //player->CastSpell(player, 30113, true);
-        //player->CastSpell(player, 30127, true);
-        //player->CastSpell(player, 53094, true);
-        //player->CastSpell(player, 53317, true);
-            //CloseGossipMenuFor(player);
-        //break;
+        case 32355:
+        player->CastSpell(player, 30110, true);
+        player->CastSpell(player, 30113, true);
+        player->CastSpell(player, 30127, true);
+        player->CastSpell(player, 53094, true);
+        player->CastSpell(player, 53317, true);
+            CloseGossipMenuFor(player);
+        break;
         case 32344:
           player->AddItem(6893, 1);
           player->AddItem(7146, 1);

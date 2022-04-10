@@ -615,8 +615,8 @@ void TournamentManager::stop(uint32 entry, bool win)
     }
     
     tournament->inProgress = false;
-    //reset(tournament->entry);
-    reset(entry);
+    reset(tournament->entry);
+    //reset(entry);
     
     if (!win)
     {
