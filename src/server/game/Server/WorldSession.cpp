@@ -301,6 +301,8 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
     uint32 processedPackets = 0;
     time_t currentTime = GameTime::GetGameTime();
 
+    constexpr uint32 MAX_PROCESSED_PACKETS_IN_SAME_WORLDSESSION_UPDATE = 100;
+
     while (m_Socket && _recvQueue.next(packet, updater))
     {
         OpcodeClient opcode = static_cast<OpcodeClient>(packet->GetOpcode());
@@ -335,6 +337,8 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
                         opHandle->Call(this, *packet);
                         LogUnprocessedTail(packet);
                     }
+                    else
+                        processedPackets = MAX_PROCESSED_PACKETS_IN_SAME_WORLDSESSION_UPDATE;   // break out of packet processing loop
                     // lag can cause STATUS_LOGGEDIN opcodes to arrive after the player started a transfer
                     break;
                 case STATUS_LOGGEDIN_OR_RECENTLY_LOGGOUT:
@@ -352,6 +356,8 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
                         opHandle->Call(this, *packet);
                         LogUnprocessedTail(packet);
                     }
+                    else
+                        processedPackets = MAX_PROCESSED_PACKETS_IN_SAME_WORLDSESSION_UPDATE;   // break out of packet processing loop
                     break;
                 case STATUS_TRANSFER:
                     if (!_player)
@@ -368,6 +374,8 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
                         opHandle->Call(this, *packet);
                         LogUnprocessedTail(packet);
                     }
+                    else
+                        processedPackets = MAX_PROCESSED_PACKETS_IN_SAME_WORLDSESSION_UPDATE;   // break out of packet processing loop
                     break;
                 case STATUS_AUTHED:
                     // prevent cheating with skip queue wait
@@ -392,6 +400,8 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
                         opHandle->Call(this, *packet);
                         LogUnprocessedTail(packet);
                     }
+                    else
+                        processedPackets = MAX_PROCESSED_PACKETS_IN_SAME_WORLDSESSION_UPDATE;   // break out of packet processing loop
                     break;
                 case STATUS_NEVER:
                     TC_LOG_ERROR("network.opcode", "Received not allowed opcode %s from %s", GetOpcodeNameForLogging(static_cast<OpcodeClient>(packet->GetOpcode())).c_str()
@@ -436,7 +446,6 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
 
         deletePacket = true;
 
-#define MAX_PROCESSED_PACKETS_IN_SAME_WORLDSESSION_UPDATE 100
         processedPackets++;
 
         //process only a max amout of packets in 1 Update() call.
