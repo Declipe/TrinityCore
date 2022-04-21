@@ -46,6 +46,7 @@
 #include "ItemDefines.h"
 #include "ItemEnchantmentMgr.h"
 #include "ItemTemplate.h"
+#include "GossipDef.h"
 
 #define MSG_GOSSIP_TELE          "Телепортироваться в дом гильдии"
 #define MSG_GOSSIP_BUY           "Купить дом гильдии"
@@ -68,16 +69,6 @@
 #define ACTION_TELE 1001
 #define ACTION_SHOW_BUYLIST 1002 //deprecated. Use (OFFSET_SHOWBUY_FROM + 0) instead
 #define ACTION_SELL_GUILDHOUSE 1003
-
-#define ICON_GOSSIP_BALOON 0
-#define ICON_GOSSIP_WING 2
-#define ICON_GOSSIP_BOOK 3
-#define ICON_GOSSIP_WHEEL1 4
-#define ICON_GOSSIP_WHEEL2 5
-#define ICON_GOSSIP_GOLD 6
-#define ICON_GOSSIP_BALOONDOTS 7
-#define ICON_GOSSIP_TABARD 8
-#define ICON_GOSSIP_XSWORDS 9
 
 #define COST_GH_BUY 10000000 //1000 g.
 #define COST_GH_SELL 5000000 //500 g.
@@ -169,7 +160,7 @@ bool showBuyList(Player *player, Creature *_creature, uint32 showFromId = 0)
 
  //send comment as a gossip item
  //transmit guildhouseId in Action variable
- AddGossipItemFor(player, ICON_GOSSIP_TABARD, comment, GOSSIP_SENDER_MAIN,
+ AddGossipItemFor(player, GOSSIP_ICON_TABARD, comment, GOSSIP_SENDER_MAIN,
  guildhouseId + OFFSET_GH_ID_TO_ACTION);
  }
  while (result->NextRow());
@@ -178,7 +169,7 @@ bool showBuyList(Player *player, Creature *_creature, uint32 showFromId = 0)
  {
  //assume that we have additional page
  //add link to next GOSSIP_COUNT_MAX items
- AddGossipItemFor(player, ICON_GOSSIP_BALOONDOTS, MSG_GOSSIP_NEXTPAGE, GOSSIP_SENDER_MAIN,
+ AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_NEXTPAGE, GOSSIP_SENDER_MAIN,
  guildhouseId + OFFSET_SHOWBUY_FROM);
  }
 
@@ -336,20 +327,20 @@ bool GossipSelect(Player* player, uint32 sender, uint32 action)
 
  bool OnGossipHello(Player *player) override
  {
- AddGossipItemFor(player, ICON_GOSSIP_BALOON, MSG_GOSSIP_TELE, GOSSIP_SENDER_MAIN, ACTION_TELE);
+ AddGossipItemFor(player, GOSSIP_ICON_CHAT, MSG_GOSSIP_TELE, GOSSIP_SENDER_MAIN, ACTION_TELE);
 
  if (isPlayerGuildLeader(player))
  {
  if (isPlayerHasGuildhouse(player, me))
  {
  //and additional for guildhouse owner (Removed :
- AddGossipItemFor(player, ICON_GOSSIP_GOLD, MSG_GOSSIP_SELL, GOSSIP_SENDER_MAIN, ACTION_SELL_GUILDHOUSE, MSG_SELL_CONFIRM, 0, false);
+ AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_SELL, GOSSIP_SENDER_MAIN, ACTION_SELL_GUILDHOUSE, MSG_SELL_CONFIRM, 0, false);
 
  }
  else
  {
  //show additional menu for guild leader
- AddGossipItemFor(player, ICON_GOSSIP_GOLD, MSG_GOSSIP_BUY, GOSSIP_SENDER_MAIN, ACTION_SHOW_BUYLIST);
+ AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_BUY, GOSSIP_SENDER_MAIN, ACTION_SHOW_BUYLIST);
  }
  }
 
