@@ -38,6 +38,8 @@
 #include "SpellMgr.h"
 #include "TemporarySummon.h"
 #include "MotionMaster.h"
+#include "GossipDef.h"
+
 
 enum Creatures
 {
@@ -147,8 +149,8 @@ public:
     {
         if ((player->GetClass() == CLASS_HUNTER))
         {
-        AddGossipItemFor(player, 0, "|cff00ff00|TInterface\\icons\\Ability_Hunter_Pet_Devilsaur:30|t|r Normal Creatures (Cost 25 Gold)", GOSSIP_SENDER_MAIN, pets);
-        AddGossipItemFor(player, 0, "|cff00ff00|TInterface\\icons\\Ability_Hunter_BeastMastery:30|t|r Exotic Creatures (Cost 500 Gold)", GOSSIP_SENDER_MAIN, exotic);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|cff00ff00|TInterface\\icons\\Ability_Hunter_Pet_Devilsaur:30|t|r Normal Creatures (Cost 25 Gold)", GOSSIP_SENDER_MAIN, pets);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|cff00ff00|TInterface\\icons\\Ability_Hunter_BeastMastery:30|t|r Exotic Creatures (Cost 500 Gold)", GOSSIP_SENDER_MAIN, exotic);
         SendGossipMenuFor(player, 40009, me->GetGUID());
     return true;
         }
@@ -168,28 +170,28 @@ player->PlayerTalkClass->ClearMenus();
     {
                 case pets:
                         // 2, "Felshetzer", GOSSIP_SENDER_MAIN, felshetzer);
-                        AddGossipItemFor(player, 2, "Vile Bat", GOSSIP_SENDER_MAIN, fledermaus);
-                        AddGossipItemFor(player, 2, "Marshfang Slicer", GOSSIP_SENDER_MAIN, netherrochen);
-                        AddGossipItemFor(player, 2, "Skettis Kaliri", GOSSIP_SENDER_MAIN, raubvogelrot);
-                        AddGossipItemFor(player, 2, "Oiled Fledgeling", GOSSIP_SENDER_MAIN, raubvogelschwarz);
-                        AddGossipItemFor(player, 2, "Imperial Eagle", GOSSIP_SENDER_MAIN, raubvogelweiss);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Vile Bat", GOSSIP_SENDER_MAIN, fledermaus);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Marshfang Slicer", GOSSIP_SENDER_MAIN, netherrochen);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Skettis Kaliri", GOSSIP_SENDER_MAIN, raubvogelrot);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Oiled Fledgeling", GOSSIP_SENDER_MAIN, raubvogelschwarz);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Imperial Eagle", GOSSIP_SENDER_MAIN, raubvogelweiss);
                         //AddGossipItemFor(player, 2, "Schlange", GOSSIP_SENDER_MAIN, schlange);
-                        AddGossipItemFor(player, 2, "Ridgespine Stalker", GOSSIP_SENDER_MAIN, spinne);
-                        AddGossipItemFor(player, 2, "Skymane Gorilla", GOSSIP_SENDER_MAIN, gorillaschwarz);
-                        AddGossipItemFor(player, 2, "Un'Goro Thunderer", GOSSIP_SENDER_MAIN, gorillaweiss);
-                        AddGossipItemFor(player, 2, "Giant Tidecrawler", GOSSIP_SENDER_MAIN, krebs);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Ridgespine Stalker", GOSSIP_SENDER_MAIN, spinne);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Skymane Gorilla", GOSSIP_SENDER_MAIN, gorillaschwarz);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Un'Goro Thunderer", GOSSIP_SENDER_MAIN, gorillaweiss);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Giant Tidecrawler", GOSSIP_SENDER_MAIN, krebs);
                         //AddGossipItemFor(player, 2, "Krokodil", GOSSIP_SENDER_MAIN, krokolisk);
                         //AddGossipItemFor(player, 2, "Aasvogel", GOSSIP_SENDER_MAIN, aasvogel);
-                        AddGossipItemFor(player, 2, "Tundra Scavenger", GOSSIP_SENDER_MAIN, hyaene);
-                        AddGossipItemFor(player, 2, "Frostsaber Pride Watcher", GOSSIP_SENDER_MAIN, katzetiger);
-                        AddGossipItemFor(player, 2, "Pitch", GOSSIP_SENDER_MAIN, katzeloewe);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Tundra Scavenger", GOSSIP_SENDER_MAIN, hyaene);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Frostsaber Pride Watcher", GOSSIP_SENDER_MAIN, katzetiger);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Pitch", GOSSIP_SENDER_MAIN, katzeloewe);
                         //AddGossipItemFor(player, 2, "Katze (Luchs)", GOSSIP_SENDER_MAIN, katzeluchs);
-                        AddGossipItemFor(player, 2, "Felsworn Daggermaw", GOSSIP_SENDER_MAIN, raptorgruen);
-                        AddGossipItemFor(player, 2, "Bloodfen Screecher", GOSSIP_SENDER_MAIN, raptorrot);
-                        AddGossipItemFor(player, 2, "Fleeting Plainstrider", GOSSIP_SENDER_MAIN, weitschreiter);
-                        AddGossipItemFor(player, 2, "Blacksting", GOSSIP_SENDER_MAIN, wesperot);
-                        AddGossipItemFor(player, 2, "Sapphire Hive Wasp", GOSSIP_SENDER_MAIN, wespeblau);
-                        AddGossipItemFor(player, 2, "Shattered Hand Warhound", GOSSIP_SENDER_MAIN, wolfruestung);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Felsworn Daggermaw", GOSSIP_SENDER_MAIN, raptorgruen);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Bloodfen Screecher", GOSSIP_SENDER_MAIN, raptorrot);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Fleeting Plainstrider", GOSSIP_SENDER_MAIN, weitschreiter);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Blacksting", GOSSIP_SENDER_MAIN, wesperot);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Sapphire Hive Wasp", GOSSIP_SENDER_MAIN, wespeblau);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Shattered Hand Warhound", GOSSIP_SENDER_MAIN, wolfruestung);
                         //AddGossipItemFor(player, 2, "Wolf (Wilder Worg)", GOSSIP_SENDER_MAIN, wolfgrau);
                         //AddGossipItemFor(player, 2, "Wolf (Blutdurstiger Tundrawolf)", GOSSIP_SENDER_MAIN, wolfwei?);
                         //AddGossipItemFor(player, 0, "I would prefer a exotic list...", GOSSIP_SENDER_MAIN, exotic);
@@ -198,19 +200,19 @@ player->PlayerTalkClass->ClearMenus();
                 break;
                
                 case exotic:
-                        AddGossipItemFor(player, 2, "Nuramoc", GOSSIP_SENDER_MAIN, schimaere);
-                        AddGossipItemFor(player, 2, "Vekniss Warrior", GOSSIP_SENDER_MAIN, silithidgelb);
-                        AddGossipItemFor(player, 2, "Centipaar Sandreaver", GOSSIP_SENDER_MAIN, silithidrot);
-                        AddGossipItemFor(player, 2, "Wooly Rhino Calf", GOSSIP_SENDER_MAIN, rhinozeros);
-                        AddGossipItemFor(player, 2, "Oozeworm", GOSSIP_SENDER_MAIN, wurmgelb);
-                        AddGossipItemFor(player, 2, "The Kurken", GOSSIP_SENDER_MAIN, kernhundweiss);
-                        AddGossipItemFor(player, 2, "Core Hound", GOSSIP_SENDER_MAIN, kernhundrot);
-                        AddGossipItemFor(player, 2, "Devilsaur", GOSSIP_SENDER_MAIN, teufelssaurierweiss);
-                        AddGossipItemFor(player, 2, "Tyrantus", GOSSIP_SENDER_MAIN, teufelssaurierschwarz);
-                        AddGossipItemFor(player, 2, "Skoll", GOSSIP_SENDER_MAIN, skoll);
-                        AddGossipItemFor(player, 2, "Loque'nahak", GOSSIP_SENDER_MAIN, loque);
-                        AddGossipItemFor(player, 2, "Gondria", GOSSIP_SENDER_MAIN, gondria);
-                        AddGossipItemFor(player, 2, "Arcturis", GOSSIP_SENDER_MAIN, arcturis);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Nuramoc", GOSSIP_SENDER_MAIN, schimaere);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Vekniss Warrior", GOSSIP_SENDER_MAIN, silithidgelb);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Centipaar Sandreaver", GOSSIP_SENDER_MAIN, silithidrot);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Wooly Rhino Calf", GOSSIP_SENDER_MAIN, rhinozeros);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Oozeworm", GOSSIP_SENDER_MAIN, wurmgelb);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "The Kurken", GOSSIP_SENDER_MAIN, kernhundweiss);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Core Hound", GOSSIP_SENDER_MAIN, kernhundrot);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Devilsaur", GOSSIP_SENDER_MAIN, teufelssaurierweiss);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Tyrantus", GOSSIP_SENDER_MAIN, teufelssaurierschwarz);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Skoll", GOSSIP_SENDER_MAIN, skoll);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Loque'nahak", GOSSIP_SENDER_MAIN, loque);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Gondria", GOSSIP_SENDER_MAIN, gondria);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Arcturis", GOSSIP_SENDER_MAIN, arcturis);
                         //AddGossipItemFor(player,0, "I would prefer a non-exotic list...", GOSSIP_SENDER_MAIN, pets);
                        
                         SendGossipMenuFor(player, 40011, me->GetGUID());
