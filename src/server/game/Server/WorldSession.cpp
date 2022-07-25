@@ -333,8 +333,8 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
                         {
                             sScriptMgr->OnPacketReceive(this, *packet);
 #ifdef ELUNA
-                        if (!sEluna->OnPacketReceive(this, *packet))
-                            break;
+                            if (!sEluna->OnPacketReceive(this, *packet))
+                                break;
 #endif
                             opHandle->Call(this, *packet);
                             LogUnprocessedTail(packet);
