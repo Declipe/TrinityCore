@@ -10019,6 +10019,8 @@ void ObjectMgr::LoadScriptNames()
         "UNION "
         "SELECT DISTINCT(ScriptName) FROM creature_template WHERE ScriptName <> '' "
         "UNION "
+        "SELECT DISTINCT(ScriptName) FROM creature_template2 WHERE ScriptName <> '' "
+        "UNION "
         "SELECT DISTINCT(ScriptName) FROM gameobject WHERE ScriptName <> '' "
         "UNION "
         "SELECT DISTINCT(ScriptName) FROM gameobject_template WHERE ScriptName <> '' "
