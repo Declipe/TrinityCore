@@ -16,6 +16,9 @@
  */
 
 // This is where scripts' loading functions should be declared:
+void AddSC_battle_royal();
+void AddSC_battle_royal_rewards();
+void AddSC_battle_royal_gamemaster();
 void AddSC_NPC_TransmogDisplayVendor();
 void AddSC_Mod_SpecialCode();
 void AddSC_BGReward();
@@ -87,4 +90,7 @@ AddSC_npc_teleport();
 AddSC_Transmogrification();
 AddSC_mod_DefaultSpec();
 AddSC_level_award();
+ AddSC_battle_royal();
+    AddSC_battle_royal_gamemaster();
+    AddSC_battle_royal_rewards();
 }
