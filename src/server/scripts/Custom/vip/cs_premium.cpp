@@ -66,6 +66,7 @@ public:
 			{ "home",          HandleVipHomeCommand,         rbac::RBAC_PERM_COMMAND_VIP_HOME,  Console::No },
 			{ "teles",         HandleTelesNameCommand,       rbac::RBAC_PERM_COMMAND_VIP_HOMEs,  Console::No },
 			{ "status",        HandleVipStatusCommand,       rbac::RBAC_HandleVipStatusCommand,  Console::No },
+			{ "gbuff",         HandleGuildBuffCommand,       rbac::RBAC_PERM_COMMAND_GXP_BUFF,  Console::No },
 			//{ "qcomplete", rbac::RBAC_PERM_COMMAND_VIP_qcomplete, false, &HandleQuestCompletes, "" },
 		};
 
@@ -77,6 +78,46 @@ public:
 		return commandTable;
 	}
 
+    static bool HandleGuildBuffCommand(ChatHandler* handler, const char* args)
+    {
+        Player* me = handler->GetSession()->GetPlayer();
+        Guild* guild = me->GetGuild();
+        if (!guild)
+        {
+            handler->SendSysMessage("Sie sind in keiner Gilde.");
+            return false;
+        }
+        Group* group = me->GetGroup();
+        if (!group)
+        {
+            handler->SendSysMessage("Ihr seid in keiner Gruppe.");
+            return false;
+        }
+        if (me->GetGUID() != group->GetLeaderGUID()){
+            handler->SendSysMessage("Ihr seid nicht der Gruppenleiter.");
+            return false;
+        }
+        GroupReference* target = group->GetFirstMember(); 
+        while (target)
+        {
+            me = target->GetSource();
+            //INSERT BUFFLIST HERE:
+            me->CastSpell(me, 48073, TRIGGERED_FULL_MASK);  // Göttlicher Wille
+            me->CastSpell(me, 48161, TRIGGERED_FULL_MASK);  // Machtwort: Seelenstärke
+            me->CastSpell(me, 48469, TRIGGERED_FULL_MASK);  // Mark of the Wild
+            me->CastSpell(me, 58054, TRIGGERED_FULL_MASK);  // Blessing of Kings
+            me->CastSpell(me, 42995, TRIGGERED_FULL_MASK);  // Arcane Intelligence
+            me->CastSpell(me, 48102, TRIGGERED_FULL_MASK);  // Scroll of Stamina VIII
+            me->CastSpell(me, 48104, TRIGGERED_FULL_MASK);  // Scroll of Spirit VIII
+            me->CastSpell(me, 58451, TRIGGERED_FULL_MASK);  // Scroll of Agility VIII
+            me->CastSpell(me, 58449, TRIGGERED_FULL_MASK);  // Scroll of Strength VIII
+            me->CastSpell(me, 48100, TRIGGERED_FULL_MASK);  // Scroll of Intelligenc VII
+            //END BUFFLIST
+            target = target->next();
+        }
+        return true;
+    }
+    
 	static bool HandleVipStatusCommand(ChatHandler* handler, char const* args)
 	{
 		uint32 accountId;
