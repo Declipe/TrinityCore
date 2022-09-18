@@ -359,7 +359,7 @@ void WorldSession::HandleMovementOpcodes(WorldPacket& recvData)
         mover->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_LANDING); // Parachutes
 
     if (plrMover)
-        sAnticheatMgr->StartHackDetection(plrMover, movementInfo, opcode);
+        sAnticheatMgr->OnPlayerMove(plrMover, movementInfo, opcode);
 
     /* process position-change */
     WorldPacket data(opcode, recvData.size());
@@ -656,7 +656,7 @@ void WorldSession::HandleMoveKnockBackAck(WorldPacket& recvData)
 
     WorldPacket data(MSG_MOVE_KNOCK_BACK, 66);
     WriteMovementInfo(&data, &movementInfo);
-
+    _player->SetCanTeleport(true);
     // knockback specific info
     data << movementInfo.jump.sinAngle;
     data << movementInfo.jump.cosAngle;

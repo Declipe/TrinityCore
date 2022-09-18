@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -17,6 +17,7 @@
 
 #include "AnticheatScripts.h"
 #include "AnticheatMgr.h"
+#include "World.h"
 
 AnticheatScripts::AnticheatScripts(): PlayerScript("AnticheatScripts") {}
 
@@ -28,4 +29,14 @@ void AnticheatScripts::OnLogout(Player* player)
 void AnticheatScripts::OnLogin(Player* player,bool)
 {
     sAnticheatMgr->HandlePlayerLogin(player);
+}
+
+void AnticheatScripts::OnUpdate(Player* player, uint32 diff)
+{
+    if (!sWorld->getBoolConfig(CONFIG_ANTICHEAT_OP_ACK_HACK_ENABLE) && !sWorld->getBoolConfig(CONFIG_ANTICHEAT_ENABLE))
+    {
+        return;
+    }
+
+    sAnticheatMgr->AckUpdate(player, diff);
 }
