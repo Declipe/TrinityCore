@@ -1861,7 +1861,10 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
     else
     {
         if (GetClass() == CLASS_DEATH_KNIGHT && GetMapId() == 609 && !IsGameMaster() && !HasSpell(50977) && !sWorld->getBoolConfig(CONFIG_DEATH_KNIGHT_SKIP_QUEST))
+        {
+            SendTransferAborted(mapid, TRANSFER_ABORT_UNIQUE_MESSAGE, 1);
             return false;
+        }
 
         // far teleport to another map
         Map* oldmap = IsInWorld() ? GetMap() : nullptr;
