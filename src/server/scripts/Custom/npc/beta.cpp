@@ -1,4 +1,4 @@
-#include "Config.h"
+﻿#include "Config.h"
 #include "GuildMgr.h"
 #include "Player.h"
 #include "Battleground.h"
@@ -194,10 +194,11 @@ public:
     bool LearnAllRecipesInProfession(Player *player, SkillType skill)
     {
         ChatHandler handler(player->GetSession());
-        char* skill_name;
+        //char* skill_name;
+        char const* skill_name = nullptr;
 
         SkillLineEntry const *SkillInfo = sSkillLineStore.LookupEntry(skill);
-        //skill_name = SkillInfo->DisplayName[handler.GetSessionDbcLocale()];
+        skill_name = SkillInfo->DisplayName[handler.GetSessionDbcLocale()];
 
         if (!SkillInfo)
         {
@@ -209,7 +210,7 @@ public:
 
         uint16 maxLevel = player->GetPureMaxSkillValue(SkillInfo->ID);
         player->SetSkill(SkillInfo->ID, player->GetSkillStep(SkillInfo->ID), maxLevel, maxLevel);
-        //handler.PSendSysMessage(LANG_COMMAND_LEARN_ALL_RECIPES, skill_name);
+        handler.PSendSysMessage(LANG_COMMAND_LEARN_ALL_RECIPES, skill_name);
 
         return true;
     }
