@@ -141,7 +141,7 @@ public:
     void CompleteLearnProfession(Player *player, Creature* creature, SkillType skill)
     {
         if (PlayerAlreadyHasNineProfessions(player) && !IsSecondarySkill(skill))
-            creature->Whisper("Вы уже выучили 11 професии!", LANG_UNIVERSAL, player);
+            creature->Whisper("Вы уже выучили 2 професии!", LANG_UNIVERSAL, player);
         else
         {
             if (!LearnAllRecipesInProfession(player, skill))
@@ -165,7 +165,7 @@ public:
         if (pPlayer->HasSkill(SKILL_HERBALISM))
             skillCount++;
 
-        if (skillCount >= 11)
+        if (skillCount >= 2)
             return true;
 
         for (uint32 i = 0; i < sSkillLineStore.GetNumRows(); ++i)
@@ -184,7 +184,7 @@ public:
             if (pPlayer->HasSkill(skillID))
                 skillCount++;
 
-            if (skillCount >= 11)
+            if (skillCount >= 2)
                 return true;
         }
 
