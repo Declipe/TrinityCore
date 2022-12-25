@@ -681,6 +681,7 @@ class TC_GAME_API SpellMgr
         void LoadSpellLearnSkills();
         void LoadSpellLearnSpells();
         void LoadSpellTargetPositions();
+        void LoadSpellTargetPositions2();
         void LoadSpellGroups();
         void LoadSpellGroupStackRules();
         void LoadSpellProcs();

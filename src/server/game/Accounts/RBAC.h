@@ -802,6 +802,7 @@ enum RBACPermissions
     RBAC_HandleVipStatusCommand                                = 1029,
     RBAC_PERM_COMMAND_RELOAD_CREATURE_TEMPLATE2                = 639555,
     RBAC_PERM_COMMAND_GXP_BUFF                                 = 639556,
+    RBAC_PERM_COMMAND_RELOAD_SPELL_TARGET_POSITION2            = 639557,
 
 
 
