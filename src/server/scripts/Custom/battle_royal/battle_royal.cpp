@@ -90,7 +90,7 @@ BattleRoyale::BattleRoyale() {
     m_TypeId = OUTDOOR_PVP_BR;
     m_zoneId = 493;
     spawnPointNighthaven = Position(7830.34f, -2433.79f, 488.01f, 4.74f);
-    spawnPointShrine = Position(7842.36f, -2225.37f, 468.40, 4.05f);
+    spawnPointShrine = Position(7842.36f, -2225.37f, 468.40f, 4.05f);
     spawnPointDens = Position(7563.89f, -2951.61f, 466.69f, 1.51f);
 
 }
@@ -355,7 +355,7 @@ bool BattleRoyale::Update(uint32 diff) {
         aggressivePlayers = true;
         char msg[250];
         snprintf(msg, 250,
-                 "The Battle Royale has begun! Good luck! (Players: [%lu])",
+                 "The Battle Royale has begun! Good luck! (Players: [%zu])",
                  playersInRoyale.size());
         sWorld->SendServerMessage(SERVER_MSG_STRING, msg);
         game_master->Yell("The battle royal has begun!",
@@ -486,11 +486,11 @@ void BattleRoyale::startRoyale() {
     gameStarted = true;
     char msg[250];
     snprintf(msg, 250,
-             "The Battle Royale is about to begin in 1 minute! (Players: [%lu])",
+             "The Battle Royale is about to begin in 1 minute! (Players: [%zu])",
              playersInRoyale.size());
     sWorld->SendServerMessage(SERVER_MSG_STRING, msg);
     this->game_master = SpawnCreature(133701,
-                                      Position(7396.81, -2186.72, 527, 0.6));
+                                      Position(7396.81f, -2186.72f, 527, 0.6f));
     this->startTimer = 60000;
 }
 

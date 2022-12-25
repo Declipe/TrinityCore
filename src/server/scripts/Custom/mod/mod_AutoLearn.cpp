@@ -139,7 +139,7 @@ public:
             LearnSpellForClassInfo Spell;
 
             Spell.SpellId               = fields[0].GetUInt32();
-            Spell.SpellMask             = fields[1].GetUInt16();
+            Spell.SpellMask             = fields[1].GetUInt8();
             Spell.RequiredClassMask     = fields[2].GetUInt32();
             Spell.RequiredRaceMask      = fields[3].GetUInt32();
             Spell.RequiredLevel         = fields[4].GetUInt8();
