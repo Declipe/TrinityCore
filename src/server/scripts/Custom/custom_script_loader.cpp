@@ -55,42 +55,47 @@ void AddSC_mod_DefaultSpec();
 
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
+
+void AddSC_AutoBalance();
+
 void AddCustomScripts()
 {
-AddSC_NPC_TransmogDisplayVendor();
-AddSC_Mod_SpecialCode();
-AddSC_BGReward();
+    AddSC_NPC_TransmogDisplayVendor();
+    AddSC_Mod_SpecialCode();
+    AddSC_BGReward();
 // GuildHouse NPC
-AddSC_guildmaster();
+    AddSC_guildmaster();
 // 1v1 Arena
-AddSC_npc_1v1arena();
+    AddSC_npc_1v1arena();
 // VIP
-AddSC_premium_commandscript();
-AddSC_ZynPlayerScripts();
-AddSC_test();
-AddSC_gm_hello();
-AddSC_Mod_HonorRank();
-AddSC_Mod_BossHistory();
-AddSC_npc_title();
-AddSC_Mod_GuildDefault();
-AddSC_npc_hunterpetvendor();
-AddSC_lighthardmode();
-AddSC_orrig();
-AddSC_light();
-AddSC_boss_two();
-AddSC_exitare();
-AddSC_eonar();
-AddSC_anna();
-AddSC_event_npc();
-AddSC_Resets();
-AddSC_Mod_Tournaments();
-AddSC_Mod_ItemUpgrade();
-AddSC_Mod_AutoLearn();
-AddSC_npc_teleport();
-AddSC_Transmogrification();
-AddSC_mod_DefaultSpec();
-AddSC_level_award();
- AddSC_battle_royal();
+    AddSC_premium_commandscript();
+    AddSC_ZynPlayerScripts();
+    AddSC_test();
+    AddSC_gm_hello();
+    AddSC_Mod_HonorRank();
+    AddSC_Mod_BossHistory();
+    AddSC_npc_title();
+    AddSC_Mod_GuildDefault();
+    AddSC_npc_hunterpetvendor();
+    AddSC_lighthardmode();
+    AddSC_orrig();
+    AddSC_light();
+    AddSC_boss_two();
+    AddSC_exitare();
+    AddSC_eonar();
+    AddSC_anna();
+    AddSC_event_npc();
+    AddSC_Resets();
+    AddSC_Mod_Tournaments();
+    AddSC_Mod_ItemUpgrade();
+    AddSC_Mod_AutoLearn();
+    AddSC_npc_teleport();
+    AddSC_Transmogrification();
+    AddSC_mod_DefaultSpec();
+    AddSC_level_award();
+    AddSC_battle_royal();
     AddSC_battle_royal_gamemaster();
     AddSC_battle_royal_rewards();
+    // VAS AutoBalance
+    AddSC_AutoBalance();
 }
