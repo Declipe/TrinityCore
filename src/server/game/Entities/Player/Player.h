@@ -1785,6 +1785,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void DurabilityPointLossForEquipSlot(EquipmentSlots slot);
         uint32 DurabilityRepairAll(bool cost, float discountMod, bool guildBank);
         uint32 DurabilityRepair(uint16 pos, bool cost, float discountMod, bool guildBank);
+        //void DurabilityRepairAll(bool takeCost, float discountMod, bool guildBank);
+        //void DurabilityRepair(uint16 pos, bool takeCost, float discountMod);
 
         void UpdateMirrorTimers();
         void StopMirrorTimers();
