@@ -748,27 +748,6 @@ enum RBACPermissions
     // IF YOU ADD NEW PERMISSIONS, ADD THEM IN MASTER BRANCH AS WELL!
     //
     // custom permissions 1000+
-    // Prepatch by LordPsyan
-    // 01
-    // 02
-    // 03
-    // 04
-    // 05
-    // 06
-    // 07
-    // 08
-    // 09
-    // 10
-    // 11
-    // 12
-    // 13
-    // 14
-    // 15
-    // 16
-    // 17
-    // 18
-    // 19
-    // 20
     RBAC_PERM_COMMAND_VIP                                      = 1000,
     RBAC_PERM_COMMAND_VIP_DEBUFF                               = 1001,
     RBAC_PERM_COMMAND_VIP_BANK                                 = 1002,
@@ -804,12 +783,6 @@ enum RBACPermissions
     RBAC_PERM_COMMAND_GXP_BUFF                                 = 639556,
     RBAC_PERM_COMMAND_RELOAD_SPELL_TARGET_POSITION2            = 639557,
 
-
-
-
-    // Visit http://www.realmsofwarcraft.com/bb for forums and information
-    //
-    // End of prepatch
     RBAC_PERM_MAX
 };
 
