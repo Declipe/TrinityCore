@@ -649,7 +649,7 @@ void SpellMgr::LoadSpellTargetPositions2()
 {
     uint32 oldMSTime = getMSTime();
 
-    mSpellTargetPositions.clear();                                // need for reload case
+    //mSpellTargetPositions.clear();                                // need for reload case
 
     //                                                0      1          2        3         4           5            6
     QueryResult result = WorldDatabase.Query("SELECT ID, EffectIndex, MapID, PositionX, PositionY, PositionZ, Orientation FROM spell_target_position2");
@@ -708,41 +708,6 @@ void SpellMgr::LoadSpellTargetPositions2()
         }
 
     } while (result->NextRow());
-
-    /*
-    // Check all spells
-    for (uint32 i = 1; i < GetSpellInfoStoreSize; ++i)
-    {
-        SpellInfo const* spellInfo = GetSpellInfo(i);
-        if (!spellInfo)
-            continue;
-
-        bool found = false;
-        for (int j = 0; j < MAX_SPELL_EFFECTS; ++j)
-        {
-            switch (spellInfo->Effects[j].TargetA)
-            {
-                case TARGET_DEST_DB:
-                    found = true;
-                    break;
-            }
-            if (found)
-                break;
-            switch (spellInfo->Effects[j].TargetB)
-            {
-                case TARGET_DEST_DB:
-                    found = true;
-                    break;
-            }
-            if (found)
-                break;
-        }
-        if (found)
-        {
-            if (!sSpellMgr->GetSpellTargetPosition(i))
-                TC_LOG_DEBUG("spells", "Spell (ID: %u) does not have a record in `spell_target_position`.", i);
-        }
-    }*/
 
     TC_LOG_INFO("server.loading", ">> Loaded %u spell teleport coordinates in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
