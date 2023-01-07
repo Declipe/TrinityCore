@@ -36,7 +36,6 @@ class Unit;
 struct Condition;
 struct SpellChainNode;
 struct SpellTargetPosition;
-struct SpellTargetPosition2;
 struct SpellDurationEntry;
 struct SpellModifier;
 struct SpellRangeEntry;

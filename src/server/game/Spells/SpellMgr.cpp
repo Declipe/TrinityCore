@@ -351,14 +351,6 @@ SpellTargetPosition const* SpellMgr::GetSpellTargetPosition(uint32 spell_id, Spe
     return nullptr;
 }
 
-SpellTargetPosition2 const* SpellMgr::GetSpellTargetPosition2(uint32 spell_id, SpellEffIndex effIndex) const
-{
-    SpellTargetPositionMap2::const_iterator itr = mSpellTargetPositions2.find(std::make_pair(spell_id, effIndex));
-    if (itr != mSpellTargetPositions2.end())
-        return &itr->second;
-    return nullptr;
-}
-
 SpellSpellGroupMapBounds SpellMgr::GetSpellSpellGroupMapBounds(uint32 spell_id) const
 {
     spell_id = GetFirstSpellInChain(spell_id);
