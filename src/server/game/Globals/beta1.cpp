@@ -655,7 +655,7 @@ void SpellMgr::LoadSpellTargetPositions2()
     QueryResult result = WorldDatabase.Query("SELECT ID, EffectIndex, MapID, PositionX, PositionY, PositionZ, Orientation FROM spell_target_position2");
     if (!result)
     {
-        TC_LOG_INFO("server.loading", ">> Loaded 0 spell target coordinates. DB table `spell_target_position` is empty.");
+        TC_LOG_INFO("server.loading", ">> Loaded 0 spell target coordinates. DB table `spell_target_position2` is empty.");
         return;
     }
 
@@ -691,7 +691,7 @@ void SpellMgr::LoadSpellTargetPositions2()
         SpellInfo const* spellInfo = GetSpellInfo(Spell_ID);
         if (!spellInfo)
         {
-            TC_LOG_ERROR("sql.sql", "Spell (Id: %u) listed in `spell_target_position` does not exist.", Spell_ID);
+            TC_LOG_ERROR("sql.sql", "Spell (Id: %u) listed in `spell_target_position2` does not exist.", Spell_ID);
             continue;
         }
 
@@ -703,7 +703,7 @@ void SpellMgr::LoadSpellTargetPositions2()
         }
         else
         {
-            TC_LOG_ERROR("sql.sql", "Spell (Id: %u, effIndex: %u) listed in `spell_target_position` does not have a target TARGET_DEST_DB (17).", Spell_ID, effIndex);
+            TC_LOG_ERROR("sql.sql", "Spell (Id: %u, effIndex: %u) listed in `spell_target_position2` does not have a target TARGET_DEST_DB (17).", Spell_ID, effIndex);
             continue;
         }
 
