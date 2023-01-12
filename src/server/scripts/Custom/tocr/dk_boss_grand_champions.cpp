@@ -25,7 +25,7 @@
 #include "SpellScript.h"
 #include "SpellMgr.h"
 #include "Vehicle.h"
-#include "trial_of_the_champion.h"
+#include "dk_trial_of_the_champion.h"
 
 enum Events
 {
@@ -682,14 +682,14 @@ struct boss_grand_championAI : BossAI
 * Script Complete: 95%.                                     *
 */
 
-class generic_vehicleAI_toc5 : public CreatureScript
+class dk_generic_vehicleAI_toc5 : public CreatureScript
 {
 public:
-    generic_vehicleAI_toc5() : CreatureScript("generic_vehicleAI_toc5") { }
+    dk_generic_vehicleAI_toc5() : CreatureScript("dk_generic_vehicleAI_toc5") { }
 
-    struct generic_vehicleAI_toc5AI : public EscortAI
+    struct dk_generic_vehicleAI_toc5AI : public EscortAI
     {
-        generic_vehicleAI_toc5AI(Creature* creature) : EscortAI(creature)
+        dk_generic_vehicleAI_toc5AI(Creature* creature) : EscortAI(creature)
         {
             Initialize();
             SetDespawnAtEnd(false);
@@ -1071,23 +1071,23 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfChampionAI<generic_vehicleAI_toc5AI>(creature);
+        return GetTrialOfChampionAI<dk_generic_vehicleAI_toc5AI>(creature);
     }
 };
 
-class boss_warrior_toc5 : public CreatureScript
+class dk_boss_warrior_toc5 : public CreatureScript
 {
 public:
-    boss_warrior_toc5() : CreatureScript("boss_warrior_toc5") { }
+    dk_boss_warrior_toc5() : CreatureScript("dk_boss_warrior_toc5") { }
 
     // Marshal Jacob Alerius && Mokra the Skullcrusher || Warrior
-    struct boss_warrior_toc5AI : public boss_grand_championAI
+    struct dk_boss_warrior_toc5AI : public boss_grand_championAI
     {
-        boss_warrior_toc5AI(Creature* creature) : boss_grand_championAI(creature) { }
+        dk_boss_warrior_toc5AI(Creature* creature) : boss_grand_championAI(creature) { }
 
         void Reset() override
         {
-            boss_grand_championAI::Reset();
+            //boss_grand_championAI::Reset();
         }
 
         void JustEngagedWith(Unit* who) override
@@ -1176,23 +1176,23 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfChampionAI<boss_warrior_toc5AI>(creature);
+        return GetTrialOfChampionAI<dk_boss_warrior_toc5AI>(creature);
     }
 };
 
-class boss_mage_toc5 : public CreatureScript
+class dk_boss_mage_toc5 : public CreatureScript
 {
 public:
-    boss_mage_toc5() : CreatureScript("boss_mage_toc5") { }
+    dk_boss_mage_toc5() : CreatureScript("dk_boss_mage_toc5") { }
 
     // Ambrose Boltspark && Eressea Dawnsinger || Mage
-    struct boss_mage_toc5AI : public boss_grand_championAI
+    struct dk_boss_mage_toc5AI : public boss_grand_championAI
     {
-        boss_mage_toc5AI(Creature* creature) : boss_grand_championAI(creature) { }
+        dk_boss_mage_toc5AI(Creature* creature) : boss_grand_championAI(creature) { }
 
         void Reset() override
         {
-            boss_grand_championAI::Reset();
+           // boss_grand_championAI::Reset();
         }
 
         void JustEngagedWith(Unit* who) override
@@ -1272,19 +1272,19 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfChampionAI<boss_mage_toc5AI>(creature);
+        return GetTrialOfChampionAI<dk_boss_mage_toc5AI>(creature);
     }
 };
 
-class boss_shaman_toc5 : public CreatureScript
+class dk_boss_shaman_toc5 : public CreatureScript
 {
 public:
-    boss_shaman_toc5() : CreatureScript("boss_shaman_toc5") { }
+    dk_boss_shaman_toc5() : CreatureScript("dk_boss_shaman_toc5") { }
 
     // Colosos && Runok Wildmane || Shaman
-    struct boss_shaman_toc5AI : public boss_grand_championAI
+    struct dk_boss_shaman_toc5AI : public boss_grand_championAI
     {
-        boss_shaman_toc5AI(Creature* creature) : boss_grand_championAI(creature)
+        dk_boss_shaman_toc5AI(Creature* creature) : boss_grand_championAI(creature)
         {
             Initialize();
         }
@@ -1461,19 +1461,19 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfChampionAI<boss_shaman_toc5AI>(creature);
+        return GetTrialOfChampionAI<dk_boss_shaman_toc5AI>(creature);
     }
 };
 
-class boss_hunter_toc5 : public CreatureScript
+class dk_boss_hunter_toc5 : public CreatureScript
 {
 public:
-    boss_hunter_toc5() : CreatureScript("boss_hunter_toc5") { }
+    dk_boss_hunter_toc5() : CreatureScript("dk_boss_hunter_toc5") { }
 
     // Jaelyne Evensong && Zul'tore || Hunter
-    struct boss_hunter_toc5AI : public boss_grand_championAI
+    struct dk_boss_hunter_toc5AI : public boss_grand_championAI
     {
-        boss_hunter_toc5AI(Creature* creature) : boss_grand_championAI(creature) { }
+        dk_boss_hunter_toc5AI(Creature* creature) : boss_grand_championAI(creature) { }
 
         void Reset() override
         {
@@ -1550,19 +1550,19 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfChampionAI<boss_hunter_toc5AI>(creature);
+        return GetTrialOfChampionAI<dk_boss_hunter_toc5AI>(creature);
     }
 };
 
-class boss_rogue_toc5 : public CreatureScript
+class dk_boss_rogue_toc5 : public CreatureScript
 {
 public:
-    boss_rogue_toc5() : CreatureScript("boss_rouge_toc5") { }
+    dk_boss_rogue_toc5() : CreatureScript("dk_boss_rouge_toc5") { }
 
     // Lana Stouthammer Evensong && Deathstalker Visceri || Rogue
-    struct boss_rogue_toc5AI : public boss_grand_championAI
+    struct dk_boss_rogue_toc5AI : public boss_grand_championAI
     {
-        boss_rogue_toc5AI(Creature* creature) : boss_grand_championAI(creature) { }
+        dk_boss_rogue_toc5AI(Creature* creature) : boss_grand_championAI(creature) { }
 
         void Reset() override
         {
@@ -1627,18 +1627,18 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfChampionAI<boss_rogue_toc5AI>(creature);
+        return GetTrialOfChampionAI<dk_boss_rogue_toc5AI>(creature);
     }
 };
 
-class spell_toc5_trample_aura : public SpellScriptLoader
+class dk_spell_toc5_trample_aura : public SpellScriptLoader
 {
     public:
-        spell_toc5_trample_aura() : SpellScriptLoader("spell_toc5_trample_aura") { }
+        dk_spell_toc5_trample_aura() : SpellScriptLoader("dk_spell_toc5_trample_aura") { }
 
-        class spell_toc5_trample_aura_SpellScript : public SpellScript
+        class dk_spell_toc5_trample_aura_SpellScript : public SpellScript
         {
-            PrepareSpellScript(spell_toc5_trample_aura_SpellScript);
+            PrepareSpellScript(dk_spell_toc5_trample_aura_SpellScript);
 
             void RemoveInvalidTargets(std::list<WorldObject*>& targets)
             {
@@ -1669,9 +1669,9 @@ class spell_toc5_trample_aura : public SpellScriptLoader
 
             void Register() override
             {
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_toc5_trample_aura_SpellScript::RemoveInvalidTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
-                BeforeHit += BeforeSpellHitFn(spell_toc5_trample_aura_SpellScript::HandleStun);
-                AfterHit += SpellHitFn(spell_toc5_trample_aura_SpellScript::RemoveAura);
+                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(dk_spell_toc5_trample_aura_SpellScript::RemoveInvalidTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
+                BeforeHit += BeforeSpellHitFn(dk_spell_toc5_trample_aura_SpellScript::HandleStun);
+                AfterHit += SpellHitFn(dk_spell_toc5_trample_aura_SpellScript::RemoveAura);
             }
 
             bool _removed = false;
@@ -1679,18 +1679,18 @@ class spell_toc5_trample_aura : public SpellScriptLoader
 
         SpellScript* GetSpellScript() const override
         {
-            return new spell_toc5_trample_aura_SpellScript();
+            return new dk_spell_toc5_trample_aura_SpellScript();
         }
 };
 
-class spell_toc5_lightning_arrows : public SpellScriptLoader
+class dk_spell_toc5_lightning_arrows : public SpellScriptLoader
 {
     public:
-        spell_toc5_lightning_arrows() : SpellScriptLoader("spell_toc5_lightning_arrows") { }
+        dk_spell_toc5_lightning_arrows() : SpellScriptLoader("dk_spell_toc5_lightning_arrows") { }
 
-        class spell_toc5_lightning_arrows_AuraScript : public AuraScript
+        class dk_spell_toc5_lightning_arrows_AuraScript : public AuraScript
         {
-            PrepareAuraScript(spell_toc5_lightning_arrows_AuraScript);
+            PrepareAuraScript(dk_spell_toc5_lightning_arrows_AuraScript);
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
@@ -1706,13 +1706,13 @@ class spell_toc5_lightning_arrows : public SpellScriptLoader
 
             void Register() override
             {
-                AfterEffectRemove += AuraEffectRemoveFn(spell_toc5_lightning_arrows_AuraScript::HandleScript, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
+                AfterEffectRemove += AuraEffectRemoveFn(dk_spell_toc5_lightning_arrows_AuraScript::HandleScript, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
             }
         };
 
         AuraScript* GetAuraScript() const override
         {
-            return new spell_toc5_lightning_arrows_AuraScript();
+            return new dk_spell_toc5_lightning_arrows_AuraScript();
         }
 };
 
@@ -1731,10 +1731,10 @@ enum CriteriaIds
 };
 
 // Statistics achievements "Victories over X champion" both normal and heroic
-class achievement_victories_over_champion : public AchievementCriteriaScript
+class dk_achievement_victories_over_champion : public AchievementCriteriaScript
 {
     public:
-        achievement_victories_over_champion(char const* name, uint32 criteriaId) : AchievementCriteriaScript(name),
+        dk_achievement_victories_over_champion(char const* name, uint32 criteriaId) : AchievementCriteriaScript(name),
             _criteriaId(criteriaId)
         {
         }
@@ -1771,24 +1771,24 @@ class achievement_victories_over_champion : public AchievementCriteriaScript
         uint32 const _criteriaId;
 };
 
-void AddSC_boss_grand_champions()
+void AddSC_dk_boss_grand_champions()
 {
-    new generic_vehicleAI_toc5();
-    new boss_warrior_toc5();
-    new boss_mage_toc5();
-    new boss_shaman_toc5();
-    new boss_hunter_toc5();
-    new boss_rogue_toc5();
-    new spell_toc5_trample_aura();
-    new spell_toc5_lightning_arrows();
-    new achievement_victories_over_champion("achievement_victories_over_war_champion", CRITERIA_WARRIOR);
-    new achievement_victories_over_champion("achievement_victories_over_hun_champion", CRITERIA_HUNTER);
-    new achievement_victories_over_champion("achievement_victories_over_mag_champion", CRITERIA_MAGE);
-    new achievement_victories_over_champion("achievement_victories_over_rog_champion", CRITERIA_ROGUE);
-    new achievement_victories_over_champion("achievement_victories_over_sha_champion", CRITERIA_SHAMAN);
-    new achievement_victories_over_champion("achievement_victories_over_war_champion_h", CRITERIA_WARRIOR_H);
-    new achievement_victories_over_champion("achievement_victories_over_hun_champion_h", CRITERIA_HUNTER_H);
-    new achievement_victories_over_champion("achievement_victories_over_mag_champion_h", CRITERIA_MAGE_H);
-    new achievement_victories_over_champion("achievement_victories_over_rog_champion_h", CRITERIA_ROGUE_H);
-    new achievement_victories_over_champion("achievement_victories_over_sha_champion_h", CRITERIA_SHAMAN_H);
+    new dk_generic_vehicleAI_toc5();
+    new dk_boss_warrior_toc5();
+    new dk_boss_mage_toc5();
+    new dk_boss_shaman_toc5();
+    new dk_boss_hunter_toc5();
+    new dk_boss_rogue_toc5();
+    new dk_spell_toc5_trample_aura();
+    new dk_spell_toc5_lightning_arrows();
+    new dk_achievement_victories_over_champion("dk_achievement_victories_over_war_champion", CRITERIA_WARRIOR);
+    new dk_achievement_victories_over_champion("dk_achievement_victories_over_hun_champion", CRITERIA_HUNTER);
+    new dk_achievement_victories_over_champion("dk_achievement_victories_over_mag_champion", CRITERIA_MAGE);
+    new dk_achievement_victories_over_champion("dk_achievement_victories_over_rog_champion", CRITERIA_ROGUE);
+    new dk_achievement_victories_over_champion("dk_achievement_victories_over_sha_champion", CRITERIA_SHAMAN);
+    new dk_achievement_victories_over_champion("dk_achievement_victories_over_war_champion_h", CRITERIA_WARRIOR_H);
+    new dk_achievement_victories_over_champion("dk_achievement_victories_over_hun_champion_h", CRITERIA_HUNTER_H);
+    new dk_achievement_victories_over_champion("dk_achievement_victories_over_mag_champion_h", CRITERIA_MAGE_H);
+    new dk_achievement_victories_over_champion("dk_achievement_victories_over_rog_champion_h", CRITERIA_ROGUE_H);
+    new dk_achievement_victories_over_champion("dk_achievement_victories_over_sha_champion_h", CRITERIA_SHAMAN_H);
 }
