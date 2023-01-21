@@ -1,4 +1,4 @@
-﻿#include "Config.h"
+#include "Config.h"
 #include "GuildMgr.h"
 #include "Player.h"
 #include "Battleground.h"
@@ -33,31 +33,102 @@
 #include "DatabaseEnvFwd.h"
 #include "Log.h"
 
-#define MSG_GOSSIP_TEXT_GETTING_STARTED	"Приветствуем вас на сервере"// OneGo - World of Warcraft !"
+#define MSG_GOSSIP_TEXT_GETTING_STARTED	"???????????? ??? ?? ???????"// OneGo - World of Warcraft !"
 
-#define MSG_ERR_HONOR "У вас не достаточно хонора для совершения покупки!"
-#define MSG_ERR_ARENA_POINT_1 "У вас не достаточно Апа!"
-#define MSG_ERR_TITLE "У данного персонажа уже есть такое звание!"
-#define MSG_ERR_INCOMBAT "Вы находитесь в бою. Чтобы использовать данного Npc выйдите из него."
-#define MSG_COMPLETE_RENAME "Оплата Успешно Произведена Сделайте Логаут и Введите Новое Имя Персонажа.Не Забудьте После Смены Имени,Выйти Из Игры и Удалить Из Клиента Папку Cache!"
-#define MSG_CUSTOMIZE_COMPLETE "Оплата Успешно Произведена Сделайте Логаут и Измените Внешность Персонажа.Не Забудьте После Смены Внешности,Выйти Из Игры и Удалить Из Клиента Папку Cache!"
-#define MSG_CHANGE_FACTION_COMPLETE "Оплата Успешно Произведена Сделайте Логаут и Измените Фракцию Персонажа.Не Забудьте После Смены Внешности,Выйти Из Игры и Удалить Из Клиента Папку Cache!"
+#define MSG_ERR_HONOR "? ??? ?? ?????????? ?????? ??? ?????????? ???????!"
+#define MSG_ERR_ARENA_POINT_1 "? ??? ?? ?????????? ???!"
+#define MSG_ERR_TITLE "? ??????? ????????? ??? ???? ????? ??????!"
+#define MSG_ERR_INCOMBAT "?? ?????????? ? ???. ????? ???????????? ??????? Npc ??????? ?? ????."
+#define MSG_COMPLETE_RENAME "?????? ??????? ??????????? ???????? ?????? ? ??????? ????? ??? ?????????.?? ???????? ????? ????? ?????,????? ?? ???? ? ??????? ?? ??????? ????? Cache!"
+#define MSG_CUSTOMIZE_COMPLETE "?????? ??????? ??????????? ???????? ?????? ? ???????? ????????? ?????????.?? ???????? ????? ????? ?????????,????? ?? ???? ? ??????? ?? ??????? ????? Cache!"
+#define MSG_CHANGE_FACTION_COMPLETE "?????? ??????? ??????????? ???????? ?????? ? ???????? ??????? ?????????.?? ???????? ????? ????? ?????????,????? ?? ???? ? ??????? ?? ??????? ????? Cache!"
+enum NPC_BETA
+{
+    MENU_ID_BETA = 85310, // "This tear in the fabric of time and space looks ominous."
+    MENU_ID_BETA2 = 0,
+    GOSSIP_OPTION_1 = 1,
+    GOSSIP_OPTION_2 = 2,
+    GOSSIP_OPTION_3 = 3,
+    GOSSIP_OPTION_4 = 4,
+    GOSSIP_OPTION_5 = 5,
+    GOSSIP_OPTION_6 = 6,
+    GOSSIP_OPTION_7 = 7,
+    GOSSIP_OPTION_8 = 8,
+    GOSSIP_OPTION_9 = 9,
+    GOSSIP_OPTION_10 = 10,
+    GOSSIP_OPTION_11 = 11,
+    GOSSIP_OPTION_12 = 12,
+    GOSSIP_OPTION_13 = 13,
+    GOSSIP_OPTION_14 = 14,
+    GOSSIP_OPTION_15 = 15,
+    GOSSIP_OPTION_16 = 16,
+    GOSSIP_OPTION_17 = 17,
+    GOSSIP_OPTION_18 = 18,
+    GOSSIP_OPTION_19 = 19,
+    GOSSIP_OPTION_20 = 20,
+    GOSSIP_OPTION_21 = 21,
+    GOSSIP_OPTION_22 = 22,
+    GOSSIP_OPTION_23 = 23,
+    GOSSIP_OPTION_24 = 24,
+    GOSSIP_OPTION_25 = 25,
+    GOSSIP_OPTION_26 = 26,
+    GOSSIP_OPTION_27 = 27,
+    GOSSIP_OPTION_28 = 28,
+    GOSSIP_OPTION_29 = 29,
+    GOSSIP_OPTION_30 = 30,
+    GOSSIP_OPTION_31 = 31,
+    GOSSIP_OPTION_32 = 32,
+    GOSSIP_OPTION_33 = 33,
+    GOSSIP_OPTION_34 = 34,
+    GOSSIP_OPTION_35 = 35,
+    GOSSIP_OPTION_36 = 36,
+    GOSSIP_OPTION_37 = 37,
+    GOSSIP_OPTION_38 = 38,
+    GOSSIP_OPTION_39 = 39,
+    GOSSIP_OPTION_40 = 40,
+    GOSSIP_OPTION_41 = 41,
+    GOSSIP_OPTION_42 = 42,
+    GOSSIP_OPTION_43 = 43,
+    GOSSIP_OPTION_44 = 44,
+    GOSSIP_OPTION_45 = 45,
+    GOSSIP_OPTION_46 = 46,
+    GOSSIP_OPTION_47 = 47,
+    GOSSIP_OPTION_48 = 48,
+    GOSSIP_OPTION_49 = 49,
+    GOSSIP_OPTION_50 = 50,
+    GOSSIP_OPTION_51 = 51,
+    GOSSIP_OPTION_52 = 52,
+    GOSSIP_OPTION_53 = 53,
+    GOSSIP_OPTION_54 = 54,
+    GOSSIP_OPTION_55 = 55,
+    GOSSIP_OPTION_56 = 56,
+    GOSSIP_OPTION_57 = 57,
+    GOSSIP_OPTION_58 = 58,
+    GOSSIP_OPTION_59 = 59,
+    GOSSIP_OPTION_60 = 60,
+    GOSSIP_OPTION_61 = 61,
+    GOSSIP_OPTION_62 = 62,
+    GOSSIP_OPTION_63 = 63,
+    GOSSIP_OPTION_64 = 64,
+    GOSSIP_OPTION_65 = 65,
+    GOSSIP_OPTION_66 = 66,
+};
 
-#define MSG_GOSSIP_TEXT_MAX_HEALTH "Вылечи меня!"
-#define MSG_GOSSIP_TEXT_MAX_SKILL "Выучить все навыки оружия и защиты."
+//#define MENU_ID_BETA "?????? ????!"
+#define MSG_GOSSIP_TEXT_MAX_SKILL "??????? ??? ?????? ?????? ? ??????."
 
-#define MSG_GOSSIP_TEXT_BUFF_POWER_WORD "[Бафнуть] Слово силы: Стойкость"
-#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_KINGS "[Бафнуть] Благословение Королей"
-#define MSG_GOSSIP_TEXT_BUFF_MARK_OF_THE_WILD "[Бафнуть] Знак дикой природы"
-#define MSG_GOSSIP_TEXT_BUFF_ARCANE_BRILLIANCE "[Бафнуть] Чародейская гениальность Даларана"
-#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_MIGHT "[Бафнуть] Великое Благословение могущества"
-#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_WISDOM "[Бафнуть] Благословение мудрости"
-#define MSG_GOSSIP_TEXT_BUFF_THORNS "[Бафнуть] Шипы"
-#define MSG_GOSSIP_TEXT_BUFF_DIVINE_SPIRIT "[Бафнуть] Божественный дух"
-#define MSG_GOSSIP_TEXT_BUFF_SHADOW_PROTECTION "[Бафнуть] Защита от темной магии"
-#define MSG_GOSSIP_TEXT_BUFF_STAMINA "[Бафнуть] Выносливость"
+#define MSG_GOSSIP_TEXT_BUFF_POWER_WORD "[???????] ????? ????: ?????????"
+#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_KINGS "[???????] ????????????? ???????"
+#define MSG_GOSSIP_TEXT_BUFF_MARK_OF_THE_WILD "[???????] ???? ????? ???????"
+#define MSG_GOSSIP_TEXT_BUFF_ARCANE_BRILLIANCE "[???????] ??????????? ???????????? ????????"
+#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_MIGHT "[???????] ??????? ????????????? ??????????"
+#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_WISDOM "[???????] ????????????? ????????"
+#define MSG_GOSSIP_TEXT_BUFF_THORNS "[???????] ????"
+#define MSG_GOSSIP_TEXT_BUFF_DIVINE_SPIRIT "[???????] ???????????? ???"
+#define MSG_GOSSIP_TEXT_BUFF_SHADOW_PROTECTION "[???????] ?????? ?? ?????? ?????"
+#define MSG_GOSSIP_TEXT_BUFF_STAMINA "[???????] ????????????"
 
-#define MSG_GOSSIP_TEXT_BUFF_MENU "[Меню бафов] ->"
+#define MSG_GOSSIP_TEXT_BUFF_MENU "[???? ?????] ->"
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip1 "[Premium buff] ->"
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip2 "[Title] ->"
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip3 "[test] ->"
@@ -65,55 +136,54 @@
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip333 "[sumki] ->"
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip44 "[key] ->"
 #define MSG_GOSSIP_TEXT_BUFF_MENUvip55 "[kaput] ->"
-#define MSG_GOSSIP_TEXT_MAIN_MENU "<- [Вернутся в Главное меню]"
-#define MSG_GOSSIP_TEXT_PROFFESION_MENU "[Меню Профессий] ->"
-#define MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU "[Меню Второстепенных профессий] ->"
-#define MSG_GOSSIP_TEXT_NEXT_3 "[страница] ->"
+#define MSG_GOSSIP_TEXT_MAIN_MENU "<- [???????? ? ??????? ????]"
+#define MSG_GOSSIP_TEXT_PROFFESION_MENU "[???? ?????????] ->"
+#define MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU "[???? ?????????????? ?????????] ->"
+#define MSG_GOSSIP_TEXT_NEXT_3 "[????????] ->"
 
-#define MSG_GOSSIP_TEXT_RENAME "Сменить Имя персонажа."
-#define MSG_GOSSIP_TEXT_CUSTOM "Сменить Внешность персонажа."
-#define MSG_GOSSIP_TEXT_CHANGE_FACTION "Сменить Фракцию персонажа."
+#define MSG_GOSSIP_TEXT_RENAME "??????? ??? ?????????."
+#define MSG_GOSSIP_TEXT_CUSTOM "??????? ????????? ?????????."
+#define MSG_GOSSIP_TEXT_CHANGE_FACTION "??????? ??????? ?????????."
 
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BERSERK "[Бафнуть] Берсерк."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_RAGNAROS "[Бафнуть] Эгида Рагнароса."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_NELTHARION "[Бафнуть] Защита Нелтариона."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_ADALS "[Бафнуть] Благословение А'далла."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_CRIT_SPELLS "[Бафнуть] Критическое срабатывание."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_PINCHI "[Бафнуть] Благословение мистера Пинчи."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_TRANSPARENCY "[Бафнуть] Прозрачность."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BERSERK "[???????] ???????."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_RAGNAROS "[???????] ????? ?????????."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_NELTHARION "[???????] ?????? ??????????."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_ADALS "[???????] ????????????? ?'?????."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_CRIT_SPELLS "[???????] ??????????? ????????????."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_PINCHI "[???????] ????????????? ??????? ?????."
+#define MSG_GOSSIP_TEXT_SUPPER_BUFF_TRANSPARENCY "[???????] ????????????."
 
-#define MSG_GOSSIP_TEXT_TITLES_JENKINS "Получить звание Дженкинс."
-#define MSG_GOSSIP_TEXT_TITLES_THE_LOVE_FOOL "Получить звание Безумно Влюбленный."
-#define MSG_GOSSIP_TEXT_TITLES_MERRYMAKER "Получить звание Весельчак."
-#define MSG_GOSSIP_TEXT_TITLES_SCARAB_LORD "Получить звание Повелитель Скоробеев."
-#define MSG_GOSSIP_TEXT_TITLES_THE_NOBLE "Получить звание Чудесный."
-#define MSG_GOSSIP_TEXT_TITLES_OBSIDIAN_SLAYER "Получить звание Покоритель Обсидианового святилища."
+#define MSG_GOSSIP_TEXT_TITLES_JENKINS "???????? ?????? ????????."
+#define MSG_GOSSIP_TEXT_TITLES_THE_LOVE_FOOL "???????? ?????? ??????? ??????????."
+#define MSG_GOSSIP_TEXT_TITLES_MERRYMAKER "???????? ?????? ?????????."
+#define MSG_GOSSIP_TEXT_TITLES_SCARAB_LORD "???????? ?????? ?????????? ?????????."
+#define MSG_GOSSIP_TEXT_TITLES_THE_NOBLE "???????? ?????? ????????."
+#define MSG_GOSSIP_TEXT_TITLES_OBSIDIAN_SLAYER "???????? ?????? ?????????? ????????????? ?????????."
 
-#define MSG_GOSSIP_TEXT_MORTH_GNOME_MALE "[Превратить] Гном, мужчина."
-#define MSG_GOSSIP_TEXT_MORTH_GNOME_FEMALE "[Превратить] Гном, женщина."
-#define MSG_GOSSIP_TEXT_MORTH_HUMAN_FEMALE "[Превратить] Человек, женщина."
-#define MSG_GOSSIP_TEXT_MORTH_HUMAN_MALE "[Превратить] Человек, мужчина."
-#define MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_MALE "[Превратить] Эльф Крови, мужчина."
-#define MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_FEMALE "[Превратить] Эльф Крови, женщина."
-#define MSG_GOSSIP_TEXT_MORTH_TAUREN_MALE "[Превратить] Таурен, мужчина."
-#define MSG_GOSSIP_TEXT_MORTH_TAUREN_FEMALE "[Превратить] Таурен, женщина."
+#define MSG_GOSSIP_TEXT_MORTH_GNOME_MALE "[??????????] ????, ???????."
+#define MSG_GOSSIP_TEXT_MORTH_GNOME_FEMALE "[??????????] ????, ???????."
+#define MSG_GOSSIP_TEXT_MORTH_HUMAN_FEMALE "[??????????] ???????, ???????."
+#define MSG_GOSSIP_TEXT_MORTH_HUMAN_MALE "[??????????] ???????, ???????."
+#define MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_MALE "[??????????] ???? ?????, ???????."
+#define MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_FEMALE "[??????????] ???? ?????, ???????."
+#define MSG_GOSSIP_TEXT_MORTH_TAUREN_MALE "[??????????] ??????, ???????."
+#define MSG_GOSSIP_TEXT_MORTH_TAUREN_FEMALE "[??????????] ??????, ???????."
 
-#define MSG_GOSSIP_TEXT_ALCHEMY "|TInterface\\icons\\Trade_Alchemy:40:40:-14|t Изучить Алхимию."
-#define MSG_GOSSIP_TEXT_BLACKSMITHING "|TInterface\\icons\\Trade_BlackSmithing:40:40:-14|t Изучить Кузнечное Дело."
-#define MSG_GOSSIP_TEXT_ENCNANTING "|TInterface\\icons\\Trade_Engraving:40:40:-14|t Изучить Наложение Чар."
-#define MSG_GOSSIP_TEXT_ENGINEERING "|TInterface\\icons\\Trade_Engineering:40:40:-14|t Изучить Инженерное дело."
-#define MSG_GOSSIP_TEXT_HERBALISM "|TInterface\\icons\\Trade_Herbalism:40:40:-14|t Изучить Травничество."
-#define MSG_GOSSIP_TEXT_INSCRIPTION "|TInterface\\icons\\INV_Inscription_Tradeskill01:40:40:-14|t Изучить Начертание."
-#define MSG_GOSSIP_TEXT_JEWELCRAFTING "|TInterface\\icons\\INV_Misc_Gem_02:40:40:-14|t Изучить Ювелирное дело."
-#define MSG_GOSSIP_TEXT_LEATHERWORKING "|TInterface\\icons\\Trade_LeatherWorking:40:40:-14|t Изучить Кожевничество."
-#define MSG_GOSSIP_TEXT_MINING "|TInterface\\icons\\Trade_Mining:40:40:-14|t Изучить Горное дело."
-#define MSG_GOSSIP_TEXT_SKINNING "|TInterface\\icons\\INV_Misc_Pelt_Wolf_01:40:40:-14|t Изучить Снятие шкур."
-#define MSG_GOSSIP_TEXT_TAILORING "|TInterface\\icons\\Trade_Tailoring:40:40:-14|t Изучить Портное дело."
+#define MSG_GOSSIP_TEXT_ALCHEMY "|TInterface\\icons\\Trade_Alchemy:40:40:-14|t ??????? ???????."
+#define MSG_GOSSIP_TEXT_BLACKSMITHING "|TInterface\\icons\\Trade_BlackSmithing:40:40:-14|t ??????? ????????? ????."
+#define MSG_GOSSIP_TEXT_ENCNANTING "|TInterface\\icons\\Trade_Engraving:40:40:-14|t ??????? ????????? ???."
+#define MSG_GOSSIP_TEXT_ENGINEERING "|TInterface\\icons\\Trade_Engineering:40:40:-14|t ??????? ?????????? ????."
+#define MSG_GOSSIP_TEXT_HERBALISM "|TInterface\\icons\\Trade_Herbalism:40:40:-14|t ??????? ????????????."
+#define MSG_GOSSIP_TEXT_INSCRIPTION "|TInterface\\icons\\INV_Inscription_Tradeskill01:40:40:-14|t ??????? ??????????."
+#define MSG_GOSSIP_TEXT_JEWELCRAFTING "|TInterface\\icons\\INV_Misc_Gem_02:40:40:-14|t ??????? ????????? ????."
+#define MSG_GOSSIP_TEXT_LEATHERWORKING "|TInterface\\icons\\Trade_LeatherWorking:40:40:-14|t ??????? ?????????????."
+#define MSG_GOSSIP_TEXT_MINING "|TInterface\\icons\\Trade_Mining:40:40:-14|t ??????? ?????? ????."
+#define MSG_GOSSIP_TEXT_SKINNING "|TInterface\\icons\\INV_Misc_Pelt_Wolf_01:40:40:-14|t ??????? ?????? ????."
+#define MSG_GOSSIP_TEXT_TAILORING "|TInterface\\icons\\Trade_Tailoring:40:40:-14|t ??????? ??????? ????."
 
-#define MSG_GOSSIP_TEXT_RIDING "Изучить Верховую Езду."
-#define MSG_GOSSIP_TEXT_COOKING	"|TInterface\\icons\\INV_Misc_Food_15:40:40:-14|t Изучить Кулинарию."
-#define MSG_GOSSIP_TEXT_FIRST_AID "|TInterface\\icons\\Spell_Holy_SealOfSacrifice:40:40:-14|t Изучить Первую помощь."
-#define MSG_GOSSIP_TEXT_FISHING	"Изучить Рыбную ловлю."
+#define MSG_GOSSIP_TEXT_COOKING	"|TInterface\\icons\\INV_Misc_Food_15:40:40:-14|t ??????? ?????????."
+#define MSG_GOSSIP_TEXT_FIRST_AID "|TInterface\\icons\\Spell_Holy_SealOfSacrifice:40:40:-14|t ??????? ?????? ??????."
+#define MSG_GOSSIP_TEXT_FISHING	"??????? ?????? ?????."
 
 #define CONST_HONOR_1  0//1000000
 #define CONST_HONOR_2 0 //100000
@@ -121,31 +191,26 @@
 #define CONST_ARENA_POINT_2  0//1000
 #define CONST_ARENA_POINT_3  0//3000
 #define CONST_ARENA_POINT_4  0//5000
-#define CONST_HONOR_23 29434 //предмет который будет стоить
-#define CONST_HONOR_233 1  //сколько надо штук
+#define CONST_HONOR_23 29434 //??????? ??????? ????? ??????
+#define CONST_HONOR_233 1  //??????? ???? ????
 
-enum Npcbuba
-{
-    NPC_buba = 777777,
-};
-
-class npc_buffer : public CreatureScript
+class npc_buffer2 : public CreatureScript
 {
 public:
-    npc_buffer() : CreatureScript("npc_buffer") { }
+    npc_buffer2() : CreatureScript("npc_buffer2") { }
 
-    struct npc_bufferAI : public ScriptedAI
+    struct npc_buffer2AI : public ScriptedAI
     {
-        npc_bufferAI(Creature* me) : ScriptedAI(me) { }
+        npc_buffer2AI(Creature* me) : ScriptedAI(me) { }
 
     void CompleteLearnProfession(Player *player, Creature* creature, SkillType skill)
     {
         if (PlayerAlreadyHasNineProfessions(player) && !IsSecondarySkill(skill))
-            creature->Whisper("Вы уже выучили 2 професии!", LANG_UNIVERSAL, player);
+            creature->Whisper("?? ??? ??????? 2 ????????!", LANG_UNIVERSAL, player);
         else
         {
             if (!LearnAllRecipesInProfession(player, skill))
-                creature->Whisper("Ошибка!", LANG_UNIVERSAL, player);
+                creature->Whisper("??????!", LANG_UNIVERSAL, player);
         }
     }
 
@@ -252,19 +317,19 @@ public:
     bool OnGossipHello(Player* player) override
     {
         me->Whisper(MSG_GOSSIP_TEXT_GETTING_STARTED, LANG_UNIVERSAL, player);
-        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_RIDING, GOSSIP_SENDER_MAIN, 35);
-        AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_HEALTH, GOSSIP_SENDER_MAIN, 33);
-        AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_SKILL, GOSSIP_SENDER_MAIN, 34);
+        AddGossipItemFor(player, MENU_ID_BETA, GOSSIP_OPTION_1, GOSSIP_SENDER_MAIN, 35);
+        AddGossipItemFor(player, MENU_ID_BETA, MENU_ID_BETA2, GOSSIP_SENDER_MAIN, 33);
+        AddGossipItemFor(player, MENU_ID_BETA, GOSSIP_OPTION_2, GOSSIP_SENDER_MAIN, 34);
         //AddGossipItemFor(player, NPC_buba, 0, GOSSIP_SENDER_MAIN, 2);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENU, GOSSIP_SENDER_MAIN, 2);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip1, GOSSIP_SENDER_MAIN, 13);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip2, GOSSIP_SENDER_MAIN, 22);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip333, GOSSIP_SENDER_MAIN, 32333);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip55, GOSSIP_SENDER_MAIN, 32355);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
+        AddGossipItemFor(player, MENU_ID_BETA, GOSSIP_OPTION_3, GOSSIP_SENDER_MAIN, 2);
+       // AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_MENUvip1, GOSSIP_SENDER_MAIN, 13);
+        //AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_MENUvip2, GOSSIP_SENDER_MAIN, 22);
+        //AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
+        //AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
+        //AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_MENUvip333, GOSSIP_SENDER_MAIN, 32333);
+        //AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
+        //AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_MENUvip55, GOSSIP_SENDER_MAIN, 32355);
+        AddGossipItemFor(player, MENU_ID_BETA, GOSSIP_OPTION_4, GOSSIP_SENDER_MAIN, 36);
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
         return true;
     }
@@ -286,21 +351,21 @@ public:
         }
         switch (action)
         {
-        case 2:
+            /* case 2:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_POWER_WORD, GOSSIP_SENDER_MAIN, 3);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_KINGS, GOSSIP_SENDER_MAIN, 4);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_MARK_OF_THE_WILD, GOSSIP_SENDER_MAIN, 5);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_ARCANE_BRILLIANCE, GOSSIP_SENDER_MAIN, 6);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_MIGHT, GOSSIP_SENDER_MAIN, 7);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_WISDOM, GOSSIP_SENDER_MAIN, 8);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_THORNS, GOSSIP_SENDER_MAIN, 9);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_DIVINE_SPIRIT, GOSSIP_SENDER_MAIN, 10);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_SHADOW_PROTECTION, GOSSIP_SENDER_MAIN, 11);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_STAMINA, GOSSIP_SENDER_MAIN, 12);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_POWER_WORD, GOSSIP_SENDER_MAIN, 3);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_KINGS, GOSSIP_SENDER_MAIN, 4);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_MARK_OF_THE_WILD, GOSSIP_SENDER_MAIN, 5);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_ARCANE_BRILLIANCE, GOSSIP_SENDER_MAIN, 6);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_MIGHT, GOSSIP_SENDER_MAIN, 7);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_WISDOM, GOSSIP_SENDER_MAIN, 8);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_THORNS, GOSSIP_SENDER_MAIN, 9);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_DIVINE_SPIRIT, GOSSIP_SENDER_MAIN, 10);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_SHADOW_PROTECTION, GOSSIP_SENDER_MAIN, 11);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_STAMINA, GOSSIP_SENDER_MAIN, 12);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-            break;
+            break;*/
         case 3:
             // ????????? ????????? (??????????)
             player->CastSpell(player, 69377, true);
@@ -350,18 +415,18 @@ public:
             player->CastSpell(player, 48102, true);
             CloseGossipMenuFor(player);
             break;
-        case 13:
+            /*  case 13:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_TEXT_SUPPER_BUFF_BERSERK, GOSSIP_SENDER_MAIN, 14);
-            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_RAGNAROS, GOSSIP_SENDER_MAIN, 15);
-            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_NELTHARION, GOSSIP_SENDER_MAIN, 16);
-            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_ADALS, GOSSIP_SENDER_MAIN, 17);
-            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_TEXT_SUPPER_BUFF_CRIT_SPELLS, GOSSIP_SENDER_MAIN, 18);
-            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_PINCHI, GOSSIP_SENDER_MAIN, 19);
-            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_TEXT_SUPPER_BUFF_TRANSPARENCY, GOSSIP_SENDER_MAIN, 20);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_SUPPER_BUFF_BERSERK, GOSSIP_SENDER_MAIN, 14);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_RAGNAROS, GOSSIP_SENDER_MAIN, 15);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_NELTHARION, GOSSIP_SENDER_MAIN, 16);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_ADALS, GOSSIP_SENDER_MAIN, 17);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_SUPPER_BUFF_CRIT_SPELLS, GOSSIP_SENDER_MAIN, 18);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_PINCHI, GOSSIP_SENDER_MAIN, 19);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_SUPPER_BUFF_TRANSPARENCY, GOSSIP_SENDER_MAIN, 20);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-            break;
+            break; */
         case 14:
             if (player->GetHonorPoints() < CONST_HONOR_1)
             {
@@ -453,19 +518,19 @@ public:
                 CloseGossipMenuFor(player);
         case 21:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_RIDING, GOSSIP_SENDER_MAIN, 35);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_HEALTH, GOSSIP_SENDER_MAIN, 33);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_SKILL, GOSSIP_SENDER_MAIN, 34);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENU, GOSSIP_SENDER_MAIN, 2);
+            AddGossipItemFor(player, MENU_ID_BETA,  GOSSIP_OPTION_1, GOSSIP_SENDER_MAIN, 35);
+            AddGossipItemFor(player, MENU_ID_BETA, MENU_ID_BETA2, GOSSIP_SENDER_MAIN, 33);
+            AddGossipItemFor(player, MENU_ID_BETA, GOSSIP_OPTION_2, GOSSIP_SENDER_MAIN, 34);
+            AddGossipItemFor(player, MENU_ID_BETA, GOSSIP_OPTION_3, GOSSIP_SENDER_MAIN, 2);
              //AddGossipItemFor(player, NPC_buba, 0, GOSSIP_SENDER_MAIN, 2);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip1, GOSSIP_SENDER_MAIN, 13);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip2, GOSSIP_SENDER_MAIN, 22);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip333, GOSSIP_SENDER_MAIN, 32333);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip55, GOSSIP_SENDER_MAIN, 32355);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
+           // AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_MENUvip1, GOSSIP_SENDER_MAIN, 13);
+            //AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_MENUvip2, GOSSIP_SENDER_MAIN, 22);
+            //AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
+            //AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
+            //AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_MENUvip333, GOSSIP_SENDER_MAIN, 32333);
+            //AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
+            //AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BUFF_MENUvip55, GOSSIP_SENDER_MAIN, 32355);
+            AddGossipItemFor(player, MENU_ID_BETA, GOSSIP_OPTION_4, GOSSIP_SENDER_MAIN, 36);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
         case 32355:
@@ -513,21 +578,21 @@ public:
                 return true;
             }
             break;
-        case 22333:
+            /* case 22333:
             player->PlayerTalkClass->ClearMenus();
-            //AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_JENKINS, GOSSIP_SENDER_MAIN, 23);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "1", GOSSIP_SENDER_MAIN, 22334);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "2", GOSSIP_SENDER_MAIN, 22335);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "3", GOSSIP_SENDER_MAIN, 22336);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "4", GOSSIP_SENDER_MAIN, 22337);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "5", GOSSIP_SENDER_MAIN, 22338);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "6", GOSSIP_SENDER_MAIN, 22339);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "7", GOSSIP_SENDER_MAIN, 22340);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "8", GOSSIP_SENDER_MAIN, 22341);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "9", GOSSIP_SENDER_MAIN, 22342);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            //AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_TITLES_JENKINS, GOSSIP_SENDER_MAIN, 23);
+            AddGossipItemFor(player, MENU_ID_BETA, "1", GOSSIP_SENDER_MAIN, 22334);
+            AddGossipItemFor(player, MENU_ID_BETA, "2", GOSSIP_SENDER_MAIN, 22335);
+            AddGossipItemFor(player, MENU_ID_BETA, "3", GOSSIP_SENDER_MAIN, 22336);
+            AddGossipItemFor(player, MENU_ID_BETA, "4", GOSSIP_SENDER_MAIN, 22337);
+            AddGossipItemFor(player, MENU_ID_BETA, "5", GOSSIP_SENDER_MAIN, 22338);
+            AddGossipItemFor(player, MENU_ID_BETA, "6", GOSSIP_SENDER_MAIN, 22339);
+            AddGossipItemFor(player, MENU_ID_BETA, "7", GOSSIP_SENDER_MAIN, 22340);
+            AddGossipItemFor(player, MENU_ID_BETA, "8", GOSSIP_SENDER_MAIN, 22341);
+            AddGossipItemFor(player, MENU_ID_BETA, "9", GOSSIP_SENDER_MAIN, 22342);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-            break;
+            break; */ 
         case 22334:
         {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(178);
         if (player->HasTitle(titleInfo))
@@ -709,43 +774,43 @@ public:
         }
         break;
 
-        case 2233:
+        /* case 2233:
             player->PlayerTalkClass->ClearMenus();
-            //AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_JENKINS, GOSSIP_SENDER_MAIN, 23);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Король Лич", GOSSIP_SENDER_MAIN, 711);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Огонек", GOSSIP_SENDER_MAIN, 712);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Лорд Каззак", GOSSIP_SENDER_MAIN, 713);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Леокк", GOSSIP_SENDER_MAIN, 714);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Таддиус", GOSSIP_SENDER_MAIN, 715);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Прелесть", GOSSIP_SENDER_MAIN, 716);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Паук", GOSSIP_SENDER_MAIN, 717);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сапфирон", GOSSIP_SENDER_MAIN, 718);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Нот Чумной", GOSSIP_SENDER_MAIN, 719);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Кель Тузед", GOSSIP_SENDER_MAIN, 720);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "КельТалас", GOSSIP_SENDER_MAIN, 721);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ктун", GOSSIP_SENDER_MAIN, 722);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Тралл", GOSSIP_SENDER_MAIN, 723);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сильвана", GOSSIP_SENDER_MAIN, 724);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Алекстраза(человек)", GOSSIP_SENDER_MAIN, 725);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Король Ринн", GOSSIP_SENDER_MAIN, 726);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Молганис", GOSSIP_SENDER_MAIN, 727);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Алекстраза(дракон)", GOSSIP_SENDER_MAIN, 728);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сакролаш", GOSSIP_SENDER_MAIN, 729);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
-            //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            //AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_TITLES_JENKINS, GOSSIP_SENDER_MAIN, 23);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????? ???", GOSSIP_SENDER_MAIN, 711);
+            AddGossipItemFor(player, MENU_ID_BETA, "??????", GOSSIP_SENDER_MAIN, 712);
+            AddGossipItemFor(player, MENU_ID_BETA, "???? ??????", GOSSIP_SENDER_MAIN, 713);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????", GOSSIP_SENDER_MAIN, 714);
+            AddGossipItemFor(player, MENU_ID_BETA, "???????", GOSSIP_SENDER_MAIN, 715);
+            AddGossipItemFor(player, MENU_ID_BETA, "????????", GOSSIP_SENDER_MAIN, 716);
+            AddGossipItemFor(player, MENU_ID_BETA, "????", GOSSIP_SENDER_MAIN, 717);
+            AddGossipItemFor(player, MENU_ID_BETA, "????????", GOSSIP_SENDER_MAIN, 718);
+            AddGossipItemFor(player, MENU_ID_BETA, "??? ??????", GOSSIP_SENDER_MAIN, 719);
+            AddGossipItemFor(player, MENU_ID_BETA, "???? ?????", GOSSIP_SENDER_MAIN, 720);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????????", GOSSIP_SENDER_MAIN, 721);
+            AddGossipItemFor(player, MENU_ID_BETA, "????", GOSSIP_SENDER_MAIN, 722);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????", GOSSIP_SENDER_MAIN, 723);
+            AddGossipItemFor(player, MENU_ID_BETA, "????????", GOSSIP_SENDER_MAIN, 724);
+            AddGossipItemFor(player, MENU_ID_BETA, "??????????(???????)", GOSSIP_SENDER_MAIN, 725);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????? ????", GOSSIP_SENDER_MAIN, 726);
+            AddGossipItemFor(player, MENU_ID_BETA, "????????", GOSSIP_SENDER_MAIN, 727);
+            AddGossipItemFor(player, MENU_ID_BETA, "??????????(??????)", GOSSIP_SENDER_MAIN, 728);
+            AddGossipItemFor(player, MENU_ID_BETA, "????????", GOSSIP_SENDER_MAIN, 729);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
+            //AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
-        case 22:
+               case 22:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_JENKINS, GOSSIP_SENDER_MAIN, 23);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_THE_LOVE_FOOL, GOSSIP_SENDER_MAIN, 24);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_MERRYMAKER, GOSSIP_SENDER_MAIN, 25);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_SCARAB_LORD, GOSSIP_SENDER_MAIN, 26);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_THE_NOBLE, GOSSIP_SENDER_MAIN, 27);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_OBSIDIAN_SLAYER, GOSSIP_SENDER_MAIN, 28);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_TITLES_JENKINS, GOSSIP_SENDER_MAIN, 23);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_TITLES_THE_LOVE_FOOL, GOSSIP_SENDER_MAIN, 24);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_TITLES_MERRYMAKER, GOSSIP_SENDER_MAIN, 25);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_TITLES_SCARAB_LORD, GOSSIP_SENDER_MAIN, 26);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_TITLES_THE_NOBLE, GOSSIP_SENDER_MAIN, 27);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_TITLES_OBSIDIAN_SLAYER, GOSSIP_SENDER_MAIN, 28);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-            break;
+            break;*/ 
        case 711: 
        if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
             {
@@ -1070,71 +1135,71 @@ public:
             CloseGossipMenuFor(player);
             }
             break; 
-            case 747:
+            /*    case 747:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Король Лич", GOSSIP_SENDER_MAIN, 711);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Огонек", GOSSIP_SENDER_MAIN, 712);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Лорд Каззак", GOSSIP_SENDER_MAIN, 713);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Леокк", GOSSIP_SENDER_MAIN, 714);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Таддиус", GOSSIP_SENDER_MAIN, 715);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Прелесть", GOSSIP_SENDER_MAIN, 716);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Паук", GOSSIP_SENDER_MAIN, 717);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сапфирон", GOSSIP_SENDER_MAIN, 718);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Нот Чумной", GOSSIP_SENDER_MAIN, 719);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Кель Тузед", GOSSIP_SENDER_MAIN, 720);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "КельТалас", GOSSIP_SENDER_MAIN, 721);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ктун", GOSSIP_SENDER_MAIN, 722);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Тралл", GOSSIP_SENDER_MAIN, 723);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сильвана", GOSSIP_SENDER_MAIN, 724);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Алекстраза(человек)", GOSSIP_SENDER_MAIN, 725);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Король Ринн", GOSSIP_SENDER_MAIN, 726);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Молганис", GOSSIP_SENDER_MAIN, 727);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Алекстраза(дракон)", GOSSIP_SENDER_MAIN, 728);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сакролаш", GOSSIP_SENDER_MAIN, 729);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????? ???", GOSSIP_SENDER_MAIN, 711);
+            AddGossipItemFor(player, MENU_ID_BETA, "??????", GOSSIP_SENDER_MAIN, 712);
+            AddGossipItemFor(player, MENU_ID_BETA, "???? ??????", GOSSIP_SENDER_MAIN, 713);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????", GOSSIP_SENDER_MAIN, 714);
+            AddGossipItemFor(player, MENU_ID_BETA, "???????", GOSSIP_SENDER_MAIN, 715);
+            AddGossipItemFor(player, MENU_ID_BETA, "????????", GOSSIP_SENDER_MAIN, 716);
+            AddGossipItemFor(player, MENU_ID_BETA, "????", GOSSIP_SENDER_MAIN, 717);
+            AddGossipItemFor(player, MENU_ID_BETA, "????????", GOSSIP_SENDER_MAIN, 718);
+            AddGossipItemFor(player, MENU_ID_BETA, "??? ??????", GOSSIP_SENDER_MAIN, 719);
+            AddGossipItemFor(player, MENU_ID_BETA, "???? ?????", GOSSIP_SENDER_MAIN, 720);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????????", GOSSIP_SENDER_MAIN, 721);
+            AddGossipItemFor(player, MENU_ID_BETA, "????", GOSSIP_SENDER_MAIN, 722);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????", GOSSIP_SENDER_MAIN, 723);
+            AddGossipItemFor(player, MENU_ID_BETA, "????????", GOSSIP_SENDER_MAIN, 724);
+            AddGossipItemFor(player, MENU_ID_BETA, "??????????(???????)", GOSSIP_SENDER_MAIN, 725);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????? ????", GOSSIP_SENDER_MAIN, 726);
+            AddGossipItemFor(player, MENU_ID_BETA, "????????", GOSSIP_SENDER_MAIN, 727);
+            AddGossipItemFor(player, MENU_ID_BETA, "??????????(??????)", GOSSIP_SENDER_MAIN, 728);
+            AddGossipItemFor(player, MENU_ID_BETA, "????????", GOSSIP_SENDER_MAIN, 729);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                  break;   
           case 748:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Утгард Воин", GOSSIP_SENDER_MAIN, 730);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Упырь", GOSSIP_SENDER_MAIN, 731);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Скелет", GOSSIP_SENDER_MAIN, 732);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Скелет 2", GOSSIP_SENDER_MAIN, 733);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Скелет 3", GOSSIP_SENDER_MAIN, 734);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Пудж", GOSSIP_SENDER_MAIN, 735);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Скелет 4", GOSSIP_SENDER_MAIN, 736);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Вестник Смерти", GOSSIP_SENDER_MAIN, 737);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Рыцарь Смерти", GOSSIP_SENDER_MAIN, 738);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Маг серебряного авангарда", GOSSIP_SENDER_MAIN, 739);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Голум", GOSSIP_SENDER_MAIN, 740);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Красный бес", GOSSIP_SENDER_MAIN, 741);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Древень", GOSSIP_SENDER_MAIN, 742);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Синий бес", GOSSIP_SENDER_MAIN, 743);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Огр", GOSSIP_SENDER_MAIN, 744);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Демон Голова", GOSSIP_SENDER_MAIN, 745);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Дреней Красные доспехи", GOSSIP_SENDER_MAIN, 746);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 749);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 747);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????? ????", GOSSIP_SENDER_MAIN, 730);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????", GOSSIP_SENDER_MAIN, 731);
+            AddGossipItemFor(player, MENU_ID_BETA, "??????", GOSSIP_SENDER_MAIN, 732);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????? 2", GOSSIP_SENDER_MAIN, 733);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????? 3", GOSSIP_SENDER_MAIN, 734);
+            AddGossipItemFor(player, MENU_ID_BETA, "????", GOSSIP_SENDER_MAIN, 735);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????? 4", GOSSIP_SENDER_MAIN, 736);
+            AddGossipItemFor(player, MENU_ID_BETA, "??????? ??????", GOSSIP_SENDER_MAIN, 737);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????? ??????", GOSSIP_SENDER_MAIN, 738);
+            AddGossipItemFor(player, MENU_ID_BETA, "??? ??????????? ?????????", GOSSIP_SENDER_MAIN, 739);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????", GOSSIP_SENDER_MAIN, 740);
+            AddGossipItemFor(player, MENU_ID_BETA, "??????? ???", GOSSIP_SENDER_MAIN, 741);
+            AddGossipItemFor(player, MENU_ID_BETA, "???????", GOSSIP_SENDER_MAIN, 742);
+            AddGossipItemFor(player, MENU_ID_BETA, "????? ???", GOSSIP_SENDER_MAIN, 743);
+            AddGossipItemFor(player, MENU_ID_BETA, "???", GOSSIP_SENDER_MAIN, 744);
+            AddGossipItemFor(player, MENU_ID_BETA, "????? ??????", GOSSIP_SENDER_MAIN, 745);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????? ??????? ???????", GOSSIP_SENDER_MAIN, 746);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 749);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 747);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                  break;
-                 case 749:
+            case 749:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Гидра", GOSSIP_SENDER_MAIN, 750);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Колосс", GOSSIP_SENDER_MAIN, 751);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Бес феолетовый", GOSSIP_SENDER_MAIN, 752);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Красный Орк", GOSSIP_SENDER_MAIN, 753);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Занзилл Чумной", GOSSIP_SENDER_MAIN, 754);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Волк", GOSSIP_SENDER_MAIN, 755);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Подобие Матери БТ", GOSSIP_SENDER_MAIN, 756);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Эльф Красные доспехи", GOSSIP_SENDER_MAIN, 757);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Злобень", GOSSIP_SENDER_MAIN, 758);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Призрак человека", GOSSIP_SENDER_MAIN, 759);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Мароуз", GOSSIP_SENDER_MAIN, 760);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Злобный призрак", GOSSIP_SENDER_MAIN, 761);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            AddGossipItemFor(player, MENU_ID_BETA, "?????", GOSSIP_SENDER_MAIN, 750);
+            AddGossipItemFor(player, MENU_ID_BETA, "??????", GOSSIP_SENDER_MAIN, 751);
+            AddGossipItemFor(player, MENU_ID_BETA, "??? ??????????", GOSSIP_SENDER_MAIN, 752);
+            AddGossipItemFor(player, MENU_ID_BETA, "??????? ???", GOSSIP_SENDER_MAIN, 753);
+            AddGossipItemFor(player, MENU_ID_BETA, "??????? ??????", GOSSIP_SENDER_MAIN, 754);
+            AddGossipItemFor(player, MENU_ID_BETA, "????", GOSSIP_SENDER_MAIN, 755);
+            AddGossipItemFor(player, MENU_ID_BETA, "??????? ?????? ??", GOSSIP_SENDER_MAIN, 756);
+            AddGossipItemFor(player, MENU_ID_BETA, "???? ??????? ???????", GOSSIP_SENDER_MAIN, 757);
+            AddGossipItemFor(player, MENU_ID_BETA, "???????", GOSSIP_SENDER_MAIN, 758);
+            AddGossipItemFor(player, MENU_ID_BETA, "??????? ????????", GOSSIP_SENDER_MAIN, 759);
+            AddGossipItemFor(player, MENU_ID_BETA, "??????", GOSSIP_SENDER_MAIN, 760);
+            AddGossipItemFor(player, MENU_ID_BETA, "??????? ???????", GOSSIP_SENDER_MAIN, 761);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-                 break;
+                 break;*/
                  case 750: 
        if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
             {
@@ -1365,14 +1430,14 @@ public:
         }
         }
         break;
-        case 29:
+        /*  case 29:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_RENAME, GOSSIP_SENDER_MAIN, 30);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_CUSTOM, GOSSIP_SENDER_MAIN, 31);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_CHANGE_FACTION, GOSSIP_SENDER_MAIN, 32);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_RENAME, GOSSIP_SENDER_MAIN, 30);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_CUSTOM, GOSSIP_SENDER_MAIN, 31);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_CHANGE_FACTION, GOSSIP_SENDER_MAIN, 32);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-            break;
+            break;*/
         case 30:
             if (player->GetArenaPoints() < CONST_ARENA_POINT_3)
             {
@@ -1432,23 +1497,23 @@ public:
             player->LearnSpell(33389, true);
             CloseGossipMenuFor(player);
             break;
-        case 36:
+        /*    case 36:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_ALCHEMY, GOSSIP_SENDER_MAIN, 37);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BLACKSMITHING, GOSSIP_SENDER_MAIN, 38);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_ENCNANTING, GOSSIP_SENDER_MAIN, 39);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_ENGINEERING, GOSSIP_SENDER_MAIN, 40);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_HERBALISM, GOSSIP_SENDER_MAIN, 41);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_INSCRIPTION, GOSSIP_SENDER_MAIN, 42);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_JEWELCRAFTING, GOSSIP_SENDER_MAIN, 43);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_LEATHERWORKING, GOSSIP_SENDER_MAIN, 44);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_MINING, GOSSIP_SENDER_MAIN, 45);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_SKINNING, GOSSIP_SENDER_MAIN, 46);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_TAILORING, GOSSIP_SENDER_MAIN, 47);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU, GOSSIP_SENDER_MAIN, 48);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_ALCHEMY, GOSSIP_SENDER_MAIN, 37);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_BLACKSMITHING, GOSSIP_SENDER_MAIN, 38);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_ENCNANTING, GOSSIP_SENDER_MAIN, 39);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_ENGINEERING, GOSSIP_SENDER_MAIN, 40);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_HERBALISM, GOSSIP_SENDER_MAIN, 41);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_INSCRIPTION, GOSSIP_SENDER_MAIN, 42);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_JEWELCRAFTING, GOSSIP_SENDER_MAIN, 43);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_LEATHERWORKING, GOSSIP_SENDER_MAIN, 44);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MINING, GOSSIP_SENDER_MAIN, 45);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_SKINNING, GOSSIP_SENDER_MAIN, 46);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_TAILORING, GOSSIP_SENDER_MAIN, 47);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU, GOSSIP_SENDER_MAIN, 48);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
            SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-            break;
+            break;*/
         case 37:
             CompleteLearnProfession(player, me, SKILL_ALCHEMY);
             player->AddItem(40772, 1);
@@ -1501,14 +1566,14 @@ public:
             player->AddItem(40772, 1);
             CloseGossipMenuFor(player);
             break;
-        case 48:
+        /*/   case 48:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_COOKING, GOSSIP_SENDER_MAIN, 49);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_FIRST_AID, GOSSIP_SENDER_MAIN, 50);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_FISHING, GOSSIP_SENDER_MAIN, 51);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_COOKING, GOSSIP_SENDER_MAIN, 49);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_FIRST_AID, GOSSIP_SENDER_MAIN, 50);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_FISHING, GOSSIP_SENDER_MAIN, 51);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-            break;
+            break;*/
         case 49:
             CompleteLearnProfession(player, me, SKILL_COOKING);
             CloseGossipMenuFor(player);
@@ -1521,19 +1586,19 @@ public:
             CompleteLearnProfession(player, me, SKILL_FISHING);
             CloseGossipMenuFor(player);
             break;
-        case 52:
+       /* case 52:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_GNOME_MALE, GOSSIP_SENDER_MAIN, 53);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_GNOME_FEMALE, GOSSIP_SENDER_MAIN, 54);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_HUMAN_MALE, GOSSIP_SENDER_MAIN, 55);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_HUMAN_FEMALE, GOSSIP_SENDER_MAIN, 56);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_MALE, GOSSIP_SENDER_MAIN, 57);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_MALE, GOSSIP_SENDER_MAIN, 58);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_TAUREN_MALE, GOSSIP_SENDER_MAIN, 59);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_TAUREN_FEMALE, GOSSIP_SENDER_MAIN, 50);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MORTH_GNOME_MALE, GOSSIP_SENDER_MAIN, 53);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MORTH_GNOME_FEMALE, GOSSIP_SENDER_MAIN, 54);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MORTH_HUMAN_MALE, GOSSIP_SENDER_MAIN, 55);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MORTH_HUMAN_FEMALE, GOSSIP_SENDER_MAIN, 56);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_MALE, GOSSIP_SENDER_MAIN, 57);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_MALE, GOSSIP_SENDER_MAIN, 58);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MORTH_TAUREN_MALE, GOSSIP_SENDER_MAIN, 59);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MORTH_TAUREN_FEMALE, GOSSIP_SENDER_MAIN, 50);
+            AddGossipItemFor(player, MENU_ID_BETA, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-            break;
+            break; */
         case 53:
             player->CastSpell(player, 37808, true);
             CloseGossipMenuFor(player);
@@ -1577,28 +1642,11 @@ public:
 
     CreatureAI* GetAI(Creature* me) const override
     {
-        return new npc_bufferAI(me);
+        return new npc_buffer2AI(me);
     }
 };
 
-class channel_factions : public PlayerScript
+void AddSC_npc_buffer2()
 {
-public:
-    channel_factions() : PlayerScript("channel_factions") {}
-
-    void OnChat(Player* player, uint32 /*type*/, uint32 /*lang*/, std::string& msg, Channel* channel)
-    {
-        if (!player || !channel)
-            return;
-
-        std::stringstream ssMsg;
-        ssMsg << ((player->GetTeam() == HORDE) ? "|TInterface\\PVPFrame\\PVP-Currency-Horde:18:18:0:-1|t" : "|TInterface\\PVPFrame\\PVP-Currency-Alliance:18:18:0:-1|t") << msg;
-        msg = ssMsg.str();
-    }
-};
-
-void AddSC_Resets()
-{
-    new npc_buffer();
-    new channel_factions();
+    new npc_buffer2();
 }
