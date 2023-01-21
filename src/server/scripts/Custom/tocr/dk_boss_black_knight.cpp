@@ -22,7 +22,7 @@
 #include "SpellAuraEffects.h"
 #include "SpellScript.h"
 #include "SpellMgr.h"
-#include "trial_of_the_champion.h"
+#include "dk_trial_of_the_champion.h"
 
 enum Yells
 {
@@ -106,14 +106,14 @@ enum Phases
     PHASE_GHOST             = 3
 };
 
-class npc_risen_ghoul : public CreatureScript
+class dk_npc_risen_ghoul : public CreatureScript
 {
 public:
-    npc_risen_ghoul() : CreatureScript("npc_risen_ghoul") { }
+    dk_npc_risen_ghoul() : CreatureScript("dk_npc_risen_ghoul") { }
 
-    struct npc_risen_ghoulAI : public ScriptedAI
+    struct dk_npc_risen_ghoulAI : public ScriptedAI
     {
-        npc_risen_ghoulAI(Creature* creature) : ScriptedAI(creature)
+        dk_npc_risen_ghoulAI(Creature* creature) : ScriptedAI(creature)
         {
             Initialize();
             instance = creature->GetInstanceScript();
@@ -239,18 +239,18 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfChampionAI<npc_risen_ghoulAI>(creature);
+        return GetTrialOfChampionAI<dk_npc_risen_ghoulAI>(creature);
     }
 };
 
-class boss_black_knight : public CreatureScript
+class dk_boss_black_knight : public CreatureScript
 {
 public:
-    boss_black_knight() : CreatureScript("boss_black_knight") { }
+    dk_boss_black_knight() : CreatureScript("dk_boss_black_knight") { }
 
-    struct boss_black_knightAI : public BossAI
+    struct dk_boss_black_knightAI : public BossAI
     {
-        boss_black_knightAI(Creature* creature) : BossAI(creature, DATA_BLACK_KNIGHT)
+        dk_boss_black_knightAI(Creature* creature) : BossAI(creature, DATA_BLACK_KNIGHT)
         {
             Initialize();
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -390,7 +390,7 @@ public:
                 {
                     Creature* ghoul = ObjectAccessor::GetCreature(*me, *itr);
                     if (ghoul && ghoul->IsAlive() && !ghoul->HasAura(SPELL_GHOUL_EXPLODE))
-                        ENSURE_AI(npc_risen_ghoul::npc_risen_ghoulAI, ghoul->AI())->DoExplode();
+                        ENSURE_AI(dk_npc_risen_ghoul::dk_npc_risen_ghoulAI, ghoul->AI())->DoExplode();
                 }
             }
         }
@@ -473,18 +473,18 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfChampionAI<boss_black_knightAI>(creature);
+        return GetTrialOfChampionAI<dk_boss_black_knightAI>(creature);
     }
 };
 
-class npc_black_knight_skeletal_gryphon : public CreatureScript
+class dk_npc_black_knight_skeletal_gryphon : public CreatureScript
 {
 public:
-    npc_black_knight_skeletal_gryphon() : CreatureScript("npc_black_knight_skeletal_gryphon") { }
+    dk_npc_black_knight_skeletal_gryphon() : CreatureScript("dk_npc_black_knight_skeletal_gryphon") { }
 
-    struct npc_black_knight_skeletal_gryphonAI : public EscortAI
+    struct dk_npc_black_knight_skeletal_gryphonAI : public EscortAI
     {
-        npc_black_knight_skeletal_gryphonAI(Creature* creature) : EscortAI(creature)
+        dk_npc_black_knight_skeletal_gryphonAI(Creature* creature) : EscortAI(creature)
         {
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             me->SetReactState(REACT_PASSIVE);
@@ -540,18 +540,18 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfChampionAI<npc_black_knight_skeletal_gryphonAI>(creature);
+        return GetTrialOfChampionAI<dk_npc_black_knight_skeletal_gryphonAI>(creature);
     }
 };
 
-class spell_black_knight_deaths_push : public SpellScriptLoader
+class dk_spell_black_knight_deaths_push : public SpellScriptLoader
 {
 public:
-    spell_black_knight_deaths_push() : SpellScriptLoader("spell_black_knight_deaths_push") { }
+    dk_spell_black_knight_deaths_push() : SpellScriptLoader("dk_spell_black_knight_deaths_push") { }
 
-    class spell_black_knight_deaths_push_AuraScript : public AuraScript
+    class dk_spell_black_knight_deaths_push_AuraScript : public AuraScript
     {
-        PrepareAuraScript(spell_black_knight_deaths_push_AuraScript);
+        PrepareAuraScript(dk_spell_black_knight_deaths_push_AuraScript);
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
@@ -572,24 +572,24 @@ public:
 
         void Register() override
         {
-            AfterEffectRemove += AuraEffectRemoveFn(spell_black_knight_deaths_push_AuraScript::HandleScript, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+            AfterEffectRemove += AuraEffectRemoveFn(dk_spell_black_knight_deaths_push_AuraScript::HandleScript, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
         }
     };
 
     AuraScript* GetAuraScript() const override
     {
-        return new spell_black_knight_deaths_push_AuraScript();
+        return new dk_spell_black_knight_deaths_push_AuraScript();
     }
 };
 
-class spell_black_knight_obliterate : public SpellScriptLoader
+class dk_spell_black_knight_obliterate : public SpellScriptLoader
 {
 public:
-    spell_black_knight_obliterate() : SpellScriptLoader("spell_black_knight_obliterate") { }
+    dk_spell_black_knight_obliterate() : SpellScriptLoader("dk_spell_black_knight_obliterate") { }
 
-    class spell_black_knight_obliterate_SpellScript : public SpellScript
+    class dk_spell_black_knight_obliterate_SpellScript : public SpellScript
     {
-        PrepareSpellScript(spell_black_knight_obliterate_SpellScript);
+        PrepareSpellScript(dk_spell_black_knight_obliterate_SpellScript);
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
@@ -625,24 +625,24 @@ public:
 
         void Register() override
         {
-            OnHit += SpellHitFn(spell_black_knight_obliterate_SpellScript::CalculateDamage);
+            OnHit += SpellHitFn(dk_spell_black_knight_obliterate_SpellScript::CalculateDamage);
         }
     };
 
     SpellScript* GetSpellScript() const override
     {
-        return new spell_black_knight_obliterate_SpellScript();
+        return new dk_spell_black_knight_obliterate_SpellScript();
     }
 };
 
-class spell_black_knight_army_of_the_dead : public SpellScriptLoader
+class dk_spell_black_knight_army_of_the_dead : public SpellScriptLoader
 {
 public:
-    spell_black_knight_army_of_the_dead() : SpellScriptLoader("spell_black_knight_army_of_the_dead") { }
+    dk_spell_black_knight_army_of_the_dead() : SpellScriptLoader("dk_spell_black_knight_army_of_the_dead") { }
 
-    class spell_black_knight_army_of_the_dead_AuraScript : public AuraScript
+    class dk_spell_black_knight_army_of_the_dead_AuraScript : public AuraScript
     {
-        PrepareAuraScript(spell_black_knight_army_of_the_dead_AuraScript);
+        PrepareAuraScript(dk_spell_black_knight_army_of_the_dead_AuraScript);
 
         void RemoveFlag(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
@@ -654,24 +654,24 @@ public:
 
         void Register() override
         {
-            AfterEffectRemove += AuraEffectRemoveFn(spell_black_knight_army_of_the_dead_AuraScript::RemoveFlag, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
+            AfterEffectRemove += AuraEffectRemoveFn(dk_spell_black_knight_army_of_the_dead_AuraScript::RemoveFlag, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
         }
     };
 
     AuraScript* GetAuraScript() const override
     {
-        return new spell_black_knight_army_of_the_dead_AuraScript();
+        return new dk_spell_black_knight_army_of_the_dead_AuraScript();
     }
 };
 
-class spell_black_knight_ghoul_explode : public SpellScriptLoader
+class dk_spell_black_knight_ghoul_explode : public SpellScriptLoader
 {
 public:
-    spell_black_knight_ghoul_explode() : SpellScriptLoader("spell_black_knight_ghoul_explode") { }
+    dk_spell_black_knight_ghoul_explode() : SpellScriptLoader("dk_spell_black_knight_ghoul_explode") { }
 
-    class spell_black_knight_ghoul_explode_AuraScript : public AuraScript
+    class dk_spell_black_knight_ghoul_explode_AuraScript : public AuraScript
     {
-        PrepareAuraScript(spell_black_knight_ghoul_explode_AuraScript);
+        PrepareAuraScript(dk_spell_black_knight_ghoul_explode_AuraScript);
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
@@ -688,40 +688,40 @@ public:
 
         void Register() override
         {
-            AfterEffectApply += AuraEffectApplyFn(spell_black_knight_ghoul_explode_AuraScript::CastExplode, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
+            AfterEffectApply += AuraEffectApplyFn(dk_spell_black_knight_ghoul_explode_AuraScript::CastExplode, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
         }
     };
 
     AuraScript* GetAuraScript() const override
     {
-        return new spell_black_knight_ghoul_explode_AuraScript();
+        return new dk_spell_black_knight_ghoul_explode_AuraScript();
     }
 };
 
 // Achievement id 3804 - I've Had Worse
-class achievement_ive_had_worse : public AchievementCriteriaScript
+class dk_achievement_ive_had_worse : public AchievementCriteriaScript
 {
 public:
-    achievement_ive_had_worse() : AchievementCriteriaScript("achievement_ive_had_worse") { }
+    dk_achievement_ive_had_worse() : AchievementCriteriaScript("dk_achievement_ive_had_worse") { }
 
     bool OnCheck(Player* /*player*/, Unit* target) override
     {
         if (target->GetEntry() != NPC_BLACK_KNIGHT)
             return false;
-        if (!ENSURE_AI(boss_black_knight::boss_black_knightAI, target->GetAI())->achievementCredit)
+        if (!ENSURE_AI(dk_boss_black_knight::dk_boss_black_knightAI, target->GetAI())->achievementCredit)
             return false;
         return true;
     }
 };
 
-void AddSC_boss_black_knight()
+void AddSC_dk_boss_black_knight()
 {
-    new boss_black_knight();
-    new npc_risen_ghoul();
-    new npc_black_knight_skeletal_gryphon();
-    new spell_black_knight_deaths_push();
-    new spell_black_knight_obliterate();
-    new spell_black_knight_army_of_the_dead();
-    new spell_black_knight_ghoul_explode();
-    new achievement_ive_had_worse();
+    new dk_boss_black_knight();
+    new dk_npc_risen_ghoul();
+    new dk_npc_black_knight_skeletal_gryphon();
+    new dk_spell_black_knight_deaths_push();
+    new dk_spell_black_knight_obliterate();
+    new dk_spell_black_knight_army_of_the_dead();
+    new dk_spell_black_knight_ghoul_explode();
+    new dk_achievement_ive_had_worse();
 }

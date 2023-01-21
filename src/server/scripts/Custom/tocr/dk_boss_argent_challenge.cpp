@@ -21,7 +21,7 @@
 #include "Log.h"
 #include "ScriptedCreature.h"
 #include "SpellScript.h"
-#include "trial_of_the_champion.h"
+#include "dk_trial_of_the_champion.h"
 
 enum Yells
 {
@@ -236,14 +236,14 @@ enum EadricData
     DATA_FACEROLLER_ACHIEVEMENT = 1
 };
 
-class boss_eadric : public CreatureScript
+class dk_boss_eadric : public CreatureScript
 {
 public:
-    boss_eadric() : CreatureScript("boss_eadric") { }
+    dk_boss_eadric() : CreatureScript("dk_boss_eadric") { }
 
-    struct boss_eadricAI : public argent_challenge_baseAI
+    struct dk_boss_eadricAI : public argent_challenge_baseAI
     {
-        boss_eadricAI(Creature* creature) : argent_challenge_baseAI(creature) { }
+        dk_boss_eadricAI(Creature* creature) : argent_challenge_baseAI(creature) { }
 
         void Initialize() override
         {
@@ -365,7 +365,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfChampionAI<boss_eadricAI>(creature);
+        return GetTrialOfChampionAI<dk_boss_eadricAI>(creature);
     }
 };
 
@@ -376,14 +376,14 @@ enum PaletressData
     ACTION_MEMORY_DEATH
 };
 
-class boss_paletress : public CreatureScript
+class dk_boss_paletress : public CreatureScript
 {
 public:
-    boss_paletress() : CreatureScript("boss_paletress") { }
+    dk_boss_paletress() : CreatureScript("dk_boss_paletress") { }
 
-    struct boss_paletressAI : public argent_challenge_baseAI
+    struct dk_boss_paletressAI : public argent_challenge_baseAI
     {
-        boss_paletressAI(Creature* creature) : argent_challenge_baseAI(creature) { }
+        dk_boss_paletressAI(Creature* creature) : argent_challenge_baseAI(creature) { }
 
         void Initialize() override
         {
@@ -564,18 +564,18 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfChampionAI<boss_paletressAI>(creature);
+        return GetTrialOfChampionAI<dk_boss_paletressAI>(creature);
     }
 };
 
-class npc_argent_soldier : public CreatureScript
+class dk_npc_argent_soldier : public CreatureScript
 {
 public:
-    npc_argent_soldier() : CreatureScript("npc_argent_soldier") { }
+    dk_npc_argent_soldier() : CreatureScript("dk_npc_argent_soldier") { }
 
-    struct npc_argent_soldierAI : public ScriptedAI
+    struct dk_npc_argent_soldierAI : public ScriptedAI
     {
-        npc_argent_soldierAI(Creature* creature) : ScriptedAI(creature)
+        dk_npc_argent_soldierAI(Creature* creature) : ScriptedAI(creature)
         {
             _instance = creature->GetInstanceScript();
             Initialize();
@@ -843,18 +843,18 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfChampionAI<npc_argent_soldierAI>(creature);
+        return GetTrialOfChampionAI<dk_npc_argent_soldierAI>(creature);
     }
 };
 
-class npc_fountain_of_light : public CreatureScript
+class dk_npc_fountain_of_light : public CreatureScript
 {
 public:
-    npc_fountain_of_light() : CreatureScript("npc_fountain_of_light") { }
+    dk_npc_fountain_of_light() : CreatureScript("dk_npc_fountain_of_light") { }
 
-    struct npc_fountain_of_lightAI : public NullCreatureAI
+    struct dk_npc_fountain_of_lightAI : public NullCreatureAI
     {
-        npc_fountain_of_lightAI(Creature* creature) : NullCreatureAI(creature)
+        dk_npc_fountain_of_lightAI(Creature* creature) : NullCreatureAI(creature)
         {
             me->SetReactState(REACT_PASSIVE);
         }
@@ -871,18 +871,18 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfChampionAI<npc_fountain_of_lightAI>(creature);
+        return GetTrialOfChampionAI<dk_npc_fountain_of_lightAI>(creature);
     }
 };
 
-class npc_memory : public CreatureScript
+class dk_npc_memory : public CreatureScript
 {
 public:
-    npc_memory() : CreatureScript("npc_memory") { }
+    dk_npc_memory() : CreatureScript("dk_npc_memory") { }
 
-    struct npc_memoryAI : public ScriptedAI
+    struct dk_npc_memoryAI : public ScriptedAI
     {
-        npc_memoryAI(Creature* creature) : ScriptedAI(creature)
+        dk_npc_memoryAI(Creature* creature) : ScriptedAI(creature)
         {
             Initialize();
             me->SetReactState(REACT_PASSIVE);
@@ -954,18 +954,18 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfChampionAI<npc_memoryAI>(creature);
+        return GetTrialOfChampionAI<dk_npc_memoryAI>(creature);
     }
 };
 
-class spell_eadric_hammer_of_righteous : public SpellScriptLoader
+class dk_spell_eadric_hammer_of_righteous : public SpellScriptLoader
 {
 public:
-    spell_eadric_hammer_of_righteous() : SpellScriptLoader("spell_eadric_hammer_of_righteous") { }
+    dk_spell_eadric_hammer_of_righteous() : SpellScriptLoader("dk_spell_eadric_hammer_of_righteous") { }
 
-    class spell_eadric_hammer_of_righteous_SpellScript : public SpellScript
+    class dk_spell_eadric_hammer_of_righteous_SpellScript : public SpellScript
     {
-        PrepareSpellScript(spell_eadric_hammer_of_righteous_SpellScript);
+        PrepareSpellScript(dk_spell_eadric_hammer_of_righteous_SpellScript);
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
@@ -989,24 +989,24 @@ public:
 
         void Register() override
         {
-            BeforeHit += BeforeSpellHitFn(spell_eadric_hammer_of_righteous_SpellScript::HandleDamage);
+            BeforeHit += BeforeSpellHitFn(dk_spell_eadric_hammer_of_righteous_SpellScript::HandleDamage);
         }
     };
 
     SpellScript* GetSpellScript() const override
     {
-        return new spell_eadric_hammer_of_righteous_SpellScript();
+        return new dk_spell_eadric_hammer_of_righteous_SpellScript();
     }
 };
 
-class spell_eadric_hammer_of_righteous_faceroller : public SpellScriptLoader
+class dk_spell_eadric_hammer_of_righteous_faceroller : public SpellScriptLoader
 {
 public:
-    spell_eadric_hammer_of_righteous_faceroller() : SpellScriptLoader("spell_eadric_hammer_of_righteous_faceroller") { }
+    dk_spell_eadric_hammer_of_righteous_faceroller() : SpellScriptLoader("dk_spell_eadric_hammer_of_righteous_faceroller") { }
 
-    class spell_eadric_hammer_of_righteous_faceroller_SpellScript : public SpellScript
+    class dk_spell_eadric_hammer_of_righteous_faceroller_SpellScript : public SpellScript
     {
-        PrepareSpellScript(spell_eadric_hammer_of_righteous_faceroller_SpellScript);
+        PrepareSpellScript(dk_spell_eadric_hammer_of_righteous_faceroller_SpellScript);
 
         bool Load() override
         {
@@ -1028,25 +1028,25 @@ public:
 
         void Register() override
         {
-            OnEffectHitTarget += SpellEffectFn(spell_eadric_hammer_of_righteous_faceroller_SpellScript::CheckHealth, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+            OnEffectHitTarget += SpellEffectFn(dk_spell_eadric_hammer_of_righteous_faceroller_SpellScript::CheckHealth, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
         }
     };
 
     SpellScript* GetSpellScript() const override
     {
-        return new spell_eadric_hammer_of_righteous_faceroller_SpellScript();
+        return new dk_spell_eadric_hammer_of_righteous_faceroller_SpellScript();
     }
 };
 
 
-class spell_eadric_radiance : public SpellScriptLoader
+class dk_spell_eadric_radiance : public SpellScriptLoader
 {
 public:
-    spell_eadric_radiance() : SpellScriptLoader("spell_eadric_radiance") { }
+    dk_spell_eadric_radiance() : SpellScriptLoader("dk_spell_eadric_radiance") { }
 
-    class spell_eadric_radiance_SpellScript : public SpellScript
+    class dk_spell_eadric_radiance_SpellScript : public SpellScript
     {
-        PrepareSpellScript(spell_eadric_radiance_SpellScript);
+        PrepareSpellScript(dk_spell_eadric_radiance_SpellScript);
 
         void FilterTargets(std::list<WorldObject*>& targets)
         {
@@ -1062,13 +1062,13 @@ public:
 
         void Register() override
         {
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_eadric_radiance_SpellScript::FilterTargets, EFFECT_ALL, TARGET_UNIT_SRC_AREA_ENEMY);
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(dk_spell_eadric_radiance_SpellScript::FilterTargets, EFFECT_ALL, TARGET_UNIT_SRC_AREA_ENEMY);
         }
     };
 
     SpellScript* GetSpellScript() const override
     {
-        return new spell_eadric_radiance_SpellScript();
+        return new dk_spell_eadric_radiance_SpellScript();
     }
 };
 
@@ -1102,14 +1102,14 @@ std::vector<uint32> const memorySpells =
 };
 
 // 66545 - Summon Memory
-class spell_paletress_summon_memory : public SpellScriptLoader
+class dk_spell_paletress_summon_memory : public SpellScriptLoader
 {
 public:
-    spell_paletress_summon_memory() : SpellScriptLoader("spell_paletress_summon_memory") { }
+    dk_spell_paletress_summon_memory() : SpellScriptLoader("dk_spell_paletress_summon_memory") { }
 
-    class spell_paletress_summon_memory_SpellScript : public SpellScript
+    class dk_spell_paletress_summon_memory_SpellScript : public SpellScript
     {
-        PrepareSpellScript(spell_paletress_summon_memory_SpellScript);
+        PrepareSpellScript(dk_spell_paletress_summon_memory_SpellScript);
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
@@ -1160,25 +1160,25 @@ public:
 
         void Register() override
         {
-            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_paletress_summon_memory_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
-            OnEffectHitTarget += SpellEffectFn(spell_paletress_summon_memory_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(dk_spell_paletress_summon_memory_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
+            OnEffectHitTarget += SpellEffectFn(dk_spell_paletress_summon_memory_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
         }
     };
 
     SpellScript* GetSpellScript() const override
     {
-        return new spell_paletress_summon_memory_SpellScript();
+        return new dk_spell_paletress_summon_memory_SpellScript();
     }
 };
 
-class spell_paletress_reflective_shield : public SpellScriptLoader
+class dk_spell_paletress_reflective_shield : public SpellScriptLoader
 {
 public:
-    spell_paletress_reflective_shield() : SpellScriptLoader("spell_paletress_reflective_shield") { }
+    dk_spell_paletress_reflective_shield() : SpellScriptLoader("dk_spell_paletress_reflective_shield") { }
 
-    class spell_paletress_reflective_shield_AuraScript : public AuraScript
+    class dk_spell_paletress_reflective_shield_AuraScript : public AuraScript
     {
-        PrepareAuraScript(spell_paletress_reflective_shield_AuraScript);
+        PrepareAuraScript(dk_spell_paletress_reflective_shield_AuraScript);
 
         bool Validate(SpellInfo const* /*spellInfo*/) override
         {
@@ -1198,21 +1198,21 @@ public:
 
         void Register() override
         {
-            AfterEffectAbsorb += AuraEffectAbsorbFn(spell_paletress_reflective_shield_AuraScript::HandleScript, EFFECT_0);
+            AfterEffectAbsorb += AuraEffectAbsorbFn(dk_spell_paletress_reflective_shield_AuraScript::HandleScript, EFFECT_0);
         }
     };
 
     AuraScript* GetAuraScript() const override
     {
-        return new spell_paletress_reflective_shield_AuraScript();
+        return new dk_spell_paletress_reflective_shield_AuraScript();
     }
 };
 
 template <uint32 Entry>
-class achievement_argent_confessor : public AchievementCriteriaScript
+class dk_achievement_argent_confessor : public AchievementCriteriaScript
 {
 public:
-    achievement_argent_confessor(char const* name) : AchievementCriteriaScript(name) { }
+    dk_achievement_argent_confessor(char const* name) : AchievementCriteriaScript(name) { }
 
     bool OnCheck(Player* /*source*/, Unit* target) override
     {
@@ -1223,10 +1223,10 @@ public:
     }
 };
 
-class achievement_eadric_faceroller : public AchievementCriteriaScript
+class dk_achievement_eadric_faceroller : public AchievementCriteriaScript
 {
 public:
-    achievement_eadric_faceroller() : AchievementCriteriaScript("achievement_eadric_faceroller") { }
+    dk_achievement_eadric_faceroller() : AchievementCriteriaScript("dk_achievement_eadric_faceroller") { }
 
     bool OnCheck(Player* /*source*/, Unit* target) override
     {
@@ -1237,47 +1237,42 @@ public:
     }
 };
 
-void AddSC_boss_argent_challenge()
+void AddSC_dk_boss_argent_challenge()
 {
-    new boss_eadric();
-    new boss_paletress();
-
-    new npc_argent_soldier();
-    new npc_fountain_of_light();
-    new npc_memory();
-
-    new spell_eadric_hammer_of_righteous();
-    new spell_eadric_hammer_of_righteous_faceroller();
-    new spell_eadric_radiance();
-
-    new spell_paletress_summon_memory();
-    new spell_paletress_reflective_shield();
-
-    new achievement_argent_confessor<NPC_MEMORY_HOGGER>("achievement_argent_confessor_hogger");
-    new achievement_argent_confessor<NPC_MEMORY_VANCLEEF>("achievement_argent_confessor_vancleef");
-    new achievement_argent_confessor<NPC_MEMORY_MUTANUS>("achievement_argent_confessor_mutanus");
-    new achievement_argent_confessor<NPC_MEMORY_HEROD>("achievement_argent_confessor_herod");
-    new achievement_argent_confessor<NPC_MEMORY_LUCIFRON>("achievement_argent_confessor_lucifron");
-    new achievement_argent_confessor<NPC_MEMORY_THUNDERAAN>("achievement_argent_confessor_thunderaan");
-    new achievement_argent_confessor<NPC_MEMORY_CHROMAGGUS>("achievement_argent_confessor_chromaggus");
-    new achievement_argent_confessor<NPC_MEMORY_HAKKAR>("achievement_argent_confessor_hakkar");
-    new achievement_argent_confessor<NPC_MEMORY_VEKNILASH>("achievement_argent_confessor_veknilash");
-    new achievement_argent_confessor<NPC_MEMORY_KALITHRESH>("achievement_argent_confessor_kalithresh");
-    new achievement_argent_confessor<NPC_MEMORY_MALCHEZAAR>("achievement_argent_confessor_malchezaar");
-    new achievement_argent_confessor<NPC_MEMORY_GRUUL>("achievement_argent_confessor_gruul");
-    new achievement_argent_confessor<NPC_MEMORY_VASHJ>("achievement_argent_confessor_vashj");
-    new achievement_argent_confessor<NPC_MEMORY_ARCHIMONDE>("achievement_argent_confessor_archimonde");
-    new achievement_argent_confessor<NPC_MEMORY_ILLIDAN>("achievement_argent_confessor_illidan");
-    new achievement_argent_confessor<NPC_MEMORY_DELRISSA>("achievement_argent_confessor_delrissa");
-    new achievement_argent_confessor<NPC_MEMORY_MURU>("achievement_argent_confessor_muru");
-    new achievement_argent_confessor<NPC_MEMORY_INGVAR>("achievement_argent_confessor_ingvar");
-    new achievement_argent_confessor<NPC_MEMORY_CYANIGOSA>("achievement_argent_confessor_cyanigosa");
-    new achievement_argent_confessor<NPC_MEMORY_ECK>("achievement_argent_confessor_eck");
-    new achievement_argent_confessor<NPC_MEMORY_ONYXIA>("achievement_argent_confessor_onyxia");
-    new achievement_argent_confessor<NPC_MEMORY_HEIGAN>("achievement_argent_confessor_heigan");
-    new achievement_argent_confessor<NPC_MEMORY_IGNIS>("achievement_argent_confessor_ignis");
-    new achievement_argent_confessor<NPC_MEMORY_VEZAX>("achievement_argent_confessor_vezax");
-    new achievement_argent_confessor<NPC_MEMORY_ALGALON>("achievement_argent_confessor_algalon");
-
-    new achievement_eadric_faceroller();
+    new dk_boss_eadric();
+    new dk_boss_paletress();
+    new dk_npc_argent_soldier();
+    new dk_npc_fountain_of_light();
+    new dk_npc_memory();
+    new dk_spell_eadric_hammer_of_righteous();
+    new dk_spell_eadric_hammer_of_righteous_faceroller();
+    new dk_spell_eadric_radiance();
+    new dk_spell_paletress_summon_memory();
+    new dk_spell_paletress_reflective_shield();
+    new dk_achievement_argent_confessor<NPC_MEMORY_HOGGER>("dk_achievement_argent_confessor_hogger");
+    new dk_achievement_argent_confessor<NPC_MEMORY_VANCLEEF>("dk_achievement_argent_confessor_vancleef");
+    new dk_achievement_argent_confessor<NPC_MEMORY_MUTANUS>("dk_achievement_argent_confessor_mutanus");
+    new dk_achievement_argent_confessor<NPC_MEMORY_HEROD>("dk_achievement_argent_confessor_herod");
+    new dk_achievement_argent_confessor<NPC_MEMORY_LUCIFRON>("dk_achievement_argent_confessor_lucifron");
+    new dk_achievement_argent_confessor<NPC_MEMORY_THUNDERAAN>("dk_achievement_argent_confessor_thunderaan");
+    new dk_achievement_argent_confessor<NPC_MEMORY_CHROMAGGUS>("dk_achievement_argent_confessor_chromaggus");
+    new dk_achievement_argent_confessor<NPC_MEMORY_HAKKAR>("dk_achievement_argent_confessor_hakkar");
+    new dk_achievement_argent_confessor<NPC_MEMORY_VEKNILASH>("dk_achievement_argent_confessor_veknilash");
+    new dk_achievement_argent_confessor<NPC_MEMORY_KALITHRESH>("dk_achievement_argent_confessor_kalithresh");
+    new dk_achievement_argent_confessor<NPC_MEMORY_MALCHEZAAR>("dk_achievement_argent_confessor_malchezaar");
+    new dk_achievement_argent_confessor<NPC_MEMORY_GRUUL>("dk_achievement_argent_confessor_gruul");
+    new dk_achievement_argent_confessor<NPC_MEMORY_VASHJ>("dk_achievement_argent_confessor_vashj");
+    new dk_achievement_argent_confessor<NPC_MEMORY_ARCHIMONDE>("dk_achievement_argent_confessor_archimonde");
+    new dk_achievement_argent_confessor<NPC_MEMORY_ILLIDAN>("dk_achievement_argent_confessor_illidan");
+    new dk_achievement_argent_confessor<NPC_MEMORY_DELRISSA>("dk_achievement_argent_confessor_delrissa");
+    new dk_achievement_argent_confessor<NPC_MEMORY_MURU>("dk_achievement_argent_confessor_muru");
+    new dk_achievement_argent_confessor<NPC_MEMORY_INGVAR>("dk_achievement_argent_confessor_ingvar");
+    new dk_achievement_argent_confessor<NPC_MEMORY_CYANIGOSA>("dk_achievement_argent_confessor_cyanigosa");
+    new dk_achievement_argent_confessor<NPC_MEMORY_ECK>("dk_achievement_argent_confessor_eck");
+    new dk_achievement_argent_confessor<NPC_MEMORY_ONYXIA>("dk_achievement_argent_confessor_onyxia");
+    new dk_achievement_argent_confessor<NPC_MEMORY_HEIGAN>("dk_achievement_argent_confessor_heigan");
+    new dk_achievement_argent_confessor<NPC_MEMORY_IGNIS>("dk_achievement_argent_confessor_ignis");
+    new dk_achievement_argent_confessor<NPC_MEMORY_VEZAX>("dk_achievement_argent_confessor_vezax");
+    new dk_achievement_argent_confessor<NPC_MEMORY_ALGALON>("dk_achievement_argent_confessor_algalon");
+    new dk_achievement_eadric_faceroller();
 }

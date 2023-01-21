@@ -21,7 +21,7 @@
 #include "Log.h"
 #include "ScriptedCreature.h"
 #include "ScriptMgr.h"
-#include "trial_of_the_champion.h"
+#include "dk_trial_of_the_champion.h"
 
 ObjectData const creatureData[] =
 {
@@ -58,14 +58,14 @@ DoorData const doorData[] =
 
 uint8 const GrandChampionsCount = 3;
 
-class instance_trial_of_the_champion : public InstanceMapScript
+class dk_instance_trial_of_the_champion : public InstanceMapScript
 {
     public:
-        instance_trial_of_the_champion() : InstanceMapScript(ToCScriptName, 650) { }
+        dk_instance_trial_of_the_champion() : InstanceMapScript(ToCScriptName, 650) { }
 
-        struct instance_trial_of_the_champion_InstanceMapScript : public InstanceScript
+        struct dk_instance_trial_of_the_champion_InstanceMapScript : public InstanceScript
         {
-            instance_trial_of_the_champion_InstanceMapScript(InstanceMap* map) : InstanceScript(map)
+            dk_instance_trial_of_the_champion_InstanceMapScript(InstanceMap* map) : InstanceScript(map)
             {
                 SetHeaders(DataHeader);
                 SetBossNumber(MAX_ENCOUNTER);
@@ -372,11 +372,11 @@ class instance_trial_of_the_champion : public InstanceMapScript
 
         InstanceScript* GetInstanceScript(InstanceMap* map) const override
         {
-            return new instance_trial_of_the_champion_InstanceMapScript(map);
+            return new dk_instance_trial_of_the_champion_InstanceMapScript(map);
         }
 };
 
-void AddSC_instance_trial_of_the_champion()
+void AddSC_dk_instance_trial_of_the_champion()
 {
-    new instance_trial_of_the_champion();
+    new dk_instance_trial_of_the_champion();
 }

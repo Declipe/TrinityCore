@@ -20,7 +20,7 @@
 
 #include "CreatureAIImpl.h"
 
-#define ToCScriptName "instance_trial_of_the_champion"
+#define ToCScriptName "dk_instance_trial_of_the_champion"
 #define DataHeader "TC"
 
 Position const LesserChampLoc[18] =

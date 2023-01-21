@@ -32,7 +32,7 @@
 #include "SpellAuraEffects.h"
 #include "SpellInfo.h"
 #include "SpellScript.h"
-#include "trial_of_the_champion.h"
+#include "dk_trial_of_the_champion.h"
 #include "TemporarySummon.h"
 
 enum Texts
@@ -289,14 +289,14 @@ GrandChampionInfo const GrandChampionData[5] =
     }
 };
 
-class npc_announcer_toc5 : public CreatureScript
+class dk_npc_announcer_toc5 : public CreatureScript
 {
     public:
-    npc_announcer_toc5() : CreatureScript("npc_announcer_toc5") { }
+        dk_npc_announcer_toc5() : CreatureScript("dk_npc_announcer_toc5") { }
 
-    struct npc_announcer_toc5AI : public ScriptedAI
+    struct dk_npc_announcer_toc5AI : public ScriptedAI
     {
-        npc_announcer_toc5AI(Creature* creature) : ScriptedAI(creature)
+        dk_npc_announcer_toc5AI(Creature* creature) : ScriptedAI(creature)
         {
             instance = creature->GetInstanceScript();
 
@@ -1392,11 +1392,11 @@ class npc_announcer_toc5 : public CreatureScript
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfChampionAI<npc_announcer_toc5AI>(creature);
+        return GetTrialOfChampionAI<dk_npc_announcer_toc5AI>(creature);
     }
 };
 
-void AddSC_trial_of_the_champion()
+void AddSC_dk_trial_of_the_champion()
 {
-    new npc_announcer_toc5();
+    new dk_npc_announcer_toc5();
 }
