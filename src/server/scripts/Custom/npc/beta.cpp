@@ -33,88 +33,6 @@
 #include "DatabaseEnvFwd.h"
 #include "Log.h"
 
-#define MSG_GOSSIP_TEXT_GETTING_STARTED	"Приветствуем вас на сервере"// OneGo - World of Warcraft !"
-
-#define MSG_ERR_HONOR "У вас не достаточно хонора для совершения покупки!"
-#define MSG_ERR_ARENA_POINT_1 "У вас не достаточно Апа!"
-#define MSG_ERR_TITLE "У данного персонажа уже есть такое звание!"
-#define MSG_ERR_INCOMBAT "Вы находитесь в бою. Чтобы использовать данного Npc выйдите из него."
-#define MSG_COMPLETE_RENAME "Оплата Успешно Произведена Сделайте Логаут и Введите Новое Имя Персонажа.Не Забудьте После Смены Имени,Выйти Из Игры и Удалить Из Клиента Папку Cache!"
-#define MSG_CUSTOMIZE_COMPLETE "Оплата Успешно Произведена Сделайте Логаут и Измените Внешность Персонажа.Не Забудьте После Смены Внешности,Выйти Из Игры и Удалить Из Клиента Папку Cache!"
-#define MSG_CHANGE_FACTION_COMPLETE "Оплата Успешно Произведена Сделайте Логаут и Измените Фракцию Персонажа.Не Забудьте После Смены Внешности,Выйти Из Игры и Удалить Из Клиента Папку Cache!"
-
-#define MSG_GOSSIP_TEXT_MAX_HEALTH "Вылечи меня!"
-#define MSG_GOSSIP_TEXT_MAX_SKILL "Выучить все навыки оружия и защиты."
-
-#define MSG_GOSSIP_TEXT_BUFF_POWER_WORD "[Бафнуть] Слово силы: Стойкость"
-#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_KINGS "[Бафнуть] Благословение Королей"
-#define MSG_GOSSIP_TEXT_BUFF_MARK_OF_THE_WILD "[Бафнуть] Знак дикой природы"
-#define MSG_GOSSIP_TEXT_BUFF_ARCANE_BRILLIANCE "[Бафнуть] Чародейская гениальность Даларана"
-#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_MIGHT "[Бафнуть] Великое Благословение могущества"
-#define MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_WISDOM "[Бафнуть] Благословение мудрости"
-#define MSG_GOSSIP_TEXT_BUFF_THORNS "[Бафнуть] Шипы"
-#define MSG_GOSSIP_TEXT_BUFF_DIVINE_SPIRIT "[Бафнуть] Божественный дух"
-#define MSG_GOSSIP_TEXT_BUFF_SHADOW_PROTECTION "[Бафнуть] Защита от темной магии"
-#define MSG_GOSSIP_TEXT_BUFF_STAMINA "[Бафнуть] Выносливость"
-
-#define MSG_GOSSIP_TEXT_BUFF_MENU "[Меню бафов] ->"
-#define MSG_GOSSIP_TEXT_BUFF_MENUvip1 "[Premium buff] ->"
-#define MSG_GOSSIP_TEXT_BUFF_MENUvip2 "[Title] ->"
-#define MSG_GOSSIP_TEXT_BUFF_MENUvip3 "[test] ->"
-#define MSG_GOSSIP_TEXT_BUFF_MENUvip33 "[titlestest] ->"
-#define MSG_GOSSIP_TEXT_BUFF_MENUvip333 "[sumki] ->"
-#define MSG_GOSSIP_TEXT_BUFF_MENUvip44 "[key] ->"
-#define MSG_GOSSIP_TEXT_BUFF_MENUvip55 "[kaput] ->"
-#define MSG_GOSSIP_TEXT_MAIN_MENU "<- [Вернутся в Главное меню]"
-#define MSG_GOSSIP_TEXT_PROFFESION_MENU "[Меню Профессий] ->"
-#define MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU "[Меню Второстепенных профессий] ->"
-#define MSG_GOSSIP_TEXT_NEXT_3 "[страница] ->"
-
-#define MSG_GOSSIP_TEXT_RENAME "Сменить Имя персонажа."
-#define MSG_GOSSIP_TEXT_CUSTOM "Сменить Внешность персонажа."
-#define MSG_GOSSIP_TEXT_CHANGE_FACTION "Сменить Фракцию персонажа."
-
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BERSERK "[Бафнуть] Берсерк."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_RAGNAROS "[Бафнуть] Эгида Рагнароса."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_NELTHARION "[Бафнуть] Защита Нелтариона."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_ADALS "[Бафнуть] Благословение А'далла."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_CRIT_SPELLS "[Бафнуть] Критическое срабатывание."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_PINCHI "[Бафнуть] Благословение мистера Пинчи."
-#define MSG_GOSSIP_TEXT_SUPPER_BUFF_TRANSPARENCY "[Бафнуть] Прозрачность."
-
-#define MSG_GOSSIP_TEXT_TITLES_JENKINS "Получить звание Дженкинс."
-#define MSG_GOSSIP_TEXT_TITLES_THE_LOVE_FOOL "Получить звание Безумно Влюбленный."
-#define MSG_GOSSIP_TEXT_TITLES_MERRYMAKER "Получить звание Весельчак."
-#define MSG_GOSSIP_TEXT_TITLES_SCARAB_LORD "Получить звание Повелитель Скоробеев."
-#define MSG_GOSSIP_TEXT_TITLES_THE_NOBLE "Получить звание Чудесный."
-#define MSG_GOSSIP_TEXT_TITLES_OBSIDIAN_SLAYER "Получить звание Покоритель Обсидианового святилища."
-
-#define MSG_GOSSIP_TEXT_MORTH_GNOME_MALE "[Превратить] Гном, мужчина."
-#define MSG_GOSSIP_TEXT_MORTH_GNOME_FEMALE "[Превратить] Гном, женщина."
-#define MSG_GOSSIP_TEXT_MORTH_HUMAN_FEMALE "[Превратить] Человек, женщина."
-#define MSG_GOSSIP_TEXT_MORTH_HUMAN_MALE "[Превратить] Человек, мужчина."
-#define MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_MALE "[Превратить] Эльф Крови, мужчина."
-#define MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_FEMALE "[Превратить] Эльф Крови, женщина."
-#define MSG_GOSSIP_TEXT_MORTH_TAUREN_MALE "[Превратить] Таурен, мужчина."
-#define MSG_GOSSIP_TEXT_MORTH_TAUREN_FEMALE "[Превратить] Таурен, женщина."
-
-#define MSG_GOSSIP_TEXT_ALCHEMY "|TInterface\\icons\\Trade_Alchemy:40:40:-14|t Изучить Алхимию."
-#define MSG_GOSSIP_TEXT_BLACKSMITHING "|TInterface\\icons\\Trade_BlackSmithing:40:40:-14|t Изучить Кузнечное Дело."
-#define MSG_GOSSIP_TEXT_ENCNANTING "|TInterface\\icons\\Trade_Engraving:40:40:-14|t Изучить Наложение Чар."
-#define MSG_GOSSIP_TEXT_ENGINEERING "|TInterface\\icons\\Trade_Engineering:40:40:-14|t Изучить Инженерное дело."
-#define MSG_GOSSIP_TEXT_HERBALISM "|TInterface\\icons\\Trade_Herbalism:40:40:-14|t Изучить Травничество."
-#define MSG_GOSSIP_TEXT_INSCRIPTION "|TInterface\\icons\\INV_Inscription_Tradeskill01:40:40:-14|t Изучить Начертание."
-#define MSG_GOSSIP_TEXT_JEWELCRAFTING "|TInterface\\icons\\INV_Misc_Gem_02:40:40:-14|t Изучить Ювелирное дело."
-#define MSG_GOSSIP_TEXT_LEATHERWORKING "|TInterface\\icons\\Trade_LeatherWorking:40:40:-14|t Изучить Кожевничество."
-#define MSG_GOSSIP_TEXT_MINING "|TInterface\\icons\\Trade_Mining:40:40:-14|t Изучить Горное дело."
-#define MSG_GOSSIP_TEXT_SKINNING "|TInterface\\icons\\INV_Misc_Pelt_Wolf_01:40:40:-14|t Изучить Снятие шкур."
-#define MSG_GOSSIP_TEXT_TAILORING "|TInterface\\icons\\Trade_Tailoring:40:40:-14|t Изучить Портное дело."
-
-#define MSG_GOSSIP_TEXT_RIDING "Изучить Верховую Езду."
-#define MSG_GOSSIP_TEXT_COOKING	"|TInterface\\icons\\INV_Misc_Food_15:40:40:-14|t Изучить Кулинарию."
-#define MSG_GOSSIP_TEXT_FIRST_AID "|TInterface\\icons\\Spell_Holy_SealOfSacrifice:40:40:-14|t Изучить Первую помощь."
-#define MSG_GOSSIP_TEXT_FISHING	"Изучить Рыбную ловлю."
-
 #define CONST_HONOR_1  0//1000000
 #define CONST_HONOR_2 0 //100000
 #define CONST_ARENA_POINT_1  0//500
@@ -123,11 +41,6 @@
 #define CONST_ARENA_POINT_4  0//5000
 #define CONST_HONOR_23 29434 //предмет который будет стоить
 #define CONST_HONOR_233 1  //сколько надо штук
-
-enum Npcbuba
-{
-    NPC_buba = 777777,
-};
 
 class npc_buffer : public CreatureScript
 {
@@ -251,20 +164,22 @@ public:
 
     bool OnGossipHello(Player* player) override
     {
-        me->Whisper(MSG_GOSSIP_TEXT_GETTING_STARTED, LANG_UNIVERSAL, player);
-        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_RIDING, GOSSIP_SENDER_MAIN, 35);
-        AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_HEALTH, GOSSIP_SENDER_MAIN, 33);
-        AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_SKILL, GOSSIP_SENDER_MAIN, 34);
-        //AddGossipItemFor(player, NPC_buba, 0, GOSSIP_SENDER_MAIN, 2);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENU, GOSSIP_SENDER_MAIN, 2);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip1, GOSSIP_SENDER_MAIN, 13);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip2, GOSSIP_SENDER_MAIN, 22);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip333, GOSSIP_SENDER_MAIN, 32333);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip55, GOSSIP_SENDER_MAIN, 32355);
-        AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
+        LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
+
+        me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_1, loc_idx), LANG_UNIVERSAL, player);
+        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_68, loc_idx), GOSSIP_SENDER_MAIN, 35);
+        AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_9, loc_idx), GOSSIP_SENDER_MAIN, 33);
+        AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_10, loc_idx), GOSSIP_SENDER_MAIN, 34);
+        //AddGossipItemFor(player, NPC_buba, 0, loc_idx), GOSSIP_SENDER_MAIN, 2);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_21, loc_idx), GOSSIP_SENDER_MAIN, 2);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_22, loc_idx), GOSSIP_SENDER_MAIN, 13);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_23, loc_idx), GOSSIP_SENDER_MAIN, 22);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_24, loc_idx), GOSSIP_SENDER_MAIN, 2233);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_25, loc_idx), GOSSIP_SENDER_MAIN, 22333);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_26, loc_idx), GOSSIP_SENDER_MAIN, 32333);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_27, loc_idx), GOSSIP_SENDER_MAIN, 32344);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_28, loc_idx), GOSSIP_SENDER_MAIN, 32355);
+        AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_30, loc_idx), GOSSIP_SENDER_MAIN, 36);
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
         return true;
     }
@@ -278,27 +193,30 @@ public:
 
     bool GossipSelect(Player* player, uint32 /*sender*/, uint32 action)
     {
+        LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
+
         if (!player->getAttackers().empty())
         {
-            me->Whisper(MSG_ERR_INCOMBAT, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_5, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return false;
         }
+
         switch (action)
         {
         case 2:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_POWER_WORD, GOSSIP_SENDER_MAIN, 3);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_KINGS, GOSSIP_SENDER_MAIN, 4);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_MARK_OF_THE_WILD, GOSSIP_SENDER_MAIN, 5);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_ARCANE_BRILLIANCE, GOSSIP_SENDER_MAIN, 6);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_MIGHT, GOSSIP_SENDER_MAIN, 7);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_BLESSING_OF_WISDOM, GOSSIP_SENDER_MAIN, 8);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_THORNS, GOSSIP_SENDER_MAIN, 9);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_DIVINE_SPIRIT, GOSSIP_SENDER_MAIN, 10);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_SHADOW_PROTECTION, GOSSIP_SENDER_MAIN, 11);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BUFF_STAMINA, GOSSIP_SENDER_MAIN, 12);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_11, loc_idx), GOSSIP_SENDER_MAIN, 3);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_12, loc_idx), GOSSIP_SENDER_MAIN, 4);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_13, loc_idx), GOSSIP_SENDER_MAIN, 5);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_14, loc_idx), GOSSIP_SENDER_MAIN, 6);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_15, loc_idx), GOSSIP_SENDER_MAIN, 7);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_16, loc_idx), GOSSIP_SENDER_MAIN, 8);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_17, loc_idx), GOSSIP_SENDER_MAIN, 9);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_18, loc_idx), GOSSIP_SENDER_MAIN, 10);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_19, loc_idx), GOSSIP_SENDER_MAIN, 11);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_20, loc_idx), GOSSIP_SENDER_MAIN, 12);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK,    sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_29, loc_idx), GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
         case 3:
@@ -352,20 +270,20 @@ public:
             break;
         case 13:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_TEXT_SUPPER_BUFF_BERSERK, GOSSIP_SENDER_MAIN, 14);
-            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_RAGNAROS, GOSSIP_SENDER_MAIN, 15);
-            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_TEXT_SUPPER_BUFF_AEGIS_OF_NELTHARION, GOSSIP_SENDER_MAIN, 16);
-            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_ADALS, GOSSIP_SENDER_MAIN, 17);
-            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_TEXT_SUPPER_BUFF_CRIT_SPELLS, GOSSIP_SENDER_MAIN, 18);
-            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_TEXT_SUPPER_BUFF_BLESSING_PINCHI, GOSSIP_SENDER_MAIN, 19);
-            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, MSG_GOSSIP_TEXT_SUPPER_BUFF_TRANSPARENCY, GOSSIP_SENDER_MAIN, 20);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_36, loc_idx), GOSSIP_SENDER_MAIN, 14);
+            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_37, loc_idx), GOSSIP_SENDER_MAIN, 15);
+            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_38, loc_idx), GOSSIP_SENDER_MAIN, 16);
+            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_39, loc_idx), GOSSIP_SENDER_MAIN, 17);
+            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_40, loc_idx), GOSSIP_SENDER_MAIN, 18);
+            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_41, loc_idx), GOSSIP_SENDER_MAIN, 19);
+            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_42, loc_idx), GOSSIP_SENDER_MAIN, 20);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_29, loc_idx), GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
         case 14:
             if (player->GetHonorPoints() < CONST_HONOR_1)
             {
-                me->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
+                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_2, loc_idx), LANG_UNIVERSAL, player);
                 CloseGossipMenuFor(player);
             }
             else{
@@ -378,7 +296,7 @@ public:
         case 15:
             if (player->GetHonorPoints() < CONST_HONOR_2)
             {
-                me->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
+                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_2, loc_idx), LANG_UNIVERSAL, player);
                 CloseGossipMenuFor(player);
             }
             else{
@@ -391,7 +309,7 @@ public:
         case 16:
             if (player->GetHonorPoints() < CONST_HONOR_2)
             {
-                me->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
+                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_2, loc_idx), LANG_UNIVERSAL, player);
                 CloseGossipMenuFor(player);
             }
             else{
@@ -404,7 +322,7 @@ public:
         case 17:
             if (player->GetHonorPoints() < CONST_HONOR_2)
             {
-                me->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
+                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_2, loc_idx), LANG_UNIVERSAL, player);
                 CloseGossipMenuFor(player);
             }
             else{
@@ -417,7 +335,7 @@ public:
         case 18:
             if (player->GetHonorPoints() < CONST_HONOR_2)
             {
-                me->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
+                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_2, loc_idx), LANG_UNIVERSAL, player);
                 CloseGossipMenuFor(player);
             }
             else{
@@ -430,7 +348,7 @@ public:
         case 19:
             if (player->GetHonorPoints() < CONST_HONOR_2)
             {
-                me->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
+                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_2, loc_idx), LANG_UNIVERSAL, player);
                 CloseGossipMenuFor(player);
             }
             else{
@@ -443,7 +361,7 @@ public:
         case 20:
             if (player->GetHonorPoints() < CONST_HONOR_2)
             {
-                me->Whisper(MSG_ERR_HONOR, LANG_UNIVERSAL, player);
+                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_2, loc_idx), LANG_UNIVERSAL, player);
                 CloseGossipMenuFor(player);
             }
             else{
@@ -453,19 +371,18 @@ public:
                 CloseGossipMenuFor(player);
         case 21:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_RIDING, GOSSIP_SENDER_MAIN, 35);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_HEALTH, GOSSIP_SENDER_MAIN, 33);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MAX_SKILL, GOSSIP_SENDER_MAIN, 34);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENU, GOSSIP_SENDER_MAIN, 2);
-             //AddGossipItemFor(player, NPC_buba, 0, GOSSIP_SENDER_MAIN, 2);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip1, GOSSIP_SENDER_MAIN, 13);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip2, GOSSIP_SENDER_MAIN, 22);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip3, GOSSIP_SENDER_MAIN, 2233);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip33, GOSSIP_SENDER_MAIN, 22333);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip333, GOSSIP_SENDER_MAIN, 32333);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip44, GOSSIP_SENDER_MAIN, 32344);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BUFF_MENUvip55, GOSSIP_SENDER_MAIN, 32355);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_MENU, GOSSIP_SENDER_MAIN, 36);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_68, loc_idx), GOSSIP_SENDER_MAIN, 35);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_9, loc_idx), GOSSIP_SENDER_MAIN, 33);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_10, loc_idx), GOSSIP_SENDER_MAIN, 34);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_21, loc_idx), GOSSIP_SENDER_MAIN, 2);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_22, loc_idx), GOSSIP_SENDER_MAIN, 13);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_23, loc_idx), GOSSIP_SENDER_MAIN, 22);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_24, loc_idx), GOSSIP_SENDER_MAIN, 2233);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_25, loc_idx), GOSSIP_SENDER_MAIN, 22333);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_26, loc_idx), GOSSIP_SENDER_MAIN, 32333);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_27, loc_idx), GOSSIP_SENDER_MAIN, 32344);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_28, loc_idx), GOSSIP_SENDER_MAIN, 32355);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_30, loc_idx), GOSSIP_SENDER_MAIN, 36);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
         case 32355:
@@ -515,29 +432,29 @@ public:
             break;
         case 22333:
             player->PlayerTalkClass->ClearMenus();
-            //AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_JENKINS, GOSSIP_SENDER_MAIN, 23);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "1", GOSSIP_SENDER_MAIN, 22334);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "2", GOSSIP_SENDER_MAIN, 22335);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "3", GOSSIP_SENDER_MAIN, 22336);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "4", GOSSIP_SENDER_MAIN, 22337);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "5", GOSSIP_SENDER_MAIN, 22338);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "6", GOSSIP_SENDER_MAIN, 22339);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "7", GOSSIP_SENDER_MAIN, 22340);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "8", GOSSIP_SENDER_MAIN, 22341);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "9", GOSSIP_SENDER_MAIN, 22342);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            //AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, LANG_GOSSIP_OPTION_43, loc_idx), GOSSIP_SENDER_MAIN, 23);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_72, loc_idx), GOSSIP_SENDER_MAIN, 22334);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_73, loc_idx), GOSSIP_SENDER_MAIN, 22335);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_74, loc_idx), GOSSIP_SENDER_MAIN, 22336);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_75, loc_idx), GOSSIP_SENDER_MAIN, 22337);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_76, loc_idx), GOSSIP_SENDER_MAIN, 22338);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_77, loc_idx), GOSSIP_SENDER_MAIN, 22339);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_78, loc_idx), GOSSIP_SENDER_MAIN, 22340);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_79, loc_idx), GOSSIP_SENDER_MAIN, 22341);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_80, loc_idx), GOSSIP_SENDER_MAIN, 22342);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_29, loc_idx), GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
         case 22334:
         {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(178);
         if (player->HasTitle(titleInfo))
         {
-            me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return false;
         }
         if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-            me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
         else {
@@ -552,12 +469,12 @@ public:
         {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(179);
         if (player->HasTitle(titleInfo))
         {
-            me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return false;
         }
         if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-            me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
         else {
@@ -572,12 +489,12 @@ public:
         {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(180);
         if (player->HasTitle(titleInfo))
         {
-            me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return false;
         }
         if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-            me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
         else {
@@ -592,12 +509,12 @@ public:
         {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(181);
         if (player->HasTitle(titleInfo))
         {
-            me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return false;
         }
         if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-            me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
         else {
@@ -612,12 +529,12 @@ public:
         {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(182);
         if (player->HasTitle(titleInfo))
         {
-            me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return false;
         }
         if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-            me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
         else {
@@ -632,12 +549,12 @@ public:
         {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(183);
         if (player->HasTitle(titleInfo))
         {
-            me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return false;
         }
         if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-            me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
         else {
@@ -652,12 +569,12 @@ public:
         {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(184);
         if (player->HasTitle(titleInfo))
         {
-            me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return false;
         }
         if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-            me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
         else {
@@ -672,12 +589,12 @@ public:
         {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(185);
         if (player->HasTitle(titleInfo))
         {
-            me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return false;
         }
         if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-            me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
         else {
@@ -692,12 +609,12 @@ public:
         {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(186);
         if (player->HasTitle(titleInfo))
         {
-            me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return false;
         }
         if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-            me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
         else {
@@ -711,39 +628,39 @@ public:
 
         case 2233:
             player->PlayerTalkClass->ClearMenus();
-            //AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_JENKINS, GOSSIP_SENDER_MAIN, 23);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Король Лич", GOSSIP_SENDER_MAIN, 711);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Огонек", GOSSIP_SENDER_MAIN, 712);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Лорд Каззак", GOSSIP_SENDER_MAIN, 713);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Леокк", GOSSIP_SENDER_MAIN, 714);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Таддиус", GOSSIP_SENDER_MAIN, 715);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Прелесть", GOSSIP_SENDER_MAIN, 716);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Паук", GOSSIP_SENDER_MAIN, 717);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сапфирон", GOSSIP_SENDER_MAIN, 718);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Нот Чумной", GOSSIP_SENDER_MAIN, 719);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Кель Тузед", GOSSIP_SENDER_MAIN, 720);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "КельТалас", GOSSIP_SENDER_MAIN, 721);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ктун", GOSSIP_SENDER_MAIN, 722);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Тралл", GOSSIP_SENDER_MAIN, 723);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сильвана", GOSSIP_SENDER_MAIN, 724);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Алекстраза(человек)", GOSSIP_SENDER_MAIN, 725);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Король Ринн", GOSSIP_SENDER_MAIN, 726);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Молганис", GOSSIP_SENDER_MAIN, 727);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Алекстраза(дракон)", GOSSIP_SENDER_MAIN, 728);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сакролаш", GOSSIP_SENDER_MAIN, 729);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
-            //AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            //AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, LANG_GOSSIP_OPTION_43, loc_idx), GOSSIP_SENDER_MAIN, 23);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_81, loc_idx), GOSSIP_SENDER_MAIN, 711);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_82, loc_idx), GOSSIP_SENDER_MAIN, 712);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_83, loc_idx), GOSSIP_SENDER_MAIN, 713);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_84, loc_idx), GOSSIP_SENDER_MAIN, 714);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_85, loc_idx), GOSSIP_SENDER_MAIN, 715);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_86, loc_idx), GOSSIP_SENDER_MAIN, 716);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_87, loc_idx), GOSSIP_SENDER_MAIN, 717);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_88, loc_idx), GOSSIP_SENDER_MAIN, 718);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_89, loc_idx), GOSSIP_SENDER_MAIN, 719);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_90, loc_idx), GOSSIP_SENDER_MAIN, 720);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_91, loc_idx), GOSSIP_SENDER_MAIN, 721);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_92, loc_idx), GOSSIP_SENDER_MAIN, 722);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_93, loc_idx), GOSSIP_SENDER_MAIN, 723);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_94, loc_idx), GOSSIP_SENDER_MAIN, 724);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_95, loc_idx), GOSSIP_SENDER_MAIN, 725);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_96, loc_idx), GOSSIP_SENDER_MAIN, 726);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_97, loc_idx), GOSSIP_SENDER_MAIN, 727);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_98, loc_idx), GOSSIP_SENDER_MAIN, 728);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_99, loc_idx), GOSSIP_SENDER_MAIN, 729);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_32, loc_idx), GOSSIP_SENDER_MAIN, 748);
+            //AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_29, loc_idx), GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
         case 22:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_JENKINS, GOSSIP_SENDER_MAIN, 23);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_THE_LOVE_FOOL, GOSSIP_SENDER_MAIN, 24);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_MERRYMAKER, GOSSIP_SENDER_MAIN, 25);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_SCARAB_LORD, GOSSIP_SENDER_MAIN, 26);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_THE_NOBLE, GOSSIP_SENDER_MAIN, 27);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_TITLES_OBSIDIAN_SLAYER, GOSSIP_SENDER_MAIN, 28);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_43, loc_idx), GOSSIP_SENDER_MAIN, 23);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_44, loc_idx), GOSSIP_SENDER_MAIN, 24);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_45, loc_idx), GOSSIP_SENDER_MAIN, 25);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_46, loc_idx), GOSSIP_SENDER_MAIN, 26);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_47, loc_idx), GOSSIP_SENDER_MAIN, 27);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_48, loc_idx), GOSSIP_SENDER_MAIN, 28);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_29, loc_idx), GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
        case 711: 
@@ -1072,67 +989,67 @@ public:
             break; 
             case 747:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Король Лич", GOSSIP_SENDER_MAIN, 711);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Огонек", GOSSIP_SENDER_MAIN, 712);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Лорд Каззак", GOSSIP_SENDER_MAIN, 713);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Леокк", GOSSIP_SENDER_MAIN, 714);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Таддиус", GOSSIP_SENDER_MAIN, 715);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Прелесть", GOSSIP_SENDER_MAIN, 716);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Паук", GOSSIP_SENDER_MAIN, 717);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сапфирон", GOSSIP_SENDER_MAIN, 718);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Нот Чумной", GOSSIP_SENDER_MAIN, 719);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Кель Тузед", GOSSIP_SENDER_MAIN, 720);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "КельТалас", GOSSIP_SENDER_MAIN, 721);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Ктун", GOSSIP_SENDER_MAIN, 722);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Тралл", GOSSIP_SENDER_MAIN, 723);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сильвана", GOSSIP_SENDER_MAIN, 724);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Алекстраза(человек)", GOSSIP_SENDER_MAIN, 725);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Король Ринн", GOSSIP_SENDER_MAIN, 726);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Молганис", GOSSIP_SENDER_MAIN, 727);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Алекстраза(дракон)", GOSSIP_SENDER_MAIN, 728);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Сакролаш", GOSSIP_SENDER_MAIN, 729);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_81, loc_idx), GOSSIP_SENDER_MAIN, 711);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_82, loc_idx), GOSSIP_SENDER_MAIN, 712);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_83, loc_idx), GOSSIP_SENDER_MAIN, 713);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_84, loc_idx), GOSSIP_SENDER_MAIN, 714);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_85, loc_idx), GOSSIP_SENDER_MAIN, 715);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_86, loc_idx), GOSSIP_SENDER_MAIN, 716);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_87, loc_idx), GOSSIP_SENDER_MAIN, 717);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_88, loc_idx), GOSSIP_SENDER_MAIN, 718);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_89, loc_idx), GOSSIP_SENDER_MAIN, 719);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_90, loc_idx), GOSSIP_SENDER_MAIN, 720);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_91, loc_idx), GOSSIP_SENDER_MAIN, 721);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_92, loc_idx), GOSSIP_SENDER_MAIN, 722);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_93, loc_idx), GOSSIP_SENDER_MAIN, 723);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_94, loc_idx), GOSSIP_SENDER_MAIN, 724);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_95, loc_idx), GOSSIP_SENDER_MAIN, 725);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_96, loc_idx), GOSSIP_SENDER_MAIN, 726);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_97, loc_idx), GOSSIP_SENDER_MAIN, 727);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_98, loc_idx), GOSSIP_SENDER_MAIN, 728);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_99, loc_idx), GOSSIP_SENDER_MAIN, 729);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_32, loc_idx), GOSSIP_SENDER_MAIN, 748);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                  break;   
           case 748:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Утгард Воин", GOSSIP_SENDER_MAIN, 730);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Упырь", GOSSIP_SENDER_MAIN, 731);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Скелет", GOSSIP_SENDER_MAIN, 732);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Скелет 2", GOSSIP_SENDER_MAIN, 733);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Скелет 3", GOSSIP_SENDER_MAIN, 734);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Пудж", GOSSIP_SENDER_MAIN, 735);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Скелет 4", GOSSIP_SENDER_MAIN, 736);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Вестник Смерти", GOSSIP_SENDER_MAIN, 737);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Рыцарь Смерти", GOSSIP_SENDER_MAIN, 738);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Маг серебряного авангарда", GOSSIP_SENDER_MAIN, 739);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Голум", GOSSIP_SENDER_MAIN, 740);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Красный бес", GOSSIP_SENDER_MAIN, 741);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Древень", GOSSIP_SENDER_MAIN, 742);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Синий бес", GOSSIP_SENDER_MAIN, 743);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Огр", GOSSIP_SENDER_MAIN, 744);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Демон Голова", GOSSIP_SENDER_MAIN, 745);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Дреней Красные доспехи", GOSSIP_SENDER_MAIN, 746);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 749);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 747);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_100, loc_idx), GOSSIP_SENDER_MAIN, 730);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_101, loc_idx), GOSSIP_SENDER_MAIN, 731);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_102, loc_idx), GOSSIP_SENDER_MAIN, 732);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_103, loc_idx), GOSSIP_SENDER_MAIN, 733);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_104, loc_idx), GOSSIP_SENDER_MAIN, 734);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_105, loc_idx), GOSSIP_SENDER_MAIN, 735);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_106, loc_idx), GOSSIP_SENDER_MAIN, 736);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_107, loc_idx), GOSSIP_SENDER_MAIN, 737);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_108, loc_idx), GOSSIP_SENDER_MAIN, 738);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_109, loc_idx), GOSSIP_SENDER_MAIN, 739);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_110, loc_idx), GOSSIP_SENDER_MAIN, 740);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_111, loc_idx), GOSSIP_SENDER_MAIN, 741);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_112, loc_idx), GOSSIP_SENDER_MAIN, 742);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_113, loc_idx), GOSSIP_SENDER_MAIN, 743);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_114, loc_idx), GOSSIP_SENDER_MAIN, 744);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_115, loc_idx), GOSSIP_SENDER_MAIN, 745);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_116, loc_idx), GOSSIP_SENDER_MAIN, 746);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_32, loc_idx), GOSSIP_SENDER_MAIN, 749);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_29, loc_idx), GOSSIP_SENDER_MAIN, 747);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                  break;
                  case 749:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Гидра", GOSSIP_SENDER_MAIN, 750);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Колосс", GOSSIP_SENDER_MAIN, 751);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Бес феолетовый", GOSSIP_SENDER_MAIN, 752);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Красный Орк", GOSSIP_SENDER_MAIN, 753);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Занзилл Чумной", GOSSIP_SENDER_MAIN, 754);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Волк", GOSSIP_SENDER_MAIN, 755);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Подобие Матери БТ", GOSSIP_SENDER_MAIN, 756);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Эльф Красные доспехи", GOSSIP_SENDER_MAIN, 757);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Злобень", GOSSIP_SENDER_MAIN, 758);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Призрак человека", GOSSIP_SENDER_MAIN, 759);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Мароуз", GOSSIP_SENDER_MAIN, 760);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, "Злобный призрак", GOSSIP_SENDER_MAIN, 761);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 748);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_117, loc_idx), GOSSIP_SENDER_MAIN, 750);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_118, loc_idx), GOSSIP_SENDER_MAIN, 751);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_119, loc_idx), GOSSIP_SENDER_MAIN, 752);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_120, loc_idx), GOSSIP_SENDER_MAIN, 753);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_121, loc_idx), GOSSIP_SENDER_MAIN, 754);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_122, loc_idx), GOSSIP_SENDER_MAIN, 755);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_123, loc_idx), GOSSIP_SENDER_MAIN, 756);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_124, loc_idx), GOSSIP_SENDER_MAIN, 757);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_125, loc_idx), GOSSIP_SENDER_MAIN, 758);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_126, loc_idx), GOSSIP_SENDER_MAIN, 759);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_127, loc_idx), GOSSIP_SENDER_MAIN, 760);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_128, loc_idx), GOSSIP_SENDER_MAIN, 761);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_32, loc_idx), GOSSIP_SENDER_MAIN, 748);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_29, loc_idx), GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                  break;
                  case 750: 
@@ -1247,13 +1164,13 @@ public:
         {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(143);
         if (player->HasTitle(titleInfo))
         {
-            me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return false;
         }
         if (player->GetArenaPoints() < CONST_ARENA_POINT_1)
         {
-            me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
         else{
@@ -1268,13 +1185,13 @@ public:
         {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(135);
         if (player->HasTitle(titleInfo))
         {
-            me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return false;
         }
         if (player->GetArenaPoints() < CONST_ARENA_POINT_1)
         {
-            me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
         else{
@@ -1289,12 +1206,12 @@ public:
         {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(134);
         if (player->HasTitle(titleInfo))
         {
-            me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return false;
         }
         if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-            me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
         else{
@@ -1309,12 +1226,12 @@ public:
         {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(46);
         if (player->HasTitle(titleInfo))
         {
-            me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return false;
         }
         if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-            me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
         else{
@@ -1329,12 +1246,12 @@ public:
         {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(155);
         if (player->HasTitle(titleInfo))
         {
-            me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return false;
         }
         if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-            me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
         else{
@@ -1349,12 +1266,12 @@ public:
         {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(139);
         if (player->HasTitle(titleInfo))
         {
-            me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return false;
         }
         if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-            me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+            me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
         else{
@@ -1367,51 +1284,51 @@ public:
         break;
         case 29:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_RENAME, GOSSIP_SENDER_MAIN, 30);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_CUSTOM, GOSSIP_SENDER_MAIN, 31);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_CHANGE_FACTION, GOSSIP_SENDER_MAIN, 32);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_33, loc_idx), GOSSIP_SENDER_MAIN, 30);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_34, loc_idx), GOSSIP_SENDER_MAIN, 31);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_35, loc_idx), GOSSIP_SENDER_MAIN, 32);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_29, loc_idx), GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
         case 30:
             if (player->GetArenaPoints() < CONST_ARENA_POINT_3)
             {
-                me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
                 CloseGossipMenuFor(player);
             }
             else{
                 // ?????? ??????
                 player->SetAtLoginFlag(AT_LOGIN_RENAME);
                 player->ModifyArenaPoints(-CONST_ARENA_POINT_3);
-                me->Whisper(MSG_COMPLETE_RENAME, LANG_UNIVERSAL, player);
+                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_6, loc_idx), LANG_UNIVERSAL, player);
                 CloseGossipMenuFor(player);
             }
             break;
         case 31:
             if (player->GetArenaPoints() < CONST_ARENA_POINT_3)
             {
-                me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
                 CloseGossipMenuFor(player);
             }
             else{
                 // ?????? ????? ?????????
                 player->SetAtLoginFlag(AT_LOGIN_CUSTOMIZE);
                 player->ModifyArenaPoints(-CONST_ARENA_POINT_3);
-                me->Whisper(MSG_CUSTOMIZE_COMPLETE, LANG_UNIVERSAL, player);
+                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_7, loc_idx), LANG_UNIVERSAL, player);
                 CloseGossipMenuFor(player);
             }
             break;
         case 32:
             if (player->GetArenaPoints() < CONST_ARENA_POINT_4)
             {
-                me->Whisper(MSG_ERR_ARENA_POINT_1, LANG_UNIVERSAL, player);
+                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
                 CloseGossipMenuFor(player);
             }
             else{
                 // ?????? ????? ?????????
                 player->SetAtLoginFlag(AT_LOGIN_CHANGE_FACTION);
                 player->ModifyArenaPoints(-CONST_ARENA_POINT_4);
-                me->Whisper(MSG_CHANGE_FACTION_COMPLETE, LANG_UNIVERSAL, player);
+                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_8, loc_idx), LANG_UNIVERSAL, player);
                 CloseGossipMenuFor(player);
             }
             break;
@@ -1434,19 +1351,19 @@ public:
             break;
         case 36:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_ALCHEMY, GOSSIP_SENDER_MAIN, 37);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_BLACKSMITHING, GOSSIP_SENDER_MAIN, 38);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_ENCNANTING, GOSSIP_SENDER_MAIN, 39);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_ENGINEERING, GOSSIP_SENDER_MAIN, 40);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_HERBALISM, GOSSIP_SENDER_MAIN, 41);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_INSCRIPTION, GOSSIP_SENDER_MAIN, 42);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_JEWELCRAFTING, GOSSIP_SENDER_MAIN, 43);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_LEATHERWORKING, GOSSIP_SENDER_MAIN, 44);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_MINING, GOSSIP_SENDER_MAIN, 45);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_SKINNING, GOSSIP_SENDER_MAIN, 46);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_TAILORING, GOSSIP_SENDER_MAIN, 47);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_PROFFESION_SECON_MENU, GOSSIP_SENDER_MAIN, 48);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_57, loc_idx), GOSSIP_SENDER_MAIN, 37);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_58, loc_idx), GOSSIP_SENDER_MAIN, 38);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_59, loc_idx), GOSSIP_SENDER_MAIN, 39);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_60, loc_idx), GOSSIP_SENDER_MAIN, 40);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_61, loc_idx), GOSSIP_SENDER_MAIN, 41);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_62, loc_idx), GOSSIP_SENDER_MAIN, 42);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_63, loc_idx), GOSSIP_SENDER_MAIN, 43);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_64, loc_idx), GOSSIP_SENDER_MAIN, 44);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_65, loc_idx), GOSSIP_SENDER_MAIN, 45);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_66, loc_idx), GOSSIP_SENDER_MAIN, 46);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_67, loc_idx), GOSSIP_SENDER_MAIN, 47);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_31, loc_idx), GOSSIP_SENDER_MAIN, 48);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_29, loc_idx), GOSSIP_SENDER_MAIN, 21);
            SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
         case 37:
@@ -1503,10 +1420,10 @@ public:
             break;
         case 48:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_COOKING, GOSSIP_SENDER_MAIN, 49);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_FIRST_AID, GOSSIP_SENDER_MAIN, 50);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_FISHING, GOSSIP_SENDER_MAIN, 51);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_69, loc_idx), GOSSIP_SENDER_MAIN, 49);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_70, loc_idx), GOSSIP_SENDER_MAIN, 50);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_71, loc_idx), GOSSIP_SENDER_MAIN, 51);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_29, loc_idx), GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
         case 49:
@@ -1523,15 +1440,15 @@ public:
             break;
         case 52:
             player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_GNOME_MALE, GOSSIP_SENDER_MAIN, 53);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_GNOME_FEMALE, GOSSIP_SENDER_MAIN, 54);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_HUMAN_MALE, GOSSIP_SENDER_MAIN, 55);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_HUMAN_FEMALE, GOSSIP_SENDER_MAIN, 56);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_MALE, GOSSIP_SENDER_MAIN, 57);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_BLOOD_ELF_MALE, GOSSIP_SENDER_MAIN, 58);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_TAUREN_MALE, GOSSIP_SENDER_MAIN, 59);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, MSG_GOSSIP_TEXT_MORTH_TAUREN_FEMALE, GOSSIP_SENDER_MAIN, 50);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_MAIN_MENU, GOSSIP_SENDER_MAIN, 21);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_49, loc_idx), GOSSIP_SENDER_MAIN, 53);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_50, loc_idx), GOSSIP_SENDER_MAIN, 54);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_52, loc_idx), GOSSIP_SENDER_MAIN, 55);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_51, loc_idx), GOSSIP_SENDER_MAIN, 56);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_53, loc_idx), GOSSIP_SENDER_MAIN, 57);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_53, loc_idx), GOSSIP_SENDER_MAIN, 58);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_55, loc_idx), GOSSIP_SENDER_MAIN, 59);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_56, loc_idx), GOSSIP_SENDER_MAIN, 50);
+            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_29, loc_idx), GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
         case 53:
