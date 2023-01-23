@@ -59,7 +59,6 @@ void AddSC_Mod_ItemUpgrade();
 void AddSC_Mod_AutoLearn();
 void AddSC_Transmogrification();
 void AddSC_mod_DefaultSpec();
-void AddSC_npc_buffer2();
 
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
@@ -111,5 +110,4 @@ void AddCustomScripts()
     AddSC_dk_boss_black_knight();
     AddSC_dk_instance_trial_of_the_champion();
     AddSC_dk_boss_argent_challenge();
-    AddSC_npc_buffer2();
 }
