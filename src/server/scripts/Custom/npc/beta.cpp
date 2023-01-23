@@ -1,4 +1,4 @@
-﻿#include "Config.h"
+#include "Config.h"
 #include "GuildMgr.h"
 #include "Player.h"
 #include "Battleground.h"
@@ -39,8 +39,8 @@
 #define CONST_ARENA_POINT_2  0//1000
 #define CONST_ARENA_POINT_3  0//3000
 #define CONST_ARENA_POINT_4  0//5000
-#define CONST_HONOR_23 29434 //предмет который будет стоить
-#define CONST_HONOR_233 1  //сколько надо штук
+#define CONST_HONOR_23 29434 //??????? ??????? ????? ??????
+#define CONST_HONOR_233 1  //??????? ???? ????
 
 class npc_buffer : public CreatureScript
 {
@@ -54,11 +54,11 @@ public:
     void CompleteLearnProfession(Player *player, Creature* creature, SkillType skill)
     {
         if (PlayerAlreadyHasNineProfessions(player) && !IsSecondarySkill(skill))
-            creature->Whisper("Вы уже выучили 2 професии!", LANG_UNIVERSAL, player);
+            creature->Whisper("2proff!", LANG_UNIVERSAL, player);
         else
         {
             if (!LearnAllRecipesInProfession(player, skill))
-                creature->Whisper("Ошибка!", LANG_UNIVERSAL, player);
+                creature->Whisper("Error!", LANG_UNIVERSAL, player);
         }
     }
 
@@ -664,7 +664,12 @@ public:
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
        case 711: 
-       if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+       if(/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+            {
+            me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+            CloseGossipMenuFor(player);
+            }
+            else
             {
             player->SetDisplayId(30721);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -673,7 +678,12 @@ public:
             }
             break;
        case 712: 
-            if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(12432);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -682,7 +692,12 @@ public:
             }
             break;
        case 713: 
-            if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(17887);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -691,7 +706,12 @@ public:
             }
             break;
        case 714: 
-           if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(20964);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -700,7 +720,12 @@ public:
             }
             break;
        case 715: 
-           if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(16137);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -709,7 +734,12 @@ public:
             }
             break;
        case 716: 
-           if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(16064);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -718,7 +748,12 @@ public:
             }
             break;
        case 717:
-           if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(15928);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -727,7 +762,12 @@ public:
             }
             break;
        case 718: 
-            if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(16033);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -736,7 +776,12 @@ public:
             }
             break;
        case 719:
-           if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(16590);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -745,7 +790,12 @@ public:
             }
             break;
        case 720: 
-            if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(15945);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -754,7 +804,12 @@ public:
             }
             break;
        case 721:
-       if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {       
             player->SetDisplayId(20023);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -763,7 +818,12 @@ public:
             }
             break;
        case 722:      
-       if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {    
             player->SetDisplayId(15786);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -772,7 +832,12 @@ public:
             }
             break;
        case 723:
-       if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(4527);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -781,7 +846,12 @@ public:
             }
             break;
        case 724:
-            if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(28213);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -790,7 +860,12 @@ public:
             }
             break;
         case 725:
-            if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+            {
+                me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                CloseGossipMenuFor(player);
+            }
+            else
             {
             player->SetDisplayId(28227);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true); 
@@ -799,7 +874,12 @@ public:
             }
             break;
        case 726:
-           if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(28127);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -808,7 +888,12 @@ public:
             }
             break;
        case 727:
-            if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(28220);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -817,7 +902,12 @@ public:
             }
             break;
        case 728:
-      if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(27569);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -826,7 +916,12 @@ public:
             }
             break;
        case 729:
-         if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(23177);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -835,7 +930,12 @@ public:
             }
             break;
             case 730: 
-         if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+                {
+                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
             {
             player->SetDisplayId(26623);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -844,7 +944,12 @@ public:
             }
             break; 
             case 731: 
-         if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+                {
+                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
             {
             player->SetDisplayId(25286);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -853,7 +958,12 @@ public:
             }
             break; 
             case 732: 
-         if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+                {
+                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
             {
             player->SetDisplayId(27511);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -862,7 +972,12 @@ public:
             }
             break; 
             case 733: 
-         if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+                {
+                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
             {
             player->SetDisplayId(27573);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -871,7 +986,12 @@ public:
             }
             break; 
             case 734: 
-         if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+                {
+                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
             {
             player->SetDisplayId(27537);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -880,7 +1000,12 @@ public:
             }
             break; 
             case 735: 
-         if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+                {
+                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
             {
             player->SetDisplayId(12818);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -889,7 +1014,12 @@ public:
             }
             break; 
             case 736: 
-         if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+                {
+                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
             {
             player->SetDisplayId(25241);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -898,7 +1028,12 @@ public:
             }
             break; 
             case 737: 
-         if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+                {
+                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
             {
             player->SetDisplayId(775);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -907,7 +1042,12 @@ public:
             }
             break; 
             case 738: 
-         if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+                {
+                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
             {
             player->SetDisplayId(29099);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -916,7 +1056,12 @@ public:
             }
             break; 
             case 739: 
-         if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+                {
+                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
             {
             player->SetDisplayId(29114);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -925,7 +1070,12 @@ public:
             }
             break; 
             case 740: 
-         if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+                {
+                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
             {
             player->SetDisplayId(11650);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -934,7 +1084,12 @@ public:
             }
             break; 
             case 741: 
-         if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+                {
+                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
             {
             player->SetDisplayId(17035);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -943,7 +1098,12 @@ public:
             }
             break; 
             case 742: 
-         if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+                {
+                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
             {
             player->SetDisplayId(6351);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -952,7 +1112,12 @@ public:
             }
             break; 
             case 743: 
-         if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+                {
+                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
             {
             player->SetDisplayId(18038);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -961,7 +1126,12 @@ public:
             }
             break; 
             case 744: 
-         if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+                {
+                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
             {
             player->SetDisplayId(18058);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -970,7 +1140,12 @@ public:
             }
             break; 
         case 745: 
-         if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+            {
+                me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                CloseGossipMenuFor(player);
+            }
+            else
             {
             player->SetDisplayId(18916);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -979,7 +1154,12 @@ public:
             }
             break; 
         case 746: 
-          if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+            {
+                me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                CloseGossipMenuFor(player);
+            }
+            else
             {
             player->SetDisplayId(17715);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -1053,7 +1233,12 @@ public:
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                  break;
                  case 750: 
-       if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+                     if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+                     {
+                         me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                         CloseGossipMenuFor(player);
+                     }
+                     else
             {
             player->SetDisplayId(18314);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -1062,7 +1247,12 @@ public:
             }
             break;
        case 751: 
-            if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(19687);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -1071,7 +1261,12 @@ public:
             }
             break;
        case 752: 
-            if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(17695);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -1080,7 +1275,12 @@ public:
             }
             break;
        case 753: 
-           if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(17052);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -1089,7 +1289,12 @@ public:
             }
             break;
        case 754: 
-           if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(22124);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -1098,7 +1303,12 @@ public:
             }
             break;
        case 755: 
-           if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(20046);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -1107,7 +1317,12 @@ public:
             }
             break;
        case 756:
-           if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(19586);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -1116,7 +1331,12 @@ public:
             }
             break;
        case 757: 
-            if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(22786);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -1125,7 +1345,12 @@ public:
             }
             break;
        case 758:
-           if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(22976);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -1134,7 +1359,12 @@ public:
             }
             break;
        case 759: 
-            if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {
             player->SetDisplayId(16042);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -1143,7 +1373,12 @@ public:
             }
             break;
        case 760:
-       if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {       
             player->SetDisplayId(16540);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
@@ -1152,7 +1387,12 @@ public:
             }
             break;
        case 761:      
-          if(player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233))
+           if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+           {
+               me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+               CloseGossipMenuFor(player);
+           }
+           else
             {    
             player->SetDisplayId(19329);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
