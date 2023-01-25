@@ -1023,7 +1023,7 @@ void WorldSession::SendFeatureSystemStatus()
 {
     WorldPackets::System::FeatureSystemStatus features;
     features.ComplaintStatus = COMPLAINT_ENABLED_WITH_AUTO_IGNORE;
-    features.VoiceEnabled = true;
+    features.VoiceEnabled = false;
     SendPacket(features.Write());
 }
 
