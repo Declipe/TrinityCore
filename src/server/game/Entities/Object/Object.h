@@ -351,7 +351,7 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
     public:
         virtual ~WorldObject();
 
-        virtual void Update(uint32 /*time_diff*/) { }
+        virtual void Update(uint32 diff);
 
         void AddToWorld() override;
         void RemoveFromWorld() override;

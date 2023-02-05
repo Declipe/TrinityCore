@@ -976,6 +976,11 @@ WorldObject::~WorldObject()
     }
 }
 
+void WorldObject::Update(uint32 diff)
+{
+    m_Events.Update(diff);
+}
+
 void WorldObject::SetIsStoredInWorldObjectGridContainer(bool on)
 {
     if (!IsInWorld())
@@ -1042,6 +1047,8 @@ void WorldObject::CleanupsBeforeDelete(bool /*finalCleanup*/)
 
     if (Transport* transport = GetTransport())
         transport->RemovePassenger(this);
+
+    m_Events.KillAllEvents(false);                      // non-delatable (currently cast spells) will not deleted now but it will deleted at call in Map::RemoveAllObjectsInRemoveList
 }
 
 void WorldObject::UpdatePositionData()
