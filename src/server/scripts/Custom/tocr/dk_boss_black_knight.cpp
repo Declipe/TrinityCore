@@ -1,5 +1,5 @@
 /*
- * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
+ * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -15,13 +15,22 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* ScriptData
+SDName: Boss Black Knight
+SD%Complete: 10%
+SDComment:
+SDCategory: Trial of the Champion
+EndScriptData */
+
+#include "Creature.h"
 #include "Player.h"
+#include "Unit.h"
+#include "InstanceScript.h"
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "ScriptedEscortAI.h"
-#include "SpellAuraEffects.h"
+#include "SpellInfo.h"
 #include "SpellScript.h"
-#include "SpellMgr.h"
 #include "dk_trial_of_the_champion.h"
 
 enum Yells
@@ -163,7 +172,7 @@ public:
                 Talk(urand(0, 2));
         }
 
-        void DamageTaken(Unit* /*attacker*/, uint32& damage, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
+        void DamageTaken(Unit* /*doneBy*/, uint32& /*damage*/, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
         {
             if (HealthBelowPct(31) && !doExplode)
             {
@@ -183,7 +192,7 @@ public:
 
         void JustDied(Unit* /*killer*/) override
         {
-            me->DespawnOrUnsummon(1s);
+            me->DespawnOrUnsummon(1s, 0s);
         }
 
         void KilledUnit(Unit* who) override
@@ -219,14 +228,14 @@ public:
                             AddThreat(target, 10.0f);
                             me->AI()->AttackStart(target);
                         }
-                        events.ScheduleEvent(EVENT_CLAW, 12s, 15s);
+                        events.ScheduleEvent(EVENT_CLAW, randtime(12s, 15s));
                         break;
                     case EVENT_LEAP:
                         if (me->GetEntry() == NPC_RISEN_ARELAS || me->GetEntry() == NPC_RISEN_JAEREN)
                         {
                             if (Unit* target = SelectTarget(SelectTargetMethod::Random, 1, 30.0f, true))
                                 DoCast(target, SPELL_LEAP);
-                            events.ScheduleEvent(EVENT_LEAP, 8s, 10s);
+                            events.ScheduleEvent(EVENT_LEAP, randtime(8s, 10s));
                         }
                         break;
                     default:
@@ -239,7 +248,7 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return GetTrialOfChampionAI<dk_npc_risen_ghoulAI>(creature);
+        return new dk_npc_risen_ghoulAI(creature);
     }
 };
 
@@ -302,9 +311,9 @@ public:
                     if (Creature* announcer = instance->GetCreature(DATA_ANNOUNCER))
                     {
                         if (announcer->GetEntry() == NPC_JAEREN)
-                            announcer->CastSpell(me->GetVictim(), SPELL_RAISE_JAEREN, false);
+                            announcer->CastSpell(me->GetVictim(), SPELL_RAISE_JAEREN);
                         else
-                            announcer->CastSpell(me->GetVictim(), SPELL_RAISE_ARELAS, false);
+                            announcer->CastSpell(me->GetVictim(), SPELL_RAISE_ARELAS);
                     }
                 }
                 else
@@ -327,7 +336,7 @@ public:
                 achievementCredit = false;
         }
 
-        void SpellHit(WorldObject* /*caster*/, SpellInfo const* spellInfo) override
+        void SpellHit(WorldObject* /*target*/, SpellInfo const* spellInfo) override
         {
             if (spellInfo->Id == SPELL_BLACK_KNIGHT_RES)
             {
@@ -376,7 +385,12 @@ public:
             summon->AI()->AttackStart(me->GetVictim());
         }
 
-        void DamageTaken(Unit* /*attacker*/, uint32& damage, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
+        void SummonedCreatureDespawn(Creature* summon) override
+        {
+            summons.Despawn(summon);
+        }
+
+        void DamageTaken(Unit* /*doneBy*/, uint32& damage, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
         {
             if (damage >= me->GetHealth() && uiPhase < PHASE_GHOST)
             {
@@ -406,7 +420,7 @@ public:
         {
             LoadEvents();
             Talk(SAY_AGGRO, who);
-            _JustEngagedWith(who);
+            BossAI::JustEngagedWith(who);
         }
 
         void KilledUnit(Unit* who) override
@@ -438,21 +452,21 @@ public:
                         break;
                     case EVENT_OBLITERATE:
                         DoCastVictim(SPELL_OBLITERATE);
-                        events.ScheduleEvent(EVENT_ICY_TOUCH, 5s, 8s);
+                        events.ScheduleEvent(EVENT_ICY_TOUCH, randtime(5s, 8s));
                         break;
                     case EVENT_DEATH_RESPITE:
                         // TODO: fixing this later
                         if (Unit* target = SelectTarget(SelectTargetMethod::Random, 1, 50.0f, true))
                             DoCast(target, SPELL_DEATH_RESPITE);
-                        events.ScheduleEvent(EVENT_DEATH_RESPITE, 15s, 16s);
+                        events.ScheduleEvent(EVENT_DEATH_RESPITE, randtime(15s, 16s));
                         break;
                     case EVENT_DESECRATION:
                         DoCastVictim(SPELL_DESECRATION);
-                        events.ScheduleEvent(EVENT_DESECRATION, 15s, 16s);
+                        events.ScheduleEvent(EVENT_DESECRATION, randtime(15s, 16s));
                         break;
                     case EVENT_GHOUL_EXPLODE:
                         DoCastAOE(SPELL_GHOUL_EXPLODE);
-                        events.ScheduleEvent(EVENT_GHOUL_EXPLODE, 15s, 16s);
+                        events.ScheduleEvent(EVENT_GHOUL_EXPLODE, randtime(15s, 16s));
                         break;
                     case EVENT_DEATH_BITE:
                         DoCastAOE(SPELL_DEATH_BITE);
@@ -461,7 +475,7 @@ public:
                     case EVENT_MARKED_DEATH:
                         if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 50.0f))
                             DoCast(target, SPELL_MARKED_DEATH);
-                        events.ScheduleEvent(EVENT_MARKED_DEATH, 13s, 15s);
+                        events.ScheduleEvent(EVENT_MARKED_DEATH, randtime(13s, 15s));
                         break;
                     default:
                         break;
@@ -503,6 +517,32 @@ public:
         {
             if (uiType == 1)
             {
+                // Black Knight is flying towards arena
+                AddWaypoint(0, 766.99f, 657.16f, 457.43f);
+                AddWaypoint(1, 747.28f, 659.71f, 440.49f);
+                AddWaypoint(2, 730.03f, 639.59f, 428.16f);
+                AddWaypoint(3, 721.13f, 621.49f, 423.16f);
+                AddWaypoint(4, 731.72f, 599.81f, 421.99f);
+                AddWaypoint(5, 753.71f, 591.09f, 420.63f);
+                AddWaypoint(6, 776.53f, 597.52f, 418.05f);
+                AddWaypoint(7, 787.38f, 617.07f, 417.49f);
+                AddWaypoint(8, 777.06f, 636.98f, 416.57f);
+                AddWaypoint(9, 760.6f, 642.12f, 414.71f);
+                AddWaypoint(10, 752.58f, 632.35f, 411.63f);
+                // The vehicle starts flying away
+                AddWaypoint(11, 748.89f, 633.61f, 415.24f);
+                AddWaypoint(12, 740.42f, 636.31f, 418.32f);
+                AddWaypoint(13, 727.49f, 637.4f, 422.24f);
+                AddWaypoint(14, 716.59f, 617.99f, 422.24f);
+                AddWaypoint(15, 727.18f, 599.29f, 422.24f);
+                AddWaypoint(16, 746.63f, 587.77f, 422.24f);
+                AddWaypoint(17, 765.6f, 599.52f, 422.24f);
+                AddWaypoint(18, 777.01f, 618.79f, 422.24f);
+                AddWaypoint(19, 761.84f, 642.18f, 422.24f);
+                AddWaypoint(20, 746.09f, 670.33f, 429.68f);
+                AddWaypoint(21, 748.02f, 728.22f, 466.68f);
+                AddWaypoint(22, 779.44f, 797.49f, 477.79f);
+                AddWaypoint(23, 859.14f, 807.98f, 477.79f);
                 Start(false, true);
             }
             else if (uiType == 2)
@@ -546,172 +586,173 @@ public:
 
 class dk_spell_black_knight_deaths_push : public SpellScriptLoader
 {
-public:
-    dk_spell_black_knight_deaths_push() : SpellScriptLoader("dk_spell_black_knight_deaths_push") { }
+    public:
+        dk_spell_black_knight_deaths_push() : SpellScriptLoader("dk_spell_black_knight_deaths_push") { }
 
-    class dk_spell_black_knight_deaths_push_AuraScript : public AuraScript
-    {
-        PrepareAuraScript(dk_spell_black_knight_deaths_push_AuraScript);
-
-        bool Validate(SpellInfo const* /*spellInfo*/) override
+        class dk_spell_black_knight_deaths_push_AuraScript : public AuraScript
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_DEATH_RESPITE_DND) ||
-                !sSpellMgr->GetSpellInfo(SPELL_FEIGN_DEATH))
-                return false;
-            return true;
-        }
+            PrepareAuraScript(dk_spell_black_knight_deaths_push_AuraScript);
 
-        void HandleScript(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            bool Validate(SpellInfo const* /*spellInfo*/) override
+            {
+                return ValidateSpellInfo({ SPELL_DEATH_RESPITE_DND, SPELL_FEIGN_DEATH });
+            }
+
+            void HandleScript(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                // The spell applies a dummy aura with short duration
+                // when the dummy aura is removed, announcer 'dies'
+                GetTarget()->RemoveAura(SPELL_DEATH_RESPITE_DND);
+                GetTarget()->CastSpell(GetTarget(), SPELL_FEIGN_DEATH, true);
+                GetTarget()->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNINTERACTIBLE);
+            }
+
+            void Register() override
+            {
+                AfterEffectRemove += AuraEffectRemoveFn(dk_spell_black_knight_deaths_push_AuraScript::HandleScript, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+            }
+        };
+
+        AuraScript* GetAuraScript() const override
         {
-            // The spell applies a dummy aura with short duration
-            // when the dummy aura is removed, announcer 'dies'
-            GetTarget()->RemoveAura(SPELL_DEATH_RESPITE_DND);
-            GetTarget()->CastSpell(GetTarget(), SPELL_FEIGN_DEATH, true);
-            GetTarget()->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNINTERACTIBLE);
+            return new dk_spell_black_knight_deaths_push_AuraScript();
         }
-
-        void Register() override
-        {
-            AfterEffectRemove += AuraEffectRemoveFn(dk_spell_black_knight_deaths_push_AuraScript::HandleScript, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-        }
-    };
-
-    AuraScript* GetAuraScript() const override
-    {
-        return new dk_spell_black_knight_deaths_push_AuraScript();
-    }
 };
 
 class dk_spell_black_knight_obliterate : public SpellScriptLoader
 {
-public:
-    dk_spell_black_knight_obliterate() : SpellScriptLoader("dk_spell_black_knight_obliterate") { }
+    public:
+        dk_spell_black_knight_obliterate() : SpellScriptLoader("dk_spell_black_knight_obliterate") { }
 
-    class dk_spell_black_knight_obliterate_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(dk_spell_black_knight_obliterate_SpellScript);
-
-        bool Validate(SpellInfo const* /*spellInfo*/) override
+        class dk_spell_black_knight_obliterate_SpellScript : public SpellScript
         {
-            if (!sSpellMgr->GetSpellInfo(SPELL_BLOOD_PLAGUE) ||
-                !sSpellMgr->GetSpellInfo(SPELL_FROST_FEVER) ||
-                !sSpellMgr->GetSpellInfo(SPELL_BLOOD_PLAGUE_H) ||
-                !sSpellMgr->GetSpellInfo(SPELL_FROST_FEVER_H))
-                return false;
-            return true;
-        }
+            PrepareSpellScript(dk_spell_black_knight_obliterate_SpellScript);
 
-        void CalculateDamage()
-        {
-            if (!GetHitUnit())
-                return;
-            uint32 bloodPlague = GetCaster()->GetMap()->IsHeroic() ? SPELL_BLOOD_PLAGUE_H : SPELL_BLOOD_PLAGUE;
-            uint32 frostFever = GetCaster()->GetMap()->IsHeroic() ? SPELL_FROST_FEVER_H : SPELL_FROST_FEVER;
-
-            int32 damage = GetHitDamage();
-            int32 bonus = 0;
-            if (GetHitUnit()->HasAura(frostFever))
+            bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                bonus += int32(damage * 0.3f);
-                GetHitUnit()->RemoveAurasDueToSpell(frostFever);
+                return ValidateSpellInfo({ SPELL_BLOOD_PLAGUE, SPELL_FROST_FEVER, SPELL_BLOOD_PLAGUE_H, SPELL_FROST_FEVER_H });
             }
-            if (GetHitUnit()->HasAura(bloodPlague))
+
+            void CalculateDamage()
             {
-                bonus += int32(damage * 0.3f);
-                GetHitUnit()->RemoveAurasDueToSpell(bloodPlague);
+                if (!GetHitUnit())
+                    return;
+                uint32 bloodPlague = GetCaster()->GetMap()->IsHeroic() ? SPELL_BLOOD_PLAGUE_H : SPELL_BLOOD_PLAGUE;
+                uint32 frostFever = GetCaster()->GetMap()->IsHeroic() ? SPELL_FROST_FEVER_H : SPELL_FROST_FEVER;
+
+                int32 damage = GetHitDamage();
+                int32 bonus = 0;
+                if (GetHitUnit()->HasAura(frostFever))
+                {
+                    bonus += int32(damage * 0.3f);
+                    GetHitUnit()->RemoveAurasDueToSpell(frostFever);
+                }
+                if (GetHitUnit()->HasAura(bloodPlague))
+                {
+                    bonus += int32(damage * 0.3f);
+                    GetHitUnit()->RemoveAurasDueToSpell(bloodPlague);
+                }
+                SetHitDamage(damage + bonus);
             }
-            SetHitDamage(damage + bonus);
-        }
 
-        void Register() override
+            void Register() override
+            {
+                OnHit += SpellHitFn(dk_spell_black_knight_obliterate_SpellScript::CalculateDamage);
+            }
+        };
+
+        SpellScript* GetSpellScript() const override
         {
-            OnHit += SpellHitFn(dk_spell_black_knight_obliterate_SpellScript::CalculateDamage);
+            return new dk_spell_black_knight_obliterate_SpellScript();
         }
-    };
-
-    SpellScript* GetSpellScript() const override
-    {
-        return new dk_spell_black_knight_obliterate_SpellScript();
-    }
 };
 
 class dk_spell_black_knight_army_of_the_dead : public SpellScriptLoader
 {
-public:
-    dk_spell_black_knight_army_of_the_dead() : SpellScriptLoader("dk_spell_black_knight_army_of_the_dead") { }
+    public:
+        dk_spell_black_knight_army_of_the_dead() : SpellScriptLoader("dk_spell_black_knight_army_of_the_dead") { }
 
-    class dk_spell_black_knight_army_of_the_dead_AuraScript : public AuraScript
-    {
-        PrepareAuraScript(dk_spell_black_knight_army_of_the_dead_AuraScript);
-
-        void RemoveFlag(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        class dk_spell_black_knight_army_of_the_dead_AuraScript : public AuraScript
         {
-            // that is wrong, movement disabled by spell (channel)
-            // On aura remove we must remove disable movement flag
-            if (Unit* caster = GetCaster())
-                caster->SetControlled(false, UNIT_STATE_ROOT);
-        }
+            PrepareAuraScript(dk_spell_black_knight_army_of_the_dead_AuraScript);
 
-        void Register() override
+            void RemoveFlag(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                // that is wrong, movement disabled by spell (channel)
+                // On aura remove we must remove disable movement flag
+                if (Unit* caster = GetCaster())
+                    caster->SetControlled(false, UNIT_STATE_ROOT);
+            }
+
+            void Register() override
+            {
+                AfterEffectRemove += AuraEffectRemoveFn(dk_spell_black_knight_army_of_the_dead_AuraScript::RemoveFlag, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
+            }
+        };
+
+        AuraScript* GetAuraScript() const override
         {
-            AfterEffectRemove += AuraEffectRemoveFn(dk_spell_black_knight_army_of_the_dead_AuraScript::RemoveFlag, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
+            return new dk_spell_black_knight_army_of_the_dead_AuraScript();
         }
-    };
+};
 
-    AuraScript* GetAuraScript() const override
+// 67751 - Ghoul Explode
+class dk_spell_black_knight_ghoul_explode : public SpellScript
+{
+    PrepareSpellScript(dk_spell_black_knight_ghoul_explode);
+
+    bool Validate(SpellInfo const* spellInfo) override
     {
-        return new dk_spell_black_knight_army_of_the_dead_AuraScript();
+        return ValidateSpellInfo({ uint32(spellInfo->GetEffect(EFFECT_0).CalcValue()) });
+    }
+
+    void HandleScript(SpellEffIndex /*effIndex*/)
+    {
+        GetHitUnit()->CastSpell(GetHitUnit(), uint32(GetEffectInfo(EFFECT_0).CalcValue()));
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(dk_spell_black_knight_ghoul_explode::HandleScript, EFFECT_1, SPELL_EFFECT_SCRIPT_EFFECT);
     }
 };
 
-class dk_spell_black_knight_ghoul_explode : public SpellScriptLoader
+// 67754 - Ghoul Explode
+// 67889 - Ghoul Explode
+class dk_spell_black_knight_ghoul_explode_risen_ghoul : public SpellScript
 {
-public:
-    dk_spell_black_knight_ghoul_explode() : SpellScriptLoader("dk_spell_black_knight_ghoul_explode") { }
+    PrepareSpellScript(dk_spell_black_knight_ghoul_explode_risen_ghoul);
 
-    class dk_spell_black_knight_ghoul_explode_AuraScript : public AuraScript
+    bool Validate(SpellInfo const* spellInfo) override
     {
-        PrepareAuraScript(dk_spell_black_knight_ghoul_explode_AuraScript);
+        return ValidateSpellInfo({ uint32(spellInfo->GetEffect(EFFECT_1).CalcValue()) });
+    }
 
-        bool Validate(SpellInfo const* /*spellInfo*/) override
-        {
-            if (!sSpellMgr->GetSpellInfo(SPELL_EXPLODE))
-                return false;
-            return true;
-        }
-
-        void CastExplode(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-        {
-            // On Ghoul Explode aura apply, start casting Explode
-            GetTarget()->CastSpell(GetTarget(), SPELL_EXPLODE);
-        }
-
-        void Register() override
-        {
-            AfterEffectApply += AuraEffectApplyFn(dk_spell_black_knight_ghoul_explode_AuraScript::CastExplode, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
-        }
-    };
-
-    AuraScript* GetAuraScript() const override
+    void HandleScript(SpellEffIndex /*effIndex*/)
     {
-        return new dk_spell_black_knight_ghoul_explode_AuraScript();
+        GetCaster()->CastSpell(GetCaster(), uint32(GetEffectValue()));
+    }
+
+    void Register() override
+    {
+        OnEffectHit += SpellEffectFn(dk_spell_black_knight_ghoul_explode_risen_ghoul::HandleScript, EFFECT_1, SPELL_EFFECT_SCRIPT_EFFECT);
     }
 };
 
 // Achievement id 3804 - I've Had Worse
 class dk_achievement_ive_had_worse : public AchievementCriteriaScript
 {
-public:
-    dk_achievement_ive_had_worse() : AchievementCriteriaScript("dk_achievement_ive_had_worse") { }
+    public:
+        dk_achievement_ive_had_worse() : AchievementCriteriaScript("dk_achievement_ive_had_worse") { }
 
-    bool OnCheck(Player* /*player*/, Unit* target) override
-    {
-        if (target->GetEntry() != NPC_BLACK_KNIGHT)
-            return false;
-        if (!ENSURE_AI(dk_boss_black_knight::dk_boss_black_knightAI, target->GetAI())->achievementCredit)
-            return false;
-        return true;
-    }
+        bool OnCheck(Player* /*player*/, Unit* target) override
+        {
+            if (target->GetEntry() != NPC_BLACK_KNIGHT)
+                return false;
+            if (!ENSURE_AI(dk_boss_black_knight::dk_boss_black_knightAI, target->GetAI())->achievementCredit)
+                return false;
+            return true;
+        }
 };
 
 void AddSC_dk_boss_black_knight()
@@ -722,6 +763,7 @@ void AddSC_dk_boss_black_knight()
     new dk_spell_black_knight_deaths_push();
     new dk_spell_black_knight_obliterate();
     new dk_spell_black_knight_army_of_the_dead();
-    new dk_spell_black_knight_ghoul_explode();
+    RegisterSpellScript(dk_spell_black_knight_ghoul_explode);
+    RegisterSpellScript(dk_spell_black_knight_ghoul_explode_risen_ghoul);
     new dk_achievement_ive_had_worse();
 }

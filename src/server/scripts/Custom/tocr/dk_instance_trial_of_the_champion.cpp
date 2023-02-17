@@ -1,5 +1,5 @@
 /*
- * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
+ * Copyright (C) 2008-2017 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -15,12 +15,19 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* ScriptData
+SDName: Instance Trial of the Champion
+SDComment: missing fireworks when boss encounter is set to done
+SDCategory: Trial Of the Champion
+EndScriptData */
+
 #include "GameObject.h"
 #include "InstanceScript.h"
 #include "Player.h"
-#include "Log.h"
 #include "ScriptedCreature.h"
 #include "ScriptMgr.h"
+#include "Map.h"
+#include "MotionMaster.h"
 #include "dk_trial_of_the_champion.h"
 
 ObjectData const creatureData[] =
@@ -200,7 +207,7 @@ class dk_instance_trial_of_the_champion : public InstanceMapScript
                                 announcer->GetMotionMaster()->MovePoint(1, announcerWaitPos);
                                 announcer->AI()->SetData(DATA_GRAND_CHAMPIONS_DONE, 0);
 
-                                DoRespawnGameObject(GetObjectGuid(DATA_CHAMPION_S_CACHE), 24h);
+                                DoRespawnGameObject(GetObjectGuid(DATA_CHAMPION_S_CACHE), Hours(24));
                                 if (GameObject* cache = GetGameObject(DATA_CHAMPION_S_CACHE))
                                     cache->RemoveFlag(GO_FLAG_NOT_SELECTABLE);
                             }
@@ -242,12 +249,11 @@ class dk_instance_trial_of_the_champion : public InstanceMapScript
                                         dataType = DATA_CONFESSOR_S_CACHE;
                                         break;
                                     default:
-                                        TC_LOG_DEBUG("script", "_argentChampionGUID == something went wrong");
                                         ABORT();
                                         break;
                                 }
 
-                                DoRespawnGameObject(GetObjectGuid(dataType), 24h);
+                                DoRespawnGameObject(GetObjectGuid(dataType), Hours(24));
                                 if (GameObject* cache = GetGameObject(dataType))
                                     cache->RemoveFlag(GO_FLAG_NOT_SELECTABLE);
                             }
@@ -294,7 +300,7 @@ class dk_instance_trial_of_the_champion : public InstanceMapScript
                         {
                             if (Creature* boss = instance->GetCreature(_argentChampionGUID))
                             {
-                                boss->SetFaction(FACTION_MONSTER_2);
+                                boss->SetFaction(16);
                                 boss->SetHomePosition(747.02f, 637.65f, 411.57f, centerOrientation);
                                 boss->GetMotionMaster()->MovePoint(1, boss->GetHomePosition());
                             }

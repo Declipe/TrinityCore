@@ -1,5 +1,6 @@
 /*
- * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
+ * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -15,16 +16,32 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* ScriptData
+SDName: boss_grand_champions
+SD%Complete: 9%
+SDComment: Cosmetic things missing
+SDCategory: Trial Of the Champion
+EndScriptData */
+
+#include "Creature.h"
 #include "CellImpl.h"
 #include "GridNotifiersImpl.h"
+#include "GridNotifiers.h"
 #include "Player.h"
+#include "Unit.h"
+#include "InstanceScript.h"
 #include "ScriptedCreature.h"
 #include "ScriptedEscortAI.h"
 #include "ScriptMgr.h"
 #include "SpellAuraEffects.h"
 #include "SpellScript.h"
 #include "SpellMgr.h"
+#include "Object.h"
+#include "ObjectAccessor.h"
 #include "Vehicle.h"
+#include "Map.h"
+#include "MotionMaster.h"
+#include "TemporarySummon.h"
 #include "dk_trial_of_the_champion.h"
 
 enum Events
@@ -108,7 +125,7 @@ enum Spells
     SPELL_MULTI_SHOT                    = 66081,
     SPELL_SHOOT                         = 66079,
 
-    // Lana Stouthammer && Deathstalker Visceri || Rogue
+    // Lana Stouthammer && Deathstalker Visceri || Rouge
     SPELL_EVISCERATE                    = 67709,
     SPELL_FAN_OF_KNIVES                 = 67706,
     SPELL_POISON_BOTTLE                 = 67701,
@@ -117,7 +134,7 @@ enum Spells
 
 enum Texts
 {
-    EMOTE_TRAMPLE                       = 0
+    EMOTE_TRAMPLE                       = 0,
 };
 
 enum PointMovement
@@ -358,16 +375,15 @@ struct boss_grand_championAI : BossAI
         _JustReachedHome();
     }
 
-    void SpellHit(WorldObject* caster, SpellInfo const* spellInfo) override
+    void SpellHit(WorldObject* target, SpellInfo const* spellInfo) override
     {
-        if (spellInfo->Id == SPELL_TRAMPLE_AURA && LookingForMount && uiPhase == 0 && !me->IsImmunedToSpell(spellInfo, caster))
+        if (spellInfo->Id == SPELL_TRAMPLE_AURA && LookingForMount && uiPhase == 0 && !me->IsImmunedToSpell(spellInfo, target))
         {
             uiPhase = 3;
-            //me->GetMotionMaster()->MovementExpired();
-            me->GetMotionMaster()->Clear(MOTION_PRIORITY_NORMAL);
+            me->GetMotionMaster()->Clear();
             me->GetMotionMaster()->MoveIdle();
             Talk(EMOTE_TRAMPLE, me);
-            events.ScheduleEvent(EVENT_TRAMPLE, 1s, spellInfo->GetDuration());
+            events.ScheduleEvent(EVENT_TRAMPLE, Milliseconds(spellInfo->GetDuration()));
         }
     }
 
@@ -422,7 +438,7 @@ struct boss_grand_championAI : BossAI
             me->DisappearAndDie();
     }
 
-    void DamageTaken(Unit* /*attacker*/, uint32& damage, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
+    void DamageTaken(Unit* /*doneBy*/, uint32& damage, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
     {
         if (damage >= me->GetHealth() && me->GetVehicleBase())
         {
@@ -550,7 +566,7 @@ struct boss_grand_championAI : BossAI
                 if (pGrandChampion && !pGrandChampion->HasAura(SPELL_KNEEL) && !pGrandChampion->IsInCombat())
                     pGrandChampion->AI()->AttackStart(who);
             }
-            _JustEngagedWith(who);
+           BossAI::JustEngagedWith(who);
         //}
     }
 
@@ -1087,14 +1103,14 @@ public:
 
         void Reset() override
         {
-            //boss_grand_championAI::Reset();
+            boss_grand_championAI::Reset();
         }
 
         void JustEngagedWith(Unit* who) override
         {
-            events.ScheduleEvent(EVENT_BLADESTORM, 15s, 20s);
+            events.ScheduleEvent(EVENT_BLADESTORM, randtime(15s, 20s));
             events.ScheduleEvent(EVENT_INTERCEPT, 7s);
-            events.ScheduleEvent(EVENT_MORTAL_STRIKE, 8s, 12s);
+            events.ScheduleEvent(EVENT_MORTAL_STRIKE, randtime(8s, 12s));
             events.ScheduleEvent(EVENT_ROLLING_THROW, 30s);
             boss_grand_championAI::JustEngagedWith(who);
         }
@@ -1151,12 +1167,12 @@ public:
                     }
                     case EVENT_BLADESTORM:
                         DoCastVictim(SPELL_BLADESTORM);
-                        events.ScheduleEvent(EVENT_BLADESTORM, 15s, 20s);
+                        events.ScheduleEvent(EVENT_BLADESTORM, randtime(15s, 20s));
                         break;
                     case EVENT_MORTAL_STRIKE:
                         if (!me->HasAura(SPELL_BLADESTORM))
                             DoCastVictim(SPELL_MORTAL_STRIKE);
-                        events.ScheduleEvent(EVENT_MORTAL_STRIKE, 8s, 12s);
+                        events.ScheduleEvent(EVENT_MORTAL_STRIKE, randtime(8s, 12s));
                         break;
                     case EVENT_ROLLING_THROW:
                         // TODO: FIXME
@@ -1192,7 +1208,7 @@ public:
 
         void Reset() override
         {
-           // boss_grand_championAI::Reset();
+            boss_grand_championAI::Reset();
         }
 
         void JustEngagedWith(Unit* who) override
@@ -1243,7 +1259,7 @@ public:
                             {
                                 me->InterruptNonMeleeSpells(true);
                                 DoCastAOE(SPELL_BLAST_WAVE);
-                                events.ScheduleEvent(EVENT_FIREBALL, 2s);
+                                events.ScheduleEvent(EVENT_FIREBALL, 1500ms);
                             }
                         }
                         events.ScheduleEvent(EVENT_BLASTWAVE, 13s);
@@ -1251,7 +1267,7 @@ public:
                     case EVENT_HASTE:
                         me->InterruptNonMeleeSpells(true);
                         DoCast(me, SPELL_HASTE);
-                        events.ScheduleEvent(EVENT_FIREBALL, 2s);
+                        events.ScheduleEvent(EVENT_FIREBALL, 1500ms);
                         events.ScheduleEvent(EVENT_HASTE, 22s);
                         break;
                     case EVENT_FIREBALL:
@@ -1301,8 +1317,8 @@ public:
 
         void Reset() override
         {
-            //Initialize();
-            //boss_grand_championAI::Reset();
+            Initialize();
+            boss_grand_championAI::Reset();
         }
 
         void JustEngagedWith(Unit* who) override
@@ -1328,7 +1344,7 @@ public:
             me->InterruptNonMeleeSpells(true);
             isDefensive = true;
             events.ScheduleEvent(EVENT_EARTH_SHIELD, 1s);
-            events.ScheduleEvent(EVENT_HEALING_WAVE, 2s);
+            events.ScheduleEvent(EVENT_HEALING_WAVE, 1500ms);
         }
 
         Unit* FindChampionWithLowestHp(float range)
@@ -1444,11 +1460,11 @@ public:
                                 earthShieldTarget = pFriend->GetGUID();
                             }
                         }
-                        events.ScheduleEvent(EVENT_EARTH_SHIELD, 30s, 35s);
+                        events.ScheduleEvent(EVENT_EARTH_SHIELD, randtime(30s, 35s));
                         break;
                     case EVENT_HEX_MENDING:
                         DoCastVictim(SPELL_HEX_OF_MENDING);
-                        events.ScheduleEvent(EVENT_HEX_MENDING, 20s, 25s);
+                        events.ScheduleEvent(EVENT_HEX_MENDING, randtime(20s, 25s));
                         break;
                     default:
                         break;
@@ -1477,14 +1493,14 @@ public:
 
         void Reset() override
         {
-           // boss_grand_championAI::Reset();
+            boss_grand_championAI::Reset();
         }
 
         void JustEngagedWith(Unit* who) override
         {
-            events.ScheduleEvent(EVENT_MULTI_SHOT, 8s);
+            events.ScheduleEvent(EVENT_MULTI_SHOT, 7500ms);
             events.ScheduleEvent(EVENT_LIGHTNING_ARROWS, 15s);
-            events.ScheduleEvent(EVENT_DISENGAGE, 25s, 35s);
+            events.ScheduleEvent(EVENT_DISENGAGE, randtime(25s, 35s));
             boss_grand_championAI::JustEngagedWith(who);
         }
 
@@ -1518,7 +1534,7 @@ public:
                                 DoCast(me, SPELL_DISENGAGE);
                             }
                         }
-                        events.ScheduleEvent(EVENT_DISENGAGE, 25s, 35s);
+                        events.ScheduleEvent(EVENT_DISENGAGE, randtime(25s, 35s));
                         break;
                     case EVENT_LIGHTNING_ARROWS:
                         if (!me->HasAura(SPELL_LIGHTNING_ARROWS_AURA) && !me->IsWithinDist(me->GetVictim(), 2.0f))
@@ -1526,7 +1542,7 @@ public:
                             me->InterruptNonMeleeSpells(true);
                             DoCastAOE(SPELL_LIGHTNING_ARROWS);
                         }
-                        events.ScheduleEvent(EVENT_LIGHTNING_ARROWS, 20s, 30s);
+                        events.ScheduleEvent(EVENT_LIGHTNING_ARROWS, randtime(20s, 30s));
                         break;
                     case EVENT_MULTI_SHOT:
                         if (me->IsInRange(me->GetVictim(), 5.0f, 30.0f, false) && !me->HasAura(SPELL_LIGHTNING_ARROWS))
@@ -1557,7 +1573,7 @@ public:
 class dk_boss_rogue_toc5 : public CreatureScript
 {
 public:
-    dk_boss_rogue_toc5() : CreatureScript("dk_boss_rouge_toc5") { }
+    dk_boss_rogue_toc5() : CreatureScript("boss_rouge_toc5") { }
 
     // Lana Stouthammer Evensong && Deathstalker Visceri || Rogue
     struct dk_boss_rogue_toc5AI : public boss_grand_championAI
@@ -1566,12 +1582,12 @@ public:
 
         void Reset() override
         {
-            //boss_grand_championAI::Reset();
+            boss_grand_championAI::Reset();
         }
 
         void JustEngagedWith(Unit* who) override
         {
-            events.ScheduleEvent(EVENT_DEADLY_POISON, 1s);
+            events.ScheduleEvent(EVENT_DEADLY_POISON, 500ms);
             events.ScheduleEvent(EVENT_EVISCERATE, 8s);
             events.ScheduleEvent(EVENT_FAN_OF_KNIVES, 14s);
             events.ScheduleEvent(EVENT_POISON_BOTTLE, 19s);
@@ -1600,6 +1616,7 @@ public:
                         if (!me->HasAura(SPELL_DEADLY_POISON))
                             DoCast(me, SPELL_DEADLY_POISON);
                         events.ScheduleEvent(EVENT_DEADLY_POISON, 30s);
+                        break;
                     case EVENT_EVISCERATE:
                         DoCastVictim(SPELL_EVISCERATE);
                         events.ScheduleEvent(EVENT_EVISCERATE, 8s);
@@ -1646,8 +1663,11 @@ class dk_spell_toc5_trample_aura : public SpellScriptLoader
                 targets.remove_if(Trinity::UnitAuraCheck(true, GetSpellInfo()->Id));
             }
 
-            void HandleStun(SpellMissInfo /*missInfo*/)
+            void HandleStun(SpellMissInfo missInfo)
             {
+                if (missInfo != SPELL_MISS_NONE)
+                    return;
+
                 if (Unit* target = GetHitUnit())
                 {
                     // If target is mounted, do not apply
@@ -1694,9 +1714,7 @@ class dk_spell_toc5_lightning_arrows : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             {
-                if (!sSpellMgr->GetSpellInfo(SPELL_LIGHTNING_ARROWS_AURA))
-                    return false;
-                return true;
+                return ValidateSpellInfo({ SPELL_LIGHTNING_ARROWS_AURA });
             }
 
             void HandleScript(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)

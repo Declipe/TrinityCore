@@ -1,5 +1,6 @@
 /*
- * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
+ * Copyright (C) 2008-2017 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -289,10 +290,9 @@ enum PennantSpells
     SPELL_PENNANT_UNDERCITY                         = 63430
 };
 
-template<class AI>
-AI* GetTrialOfChampionAI(Creature* creature)
+template <class AI, class T>
+inline AI* GetTrialOfChampionAI(T* obj)
 {
-    return GetInstanceAI<AI>(creature, ToCScriptName);
+    return GetInstanceAI<AI>(obj, ToCScriptName);
 }
-
-#endif
+#endif // TRIAL_OF_CHAMPION_H_
