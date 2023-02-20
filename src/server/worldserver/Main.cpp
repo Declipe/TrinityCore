@@ -490,6 +490,7 @@ void WorldUpdateLoop()
     LoginDatabase.WarnAboutSyncQueries(true);
     CharacterDatabase.WarnAboutSyncQueries(true);
     WorldDatabase.WarnAboutSyncQueries(true);
+    ZynDatabase.WarnAboutSyncQueries(true);
 
     ///- While we have not World::m_stopEvent, update the world
     while (!World::IsStopped())
@@ -523,6 +524,7 @@ void WorldUpdateLoop()
     LoginDatabase.WarnAboutSyncQueries(false);
     CharacterDatabase.WarnAboutSyncQueries(false);
     WorldDatabase.WarnAboutSyncQueries(false);
+    ZynDatabase.WarnAboutSyncQueries(false);
 }
 
 void SignalHandler(boost::system::error_code const& error, int /*signalNumber*/)
@@ -672,7 +674,7 @@ void StopDB()
     CharacterDatabase.Close();
     WorldDatabase.Close();
     LoginDatabase.Close();
-	//ZynDatabase.Close();
+	ZynDatabase.Close();
 
     MySQL::Library_End();
 }

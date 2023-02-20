@@ -105,6 +105,7 @@ void MapUpdater::WorkerThread()
     LoginDatabase.WarnAboutSyncQueries(true);
     CharacterDatabase.WarnAboutSyncQueries(true);
     WorldDatabase.WarnAboutSyncQueries(true);
+    ZynDatabase.WarnAboutSyncQueries(true);
 
     while (1)
     {

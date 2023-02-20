@@ -68,20 +68,20 @@ std::string& DBUpdaterUtil::corrected_path()
 template<>
 std::string DBUpdater<ZynDatabaseConnection>::GetConfigEntry()
 {
-	return "Updates.ZynDatabase";
+	return "Updates.Zyn";
 }
 
 template<>
 std::string DBUpdater<ZynDatabaseConnection>::GetTableName()
 {
-	return "ZynDatabase";
+	return "Zyn";
 }
 
 template<>
 std::string DBUpdater<ZynDatabaseConnection>::GetBaseFile()
 {
 	return BuiltInConfig::GetSourceDirectory() +
-		"/sql/base/ZynDatabase_database.sql";
+		"/sql/base/Zyn_database.sql";
 }
 
 template<>
