@@ -446,7 +446,7 @@ public:
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
         case 22334:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(178);
+        {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(178);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -466,7 +466,7 @@ public:
         }
         break;
         case 22335:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(179);
+        {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(179);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -486,7 +486,7 @@ public:
         }
         break;
         case 22336:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(180);
+        {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(180);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -506,7 +506,7 @@ public:
         }
         break;
         case 22337:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(181);
+        {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(181);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -526,7 +526,7 @@ public:
         }
         break;
         case 22338:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(182);
+        {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(182);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -546,7 +546,7 @@ public:
         }
         break;
         case 22339:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(183);
+        {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(183);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -566,7 +566,7 @@ public:
         }
         break;
         case 22340:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(184);
+        {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(184);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -586,7 +586,7 @@ public:
         }
         break;
         case 22341:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(185);
+        {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(185);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -606,7 +606,7 @@ public:
         }
         break;
         case 22342:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(186);
+        {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(186);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -1401,7 +1401,7 @@ public:
             }
             break;
       case 23:    
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(143);
+        {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(143);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -1422,7 +1422,7 @@ public:
         }
         break;
         case 24:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(135);
+        {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(135);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -1443,7 +1443,7 @@ public:
         }
         break;
         case 25:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(134);
+        {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(134);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -1463,7 +1463,7 @@ public:
         }
         break;
         case 26:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(46);
+        {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(46);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -1483,7 +1483,7 @@ public:
         }
         break;
         case 27:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(155);
+        {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(155);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -1503,7 +1503,7 @@ public:
         }
         break;
         case 28:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(139);
+        {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(139);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);

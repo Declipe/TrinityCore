@@ -107,7 +107,7 @@ class Mod_HonorRank_PlayerScript : public PlayerScript
         uint16 tId = player->GetTeam() == ALLIANCE ? ttl[i].tA : ttl[i].tH;
 
         if(!player->HasTitle(tId))
-            if (CharTitlesEntry const* title = sDBCMgr->GetCharTitlesEntry(tId))
+            if (CharTitlesEntry const* title = sCharTitlesStore.LookupEntry(tId))
             {
                 player->SetTitle(title);
 
