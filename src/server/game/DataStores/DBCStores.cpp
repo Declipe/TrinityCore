@@ -657,10 +657,10 @@ void LoadDBCStores(const std::string& dataPath)
         TC_LOG_ERROR("misc", "Some required *.dbc files (%u from %d) not found or not compatible:\n%s", (uint32)bad_dbc_files.size(), DBCFileCount, str.c_str());
         exit(1);
     }
-    
+    /*
     // Check loaded DBC files proper version
-    if (/*!sAreaTableStore.LookupEntry(4987)         ||       // last area added in 3.3.5a
-        !sCharTitlesStore.LookupEntry(177)         ||       // last char title added in 3.3.5a*/
+    if (!sAreaTableStore.LookupEntry(4987)         ||       // last area added in 3.3.5a
+        !sCharTitlesStore.LookupEntry(177)         ||       // last char title added in 3.3.5a
         !sGemPropertiesStore.LookupEntry(1629)     ||       // last gem property added in 3.3.5a
         !sItemStore.LookupEntry(56806)             ||       // last client known item added in 3.3.5a
         !sDBCMgr->GetItemExtendedCostEntry(2997)  ||       // last item extended cost added in 3.3.5a
@@ -670,7 +670,7 @@ void LoadDBCStores(const std::string& dataPath)
         TC_LOG_ERROR("misc", "You have _outdated_ DBC files. Please extract correct versions from current using client.");
         exit(1);
     }
-    
+    */
     TC_LOG_INFO("server.loading", ">> Initialized %d data stores in %u ms", DBCFileCount, GetMSTimeDiffToNow(oldMSTime));
 
 }
@@ -989,46 +989,37 @@ EmotesTextSoundEntry const* FindTextSoundEmoteFor(uint32 emote, uint32 race, uin
     return itr != sEmotesTextSoundMap.end() ? itr->second : nullptr;
 }
 
-// load CharTitles.dbc
 void DBCMgr::LoadCharTitlesStore()
 {
     uint32 oldMSTime = getMSTime();
-
     CharTitlesStore.clear();
-    //                                                 0    1       2               3               4               5               6               7               8               9               10              11              12                13                14              15              16              17                  18              19             20
-    QueryResult result = WorldDatabase.Query("SELECT guid, ID, Name_Lang_enUS, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_zhCN, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, Name1_Lang_enUS, Name1_Lang_koKR, Name1_Lang_frFR, Name1_Lang_deDE, Name1_Lang_zhCN, Name1_Lang_zhTW, Name1_Lang_esES, Name1_Lang_esMX, Name1_Lang_ruRU, Mask_ID FROM dbc_chartitles");
+
+    QueryResult result = WorldDatabase.Query("SELECT Id, Male, Male_loc2, Female, Female_loc2, InGameOrder FROM dbc_chartitles");
     if (!result)
     {
-        TC_LOG_INFO("server.loading", ">> Loaded 0 DBC_chartitles. DB table `dbc_chartitles` is empty.");
+        TC_LOG_ERROR("server.loading", ">> Loaded 0 chartitles entry. DB table `dbc_chartitles` is empty.");
         return;
     }
 
-    uint32 count = 0;
-    do
-    {
+    do {
         Field* fields = result->Fetch();
 
-        //CharTitlesEntry* newCharTitles = new CharTitlesEntry;
-        CharTitlesEntry newCharTitles;
-        uint32 id = fields[0].GetUInt32();
-       //newCharTitles ct;
-        newCharTitles.ID = fields[1].GetUInt32();
+        CharTitlesEntry* newCharTitles = new CharTitlesEntry;
+        newCharTitles->ID = fields[0].GetUInt32();
+        for (uint8 i = 0; i < 16; i++)
+            newCharTitles->Name[i] = "";
+        newCharTitles->Name[0] = (char*)fields[1].GetCString();
+        newCharTitles->Name[2] = (char*)fields[2].GetCString();
+        for (uint8 i = 0; i < 16; i++)
+            newCharTitles->Name1[i] = "";
+        newCharTitles->Name1[0] = (char*)fields[3].GetCString();
+        newCharTitles->Name1[2] = (char*)fields[4].GetCString();
+        newCharTitles->MaskID = fields[5].GetUInt32();
+        CharTitlesStore[newCharTitles->ID] = newCharTitles;
 
-        for (uint8 i = 0; i < TOTAL_LOCALES; i++)
-            newCharTitles.Name[i] = fields[2 + i].GetString();
-
-        for (uint8 i = 0; i < TOTAL_LOCALES; i++)
-            newCharTitles.Name1[i] = fields[11 + i].GetString();
-
-        newCharTitles.MaskID = fields[20].GetUInt32();
-
-        //_charTitlesMap[id] = ct;
-        _charTitlesMap[id] = newCharTitles;
-
-        ++count;
     } while (result->NextRow());
 
-    TC_LOG_INFO("server.loading", ">> Loaded %u DBC_chartitles in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_ERROR("misc", ">> Loaded %lu chartitles entries in %u ms", (unsigned long)CharTitlesStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void DBCMgr::LoadItemExtendedCostStore()
