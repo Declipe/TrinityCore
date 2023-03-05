@@ -216,6 +216,7 @@ TC_GAME_API void LoadDBCStores(const std::string& dataPath);
 typedef std::unordered_map<uint32, const WorldSafeLocsEntry*> WorldSafeLocsContainer;
 typedef std::unordered_map<uint32, const ItemExtendedCostEntry*> ItemExtendedCostContainer;
 typedef std::unordered_map<uint32, const CharTitlesEntry*> CharTitlesContainer;
+typedef std::unordered_map<uint32 /*guid*/, CharTitlesEntry> CharTitlesDBCMap;
 
 class DBCMgr
 {
@@ -230,6 +231,7 @@ public:
     void LoadWorldSafeLocsStore();
     void LoadItemExtendedCostStore();
     void LoadCharTitlesStore();
+    void _Load_CharTitles();
 
     const ItemExtendedCostEntry* GetItemExtendedCostEntry(uint32 ID) const { ItemExtendedCostContainer::const_iterator itr = ItemExtendedCostStore.find(ID); if (itr != ItemExtendedCostStore.end()) return itr->second; return nullptr; }
     const WorldSafeLocsEntry* GetWorldSafeLocsEntry(uint32 Id) const { WorldSafeLocsContainer::const_iterator itr = WorldSafeLocsStore.find(Id); if (itr != WorldSafeLocsStore.end()) return itr->second; return nullptr; }
@@ -238,6 +240,7 @@ public:
     WorldSafeLocsContainer WorldSafeLocsStore;
     ItemExtendedCostContainer ItemExtendedCostStore;
     CharTitlesContainer CharTitlesStore;
+    CharTitlesDBCMap _charTitlesMap;
 };
 
 #define sDBCMgr DBCMgr::instance()
