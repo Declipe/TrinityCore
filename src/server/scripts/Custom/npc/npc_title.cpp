@@ -179,52 +179,52 @@ public:
             switch (action)
             {
             case 2:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(144);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(144);
             AddTitle(player, titleInfo);
             }
             break;
             case 3:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(62);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(62);
             AddTitle(player, titleInfo);
             }
             break;
             case 4:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(135);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(135);
             AddTitle(player, titleInfo);
             }
             break;
             case 5:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(141);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(141);
             AddTitle(player, titleInfo);
             }
             break;
             case 6:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(138);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(138);
             AddTitle(player, titleInfo);
             }
             break;
             case 7:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(170);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(170);
             AddTitle(player, titleInfo);
             }
             break;
             case 8:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(28);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(28);
             AddTitle(player, titleInfo);
             }
             break;
             case 9:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(48);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(48);
             AddTitle(player, titleInfo);
             }
             break;
             case 10:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(134);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(134);
             AddTitle(player, titleInfo);
             }
             break;
             case 11:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(72);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(72);
             AddTitle(player, titleInfo);
             }
             break;
@@ -245,52 +245,52 @@ public:
                 SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                 break;
             case 13:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(42);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(42);
             AddTitle(player, titleInfo);
             }
             break;
             case 14:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(113);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(113);
             AddTitle(player, titleInfo);
             }
             break;
             case 15:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(147);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(147);
             AddTitle(player, titleInfo);
             }
             break;
             case 16:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(143);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(143);
             AddTitle(player, titleInfo);
             }
             break;
             case 17:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(79);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(79);
             AddTitle(player, titleInfo);
             }
             break;
             case 18:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(64);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(64);
             AddTitle(player, titleInfo);
             }
             break;
             case 19:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(43);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(43);
             AddTitle(player, titleInfo);
             }
             break;
             case 20:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(80);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(80);
             AddTitle(player, titleInfo);
             }
             break;
             case 21:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(47);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(47);
             AddTitle(player, titleInfo);
             }
             break;
             case 22:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(122);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(122);
             AddTitle(player, titleInfo);
             }
             break;
@@ -311,52 +311,52 @@ public:
                 SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                 break;
             case 24:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(81);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(81);
             AddTitle(player, titleInfo);
             }
             break;
             case 25:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(78);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(78);
             AddTitle(player, titleInfo);
             }
             break;
             case 26:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(156);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(156);
             AddTitle(player, titleInfo);
             }
             break;
             case 27:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(83);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(83);
             AddTitle(player, titleInfo);
             }
             break;
             case 28:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(71);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(71);
             AddTitle(player, titleInfo);
             }
             break;
             case 29:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(142);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(142);
             AddTitle(player, titleInfo);
             }
             break;
             case 30:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(146);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(146);
             AddTitle(player, titleInfo);
             }
             break;
             case 31:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(150);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(150);
             AddTitle(player, titleInfo);
             }
             break;
             case 32:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(46);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(46);
             AddTitle(player, titleInfo);
             }
             break;
             case 33:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(278);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(278);
             AddTitle(player, titleInfo);
             }
             break;
@@ -377,52 +377,52 @@ public:
                 SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                 break;
             case 35:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(139);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(139);
             AddTitle(player, titleInfo);
             }
             break;
             case 36:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(77);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(77);
             AddTitle(player, titleInfo);
             }
             break;
             case 37:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(74);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(74);
             AddTitle(player, titleInfo);
             }
             break;
             case 38:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(45);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(45);
             AddTitle(player, titleInfo);
             }
             break;
             case 39:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(177);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(177);
             AddTitle(player, titleInfo);
             }
             break;
             case 40:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(151);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(151);
             AddTitle(player, titleInfo);
             }
             break;
             case 41:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(171);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(171);
             AddTitle(player, titleInfo);
             }
             break;
             case 42:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(131);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(131);
             AddTitle(player, titleInfo);
             }
             break;
             case 43:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(173);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(173);
             AddTitle(player, titleInfo);
             }
             break;
             case 44:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(157);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(157);
             AddTitle(player, titleInfo);
             }
             break;
@@ -442,52 +442,52 @@ public:
                 SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                 break;
             case 46:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(75);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(75);
             AddTitle(player, titleInfo);
             }
             break;
             case 47:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(140);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(140);
             AddTitle(player, titleInfo);
             }
             break;
             case 48:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(172);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(172);
             AddTitle(player, titleInfo);
             }
             break;
             case 49:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(124);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(124);
             AddTitle(player, titleInfo);
             }
             break;
             case 50:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(133);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(133);
             AddTitle(player, titleInfo);
             }
             break;
             case 51:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(125);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(125);
             AddTitle(player, titleInfo);
             }
             break;
             case 52:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(76);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(76);
             AddTitle(player, titleInfo);
             }
             break;
             case 53:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(145);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(145);
             AddTitle(player, titleInfo);
             }
             break;
             case 54:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(155);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(155);
             AddTitle(player, titleInfo);
             }
             break;
             case 55:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(84);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(84);
             AddTitle(player, titleInfo);
             }
             break;
