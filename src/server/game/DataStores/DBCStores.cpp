@@ -59,7 +59,7 @@ DBCStorage <CharSectionsEntry> sCharSectionsStore(CharSectionsEntryfmt);
 std::unordered_multimap<uint32, CharSectionsEntry const*> sCharSectionMap;
 DBCStorage <CharStartOutfitEntry> sCharStartOutfitStore(CharStartOutfitEntryfmt);
 std::map<uint32, CharStartOutfitEntry const*> sCharStartOutfitMap;
-DBCStorage <CharTitlesEntry> sCharTitlesStore(CharTitlesEntryfmt);
+//DBCStorage <CharTitlesEntry> sCharTitlesStore(CharTitlesEntryfmt);
 DBCStorage <ChatChannelsEntry> sChatChannelsStore(ChatChannelsEntryfmt);
 DBCStorage <ChrClassesEntry> sChrClassesStore(ChrClassesEntryfmt);
 DBCStorage <ChrRacesEntry> sChrRacesStore(ChrRacesEntryfmt);
@@ -296,7 +296,8 @@ void LoadDBCStores(const std::string& dataPath)
     LOAD_DBC(sCharacterFacialHairStylesStore,     "CharacterFacialHairStyles.dbc");
     LOAD_DBC(sCharSectionsStore,                  "CharSections.dbc");
     LOAD_DBC(sCharStartOutfitStore,               "CharStartOutfit.dbc");
-    LOAD_DBC(sCharTitlesStore,                    "CharTitles.dbc");
+    //LOAD_DBC(sCharTitlesStore,                    "CharTitles.dbc");
+    sDBCMgr->LoadCharTitlesStore();
     LOAD_DBC(sChatChannelsStore,                  "ChatChannels.dbc");
     LOAD_DBC(sChrClassesStore,                    "ChrClasses.dbc");
     LOAD_DBC(sChrRacesStore,                      "ChrRaces.dbc");
@@ -659,7 +660,7 @@ void LoadDBCStores(const std::string& dataPath)
 
     // Check loaded DBC files proper version
     if (!sAreaTableStore.LookupEntry(4987)         ||       // last area added in 3.3.5a
-        !sCharTitlesStore.LookupEntry(177)         ||       // last char title added in 3.3.5a
+       // !sCharTitlesStore.LookupEntry(177)         ||       // last char title added in 3.3.5a
         !sGemPropertiesStore.LookupEntry(1629)     ||       // last gem property added in 3.3.5a
         !sItemStore.LookupEntry(56806)             ||       // last client known item added in 3.3.5a
         !sDBCMgr->GetItemExtendedCostEntry(2997)  ||       // last item extended cost added in 3.3.5a
@@ -986,6 +987,39 @@ EmotesTextSoundEntry const* FindTextSoundEmoteFor(uint32 emote, uint32 race, uin
 {
     auto itr = sEmotesTextSoundMap.find(EmotesTextSoundKey(emote, race, gender));
     return itr != sEmotesTextSoundMap.end() ? itr->second : nullptr;
+}
+
+void DBCMgr::LoadCharTitlesStore()
+{
+    uint32 oldMSTime = getMSTime();
+    CharTitlesStore.clear();
+
+    //                                             0            1             2                 3              4               5                6              7             8                   9              10             11                  12               13                 14               15           16              17                 18            19                                                              
+    QueryResult result = WorldDatabase.Query("SELECT ID, Name_Lang_enUS, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_zhCN, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, Name1_Lang_enUS, Name1_Lang_koKR, Name1_Lang_frFR, Name1_Lang_deDE, Name1_Lang_zhCN, Name1_Lang_zhTW, Name1_Lang_esES, Name1_Lang_esMX, Name1_Lang_ruRU, Mask_ID FROM dbc_chartitles");
+
+    if (!result)
+    {
+        TC_LOG_ERROR("server.loading", ">> Loaded 0 chartitles entry. DB table `dbc_chartitles` is empty.");
+        return;
+    }
+
+    do {
+        Field* fields = result->Fetch();
+
+        CharTitlesEntry* newCharTitles = new CharTitlesEntry;
+        newCharTitles->ID = fields[0].GetUInt32();
+        for (uint8 i = 0; i < TOTAL_LOCALES; i++)
+            newCharTitles->Name[i] = (char*)fields[1 + i].GetCString();//GetString();
+
+        for (uint8 i = 0; i < TOTAL_LOCALES; i++)
+            newCharTitles->Name1[i] = (char*)fields[10 + i].GetCString();//GetString();
+
+        newCharTitles->MaskID = fields[19].GetUInt32();
+        CharTitlesStore[newCharTitles->ID] = newCharTitles;
+
+    } while (result->NextRow());
+
+    TC_LOG_ERROR("misc", ">> Loaded %lu chartitles entries in %u ms", (unsigned long)CharTitlesStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void DBCMgr::LoadItemExtendedCostStore()

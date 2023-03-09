@@ -22,7 +22,7 @@
 
 bool grantTitleReward
 (int titleID, Player* player) {
-    if (CharTitlesEntry const *titleEntry = sCharTitlesStore.LookupEntry(titleID)) {
+    if (CharTitlesEntry const *titleEntry = sDBCMgr->GetCharTitlesEntry(titleID)) {
         player->SetTitle(titleEntry);
         return true;
     }
