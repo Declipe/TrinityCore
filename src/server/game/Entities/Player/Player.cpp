@@ -4637,6 +4637,12 @@ void Player::BuildPlayerRepop()
     setDeathState(DEAD);
     SetHealth(1);
 
+    //Guild-Level-System (Bonus: Faster spirit)
+     //if (!GetMap()->IsBattlegroundOrArena())
+     //if (Guild* guild = GetGuild())
+     //if (guild->HasLevelForBonus(GUILD_BONUS_SCHNELLER_GEIST))
+     //SetSpeed(MOVE_RUN, 2.0f);
+
     SetMovement(MOVE_WATER_WALK);
     if (!GetSession()->isLogingOut())
         SetMovement(MOVE_UNROOT);
@@ -4680,6 +4686,12 @@ void Player::ResurrectPlayer(float restore_percent, bool applySickness)
 
     SetMovement(MOVE_LAND_WALK);
     SetMovement(MOVE_UNROOT);
+
+    //Guild-Level-System (Bonus: Faster spirit)
+     //if (!GetMap()->IsBattlegroundOrArena())
+     //if (Guild* guild = GetGuild())
+     //if (guild->HasLevelForBonus(GUILD_BONUS_SCHNELLER_GEIST))
+     //SetSpeed(MOVE_RUN, 2.0f);
 
     m_deathTimer = 0;
 
@@ -5049,6 +5061,15 @@ void Player::DurabilityRepairAll(bool takeCost, float discountMod, bool guildBan
 
         if (!HasEnoughMoney(totalCost))
             return; // silent return, client should display error by itself and not send opcode.
+
+        //Guild-Level-System (Bonus: Guenstige Reperatur)
+        if (Guild* guild = GetGuild())
+             {
+            if (guild->HasLevelForBonus(GUILD_BONUS_REPERATUR_1))
+                totalCost -= uint32(totalCost * 0.25f);
+            if (guild->HasLevelForBonus(GUILD_BONUS_REPERATUR_2))
+                totalCost -= uint32(totalCost * 0.5f);
+            }
 
         ModifyMoney(-int32(totalCost));
 
@@ -6976,6 +6997,14 @@ bool Player::RewardHonor(Unit* victim, uint32 groupsize, int32 honor, bool pvpto
 
     if(GetSession()->IsPremium())
         honor_f *= sWorld->getRate(RATE_HONOR_PREMIUM);
+
+    if (Guild* guild = GetGuild())
+    {
+        if (guild->HasLevelForBonus(GUILD_BONUS_EHRE_1))
+            honor_f *= 0.05f;
+        if (guild->HasLevelForBonus(GUILD_BONUS_EHRE_2))
+            honor_f *= 0.1f;
+    }
 
     // Back to int now
     honor = int32(honor_f);
@@ -15367,6 +15396,18 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
  
     if (GetSession()->IsPremium())
         XP *= sWorld->getRate(RATE_XP_QUEST_PREMIUM);
+
+    if (Guild* guild = GetGuild())
+    {
+        //QuestXP for the Guild
+        guild->GiveXp(50000);
+
+        //GuildXP-Bonus
+        if (guild->HasLevelForBonus(GUILD_BONUS_XP_1))
+            XP += uint32(XP * 0.05f);
+        if (guild->HasLevelForBonus(GUILD_BONUS_XP_2))
+            XP += uint32(XP * 0.1f);
+    }
 
     if (!IsMaxLevel())
         GiveXP(XP, nullptr);

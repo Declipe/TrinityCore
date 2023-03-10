@@ -92,6 +92,7 @@ enum ConditionTypes
     CONDITION_SCENARIO_STEP            = 54,                   // ScenarioStepId         0              0                  true if player is at scenario with current step equal to ScenarioStepID
     CONDITION_SCENE_IN_PROGRESS        = 55,                   // SceneScriptPackageId   0              0                  true if player is playing a scene with ScriptPackageId equal to given value
     CONDITION_PLAYER_CONDITION         = 56,                   // PlayerConditionId      0              0                  true if player satisfies PlayerCondition
+    CONDITION_GUILD_LEVEL              = 57,                   // Guildlevel       Level          match_type
     CONDITION_MAX
 };
 

@@ -1376,5 +1376,8 @@ enum TrinityStrings
     LANG_GOSSIP_OPTION_128                        = 40128,
     LANG_GOSSIP_OPTION_129                        = 40129,
     LANG_GOSSIP_OPTION_130                        = 40130,
+    //Guild-Level-System
+    LANG_GUILDINFO_LEVEL                          = 40131,
+    LANG_GUILDINFO_XP_INFO                        = 40132,
 };
 #endif

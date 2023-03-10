@@ -595,6 +595,16 @@ void CharacterDatabaseConnection::DoPrepareStatements()
     PrepareStatement(CHAR_UPD_QUEST_TRACK_COMPLETE_TIME, "UPDATE quest_tracker SET quest_complete_time = NOW() WHERE id = ? AND character_guid = ? ORDER BY quest_accept_time DESC LIMIT 1", CONNECTION_ASYNC);
     PrepareStatement(CHAR_UPD_QUEST_TRACK_ABANDON_TIME, "UPDATE quest_tracker SET quest_abandon_time = NOW() WHERE id = ? AND character_guid = ? ORDER BY quest_accept_time DESC LIMIT 1", CONNECTION_ASYNC);
 
+    //Guild-Level-System
+    //Load
+    PrepareStatement(CHAR_SEL_GUILD_BONUS_INFO, "SELECT RequiredGuildLevel FROM guild_bonus_config WHERE BonusId = ?", CONNECTION_SYNCH);
+    PrepareStatement(CHAR_SEL_GUILD_LEVEL_INFO, "SELECT xp, level FROM guild WHERE guildid = ?", CONNECTION_SYNCH);
+    PrepareStatement(CHAR_SEL_GUILD_XP_FOR_NEXT_LEVEL, "SELECT xp_for_next_level FROM guild_xp_for_next_level WHERE level = ?", CONNECTION_SYNCH);
+
+    //Save
+    PrepareStatement(CHAR_UPD_GUILD_LEVEL, "UPDATE guild SET level = ? WHERE guildid = ?", CONNECTION_ASYNC);
+    PrepareStatement(CHAR_UPD_GUILD_XP, "UPDATE guild SET xp = (xp + ?) WHERE guildid = ?", CONNECTION_ASYNC);
+
     // DeserterTracker
     PrepareStatement(CHAR_INS_DESERTER_TRACK, "INSERT INTO battleground_deserters (guid, type, datetime) VALUES (?, ?, NOW())", CONNECTION_ASYNC);
 

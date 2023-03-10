@@ -27,6 +27,7 @@
 #include "SharedDefines.h"
 #include "World.h"
 #include "Config.h"
+#include "Guild.h"
 
 namespace Trinity
 {
@@ -192,6 +193,15 @@ namespace Trinity
                     }
 
                     xpMod *= creature->GetCreatureTemplate()->ModExperience;
+                }
+
+                if (Guild* guild = player->GetGuild())
+                {
+                    //GuildXP-Bonus
+                    if (guild->HasLevelForBonus(GUILD_BONUS_XP_1))
+                        gain += uint32(gain * 0.05f);
+                    if (guild->HasLevelForBonus(GUILD_BONUS_XP_2))
+                        gain += uint32(gain * 0.1f);
                 }
 
                 xpMod *= isBattleGround ? sWorld->getRate(RATE_XP_BG_KILL) : sWorld->getRate(RATE_XP_KILL);

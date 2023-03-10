@@ -21,6 +21,7 @@
 #include "Creature.h"
 #include "GameObject.h"
 #include "Group.h"
+#include "Guild.h"
 #include "Item.h"
 #include "Log.h"
 #include "LootItemStorage.h"
@@ -210,6 +211,17 @@ void WorldSession::HandleLootMoneyOpcode(WorldPacket& /*recvData*/)
 #ifdef ELUNA
         sEluna->OnLootMoney(player, loot->gold);
 #endif
+
+        //Guild-Level-System (Bonus: Gold)
+        if (Guild* guild = player->GetGuild())
+        {
+            //Extra Gold fuer die Gildenbank
+            if (guild->HasLevelForBonus(GUILD_BONUS_GOLD_1))
+                guild->HandleMemberDepositMoney(this, uint32(loot->gold*0.05f));
+            if (guild->HasLevelForBonus(GUILD_BONUS_GOLD_2))
+                guild->HandleMemberDepositMoney(this, uint32(loot->gold*0.1f));
+        }
+
         loot->gold = 0;
 
         // Delete the money loot record from the DB

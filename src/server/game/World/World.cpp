@@ -94,6 +94,8 @@
 #include "WorldSession.h"
 
 #include <boost/asio/ip/address.hpp>
+#include "CharacterDatabase.h"
+#include "Guild.h"
 
 TC_GAME_API std::atomic<bool> World::m_stopEvent(false);
 TC_GAME_API uint8 World::m_ExitCode = SHUTDOWN_EXIT_CODE;
@@ -1626,6 +1628,8 @@ void World::LoadConfigSettings(bool reload)
     // call ScriptMgr if we're reloading the configuration
     if (reload)
         sScriptMgr->OnConfigLoad(reload);
+    //Guild-Level-System
+    LoadGuildBonusInfo();
 }
 
 /// Initialize the World
@@ -3712,6 +3716,90 @@ void World::ReloadRBAC()
         if (WorldSession* session = itr->second)
             session->InvalidateRBACData();
 }
+
+//Guild-Level-System [Start]
+void World::LoadGuildBonusInfo()
+{
+    //Moechte keinen riesigen Abschnitt in die Worldconf hinzufuegen, deswegen
+    //soll das ganze ueber eine Tabelle in der CharDB geregelt werden.
+    //Hier werden die benoetigten Daten geladen.
+    m_req_guildLevel_gold_1 = SelectReqGuildLevelForBonus(GUILD_BONUS_GOLD_1);
+    m_req_guildLevel_xp_1 = SelectReqGuildLevelForBonus(GUILD_BONUS_XP_1);
+    m_req_guildLevel_schneller_geist = SelectReqGuildLevelForBonus(GUILD_BONUS_SCHNELLER_GEIST);
+    m_req_guildLevel_reperatur_1 = SelectReqGuildLevelForBonus(GUILD_BONUS_REPERATUR_1);
+    m_req_guildLevel_gold_2 = SelectReqGuildLevelForBonus(GUILD_BONUS_GOLD_2);
+    m_req_guildLevel_reittempo_1 = SelectReqGuildLevelForBonus(GUILD_BONUS_REITTEMPO_1);
+    m_req_guildLevel_reputation_1 = SelectReqGuildLevelForBonus(GUILD_BONUS_RUF_1);
+    m_req_guildLevel_xp_2 = SelectReqGuildLevelForBonus(GUILD_BONUS_XP_2);
+    m_req_guildLevel_reperatur_2 = SelectReqGuildLevelForBonus(GUILD_BONUS_REPERATUR_2);
+    m_req_guildLevel_reittempo_2 = SelectReqGuildLevelForBonus(GUILD_BONUS_REITTEMPO_2);
+    m_req_guildLevel_reputation_2 = SelectReqGuildLevelForBonus(GUILD_BONUS_RUF_2);
+    m_req_guildLevel_honor_1 = SelectReqGuildLevelForBonus(GUILD_BONUS_EHRE_1);
+    m_req_guildLevel_honor_2 = SelectReqGuildLevelForBonus(GUILD_BONUS_EHRE_2);
+}
+
+uint8 World::SelectReqGuildLevelForBonus(uint8 guildBonus)
+{
+    CharacterDatabasePreparedStatement* stmt;
+    stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_GUILD_BONUS_INFO);
+    stmt->setUInt8(0, guildBonus);
+    PreparedQueryResult result = CharacterDatabase.Query(stmt);
+
+    if (result)
+        return (*result)[0].GetUInt8();
+    else
+        return 0;
+}
+
+uint8 World::GetReqGuildLevelForBonus(uint8 guildBonus)
+{
+    switch (guildBonus)
+    {
+    case GUILD_BONUS_GOLD_1:
+        return m_req_guildLevel_gold_1;
+        break;
+    case GUILD_BONUS_GOLD_2:
+        return m_req_guildLevel_gold_2;
+        break;
+    case GUILD_BONUS_EHRE_1:
+        return m_req_guildLevel_honor_1;
+        break;
+    case GUILD_BONUS_EHRE_2:
+        return m_req_guildLevel_honor_2;
+        break;
+    case GUILD_BONUS_REITTEMPO_1:
+        return m_req_guildLevel_reittempo_1;
+        break;
+    case GUILD_BONUS_REITTEMPO_2:
+        return m_req_guildLevel_reittempo_2;
+        break;
+    case GUILD_BONUS_REPERATUR_1:
+        return m_req_guildLevel_reperatur_1;
+        break;
+    case GUILD_BONUS_REPERATUR_2:
+        return m_req_guildLevel_reperatur_2;
+        break;
+    case GUILD_BONUS_RUF_1:
+        return m_req_guildLevel_reputation_1;
+        break;
+    case GUILD_BONUS_RUF_2:
+        return m_req_guildLevel_reputation_2;
+        break;
+    case GUILD_BONUS_SCHNELLER_GEIST:
+        return m_req_guildLevel_schneller_geist;
+        break;
+    case GUILD_BONUS_XP_1:
+        return m_req_guildLevel_xp_1;
+        break;
+    case GUILD_BONUS_XP_2:
+        return m_req_guildLevel_xp_2;
+        break;
+    default:
+        return 0;
+        break;
+    }
+}
+//Guild-Level-System [End]
 
 void World::RemoveOldCorpses()
 {
