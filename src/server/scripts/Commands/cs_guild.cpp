@@ -55,8 +55,8 @@ public:
             { "rename",   rbac::RBAC_PERM_COMMAND_GUILD_RENAME,   true, &HandleGuildRenameCommand,           "" },
             { "info",     rbac::RBAC_PERM_COMMAND_GUILD_INFO,     true, &HandleGuildInfoCommand,             "" },
             { "linfo",    rbac::RBAC_PERM_COMMAND_GUILD_LINFO,    true, &HandleGuildLInfoCommand,            "" },
-            //{ "setlevel", rbac::RBAC_PERM_COMMAND_GUILD_SET_LEVEL,true, &HandleGuildSetLevelCommand,         "" },
-            //{ "givexp",   rbac::RBAC_PERM_COMMAND_GUILD_GIVE_XP,  true, &HandleGuildGiveXpCommand,           "" },
+            { "setlevel", rbac::RBAC_PERM_COMMAND_GUILD_SET_LEVEL,true, &HandleGuildSetLevelCommand,         "" },
+            { "givexp",   rbac::RBAC_PERM_COMMAND_GUILD_GIVE_XP,  true, &HandleGuildGiveXpCommand,           "" },
         };
         static std::vector<ChatCommand> commandTable =
         {
@@ -367,7 +367,7 @@ public:
             return false;
         }
     }
-    /*
+    
     static bool HandleGuildSetLevelCommand(ChatHandler* handler, char const* args)
     {
         if (!*args)
@@ -427,7 +427,7 @@ public:
         }
 
         return true;
-    }*/
+    }/**/
 };
 
 void AddSC_guild_commandscript()
