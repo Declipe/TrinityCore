@@ -217,7 +217,7 @@ typedef std::unordered_map<uint32, const WorldSafeLocsEntry*> WorldSafeLocsConta
 typedef std::unordered_map<uint32, const ItemExtendedCostEntry*> ItemExtendedCostContainer;
 typedef std::unordered_map<uint32, const CharTitlesEntry*> CharTitlesContainer;
 
-class DBCMgr
+class TC_GAME_API DBCMgr
 {
 public:
     static DBCMgr* instance()
