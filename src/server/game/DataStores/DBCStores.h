@@ -233,7 +233,7 @@ public:
 
     const ItemExtendedCostEntry* GetItemExtendedCostEntry(uint32 ID) const { ItemExtendedCostContainer::const_iterator itr = ItemExtendedCostStore.find(ID); if (itr != ItemExtendedCostStore.end()) return itr->second; return nullptr; }
     const WorldSafeLocsEntry* GetWorldSafeLocsEntry(uint32 Id) const { WorldSafeLocsContainer::const_iterator itr = WorldSafeLocsStore.find(Id); if (itr != WorldSafeLocsStore.end()) return itr->second; return nullptr; }
-    const CharTitlesEntry* GetCharTitlesEntry(uint32 ID) const { CharTitlesContainer::const_iterator itr = CharTitlesStore.find(ID); if (itr != CharTitlesStore.end()) return itr->second; return NULL; }
+    const CharTitlesEntry* GetCharTitlesEntry(uint32 ID) const { CharTitlesContainer::const_iterator itr = CharTitlesStore.find(ID); if (itr != CharTitlesStore.end()) return itr->second; return nullptr; }
 
     WorldSafeLocsContainer WorldSafeLocsStore;
     ItemExtendedCostContainer ItemExtendedCostStore;

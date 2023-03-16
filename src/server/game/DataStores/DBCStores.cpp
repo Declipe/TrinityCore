@@ -1015,11 +1015,12 @@ void DBCMgr::LoadCharTitlesStore()
             newCharTitles->Name1[i] = (char*)fields[10 + i].GetCString();//GetString();
 
         newCharTitles->MaskID = fields[19].GetUInt32();
+
         CharTitlesStore[newCharTitles->ID] = newCharTitles;
 
     } while (result->NextRow());
 
-    TC_LOG_ERROR("misc", ">> Loaded %lu chartitles entries in %u ms", (unsigned long)CharTitlesStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_ERROR("misc", ">> Loaded %lu dbc_chartitles entries in %u ms", (unsigned long)CharTitlesStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void DBCMgr::LoadItemExtendedCostStore()
