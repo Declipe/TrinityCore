@@ -75,10 +75,8 @@ public:
 
     struct lightAI : public ScriptedAI
     {
-        lightAI(Creature* creature) : ScriptedAI(creature), Summons(me) 	
-        
+        lightAI(Creature* creature) : ScriptedAI(creature), Summons(me)   
         {
-
         }
 
         uint32 playerdie = 0;

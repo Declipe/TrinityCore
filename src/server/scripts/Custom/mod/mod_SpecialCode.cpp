@@ -46,7 +46,7 @@
 #define SQL_CODE_COUNT_ACCOUNT "SELECT COUNT(*) FROM `world_coded_history` WHERE `CodeId` = '%u' AND `AccountId` = '%u'"
 #define SQL_CODE_COUNT_CHARACTER "SELECT COUNT(*) FROM `world_coded_history` WHERE `CodeId` = '%u' AND `CharacterGuid` = '%u'"
 #define SQL_CODE_HISTORY "INSERT INTO `world_coded_history` (`CodeId`, `CharacterGuid`, `AccountId`, `SessionIp`) VALUES ('%u', '%u', '%u', '%s')"
-#define SQL_CODE_ITEMS "SELECT `ItemId`, `ItemCount` FROM `world_coded_items` WHERE `CodeId` = '%u' AND (`ItemClassMask` & %u OR `ItemClassMask` = 0) AND (`ItemRaceMask` & %u OR `ItemRaceMask` = 0)"
+#define SQL_CODE_ITEMS "SELECT `ItemId`, `ItemCount`, `ItemId1`, `ItemCount1`, `ItemId2`, `ItemCount2`, `ItemId3`, `ItemCount3`, `ItemId4`, `ItemCount4` FROM `world_coded_items` WHERE `CodeId` = '%u' AND (`ItemClassMask` & %u OR `ItemClassMask` = 0) AND (`ItemRaceMask` & %u OR `ItemRaceMask` = 0)"
 
 bool SCEnable = false;
 
@@ -153,13 +153,44 @@ class Mod_SpecialCode_AllCreatureScript : public AllCreatureScript
                 Field* fields = result->Fetch();
 
                 uint32 itemId = fields[0].GetUInt32();
-                uint16 itemCount = fields[1].GetUInt16();
+                uint16 itemCount = fields[1].GetUInt32();
+                uint32 itemId1 = fields[2].GetUInt32();
+                uint16 itemCount1 = fields[3].GetUInt32();
+                uint32 itemId2 = fields[4].GetUInt32();
+                uint16 itemCount2 = fields[5].GetUInt32();
+                uint32 itemId3 = fields[6].GetUInt32();
+                uint16 itemCount3 = fields[7].GetUInt16();
+                uint32 itemId4 = fields[8].GetUInt32();
+                uint16 itemCount4 = fields[9].GetUInt16();
 
                 ItemTemplate const* itemProto = sObjectMgr->GetItemTemplate(itemId);
                 if (!itemProto)
                     continue;
+                /**/
+                ItemTemplate const* itemProto1 = sObjectMgr->GetItemTemplate(itemId1);
+                if (!itemProto1)
+                    continue;
+                ItemTemplate const* itemProto2 = sObjectMgr->GetItemTemplate(itemId2);
+                if (!itemProto2)
+                    continue;
+                ItemTemplate const* itemProto3 = sObjectMgr->GetItemTemplate(itemId3);
+                if (!itemProto3)
+                    continue;
+                ItemTemplate const* itemProto4 = sObjectMgr->GetItemTemplate(itemId4);
+                if (!itemProto4)
+                    continue;
 
                 if (itemCount < 1 || (itemProto->MaxCount > 0 && itemCount > uint32(itemProto->MaxCount)))
+                    continue;
+
+                if (itemCount1 < 1 || (itemProto1->MaxCount > 0 && itemCount1 > uint32(itemProto1->MaxCount)))
+                    continue;
+
+                if (itemCount2 < 1 || (itemProto2->MaxCount > 0 && itemCount2 > uint32(itemProto2->MaxCount)))
+                    continue;
+                if (itemCount3 < 1 || (itemProto3->MaxCount > 0 && itemCount3 > uint32(itemProto3->MaxCount)))
+                    continue;
+                if (itemCount4 < 1 || (itemProto4->MaxCount > 0 && itemCount4 > uint32(itemProto4->MaxCount)))
                     continue;
 
                 while (itemCount > itemProto->GetMaxStackSize())
@@ -168,7 +199,39 @@ class Mod_SpecialCode_AllCreatureScript : public AllCreatureScript
                     itemCount -= itemProto->GetMaxStackSize();
                 }
 
+                while (itemCount1 > itemProto->GetMaxStackSize())
+                {
+                    items.push_back(ItemPair(itemId1, itemProto1->GetMaxStackSize()));
+                    itemCount1 -= itemProto1->GetMaxStackSize();
+                }
+
+                while (itemCount2 > itemProto->GetMaxStackSize())
+                {
+                    items.push_back(ItemPair(itemId2, itemProto2->GetMaxStackSize()));
+                    itemCount2 -= itemProto2->GetMaxStackSize();
+                }
+
+                while (itemCount3 > itemProto3->GetMaxStackSize())
+                {
+                    items.push_back(ItemPair(itemId3, itemProto3->GetMaxStackSize()));
+                    itemCount3 -= itemProto3->GetMaxStackSize();
+                }
+
+                while (itemCount4 > itemProto4->GetMaxStackSize())
+                {
+                    items.push_back(ItemPair(itemId4, itemProto4->GetMaxStackSize()));
+                    itemCount4 -= itemProto4->GetMaxStackSize();
+                }
+
                 items.push_back(ItemPair(itemId, itemCount));
+
+                items.push_back(ItemPair(itemId1, itemCount1));
+
+                items.push_back(ItemPair(itemId2, itemCount2));
+
+                items.push_back(ItemPair(itemId3, itemCount3));
+
+                items.push_back(ItemPair(itemId4, itemCount4));
 
                 if (items.size() > MAX_MAIL_ITEMS)
                 {

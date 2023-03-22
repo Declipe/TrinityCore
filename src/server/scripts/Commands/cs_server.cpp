@@ -272,8 +272,8 @@ public:
 
         handler->PSendSysMessage("%s", GitRevision::GetFullVersion());
         handler->PSendSysMessage("Core: DkCore 3.3.5a");
-        handler->PSendSysMessage("Tdb: rev.3.3.5.21011");
-        handler->PSendSysMessage("UP: 02.02.2021");
+        handler->PSendSysMessage("Tdb: rev.3.3.5.23011");
+        handler->PSendSysMessage("UP: 20.03.2023");
         handler->PSendSysMessage(LANG_CONNECTED_PLAYERS, playersNum, maxPlayersNum);
         handler->PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
         handler->PSendSysMessage(LANG_UPTIME, uptime.c_str());
