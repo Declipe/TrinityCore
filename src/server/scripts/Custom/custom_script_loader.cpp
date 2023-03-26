@@ -61,6 +61,11 @@ void AddSC_Mod_AutoLearn();
 void AddSC_Transmogrification();
 void AddSC_mod_DefaultSpec();
 
+// The name of this function should match:
+// void Add${NameOfDirectory}Scripts()
+
+void AddSC_AutoBalance();
+
 void AddCustomScripts()
 {
     AddSC_ex_champions();
@@ -100,6 +105,8 @@ void AddCustomScripts()
     AddSC_battle_royal();
     AddSC_battle_royal_gamemaster();
     AddSC_battle_royal_rewards();
+    // VAS AutoBalance
+    AddSC_AutoBalance();
     AddSC_dk_trial_of_the_champion();
     AddSC_dk_boss_grand_champions();
     AddSC_dk_boss_black_knight();

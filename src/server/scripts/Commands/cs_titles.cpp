@@ -120,7 +120,7 @@ public:
         return true;
     }
 
-    static bool HandleTitlesRemoveCommand(ChatHandler* handler, Variant<Hyperlink<title>, uint16> titleId)
+    static bool HandleTitlesRemoveCommand(ChatHandler* handler, Variant<Hyperlink<title>, uint32> titleId)
     {
         Player* target = handler->getSelectedPlayer();
         if (!target)
