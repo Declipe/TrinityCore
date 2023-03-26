@@ -290,6 +290,8 @@ enum UlduarGameObjects
     GO_THORIM_DARK_IRON_PORTCULLIS          = 194560,
 
     // Mimiron
+    Doodad_UL_Train_Turnaround01            = 194915,
+    Doodad_UL_Train_Turnaround02            = 194913,
     GO_MIMIRON_TRAM                         = 194675,
     GO_MIMIRON_ELEVATOR                     = 194749,
     GO_MIMIRON_BUTTON                       = 194739,
@@ -431,6 +433,8 @@ enum UlduarData
     DATA_MIMIRON_ELEVATOR,
     DATA_MIMIRON_TRAM,
     DATA_MIMIRON_BUTTON,
+    DATA_MIMIRON_TRAM_TURNOUT_1,
+    DATA_MIMIRON_TRAM_TURNOUT_2,
 
     // Yogg-Saron
     DATA_VOICE_OF_YOGG_SARON,

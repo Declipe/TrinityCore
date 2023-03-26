@@ -38,72 +38,72 @@ REPLACE INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_ent
 #include "DatabaseEnvFwd.h"
 #include "Log.h"
 
-#define MSG_GOSSIP_TEXT_GETTING_STARTED	"Приветствуем вас на сервере!"
+#define MSG_GOSSIP_TEXT_GETTING_STARTED	"???????????? ??? ?? ???????!"
 
-#define MSG_ERR_ARENA_POINT "У вас не достаточно Апа!"
-#define MSG_ERR_TITLE "У данного персонажа уже есть такое звание!"
-#define MSG_ERR_INCOMBAT "Вы находитесь в бою. Чтобы использовать данного Npc выйдите из него."
+#define MSG_ERR_ARENA_POINT "? ??? ?? ?????????? ???!"
+#define MSG_ERR_TITLE "? ??????? ????????? ??? ???? ????? ??????!"
+#define MSG_ERR_INCOMBAT "?? ?????????? ? ???. ????? ???????????? ??????? Npc ??????? ?? ????."
 
-#define MSG_GOSSIP_TEXT_NEXT_2 "[Вторая страница] ->"
-#define MSG_GOSSIP_TEXT_NEXT_3 "[Третья страница] ->"
-#define MSG_GOSSIP_TEXT_NEXT_4 "[Четвертая страница] ->"
-#define MSG_GOSSIP_TEXT_NEXT_5 "[Пятая страница] ->"
+#define MSG_GOSSIP_TEXT_NEXT_2 "[?????? ????????] ->"
+#define MSG_GOSSIP_TEXT_NEXT_3 "[?????? ????????] ->"
+#define MSG_GOSSIP_TEXT_NEXT_4 "[????????? ????????] ->"
+#define MSG_GOSSIP_TEXT_NEXT_5 "[????? ????????] ->"
 
-#define MSG_GOSSIP_TEXT_BACK_4 "<- [Четвертая страница] "
-#define MSG_GOSSIP_TEXT_BACK_3 "<- [Третья страница] "
-#define MSG_GOSSIP_TEXT_BACK_2 "<- [Вторая страница] "
-#define MSG_GOSSIP_TEXT_BACK_1 "<- [Первая страница] "
+#define MSG_GOSSIP_TEXT_BACK_4 "<- [????????? ????????] "
+#define MSG_GOSSIP_TEXT_BACK_3 "<- [?????? ????????] "
+#define MSG_GOSSIP_TEXT_BACK_2 "<- [?????? ????????] "
+#define MSG_GOSSIP_TEXT_BACK_1 "<- [?????? ????????] "
 
-#define MSG_GOSSIP_TEXT_144 "Получить звание Адмирал Кровавого Паруса"
-#define MSG_GOSSIP_TEXT_62 "Получить звание Безжалостный гладиатор"
-#define MSG_GOSSIP_TEXT_135 "Получить звание Безумно влюбленный"
-#define MSG_GOSSIP_TEXT_141 "Получить звание Бессмертный"
-#define MSG_GOSSIP_TEXT_138 "Получить звание Благодетель"
-#define MSG_GOSSIP_TEXT_170 "Получить звание Великий крестоносец"
-#define MSG_GOSSIP_TEXT_28 "Получить звание Верховный вождь"
-#define MSG_GOSSIP_TEXT_48 "Получить звание Вершитель правосудия"
-#define MSG_GOSSIP_TEXT_134 "Получить звание Весельчак"
-#define MSG_GOSSIP_TEXT_72 "Получить звание Военачальник"
-#define MSG_GOSSIP_TEXT_42 "Получить звание Гладиатор"
-#define MSG_GOSSIP_TEXT_113 "Получить звание Гномреганский"
-#define MSG_GOSSIP_TEXT_147 "Получить звание Дарнасский"
-#define MSG_GOSSIP_TEXT_143 "Получить звание Дженкинс"
-#define MSG_GOSSIP_TEXT_79 "Получить звание Дипломат"
-#define MSG_GOSSIP_TEXT_64 "Получить звание Длань А'дала"
-#define MSG_GOSSIP_TEXT_43 "Получить звание Дуэлянт"
-#define MSG_GOSSIP_TEXT_80 "Получить звание Жестокий Гладиатор"
-#define MSG_GOSSIP_TEXT_47 "Получить звание Завоеватель"
-#define MSG_GOSSIP_TEXT_122 "Получить звание Завоеватель Наксрамаса"
-#define MSG_GOSSIP_TEXT_81 "Получить звание Искатель"
-#define MSG_GOSSIP_TEXT_78 "Получить звание Исследователь"
-#define MSG_GOSSIP_TEXT_156 "Получить звание Крестоносец"
-#define MSG_GOSSIP_TEXT_83 "Получить звание Морской дьявол"
-#define MSG_GOSSIP_TEXT_71 "Получить звание Мстительный гладиатор"
-#define MSG_GOSSIP_TEXT_142 "Получить звание Неумирающий"
-#define MSG_GOSSIP_TEXT_146 "Получить звание Неумолимый гладиатор"
-#define MSG_GOSSIP_TEXT_150 "Получить звание Оргриммарский"
-#define MSG_GOSSIP_TEXT_46 "Получить звание Повелитель Скарабеев"
-#define MSG_GOSSIP_TEXT_278 "Получить звание Повелитель Огня"
-#define MSG_GOSSIP_TEXT_139 "Получить звание Покоритель Обсидианового святилища"
-#define MSG_GOSSIP_TEXT_77 "Получить звание Превозносимый"
-#define MSG_GOSSIP_TEXT_74 "Получить звание Премудрый"
-#define MSG_GOSSIP_TEXT_45 "Получить звание Претендент"
-#define MSG_GOSSIP_TEXT_177 "Получить звание Разгневанный гладиатор"
-#define MSG_GOSSIP_TEXT_151 "Получить звание Сен'джинский"
-#define MSG_GOSSIP_TEXT_171 "Получить звание Серебряный заступник"
-#define MSG_GOSSIP_TEXT_131 "Получить звание Серебряный защитник"
-#define MSG_GOSSIP_TEXT_173 "Получить звание Сияние Рассвета"
-#define MSG_GOSSIP_TEXT_157 "Получить звание Смертоносный гладиатор"
-#define MSG_GOSSIP_TEXT_75 "Получить звание Страж огня"
-#define MSG_GOSSIP_TEXT_140 "Получить звание Сумеречный"
-#define MSG_GOSSIP_TEXT_172 "Получить звание Терпеливый"
-#define MSG_GOSSIP_TEXT_124 "Получить звание Тыквер"
-#define MSG_GOSSIP_TEXT_133 "Получить звание Хмелевар"
-#define MSG_GOSSIP_TEXT_125 "Получить звание Хранитель мудрости"
-#define MSG_GOSSIP_TEXT_76 "Получить звание Хранитель огня"
-#define MSG_GOSSIP_TEXT_145 "Получить звание Чокнутый"
-#define MSG_GOSSIP_TEXT_155 "Получить звание Чудесный"
-#define MSG_GOSSIP_TEXT_84 "Получить звание Шеф-повар"
+#define MSG_GOSSIP_TEXT_144 "???????? ?????? ??????? ????????? ??????"
+#define MSG_GOSSIP_TEXT_62 "???????? ?????? ???????????? ?????????"
+#define MSG_GOSSIP_TEXT_135 "???????? ?????? ??????? ??????????"
+#define MSG_GOSSIP_TEXT_141 "???????? ?????? ???????????"
+#define MSG_GOSSIP_TEXT_138 "???????? ?????? ???????????"
+#define MSG_GOSSIP_TEXT_170 "???????? ?????? ??????? ???????????"
+#define MSG_GOSSIP_TEXT_28 "???????? ?????? ????????? ?????"
+#define MSG_GOSSIP_TEXT_48 "???????? ?????? ????????? ??????????"
+#define MSG_GOSSIP_TEXT_134 "???????? ?????? ?????????"
+#define MSG_GOSSIP_TEXT_72 "???????? ?????? ????????????"
+#define MSG_GOSSIP_TEXT_42 "???????? ?????? ?????????"
+#define MSG_GOSSIP_TEXT_113 "???????? ?????? ?????????????"
+#define MSG_GOSSIP_TEXT_147 "???????? ?????? ??????????"
+#define MSG_GOSSIP_TEXT_143 "???????? ?????? ????????"
+#define MSG_GOSSIP_TEXT_79 "???????? ?????? ????????"
+#define MSG_GOSSIP_TEXT_64 "???????? ?????? ????? ?'????"
+#define MSG_GOSSIP_TEXT_43 "???????? ?????? ???????"
+#define MSG_GOSSIP_TEXT_80 "???????? ?????? ???????? ?????????"
+#define MSG_GOSSIP_TEXT_47 "???????? ?????? ???????????"
+#define MSG_GOSSIP_TEXT_122 "???????? ?????? ??????????? ??????????"
+#define MSG_GOSSIP_TEXT_81 "???????? ?????? ????????"
+#define MSG_GOSSIP_TEXT_78 "???????? ?????? ?????????????"
+#define MSG_GOSSIP_TEXT_156 "???????? ?????? ???????????"
+#define MSG_GOSSIP_TEXT_83 "???????? ?????? ??????? ??????"
+#define MSG_GOSSIP_TEXT_71 "???????? ?????? ??????????? ?????????"
+#define MSG_GOSSIP_TEXT_142 "???????? ?????? ???????????"
+#define MSG_GOSSIP_TEXT_146 "???????? ?????? ?????????? ?????????"
+#define MSG_GOSSIP_TEXT_150 "???????? ?????? ?????????????"
+#define MSG_GOSSIP_TEXT_46 "???????? ?????? ?????????? ?????????"
+#define MSG_GOSSIP_TEXT_278 "???????? ?????? ?????????? ????"
+#define MSG_GOSSIP_TEXT_139 "???????? ?????? ?????????? ????????????? ?????????"
+#define MSG_GOSSIP_TEXT_77 "???????? ?????? ?????????????"
+#define MSG_GOSSIP_TEXT_74 "???????? ?????? ?????????"
+#define MSG_GOSSIP_TEXT_45 "???????? ?????? ??????????"
+#define MSG_GOSSIP_TEXT_177 "???????? ?????? ???????????? ?????????"
+#define MSG_GOSSIP_TEXT_151 "???????? ?????? ???'????????"
+#define MSG_GOSSIP_TEXT_171 "???????? ?????? ?????????? ?????????"
+#define MSG_GOSSIP_TEXT_131 "???????? ?????? ?????????? ????????"
+#define MSG_GOSSIP_TEXT_173 "???????? ?????? ?????? ????????"
+#define MSG_GOSSIP_TEXT_157 "???????? ?????? ???????????? ?????????"
+#define MSG_GOSSIP_TEXT_75 "???????? ?????? ????? ????"
+#define MSG_GOSSIP_TEXT_140 "???????? ?????? ??????????"
+#define MSG_GOSSIP_TEXT_172 "???????? ?????? ??????????"
+#define MSG_GOSSIP_TEXT_124 "???????? ?????? ??????"
+#define MSG_GOSSIP_TEXT_133 "???????? ?????? ????????"
+#define MSG_GOSSIP_TEXT_125 "???????? ?????? ????????? ????????"
+#define MSG_GOSSIP_TEXT_76 "???????? ?????? ????????? ????"
+#define MSG_GOSSIP_TEXT_145 "???????? ?????? ????????"
+#define MSG_GOSSIP_TEXT_155 "???????? ?????? ????????"
+#define MSG_GOSSIP_TEXT_84 "???????? ?????? ???-?????"
 
 #define CONST_ARENA_POINT 200
 
@@ -179,52 +179,52 @@ public:
             switch (action)
             {
             case 2:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(144);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(144);
             AddTitle(player, titleInfo);
             }
             break;
             case 3:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(62);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(62);
             AddTitle(player, titleInfo);
             }
             break;
             case 4:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(135);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(135);
             AddTitle(player, titleInfo);
             }
             break;
             case 5:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(141);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(141);
             AddTitle(player, titleInfo);
             }
             break;
             case 6:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(138);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(138);
             AddTitle(player, titleInfo);
             }
             break;
             case 7:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(170);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(170);
             AddTitle(player, titleInfo);
             }
             break;
             case 8:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(28);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(28);
             AddTitle(player, titleInfo);
             }
             break;
             case 9:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(48);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(48);
             AddTitle(player, titleInfo);
             }
             break;
             case 10:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(134);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(134);
             AddTitle(player, titleInfo);
             }
             break;
             case 11:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(72);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(72);
             AddTitle(player, titleInfo);
             }
             break;
@@ -245,52 +245,52 @@ public:
                 SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                 break;
             case 13:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(42);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(42);
             AddTitle(player, titleInfo);
             }
             break;
             case 14:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(113);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(113);
             AddTitle(player, titleInfo);
             }
             break;
             case 15:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(147);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(147);
             AddTitle(player, titleInfo);
             }
             break;
             case 16:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(143);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(143);
             AddTitle(player, titleInfo);
             }
             break;
             case 17:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(79);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(79);
             AddTitle(player, titleInfo);
             }
             break;
             case 18:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(64);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(64);
             AddTitle(player, titleInfo);
             }
             break;
             case 19:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(43);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(43);
             AddTitle(player, titleInfo);
             }
             break;
             case 20:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(80);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(80);
             AddTitle(player, titleInfo);
             }
             break;
             case 21:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(47);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(47);
             AddTitle(player, titleInfo);
             }
             break;
             case 22:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(122);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(122);
             AddTitle(player, titleInfo);
             }
             break;
@@ -311,52 +311,52 @@ public:
                 SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                 break;
             case 24:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(81);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(81);
             AddTitle(player, titleInfo);
             }
             break;
             case 25:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(78);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(78);
             AddTitle(player, titleInfo);
             }
             break;
             case 26:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(156);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(156);
             AddTitle(player, titleInfo);
             }
             break;
             case 27:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(83);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(83);
             AddTitle(player, titleInfo);
             }
             break;
             case 28:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(71);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(71);
             AddTitle(player, titleInfo);
             }
             break;
             case 29:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(142);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(142);
             AddTitle(player, titleInfo);
             }
             break;
             case 30:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(146);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(146);
             AddTitle(player, titleInfo);
             }
             break;
             case 31:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(150);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(150);
             AddTitle(player, titleInfo);
             }
             break;
             case 32:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(46);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(46);
             AddTitle(player, titleInfo);
             }
             break;
             case 33:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(278);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(278);
             AddTitle(player, titleInfo);
             }
             break;
@@ -377,52 +377,52 @@ public:
                 SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                 break;
             case 35:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(139);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(139);
             AddTitle(player, titleInfo);
             }
             break;
             case 36:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(77);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(77);
             AddTitle(player, titleInfo);
             }
             break;
             case 37:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(74);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(74);
             AddTitle(player, titleInfo);
             }
             break;
             case 38:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(45);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(45);
             AddTitle(player, titleInfo);
             }
             break;
             case 39:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(177);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(177);
             AddTitle(player, titleInfo);
             }
             break;
             case 40:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(151);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(151);
             AddTitle(player, titleInfo);
             }
             break;
             case 41:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(171);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(171);
             AddTitle(player, titleInfo);
             }
             break;
             case 42:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(131);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(131);
             AddTitle(player, titleInfo);
             }
             break;
             case 43:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(173);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(173);
             AddTitle(player, titleInfo);
             }
             break;
             case 44:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(157);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(157);
             AddTitle(player, titleInfo);
             }
             break;
@@ -442,52 +442,52 @@ public:
                 SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                 break;
             case 46:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(75);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(75);
             AddTitle(player, titleInfo);
             }
             break;
             case 47:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(140);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(140);
             AddTitle(player, titleInfo);
             }
             break;
             case 48:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(172);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(172);
             AddTitle(player, titleInfo);
             }
             break;
             case 49:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(124);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(124);
             AddTitle(player, titleInfo);
             }
             break;
             case 50:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(133);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(133);
             AddTitle(player, titleInfo);
             }
             break;
             case 51:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(125);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(125);
             AddTitle(player, titleInfo);
             }
             break;
             case 52:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(76);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(76);
             AddTitle(player, titleInfo);
             }
             break;
             case 53:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(145);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(145);
             AddTitle(player, titleInfo);
             }
             break;
             case 54:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(155);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(155);
             AddTitle(player, titleInfo);
             }
             break;
             case 55:
-            {CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(84);
+            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(84);
             AddTitle(player, titleInfo);
             }
             break;

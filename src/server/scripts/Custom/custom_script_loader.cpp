@@ -17,6 +17,7 @@
 
 // This is where scripts' loading functions should be declared:
 
+void AddSC_ex_champions();
 void AddSC_dk_trial_of_the_champion();
 void AddSC_dk_boss_grand_champions();
 void AddSC_dk_boss_black_knight();
@@ -67,6 +68,7 @@ void AddSC_AutoBalance();
 
 void AddCustomScripts()
 {
+    AddSC_ex_champions();
     AddSC_NPC_TransmogDisplayVendor();
     AddSC_Mod_SpecialCode();
     AddSC_BGReward();

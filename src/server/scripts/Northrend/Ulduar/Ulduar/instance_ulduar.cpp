@@ -28,6 +28,21 @@
 #include "Vehicle.h"
 #include "WorldStatePackets.h"
 
+#include "DBCStructure.h"
+#include "GameEventMgr.h"
+#include "GameObjectAI.h"
+#include "GameTime.h"
+#include "Log.h"
+#include "MotionMaster.h"
+#include "ObjectMgr.h"
+#include "ScriptedCreature.h"
+#include "ScriptedGossip.h"
+#include "Spell.h"
+#include "SpellInfo.h"
+#include "SpellMgr.h"
+#include "WorldSession.h"
+
+
 static BossBoundaryData const boundaries =
 {
     { DATA_FLAME_LEVIATHAN, new RectangleBoundary(148.0f, 401.3f, -155.0f, 90.0f) },
@@ -121,6 +136,9 @@ ObjectData const objectData[] =
 {
     { GO_MIMIRON_ELEVATOR,             DATA_MIMIRON_ELEVATOR     },
     { GO_MIMIRON_BUTTON,               DATA_MIMIRON_BUTTON       },
+    { GO_MIMIRON_TRAM,                 DATA_MIMIRON_TRAM         },
+    { Doodad_UL_Train_Turnaround01,    DATA_MIMIRON_TRAM_TURNOUT_1 },
+    { Doodad_UL_Train_Turnaround02,    DATA_MIMIRON_TRAM_TURNOUT_2 },
     { GO_DOODAD_UL_UNIVERSEGLOBE01,    DATA_UNIVERSE_GLOBE       },
     { GO_DOODAD_UL_ULDUAR_TRAPDOOR_03, DATA_ALGALON_TRAPDOOR     },
     { GO_RAZOR_HARPOON_1,              GO_RAZOR_HARPOON_1        },
@@ -1080,7 +1098,120 @@ class instance_ulduar : public InstanceMapScript
         }
 };
 
+
+enum TramEvents
+{
+    EVENT_NONE = 0,
+    EVENT_CAST = 1,
+    EVENT_BUTTON_RDY = 2,
+    EVENT_BUTTON_APPEAR = 3
+};
+
+class go_mimiron_activate_tram : public GameObjectScript
+{
+public:
+    go_mimiron_activate_tram() : GameObjectScript("go_mimiron_activate_tram") { }
+
+    struct go_mimiron_activate_tramAI : public GameObjectAI
+    {
+        go_mimiron_activate_tramAI(GameObject* go) : GameObjectAI(go), instance(go->GetInstanceScript())
+        {
+            Initialize();
+        }
+
+        void Initialize()
+        {
+            _event.Reset();
+            _event.ScheduleEvent(EVENT_CAST, 35s);
+        }
+
+        void Reset() override
+        {
+            Initialize();
+        }
+
+        InstanceScript* instance;
+        Player* clicker;
+
+        bool OnGossipHello(Player* player) override
+        {
+            switch (me->GetEntry())
+            {
+                case 194914:
+                case 194438:
+                    instance->SetData(DATA_MIMIRON_TRAM, 0);
+                    break;
+                case 194912:
+                case 194437:
+                    instance->SetData(DATA_MIMIRON_TRAM, 1);
+                    break;
+            }
+
+            _event.ScheduleEvent(EVENT_CAST, 0s);
+            _event.ScheduleEvent(EVENT_BUTTON_RDY, 500ms);
+
+            me->SetGoState(GO_STATE_ACTIVE); //animation of button
+            clicker = player;
+            return true;
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (!me)
+                return;
+
+            if (_event.Empty())
+                return;
+
+            _event.Update(diff);
+
+            while (uint32 eventId = _event.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                    case EVENT_CAST:
+                        if (GameObject* turn1 = instance->GetGameObject(DATA_MIMIRON_TRAM_TURNOUT_1))
+                            turn1->SetGoState(GO_STATE_READY);
+
+                        if (GameObject* turn2 = instance->GetGameObject(DATA_MIMIRON_TRAM_TURNOUT_2))
+                            turn2->SetGoState(GO_STATE_READY);
+                        break;
+                    case EVENT_BUTTON_RDY:
+                        me->SetGoState(GO_STATE_READY); //animation of button
+
+                        if (GameObject* turn1 = instance->GetGameObject(DATA_MIMIRON_TRAM_TURNOUT_1))
+                            turn1->SetGoState(GO_STATE_ACTIVE);
+
+                        if (GameObject* turn2 = instance->GetGameObject(DATA_MIMIRON_TRAM_TURNOUT_2))
+                            turn2->SetGoState(GO_STATE_ACTIVE);
+
+                        if (GameObject* tram = instance->GetGameObject(DATA_MIMIRON_TRAM))
+                        {
+                            // Activate
+                            tram->SetLootState(GO_READY);
+                            tram->UseDoorOrButton(0u, false, clicker);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            GameObjectAI::UpdateAI(diff);
+        }
+
+    private:
+        EventMap _event;
+    };
+
+    GameObjectAI* GetAI(GameObject* go) const override
+    {
+        return GetUlduarAI<go_mimiron_activate_tramAI>(go);
+    }
+};
+
 void AddSC_instance_ulduar()
 {
     new instance_ulduar();
+    new go_mimiron_activate_tram();
 }
