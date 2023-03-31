@@ -1307,8 +1307,8 @@ class TC_GAME_API ObjectMgr
         uint64 GenerateEquipmentSetGuid();
         uint32 GenerateMailID();
         uint32 GeneratePetNumber();
-        ObjectGuid::LowType GenerateCreatureSpawnId();
-        ObjectGuid::LowType GenerateGameObjectSpawnId();
+        uint64 GenerateCreatureSpawnId();
+        uint64 GenerateGameObjectSpawnId();
 
         SpawnGroupTemplateData const* GetSpawnGroupData(uint32 groupId) const { auto it = _spawnGroupDataStore.find(groupId); return it != _spawnGroupDataStore.end() ? &it->second : nullptr; }
         SpawnGroupTemplateData const* GetSpawnGroupData(SpawnObjectType type, ObjectGuid::LowType spawnId) const { SpawnMetadata const* data = GetSpawnMetadata(type, spawnId); return data ? data->spawnGroupData : nullptr; }
@@ -1504,8 +1504,8 @@ class TC_GAME_API ObjectMgr
         void RemoveCreatureFromGrid(ObjectGuid::LowType guid, CreatureData const* data);
         void AddGameobjectToGrid(ObjectGuid::LowType guid, GameObjectData const* data);
         void RemoveGameobjectFromGrid(ObjectGuid::LowType guid, GameObjectData const* data);
-        ObjectGuid::LowType AddGameObjectData(uint32 entry, uint32 map, Position const& pos, QuaternionData const& rot, uint32 spawntimedelay = 0);
-        ObjectGuid::LowType AddCreatureData(uint32 entry, uint32 map, Position const& pos, uint32 spawntimedelay = 0);
+        uint64 AddGameObjectData(uint64 entry, uint32 map, Position const& pos, QuaternionData const& rot, uint32 spawntimedelay = 0);
+        uint64 AddCreatureData(uint64 entry, uint32 map, Position const& pos, uint32 spawntimedelay = 0);
 
         // reserved names
         void LoadReservedPlayersNames();

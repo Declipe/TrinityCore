@@ -2634,7 +2634,7 @@ void ObjectMgr::RemoveCreatureFromGrid(ObjectGuid::LowType guid, CreatureData co
     }
 }
 
-ObjectGuid::LowType ObjectMgr::AddGameObjectData(uint32 entry, uint32 mapId, Position const& pos, QuaternionData const& rot, uint32 spawntimedelay /*= 0*/)
+uint64 ObjectMgr::AddGameObjectData(uint64 entry, uint32 mapId, Position const& pos, QuaternionData const& rot, uint32 spawntimedelay /*= 0*/)
 {
     GameObjectTemplate const* goinfo = GetGameObjectTemplate(entry);
     if (!goinfo)
@@ -2644,7 +2644,7 @@ ObjectGuid::LowType ObjectMgr::AddGameObjectData(uint32 entry, uint32 mapId, Pos
     if (!map)
         return 0;
 
-    ObjectGuid::LowType spawnId = GenerateGameObjectSpawnId();
+    uint64 spawnId = GenerateGameObjectSpawnId();
 
     GameObjectData& data = NewOrExistGameObjectData(spawnId);
     data.spawnId        = spawnId;
@@ -2681,7 +2681,7 @@ ObjectGuid::LowType ObjectMgr::AddGameObjectData(uint32 entry, uint32 mapId, Pos
     return spawnId;
 }
 
-ObjectGuid::LowType ObjectMgr::AddCreatureData(uint32 entry, uint32 mapId, Position const& pos, uint32 spawntimedelay /*= 0*/)
+uint64 ObjectMgr::AddCreatureData(uint64 entry, uint32 mapId, Position const& pos, uint32 spawntimedelay /*= 0*/)
 {
     CreatureTemplate const* cInfo = GetCreatureTemplate(entry);
     if (!cInfo)
@@ -7797,9 +7797,9 @@ uint32 ObjectMgr::GeneratePetNumber()
     return _hiPetNumber++;
 }
 
-uint32 ObjectMgr::GenerateCreatureSpawnId()
+uint64 ObjectMgr::GenerateCreatureSpawnId()
 {
-    if (_creatureSpawnId >= uint32(0xFFFFFF))
+    if (_creatureSpawnId >= uint64(0xFFFFFFFFFFFFFFFELL))
     {
         TC_LOG_ERROR("misc", "Creature spawn id overflow!! Can't continue, shutting down server. Search on forum for TCE00007 for more info.");
         World::StopNow(ERROR_EXIT_CODE);
@@ -7807,9 +7807,9 @@ uint32 ObjectMgr::GenerateCreatureSpawnId()
     return _creatureSpawnId++;
 }
 
-uint32 ObjectMgr::GenerateGameObjectSpawnId()
+uint64 ObjectMgr::GenerateGameObjectSpawnId()
 {
-    if (_gameObjectSpawnId >= uint32(0xFFFFFF))
+    if (_gameObjectSpawnId >= uint64(0xFFFFFFFFFFFFFFFELL))
     {
         TC_LOG_ERROR("misc", "GameObject spawn id overflow!! Can't continue, shutting down server. Search on forum for TCE00007 for more info. ");
         World::StopNow(ERROR_EXIT_CODE);
