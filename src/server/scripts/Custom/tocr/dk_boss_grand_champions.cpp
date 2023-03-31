@@ -1573,7 +1573,7 @@ public:
 class dk_boss_rogue_toc5 : public CreatureScript
 {
 public:
-    dk_boss_rogue_toc5() : CreatureScript("boss_rouge_toc5") { }
+    dk_boss_rogue_toc5() : CreatureScript("dk_boss_rogue_toc5") { }
 
     // Lana Stouthammer Evensong && Deathstalker Visceri || Rogue
     struct dk_boss_rogue_toc5AI : public boss_grand_championAI
