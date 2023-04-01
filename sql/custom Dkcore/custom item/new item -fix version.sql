@@ -1162,7 +1162,7 @@ INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubcla
 INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('53938', '4', '6', '-1', '38258', '14', '1', '4');
 
 
---strella
+-- strella
 INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('2103', '6', '2', '-1', '26499', '24', '2', '0');
 INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('2514', '6', '2', '-1', '5996', '24', '2', '0');
 INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('2517', '6', '2', '-1', '5996', '24', '2', '0');
@@ -1172,7 +1172,7 @@ INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubcla
 INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('29907', '6', '2', '-1', '41489', '24', '2', '0');
 INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('37309', '6', '2', '-1', '41489', '24', '2', '0');
 INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('46854', '6', '2', '-1', '60089', '24', '2', '0');
---piy piy                 
+-- piy piy                 
 INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('2104', '6', '3', '-1', '5999', '24', '2', '0');
 INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('2513', '6', '3', '-1', '5998', '24', '2', '0');
 INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('2518', '6', '3', '-1', '5998', '24', '2', '0');
