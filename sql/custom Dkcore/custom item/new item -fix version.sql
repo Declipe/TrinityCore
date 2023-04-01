@@ -1162,6 +1162,46 @@ INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubcla
 INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('53938', '4', '6', '-1', '38258', '14', '1', '4');
 
 
+--strella
+INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('2103', '6', '2', '-1', '26499', '24', '2', '0');
+INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('2514', '6', '2', '-1', '5996', '24', '2', '0');
+INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('2517', '6', '2', '-1', '5996', '24', '2', '0');
+INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('3029', '6', '2', '-1', '5996', '24', '2', '0');
+INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('3043', '6', '2', '-1', '2414', '24', '2', '0');
+INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('19082', '6', '2', '-1', '23211', '24', '2', '0');
+INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('29907', '6', '2', '-1', '41489', '24', '2', '0');
+INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('37309', '6', '2', '-1', '41489', '24', '2', '0');
+INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('46854', '6', '2', '-1', '60089', '24', '2', '0');
+--piy piy                 
+INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('2104', '6', '3', '-1', '5999', '24', '2', '0');
+INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('2513', '6', '3', '-1', '5998', '24', '2', '0');
+INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('2518', '6', '3', '-1', '5998', '24', '2', '0');
+INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('19285', '6', '3', '-1', '8127', '21', '1', '7');
+INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('19286', '6', '3', '-1', '26613', '24', '2', '0');
+INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('32880', '6', '3', '-1', '45547', '24', '6', '0');
+INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('32881', '6', '3', '-1', '45547', '24', '6', '0');
+INSERT INTO `item_template2` (`entry`, `class`, `subclass`, `SoundOverrideSubclass`,`displayid`,`inventorytype`,`material`,`sheath`)VALUES ('34534', '6', '3', '-1', '23211', '24', '2', '0');
+
+
+INSERT INTO `creature_template` VALUES (500146,0,0,0,0,0,30721,0,0,0,'GM Piy Items','',NULL,0,80,80,0,35,4225,1,1.14286,0.75,3,0,0,2000,1,1,1,0,2048,0,0,0,0,0,0,0,0,0,0,0,'',0,1,1,1,1,1,1,0,0,1,0,0,128,'',12340);
+
+INSERT INTO `npc_vendor` VALUES (500146,0,2103,0,0,0,0);
+INSERT INTO `npc_vendor` VALUES (500146,0,2514,0,0,0,0);
+INSERT INTO `npc_vendor` VALUES (500146,0,2517,0,0,0,0);
+INSERT INTO `npc_vendor` VALUES (500146,0,3029,0,0,0,0);
+INSERT INTO `npc_vendor` VALUES (500146,0,3043,0,0,0,0);
+INSERT INTO `npc_vendor` VALUES (500146,0,19082,0,0,0,0);
+INSERT INTO `npc_vendor` VALUES (500146,0,29907,0,0,0,0);
+INSERT INTO `npc_vendor` VALUES (500146,0,37309,0,0,0,0);
+INSERT INTO `npc_vendor` VALUES (500146,0,46854,0,0,0,0);
+INSERT INTO `npc_vendor` VALUES (500146,0,2104,0,0,0,0);
+INSERT INTO `npc_vendor` VALUES (500146,0,2513,0,0,0,0);
+INSERT INTO `npc_vendor` VALUES (500146,0,2518,0,0,0,0);
+INSERT INTO `npc_vendor` VALUES (500146,0,19285,0,0,0,0);
+INSERT INTO `npc_vendor` VALUES (500146,0,19286,0,0,0,0);
+INSERT INTO `npc_vendor` VALUES (500146,0,32880,0,0,0,0);
+INSERT INTO `npc_vendor` VALUES (500146,0,32881,0,0,0,0);
+INSERT INTO `npc_vendor` VALUES (500146,0,34534,0,0,0,0);
 
 
 
