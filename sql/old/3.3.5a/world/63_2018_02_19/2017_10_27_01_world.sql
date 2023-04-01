@@ -1,5 +1,3 @@
-SET sql_mode = 'ALLOW_INVALID_DATES';
-
 DROP TABLE IF EXISTS `holiday_dates`;
 CREATE TABLE `holiday_dates` (
   `id` INT UNSIGNED NOT NULL,
