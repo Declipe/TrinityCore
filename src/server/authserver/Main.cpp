@@ -36,7 +36,6 @@
 #include "MySQLThreading.h"
 #include "OpenSSLCrypto.h"
 #include "ProcessPriority.h"
-#include "Patcher.h"
 #include "RealmList.h"
 #include "SecretMgr.h"
 #include "SharedDefines.h"
@@ -172,9 +171,6 @@ int main(int argc, char** argv)
         TC_LOG_ERROR("server.authserver", "No valid realms specified.");
         return 1;
     }
-
-    // Initialize patcher
-    sPatcher->Initialize();
 
     // Start the listening port (acceptor) for auth connections
     int32 port = sConfigMgr->GetIntDefault("RealmServerPort", 3724);
