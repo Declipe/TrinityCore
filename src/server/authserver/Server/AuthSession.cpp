@@ -33,6 +33,8 @@
 #include "Util.h"
 #include <boost/lexical_cast.hpp>
 #include <openssl/crypto.h>
+#include <openssl/md5.h>
+#include "PatchMgr.h"
 
 using boost::asio::ip::tcp;
 
@@ -120,6 +122,9 @@ std::array<uint8, 16> VersionChallenge = { { 0xBA, 0xA3, 0x1E, 0x99, 0xA0, 0x0B,
 
 #define AUTH_LOGON_CHALLENGE_INITIAL_SIZE 4
 #define REALM_LIST_PACKET_SIZE 5
+#define XFER_ACCEPT_SIZE 1
+#define XFER_RESUME_SIZE 9
+#define XFER_CANCEL_SIZE 1
 
 std::unordered_map<uint8, AuthHandler> AuthSession::InitHandlers()
 {
@@ -130,6 +135,9 @@ std::unordered_map<uint8, AuthHandler> AuthSession::InitHandlers()
     handlers[AUTH_RECONNECT_CHALLENGE] = { STATUS_CHALLENGE, AUTH_LOGON_CHALLENGE_INITIAL_SIZE, &AuthSession::HandleReconnectChallenge };
     handlers[AUTH_RECONNECT_PROOF]     = { STATUS_RECONNECT_PROOF, sizeof(AUTH_RECONNECT_PROOF_C),    &AuthSession::HandleReconnectProof };
     handlers[REALM_LIST]               = { STATUS_AUTHED,    REALM_LIST_PACKET_SIZE,            &AuthSession::HandleRealmList };
+    handlers[XFER_ACCEPT]              = { STATUS_CLOSED,    XFER_ACCEPT_SIZE,                  &AuthSession::HandleXferAccept };
+    handlers[XFER_RESUME]              = { STATUS_CLOSED,    XFER_RESUME_SIZE,                  &AuthSession::HandleXferResume };
+    handlers[XFER_CANCEL]              = { STATUS_CLOSED,    XFER_CANCEL_SIZE,                  &AuthSession::HandleXferCancel };
 
     return handlers;
 }
@@ -161,7 +169,13 @@ void AccountInfo::LoadResult(Field* fields)
 }
 
 AuthSession::AuthSession(tcp::socket&& socket) : Socket(std::move(socket)),
-_status(STATUS_CHALLENGE), _build(0), _expversion(0) { }
+_patcher(nullptr), _status(STATUS_CHALLENGE), _build(0), _expversion(0) { }
+
+AuthSession::~AuthSession()
+{
+    if (_patcher)
+        delete _patcher;
+}
 
 void AuthSession::Start()
 {
@@ -404,7 +418,7 @@ void AuthSession::LogonChallengeCallback(PreparedQueryResult result)
     );
 
     // Fill the response packet with the result
-    if (AuthHelper::IsAcceptedClientBuild(_build))
+    if (AuthHelper::IsAcceptedClientBuild(_build) || sPatcher->CanPatch(_build))
     {
         pkt << uint8(WOW_SUCCESS);
 
@@ -458,8 +472,12 @@ bool AuthSession::HandleLogonProof()
     // If the client has no valid version
     if (_expversion == NO_VALID_EXP_FLAG)
     {
-        // Check if we have the appropriate patch on the disk
-        TC_LOG_DEBUG("network", "Client with invalid version, patching is not implemented");
+        TC_LOG_INFO("patcher", "User has no valid version. Attempting patching...");
+        if (sPatcher->CanPatch(_build)) {
+            sPatcher->Patch(_build, this);
+            return true;
+        }
+        TC_LOG_INFO("patcher", "Patching failed for user! Build: {}", _build);
         return false;
     }
 
@@ -825,6 +843,34 @@ void AuthSession::RealmListCallback(PreparedQueryResult result)
     SendPacket(hdr);
 
     _status = STATUS_AUTHED;
+}
+
+// Resume patch transfer
+bool AuthSession::HandleXferResume()
+{
+    TC_LOG_DEBUG("server.authserver", "Entering _HandleXferResume");
+    return true;
+}
+
+// Cancel patch transfer
+bool AuthSession::HandleXferCancel()
+{
+    TC_LOG_DEBUG("server.authserver", "Entering _HandleXferCancel");
+    if (_patcher)
+        _patcher->Stop();
+    return false;
+}
+
+// Accept patch transfer
+bool AuthSession::HandleXferAccept()
+{
+    TC_LOG_INFO("patcher", "Entering _HandleXferAccept");
+    if (!_patcher) {
+        TC_LOG_INFO("patcher", "No patcher for user!");
+        return false;
+    }
+    _patcher->Init();
+    return true;
 }
 
 bool AuthSession::VerifyVersion(uint8 const* a, int32 aLength, Trinity::Crypto::SHA1::Digest const& versionProof, bool isReconnect)
