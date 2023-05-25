@@ -107,7 +107,7 @@ void MapUpdater::WorkerThread()
     WorldDatabase.WarnAboutSyncQueries(true);
     ZynDatabase.WarnAboutSyncQueries(true);
 
-    while (1)
+    while (true)
     {
         MapUpdateRequest* request = nullptr;
 
