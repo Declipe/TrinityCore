@@ -542,7 +542,7 @@ void BattlegroundMgr::LoadBattlegroundTemplates()
             continue;
 
         // can be overwrite by values from DB
-        BattlemasterListEntry const* bl = sBattlemasterListStore.LookupEntry(bgTypeId);
+        BattlemasterListEntry const* bl = sDBCMgr->GetBattlemasterListEntry(bgTypeId);
         if (!bl)
         {
             TC_LOG_ERROR("bg.battleground", "Battleground ID %u could not be found in BattlemasterList.dbc. The battleground was not created.", bgTypeId);
@@ -904,7 +904,7 @@ void BattlegroundMgr::LoadBattleMastersEntry()
         }
 
         uint32 bgTypeId  = fields[1].GetUInt32();
-        if (!sBattlemasterListStore.LookupEntry(bgTypeId))
+        if (!sDBCMgr->GetBattlemasterListEntry(bgTypeId))
         {
             TC_LOG_ERROR("sql.sql", "Table `battlemaster_entry` contains entry %u for a non-existing battleground type %u, ignored.", entry, bgTypeId);
             continue;

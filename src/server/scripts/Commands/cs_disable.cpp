@@ -136,7 +136,7 @@ public:
             }
             case DISABLE_TYPE_BATTLEGROUND:
             {
-                if (!sBattlemasterListStore.LookupEntry(entry))
+                if (!sDBCMgr->GetBattlemasterListEntry(entry))
                 {
                     handler->PSendSysMessage(LANG_COMMAND_NO_BATTLEGROUND_FOUND);
                     handler->SetSentErrorMessage(true);
