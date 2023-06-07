@@ -85,7 +85,6 @@ public:
     }
 };
 
-//https://community.trinitycore.org/topic/14891-share-callback-between-two-custom-scripts-question/
 BattleRoyale::BattleRoyale() {
     m_TypeId = OUTDOOR_PVP_BR;
     m_zoneId = 493;

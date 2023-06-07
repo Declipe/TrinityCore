@@ -168,10 +168,10 @@ void ObjectMgr::LoadItemTemplates2()
         itemTemplate.Description = fields[102].GetString();
         itemTemplate.PageText = fields[103].GetUInt32();
         itemTemplate.LanguageID = uint32(fields[104].GetUInt8());
-        itemTemplate.PageMaterial = uint32(fields[105].GetUInt8());
+        itemTemplate.PageMaterial = uint32(fields[105].GetUInt32());
         itemTemplate.StartQuest = fields[106].GetUInt32();
         itemTemplate.LockID = fields[107].GetUInt32();
-        itemTemplate.Material = int32(fields[108].GetInt8());
+        itemTemplate.Material = int32(fields[108].GetInt32());
         itemTemplate.Sheath = uint32(fields[109].GetUInt8());
         itemTemplate.RandomProperty = fields[110].GetUInt32();
         itemTemplate.RandomSuffix = fields[111].GetInt32();
