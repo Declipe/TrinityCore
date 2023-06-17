@@ -29,7 +29,7 @@
 #include "SpellInfo.h"
 #include "Channel.h"
 #include "SpellMgr.h"
-#include "Implementation/ZynDatabase.h"
+#include "ZynDatabase.h"
 #include "DatabaseEnvFwd.h"
 #include "Log.h"
 
