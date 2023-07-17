@@ -98,7 +98,7 @@ TC_GAME_API extern DBCStorage <AuctionHouseEntry>            sAuctionHouseStore;
 TC_GAME_API extern DBCStorage <BankBagSlotPricesEntry>       sBankBagSlotPricesStore;
 TC_GAME_API extern DBCStorage <BannedAddOnsEntry>            sBannedAddOnsStore;
 TC_GAME_API extern DBCStorage <BarberShopStyleEntry>         sBarberShopStyleStore;
-//TC_GAME_API extern DBCStorage <BattlemasterListEntry>        sBattlemasterListStore;
+TC_GAME_API extern DBCStorage <BattlemasterListEntry>        sBattlemasterListStore;
 TC_GAME_API extern DBCStorage <ChatChannelsEntry>            sChatChannelsStore;
 TC_GAME_API extern DBCStorage <CharacterFacialHairStylesEntry> sCharacterFacialHairStylesStore;
 TC_GAME_API extern DBCStorage <CharSectionsEntry>            sCharSectionsStore;
@@ -216,7 +216,6 @@ TC_GAME_API void LoadDBCStores(const std::string& dataPath);
 typedef std::unordered_map<uint32, const WorldSafeLocsEntry*> WorldSafeLocsContainer;
 typedef std::unordered_map<uint32, const ItemExtendedCostEntry*> ItemExtendedCostContainer;
 typedef std::unordered_map<uint32, const CharTitlesEntry*> CharTitlesContainer;
-typedef std::unordered_map<uint32, const BattlemasterListEntry*> BattlemasterListContainer;
 
 class TC_GAME_API DBCMgr
 {
@@ -231,17 +230,14 @@ public:
     void LoadWorldSafeLocsStore();
     void LoadItemExtendedCostStore();
     void LoadCharTitlesStore();
-    void LoadBattlemasterListStore();
 
     const ItemExtendedCostEntry* GetItemExtendedCostEntry(uint32 ID) const { ItemExtendedCostContainer::const_iterator itr = ItemExtendedCostStore.find(ID); if (itr != ItemExtendedCostStore.end()) return itr->second; return nullptr; }
     const WorldSafeLocsEntry* GetWorldSafeLocsEntry(uint32 Id) const { WorldSafeLocsContainer::const_iterator itr = WorldSafeLocsStore.find(Id); if (itr != WorldSafeLocsStore.end()) return itr->second; return nullptr; }
     const CharTitlesEntry* GetCharTitlesEntry(uint32 ID) const { CharTitlesContainer::const_iterator itr = CharTitlesStore.find(ID); if (itr != CharTitlesStore.end()) return itr->second; return nullptr; }
-    const BattlemasterListEntry* GetBattlemasterListEntry(uint32 ID) const { BattlemasterListContainer::const_iterator itr = BattlemasterListStore.find(ID); if (itr != BattlemasterListStore.end()) return itr->second; return nullptr; }
 
     WorldSafeLocsContainer WorldSafeLocsStore;
     ItemExtendedCostContainer ItemExtendedCostStore;
     CharTitlesContainer CharTitlesStore;
-    BattlemasterListContainer BattlemasterListStore;
 };
 
 #define sDBCMgr DBCMgr::instance()

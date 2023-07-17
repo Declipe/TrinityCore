@@ -51,7 +51,7 @@ DBCStorage <AreaTriggerEntry> sAreaTriggerStore(AreaTriggerEntryfmt);
 DBCStorage <AuctionHouseEntry> sAuctionHouseStore(AuctionHouseEntryfmt);
 DBCStorage <BankBagSlotPricesEntry> sBankBagSlotPricesStore(BankBagSlotPricesEntryfmt);
 DBCStorage <BannedAddOnsEntry> sBannedAddOnsStore(BannedAddOnsfmt);
-//DBCStorage <BattlemasterListEntry> sBattlemasterListStore(BattlemasterListEntryfmt);
+DBCStorage <BattlemasterListEntry> sBattlemasterListStore(BattlemasterListEntryfmt);
 DBCStorage <BarberShopStyleEntry> sBarberShopStyleStore(BarberShopStyleEntryfmt);
 DBCStorage <CharacterFacialHairStylesEntry> sCharacterFacialHairStylesStore(CharacterFacialHairStylesfmt);
 std::unordered_map<uint32, CharacterFacialHairStylesEntry const*> sCharFacialHairMap;
@@ -291,8 +291,7 @@ void LoadDBCStores(const std::string& dataPath)
     LOAD_DBC(sAuctionHouseStore,                  "AuctionHouse.dbc");
     LOAD_DBC(sBankBagSlotPricesStore,             "BankBagSlotPrices.dbc");
     LOAD_DBC(sBannedAddOnsStore,                  "BannedAddOns.dbc");
-    //LOAD_DBC(sBattlemasterListStore,              "BattlemasterList.dbc");
-    sDBCMgr->LoadBattlemasterListStore();
+    LOAD_DBC(sBattlemasterListStore,              "BattlemasterList.dbc");
     LOAD_DBC(sBarberShopStyleStore,               "BarberShopStyle.dbc");
     LOAD_DBC(sCharacterFacialHairStylesStore,     "CharacterFacialHairStyles.dbc");
     LOAD_DBC(sCharSectionsStore,                  "CharSections.dbc");
@@ -1022,52 +1021,6 @@ void DBCMgr::LoadCharTitlesStore()
     } while (result->NextRow());
 
     TC_LOG_ERROR("misc", ">> Loaded %lu dbc_chartitles entries in %u ms", (unsigned long)CharTitlesStore.size(), GetMSTimeDiffToNow(oldMSTime));
-}
-
-void DBCMgr::LoadBattlemasterListStore()
-{
-    uint32 oldMSTime = getMSTime();
-    BattlemasterListStore.clear();
-    //                                                0     1        2        3        4        5        6        7       8             9           10              11              12              13              14              15              16              17              18              19              20            21                22            23               24            25             26        27            28              29         30           31         32
-    QueryResult result = WorldDatabase.Query("SELECT ID, MapID_1, MapID_2, MapID_3, MapID_4, MapID_5, MapID_6, MapID_7, MapID_8, InstanceType, GroupsAllowed, Name_Lang_enUS, Name_Lang_enGB, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_enCN, Name_Lang_zhCN, Name_Lang_enTW, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, Name_Lang_ptPT, Name_Lang_ptBR, Name_Lang_itIT, Name_Lang_Unk, Name_Lang_Mask, MaxGroupSize, HolidayWorldState, Minlevel, MaxLevel FROM battlemasterlistdbc");
-    if (!result)
-    {
-        TC_LOG_INFO("server.loading", ">> Loaded 0 battlemasterlistdbc. DB table `battlemasterlistdbc` is empty.");
-        return;
-    }
-
-    uint32 count = 0;
-    do
-    {
-        Field* fields = result->Fetch();
-        uint32 id = fields[0].GetUInt32();
-        BattlemasterListEntry* newBattlemasterList = new BattlemasterListEntry;
-        newBattlemasterList->ID = id;
-
-        newBattlemasterList->ID = fields[0].GetUInt32();
-
-        for (uint8 i = 0; i < 8; i++)
-            newBattlemasterList->MapID[i] = fields[0 + i].GetInt32();
-
-        newBattlemasterList->InstanceType = fields[9].GetUInt32();
-        newBattlemasterList->GroupsAllowed = fields[10].GetUInt32();
-
-        for (uint8 i = 0; i < 16; i++)
-            newBattlemasterList->Name[i] = (char*)fields[11 + i].GetCString();
-
-        newBattlemasterList->Name_Lang_Unk = fields[26].GetUInt32();
-        newBattlemasterList->Name_Lang_Mask = fields[27].GetUInt32();
-        newBattlemasterList->MaxGroupSize = fields[28].GetUInt32();
-        newBattlemasterList->HolidayWorldState = fields[29].GetUInt32();
-        newBattlemasterList->MinLevel = fields[30].GetUInt32();
-        newBattlemasterList->MaxLevel = fields[31].GetUInt32();
-
-        BattlemasterListStore[newBattlemasterList->ID] = newBattlemasterList;
-
-        ++count;
-    } while (result->NextRow());
-
-    TC_LOG_ERROR("misc", ">> Loaded %lu battlemaster list entries in %u ms", (unsigned long)BattlemasterListStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void DBCMgr::LoadItemExtendedCostStore()
