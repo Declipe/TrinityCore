@@ -1,5 +1,6 @@
 #include "Config.h"
-//#include "GuildMgr.h"
+#include "CustomConfig.h"
+#include "CustomConfig.h"
 #include "Player.h"
 #include "Battleground.h"
 #include "BattlegroundMgr.h"
@@ -129,11 +130,12 @@ class Mod_ItemUpgrade_WorldScript : public WorldScript
 
     void OnConfigLoad(bool /*reload*/)
     {
-        ItemUpgradeTextAreYouSure    = sConfigMgr->GetIntDefault("ItemUpgrade.Text.AreYouSure", ARE_YOU_SURE);
-        ItemUpgradeTextNoEffect      = sConfigMgr->GetIntDefault("ItemUpgrade.Text.NoEffect", NO_EFFECT);
-        ItemUpgradeTextEffectNow     = sConfigMgr->GetIntDefault("ItemUpgrade.Text.EffectNow", EFFECT_NOW);
-        ItemUpgradeTextEffectRemove  = sConfigMgr->GetIntDefault("ItemUpgrade.Text.EffectRemove", EFFECT_REMOVE);
-        ItemUpgradeEnable            = sConfigMgr->GetBoolDefault("ItemUpgrade.Enable", false);
+        ItemUpgradeTextAreYouSure    = sGameConfig->GetIntConfig("ItemUpgrade.Text.AreYouSure");
+        ItemUpgradeTextNoEffect      = sGameConfig->GetIntConfig("ItemUpgrade.Text.NoEffect");
+        ItemUpgradeTextEffectNow     = sGameConfig->GetIntConfig("ItemUpgrade.Text.EffectNow");
+        ItemUpgradeTextEffectRemove  = sGameConfig->GetIntConfig("ItemUpgrade.Text.EffectRemove");
+        //ItemUpgradeEnable            = sConfigMgr->GetBoolDefault("ItemUpgrade.Enable", false);
+        ItemUpgradeEnable            = sGameConfig->GetBoolConfig("ItemUpgrade.Enable");
 
         if (ItemUpgradeEnable)
             LoadDataFromDataBase();

@@ -1,4 +1,5 @@
 #include "Config.h"
+#include "CustomConfig.h"
 #include "Player.h"
 #include "ObjectMgr.h"
 #include "World.h"
@@ -186,14 +187,14 @@ bool isPlayerHasGuildhouse(Player *player, Creature *_creature, bool whisper = f
 void buyGuildhouse(Player *player, Creature *_creature, uint32 guildhouseId)
 {
 
- bool token = sConfigMgr->GetBoolDefault("GuildHouse.TokenOrGold", false);
- int cost = sConfigMgr->GetBoolDefault("GuildHouse.Cost", false);
+ bool token = sGameConfig->GetBoolConfig("GuildHouse.TokenOrGold");
+ int cost = sGameConfig->GetIntConfig("GuildHouse.Cost");
 
  if (player->GetMoney() < COST_GH_BUY)
  {
  //show how much money player need to buy GH (in gold)
  char msg[100];
- sprintf(msg, MSG_NOTENOUGHMONEY, COST_GH_BUY - sConfigMgr->GetBoolDefault("GuildHouse.Cost", false));
+ sprintf(msg, MSG_NOTENOUGHMONEY, COST_GH_BUY - sGameConfig->GetIntConfig("GuildHouse.Cost"));
  _creature->Whisper(msg, LANG_UNIVERSAL, player);
  return;
  }
@@ -220,7 +221,7 @@ void buyGuildhouse(Player *player, Creature *_creature, uint32 guildhouseId)
  player->GetGuildId(), guildhouseId);
 
 
- player->ModifyMoney(-sConfigMgr->GetIntDefault("GuildHouse.BuyCost", false) * 10000);
+ player->ModifyMoney(-sGameConfig->GetIntConfig("GuildHouse.BuyCost") * 10000);
 
  //player->DestroyItemCount(token, cost, true);
  _creature->Say(MSG_CONGRATULATIONS, LANG_UNIVERSAL, player);
@@ -235,11 +236,11 @@ void sellGuildhouse(Player *player, Creature *_creature)
  result = ZynDatabase.PQuery("UPDATE `guildhouses` SET `guildId` = 0 WHERE `guildId` = %u",
  player->GetGuildId());
 
- player->ModifyMoney(sConfigMgr->GetIntDefault("GuildHouse.SellCost", false) * 10000);
+ player->ModifyMoney(sGameConfig->GetIntConfig("GuildHouse.SellCost") * 10000);
 
  //display message e.g. "here your money etc."
  char msg[100];
- sprintf(msg, MSG_SOLD, sConfigMgr->GetIntDefault("GuildHouse.SellCost", false));
+ sprintf(msg, MSG_SOLD, sGameConfig->GetIntConfig("GuildHouse.SellCost"));
  _creature->Whisper(msg, LANG_UNIVERSAL, player);
  }
 }

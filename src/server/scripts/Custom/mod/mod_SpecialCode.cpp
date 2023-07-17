@@ -15,6 +15,7 @@
 #include "Opcodes.h"
 #include "Player.h"
 #include "PetitionMgr.h"
+#include "CustomConfig.h"
 #include "WorldPacket.h"
 #include "World.h"
 #include "ScriptMgr.h"
@@ -57,7 +58,7 @@ class Mod_SpecialCode_WorldScript : public WorldScript
 
     void OnConfigLoad(bool /*reload*/)
     {
-        SCEnable = sConfigMgr->GetBoolDefault("SpecialCode.Enable", false);
+        SCEnable = sGameConfig->GetBoolConfig("SpecialCode.Enable");
     }
 };
 

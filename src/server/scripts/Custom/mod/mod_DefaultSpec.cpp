@@ -10,6 +10,7 @@
 #include "Log.h"
 #include "GameTime.h"
 #include "SpellMgr.h"
+#include "CustomConfig.h"
 #include "Guild.h"
 #include "GuildMgr.h"
 #include "Battleground.h"
@@ -26,7 +27,7 @@ public:
     // Called after the world configuration is (re)loaded.
     void OnConfigLoad(bool /*reload*/)
     {
-        DefaultSpecEnable    = sConfigMgr->GetBoolDefault("DefaultSpec.Enable", false);
+        DefaultSpecEnable    = sGameConfig->GetBoolConfig("DefaultSpec.Enable");
     }
 };
 

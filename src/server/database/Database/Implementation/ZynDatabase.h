@@ -24,6 +24,7 @@ enum ZynDatabaseStatements : uint32
 {
     ZynDatabase1,
     ZynDatabase2,
+    WORLD_SEL_CUSTOM_CONFIG,
     MAX_ZYNDATABASE_STATEMENTS
 };
 

@@ -108,6 +108,7 @@
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include "Config.h"
+#include "CustomConfig.h"
 #ifdef ELUNA
 #include "LuaEngine.h"
 #endif
@@ -286,20 +287,20 @@ Player::Player(WorldSession* session): Unit(true)
     }
 
 	// PlayedTimeReward
-    ptr_Interval = sConfigMgr->GetIntDefault("PlayedTimeReward.Interval", 0);
-    ptr_Money = sConfigMgr->GetIntDefault("PlayedTimeReward.Money", 0);
-    ptr_Honor = sConfigMgr->GetIntDefault("PlayedTimeReward.Honor", 0);
-    ptr_Arena = sConfigMgr->GetIntDefault("PlayedTimeReward.Arena", 0);
-    ptr_item1 = sConfigMgr->GetIntDefault("PlayedTimeReward.item1", 0);
-    ptr_item2 = sConfigMgr->GetIntDefault("PlayedTimeReward.item2", 0);
-    ptr_item3 = sConfigMgr->GetIntDefault("PlayedTimeReward.item3", 0);
-    ptr_item4 = sConfigMgr->GetIntDefault("PlayedTimeReward.item4", 0);
-    ptr_item5 = sConfigMgr->GetIntDefault("PlayedTimeReward.item5", 0);
-    ptr_item1id = sConfigMgr->GetIntDefault("PlayedTimeReward.item1id", 0);
-    ptr_item2id = sConfigMgr->GetIntDefault("PlayedTimeReward.item2id", 0);
-    ptr_item3id = sConfigMgr->GetIntDefault("PlayedTimeReward.item3id", 0);
-    ptr_item4id = sConfigMgr->GetIntDefault("PlayedTimeReward.item4id", 0);
-    ptr_item5id = sConfigMgr->GetIntDefault("PlayedTimeReward.item5id", 0);
+    ptr_Interval = sGameConfig->GetIntConfig("PlayedTimeReward.Interval");
+    ptr_Money = sGameConfig->GetIntConfig("PlayedTimeReward.Money");
+    ptr_Honor = sGameConfig->GetIntConfig("PlayedTimeReward.Honor");
+    ptr_Arena = sGameConfig->GetIntConfig("PlayedTimeReward.Arena");
+    ptr_item1 = sGameConfig->GetIntConfig("PlayedTimeReward.item1");
+    ptr_item2 = sGameConfig->GetIntConfig("PlayedTimeReward.item2");
+    ptr_item3 = sGameConfig->GetIntConfig("PlayedTimeReward.item3");
+    ptr_item4 = sGameConfig->GetIntConfig("PlayedTimeReward.item4");
+    ptr_item5 = sGameConfig->GetIntConfig("PlayedTimeReward.item5");
+    ptr_item1id = sGameConfig->GetIntConfig("PlayedTimeReward.item1id");
+    ptr_item2id = sGameConfig->GetIntConfig("PlayedTimeReward.item2id");
+    ptr_item3id = sGameConfig->GetIntConfig("PlayedTimeReward.item3id");
+    ptr_item4id = sGameConfig->GetIntConfig("PlayedTimeReward.item4id");
+    ptr_item5id = sGameConfig->GetIntConfig("PlayedTimeReward.item5id");
 
     m_logintime = GameTime::GetGameTime();
     m_Last_tick = m_logintime;
@@ -1112,30 +1113,30 @@ void Player::Update(uint32 p_time)
             ModifyMoney(ptr_Money);
             ModifyHonorPoints(ptr_Honor);
             ModifyArenaPoints(ptr_Arena);
-    if (!sWorld->getBoolConfig(CONFIG_VIP1))
+    if (!sGameConfig->GetBoolConfig("Item.Disableall"))
             {
-				if (!sWorld->getBoolConfig(CONFIG_VIP2))
+				if (!sGameConfig->GetBoolConfig("Item.Disable1"))
                  {
                    AddItem(ptr_item1id, ptr_item1);
                  }
-				if (!sWorld->getBoolConfig(CONFIG_VIP3))
+				if (!sGameConfig->GetBoolConfig("Item.Disable2"))
                  {
                    AddItem(ptr_item2id, ptr_item2);
                  }
-				if (!sWorld->getBoolConfig(CONFIG_VIP4))
+				if (!sGameConfig->GetBoolConfig("Item.Disable3"))
                  {
                    AddItem(ptr_item3id, ptr_item3);
                  }
-				if (!sWorld->getBoolConfig(CONFIG_VIP5))
+				if (!sGameConfig->GetBoolConfig("Item.Disable4"))
                  {
                    AddItem(ptr_item4id, ptr_item4);
                  }
-				if (!sWorld->getBoolConfig(CONFIG_VIP6))
+				if (!sGameConfig->GetBoolConfig("Item.Disable5"))
                  {
                    AddItem(ptr_item5id, ptr_item5);
                  }
              }
-            ptr_Interval = sConfigMgr->GetIntDefault("PlayedTimeReward.Interval", 0);
+            ptr_Interval = sGameConfig->GetIntConfig("PlayedTimeReward.Interval");
         }
         else
             ptr_Interval -= p_time;
@@ -1835,7 +1836,7 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
     }
     else
     {
-        if (GetClass() == CLASS_DEATH_KNIGHT && GetMapId() == 609 && !IsGameMaster() && !HasSpell(50977) && !sWorld->getBoolConfig(CONFIG_DEATH_KNIGHT_SKIP_QUEST))
+        if (GetClass() == CLASS_DEATH_KNIGHT && GetMapId() == 609 && !IsGameMaster() && !HasSpell(50977) && !sGameConfig->GetBoolConfig("DeathKnight.SkipQuest"))
         {
             SendTransferAborted(mapid, TRANSFER_ABORT_UNIQUE_MESSAGE, 1);
             return false;
@@ -22589,7 +22590,7 @@ WorldLocation Player::GetStartPosition() const
     PlayerInfo const* info = sObjectMgr->GetPlayerInfo(GetRace(), GetClass());
     ASSERT(info);
     uint32 mapId = info->mapId;
-    if (GetClass() == CLASS_DEATH_KNIGHT && HasSpell(HasSpell(50977) || sWorld->getBoolConfig(CONFIG_DEATH_KNIGHT_SKIP_QUEST)))
+    if (GetClass() == CLASS_DEATH_KNIGHT && HasSpell(HasSpell(50977) || sGameConfig->GetBoolConfig("DeathKnight.SkipQuest")))
         mapId = 0;
     return WorldLocation(mapId, info->positionX, info->positionY, info->positionZ, 0);
 }
@@ -25189,7 +25190,7 @@ uint32 Player::CalculateTalentsPoints() const
 {
     uint32 base_talent = GetLevel() < 10 ? 0 : GetLevel()-9;
 
-    if (GetClass() != CLASS_DEATH_KNIGHT || GetMapId() != 609 || sWorld->getBoolConfig(CONFIG_DEATH_KNIGHT_SKIP_QUEST))
+    if (GetClass() != CLASS_DEATH_KNIGHT || GetMapId() != 609 || sGameConfig->GetBoolConfig("DeathKnight.SkipQuest"))
         return uint32(base_talent * sWorld->getRate(RATE_TALENT));
 
     uint32 talentPointsForLevel = GetLevel() < 56 ? 0 : GetLevel() - 55;

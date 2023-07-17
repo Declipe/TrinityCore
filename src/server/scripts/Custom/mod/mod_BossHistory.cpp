@@ -7,6 +7,7 @@
 #include "ZynDatabase.h"
 #include "DatabaseEnvFwd.h"
 #include "DatabaseEnv.h"
+#include "CustomConfig.h"
 #include "Log.h"
 #include "GameTime.h"
 #include "SpellMgr.h"
@@ -34,16 +35,16 @@ class mod_BossHistory_WorldScript : public WorldScript
 
 	void OnConfigLoad(bool /*reload*/)
 	{
-		BossHistoryEnable =      sConfigMgr->GetBoolDefault("BossHistory.Enable", false);
+		BossHistoryEnable = sGameConfig->GetBoolConfig("BossHistory.Enable");
 
 		if (!BossHistoryEnable)
 			return;
 
-		BossHistoryInstance = sConfigMgr->GetBoolDefault("BossHistory.InstanceOnly", false);
-		BossHistoryAnnounce = sConfigMgr->GetBoolDefault("BossHistory.Announce", false);
-		BossHistoryLog      = sConfigMgr->GetBoolDefault("BossHistory.Log", false);
-		BossHistoryNormalText = sConfigMgr->GetIntDefault("BossHistory.NormalTextId", 31006);
-		BossHistoryHeroicText = sConfigMgr->GetIntDefault("BossHistory.HeroicTextId", 31007);
+		BossHistoryInstance = sGameConfig->GetBoolConfig("BossHistory.InstanceOnly");
+		BossHistoryAnnounce = sGameConfig->GetBoolConfig("BossHistory.Announce");
+		BossHistoryLog      = sGameConfig->GetBoolConfig("BossHistory.Log");
+		BossHistoryNormalText = sGameConfig->GetIntConfig("BossHistory.NormalTextId");
+		BossHistoryHeroicText = sGameConfig->GetIntConfig("BossHistory.HeroicTextId");
 	}
 };
 

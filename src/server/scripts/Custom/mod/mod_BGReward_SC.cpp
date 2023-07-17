@@ -16,6 +16,7 @@
  */
 
 #include "Log.h"
+#include "CustomConfig.h"
 #include "Battleground.h"
 #include "Chat.h"
 #include "Config.h"

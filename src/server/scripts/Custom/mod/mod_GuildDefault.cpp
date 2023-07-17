@@ -12,6 +12,7 @@
 #include "SpellMgr.h"
 #include "Guild.h"
 #include "GuildMgr.h"
+#include "CustomConfig.h"
 #include "Battleground.h"
 #include "BattlegroundMgr.h"
 #include "Group.h"
@@ -27,8 +28,8 @@ class Mod_GuildDefault_PlayerScript : public PlayerScript
         {
             CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
             //uint32 rankId =0;
-            uint32 GUILD_ID_ALLIANCE = sConfigMgr->GetIntDefault("GuildDefault.IDA", 0);
-            uint32 GUILD_ID_HORDE = sConfigMgr->GetIntDefault("GuildDefault.IDH", 0);
+            uint32 GUILD_ID_ALLIANCE = sGameConfig->GetIntConfig("GuildDefault.IDA");
+            uint32 GUILD_ID_HORDE = sGameConfig->GetIntConfig("GuildDefault.IDH");
             Guild* guild = sGuildMgr->GetGuildById(player->GetTeam() == ALLIANCE ? GUILD_ID_ALLIANCE : GUILD_ID_HORDE);
 
             if (guild)

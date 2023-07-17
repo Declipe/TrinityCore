@@ -80,7 +80,7 @@ namespace nsNpcTel
         uint32 catid;
         nsNpcTel::Flag flag;
         uint64 data0;
-        uint32 data1;
+        uint64 data1;
     };
 
     struct CatName

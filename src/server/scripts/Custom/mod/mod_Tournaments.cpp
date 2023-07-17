@@ -1,6 +1,7 @@
 /*
 ** Experimental!!!
 */
+#include "CustomConfig.h"
 #include "Config.h"
 //#include "GuildMgr.h"
 #include "Player.h"
@@ -804,10 +805,10 @@ class ModTournamentsWorldScript : public WorldScript
 
     void OnConfigLoad(bool /*reload*/)
     {
-        TournamentEnable     = sConfigMgr->GetBoolDefault("Tournaments.Enable", false);
-        TournamentDebug      = sConfigMgr->GetBoolDefault("Tournaments.Debug", false);
-        TournamentLadder     = sConfigMgr->GetBoolDefault("Tournaments.Ladder", false);
-        TournamentLadderText =  sConfigMgr->GetIntDefault("Tournaments.LadderText", 0);
+        TournamentEnable     = sGameConfig->GetBoolConfig("Tournaments.Enable");
+        TournamentDebug      = sGameConfig->GetBoolConfig("Tournaments.Debug");
+        TournamentLadder     = sGameConfig->GetBoolConfig("Tournaments.Ladder");
+        TournamentLadderText = sGameConfig->GetIntConfig("Tournaments.LadderText");
 
         if (!TournamentEnable)
             return;

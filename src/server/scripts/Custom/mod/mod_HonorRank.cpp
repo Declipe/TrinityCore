@@ -15,6 +15,7 @@
 #include "AchievementMgr.h"
 #include "ObjectAccessor.h"
 #include "Unit.h"
+#include "CustomConfig.h"
 #include "SharedDefines.h"
 #include "Creature.h"
 #include "ScriptMgr.h"
@@ -80,14 +81,14 @@ class Mod_HonorRank_WorldScript : public WorldScript
 
     void OnConfigLoad(bool /*reload*/)
     {
-        HonorRankEnable         = sConfigMgr->GetBoolDefault("HonorRank.Enable", false);
+        HonorRankEnable         = sGameConfig->GetBoolConfig("HonorRank.Enable");
 
         if (!HonorRankEnable)
             return;
 
-        HonorRankCheckKill      = sConfigMgr->GetBoolDefault("HonorRank.Check.Kill", false);
-        HonorRankCheckLogin     = sConfigMgr->GetBoolDefault("HonorRank.Check.Login", false);
-        HonorRankSetNew         = sConfigMgr->GetBoolDefault("HonorRank.SetNew", false);
+        HonorRankCheckKill      = sGameConfig->GetBoolConfig("HonorRank.Check.Kill");
+        HonorRankCheckLogin     = sGameConfig->GetBoolConfig("HonorRank.Check.Login");
+        HonorRankSetNew         = sGameConfig->GetBoolConfig("HonorRank.SetNew");
     }
 };
 
@@ -233,7 +234,7 @@ class Mod_CustomRewardPvP_WorldScript : public WorldScript
 
     void OnConfigLoad(bool /*reload*/)
     {
-        CustomRewardPvPEnable = sConfigMgr->GetBoolDefault("CustomRewardPvP.Enable", false);
+        CustomRewardPvPEnable = sGameConfig->GetBoolConfig("CustomRewardPvP.Enable");
 
         if (!CustomRewardPvPEnable)
             return;

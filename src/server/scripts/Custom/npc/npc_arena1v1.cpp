@@ -4,7 +4,7 @@
  * Written by Teiby <http://www.teiby.de/>
  *
  */
-
+#include "CustomConfig.h"
 #include "Common.h"
 #include "DisableMgr.h"
 #include "npc_arena1v1.h"
@@ -139,7 +139,7 @@ public:
         }
 
         BattlegroundQueue &bgQueue = sBattlegroundMgr->GetBattlegroundQueue(bgQueueTypeId);
-        if (sConfigMgr->GetBoolDefault("Ip.enabled", false)) // If "fatigue.enabled" is enabled
+        if (sGameConfig->GetBoolConfig("Ip.enabled")) // If "fatigue.enabled" is enabled
         {
             if (bgQueue.IPExistsInQueue(player, nullptr, bracketEntry, isRated, false))
             {
