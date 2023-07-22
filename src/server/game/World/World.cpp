@@ -560,17 +560,6 @@ void World::LoadConfigSettings(bool reload)
     rate_values[RATE_XP_EXPLORE_PREMIUM] = sConfigMgr->GetFloatDefault("Rate.XP.Explore.Premium", 1.0f);
     rate_values[RATE_REPUTATION_PREMIUM] = sConfigMgr->GetFloatDefault("Rate.Reputation.Premium", 1.0f);
     rate_values[RATE_HONOR_PREMIUM] = sConfigMgr->GetFloatDefault("Rate.Honor.Premium", 1.0f);
-    m_bool_configs[COMMAND_BANK_PREMIUM] = sConfigMgr->GetBoolDefault("Command.Bank.Premium", false);
-    m_bool_configs[COMMAND_MAIL_PREMIUM] = sConfigMgr->GetBoolDefault("Command.Mail.Premium", false);
-    m_bool_configs[CONFIG_VIP_DEBUFF_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Debuff.Command", false);
-    m_bool_configs[CONFIG_VIP_REPAIR_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Repair.Command", false);
-    m_bool_configs[CONFIG_VIP_RESET_TALENTS_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Reset.Talents.Command", false);
-    m_bool_configs[CONFIG_VIP_TAXI_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Taxi.Command", false);
-    m_bool_configs[CONFIG_VIP_HOME_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Home.Command", false);
-    m_bool_configs[CONFIG_VIP_CAPITAL_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Capital.Command", false);
-    m_bool_configs[CONFIG_VIP_CUSTOMIZE_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Customize.Command", false);
-    m_bool_configs[CONFIG_VIP_CHANGERACE_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Changerace.Command", false);
-    m_bool_configs[CONFIG_VIP_APPEAR_COMMAND] = sConfigMgr->GetBoolDefault("Vip.Appear.Command", false);
 
     m_int_configs[CONFIG_XP_BOOST_DAYMASK] = sConfigMgr->GetIntDefault("XP.Boost.Daymask", 0);
     rate_values[RATE_XP_BOOST] = sConfigMgr->GetFloatDefault("XP.Boost.Rate", 2.0f);
@@ -1246,14 +1235,6 @@ void World::LoadConfigSettings(bool reload)
     m_float_configs[CONFIG_ARENA_WIN_RATING_MODIFIER_2]              = sConfigMgr->GetFloatDefault("Arena.ArenaWinRatingModifier2", 24.0f);
     m_float_configs[CONFIG_ARENA_LOSE_RATING_MODIFIER]               = sConfigMgr->GetFloatDefault("Arena.ArenaLoseRatingModifier", 24.0f);
     m_float_configs[CONFIG_ARENA_MATCHMAKER_RATING_MODIFIER]         = sConfigMgr->GetFloatDefault("Arena.ArenaMatchmakerRatingModifier", 24.0f);
-
-   // m_bool_configs[CONFIG_ARENA_1V1_ENABLE]                          = sGameConfig->GetBoolConfig("Arena.1v1.Enable");
-   // m_bool_configs[CONFIG_ARENA_1V1_ANNOUNCER]                       = sGameConfig->GetBoolConfig("Arena.1v1.Announcer");
-   // m_int_configs[CONFIG_ARENA_1V1_MIN_LEVEL]                        = sGameConfig->GetBoolConfig("Arena.1v1.MinLevel");
-    //m_int_configs[CONFIG_ARENA_1V1_COSTS]                            = sGameConfig->GetBoolConfig("Arena.1v1.Costs");
-    //m_bool_configs[CONFIG_ARENA_1V1_VENDOR_RATING]                   = sGameConfig->GetBoolConfig("Arena.1v1.VendorRating");
-    //m_float_configs[CONFIG_ARENA_1V1_ARENAPOINTS_MULTI]              = sGameConfig->GetBoolConfig("Arena.1v1.ArenaPointsMulti");
-    //m_bool_configs[CONFIG_ARENA_1V1_BLOCK_FORBIDDEN_TALENTS]         = sGameConfig->GetBoolConfig("Arena.1v1.BlockForbiddenTalents");
 
     m_bool_configs[CONFIG_OFFHAND_CHECK_AT_SPELL_UNLEARN]            = sConfigMgr->GetBoolDefault("OffhandCheckAtSpellUnlearn", true);
 

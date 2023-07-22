@@ -9,6 +9,7 @@
 #include "GridNotifiers.h"
 #include "Group.h"
 #include "GroupMgr.h"
+#include "CustomConfig.h"
 #include "InstanceSaveMgr.h"
 #include "Item.h"
 #include "Language.h"
@@ -102,8 +103,8 @@ public:
         {
             me = target->GetSource();
             //INSERT BUFFLIST HERE:
-            me->CastSpell(me, 48073, TRIGGERED_FULL_MASK);  // GÃ¶ttlicher Wille
-            me->CastSpell(me, 48161, TRIGGERED_FULL_MASK);  // Machtwort: SeelenstÃ¤rke
+            me->CastSpell(me, 48073, TRIGGERED_FULL_MASK);  // Göttlicher Wille
+            me->CastSpell(me, 48161, TRIGGERED_FULL_MASK);  // Machtwort: Seelenstärke
             me->CastSpell(me, 48469, TRIGGERED_FULL_MASK);  // Mark of the Wild
             me->CastSpell(me, 58054, TRIGGERED_FULL_MASK);  // Blessing of Kings
             me->CastSpell(me, 42995, TRIGGERED_FULL_MASK);  // Arcane Intelligence
@@ -441,7 +442,7 @@ public:
 			return false;
 		}
 
-		if (!sWorld->getBoolConfig(COMMAND_BANK_PREMIUM))
+		if (!sGameConfig->GetBoolConfig("Command.Bank.Premium"))
 		{
 			handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
 			handler->SetSentErrorMessage(true);
@@ -498,7 +499,7 @@ public:
 			return false;
 		}
 
-		if (!sWorld->getBoolConfig(CONFIG_VIP_RESET_TALENTS_COMMAND))
+		if (!sGameConfig->GetBoolConfig("Vip.Reset.Talents.Command"))
 		{
 			handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
 			handler->SetSentErrorMessage(true);
@@ -559,7 +560,7 @@ public:
 			return false;
 		}
 
-		if (!sWorld->getBoolConfig(COMMAND_MAIL_PREMIUM))
+		if (!sGameConfig->GetBoolConfig("Command.Mail.Premium"))
 		{
 			handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
 			handler->SetSentErrorMessage(true);
@@ -949,7 +950,7 @@ public:
 			return false;
 		}
 
-		if (!sWorld->getBoolConfig(CONFIG_VIP_APPEAR_COMMAND))
+		if (!sGameConfig->GetBoolConfig("Vip.Appear.Command"))
 		{
 			handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
 			handler->SetSentErrorMessage(true);
@@ -1126,7 +1127,7 @@ public:
 			return false;
 		}
 
-		if (!sWorld->getBoolConfig(CONFIG_VIP_CHANGERACE_COMMAND))
+		if (!sGameConfig->GetBoolConfig("Vip.Changerace.Command"))
 		{
 			handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
 			handler->SetSentErrorMessage(true);
@@ -1185,7 +1186,7 @@ public:
 			return false;
 		}
 
-		if (!sWorld->getBoolConfig(CONFIG_VIP_CUSTOMIZE_COMMAND))
+		if (!sGameConfig->GetBoolConfig("Vip.Customize.Command"))
 		{
 			handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
 			handler->SetSentErrorMessage(true);
@@ -1243,7 +1244,7 @@ public:
 			return false;
 		}
 
-		if (!sWorld->getBoolConfig(CONFIG_VIP_RESET_TALENTS_COMMAND))
+		if (!sGameConfig->GetBoolConfig("Vip.Taxi.Command"))
 		{
 			handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
 			handler->SetSentErrorMessage(true);
@@ -1303,7 +1304,7 @@ public:
 			return false;
 		}
 
-		if (!sWorld->getBoolConfig(CONFIG_VIP_HOME_COMMAND))
+		if (!sGameConfig->GetBoolConfig("Vip.Home.Command"))
 		{
 			handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
 			handler->SetSentErrorMessage(true);
@@ -1361,7 +1362,7 @@ public:
 			return false;
 		}
 
-		if (!sWorld->getBoolConfig(CONFIG_VIP_DEBUFF_COMMAND))
+		if (!sGameConfig->GetBoolConfig("Vip.Debuff.Command"))
 		{
 			handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
 			handler->SetSentErrorMessage(true);
@@ -1475,7 +1476,7 @@ public:
 			return false;
 		}
 
-		if (!sWorld->getBoolConfig(CONFIG_VIP_REPAIR_COMMAND))
+		if (!sGameConfig->GetBoolConfig("Vip.Repair.Command"))
 		{
 			handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
 			handler->SetSentErrorMessage(true);
@@ -1534,7 +1535,7 @@ public:
 			return false;
 		}
 
-		if (!sWorld->getBoolConfig(CONFIG_VIP_CAPITAL_COMMAND))
+		if (!sGameConfig->GetBoolConfig("Vip.Capital.Command"))
 		{
 			handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
 			handler->SetSentErrorMessage(true);
