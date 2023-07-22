@@ -15,6 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "CustomConfig.h"
 #include "ArenaTeam.h"
 #include "ArenaTeamMgr.h"
 #include "BattlegroundMgr.h"
@@ -642,7 +643,7 @@ uint32 ArenaTeam::GetPoints(uint32 memberRating)
     else if (Type == ARENA_TEAM_3v3)
         points *= 0.88f;
     else if (Type == ARENA_TEAM_5v5) // 1v1 Arena
-        points *= sWorld->getFloatConfig(CONFIG_ARENA_1V1_ARENAPOINTS_MULTI);
+        points *= sGameConfig->GetBoolConfig("Arena.1v1.ArenaPointsMulti");
 
     points *= sWorld->getRate(RATE_ARENA_POINTS);
 

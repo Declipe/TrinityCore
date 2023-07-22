@@ -8,6 +8,7 @@
 #ifndef ARENA_1V1_H
 #define ARENA_1V1_H
 
+#include "CustomConfig.h"
 #include "Config.h"
 #include "Player.h"
 #include "Battleground.h"
@@ -81,7 +82,7 @@ static bool Arena1v1CheckTalents(Player* player)
     if(!player)
         return false;
 
-    if(sWorld->getBoolConfig(CONFIG_ARENA_1V1_BLOCK_FORBIDDEN_TALENTS) == false)
+    if(sGameConfig->GetBoolConfig("Arena.1v1.BlockForbiddenTalents") == false)
         return true;
 
     uint32 count = 0;
