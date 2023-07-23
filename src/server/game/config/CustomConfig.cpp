@@ -36,6 +36,19 @@ void CustomConfig::CleanAll()
     _intOptions.clear();
     _floatOptions.clear();
     _stringOptions.clear();
+    _RateOptions.clear();
+}
+
+void CustomConfig::AddRateOption(std::string const& optionName, float value /*= 1.0f*/)
+{
+    auto const& itr = _RateOptions.find(optionName);
+    if (itr != _RateOptions.end())
+    {
+        TC_LOG_FATAL("server.loading", "> Rate option (%s) exists already!", optionName.c_str());
+        return;
+    }
+
+    _RateOptions.insert(std::make_pair(optionName, value));
 }
 
 void CustomConfig::AddBoolOption(std::string const& optionName, bool value /*= false*/)
@@ -102,6 +115,9 @@ void CustomConfig::AddOption(std::string const& optionName, GameConfigType type,
     case GameConfigType::GAME_CONFIG_TYPE_STRING:
         AddStringOption(optionName, value.empty() ? defaultValue : value);
         break;
+    case GameConfigType::GAME_CONFIG_TYPE_RATE:
+        AddRateOption(optionName, Trinity::StringTo<float>(value.empty() ? defaultValue : value).value());
+        break;
     default:
         TC_LOG_FATAL("server.loading", "> Invalid option type (%u) for option name (%s)", static_cast<uint8>(type), optionName.c_str());
         break;
@@ -134,6 +150,8 @@ void CustomConfig::Load()
             return GameConfigType::GAME_CONFIG_TYPE_FLOAT;
         else if (optionType == "string")
             return GameConfigType::GAME_CONFIG_TYPE_STRING;
+        else if (optionType == "rate")
+            return GameConfigType::GAME_CONFIG_TYPE_RATE;
         else
             return GameConfigType::GAME_CONFIG_TYPE_UNKNOWN;
     };
@@ -210,4 +228,16 @@ std::string CustomConfig::GetStringConfig(std::string const& optionName, std::st
     }
 
     return _stringOptions.at(optionName);
+}
+
+float CustomConfig::GetRateConfig(std::string const& optionName, float defaultValue /*= 1.0f*/)
+{
+    auto const& itr = _RateOptions.find(optionName);
+    if (itr == _RateOptions.end())
+    {
+        TC_LOG_FATAL("server.loading", "> Rate option (%s) not found!", optionName.c_str());
+        return defaultValue;
+    }
+
+    return _RateOptions.at(optionName);
 }
