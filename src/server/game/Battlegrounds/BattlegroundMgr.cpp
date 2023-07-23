@@ -48,8 +48,6 @@
 #include "World.h"
 #include "WorldPacket.h"
 
-#include "CFBGData.h"
-
 bool BattlegroundTemplate::IsArena() const
 {
     return BattlemasterEntry->InstanceType == MAP_ARENA;

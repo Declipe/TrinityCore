@@ -45,9 +45,6 @@
 #include "LuaEngine.h"
 #endif
 
-#include "CFBGData.h"
-#include "CharacterCache.h"
-
 void BattlegroundScore::AppendToPacket(WorldPacket& data)
 {
     data << uint64(PlayerGuid);
@@ -1016,7 +1013,6 @@ void Battleground::StartBattleground()
 
 void Battleground::AddPlayer(Player* player)
 {
-    sCharacterCache->UpdateCharacterData(player->GetGUID(), player->GetName(), {}, player->GetRace());
     // remove afk from player
     if (player->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_AFK))
         player->ToggleAFK();
