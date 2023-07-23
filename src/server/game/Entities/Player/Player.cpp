@@ -183,11 +183,6 @@ uint32 const MAX_MONEY_AMOUNT = static_cast<uint32>(std::numeric_limits<int32>::
 
 Player::Player(WorldSession* session): Unit(true)
 {
-    m_FakeRace = 0;
-    m_RealRace = 0;
-    m_ForgetBGPlayers = false;
-    m_ForgetInListPlayers = false;
-
     m_objectType |= TYPEMASK_PLAYER;
     m_objectTypeId = TYPEID_PLAYER;
 
@@ -539,11 +534,6 @@ bool Player::Create(ObjectGuid::LowType guidlow, CharacterCreateInfo* createInfo
     SetClass(createInfo->Class);
     SetGender(Gender(createInfo->Gender));
     SetPowerType(Powers(powertype), false);
-    SetCFSRace();
-    m_team = TeamForRace(getCFSRace());
-    SetFakeRace(); // m_team must be set before this can be used.
-    SetFactionForRace(getCFSRace());
-
     InitDisplayIds();
 
     if (sWorld->getIntConfig(CONFIG_GAME_TYPE) == REALM_TYPE_PVP || sWorld->getIntConfig(CONFIG_GAME_TYPE) == REALM_TYPE_RPPVP)
@@ -2687,7 +2677,7 @@ void Player::GiveLevel(uint8 level)
         guild->UpdateMemberData(this, GUILD_MEMBER_DATA_LEVEL, level);
 
     PlayerLevelInfo info;
-    sObjectMgr->GetPlayerLevelInfo(getCFSRace(), GetClass(), level, &info);
+    sObjectMgr->GetPlayerLevelInfo(GetRace(), GetClass(), level, &info);
 
     PlayerClassLevelInfo classInfo;
     sObjectMgr->GetPlayerClassLevelInfo(GetClass(), level, &classInfo);
@@ -2827,7 +2817,7 @@ void Player::InitStatsForLevel(bool reapplyMods)
     sObjectMgr->GetPlayerClassLevelInfo(GetClass(), GetLevel(), &classInfo);
 
     PlayerLevelInfo info;
-    sObjectMgr->GetPlayerLevelInfo(getCFSRace(), GetClass(), GetLevel(), &info);
+    sObjectMgr->GetPlayerLevelInfo(GetRace(), GetClass(), GetLevel(), &info);
 
     uint8 exp_max_lvl = GetMaxLevelForExpansion(GetSession()->Expansion());
     uint8 conf_max_lvl = sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL);
@@ -4806,7 +4796,7 @@ Corpse* Player::CreateCorpse()
     // prevent the existence of 2 corpses for one player
     SpawnCorpseBones();
 
-    uint32 _cfb1, _cfb2, _uf;
+    uint32 _cfb1, _cfb2;
 
     Corpse* corpse = new Corpse((m_ExtraFlags & PLAYER_EXTRA_PVP_DEATH) ? CORPSE_RESURRECTABLE_PVP : CORPSE_RESURRECTABLE_PVE);
     SetPvPDeath(false);
@@ -4818,9 +4808,6 @@ Corpse* Player::CreateCorpse()
     }
 
     _corpseLocation.WorldRelocate(*this);
-
-    _uf = getCFSRace();
-    uint8 race = (uint8)(_uf);
 
     _cfb1 = ((0x00) | (GetRace() << 8) | (GetNativeGender() << 16) | (GetSkinId() << 24));
     _cfb2 = (GetFaceId() | (GetHairStyleId() << 8) | (GetHairColorId() << 16) | (GetFacialStyle() << 24));
@@ -6647,10 +6634,10 @@ uint32 Player::TeamForRace(uint8 race)
 
 void Player::SetFactionForRace(uint8 race)
 {
-   SetBGTeam(TeamForRace(race));
+    m_team = TeamForRace(race);
 
     ChrRacesEntry const* rEntry = sChrRacesStore.LookupEntry(race);
-    SetFaction(rEntry ? rEntry->FactionID : GetFaction());
+    SetFaction(rEntry ? rEntry->FactionID : 0);
 }
 
 ReputationRank Player::GetReputationRank(uint32 faction) const
@@ -6751,26 +6738,7 @@ void Player::RewardReputation(Unit* victim, float rate)
     ReputationOnKillEntry const* Rep = sObjectMgr->GetReputationOnKilEntry(victim->ToCreature()->GetCreatureTemplate()->Entry);
     if (!Rep)
         return;
-    uint32 repfaction1 = Rep->RepFaction1;
-    uint32 repfaction2 = Rep->RepFaction2;
 
-    if (!IsPlayingNative())
-    {
-        if (GetCFSTeam() == ALLIANCE)
-        {
-            if (repfaction1 == 729)
-                repfaction1 = 730;
-            if (repfaction2 == 729)
-                repfaction2 = 730;
-        }
-        else
-        {
-            if (repfaction1 == 730)
-                repfaction1 = 729;
-            if (repfaction2 == 730)
-                repfaction2 = 729;
-        }
-    }
     uint32 ChampioningFaction = 0;
 
     if (GetChampioningFaction())
@@ -6785,23 +6753,23 @@ void Player::RewardReputation(Unit* victim, float rate)
 
     uint32 team = GetTeam();
 
-    if (repfaction1 && (!Rep->TeamDependent || team == ALLIANCE))
+    if (Rep->RepFaction1 && (!Rep->TeamDependent || team == ALLIANCE))
     {
-        int32 donerep1 = CalculateReputationGain(REPUTATION_SOURCE_KILL, victim->GetLevel(), Rep->RepValue1, ChampioningFaction ? ChampioningFaction : repfaction1);
+        int32 donerep1 = CalculateReputationGain(REPUTATION_SOURCE_KILL, victim->GetLevel(), Rep->RepValue1, ChampioningFaction ? ChampioningFaction : Rep->RepFaction1);
         donerep1 = int32(donerep1 * rate);
 
-        FactionEntry const* factionEntry1 = sFactionStore.LookupEntry(ChampioningFaction ? ChampioningFaction : repfaction1);
+        FactionEntry const* factionEntry1 = sFactionStore.LookupEntry(ChampioningFaction ? ChampioningFaction : Rep->RepFaction1);
         uint32 current_reputation_rank1 = GetReputationMgr().GetRank(factionEntry1);
         if (factionEntry1)
             GetReputationMgr().ModifyReputation(factionEntry1, donerep1, current_reputation_rank1 > Rep->ReputationMaxCap1);
     }
 
-    if (repfaction2 && (!Rep->TeamDependent || team == HORDE))
+    if (Rep->RepFaction2 && (!Rep->TeamDependent || team == HORDE))
     {
-        int32 donerep2 = CalculateReputationGain(REPUTATION_SOURCE_KILL, victim->GetLevel(), Rep->RepValue2, ChampioningFaction ? ChampioningFaction : repfaction2);
+        int32 donerep2 = CalculateReputationGain(REPUTATION_SOURCE_KILL, victim->GetLevel(), Rep->RepValue2, ChampioningFaction ? ChampioningFaction : Rep->RepFaction2);
         donerep2 = int32(donerep2 * rate);
 
-        FactionEntry const* factionEntry2 = sFactionStore.LookupEntry(ChampioningFaction ? ChampioningFaction : repfaction2);
+        FactionEntry const* factionEntry2 = sFactionStore.LookupEntry(ChampioningFaction ? ChampioningFaction : Rep->RepFaction2);
         uint32 current_reputation_rank2 = GetReputationMgr().GetRank(factionEntry2);
         if (factionEntry2)
             GetReputationMgr().ModifyReputation(factionEntry2, donerep2, current_reputation_rank2 > Rep->ReputationMaxCap2);
@@ -6901,7 +6869,7 @@ bool Player::RewardHonor(Unit* victim, uint32 groupsize, int32 honor, bool pvpto
         if (!victim || victim == this || victim->GetTypeId() != TYPEID_PLAYER)
             return false;
 
-        if (GetTeam() == victim->ToPlayer()->GetTeam())
+        if (GetBGTeam() == victim->ToPlayer()->GetBGTeam())
             return false;
 
         return true;
@@ -11938,11 +11906,11 @@ InventoryResult Player::CanUseItem(ItemTemplate const* proto) const
     if (!proto)
         return EQUIP_ERR_ITEM_NOT_FOUND;
 
-    if (((proto->Flags2 & ITEM_FLAG2_FACTION_HORDE) && GetCFSTeam() != HORDE) ||
-        (((proto->Flags2 & ITEM_FLAG2_FACTION_ALLIANCE) && GetCFSTeam() != ALLIANCE)))
+    if (((proto->Flags2 & ITEM_FLAG2_FACTION_HORDE) && GetTeam() != HORDE) ||
+        (((proto->Flags2 & ITEM_FLAG2_FACTION_ALLIANCE) && GetTeam() != ALLIANCE)))
         return EQUIP_ERR_YOU_CAN_NEVER_USE_THAT_ITEM;
 
-    if ((proto->AllowableClass & GetClassMask()) == 0 || (proto->AllowableRace & getCFSRaceMask()) == 0)
+    if ((proto->AllowableClass & GetClassMask()) == 0 || (proto->AllowableRace & GetRaceMask()) == 0)
         return EQUIP_ERR_YOU_CAN_NEVER_USE_THAT_ITEM;
 
     if (proto->RequiredSkill != 0)
@@ -17457,10 +17425,6 @@ bool Player::LoadFromDB(ObjectGuid guid, CharacterDatabaseQueryHolder const& hol
         TC_LOG_ERROR("entities.player.loading", "Player::LoadFromDB: Player (%s) has wrong race/class (%u/%u), can't load.", guid.ToString().c_str(), GetRace(), GetClass());
         return false;
     }
-    SetCFSRace();
-    m_team = TeamForRace(getCFSRace());
-    SetFakeRace(); // m_team must be set before this can be used.
-    SetFactionForRace(getCFSRace());
 
     SetLevel(fields[6].GetUInt8(), false);
     SetXP(fields[7].GetUInt32());
@@ -17527,6 +17491,10 @@ bool Player::LoadFromDB(ObjectGuid guid, CharacterDatabaseQueryHolder const& hol
 
     TC_LOG_DEBUG("entities.player.loading", "Player::LoadFromDB: Load Basic value of player '%s' is: ", m_name.c_str());
     outDebugValues();
+
+    //Need to call it to initialize m_team (m_team can be calculated from race)
+    //Other way is to saves m_team into characters table.
+    SetFactionForRace(GetRace());
 
     // load home bind and check in same time class/race pair, it used later for restore broken positions
     if (!_LoadHomeBind(holder.GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_HOME_BIND)))
@@ -19446,11 +19414,11 @@ void Player::AddInstanceEnterTime(uint32 instanceId, time_t enterTime)
 
 bool Player::_LoadHomeBind(PreparedQueryResult result)
 {
-    PlayerInfo const* info = sObjectMgr->GetPlayerInfo(getCFSRace(), GetClass());
+    PlayerInfo const* info = sObjectMgr->GetPlayerInfo(GetRace(), GetClass());
     if (!info)
     {
         TC_LOG_ERROR("entities.player", "Player::_LoadHomeBind: Player '%s' (%s) has incorrect race/class (%u/%u) pair. Can't load.",
-            GetGUID().ToString().c_str(), GetName().c_str(), uint32(getCFSRace()), uint32(GetClass()));
+            GetGUID().ToString().c_str(), GetName().c_str(), uint32(GetRace()), uint32(GetClass()));
         return false;
     }
 
@@ -19555,7 +19523,7 @@ void Player::SaveToDB(CharacterDatabaseTransaction trans, bool create /* = false
         stmt->setUInt32(index++, GetGUID().GetCounter());
         stmt->setUInt32(index++, GetSession()->GetAccountId());
         stmt->setString(index++, GetName());
-        stmt->setUInt8(index++, getCFSRace());
+        stmt->setUInt8(index++, GetRace());
         stmt->setUInt8(index++, GetClass());
         stmt->setUInt8(index++, GetNativeGender());   // save gender from PLAYER_BYTES_3, UNIT_BYTES_0 changes with every transform effect
         stmt->setUInt8(index++, GetLevel());
@@ -19665,7 +19633,7 @@ void Player::SaveToDB(CharacterDatabaseTransaction trans, bool create /* = false
         // Update query
         stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_CHARACTER);
         stmt->setString(index++, GetName());
-        stmt->setUInt8(index++, getCFSRace());
+        stmt->setUInt8(index++, GetRace());
         stmt->setUInt8(index++, GetClass());
         stmt->setUInt8(index++, GetNativeGender());   // save gender from PLAYER_BYTES_3, UNIT_BYTES_0 changes with every transform effect
         stmt->setUInt8(index++, GetLevel());
@@ -21865,24 +21833,21 @@ void Player::InitDataForForm(bool reapplyMods)
 
 void Player::InitDisplayIds()
 {
-    PlayerInfo const* info = sObjectMgr->GetPlayerInfo(getCFSRace(), GetClass());
+    PlayerInfo const* info = sObjectMgr->GetPlayerInfo(GetRace(), GetClass());
     if (!info)
     {
         TC_LOG_ERROR("entities.player", "Player::InitDisplayIds: Player '%s' (%s) has incorrect race/class pair. Can't init display ids.", GetName().c_str(), GetGUID().ToString().c_str());
         return;
     }
-    bool isMorphed = GetNativeDisplayId() != GetDisplayId();
 
     uint8 gender = GetNativeGender();
     switch (gender)
     {
         case GENDER_FEMALE:
-          if (!isMorphed)
             SetDisplayId(info->displayId_f);
             SetNativeDisplayId(info->displayId_f);
             break;
         case GENDER_MALE:
-          if (!isMorphed)
             SetDisplayId(info->displayId_m);
             SetNativeDisplayId(info->displayId_m);
             break;
@@ -22507,6 +22472,11 @@ void Player::SetBGTeam(uint32 team)
 {
     m_bgData.bgTeam = team;
     SetArenaFaction(uint8(team == ALLIANCE ? 1 : 0));
+}
+
+uint32 Player::GetBGTeam() const
+{
+    return m_bgData.bgTeam ? m_bgData.bgTeam : GetTeam();
 }
 
 void Player::LeaveBattleground(bool teleportToEntryPoint)
@@ -23262,13 +23232,13 @@ void Player::LearnCustomSpells()
         return;
 
     // learn default race/class spells
-    PlayerInfo const* info = sObjectMgr->GetPlayerInfo(getCFSRace(), GetClass());
+    PlayerInfo const* info = sObjectMgr->GetPlayerInfo(GetRace(), GetClass());
     ASSERT(info);
     for (PlayerCreateInfoSpells::const_iterator itr = info->customSpells.begin(); itr != info->customSpells.end(); ++itr)
     {
         uint32 tspell = *itr;
         TC_LOG_DEBUG("entities.player.loading", "Player::LearnCustomSpells: Player '%s' (%s, Class: %u Race: %u): Adding initial spell (SpellID: %u)",
-            GetName().c_str(), GetGUID().ToString().c_str(), uint32(GetClass()), uint32(getCFSRace()), tspell);
+            GetName().c_str(), GetGUID().ToString().c_str(), uint32(GetClass()), uint32(GetRace()), tspell);
         if (!IsInWorld())                                    // will send in INITIAL_SPELLS in list anyway at map add
             AddSpell(tspell, true, true, true, false);
         else                                                // but send in normal spell in game learn case
@@ -23279,7 +23249,7 @@ void Player::LearnCustomSpells()
 void Player::LearnDefaultSkills()
 {
     // learn default race/class skills
-    PlayerInfo const* info = sObjectMgr->GetPlayerInfo(getCFSRace(), GetClass());
+    PlayerInfo const* info = sObjectMgr->GetPlayerInfo(GetRace(), GetClass());
     ASSERT(info);
     for (PlayerCreateInfoSkills::const_iterator itr = info->skills.begin(); itr != info->skills.end(); ++itr)
     {
@@ -23293,11 +23263,11 @@ void Player::LearnDefaultSkills()
 
 void Player::LearnDefaultSkill(uint32 skillId, uint16 rank)
 {
-    SkillRaceClassInfoEntry const* rcInfo = GetSkillRaceClassInfo(skillId, getCFSRace(), GetClass());
+    SkillRaceClassInfoEntry const* rcInfo = GetSkillRaceClassInfo(skillId, GetRace(), GetClass());
     if (!rcInfo)
         return;
 
-    TC_LOG_DEBUG("entities.player.loading", "PLAYER (Class: %u Race: %u): Adding initial skill, id = %u", uint32(GetClass()), uint32(getCFSRace()), skillId);
+    TC_LOG_DEBUG("entities.player.loading", "PLAYER (Class: %u Race: %u): Adding initial skill, id = %u", uint32(GetClass()), uint32(GetRace()), skillId);
     switch (GetSkillRangeType(rcInfo))
     {
         case SKILL_RANGE_LANGUAGE:
@@ -27285,18 +27255,6 @@ std::string Player::GetDebugInfo() const
     sstr << Unit::GetDebugInfo();
     return sstr.str();
 }
-
-void Player::BuildPlayerChat(WorldPacket* data, uint8 msgtype, const std::string& text, uint32 language) const
-{
-    *data << uint8(msgtype);
-    *data << uint32(language);
-    *data << uint64(GetGUID());
-    *data << uint32(0);                                      // constant unknown time
-    *data << uint64(GetGUID());
-    *data << uint32(text.length() + 1);
-    *data << text;
-    *data << uint8(GetChatTag());
- }
 
 GameClient* Player::GetGameClient() const
 {

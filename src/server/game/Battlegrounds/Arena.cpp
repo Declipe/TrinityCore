@@ -75,10 +75,11 @@ void Arena::AddPlayer(Player* player)
 {
     bool const isInBattleground = IsPlayerInBattleground(player->GetGUID());
     Battleground::AddPlayer(player);
-    if (!isInBattleground)
-        PlayerScores[player->GetGUID().GetCounter()] = new ArenaScore(player->GetGUID(), player->GetTeam());
 
-    if (player->GetTeam() == ALLIANCE)        // gold
+    if (!isInBattleground)
+        PlayerScores[player->GetGUID().GetCounter()] = new ArenaScore(player->GetGUID(), player->GetBGTeam());
+
+    if (player->GetBGTeam() == ALLIANCE)        // gold
     {
         if (player->GetTeam() == HORDE)
             player->CastSpell(player, SPELL_HORDE_GOLD_FLAG, true);
