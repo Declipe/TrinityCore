@@ -57,6 +57,8 @@
 #include "LuaEngine.h"
 #endif
 
+#include "CFBGData.h"
+
 class LoginQueryHolder : public CharacterDatabaseQueryHolder
 {
     private:

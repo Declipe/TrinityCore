@@ -60,11 +60,8 @@ void AddSC_Mod_ItemUpgrade();
 void AddSC_Mod_AutoLearn();
 void AddSC_Transmogrification();
 void AddSC_mod_DefaultSpec();
-
-// The name of this function should match:
-// void Add${NameOfDirectory}Scripts()
-
 void AddSC_AutoBalance();
+void AddSC_CrossfactionBattlegrounds();
 
 void AddCustomScripts()
 {
@@ -112,4 +109,5 @@ void AddCustomScripts()
     AddSC_dk_boss_black_knight();
     AddSC_dk_instance_trial_of_the_champion();
     AddSC_dk_boss_argent_challenge();
+    AddSC_CrossfactionBattlegrounds();
 }
