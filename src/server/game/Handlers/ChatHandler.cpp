@@ -152,18 +152,6 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
     recvData >> type;
     recvData >> lang;
 
-  /*  if (sWorld->getBoolConfig(BATTLEGROUND_CROSSFACTION_ENABLED) /*&& lang != LANG_ADDON)
-    {
-        switch (type)
-        {
-        case CHAT_MSG_BATTLEGROUND:
-        case CHAT_MSG_BATTLEGROUND_LEADER:
-            lang = LANG_UNIVERSAL;
-        default:
-            break;
-        }
-    }*/
-    
     if (type >= MAX_CHAT_MSG_TYPE)
     {
         TC_LOG_ERROR("network", "CHAT: Wrong message type received: %u", type);
@@ -481,10 +469,6 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
             if (!sender->IsAlive())
                 return;
 
-            if (!GetPlayer()->IsGameMaster())
-                  if (GetPlayer()->SendBattleGroundChat(type, msg))
-                  return;
-
             if (sender->GetLevel() < sWorld->getIntConfig(CONFIG_CHAT_SAY_LEVEL_REQ))
             {
                 SendNotification(GetTrinityString(LANG_SAY_REQ), sWorld->getIntConfig(CONFIG_CHAT_SAY_LEVEL_REQ));
@@ -503,10 +487,6 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
         {
             // Prevent cheating
             if (!sender->IsAlive())
-                return;
-
-            if (!GetPlayer()->IsGameMaster())
-               if (GetPlayer()->SendBattleGroundChat(type, msg))
                 return;
 
             if (sender->GetLevel() < sWorld->getIntConfig(CONFIG_CHAT_EMOTE_LEVEL_REQ))
@@ -528,10 +508,6 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
             // Prevent cheating
             if (!sender->IsAlive())
                 return;
-
-            if (!GetPlayer()->IsGameMaster())
-               if (GetPlayer()->SendBattleGroundChat(type, msg))
-                 return;
 
             if (sender->GetLevel() < sWorld->getIntConfig(CONFIG_CHAT_YELL_LEVEL_REQ))
             {
