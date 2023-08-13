@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "OutdoorPvP.h"
 #include <map>
+#include <deque>
 
 using namespace std;
 
@@ -84,7 +85,7 @@ private:
 
     int m_zoneId;
     Creature *game_master;
-    GuidDeque queue;
+    std::deque<ObjectGuid> queue;
     GuidSet playersInRoyale;
     bool gameStarted = false;
     bool aggressivePlayers = false;

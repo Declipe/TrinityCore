@@ -36,6 +36,7 @@ EndScriptData */
 #include "dk_trial_of_the_champion.h"
 #include "Map.h"
 #include "MotionMaster.h"
+#include "Containers.h"
 
 enum Yells
 {
