@@ -399,14 +399,23 @@ class TC_GAME_API ItemScript : public ScriptObject
         // Called when the item is destroyed.
         virtual bool OnRemove(Player* player, Item* item);
 
+<<<<<<< HEAD
+=======
+        // Called before casting a combat spell from this item (chance on hit spells of item template, can be used to prevent cast if returning false)
+        virtual bool OnCastItemCombatSpell(Player* player, Unit* victim, SpellInfo const* spellInfo, Item* item);
+
+>>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
         // Called when a player selects an option in an item gossip window
         virtual void OnGossipSelect(Player* /*player*/, Item* /*item*/, uint32 /*sender*/, uint32 /*action*/) { }
 
         // Called when a player selects an option in an item gossip window
         virtual void OnGossipSelectCode(Player* /*player*/, Item* /*item*/, uint32 /*sender*/, uint32 /*action*/, const char* /*code*/) { }
+<<<<<<< HEAD
 
         // Called before casting a combat spell from this item (chance on hit spells of item template, can be used to prevent cast if returning false)
         virtual bool OnCastItemCombatSpell(Player* player, Unit* victim, SpellInfo const* spellInfo, Item* item);
+=======
+>>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
 };
 
 class TC_GAME_API UnitScript : public ScriptObject

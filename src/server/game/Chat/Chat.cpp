@@ -19,17 +19,14 @@
 #include "AccountMgr.h"
 #include "CellImpl.h"
 #include "CharacterCache.h"
-#include "DatabaseEnv.h"
-#include "DBCStores.h"
 #include "GridNotifiersImpl.h"
 #include "Language.h"
-#include "Log.h"
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
 #include "Optional.h"
 #include "Player.h"
 #include "Realm.h"
-#include "ScriptMgr.h"
+#include "StringConvert.h"
 #include "World.h"
 #include "WorldSession.h"
 #include <boost/algorithm/string/replace.hpp>
@@ -510,6 +507,7 @@ Creature* ChatHandler::GetCreatureFromPlayerMapByDbGuid(ObjectGuid::LowType lowg
     return creature;
 }
 
+<<<<<<< HEAD
 enum SpellLinkType
 {
     SPELL_LINK_SPELL   = 0,
@@ -595,6 +593,8 @@ GameTele const* ChatHandler::extractGameTeleFromLink(char* text)
     return sObjectMgr->GetGameTele(cId);
 }
 
+=======
+>>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
 enum GuidLinkType
 {
     GUID_LINK_PLAYER     = 0,                              // must be first for selection in not link case
@@ -640,13 +640,13 @@ ObjectGuid::LowType ChatHandler::extractLowGuidFromLink(char* text, HighGuid& gu
         case GUID_LINK_CREATURE:
         {
             guidHigh = HighGuid::Unit;
-            ObjectGuid::LowType lowguid = atoul(idS);
+            ObjectGuid::LowType lowguid = Trinity::StringTo<ObjectGuid::LowType>(idS).value_or(0);
             return lowguid;
         }
         case GUID_LINK_GAMEOBJECT:
         {
             guidHigh = HighGuid::GameObject;
-            ObjectGuid::LowType lowguid = atoul(idS);
+            ObjectGuid::LowType lowguid = Trinity::StringTo<ObjectGuid::LowType>(idS).value_or(0);
             return lowguid;
         }
     }
