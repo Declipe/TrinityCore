@@ -88,7 +88,7 @@ public:
                         if (!item)
                         {
                             if (const char* slotname = TransmogDisplayVendorMgr::getSlotName(action, player->GetSession()))
-                                session->SendNotification("No item equipped in %s slot", slotname);
+                                session->SendNotification("No item equipped in {} slot", slotname);
                             OnGossipHello(player, creature);
                             return true;
                         }
@@ -143,7 +143,7 @@ public:
                         if (player->PlayerTalkClass->GetGossipMenu().GetMenuItemCount() <= 1)
                         {
                             if (const char* slotname = TransmogDisplayVendorMgr::getSlotName(action, player->GetSession()))
-                                session->SendNotification("No transmogrifications available for %s", slotname);
+                                session->SendNotification("No transmogrifications available for {}", slotname);
                             OnGossipHello(player, creature);
                             return true;
                         }
@@ -189,16 +189,16 @@ public:
                             {
                                 TransmogDisplayVendorMgr::DeleteFakeEntry(player, newItem);
                                 if (slotname)
-                                    session->SendAreaTriggerMessage("%s transmogrification removed", slotname);
+                                    session->SendAreaTriggerMessage("{} transmogrification removed", slotname);
                             }
                             else if (slotname)
                             {
-                                session->SendNotification("No transmogrification on %s slot", slotname);
+                                session->SendNotification("No transmogrification on {} slot", slotname);
                             }
                         }
                         else if (slotname)
                         {
-                            session->SendNotification("No item equipped in %s slot", slotname);
+                            session->SendNotification("No item equipped in {} slot", slotname);
                         }
                         OnGossipSelect(player, creature, SENDER_REMOVE_MENU, 0);
                     } break;
@@ -315,7 +315,7 @@ public:
                             Creature* vendor = player->GetNPCIfCanInteractWith(creature->GetGUID(), UNIT_NPC_FLAG_VENDOR);
                             if (!vendor)
                             {
-                                TC_LOG_DEBUG("network", "WORLD: SendListInventory - Unit (GUID: %u) not found or you can not interact with him.", creature->GetGUID().GetCounter());
+                                TC_LOG_DEBUG("network", "WORLD: SendListInventory - Unit (GUID: {}) not found or you can not interact with him.", creature->GetGUID().GetCounter());
                                 player->SendSellError(SELL_ERR_CANT_FIND_VENDOR, nullptr, ObjectGuid::Empty, 0);
                                 return true;
                             }
@@ -429,7 +429,7 @@ public:
     {
         uint32 lowguid = player->GetGUID().GetCounter();
         auto trans = CharacterDatabase.BeginTransaction();
-        trans->PAppend("DELETE FROM `custom_transmogrification` WHERE `Owner` = %u", lowguid);
+        trans->PAppend("DELETE FROM `custom_transmogrification` WHERE `Owner` = {}", lowguid);
 
         if (!player->transmogMap.empty())
         {
@@ -441,7 +441,7 @@ public:
                 if (it2 == player->transmogMap.end())
                     continue;
 
-                trans->PAppend("REPLACE INTO custom_transmogrification (GUID, FakeEntry, Owner) VALUES (%u, %u, %u)", it2->first.GetCounter(), it2->second, lowguid);
+                trans->PAppend("REPLACE INTO custom_transmogrification (GUID, FakeEntry, Owner) VALUES ({}, {}, {})", it2->first.GetCounter(), it2->second, lowguid);
             }
         }
 
@@ -451,7 +451,7 @@ public:
 
     void OnLogin(Player* player, bool /*firstLogin*/) override
     {
-        QueryResult result = CharacterDatabase.PQuery("SELECT GUID, FakeEntry FROM custom_transmogrification WHERE Owner = %u", player->GetGUID().GetCounter());
+        QueryResult result = CharacterDatabase.PQuery("SELECT GUID, FakeEntry FROM custom_transmogrification WHERE Owner = {}", player->GetGUID().GetCounter());
 
         if (result)
         {
@@ -538,7 +538,7 @@ public:
             }
             else
             {
-                TC_LOG_INFO("server.loading", "Too many items for transmogrification: Class: %u SubClass: %u InventoryType: %u Quality: %u", temp.Class, temp.SubClass, TransmogDisplayVendorMgr::getCorrectInvType(temp.InventoryType), temp.Quality);
+                TC_LOG_INFO("server.loading", "Too many items for transmogrification: Class: {} SubClass: {} InventoryType: {} Quality: {}", temp.Class, temp.SubClass, TransmogDisplayVendorMgr::getCorrectInvType(temp.InventoryType), temp.Quality);
             }
         }
 

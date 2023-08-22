@@ -44,7 +44,7 @@ void CustomConfig::AddRateOption(std::string const& optionName, float value /*= 
     auto const& itr = _RateOptions.find(optionName);
     if (itr != _RateOptions.end())
     {
-        TC_LOG_FATAL("server.loading", "> Rate option (%s) exists already!", optionName.c_str());
+        TC_LOG_FATAL("server.loading", "> Rate option ({}) exists already!", optionName);
         return;
     }
 
@@ -56,7 +56,7 @@ void CustomConfig::AddBoolOption(std::string const& optionName, bool value /*= f
     auto const& itr = _boolOptions.find(optionName);
     if (itr != _boolOptions.end())
     {
-        TC_LOG_FATAL("server.loading", "> Bool option (%s) exists already!", optionName.c_str());
+        TC_LOG_FATAL("server.loading", "> Bool option ({}) exists already!", optionName);
         return;
     }
 
@@ -68,7 +68,7 @@ void CustomConfig::AddIntOption(std::string const& optionName, int32 value /*= 0
     auto const& itr = _intOptions.find(optionName);
     if (itr != _intOptions.end())
     {
-        TC_LOG_FATAL("server.loading", "> Int option (%s) exists already!", optionName.c_str());
+        TC_LOG_FATAL("server.loading", "> Int option ({}) exists already!", optionName);
         return;
     }
 
@@ -80,7 +80,7 @@ void CustomConfig::AddFloatOption(std::string const& optionName, float value /*=
     auto const& itr = _floatOptions.find(optionName);
     if (itr != _floatOptions.end())
     {
-        TC_LOG_FATAL("server.loading", "> Float option (%s) exists already!", optionName.c_str());
+        TC_LOG_FATAL("server.loading", "> Float option ({}) exists already!", optionName);
         return;
     }
 
@@ -92,7 +92,7 @@ void CustomConfig::AddStringOption(std::string const& optionName, std::string co
     auto const& itr = _stringOptions.find(optionName);
     if (itr != _stringOptions.end())
     {
-        TC_LOG_FATAL("server.loading", "> Int option (%s) exists already!", optionName.c_str());
+        TC_LOG_FATAL("server.loading", "> Int option ({}) exists already!", optionName);
         return;
     }
 
@@ -119,7 +119,7 @@ void CustomConfig::AddOption(std::string const& optionName, GameConfigType type,
         AddRateOption(optionName, Trinity::StringTo<float>(value.empty() ? defaultValue : value).value());
         break;
     default:
-        TC_LOG_FATAL("server.loading", "> Invalid option type (%u) for option name (%s)", static_cast<uint8>(type), optionName.c_str());
+        TC_LOG_FATAL("server.loading", "> Invalid option type ({}) for option name ({})", static_cast<uint8>(type), optionName);
         break;
     }
 }
@@ -169,7 +169,7 @@ void CustomConfig::Load()
 
         if (_type == GameConfigType::GAME_CONFIG_TYPE_UNKNOWN)
         {
-            TC_LOG_FATAL("server.loading", "> Don't support type (%s) for option (%s)", optionType.c_str(), optionName.c_str());
+            TC_LOG_FATAL("server.loading", "> Don't support type ({}) for option ({})", optionType, optionName);
             continue;
         }
 
@@ -179,7 +179,7 @@ void CustomConfig::Load()
 
     } while (result->NextRow());
 
-    TC_LOG_INFO("server.loading", ">> Loaded %u game config option in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded {} game config option in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
 bool CustomConfig::GetBoolConfig(std::string const& optionName, bool defaultValue /*= false*/)
@@ -187,7 +187,7 @@ bool CustomConfig::GetBoolConfig(std::string const& optionName, bool defaultValu
     auto const& itr = _boolOptions.find(optionName);
     if (itr == _boolOptions.end())
     {
-        TC_LOG_FATAL("server.loading", "> Bool option (%s) not found!", optionName.c_str());
+        TC_LOG_FATAL("server.loading", "> Bool option ({}) not found!", optionName);
         return defaultValue;
     }
 
@@ -199,7 +199,7 @@ int32 CustomConfig::GetIntConfig(std::string const& optionName, int32 defaultVal
     auto const& itr = _intOptions.find(optionName);
     if (itr == _intOptions.end())
     {
-        TC_LOG_FATAL("server.loading", "> Int option (%s) not found!", optionName.c_str());
+        TC_LOG_FATAL("server.loading", "> Int option ({}) not found!", optionName);
         return defaultValue;
     }
 
@@ -211,7 +211,7 @@ float CustomConfig::GetFloatConfig(std::string const& optionName, float defaultV
     auto const& itr = _floatOptions.find(optionName);
     if (itr == _floatOptions.end())
     {
-        TC_LOG_FATAL("server.loading", "> Float option (%s) not found!", optionName.c_str());
+        TC_LOG_FATAL("server.loading", "> Float option ({}) not found!", optionName);
         return defaultValue;
     }
 
@@ -223,7 +223,7 @@ std::string CustomConfig::GetStringConfig(std::string const& optionName, std::st
     auto const& itr = _stringOptions.find(optionName);
     if (itr == _stringOptions.end())
     {
-        TC_LOG_FATAL("server.loading", "> String option (%s) not found!", optionName.c_str());
+        TC_LOG_FATAL("server.loading", "> String option ({}) not found!", optionName);
         return defaultValue;
     }
 
@@ -235,7 +235,7 @@ float CustomConfig::GetRateConfig(std::string const& optionName, float defaultVa
     auto const& itr = _RateOptions.find(optionName);
     if (itr == _RateOptions.end())
     {
-        TC_LOG_FATAL("server.loading", "> Rate option (%s) not found!", optionName.c_str());
+        TC_LOG_FATAL("server.loading", "> Rate option ({}) not found!", optionName);
         return defaultValue;
     }
 

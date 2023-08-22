@@ -200,15 +200,11 @@ GroupQueueInfo* BattlegroundQueue::AddGroup(Player* leader, Group* grp, Battlegr
         index += PVP_TEAMS_COUNT;
     if (ginfo->Team == HORDE)
         index++;
-<<<<<<< HEAD
 
     if (sWorld->getBoolConfig(BATTLEGROUND_CROSSFACTION_ENABLED) && ArenaType == 0)
     index = BG_QUEUE_CROSSFACTION;
 
-    TC_LOG_DEBUG("bg.battleground", "Adding Group to BattlegroundQueue bgTypeId : %u, bracket_id : %u, index : %u", BgTypeId, bracketId, index);
-=======
     TC_LOG_DEBUG("bg.battleground", "Adding Group to BattlegroundQueue bgTypeId : {}, bracket_id : {}, index : {}", BgTypeId, bracketId, index);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
 
     sScriptMgr->OnQueueAddGroup(this, ginfo, index, leader, grp, bracketEntry, isPremade);
 

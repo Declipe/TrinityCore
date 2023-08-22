@@ -601,13 +601,8 @@ bool MySQLConnection::_HandleMySQLErrno(uint32 errNo, uint8 attempts /*= 5*/)
         case ER_BAD_FIELD_ERROR:
         case ER_NO_SUCH_TABLE:
             TC_LOG_ERROR("sql.sql", "Your database structure is not up to date. Please make sure you've executed all queries in the sql/updates folders.");
-<<<<<<< HEAD
-            //std::this_thread::sleep_for(std::chrono::seconds(10));
-            //std::abort();
-=======
-            std::this_thread::sleep_for(std::chrono::seconds(10));
-            ABORT();
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
+           // std::this_thread::sleep_for(std::chrono::seconds(10));
+           // ABORT();
             return false;
         case ER_PARSE_ERROR:
             TC_LOG_ERROR("sql.sql", "Error while parsing SQL. Core fix required.");

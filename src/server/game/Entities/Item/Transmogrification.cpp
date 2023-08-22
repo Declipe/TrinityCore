@@ -56,7 +56,7 @@ void Transmogrification::LoadPlayerSets(Player* player)
 
     player->presetMap.clear();
 
-    QueryResult result = CharacterDatabase.PQuery("SELECT `PresetID`, `SetName`, `SetData` FROM `custom_transmogrification_sets` WHERE Owner = %u", player->GetGUID().GetCounter());
+    QueryResult result = CharacterDatabase.PQuery("SELECT `PresetID`, `SetName`, `SetData` FROM `custom_transmogrification_sets` WHERE Owner = {}", player->GetGUID().GetCounter());
     if (!result)
         return;
 
@@ -78,7 +78,7 @@ void Transmogrification::LoadPlayerSets(Player* player)
                 break;
             if (slot >= EQUIPMENT_SLOT_END)
             {
-                TC_LOG_ERROR("custom.transmog", "Item entry (FakeEntry: %u, playerGUID: %u, slot: %u, presetId: %u) has invalid slot, ignoring.", entry, player->GetGUID().GetCounter(), uint32(slot), uint32(PresetID));
+                TC_LOG_ERROR("custom.transmog", "Item entry (FakeEntry: {}, playerGUID: {}, slot: {}, presetId: {}) has invalid slot, ignoring.", entry, player->GetGUID().GetCounter(), uint32(slot), uint32(PresetID));
                 continue;
             }
             if (sObjectMgr->GetItemTemplate(entry))
@@ -86,7 +86,7 @@ void Transmogrification::LoadPlayerSets(Player* player)
                 player->presetMap[PresetID].slotMap[slot] = entry;
             }
             else
-                TC_LOG_ERROR("custom.transmog", "Item entry (FakeEntry: %u, playerGUID: %u, slot: %u, presetId: %u) does not exist, ignoring.", entry, player->GetGUID().GetCounter(), uint32(slot), uint32(PresetID));
+                TC_LOG_ERROR("custom.transmog", "Item entry (FakeEntry: {}, playerGUID: {}, slot: {}, presetId: {}) does not exist, ignoring.", entry, player->GetGUID().GetCounter(), uint32(slot), uint32(PresetID));
         }
     } while (result->NextRow());
 }
@@ -255,7 +255,7 @@ TransmogTrinityStrings Transmogrification::Transmogrify(Player* player, ObjectGu
     // slot of the transmogrified item
     if (slot >= EQUIPMENT_SLOT_END)
     {
-        TC_LOG_DEBUG("custom.transmog", "Transmogrification::Transmogrify - %s (%s) tried to transmogrify an %s with a wrong slot (%u) when transmogrifying items.", player->GetName().c_str(), player->GetGUID().ToString().c_str(), itemGUID.ToString().c_str(), slot);
+        TC_LOG_DEBUG("custom.transmog", "Transmogrification::Transmogrify - {} ({}) tried to transmogrify an {} with a wrong slot ({}) when transmogrifying items.", player->GetName(), player->GetGUID().ToString(), itemGUID.ToString(), slot);
         return LANG_ERR_TRANSMOG_INVALID_SLOT;
     }
 
@@ -266,7 +266,7 @@ TransmogTrinityStrings Transmogrification::Transmogrify(Player* player, ObjectGu
         itemTransmogrifier = player->GetItemByGuid(itemGUID);
         if (!itemTransmogrifier)
         {
-            TC_LOG_DEBUG("custom.transmog", "Transmogrification::Transmogrify - %s (%s) tried to transmogrify with an invalid %s.", player->GetName().c_str(), player->GetGUID().ToString().c_str(), itemGUID.ToString().c_str());
+            TC_LOG_DEBUG("custom.transmog", "Transmogrification::Transmogrify - {} ({}) tried to transmogrify with an invalid {}.", player->GetName(), player->GetGUID().ToString(), itemGUID.ToString());
             return LANG_ERR_TRANSMOG_MISSING_SRC_ITEM;
         }
     }
@@ -275,7 +275,7 @@ TransmogTrinityStrings Transmogrification::Transmogrify(Player* player, ObjectGu
     Item* itemTransmogrified = player->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
     if (!itemTransmogrified)
     {
-        TC_LOG_DEBUG("custom.transmog", "Transmogrification::Transmogrify - %s (%s) tried to transmogrify an invalid item in a valid slot (slot: %u).", player->GetName().c_str(), player->GetGUID().ToString().c_str(), slot);
+        TC_LOG_DEBUG("custom.transmog", "Transmogrification::Transmogrify - {} ({}) tried to transmogrify an invalid item in a valid slot (slot: {}).", player->GetName(), player->GetGUID().ToString(), slot);
         return LANG_ERR_TRANSMOG_MISSING_DEST_ITEM;
     }
 
@@ -292,7 +292,7 @@ TransmogTrinityStrings Transmogrification::Transmogrify(Player* player, ObjectGu
     {
         if (!CanTransmogrifyItemWithItem(player, itemTransmogrified->GetTemplate(), itemTransmogrifier->GetTemplate()))
         {
-            TC_LOG_DEBUG("custom.transmog", "Transmogrification::Transmogrify - %s (%s) failed CanTransmogrifyItemWithItem (%u with %u).", player->GetName().c_str(), player->GetGUID().ToString().c_str(), itemTransmogrified->GetEntry(), itemTransmogrifier->GetEntry());
+            TC_LOG_DEBUG("custom.transmog", "Transmogrification::Transmogrify - {} ({}) failed CanTransmogrifyItemWithItem ({} with {}).", player->GetName(), player->GetGUID().ToString(), itemTransmogrified->GetEntry(), itemTransmogrifier->GetEntry());
             return LANG_ERR_TRANSMOG_INVALID_ITEMS;
         }
 
@@ -314,7 +314,7 @@ TransmogTrinityStrings Transmogrification::Transmogrify(Player* player, ObjectGu
             if (cost) // 0 cost if reverting look
             {
                 if (cost < 0)
-                    TC_LOG_DEBUG("custom.transmog", "Transmogrification::Transmogrify - %s (%s) transmogrification invalid cost (non negative, amount %i). Transmogrified %u with %u", player->GetName().c_str(), player->GetGUID().ToString().c_str(), -cost, itemTransmogrified->GetEntry(), itemTransmogrifier->GetEntry());
+                    TC_LOG_DEBUG("custom.transmog", "Transmogrification::Transmogrify - {} ({}) transmogrification invalid cost (non negative, amount {}). Transmogrified {} with {}", player->GetName(), player->GetGUID().ToString(), -cost, itemTransmogrified->GetEntry(), itemTransmogrifier->GetEntry());
                 else
                 {
                     if (!player->HasEnoughMoney(cost))
@@ -688,7 +688,7 @@ void Transmogrification::LoadConfig(bool reload)
 
     if (!sObjectMgr->GetItemTemplate(TokenEntry))
     {
-        TC_LOG_INFO("custom.transmog", "Transmogrification.TokenEntry (%u) does not exist. Using default (%u).", TokenEntry, 49426);
+        TC_LOG_INFO("custom.transmog", "Transmogrification.TokenEntry ({}) does not exist. Using default ({}).", TokenEntry, 49426);
         TokenEntry = 49426;
     }
 }

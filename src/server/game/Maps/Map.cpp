@@ -4486,11 +4486,7 @@ void Map::SaveRespawnTime(SpawnObjectType type, ObjectGuid::LowType spawnId, uin
     if (startup)
     {
         if (!success)
-<<<<<<< HEAD
-            TC_LOG_ERROR("maps", "Attempt to load saved respawn %" PRIu64 " for (%u,%u) failed - duplicate respawn? Skipped.", respawnTime, uint32(type), spawnId);
-=======
             TC_LOG_ERROR("maps", "Attempt to load saved respawn {} for ({},{}) failed - duplicate respawn? Skipped.", uint64(respawnTime), uint32(type), spawnId);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
     }
     else if (success)
         SaveRespawnInfoDB(ri, dbTrans);
@@ -4526,19 +4522,11 @@ void Map::LoadRespawnTimes()
                 if (SpawnData const* data = sObjectMgr->GetSpawnData(type, spawnId))
                     SaveRespawnTime(type, spawnId, data->id, time_t(respawnTime), Trinity::ComputeGridCoord(data->spawnPoint.GetPositionX(), data->spawnPoint.GetPositionY()).GetId(), nullptr, true);
                 else
-<<<<<<< HEAD
-                    TC_LOG_ERROR("maps", "Loading saved respawn time of %" PRIu64 " for spawnid (%u,%u) - spawn does not exist, ignoring", respawnTime, uint32(type), spawnId);
-            }
-            else
-            {
-                TC_LOG_ERROR("maps", "Loading saved respawn time of %" PRIu64 " for spawnid (%u,%u) - invalid spawn type, ignoring", respawnTime, uint32(type), spawnId);
-=======
                     TC_LOG_ERROR("maps", "Loading saved respawn time of {} for spawnid ({},{}) - spawn does not exist, ignoring", uint64(respawnTime), uint32(type), spawnId);
             }
             else
             {
                 TC_LOG_ERROR("maps", "Loading saved respawn time of {} for spawnid ({},{}) - invalid spawn type, ignoring", uint64(respawnTime), uint32(type), spawnId);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
             }
 
         } while (result->NextRow());

@@ -112,7 +112,7 @@ class Mod_ItemUpgrade_WorldScript : public WorldScript
 
             SpellItemEnchantmentEntry const* enchantEntry = sSpellItemEnchantmentStore.LookupEntry(ItemUpgradeTemp.enchantId);
             if (!enchantEntry) {
-                TC_LOG_ERROR("misc", "Item Upgrade: not exists enchantment id %u", ItemUpgradeTemp.enchantId);
+                TC_LOG_ERROR("misc", "Item Upgrade: not exists enchantment id {}", ItemUpgradeTemp.enchantId);
                 continue;
             }
 
@@ -125,7 +125,7 @@ class Mod_ItemUpgrade_WorldScript : public WorldScript
         }
         while (result->NextRow());
 
-        TC_LOG_ERROR("misc", ">> Loaded %u count for ItemUpgrade in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+        TC_LOG_ERROR("misc", ">> Loaded {} count for ItemUpgrade in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
     }
 
     void OnConfigLoad(bool /*reload*/)

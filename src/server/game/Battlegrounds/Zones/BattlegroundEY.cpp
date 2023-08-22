@@ -761,12 +761,7 @@ void BattlegroundEY::EventTeamCapturedPoint(Player* player, uint32 Point)
 
     WorldSafeLocsEntry const* sg = sDBCMgr->GetWorldSafeLocsEntry(m_CapturingPointTypes[Point].GraveyardId);
     if (!sg || !AddSpiritGuide(Point, sg->Loc.X, sg->Loc.Y, sg->Loc.Z, 3.124139f, GetTeamIndexByTeamId(Team)))
-<<<<<<< HEAD
-
-        TC_LOG_ERROR("bg.battleground", "BatteGroundEY: Failed to spawn spirit guide. point: %u, team: %u, graveyard_id: %u",
-=======
         TC_LOG_ERROR("bg.battleground", "BatteGroundEY: Failed to spawn spirit guide. point: {}, team: {}, graveyard_id: {}",
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
             Point, Team, m_CapturingPointTypes[Point].GraveyardId);
 
 //    SpawnBGCreature(Point, RESPAWN_IMMEDIATELY);

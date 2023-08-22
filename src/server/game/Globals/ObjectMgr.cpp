@@ -690,7 +690,7 @@ void ObjectMgr::LoadCreatureTemplates2()
     for (auto const& ctPair : _creatureTemplateStore)
         CheckCreatureTemplate(&ctPair.second);
 
-    TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " creature definitions in %u ms", _creatureTemplateStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded {} creature definitions in {} ms", _creatureTemplateStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 
@@ -714,7 +714,7 @@ void ObjectMgr::LoadCreatureTemplate(Field* fields)
     creatureTemplate.Name             = fields[10].GetString();
     creatureTemplate.Title            = fields[11].GetString();
     creatureTemplate.IconName         = fields[12].GetString();
-    creatureTemplate.GossipMenuId     = fields[13].GetUInt32();
+    creatureTemplate.GossipMenuId     = fields[13].GetUInt64();
     creatureTemplate.minlevel         = fields[14].GetUInt8();
     creatureTemplate.maxlevel         = fields[15].GetUInt8();
     creatureTemplate.expansion        = uint32(fields[16].GetInt16());
@@ -1126,11 +1126,7 @@ void ObjectMgr::CheckCreatureTemplate(CreatureTemplate const* cInfo)
 
             if (_difficultyEntries[diff2].find(cInfo->DifficultyEntry[diff]) != _difficultyEntries[diff2].end())
             {
-<<<<<<< HEAD
-               // TC_LOG_ERROR("sql.sql", "Creature (Entry: %u) already listed as `difficulty_entry_%u` for another entry.", cInfo->DifficultyEntry[diff], diff2 + 1);
-=======
                 TC_LOG_ERROR("sql.sql", "Creature (Entry: {}) already listed as `difficulty_entry_{}` for another entry.", cInfo->DifficultyEntry[diff], diff2 + 1);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
                 continue;
             }
 
@@ -2882,15 +2878,11 @@ void ObjectMgr::LoadGameObjects()
 
         if (!data.rotation.isUnit())
         {
-<<<<<<< HEAD
-            //TC_LOG_ERROR("sql.sql", "Table `gameobject` has gameobject (GUID: %u Entry: %u) with invalid rotation quaternion (non-unit), defaulting to orientation on Z axis only", guid, data.id);
+            //TC_LOG_ERROR("sql.sql", "Table `gameobject` has gameobject (GUID: {} Entry: {}) with invalid rotation quaternion (non-unit), defaulting to orientation on Z axis only", guid, data.id);
             if (data.rotation.w != 0 || data.rotation.x != 0 || data.rotation.y != 0 || data.rotation.z != 0)
             {
-                TC_LOG_ERROR("sql.sql", "Table `gameobject` has gameobject (GUID: %u Entry: %u) with invalid rotation quaternion (non-unit), defaulting to orientation on Z axis only", guid, data.id);
+                TC_LOG_ERROR("sql.sql", "Table `gameobject` has gameobject (GUID: {} Entry: {}) with invalid rotation quaternion (non-unit), defaulting to orientation on Z axis only", guid, data.id);
             }
-=======
-            TC_LOG_ERROR("sql.sql", "Table `gameobject` has gameobject (GUID: {} Entry: {}) with invalid rotation quaternion (non-unit), defaulting to orientation on Z axis only", guid, data.id);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
             data.rotation = QuaternionData::fromEulerAnglesZYX(data.spawnPoint.GetOrientation(), 0.0f, 0.0f);
         }
 
@@ -3362,68 +3354,50 @@ void ObjectMgr::LoadItemTemplates()
         {
             if (itemTemplate.Class != dbcitem->ClassID)
             {
-<<<<<<< HEAD
-                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct class %u, must be %u .", entry, itemTemplate.Class, dbcitem->Class);
-                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `class` = %u WHERE (entry = %u);", dbcitem->ClassID, entry);
-=======
-                TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct class {}, must be {} .", entry, itemTemplate.Class, dbcitem->ClassID);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
-                if (enforceDBCAttributes)
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `class` = {} WHERE (entry = {});", dbcitem->ClassID, entry);
+               // TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct class {}, must be {} .", entry, itemTemplate.Class, dbcitem->ClassID);
+
+    if (enforceDBCAttributes)
                     itemTemplate.Class = dbcitem->ClassID;
             }
 
             if (itemTemplate.SoundOverrideSubclass != dbcitem->SoundOverrideSubclassID)
             {
-<<<<<<< HEAD
-                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct SoundOverrideSubclass (%i), must be %i .", entry, itemTemplate.SoundOverrideSubclass, dbcitem->SoundOverrideSubclass);
-                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `SoundOverrideSubclass` = %u WHERE (entry = %u);", dbcitem->SoundOverrideSubclassID, entry);
-=======
-                TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct SoundOverrideSubclass ({}), must be {} .", entry, itemTemplate.SoundOverrideSubclass, dbcitem->SoundOverrideSubclassID);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
-                if (enforceDBCAttributes)
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `SoundOverrideSubclass` = {} WHERE (entry = {});", dbcitem->SoundOverrideSubclassID, entry);
+               // TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct SoundOverrideSubclass ({}), must be {} .", entry, itemTemplate.SoundOverrideSubclass, dbcitem->SoundOverrideSubclassID);
+
+            if (enforceDBCAttributes)
                     itemTemplate.SoundOverrideSubclass = dbcitem->SoundOverrideSubclassID;
             }
             if (itemTemplate.Material != dbcitem->Material)
             {
-<<<<<<< HEAD
-                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct material (%i), must be %i .", entry, itemTemplate.Material, dbcitem->Material);
-                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `material` = %u WHERE (entry = %u);", dbcitem->Material, entry);
-=======
-                TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct material ({}), must be {} .", entry, itemTemplate.Material, dbcitem->Material);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `material` = {} WHERE (entry = {});", dbcitem->Material, entry);
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct material ({}), must be {} .", entry, itemTemplate.Material, dbcitem->Material);
+
                 if (enforceDBCAttributes)
                     itemTemplate.Material = dbcitem->Material;
             }
             if (itemTemplate.InventoryType != dbcitem->InventoryType)
             {
-<<<<<<< HEAD
-               // TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct inventory type (%u), must be %u .", entry, itemTemplate.InventoryType, dbcitem->InventoryType);
-                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `InventoryType` = %u WHERE (entry = %u);", dbcitem->InventoryType, entry);
-=======
-                TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct inventory type ({}), must be {} .", entry, itemTemplate.InventoryType, dbcitem->InventoryType);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
-                if (enforceDBCAttributes)
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `InventoryType` = {} WHERE (entry = {});", dbcitem->InventoryType, entry);
+               // TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct inventory type ({}), must be {} .", entry, itemTemplate.InventoryType, dbcitem->InventoryType);
+
+            if (enforceDBCAttributes)
                     itemTemplate.InventoryType = dbcitem->InventoryType;
             }
             if (itemTemplate.DisplayInfoID != dbcitem->DisplayInfoID)
             {
-<<<<<<< HEAD
-                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct display id (%u), must be %u .", entry, itemTemplate.DisplayInfoID, dbcitem->DisplayId);
-                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `displayid` = %u WHERE (entry = %u);", dbcitem->DisplayInfoID, entry);
-=======
-                TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct display id ({}), must be {} .", entry, itemTemplate.DisplayInfoID, dbcitem->DisplayInfoID);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
-                if (enforceDBCAttributes)
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `displayid` = {} WHERE (entry = {});", dbcitem->DisplayInfoID, entry);
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct display id ({}), must be {} .", entry, itemTemplate.DisplayInfoID, dbcitem->DisplayInfoID);
+
+            if (enforceDBCAttributes)
                     itemTemplate.DisplayInfoID = dbcitem->DisplayInfoID;
             }
             if (itemTemplate.Sheath != dbcitem->SheatheType)
             {
-<<<<<<< HEAD
-                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct sheathid (%u), must be %u .", entry, itemTemplate.Sheath, dbcitem->Sheath);
-                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `sheath` = %u WHERE (entry = %u);", dbcitem->SheatheType, entry);
-=======
-                TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct sheathid ({}), must be {} .", entry, itemTemplate.Sheath, dbcitem->SheatheType);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct sheathid ({}), must be {} .", entry, itemTemplate.Sheath, dbcitem->Sheath);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `sheath` = {} WHERE (entry = {});", dbcitem->SheatheType, entry);
+
                 if (enforceDBCAttributes)
                     itemTemplate.Sheath = dbcitem->SheatheType;
             }
@@ -8758,7 +8732,7 @@ void ObjectMgr::LoadChatFilter()
 		count++;
 	} while (result->NextRow());
 
-	TC_LOG_ERROR("server.loading", ">> Loaded %u chat filter words in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+	TC_LOG_ERROR("server.loading", ">> Loaded {} chat filter words in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
 
 }
 
@@ -9878,7 +9852,7 @@ void ObjectMgr::LoadGossipMenu()
 
         GossipMenus gMenu;
 
-        gMenu.MenuID = fields[0].GetUInt16();
+        gMenu.MenuID = fields[0].GetUInt64();
         gMenu.TextID = fields[1].GetUInt32();
 
         if (!GetGossipText(gMenu.TextID))
@@ -9916,7 +9890,7 @@ void ObjectMgr::LoadGossipMenuItems()
 
         GossipMenuItems gMenuItem;
 
-        gMenuItem.MenuID                = fields[0].GetUInt16();
+        gMenuItem.MenuID                = fields[0].GetUInt64();
         gMenuItem.OptionID              = fields[1].GetUInt16();
         gMenuItem.OptionIcon            = GossipOptionIcon(fields[2].GetUInt32());
         gMenuItem.OptionText            = fields[3].GetString();
@@ -10597,17 +10571,10 @@ void ObjectMgr::LoadFactionChangeTitles()
         uint32 alliance = fields[0].GetUInt32();
         uint32 horde = fields[1].GetUInt32();
 
-<<<<<<< HEAD
         if (!sDBCMgr->GetCharTitlesEntry(alliance))
-            TC_LOG_ERROR("sql.sql", "Title %u (alliance_id) referenced in `player_factionchange_title` does not exist, pair skipped!", alliance);
-        else if (!sDBCMgr->GetCharTitlesEntry(horde))
-            TC_LOG_ERROR("sql.sql", "Title %u (horde_id) referenced in `player_factionchange_title` does not exist, pair skipped!", horde);
-=======
-        if (!sCharTitlesStore.LookupEntry(alliance))
             TC_LOG_ERROR("sql.sql", "Title {} (alliance_id) referenced in `player_factionchange_title` does not exist, pair skipped!", alliance);
-        else if (!sCharTitlesStore.LookupEntry(horde))
+        else if (!sDBCMgr->GetCharTitlesEntry(horde))
             TC_LOG_ERROR("sql.sql", "Title {} (horde_id) referenced in `player_factionchange_title` does not exist, pair skipped!", horde);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
         else
             FactionChangeTitles[alliance] = horde;
 
@@ -10884,7 +10851,7 @@ void ObjectMgr::LoadAreaCustomFlags()
         ++count;
     } while (result->NextRow());
 
-    TC_LOG_INFO("server.loading", ">> Loaded %u Area Custom Flags in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded {} Area Custom Flags in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::LoadCreatureSpecialRewards()
@@ -10912,5 +10879,5 @@ void ObjectMgr::LoadCreatureSpecialRewards()
         ++count;
     } while (result->NextRow());
 
-    TC_LOG_INFO("server.loading", ">> Loaded %u creature special rewards in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded {} creature special rewards in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
 }

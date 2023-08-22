@@ -354,7 +354,7 @@ void TransmogDisplayVendorMgr::HandleTransmogrify(Player* player, Creature* /*cr
     // slot of the transmogrified item
     if (slot >= EQUIPMENT_SLOT_END)
     {
-        TC_LOG_DEBUG("custom.transmog", "TransmogDisplayVendorMgr::HandleTransmogrify - %s (%s) tried to transmogrify item %u with a wrong slot (%u) when transmogrifying items.", player->GetName().c_str(), player->GetGUID().ToString().c_str(), itemEntry, slot);
+        TC_LOG_DEBUG("custom.transmog", "TransmogDisplayVendorMgr::HandleTransmogrify - {} ({}) tried to transmogrify item {} with a wrong slot ({}) when transmogrifying items.", player->GetName(), player->GetGUID().ToString(), itemEntry, slot);
         return; // LANG_ERR_TRANSMOG_INVALID_SLOT
     }
 
@@ -365,7 +365,7 @@ void TransmogDisplayVendorMgr::HandleTransmogrify(Player* player, Creature* /*cr
         itemTransmogrifier = sObjectMgr->GetItemTemplate(itemEntry);
         if (!itemTransmogrifier)
         {
-            TC_LOG_DEBUG("custom.transmog", "TransmogDisplayVendorMgr::HandleTransmogrify - %s (%s) tried to transmogrify with an invalid item entry %u.", player->GetName().c_str(), player->GetGUID().ToString().c_str(), itemEntry);
+            TC_LOG_DEBUG("custom.transmog", "TransmogDisplayVendorMgr::HandleTransmogrify - {} ({}) tried to transmogrify with an invalid item entry {}.", player->GetName(), player->GetGUID().ToString(), itemEntry);
             return; // LANG_ERR_TRANSMOG_MISSING_SRC_ITEM
         }
     }
@@ -374,8 +374,8 @@ void TransmogDisplayVendorMgr::HandleTransmogrify(Player* player, Creature* /*cr
     Item* itemTransmogrified = player->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
     if (!itemTransmogrified)
     {
-        TC_LOG_DEBUG("custom.transmog", "TransmogDisplayVendorMgr::HandleTransmogrify - %s (%s) tried to transmogrify an invalid item in a valid slot (slot: %u).", player->GetName().c_str(), player->GetGUID().ToString().c_str(), slot);
-        player->GetSession()->SendNotification("No item in %s slot", slotname);
+        TC_LOG_DEBUG("custom.transmog", "TransmogDisplayVendorMgr::HandleTransmogrify - {} ({}) tried to transmogrify an invalid item in a valid slot (slot: {}).", player->GetName(), player->GetGUID().ToString(), slot);
+        player->GetSession()->SendNotification("No item in {} slot", slotname);
         return; // LANG_ERR_TRANSMOG_MISSING_DEST_ITEM
     }
 
@@ -387,7 +387,7 @@ void TransmogDisplayVendorMgr::HandleTransmogrify(Player* player, Creature* /*cr
     {
         if (!CanTransmogrifyItemWithItem(player, itemTransmogrified->GetTemplate(), itemTransmogrifier))
         {
-            TC_LOG_DEBUG("custom.transmog", "TransmogDisplayVendorMgr::HandleTransmogrify - %s (%s) failed CanTransmogrifyItemWithItem (%u with %u).", player->GetName().c_str(), player->GetGUID().ToString().c_str(), itemTransmogrified->GetEntry(), itemTransmogrifier->ItemId);
+            TC_LOG_DEBUG("custom.transmog", "TransmogDisplayVendorMgr::HandleTransmogrify - {} ({}) failed CanTransmogrifyItemWithItem ({} with {}).", player->GetName(), player->GetGUID().ToString(), itemTransmogrified->GetEntry(), itemTransmogrifier->ItemId);
             player->GetSession()->SendNotification("Equipped item is not suitable for selected transmogrification");
             return; // LANG_ERR_TRANSMOG_INVALID_ITEMS
         }
@@ -398,7 +398,7 @@ void TransmogDisplayVendorMgr::HandleTransmogrify(Player* player, Creature* /*cr
             {
                 if (fakeItemTemplate->DisplayInfoID == itemTransmogrifier->DisplayInfoID)
                 {
-                    player->GetSession()->SendNotification("%s already transmogrified with %s", slotname, getItemName(itemTransmogrifier, player->GetSession()).c_str());
+                    player->GetSession()->SendNotification("{} already transmogrified with {}", slotname, getItemName(itemTransmogrifier, player->GetSession()).c_str());
                     return;
                 }
             }
@@ -478,7 +478,7 @@ void TransmogDisplayVendorMgr::HandleTransmogrify(Player* player, Creature* /*cr
                 }
                 else
                 {
-                    player->GetSession()->SendNotification("You do not have enough %ss", getItemName(sObjectMgr->GetItemTemplate(TransmogDisplayVendorMgr::TokenEntry), player->GetSession()).c_str());
+                    player->GetSession()->SendNotification("You do not have enough {}s", getItemName(sObjectMgr->GetItemTemplate(TransmogDisplayVendorMgr::TokenEntry), player->GetSession()).c_str());
                     return; // LANG_ERR_TRANSMOG_NOT_ENOUGH_TOKENS
                 }
             }
@@ -492,7 +492,7 @@ void TransmogDisplayVendorMgr::HandleTransmogrify(Player* player, Creature* /*cr
             {
                 if (cost < 0)
                 {
-                    TC_LOG_DEBUG("custom.transmog", "TransmogDisplayVendorMgr::HandleTransmogrify - %s (%s) transmogrification invalid cost (non negative, amount %i). Transmogrified %u with %u", player->GetName().c_str(), player->GetGUID().ToString().c_str(), -cost, itemTransmogrified->GetEntry(), itemTransmogrifier->ItemId);
+                    TC_LOG_DEBUG("custom.transmog", "TransmogDisplayVendorMgr::HandleTransmogrify - {} ({}) transmogrification invalid cost (non negative, amount {}). Transmogrified {} with {}", player->GetName(), player->GetGUID().ToString(), -cost, itemTransmogrified->GetEntry(), itemTransmogrifier->ItemId);
                 }
                 else
                 {
@@ -521,7 +521,7 @@ void TransmogDisplayVendorMgr::HandleTransmogrify(Player* player, Creature* /*cr
             //itemTransmogrifier->ClearSoulboundTradeable(player);
         }
 
-        player->GetSession()->SendAreaTriggerMessage("%s transmogrified", slotname);
+        player->GetSession()->SendAreaTriggerMessage("{} transmogrified", slotname);
         //return LANG_ERR_TRANSMOG_OK;
     }
 }

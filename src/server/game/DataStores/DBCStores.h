@@ -213,10 +213,10 @@ TC_GAME_API extern DBCStorage <WorldMapOverlayEntry>         sWorldMapOverlaySto
 
 TC_GAME_API void LoadDBCStores(const std::string& dataPath);
 
-typedef std::unordered_map<uint32, const WorldSafeLocsEntry*> WorldSafeLocsContainer;
-typedef std::unordered_map<uint32, const ItemExtendedCostEntry*> ItemExtendedCostContainer;
-typedef std::unordered_map<uint32, const CharTitlesEntry*> CharTitlesContainer;
-typedef std::unordered_map<uint32, const BattlemasterListEntry*> BattlemasterListContainer;
+typedef std::unordered_map<uint32, WorldSafeLocsEntry*> WorldSafeLocsContainer;
+typedef std::unordered_map<uint32, ItemExtendedCostEntry*> ItemExtendedCostContainer;
+typedef std::unordered_map<uint32, CharTitlesEntry*> CharTitlesContainer;
+typedef std::unordered_map<uint32, BattlemasterListEntry*> BattlemasterListContainer;
 
 class TC_GAME_API DBCMgr
 {

@@ -1021,7 +1021,7 @@ void DBCMgr::LoadCharTitlesStore()
 
     } while (result->NextRow());
 
-    TC_LOG_ERROR("misc", ">> Loaded %lu dbc_chartitles entries in %u ms", (unsigned long)CharTitlesStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_ERROR("misc", ">> Loaded {} dbc_chartitles entries in {} ms", (unsigned long)CharTitlesStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void DBCMgr::LoadBattlemasterListStore()
@@ -1051,12 +1051,12 @@ void DBCMgr::LoadBattlemasterListStore()
             newBattlemasterList->MapID[i] = fields[1 + i].GetInt32();
 
         newBattlemasterList->InstanceType = fields[10].GetUInt32();
-        newBattlemasterList->GroupsAllowed = fields[11].GetUInt32();
+        newBattlemasterList->GroupsAllowed = fields[11].GetString();
 
         for (uint8 i = 0; i < 16; i++)
-            newBattlemasterList->Name[i] = (char*)fields[11 + i].GetCString();
+            newBattlemasterList->Name[i] = fields[11 + i].GetString();
 
-        newBattlemasterList->Name_Lang_Unk = (char*)fields[26].GetCString();
+        newBattlemasterList->Name_Lang_Unk = fields[26].GetString();
         newBattlemasterList->Name_Lang_Mask = fields[27].GetUInt32();
         newBattlemasterList->MaxGroupSize = fields[28].GetUInt32();
         newBattlemasterList->HolidayWorldState = fields[29].GetUInt32();
@@ -1068,7 +1068,7 @@ void DBCMgr::LoadBattlemasterListStore()
         ++count;
     } while (result->NextRow());
 
-    TC_LOG_ERROR("misc", ">> Loaded %lu battlemaster list entries in %u ms", (unsigned long)BattlemasterListStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_ERROR("misc", ">> Loaded {} battlemaster list entries in {} ms", (unsigned long)BattlemasterListStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void DBCMgr::LoadItemExtendedCostStore()
@@ -1078,6 +1078,7 @@ void DBCMgr::LoadItemExtendedCostStore()
 
     QueryResult result = ZynDatabase.Query("SELECT Id, ReqHonorPoints, ReqArenaPoints, ReqArenaSlot, ReqItem1, ReqItem2, ReqItem3, ReqItem4, ReqItem5, "
         "ReqItemCount1, ReqItemCount2, ReqItemCount3, ReqItemCount4, ReqItemCount5, ReqPersonalArenaRating FROM itemextendedcostdbc");
+
     if (!result)
     {
         TC_LOG_ERROR("server.loading", ">> Loaded 0 itemextendedcost entry. DB table `itemextendedcostdbc` is empty.");
@@ -1101,7 +1102,7 @@ void DBCMgr::LoadItemExtendedCostStore()
 
     } while (result->NextRow());
 
-    TC_LOG_ERROR("misc", ">> Loaded %lu itemextendedcost entries in %u ms", (unsigned long)ItemExtendedCostStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_ERROR("misc", ">> Loaded {} itemextendedcost entries in {} ms", (unsigned long)ItemExtendedCostStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void DBCMgr::LoadWorldSafeLocsStore()
@@ -1128,5 +1129,5 @@ void DBCMgr::LoadWorldSafeLocsStore()
         WorldSafeLocsStore[newWorldSafeLocs->ID] = newWorldSafeLocs;
     } while (result->NextRow());
 
-    TC_LOG_ERROR("misc", ">> Loaded %lu WorldSafeLocs entries in %u ms", (unsigned long)WorldSafeLocsStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_ERROR("misc", ">> Loaded {} WorldSafeLocs entries in {} ms", (unsigned long)WorldSafeLocsStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }

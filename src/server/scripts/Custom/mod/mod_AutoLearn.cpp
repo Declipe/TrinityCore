@@ -126,7 +126,7 @@ public:
 
             if (!sSpellMgr->GetSpellInfo(Spell.SpellId))
             {
-                TC_LOG_ERROR("sql.sql", "AutoLearn: Spell (ID: %u) non-existing", Spell.SpellId);
+                TC_LOG_ERROR("sql.sql", "AutoLearn: Spell (ID: {}) non-existing", Spell.SpellId);
                 continue;
             }
 
@@ -136,19 +136,19 @@ public:
 
             if (Spell.RequiredClassMask != 0 && !(Spell.RequiredClassMask & CLASSMASK_ALL_PLAYABLE))
             {
-                TC_LOG_ERROR("sql.sql", "AutoLearn: Spell (ID: %u) RequiredClassMask (Mask: %u) non-existing", Spell.SpellId, Spell.RequiredClassMask);
+                TC_LOG_ERROR("sql.sql", "AutoLearn: Spell (ID: {}) RequiredClassMask (Mask: {}) non-existing", Spell.SpellId, Spell.RequiredClassMask);
                 continue;
             }
 
             if (Spell.RequiredRaceMask != 0 && !(Spell.RequiredRaceMask & RACEMASK_ALL_PLAYABLE))
             {
-                TC_LOG_ERROR("sql.sql", "AutoLearn: Spell (ID: %u) RequiredRaceMask (Mask: %u) non-existing", Spell.SpellId, Spell.RequiredRaceMask);
+                TC_LOG_ERROR("sql.sql", "AutoLearn: Spell (ID: {}) RequiredRaceMask (Mask: {}) non-existing", Spell.SpellId, Spell.RequiredRaceMask);
                 continue;
             }
 
             if (Spell.RequiredSpellId != 0 && !sSpellMgr->GetSpellInfo(Spell.RequiredSpellId))
             {
-                TC_LOG_ERROR("sql.sql", "AutoLearn: Spell (ID: %u) RequiredSpellId (ID: %u) non-existing", Spell.SpellId, Spell.RequiredSpellId);
+                TC_LOG_ERROR("sql.sql", "AutoLearn: Spell (ID: {}) RequiredSpellId (ID: {}) non-existing", Spell.SpellId, Spell.RequiredSpellId);
                 continue;
             }
 
@@ -157,7 +157,7 @@ public:
         }
         while (result->NextRow());
              //++count;
-        TC_LOG_INFO("server.loading", ">> Loaded %u spells for AutoLearn in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+        TC_LOG_INFO("server.loading", ">> Loaded {} spells for AutoLearn in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
     }
 };
 

@@ -2387,11 +2387,11 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond) const
         {
             if (cond->ConditionValue2 >= COMP_TYPE_MAX)
             {
-                TC_LOG_ERROR("sql.sql", "Guildlevel condition has invalid option (%u), skipped", cond->ConditionValue2);
+                TC_LOG_ERROR("sql.sql", "Guildlevel condition has invalid option ({}), skipped", cond->ConditionValue2);
                 return false;
             }
             if (cond->ConditionValue3)
-                TC_LOG_ERROR("sql.sql", "Guildlevel condition has useless data in value3 (%u)!", cond->ConditionValue3);
+                TC_LOG_ERROR("sql.sql", "Guildlevel condition has useless data in value3 ({})!", cond->ConditionValue3);
             break;
         }
         default:

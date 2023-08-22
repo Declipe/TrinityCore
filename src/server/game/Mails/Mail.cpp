@@ -328,7 +328,7 @@ void WorldSession::SendExternalMails()
 
         if (itemId)
         {
-             TC_LOG_DEBUG("entities.player.character", "External Mail> Adding %u of item with id %u", itemCount, itemId);
+             TC_LOG_DEBUG("entities.player.character", "External Mail> Adding {} of item with id {}", itemCount, itemId);
              if(Item* mailItem = Item::CreateItem(itemId, itemCount))
              {
                  mailItem->SaveToDB(trans);

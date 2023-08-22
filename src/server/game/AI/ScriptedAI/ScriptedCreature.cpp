@@ -601,11 +601,7 @@ void BossAI::_DespawnAtEvade(Seconds delayToRespawn /*= 30s*/, Creature* who /*=
 {
     if (delayToRespawn < 2s)
     {
-<<<<<<< HEAD
-        TC_LOG_ERROR("scripts.ai", "BossAI::_DespawnAtEvade: called with delay of %ld seconds, defaulting to 2 (me: %s)", delayToRespawn.count(), me->GetGUID().ToString().c_str());
-=======
         TC_LOG_ERROR("scripts.ai", "BossAI::_DespawnAtEvade: called with delay of {} seconds, defaulting to 2 (me: {})", delayToRespawn.count(), me->GetGUID().ToString());
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
         delayToRespawn = 2s;
     }
 

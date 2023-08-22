@@ -277,12 +277,7 @@ void LootStore::ReportUnusedIds(LootIdSet const& lootIdSet) const
 {
     // all still listed ids isn't referenced
     for (LootIdSet::const_iterator itr = lootIdSet.begin(); itr != lootIdSet.end(); ++itr)
-<<<<<<< HEAD
-        //TC_LOG_ERROR("sql.sql", "Table '%s' Entry %d isn't %s and not referenced from loot, and thus useless.", GetName(), *itr, GetEntryName());
-        TC_LOG_DEBUG("sql.sql", "Table '%s' Entry %d isn't %s and not referenced from loot, and thus useless.", GetName(), *itr, GetEntryName());
-=======
-        TC_LOG_ERROR("sql.sql", "Table '{}' Entry {} isn't {} and not referenced from loot, and thus useless.", GetName(), *itr, GetEntryName());
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
+        TC_LOG_DEBUG("sql.sql", "Table '{}' Entry {} isn't {} and not referenced from loot, and thus useless.", GetName(), *itr, GetEntryName());
 }
 
 void LootStore::ReportNonExistingId(uint32 lootId, char const* ownerType, uint32 ownerId) const

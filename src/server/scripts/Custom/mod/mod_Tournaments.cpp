@@ -164,13 +164,13 @@ TournamentTemplate* TournamentManager::getTournament(uint32 entry)
 TournamentLevel* TournamentManager::getTournamentLevel(uint32 entry, uint32 level)
 {
     if (TournamentDebug)
-        TC_LOG_INFO("misc", "TournamentManager::getTournamentLevel entry: %u level: %u", entry, level);
+        TC_LOG_INFO("misc", "TournamentManager::getTournamentLevel entry: {} level: {}", entry, level);
         
     TournamentTemplate* tournament = getTournament(entry);
     if (!tournament)
     {
         if (TournamentDebug)
-            TC_LOG_ERROR("misc", "TournamentManager::getTournamentLevel not exists entry: %u level: %u", entry, level);
+            TC_LOG_ERROR("misc", "TournamentManager::getTournamentLevel not exists entry: {} level: {}", entry, level);
         return nullptr;
     }
         
@@ -179,7 +179,7 @@ TournamentLevel* TournamentManager::getTournamentLevel(uint32 entry, uint32 leve
         return (*itr).second;
         
     if (TournamentDebug)
-        TC_LOG_ERROR("misc", "TournamentManager::getTournamentLevel not exists level: %u for entry: %u", level, entry);
+        TC_LOG_ERROR("misc", "TournamentManager::getTournamentLevel not exists level: {} for entry: {}", level, entry);
     return nullptr;
 }
 
@@ -284,7 +284,7 @@ void TournamentManager::load(bool reload)
         
         if (!MapManager::IsValidMapCoord(point->map, point->x, point->y, point->z, point->o))
         {
-            TC_LOG_ERROR("sql.sql", "Wrong position for point id %u in `world_tournament_points` table, ignoring.", point->id);
+            TC_LOG_ERROR("sql.sql", "Wrong position for point id {} in `world_tournament_points` table, ignoring.", point->id);
             delete point;
             continue;
         }
@@ -293,7 +293,7 @@ void TournamentManager::load(bool reload)
         ++count;
     }
     while (result->NextRow());
-    TC_LOG_INFO("server.loading", ">> Loaded %u points for TournamentManager in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded {} points for TournamentManager in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
     if (TournamentDebug)
         TC_LOG_INFO("misc", "End loadig points");
      /*============ POINTS ============*/
@@ -325,25 +325,25 @@ void TournamentManager::load(bool reload)
         
         if (level->point && !pointExists(level->point))
         {
-            TC_LOG_ERROR("sql.sql", "Wrong point_id %u for level %u in `world_tournaments` table, ignoring.", level->point, level->level);
+            TC_LOG_ERROR("sql.sql", "Wrong point_id {} for level {} in `world_tournaments` table, ignoring.", level->point, level->level);
             level->point = 0;
         }
 
         if (level->chest && !sObjectMgr->GetGameObjectTemplate(level->chest))
         {
-            TC_LOG_ERROR("sql.sql", "Wrong chest %u for level %u in `world_tournaments` table, ignoring.", level->chest, level->level);
+            TC_LOG_ERROR("sql.sql", "Wrong chest {} for level {} in `world_tournaments` table, ignoring.", level->chest, level->level);
             level->chest = 0;
         }
 
         if (level->reqQuest && !sObjectMgr->GetQuestTemplate(level->reqQuest))
         {
-            TC_LOG_ERROR("sql.sql", "Wrong reqQuest %u for level %u in `world_tournaments` table, ignoring.", level->reqQuest, level->level);
+            TC_LOG_ERROR("sql.sql", "Wrong reqQuest {} for level {} in `world_tournaments` table, ignoring.", level->reqQuest, level->level);
             level->reqQuest = 0;
         }
 
         if (level->menuString && !sObjectMgr->GetTrinityString(level->menuString))
         {
-            TC_LOG_ERROR("sql.sql", "Wrong menuString %u for level %u in `world_tournaments` table, ignoring.", level->menuString, level->level);
+            TC_LOG_ERROR("sql.sql", "Wrong menuString {} for level {} in `world_tournaments` table, ignoring.", level->menuString, level->level);
             level->menuString = 0;
         }
         
@@ -360,7 +360,7 @@ void TournamentManager::load(bool reload)
         ++count;
     }
     while (result->NextRow());
-    TC_LOG_INFO("server.loading", ">> Loaded %u templates for TournamentManager in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded {} templates for TournamentManager in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
     if (TournamentDebug)
         TC_LOG_INFO("misc", "End loadig templates");
      /*============ TEMPLATES ============*/
@@ -389,47 +389,47 @@ void TournamentManager::load(bool reload)
         creature->spawn               = false;
         
         if (TournamentDebug)
-            TC_LOG_INFO("misc", "TournamentManager::load -> check creature %u", creature->id);
+            TC_LOG_INFO("misc", "TournamentManager::load -> check creature {}", creature->id);
         
         if (!existsLevelTournament(creature->tournament, creature->level))
         {
-            TC_LOG_ERROR("sql.sql", "Wrong tournament %u level %u for creature id %u in `world_tournament_creature` table, ignoring.", creature->tournament, creature->level, creature->id);
+            TC_LOG_ERROR("sql.sql", "Wrong tournament {} level {} for creature id {} in `world_tournament_creature` table, ignoring.", creature->tournament, creature->level, creature->id);
             delete creature;
             continue;
         }
         
         if (!pointExists(creature->point))
         {
-            TC_LOG_ERROR("sql.sql", "Wrong from point %u for creature id %u in `world_tournament_creature` table, ignoring.", creature->point, creature->id);
+            TC_LOG_ERROR("sql.sql", "Wrong from point {} for creature id {} in `world_tournament_creature` table, ignoring.", creature->point, creature->id);
             delete creature;
             continue;
         }
         
         if (!pointExists(creature->move))
         {
-            TC_LOG_ERROR("sql.sql", "Wrong to point %u for creature id %u in `world_tournament_creature` table, ignoring.", creature->move, creature->id);
+            TC_LOG_ERROR("sql.sql", "Wrong to point {} for creature id {} in `world_tournament_creature` table, ignoring.", creature->move, creature->id);
             creature->move = 0;
         }
         
         if (!sObjectMgr->GetCreatureTemplate(creature->entry))
         {
-            TC_LOG_ERROR("sql.sql", "Wrong entry %u for creature id %u in `world_tournament_creature` table, ignoring.", creature->entry, creature->id);
+            TC_LOG_ERROR("sql.sql", "Wrong entry {} for creature id {} in `world_tournament_creature` table, ignoring.", creature->entry, creature->id);
             delete creature;
             continue;
         }
         
         if (TournamentDebug)
-            TC_LOG_INFO("misc", "TournamentManager::load -> end check creature %u", creature->id);
+            TC_LOG_INFO("misc", "TournamentManager::load -> end check creature {}", creature->id);
         
         tournaments[creature->tournament]->levels[creature->level]->creatures.push_back(creature);
         
         if (TournamentDebug)
-            TC_LOG_INFO("misc", "TournamentManager::load -> creature %u added", creature->id);
+            TC_LOG_INFO("misc", "TournamentManager::load -> creature {} added", creature->id);
             
         ++count;
     }
     while (result->NextRow());
-    TC_LOG_INFO("server.loading", ">> Loaded %u creatures for TournamentManager in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded {} creatures for TournamentManager in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
     if (TournamentDebug)
         TC_LOG_INFO("misc", "end loadig creatures");
      /*============ CREATURES ============*/
@@ -468,7 +468,7 @@ void TournamentManager::clear()
 void TournamentManager::reset(uint32 entry)
 {
     if (TournamentDebug)
-        TC_LOG_INFO("misc", "TournamentManager::reset: %u", entry);
+        TC_LOG_INFO("misc", "TournamentManager::reset: {}", entry);
         
         
     TournamentTemplate* tournament = getTournament(entry);
@@ -489,12 +489,12 @@ void TournamentManager::reset(uint32 entry)
 void TournamentManager::start(uint32 entry, uint32 level, Player* player)
 {
     if (TournamentDebug)
-        TC_LOG_INFO("misc", "TournamentManager::start tournament: %u level: %u", entry, level);
+        TC_LOG_INFO("misc", "TournamentManager::start tournament: {} level: {}", entry, level);
         
     if (!existsLevelTournament(entry, level))
     {
         if (TournamentDebug)
-            TC_LOG_INFO("misc", "TournamentManager::start, not exists tournament/level: %u/%u", entry, level);
+            TC_LOG_INFO("misc", "TournamentManager::start, not exists tournament/level: {}/{}", entry, level);
         return;
     }
         
@@ -502,14 +502,14 @@ void TournamentManager::start(uint32 entry, uint32 level, Player* player)
     if (!tournament)
     {
         if (TournamentDebug)
-            TC_LOG_ERROR("misc", "TournamentManager::start, not exists tournament: %u", entry);
+            TC_LOG_ERROR("misc", "TournamentManager::start, not exists tournament: {}", entry);
         return;
     }
         
     if (tournament->inProgress)
     {
         if (TournamentDebug)
-            TC_LOG_INFO("misc", "TournamentManager::start, tournament: %u in progress!!", entry);
+            TC_LOG_INFO("misc", "TournamentManager::start, tournament: {} in progress!!", entry);
         return;
     }
     
@@ -536,20 +536,20 @@ void TournamentManager::start(uint32 entry, uint32 level, Player* player)
 void TournamentManager::updateTournament(uint32 entry, uint32 diff)
 {
     //if (TournamentDebug)
-        //TC_LOG_ERROR("misc", "TournamentManager::updateTournament entry: %u", entry);
+        //TC_LOG_ERROR("misc", "TournamentManager::updateTournament entry: {}", entry);
         
     TournamentTemplate* tournament = getTournament(entry);
     if (!tournament)
         return;
                 
     //if (TournamentDebug)
-        //TC_LOG_ERROR("misc", "TournamentManager::updateTournament entry: %u Tournament Exists!!!", entry);
+        //TC_LOG_ERROR("misc", "TournamentManager::updateTournament entry: {} Tournament Exists!!!", entry);
                 
     if (!tournament->inProgress)
         return;
         
     //if (TournamentDebug)
-        //TC_LOG_ERROR("misc", "TournamentManager::updateTournament entry: %u In Progress!!!", entry);
+        //TC_LOG_ERROR("misc", "TournamentManager::updateTournament entry: {} In Progress!!!", entry);
         
     tournament->current->time += diff;
         
@@ -560,7 +560,7 @@ void TournamentManager::updateTournament(uint32 entry, uint32 diff)
         if (!(*itr)->spawn && tournament->current->time >= (*itr)->time)
         {
             if (TournamentDebug)
-                TC_LOG_INFO("misc", "TournamentManager::update -> spawn %u", (*itr)->entry);
+                TC_LOG_INFO("misc", "TournamentManager::update -> spawn {}", (*itr)->entry);
                 
             PointOnTournament const* point = getPoint((*itr)->point);
             PointOnTournament const* move = nullptr;
@@ -603,7 +603,7 @@ void TournamentManager::update(uint32 diff)
 void TournamentManager::stop(uint32 entry, bool win)
 {
     if (TournamentDebug)
-        TC_LOG_INFO("misc", "TournamentManager::stop win: %i", int(win));
+        TC_LOG_INFO("misc", "TournamentManager::stop win: {}", int(win));
                 
     TournamentTemplate* tournament = getTournament(entry);
     if (!tournament)
@@ -672,7 +672,7 @@ bool TournamentManager::existsAlive(uint32 entry)
 bool TournamentManager::checkEnd(uint32 entry)
 {
     //if (TournamentDebug)
-        //TC_LOG_ERROR("TournamentManager::checkEnd entry: %u", entry);
+        //TC_LOG_ERROR("TournamentManager::checkEnd entry: {}", entry);
         
     TournamentTemplate* tournament = getTournament(entry);
     if (!tournament)
@@ -714,7 +714,7 @@ void TournamentManager::addGossip(Creature* creature, Player* player)
     if (TournamentLadder)
     {
         if (TournamentDebug)
-            TC_LOG_INFO("misc", "TournamentManager::addGossip -> TournamentLadder: level %u", tournament->level);
+            TC_LOG_INFO("misc", "TournamentManager::addGossip -> TournamentLadder: level {}", tournament->level);
             
         uint32 newLevel = tournament->level + 1;
             

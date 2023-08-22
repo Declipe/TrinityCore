@@ -4350,7 +4350,7 @@ void Player::DeleteFromDB(ObjectGuid playerguid, uint32 accountId, bool updateRe
             stmt->setUInt32(0, guid);
             trans->Append(stmt);
 #ifdef PRESETS
-            trans->PAppend("DELETE FROM `custom_transmogrification_sets` WHERE `Owner` = %u", guid);
+            trans->PAppend("DELETE FROM `custom_transmogrification_sets` WHERE `Owner` = {}", guid);
 #endif
 
             stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_PLAYER_ACCOUNT_DATA);
@@ -5947,14 +5947,10 @@ bool Player::UpdateSkillPro(uint16 SkillId, int32 Chance, uint32 step)
         }
         UpdateSkillEnchantments(SkillId, SkillValue, SkillNewValue);
         UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL, SkillId);
-<<<<<<< HEAD
-        TC_LOG_DEBUG("entities.player.skills", "Player::UpdateSkillPro: Player '%s' (%s), SkillID: %u, Chance: %3.1f%% taken",
-            GetName().c_str(), GetGUID().ToString().c_str(), SkillId, Chance / 10.0f);
-        sScriptMgr->OnPlayerSkillUpdate(this, SkillId, SkillValue, SkillNewValue);
-=======
+
         TC_LOG_DEBUG("entities.player.skills", "Player::UpdateSkillPro: Player '{}' ({}), SkillID: {}, Chance: {:3.1f}% taken",
             GetName(), GetGUID().ToString(), SkillId, Chance / 10.0f);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
+        sScriptMgr->OnPlayerSkillUpdate(this, SkillId, SkillValue, SkillNewValue);
         return true;
     }
 
@@ -19454,13 +19450,8 @@ bool Player::_LoadHomeBind(PreparedQueryResult result)
     PlayerInfo const* info = sObjectMgr->GetPlayerInfo(getCFSRace(), GetClass());
     if (!info)
     {
-<<<<<<< HEAD
-        TC_LOG_ERROR("entities.player", "Player::_LoadHomeBind: Player '%s' (%s) has incorrect race/class (%u/%u) pair. Can't load.",
-            GetGUID().ToString().c_str(), GetName().c_str(), uint32(getCFSRace()), uint32(GetClass()));
-=======
         TC_LOG_ERROR("entities.player", "Player::_LoadHomeBind: Player '{}' ({}) has incorrect race/class ({}/{}) pair. Can't load.",
-            GetGUID().ToString(), GetName(), uint32(GetRace()), uint32(GetClass()));
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
+            GetGUID().ToString(), GetName(), uint32(getCFSRace()), uint32(GetClass()));
         return false;
     }
 
@@ -21987,8 +21978,8 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorguid, uint32 vendorslot, uin
     Creature* creature = GetNPCIfCanInteractWith(vendorguid, UNIT_NPC_FLAG_VENDOR);
     if (!creature)
     {
-        TC_LOG_DEBUG("network", "Player::BuyItemFromVendorSlot: Vendor (%s) not found or player '%s' (%s) can't interact with him.",
-        vendorguid.ToString().c_str(), GetName().c_str(), GetGUID().ToString().c_str());
+        TC_LOG_DEBUG("network", "Player::BuyItemFromVendorSlot: Vendor ({}) not found or player '{}' ({}) can't interact with him.",
+            vendorguid.ToString(), GetName(), GetGUID().ToString());
         SendBuyError(BUY_ERR_DISTANCE_TOO_FAR, nullptr, item, 0);
         return false;
     }
@@ -22008,18 +21999,6 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorguid, uint32 vendorslot, uin
     if (!IsGameMaster() && ((pProto->Flags2 & ITEM_FLAG2_FACTION_HORDE && GetTeam() == ALLIANCE) || (pProto->Flags2 == ITEM_FLAG2_FACTION_ALLIANCE && GetTeam() == HORDE)))
         return false;
 
-<<<<<<< HEAD
-=======
-    Creature* creature = GetNPCIfCanInteractWith(vendorguid, UNIT_NPC_FLAG_VENDOR);
-    if (!creature)
-    {
-        TC_LOG_DEBUG("network", "Player::BuyItemFromVendorSlot: Vendor ({}) not found or player '{}' ({}) can't interact with him.",
-            vendorguid.ToString(), GetName(), GetGUID().ToString());
-        SendBuyError(BUY_ERR_DISTANCE_TOO_FAR, nullptr, item, 0);
-        return false;
-    }
-
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
     if (!sConditionMgr->IsObjectMeetingVendorItemConditions(creature->GetEntry(), item, this, creature))
     {
         TC_LOG_DEBUG("condition", "Player::BuyItemFromVendorSlot: Player '{}' ({}) doesn't meed conditions for creature (Entry: {}, Item: {})",
@@ -23289,13 +23268,8 @@ void Player::LearnCustomSpells()
     for (PlayerCreateInfoSpells::const_iterator itr = info->customSpells.begin(); itr != info->customSpells.end(); ++itr)
     {
         uint32 tspell = *itr;
-<<<<<<< HEAD
-        TC_LOG_DEBUG("entities.player.loading", "Player::LearnCustomSpells: Player '%s' (%s, Class: %u Race: %u): Adding initial spell (SpellID: %u)",
-            GetName().c_str(), GetGUID().ToString().c_str(), uint32(GetClass()), uint32(getCFSRace()), tspell);
-=======
         TC_LOG_DEBUG("entities.player.loading", "Player::LearnCustomSpells: Player '{}' ({}, Class: {} Race: {}): Adding initial spell (SpellID: {})",
-            GetName(), GetGUID().ToString(), uint32(GetClass()), uint32(GetRace()), tspell);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
+            GetName(), GetGUID().ToString(), uint32(GetClass()), uint32(getCFSRace()), tspell);
         if (!IsInWorld())                                    // will send in INITIAL_SPELLS in list anyway at map add
             AddSpell(tspell, true, true, true, false);
         else                                                // but send in normal spell in game learn case
@@ -23324,11 +23298,9 @@ void Player::LearnDefaultSkill(uint32 skillId, uint16 rank)
     if (!rcInfo)
         return;
 
-<<<<<<< HEAD
-    TC_LOG_DEBUG("entities.player.loading", "PLAYER (Class: %u Race: %u): Adding initial skill, id = %u", uint32(GetClass()), uint32(getCFSRace()), skillId);
-=======
-    TC_LOG_DEBUG("entities.player.loading", "PLAYER (Class: {} Race: {}): Adding initial skill, id = {}", uint32(GetClass()), uint32(GetRace()), skillId);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
+
+    TC_LOG_DEBUG("entities.player.loading", "PLAYER (Class: {} Race: {}): Adding initial skill, id = {}", uint32(GetClass()), uint32(getCFSRace()), skillId);
+
     switch (GetSkillRangeType(rcInfo))
     {
         case SKILL_RANGE_LANGUAGE:

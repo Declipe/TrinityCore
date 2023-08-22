@@ -42,12 +42,12 @@
 #include "MailPackets.h"
 
 
-#define SQL_CODE "SELECT `CodeId`, `MailMoney`, `MaxCountForCharacter`, `MaxCountForAccount`, `MaxCountTotal`, `MailSubject`, `MailText` FROM `world_coded` WHERE `CodeStart` <= CURRENT_TIMESTAMP AND `CodeEnd` >= CURRENT_TIMESTAMP AND `CodeData` = '%s' LIMIT 1"
-#define SQL_CODE_COUNT "SELECT COUNT(*) FROM `world_coded_history` WHERE `CodeId` = '%u'"
-#define SQL_CODE_COUNT_ACCOUNT "SELECT COUNT(*) FROM `world_coded_history` WHERE `CodeId` = '%u' AND `AccountId` = '%u'"
-#define SQL_CODE_COUNT_CHARACTER "SELECT COUNT(*) FROM `world_coded_history` WHERE `CodeId` = '%u' AND `CharacterGuid` = '%u'"
-#define SQL_CODE_HISTORY "INSERT INTO `world_coded_history` (`CodeId`, `CharacterGuid`, `AccountId`, `SessionIp`) VALUES ('%u', '%u', '%u', '%s')"
-#define SQL_CODE_ITEMS "SELECT `ItemId`, `ItemCount`, `ItemId1`, `ItemCount1`, `ItemId2`, `ItemCount2`, `ItemId3`, `ItemCount3`, `ItemId4`, `ItemCount4` FROM `world_coded_items` WHERE `CodeId` = '%u' AND (`ItemClassMask` & %u OR `ItemClassMask` = 0) AND (`ItemRaceMask` & %u OR `ItemRaceMask` = 0)"
+#define SQL_CODE "SELECT `CodeId`, `MailMoney`, `MaxCountForCharacter`, `MaxCountForAccount`, `MaxCountTotal`, `MailSubject`, `MailText` FROM `world_coded` WHERE `CodeStart` <= CURRENT_TIMESTAMP AND `CodeEnd` >= CURRENT_TIMESTAMP AND `CodeData` = '{}' LIMIT 1"
+#define SQL_CODE_COUNT "SELECT COUNT(*) FROM `world_coded_history` WHERE `CodeId` = '{}'"
+#define SQL_CODE_COUNT_ACCOUNT "SELECT COUNT(*) FROM `world_coded_history` WHERE `CodeId` = '{}' AND `AccountId` = '{}'"
+#define SQL_CODE_COUNT_CHARACTER "SELECT COUNT(*) FROM `world_coded_history` WHERE `CodeId` = '{}' AND `CharacterGuid` = '{}'"
+#define SQL_CODE_HISTORY "INSERT INTO `world_coded_history` (`CodeId`, `CharacterGuid`, `AccountId`, `SessionIp`) VALUES ('{}', '{}', '{}', '{}')"
+#define SQL_CODE_ITEMS "SELECT `ItemId`, `ItemCount`, `ItemId1`, `ItemCount1`, `ItemId2`, `ItemCount2`, `ItemId3`, `ItemCount3`, `ItemId4`, `ItemCount4` FROM `world_coded_items` WHERE `CodeId` = '{}' AND (`ItemClassMask` & %{} OR `ItemClassMask` = 0) AND (`ItemRaceMask` & {} OR `ItemRaceMask` = 0)"
 
 bool SCEnable = false;
 

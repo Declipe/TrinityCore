@@ -555,7 +555,7 @@ void BattlegroundMgr::LoadBattlegroundTemplates()
         bgTemplate.MinPlayersPerTeam = fields[1].GetUInt16();
         bgTemplate.MaxPlayersPerTeam = fields[2].GetUInt16();
         bgTemplate.MinLevel          = fields[3].GetUInt8();
-        bgTemplate.MaxLevel          = fields[4].GetUInt8();
+        bgTemplate.MaxLevel          = fields[4].GetUInt64();
         float dist                   = fields[9].GetFloat();
         bgTemplate.MaxStartDistSq    = dist * dist;
         bgTemplate.Weight            = fields[10].GetUInt8();

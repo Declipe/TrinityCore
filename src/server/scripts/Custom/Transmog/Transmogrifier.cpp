@@ -149,7 +149,7 @@ public:
                             }
                         }
                         if (removed)
-                            session->SendAreaTriggerMessage("%s", GTS(LANG_ERR_UNTRANSMOG_OK));
+                            session->SendAreaTriggerMessage("{}", GTS(LANG_ERR_UNTRANSMOG_OK));
                         else
                             session->SendNotification(LANG_ERR_UNTRANSMOG_NO_TRANSMOGS);
                         OnGossipHello(player, creature);
@@ -163,7 +163,7 @@ public:
                                 newItem->transmog = 0;
                                 newItem->SetState(ITEM_CHANGED, player);
                                 sTransmogrification->UpdateItem(player, newItem);
-                                session->SendAreaTriggerMessage("%s", GTS(LANG_ERR_UNTRANSMOG_OK));
+                                session->SendAreaTriggerMessage("{}", GTS(LANG_ERR_UNTRANSMOG_OK));
                             }
                             else
                                 session->SendNotification(LANG_ERR_UNTRANSMOG_NO_TRANSMOGS);
@@ -248,7 +248,7 @@ public:
                         auto it = player->presetMap.find(action);
                         if (it != player->presetMap.end())
                         {
-                            CharacterDatabase.PExecute("DELETE FROM `custom_transmogrification_sets` WHERE `Owner` = %u AND `PresetID` = %u", player->GetGUID().GetCounter(), uint32(action));
+                            CharacterDatabase.PExecute("DELETE FROM `custom_transmogrification_sets` WHERE `Owner` = {} AND `PresetID` = {}", player->GetGUID().GetCounter(), uint32(action));
                             player->presetMap.erase(it);
                         }
 
@@ -316,7 +316,7 @@ public:
                         // sender = slot, action = display
                         TransmogTrinityStrings res = sTransmogrification->Transmogrify(player, ObjectGuid(HighGuid::Item, 0, action), sender);
                         if (res == LANG_ERR_TRANSMOG_OK)
-                            session->SendAreaTriggerMessage("%s", GTS(LANG_ERR_TRANSMOG_OK));
+                            session->SendAreaTriggerMessage("{}", GTS(LANG_ERR_TRANSMOG_OK));
                         else
                             session->SendNotification(res);
                         // OnGossipSelect(player, EQUIPMENT_SLOT_END, sender);
@@ -412,7 +412,7 @@ public:
                         std::ostringstream ss;
                         for (auto const & k_v : items)
                             ss << uint32(k_v.first) << ' ' << k_v.second << ' ';
-                        CharacterDatabase.PExecute("REPLACE INTO `custom_transmogrification_sets` (`Owner`, `PresetID`, `SetName`, `SetData`) VALUES (%u, %u, \"%s\", \"%s\")", player->GetGUID().GetCounter(), uint32(presetID), name.c_str(), ss.str().c_str());
+                        CharacterDatabase.PExecute("REPLACE INTO `custom_transmogrification_sets` (`Owner`, `PresetID`, `SetName`, `SetData`) VALUES ({}, {}, \"{}\", \"{}\")", player->GetGUID().GetCounter(), uint32(presetID), name.c_str(), ss.str().c_str());
                     }
                 }
             }

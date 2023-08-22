@@ -110,12 +110,10 @@ class TC_GAME_API ChatHandler
         char* extractKeyFromLink(char* text, char const* linkType, char** something1 = nullptr);
         char* extractKeyFromLink(char* text, char const* const* linkTypes, int* found_idx, char** something1 = nullptr);
         char* extractQuotedArg(char* args);
-<<<<<<< HEAD
+
         // if args have single value then it return in arg2 and arg1 == nullptr
         void extractOptFirstArg(char* args, char** arg1, char** arg2);
-        uint32 extractSpellIdFromLink(char* text);
-=======
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
+
         ObjectGuid::LowType extractLowGuidFromLink(char* text, HighGuid& guidHigh);
         GameTele const* extractGameTeleFromLink(char* text);
         bool GetPlayerGroupAndGUIDByName(char const* cname, Player*& player, Group*& group, ObjectGuid& guid, bool offline = false);

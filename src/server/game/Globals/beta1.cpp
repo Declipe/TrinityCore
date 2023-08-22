@@ -122,7 +122,7 @@ void ObjectMgr::LoadItemTemplates2()
 
         if (itemTemplate.StatsCount > MAX_ITEM_PROTO_STATS)
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has too large value in statscount (%u), replace by hardcoded limit (%u).", entry, itemTemplate.StatsCount, MAX_ITEM_PROTO_STATS);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has too large value in statscount ({}), replace by hardcoded limit ({}).", entry, itemTemplate.StatsCount, MAX_ITEM_PROTO_STATS);
             itemTemplate.StatsCount = MAX_ITEM_PROTO_STATS;
         }
 
@@ -171,7 +171,7 @@ void ObjectMgr::LoadItemTemplates2()
         itemTemplate.PageMaterial = uint32(fields[105].GetUInt32());
         itemTemplate.StartQuest = fields[106].GetUInt32();
         itemTemplate.LockID = fields[107].GetUInt32();
-        itemTemplate.Material = int32(fields[108].GetInt32());
+        itemTemplate.Material = int32(fields[108].GetInt64());
         itemTemplate.Sheath = uint32(fields[109].GetUInt8());
         itemTemplate.RandomProperty = fields[110].GetUInt32();
         itemTemplate.RandomSuffix = fields[111].GetInt32();
@@ -211,67 +211,67 @@ void ObjectMgr::LoadItemTemplates2()
         {
             if (itemTemplate.Class != dbcitem->ClassID)
             {
-                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct class %u, must be %u .", entry, itemTemplate.Class, dbcitem->Class);
-                TC_LOG_ERROR("sql.sql", "UPDATE `item_template2` SET `class` = %u WHERE (entry = %u);", dbcitem->ClassID, entry);
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct class {}, must be {} .", entry, itemTemplate.Class, dbcitem->Class);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template2` SET `class` = {} WHERE (entry = {});", dbcitem->ClassID, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.Class = dbcitem->ClassID;
             }
 
             if (itemTemplate.SoundOverrideSubclass != dbcitem->SoundOverrideSubclassID)
             {
-                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct SoundOverrideSubclass (%i), must be %i .", entry, itemTemplate.SoundOverrideSubclass, dbcitem->SoundOverrideSubclass);
-                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `SoundOverrideSubclass` = %u WHERE (entry = %u);", dbcitem->SoundOverrideSubclassID, entry);
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct SoundOverrideSubclass ({}), must be {} .", entry, itemTemplate.SoundOverrideSubclass, dbcitem->SoundOverrideSubclass);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `SoundOverrideSubclass` = {} WHERE (entry = {});", dbcitem->SoundOverrideSubclassID, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.SoundOverrideSubclass = dbcitem->SoundOverrideSubclassID;
             }
             if (itemTemplate.Material != dbcitem->Material)
             {
-                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct material (%i), must be %i .", entry, itemTemplate.Material, dbcitem->Material);
-                TC_LOG_ERROR("sql.sql", "UPDATE `item_template2` SET `material` = %u WHERE (entry = %u);", dbcitem->Material, entry);
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct material ({}), must be {} .", entry, itemTemplate.Material, dbcitem->Material);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template2` SET `material` = {} WHERE (entry = {});", dbcitem->Material, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.Material = dbcitem->Material;
             }
             if (itemTemplate.InventoryType != dbcitem->InventoryType)
             {
-                // TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct inventory type (%u), must be %u .", entry, itemTemplate.InventoryType, dbcitem->InventoryType);
-                TC_LOG_ERROR("sql.sql", "UPDATE `item_template2` SET `InventoryType` = %u WHERE (entry = %u);", dbcitem->InventoryType, entry);
+                // TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct inventory type ({}), must be {} .", entry, itemTemplate.InventoryType, dbcitem->InventoryType);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template2` SET `InventoryType` = {} WHERE (entry = {});", dbcitem->InventoryType, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.InventoryType = dbcitem->InventoryType;
             }
             if (itemTemplate.DisplayInfoID != dbcitem->DisplayInfoID)
             {
-                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct display id (%u), must be %u .", entry, itemTemplate.DisplayInfoID, dbcitem->DisplayId);
-                TC_LOG_ERROR("sql.sql", "UPDATE `item_template2` SET `displayid` = %u WHERE (entry = %u);", dbcitem->DisplayInfoID, entry);
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct display id ({}), must be {} .", entry, itemTemplate.DisplayInfoID, dbcitem->DisplayId);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template2` SET `displayid` = {} WHERE (entry = {});", dbcitem->DisplayInfoID, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.DisplayInfoID = dbcitem->DisplayInfoID;
             }
             if (itemTemplate.Sheath != dbcitem->SheatheType)
             {
-                //TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have a correct sheathid (%u), must be %u .", entry, itemTemplate.Sheath, dbcitem->Sheath);
-                TC_LOG_ERROR("sql.sql", "UPDATE `item_template2` SET `sheath` = %u WHERE (entry = %u);", dbcitem->SheatheType, entry);
+                //TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct sheathid ({}), must be {} .", entry, itemTemplate.Sheath, dbcitem->Sheath);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template2` SET `sheath` = {} WHERE (entry = {});", dbcitem->SheatheType, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.Sheath = dbcitem->SheatheType;
             }
 
         }
         else
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not exist in item.dbc! (not correct id?).", entry);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not exist in item.dbc! (not correct id?).", entry);
 
         if (itemTemplate.Class >= MAX_ITEM_CLASS)
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong Class value (%u)", entry, itemTemplate.Class);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Class value ({})", entry, itemTemplate.Class);
             itemTemplate.Class = ITEM_CLASS_MISC;
         }
 
         if (itemTemplate.SubClass >= MaxItemSubclassValues[itemTemplate.Class])
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong Subclass value (%u) for class %u", entry, itemTemplate.SubClass, itemTemplate.Class);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Subclass value ({}) for class {}", entry, itemTemplate.SubClass, itemTemplate.Class);
             itemTemplate.SubClass = 0;// exist for all item classes
         }
 
         if (itemTemplate.Quality >= MAX_ITEM_QUALITY)
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong Quality value (%u)", entry, itemTemplate.Quality);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Quality value ({})", entry, itemTemplate.Quality);
             itemTemplate.Quality = ITEM_QUALITY_NORMAL;
         }
 
@@ -279,36 +279,36 @@ void ObjectMgr::LoadItemTemplates2()
         {
             if (FactionEntry const* faction = sFactionStore.LookupEntry(HORDE))
                 if ((itemTemplate.AllowableRace & faction->ReputationRaceMask[0]) == 0)
-                    TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has value (%u) in `AllowableRace` races, not compatible with ITEM_FLAG2_FACTION_HORDE (%u) in Flags field, item cannot be equipped or used by these races.",
+                    TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has value ({}) in `AllowableRace` races, not compatible with ITEM_FLAG2_FACTION_HORDE ({}) in Flags field, item cannot be equipped or used by these races.",
                         entry, itemTemplate.AllowableRace, ITEM_FLAG2_FACTION_HORDE);
 
             if (itemTemplate.Flags2 & ITEM_FLAG2_FACTION_ALLIANCE)
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has value (%u) in `Flags2` flags (ITEM_FLAG2_FACTION_ALLIANCE) and ITEM_FLAG2_FACTION_HORDE (%u) in Flags field, this is a wrong combination.",
+                TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has value ({}) in `Flags2` flags (ITEM_FLAG2_FACTION_ALLIANCE) and ITEM_FLAG2_FACTION_HORDE ({}) in Flags field, this is a wrong combination.",
                     entry, ITEM_FLAG2_FACTION_ALLIANCE, ITEM_FLAG2_FACTION_HORDE);
         }
         else if (itemTemplate.Flags2 & ITEM_FLAG2_FACTION_ALLIANCE)
         {
             if (FactionEntry const* faction = sFactionStore.LookupEntry(ALLIANCE))
                 if ((itemTemplate.AllowableRace & faction->ReputationRaceMask[0]) == 0)
-                    TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has value (%u) in `AllowableRace` races, not compatible with ITEM_FLAG2_FACTION_ALLIANCE (%u) in Flags field, item cannot be equipped or used by these races.",
+                    TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has value ({}) in `AllowableRace` races, not compatible with ITEM_FLAG2_FACTION_ALLIANCE ({}) in Flags field, item cannot be equipped or used by these races.",
                         entry, itemTemplate.AllowableRace, ITEM_FLAG2_FACTION_ALLIANCE);
         }
 
         if (itemTemplate.BuyCount <= 0)
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong BuyCount value (%u), set to default(1).", entry, itemTemplate.BuyCount);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong BuyCount value ({}), set to default(1).", entry, itemTemplate.BuyCount);
             itemTemplate.BuyCount = 1;
         }
 
         if (itemTemplate.InventoryType >= MAX_INVTYPE)
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong InventoryType value (%u)", entry, itemTemplate.InventoryType);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong InventoryType value ({})", entry, itemTemplate.InventoryType);
             itemTemplate.InventoryType = INVTYPE_NON_EQUIP;
         }
 
         if (itemTemplate.RequiredSkill >= MAX_SKILL_TYPE)
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong RequiredSkill value (%u)", entry, itemTemplate.RequiredSkill);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong RequiredSkill value ({})", entry, itemTemplate.RequiredSkill);
             itemTemplate.RequiredSkill = 0;
         }
 
@@ -328,54 +328,54 @@ void ObjectMgr::LoadItemTemplates2()
             if (req)
             {
                 if (!(itemTemplate.AllowableClass & CLASSMASK_ALL_PLAYABLE))
-                    TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have any playable classes (%u) in `AllowableClass` and can't be equipped or used.", entry, itemTemplate.AllowableClass);
+                    TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have any playable classes ({}) in `AllowableClass` and can't be equipped or used.", entry, itemTemplate.AllowableClass);
 
                 if (!(itemTemplate.AllowableRace & RACEMASK_ALL_PLAYABLE))
-                    TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have any playable races (%u) in `AllowableRace` and can't be equipped or used.", entry, itemTemplate.AllowableRace);
+                    TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have any playable races ({}) in `AllowableRace` and can't be equipped or used.", entry, itemTemplate.AllowableRace);
             }
         }
 
         if (itemTemplate.RequiredSpell && !sSpellMgr->GetSpellInfo(itemTemplate.RequiredSpell))
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has a wrong (non-existing) spell in RequiredSpell (%u)", entry, itemTemplate.RequiredSpell);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has a wrong (non-existing) spell in RequiredSpell ({})", entry, itemTemplate.RequiredSpell);
             itemTemplate.RequiredSpell = 0;
         }
 
         if (itemTemplate.RequiredReputationRank >= MAX_REPUTATION_RANK)
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong reputation rank in RequiredReputationRank (%u), item can't be used.", entry, itemTemplate.RequiredReputationRank);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong reputation rank in RequiredReputationRank ({}), item can't be used.", entry, itemTemplate.RequiredReputationRank);
 
         if (itemTemplate.RequiredReputationFaction)
         {
             if (!sFactionStore.LookupEntry(itemTemplate.RequiredReputationFaction))
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong (not existing) faction in RequiredReputationFaction (%u)", entry, itemTemplate.RequiredReputationFaction);
+                TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong (not existing) faction in RequiredReputationFaction ({})", entry, itemTemplate.RequiredReputationFaction);
                 itemTemplate.RequiredReputationFaction = 0;
             }
 
             if (itemTemplate.RequiredReputationRank == MIN_REPUTATION_RANK)
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has min. reputation rank in RequiredReputationRank (0) but RequiredReputationFaction > 0, faction setting is useless.", entry);
+                TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has min. reputation rank in RequiredReputationRank (0) but RequiredReputationFaction > 0, faction setting is useless.", entry);
         }
 
         if (itemTemplate.MaxCount < -1)
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has too large negative in maxcount (%i), replace by value (-1) no storing limits.", entry, itemTemplate.MaxCount);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has too large negative in maxcount ({}), replace by value (-1) no storing limits.", entry, itemTemplate.MaxCount);
             itemTemplate.MaxCount = -1;
         }
 
         if (itemTemplate.Stackable == 0)
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong value in stackable (%i), replace by default 1.", entry, itemTemplate.Stackable);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong value in stackable ({}), replace by default 1.", entry, itemTemplate.Stackable);
             itemTemplate.Stackable = 1;
         }
         else if (itemTemplate.Stackable < -1)
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has too large negative in stackable (%i), replace by value (-1) no stacking limits.", entry, itemTemplate.Stackable);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has too large negative in stackable ({}), replace by value (-1) no stacking limits.", entry, itemTemplate.Stackable);
             itemTemplate.Stackable = -1;
         }
 
         if (itemTemplate.ContainerSlots > MAX_BAG_SIZE)
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has too large value in ContainerSlots (%u), replace by hardcoded limit (%u).", entry, itemTemplate.ContainerSlots, MAX_BAG_SIZE);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has too large value in ContainerSlots ({}), replace by hardcoded limit ({}).", entry, itemTemplate.ContainerSlots, MAX_BAG_SIZE);
             itemTemplate.ContainerSlots = MAX_BAG_SIZE;
         }
 
@@ -384,7 +384,7 @@ void ObjectMgr::LoadItemTemplates2()
             // for ItemStatValue != 0
             if (itemTemplate.ItemStat[j].ItemStatValue && itemTemplate.ItemStat[j].ItemStatType >= MAX_ITEM_MOD)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong (non-existing?) stat_type%d (%u)", entry, j + 1, itemTemplate.ItemStat[j].ItemStatType);
+                TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong (non-existing?) stat_type{} ({})", entry, j + 1, itemTemplate.ItemStat[j].ItemStatType);
                 itemTemplate.ItemStat[j].ItemStatType = 0;
             }
 
@@ -392,7 +392,7 @@ void ObjectMgr::LoadItemTemplates2()
             {
             case ITEM_MOD_SPELL_HEALING_DONE:
             case ITEM_MOD_SPELL_DAMAGE_DONE:
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has deprecated stat_type%d (%u)", entry, j + 1, itemTemplate.ItemStat[j].ItemStatType);
+                TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has deprecated stat_type{} ({})", entry, j + 1, itemTemplate.ItemStat[j].ItemStatType);
                 break;
             default:
                 break;
@@ -403,7 +403,7 @@ void ObjectMgr::LoadItemTemplates2()
         {
             if (itemTemplate.Damage[j].DamageType >= MAX_SPELL_SCHOOL)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong dmg_type%d (%u)", entry, j + 1, itemTemplate.Damage[j].DamageType);
+                TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong dmg_type{} ({})", entry, j + 1, itemTemplate.Damage[j].DamageType);
                 itemTemplate.Damage[j].DamageType = 0;
             }
         }
@@ -414,7 +414,7 @@ void ObjectMgr::LoadItemTemplates2()
             // spell_1
             if (itemTemplate.Spells[0].SpellTrigger != ITEM_SPELLTRIGGER_ON_USE)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong item spell trigger value in spelltrigger_%d (%u) for special learning format", entry, 0 + 1, itemTemplate.Spells[0].SpellTrigger);
+                TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong item spell trigger value in spelltrigger_{} ({}) for special learning format", entry, 0 + 1, itemTemplate.Spells[0].SpellTrigger);
                 itemTemplate.Spells[0].SpellId = 0;
                 itemTemplate.Spells[0].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
                 itemTemplate.Spells[1].SpellId = 0;
@@ -424,14 +424,14 @@ void ObjectMgr::LoadItemTemplates2()
             // spell_2 have learning spell
             if (itemTemplate.Spells[1].SpellTrigger != ITEM_SPELLTRIGGER_LEARN_SPELL_ID)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong item spell trigger value in spelltrigger_%d (%u) for special learning format.", entry, 1 + 1, itemTemplate.Spells[1].SpellTrigger);
+                TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong item spell trigger value in spelltrigger_{} ({}) for special learning format.", entry, 1 + 1, itemTemplate.Spells[1].SpellTrigger);
                 itemTemplate.Spells[0].SpellId = 0;
                 itemTemplate.Spells[1].SpellId = 0;
                 itemTemplate.Spells[1].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
             }
             else if (!itemTemplate.Spells[1].SpellId)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not have an expected spell in spellid_%d in special learning format.", entry, 1 + 1);
+                TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have an expected spell in spellid_{} in special learning format.", entry, 1 + 1);
                 itemTemplate.Spells[0].SpellId = 0;
                 itemTemplate.Spells[1].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
             }
@@ -440,7 +440,7 @@ void ObjectMgr::LoadItemTemplates2()
                 SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(itemTemplate.Spells[1].SpellId);
                 if (!spellInfo && !DisableMgr::IsDisabledFor(DISABLE_TYPE_SPELL, itemTemplate.Spells[1].SpellId, nullptr))
                 {
-                    TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong (not existing) spell in spellid_%d (%d)", entry, 1 + 1, itemTemplate.Spells[1].SpellId);
+                    TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong (not existing) spell in spellid_{} ({})", entry, 1 + 1, itemTemplate.Spells[1].SpellId);
                     itemTemplate.Spells[0].SpellId = 0;
                     itemTemplate.Spells[1].SpellId = 0;
                     itemTemplate.Spells[1].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
@@ -448,7 +448,7 @@ void ObjectMgr::LoadItemTemplates2()
                 // allowed only in special format
                 else if ((itemTemplate.Spells[1].SpellId == 483) || (itemTemplate.Spells[1].SpellId == 55884))
                 {
-                    TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has broken spell in spellid_%d (%d)", entry, 1 + 1, itemTemplate.Spells[1].SpellId);
+                    TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has broken spell in spellid_{} ({})", entry, 1 + 1, itemTemplate.Spells[1].SpellId);
                     itemTemplate.Spells[0].SpellId = 0;
                     itemTemplate.Spells[1].SpellId = 0;
                     itemTemplate.Spells[1].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
@@ -460,13 +460,13 @@ void ObjectMgr::LoadItemTemplates2()
             {
                 if (itemTemplate.Spells[j].SpellTrigger != ITEM_SPELLTRIGGER_ON_USE)
                 {
-                    TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong item spell trigger value in spelltrigger_%d (%u)", entry, j + 1, itemTemplate.Spells[j].SpellTrigger);
+                    TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong item spell trigger value in spelltrigger_{} ({})", entry, j + 1, itemTemplate.Spells[j].SpellTrigger);
                     itemTemplate.Spells[j].SpellId = 0;
                     itemTemplate.Spells[j].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
                 }
                 else if (itemTemplate.Spells[j].SpellId != 0)
                 {
-                    TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong spell in spellid_%d (%d) for learning special format", entry, j + 1, itemTemplate.Spells[j].SpellId);
+                    TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong spell in spellid_{} ({}) for learning special format", entry, j + 1, itemTemplate.Spells[j].SpellId);
                     itemTemplate.Spells[j].SpellId = 0;
                 }
             }
@@ -478,7 +478,7 @@ void ObjectMgr::LoadItemTemplates2()
             {
                 if (itemTemplate.Spells[j].SpellTrigger >= MAX_ITEM_SPELLTRIGGER || itemTemplate.Spells[j].SpellTrigger == ITEM_SPELLTRIGGER_LEARN_SPELL_ID)
                 {
-                    TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong item spell trigger value in spelltrigger_%d (%u)", entry, j + 1, itemTemplate.Spells[j].SpellTrigger);
+                    TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong item spell trigger value in spelltrigger_{} ({})", entry, j + 1, itemTemplate.Spells[j].SpellTrigger);
                     itemTemplate.Spells[j].SpellId = 0;
                     itemTemplate.Spells[j].SpellTrigger = ITEM_SPELLTRIGGER_ON_USE;
                 }
@@ -488,13 +488,13 @@ void ObjectMgr::LoadItemTemplates2()
                     SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(itemTemplate.Spells[j].SpellId);
                     if (!spellInfo && !DisableMgr::IsDisabledFor(DISABLE_TYPE_SPELL, itemTemplate.Spells[j].SpellId, nullptr))
                     {
-                        TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong (not existing) spell in spellid_%d (%d)", entry, j + 1, itemTemplate.Spells[j].SpellId);
+                        TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong (not existing) spell in spellid_{} ({})", entry, j + 1, itemTemplate.Spells[j].SpellId);
                         itemTemplate.Spells[j].SpellId = 0;
                     }
                     // allowed only in special format
                     else if ((itemTemplate.Spells[j].SpellId == 483) || (itemTemplate.Spells[j].SpellId == 55884))
                     {
-                        TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has broken spell in spellid_%d (%d)", entry, j + 1, itemTemplate.Spells[j].SpellId);
+                        TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has broken spell in spellid_{} ({})", entry, j + 1, itemTemplate.Spells[j].SpellId);
                         itemTemplate.Spells[j].SpellId = 0;
                     }
                 }
@@ -502,17 +502,17 @@ void ObjectMgr::LoadItemTemplates2()
         }
 
         if (itemTemplate.Bonding >= MAX_BIND_TYPE)
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong Bonding value (%u)", entry, itemTemplate.Bonding);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Bonding value ({})", entry, itemTemplate.Bonding);
 
         if (itemTemplate.PageText && !GetPageText(itemTemplate.PageText))
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has non existing first page (Id:%u)", entry, itemTemplate.PageText);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has non existing first page (Id:{})", entry, itemTemplate.PageText);
 
         if (itemTemplate.LockID && !sLockStore.LookupEntry(itemTemplate.LockID))
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong LockID (%u)", entry, itemTemplate.LockID);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong LockID ({})", entry, itemTemplate.LockID);
 
         if (itemTemplate.Sheath >= MAX_SHEATHETYPE)
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong Sheath (%u)", entry, itemTemplate.Sheath);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Sheath ({})", entry, itemTemplate.Sheath);
             itemTemplate.Sheath = SHEATHETYPE_NONE;
         }
 
@@ -524,28 +524,28 @@ void ObjectMgr::LoadItemTemplates2()
 
             else if (!sItemRandomPropertiesStore.LookupEntry(GetItemEnchantMod(itemTemplate.RandomProperty)))
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has unknown (wrong or not listed in `item_enchantment_template`) RandomProperty (%u)", entry, itemTemplate.RandomProperty);
+                TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has unknown (wrong or not listed in `item_enchantment_template`) RandomProperty ({})", entry, itemTemplate.RandomProperty);
                 itemTemplate.RandomProperty = 0;
             }
         }
 
         if (itemTemplate.RandomSuffix && !sItemRandomSuffixStore.LookupEntry(GetItemEnchantMod(itemTemplate.RandomSuffix)))
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong RandomSuffix (%u)", entry, itemTemplate.RandomSuffix);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong RandomSuffix ({})", entry, itemTemplate.RandomSuffix);
             itemTemplate.RandomSuffix = 0;
         }
 
         if (itemTemplate.ItemSet && !sItemSetStore.LookupEntry(itemTemplate.ItemSet))
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) have wrong ItemSet (%u)", entry, itemTemplate.ItemSet);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) have wrong ItemSet ({})", entry, itemTemplate.ItemSet);
             itemTemplate.ItemSet = 0;
         }
 
         if (itemTemplate.Area && !sAreaTableStore.LookupEntry(itemTemplate.Area))
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong Area (%u)", entry, itemTemplate.Area);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Area ({})", entry, itemTemplate.Area);
 
         if (itemTemplate.Map && !sMapStore.LookupEntry(itemTemplate.Map))
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong Map (%u)", entry, itemTemplate.Map);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong Map ({})", entry, itemTemplate.Map);
 
         if (itemTemplate.BagFamily)
         {
@@ -559,7 +559,7 @@ void ObjectMgr::LoadItemTemplates2()
                 ItemBagFamilyEntry const* bf = sItemBagFamilyStore.LookupEntry(j + 1);
                 if (!bf)
                 {
-                    TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has bag family bit set not listed in ItemBagFamily.dbc, remove bit", entry);
+                    TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has bag family bit set not listed in ItemBagFamily.dbc, remove bit", entry);
                     itemTemplate.BagFamily &= ~mask;
                     continue;
                 }
@@ -569,7 +569,7 @@ void ObjectMgr::LoadItemTemplates2()
                     CurrencyTypesEntry const* ctEntry = sCurrencyTypesStore.LookupEntry(itemTemplate.ItemId);
                     if (!ctEntry)
                     {
-                        TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has currency bag family bit set in BagFamily but not listed in CurrencyTypes.dbc, remove bit", entry);
+                        TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has currency bag family bit set in BagFamily but not listed in CurrencyTypes.dbc, remove bit", entry);
                         itemTemplate.BagFamily &= ~mask;
                     }
                 }
@@ -577,41 +577,41 @@ void ObjectMgr::LoadItemTemplates2()
         }
 
         if (itemTemplate.TotemCategory && !sTotemCategoryStore.LookupEntry(itemTemplate.TotemCategory))
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong TotemCategory (%u)", entry, itemTemplate.TotemCategory);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong TotemCategory ({})", entry, itemTemplate.TotemCategory);
 
         for (uint8 j = 0; j < MAX_ITEM_PROTO_SOCKETS; ++j)
         {
             if (itemTemplate.Socket[j].Color && (itemTemplate.Socket[j].Color & SOCKET_COLOR_ALL) != itemTemplate.Socket[j].Color)
             {
-                TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong socketColor_%d (%u)", entry, j + 1, itemTemplate.Socket[j].Color);
+                TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong socketColor_{} ({})", entry, j + 1, itemTemplate.Socket[j].Color);
                 itemTemplate.Socket[j].Color = 0;
             }
         }
 
         if (itemTemplate.GemProperties && !sGemPropertiesStore.LookupEntry(itemTemplate.GemProperties))
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong GemProperties (%u)", entry, itemTemplate.GemProperties);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong GemProperties ({})", entry, itemTemplate.GemProperties);
 
         if (itemTemplate.FoodType >= MAX_PET_DIET)
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong FoodType value (%u)", entry, itemTemplate.FoodType);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong FoodType value ({})", entry, itemTemplate.FoodType);
             itemTemplate.FoodType = 0;
         }
 
         if (itemTemplate.ItemLimitCategory && !sItemLimitCategoryStore.LookupEntry(itemTemplate.ItemLimitCategory))
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong LimitCategory value (%u)", entry, itemTemplate.ItemLimitCategory);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong LimitCategory value ({})", entry, itemTemplate.ItemLimitCategory);
             itemTemplate.ItemLimitCategory = 0;
         }
 
         if (itemTemplate.HolidayId && !sHolidaysStore.LookupEntry(itemTemplate.HolidayId))
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry: %u) has wrong HolidayId value (%u)", entry, itemTemplate.HolidayId);
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has wrong HolidayId value ({})", entry, itemTemplate.HolidayId);
             itemTemplate.HolidayId = 0;
         }
 
         if (itemTemplate.FlagsCu & ITEM_FLAGS_CU_DURATION_REAL_TIME && !itemTemplate.Duration)
         {
-            TC_LOG_ERROR("sql.sql", "Item (Entry %u) has flag ITEM_FLAGS_CU_DURATION_REAL_TIME but it does not have duration limit", entry);
+            TC_LOG_ERROR("sql.sql", "Item (Entry {}) has flag ITEM_FLAGS_CU_DURATION_REAL_TIME but it does not have duration limit", entry);
             itemTemplate.FlagsCu &= ~ITEM_FLAGS_CU_DURATION_REAL_TIME;
         }
 
@@ -640,9 +640,9 @@ void ObjectMgr::LoadItemTemplates2()
     }
 
     for (std::set<uint32>::const_iterator itr = notFoundOutfit.begin(); itr != notFoundOutfit.end(); ++itr)
-        TC_LOG_ERROR("sql.sql", "Item (Entry: %u) does not exist in `item_template2` but is referenced in `CharStartOutfit.dbc`", *itr);
+        TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not exist in `item_template2` but is referenced in `CharStartOutfit.dbc`", *itr);
 
-    TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " item templates2 in %u ms", _itemTemplateStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded {} item templates2 in {} ms", _itemTemplateStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void SpellMgr::LoadSpellTargetPositions2()
@@ -678,20 +678,20 @@ void SpellMgr::LoadSpellTargetPositions2()
         MapEntry const* mapEntry = sMapStore.LookupEntry(st.target_mapId);
         if (!mapEntry)
         {
-            TC_LOG_ERROR("sql.sql", "Spell (Id: %u, effIndex: %u) target map (ID: %u) does not exist in `Map.dbc`.", Spell_ID, effIndex, st.target_mapId);
+            TC_LOG_ERROR("sql.sql", "Spell (Id: {}, effIndex: {}) target map (ID: {}) does not exist in `Map.dbc`.", Spell_ID, effIndex, st.target_mapId);
             continue;
         }
 
         if (st.target_X == 0 && st.target_Y == 0 && st.target_Z == 0)
         {
-            TC_LOG_ERROR("sql.sql", "Spell (Id: %u, effIndex: %u) target coordinates not provided.", Spell_ID, effIndex);
+            TC_LOG_ERROR("sql.sql", "Spell (Id: {}, effIndex: {}) target coordinates not provided.", Spell_ID, effIndex);
             continue;
         }
 
         SpellInfo const* spellInfo = GetSpellInfo(Spell_ID);
         if (!spellInfo)
         {
-            TC_LOG_ERROR("sql.sql", "Spell (Id: %u) listed in `spell_target_position2` does not exist.", Spell_ID);
+            TC_LOG_ERROR("sql.sql", "Spell (Id: {}) listed in `spell_target_position2` does not exist.", Spell_ID);
             continue;
         }
 
@@ -703,11 +703,11 @@ void SpellMgr::LoadSpellTargetPositions2()
         }
         else
         {
-            TC_LOG_ERROR("sql.sql", "Spell (Id: %u, effIndex: %u) listed in `spell_target_position2` does not have a target TARGET_DEST_DB (17).", Spell_ID, effIndex);
+            TC_LOG_ERROR("sql.sql", "Spell (Id: {}, effIndex: {}) listed in `spell_target_position2` does not have a target TARGET_DEST_DB (17).", Spell_ID, effIndex);
             continue;
         }
 
     } while (result->NextRow());
 
-    TC_LOG_INFO("server.loading", ">> Loaded %u spell teleport coordinates in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded {} spell teleport coordinates in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
 }

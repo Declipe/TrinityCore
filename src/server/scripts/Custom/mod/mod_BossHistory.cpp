@@ -17,7 +17,7 @@
 #include "BattlegroundMgr.h"
 #include "Group.h"
 
-#define SQL_BOSS_HISTORY_LOG "INSERT INTO `boss_history` (`GuildId`, `CreatureEntry`, `KillerCount`, `KillData`, `MapSpawnMode`, `MapId`, `MapRaid`, `CreatureName`, `MapName`, `MapMaxPlayers`) VALUES ('%u', '%u', '%u', '%s', '%u', '%u', '%u', '%s', '%s', '%u')"
+#define SQL_BOSS_HISTORY_LOG "INSERT INTO `boss_history` (`GuildId`, `CreatureEntry`, `KillerCount`, `KillData`, `MapSpawnMode`, `MapId`, `MapRaid`, `CreatureName`, `MapName`, `MapMaxPlayers`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')"
 #define DATA_SEPARATOR ":"
 #define PEOPLE_SEPARATOR " "
 

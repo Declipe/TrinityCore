@@ -229,7 +229,7 @@ class Mod_CustomRewardPvP_WorldScript : public WorldScript
         }
         while (result->NextRow());
 
-        TC_LOG_ERROR("misc", ">> Loaded %u count for CustomRewardPvP in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+        TC_LOG_ERROR("misc", ">> Loaded {} count for CustomRewardPvP in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
     }
 
     void OnConfigLoad(bool /*reload*/)

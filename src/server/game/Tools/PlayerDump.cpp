@@ -436,11 +436,7 @@ inline bool ValidateFields(TableStruct const& ts, std::string const& str, size_t
     s = str.find("` (`");
     if (s == std::string::npos)
     {
-<<<<<<< HEAD
-        TC_LOG_ERROR("misc", "LoadPlayerDump: (line " UI64FMTD ") dump format not recognized.", lineNumber);
-=======
         TC_LOG_ERROR("misc", "LoadPlayerDump: (line {}) dump format not recognized.", lineNumber);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
         return false;
     }
     s += 4;
@@ -449,11 +445,7 @@ inline bool ValidateFields(TableStruct const& ts, std::string const& str, size_t
     std::string::size_type e = str.find('`', s);
     if (e == std::string::npos || valPos == std::string::npos)
     {
-<<<<<<< HEAD
-        TC_LOG_ERROR("misc", "LoadPlayerDump: (line " UI64FMTD ") unexpected end of line", lineNumber);
-=======
         TC_LOG_ERROR("misc", "LoadPlayerDump: (line {}) unexpected end of line", lineNumber);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
         return false;
     }
 
@@ -463,11 +455,7 @@ inline bool ValidateFields(TableStruct const& ts, std::string const& str, size_t
         int32 columnIndex = GetColumnIndexByName(ts, column);
         if (columnIndex == -1)
         {
-<<<<<<< HEAD
-            TC_LOG_ERROR("misc", "LoadPlayerDump: (line " UI64FMTD ") unknown column name `%s` for table `%s`, aborting due to incompatible DB structure.", lineNumber, column.c_str(), ts.TableName.c_str());
-=======
             TC_LOG_ERROR("misc", "LoadPlayerDump: (line {}) unknown column name `{}` for table `{}`, aborting due to incompatible DB structure.", lineNumber, column, ts.TableName);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
             return false;
         }
 
@@ -856,11 +844,7 @@ DumpReturn PlayerDumpReader::LoadDump(std::istream& input, uint32 account, std::
         std::string tn = GetTableName(line);
         if (tn.empty())
         {
-<<<<<<< HEAD
-            TC_LOG_ERROR("misc", "LoadPlayerDump: (line " UI64FMTD ") Can't extract table name!", lineNumber);
-=======
             TC_LOG_ERROR("misc", "LoadPlayerDump: (line {}) Can't extract table name!", lineNumber);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
             return DUMP_FILE_BROKEN;
         }
 
@@ -877,11 +861,7 @@ DumpReturn PlayerDumpReader::LoadDump(std::istream& input, uint32 account, std::
 
         if (i == DUMP_TABLE_COUNT)
         {
-<<<<<<< HEAD
-            TC_LOG_ERROR("misc", "LoadPlayerDump: (line " UI64FMTD ") Unknown table: `%s`!", lineNumber, tn.c_str());
-=======
             TC_LOG_ERROR("misc", "LoadPlayerDump: (line {}) Unknown table: `{}`!", lineNumber, tn);
->>>>>>> 7a01512b29807bff73c685aab813ebd7be0e8fb7
             return DUMP_FILE_BROKEN;
         }
 
