@@ -143,7 +143,7 @@ public:
             {
                 _events.SetPhase(PHASE_TWO);
                 _events.ScheduleEvent(EVENT_BLIZZARD, 15s);
-                _events.ScheduleEvent(SPELL_BLUTGERUCH, 8s);
+                _events.ScheduleEvent(EVENT_BLUTGERUCH, 8s);
                 _events.ScheduleEvent(EVENT_BRECHENDE_WELLE, 12s);
                 _events.ScheduleEvent(EVENT_DEGENERATION, 10s);
                 _events.ScheduleEvent(EVENT_EISBLITZ, 25s);
