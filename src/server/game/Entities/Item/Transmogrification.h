@@ -49,8 +49,8 @@ enum TransmogTrinityStrings // Language.h might have same entries, appears when 
 class TC_GAME_API Transmogrification
 {
 private:
-    Transmogrification() { };
-    ~Transmogrification() { };
+    Transmogrification() {};
+    ~Transmogrification() {};
     Transmogrification(const Transmogrification&);
     Transmogrification& operator=(const Transmogrification&);
 
