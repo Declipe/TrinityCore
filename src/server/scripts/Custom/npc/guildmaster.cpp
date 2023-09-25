@@ -16,20 +16,25 @@
 #include "GameObject.h"
 #include "GameObjectAI.h"
 
-#define MSG_GOSSIP_TELE          "????????????????? ? ??? ???????"
-#define MSG_GOSSIP_BUY           "?????? ??? ???????"
-#define MSG_GOSSIP_SELL          "??????? ??? ???????"
-#define MSG_GOSSIP_NEXTPAGE      "????? -->"
-#define MSG_INCOMBAT             "?? ? ?????? ???."
-#define MSG_NOGUILDHOUSE         "???? ??????? ?? ??????? ????? ???????."
-#define MSG_NOFREEGH             "??? ???? ??????? ??????."
-#define MSG_ALREADYHAVEGH        "?? ??? ???????? ????? ??????? ({})."
-#define MSG_NOTENOUGHMONEY       "? ??? ????????? {} ?????? ??? ??????? ???? ???????."
-#define MSG_GHOCCUPIED           "???? ??? ??????? ?????????? ??? ???????. ?? ??? ?????."
-#define MSG_CONGRATULATIONS      "??????????! ?? ??????? ?????? ??? ???????."
-#define MSG_SOLD                 "?? ??????? ???? ??? ??????? ?? {} ??????."
-#define MSG_NOTINGUILD           "?? ?????? ???????? ? ???????, ????? ???????????? ??? ???????."
-#define MSG_SELL_CONFIRM         "?? ???????, ??? ?????? ??????? ??? ????????"
+#include "ScriptedCreature.h"
+#include "GameEventMgr.h"
+#include "WorldSession.h"
+#include "DBCStores.h"
+
+#define MSG_GOSSIP_TELE          "Teleport to GuildHouse"
+#define MSG_GOSSIP_BUY           "Buy GuildHouse"
+#define MSG_GOSSIP_SELL          "Sell GuildHouse"
+#define MSG_GOSSIP_NEXTPAGE      "Next -->"
+#define MSG_INCOMBAT             "You are in combat and cannot be teleported to your GuildHouse."
+#define MSG_NOGUILDHOUSE         "Your guild currently does not own a GuildHouse."
+#define MSG_NOFREEGH             "Unfortunately, all GuildHouses are in use."
+#define MSG_ALREADYHAVEGH        "Sorry, but you already own a GuildHouse ({})."
+#define MSG_NOTENOUGHMONEY       "You do not have the {} gold required to purchase a GuildHouse."
+#define MSG_GHOCCUPIED           "This GuildHouse is unavailable for purchase as it is currently in use."
+#define MSG_CONGRATULATIONS      "Congratulations! You have successfully purchased a GuildHouse."
+#define MSG_SOLD                 "You have sold your GuildHouse and have received {} gold."
+#define MSG_NOTINGUILD           "You need to be in a guild before you can use a GuildHouse."
+#define MSG_SELL_CONFIRM         "Are you sure you want to sell your guildhouse for half the buy price?"
 
 #define OFFSET_GH_ID_TO_ACTION 1500
 #define OFFSET_SHOWBUY_FROM 10000
@@ -174,7 +179,7 @@ bool isPlayerHasGuildhouse(Player *player, Creature *_creature, bool whisper = f
  //whisper to player "already have etc..."
  Field *fields = result->Fetch();
  char msg[100];
- sprintf(msg, MSG_ALREADYHAVEGH, fields[0].GetString());
+ sprintf(msg, MSG_ALREADYHAVEGH, fields[0].GetCString());
  _creature->Whisper(msg, LANG_UNIVERSAL, player);
  }
 
@@ -190,11 +195,11 @@ void buyGuildhouse(Player *player, Creature *_creature, uint32 guildhouseId)
  bool token = sGameConfig->GetBoolConfig("GuildHouse.TokenOrGold");
  int cost = sGameConfig->GetIntConfig("GuildHouse.Cost");
 
- if (player->GetMoney() < COST_GH_BUY)
+ if (player->GetMoney() < cost)
  {
  //show how much money player need to buy GH (in gold)
  char msg[100];
- sprintf(msg, MSG_NOTENOUGHMONEY, COST_GH_BUY - sGameConfig->GetIntConfig("GuildHouse.Cost"));
+ sprintf(msg, MSG_NOTENOUGHMONEY, cost);
  _creature->Whisper(msg, LANG_UNIVERSAL, player);
  return;
  }
@@ -219,9 +224,8 @@ void buyGuildhouse(Player *player, Creature *_creature, uint32 guildhouseId)
  //update DB
  result = ZynDatabase.PQuery("UPDATE `guildhouses` SET `guildId` = {} WHERE `id` = {}",
  player->GetGuildId(), guildhouseId);
-
-
- player->ModifyMoney(-sGameConfig->GetIntConfig("GuildHouse.BuyCost") * 10000);
+ uint32 myMoney = sGameConfig->GetIntConfig("GuildHouse.BuyCost");
+ player->ModifyMoney(-myMoney *10000);
 
  //player->DestroyItemCount(token, cost, true);
  _creature->Say(MSG_CONGRATULATIONS, LANG_UNIVERSAL, player);
@@ -235,12 +239,12 @@ void sellGuildhouse(Player *player, Creature *_creature)
  QueryResult result;
  result = ZynDatabase.PQuery("UPDATE `guildhouses` SET `guildId` = 0 WHERE `guildId` = {}",
  player->GetGuildId());
+ uint32 myMoneys = sGameConfig->GetIntConfig("GuildHouse.SellCost");
 
- player->ModifyMoney(sGameConfig->GetIntConfig("GuildHouse.SellCost") * 10000);
-
+ player->ModifyMoney(myMoneys *10000);
  //display message e.g. "here your money etc."
  char msg[100];
- sprintf(msg, MSG_SOLD, sGameConfig->GetIntConfig("GuildHouse.SellCost"));
+ sprintf(msg, MSG_SOLD, myMoneys);
  _creature->Whisper(msg, LANG_UNIVERSAL, player);
  }
 }
@@ -271,7 +275,7 @@ bool GossipSelect(Player* player, uint32 sender, uint32 action)
  break;
  case ACTION_SELL_GUILDHOUSE:
   sellGuildhouse(player, me);
-  CloseGossipMenuFor(player);;
+  CloseGossipMenuFor(player);
  break;
  default:
  if (action > OFFSET_SHOWBUY_FROM)

@@ -392,7 +392,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
     {
         for (ObjectMgr::ChatFilterContainer::const_iterator itr = censoredWords.begin(); itr != censoredWords.end(); ++itr)
         {
-            if (!stricmp(itr->first.c_str(), words))
+            if (!strcmp(itr->first.c_str(), words))
             {
                 //! Convert everything into lower case
                 for (uint16 i = 0; i < convertedMsg.size(); ++i)
