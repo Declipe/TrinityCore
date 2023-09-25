@@ -27,6 +27,7 @@
 #include "GameTime.h"
 #include "GridNotifiersImpl.h"
 #include "Group.h"
+#include "GroupMgr.h"
 #include "MiscPackets.h"
 #include "Object.h"
 #include "ObjectAccessor.h"
@@ -1097,6 +1098,7 @@ void Battleground::AddOrSetPlayerToCorrectBgGroup(Player* player, uint32 team)
         group = new Group;
         SetBgRaid(team, group);
         group->Create(player);
+        sGroupMgr->AddGroup(group);
     }
     else                                            // raid already exist
     {
