@@ -59,55 +59,55 @@ public:
 
 #ifdef PRESETS
 
-    bool EnableSetInfo;
-    uint32 SetNpcText;
+    bool EnableSetInfo{};
+    uint32 SetNpcText{};
 
-    bool EnableSets;
-    uint8 MaxSets;
-    float SetCostModifier;
-    int32 SetCopperCost;
+    bool EnableSets{};
+    uint8 MaxSets{};
+    float SetCostModifier{};
+    int32 SetCopperCost{};
 
     void LoadPlayerSets(Player* player);
 
     void PresetTransmog(Player* player, Item* itemTransmogrified, uint32 fakeEntry, uint8 slot);
 #endif
 
-    bool EnableTransmogInfo;
-    uint32 TransmogNpcText;
+    bool EnableTransmogInfo{};
+    uint32 TransmogNpcText{};
 
     // Use IsAllowed() and IsNotAllowed()
     // these are thread unsafe, but assumed to be static data so it should be safe
     std::set<uint32> Allowed;
     std::set<uint32> NotAllowed;
 
-    float ScaledCostModifier;
-    int32 CopperCost;
+    float ScaledCostModifier{};
+    int32 CopperCost{};
 
-    bool RequireToken;
-    uint32 TokenEntry;
-    uint32 TokenAmount;
+    bool RequireToken{};
+    uint32 TokenEntry{};
+    uint32 TokenAmount{};
 
-    bool AllowPoor;
-    bool AllowCommon;
-    bool AllowUncommon;
-    bool AllowRare;
-    bool AllowEpic;
-    bool AllowLegendary;
-    bool AllowArtifact;
-    bool AllowHeirloom;
+    bool AllowPoor{};
+    bool AllowCommon{};
+    bool AllowUncommon{};
+    bool AllowRare{};
+    bool AllowEpic{};
+    bool AllowLegendary{};
+    bool AllowArtifact{};
+    bool AllowHeirloom{};
 
-    bool AllowMixedArmorTypes;
-    bool AllowMixedWeaponTypes;
-    bool AllowMixedInventoryTypes;
-    bool AllowFishingPoles;
+    bool AllowMixedArmorTypes{};
+    bool AllowMixedWeaponTypes{};
+    bool AllowMixedInventoryTypes{};
+    bool AllowFishingPoles{};
 
-    bool IgnoreReqRace;
-    bool IgnoreReqClass;
-    bool IgnoreReqSkill;
-    bool IgnoreReqSpell;
-    bool IgnoreReqLevel;
-    bool IgnoreReqEvent;
-    bool IgnoreReqStats;
+    bool IgnoreReqRace{};
+    bool IgnoreReqClass{};
+    bool IgnoreReqSkill{};
+    bool IgnoreReqSpell{};
+    bool IgnoreReqLevel{};
+    bool IgnoreReqEvent{};
+    bool IgnoreReqStats{};
 
     bool IsAllowed(uint32 entry) const;
     bool IsNotAllowed(uint32 entry) const;

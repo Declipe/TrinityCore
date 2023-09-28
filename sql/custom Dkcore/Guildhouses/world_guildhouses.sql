@@ -7,9 +7,9 @@ DROP TABLE IF EXISTS `guildhouses`;
 CREATE TABLE `guildhouses` (
   `id` int(8) unsigned NOT NULL auto_increment,
   `guildId` bigint(20) NOT NULL default '0',
-  `x` double NOT NULL,
-  `y` double NOT NULL,
-  `z` double NOT NULL,
+  `x` bigint NOT NULL,
+  `y` bigint NOT NULL,
+  `z` bigint NOT NULL,
   `map` int(11) NOT NULL,
   `comment` varchar(255) NOT NULL default '',
   PRIMARY KEY  (`id`)

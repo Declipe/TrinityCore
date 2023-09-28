@@ -65,7 +65,7 @@ enum class VehicleExitParameters
 struct PassengerInfo
 {
     ObjectGuid Guid;
-    bool IsUninteractible;
+    bool IsUninteractible{};
 
     void Reset()
     {

@@ -292,63 +292,63 @@ static const uint32 MAX_CREATURE_SPELLS = 8;
 // from `creature_template` table
 struct TC_GAME_API CreatureTemplate
 {
-    uint32  Entry;
-    uint32  DifficultyEntry[MAX_DIFFICULTY - 1];
-    uint32  KillCredit[MAX_KILL_CREDIT];
-    uint32  Modelid1;
-    uint32  Modelid2;
-    uint32  Modelid3;
-    uint32  Modelid4;
+    uint32  Entry{};
+    uint32  DifficultyEntry[MAX_DIFFICULTY - 1]{};
+    uint32  KillCredit[MAX_KILL_CREDIT]{};
+    uint32  Modelid1{};
+    uint32  Modelid2{};
+    uint32  Modelid3{};
+    uint32  Modelid4{};
     std::string  Name;
     std::string  Title;
     std::string  IconName;
-    uint32  GossipMenuId;
-    uint8   minlevel;
-    uint8   maxlevel;
-    uint32  expansion;
-    uint32  faction;
-    uint32  npcflag;
-    float   speed_walk;
-    float   speed_run;
-    float   scale;
-    uint32  rank;
-    uint32  dmgschool;
-    uint32  BaseAttackTime;
-    uint32  RangeAttackTime;
-    float   BaseVariance;
-    float   RangeVariance;
-    uint32  unit_class;                                     // enum Classes. Note only 4 classes are known for creatures.
-    uint32  unit_flags;                                     // enum UnitFlags mask values
-    uint32  unit_flags2;                                    // enum UnitFlags2 mask values
-    uint32  dynamicflags;
-    CreatureFamily  family;                                 // enum CreatureFamily values (optional)
-    uint32  type;                                           // enum CreatureType values
-    uint32  type_flags;                                     // enum CreatureTypeFlags mask values
-    uint32  lootid;
-    uint32  pickpocketLootId;
-    uint32  SkinLootId;
-    int32   resistance[MAX_SPELL_SCHOOL];
-    uint32  spells[MAX_CREATURE_SPELLS];
-    uint32  PetSpellDataId;
-    uint32  VehicleId;
-    uint32  mingold;
-    uint32  maxgold;
+    uint32  GossipMenuId{};
+    uint8   minlevel{};
+    uint8   maxlevel{};
+    uint32  expansion{};
+    uint32  faction{};
+    uint32  npcflag{};
+    float   speed_walk{};
+    float   speed_run{};
+    float   scale{};
+    uint32  rank{};
+    uint32  dmgschool{};
+    uint32  BaseAttackTime{};
+    uint32  RangeAttackTime{};
+    float   BaseVariance{};
+    float   RangeVariance{};
+    uint32  unit_class{};                                     // enum Classes. Note only 4 classes are known for creatures.
+    uint32  unit_flags{};                                     // enum UnitFlags mask values
+    uint32  unit_flags2{};                                    // enum UnitFlags2 mask values
+    uint32  dynamicflags{};
+    CreatureFamily  family{};                                 // enum CreatureFamily values (optional)
+    uint32  type{};                                           // enum CreatureType values
+    uint32  type_flags{};                                     // enum CreatureTypeFlags mask values
+    uint32  lootid{};
+    uint32  pickpocketLootId{};
+    uint32  SkinLootId{};
+    int32   resistance[MAX_SPELL_SCHOOL] {};
+    uint32  spells[MAX_CREATURE_SPELLS] {};
+    uint32  PetSpellDataId{};
+    uint32  VehicleId{};
+    uint32  mingold{};
+    uint32  maxgold{};
     std::string AIName;
-    uint32  MovementType;
+    uint32  MovementType{};
     CreatureMovementData Movement;
-    float   HoverHeight;
-    float   ModHealth;
-    float   ModMana;
-    float   ModArmor;
-    float   ModDamage;
-    float   ModExperience;
-    bool    RacialLeader;
-    uint32  movementId;
-    bool    RegenHealth;
-    uint32  MechanicImmuneMask;
-    uint32  SpellSchoolImmuneMask;
-    uint32  flags_extra;
-    uint32  ScriptID;
+    float   HoverHeight{};
+    float   ModHealth{};
+    float   ModMana{};
+    float   ModArmor{};
+    float   ModDamage{};
+    float   ModExperience{};
+    bool    RacialLeader{};
+    uint32  movementId{};
+    bool    RegenHealth{};
+    uint32  MechanicImmuneMask{};
+    uint32  SpellSchoolImmuneMask{};
+    uint32  flags_extra{};
+    uint32  ScriptID{};
     WorldPacket QueryData[TOTAL_LOCALES];
     uint32  GetRandomValidModelId() const;
     uint32  GetFirstValidModelId() const;
