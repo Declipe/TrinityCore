@@ -1,21 +1,4 @@
-#include "Config.h"
-#include "Player.h"
-#include "ObjectMgr.h"
-#include "World.h"
-#include "ScriptMgr.h"
-#include "Language.h"
-#include "ZynDatabase.h"
-#include "DatabaseEnvFwd.h"
-#include "DatabaseEnv.h"
-#include "Log.h"
-#include "GameTime.h"
-#include "SpellMgr.h"
-#include "Guild.h"
-#include "GuildMgr.h"
-#include "CustomConfig.h"
-#include "Battleground.h"
-#include "BattlegroundMgr.h"
-#include "Group.h"
+#include "Custom/Dcl.h"
 
 class Mod_GuildDefault_PlayerScript : public PlayerScript
 {

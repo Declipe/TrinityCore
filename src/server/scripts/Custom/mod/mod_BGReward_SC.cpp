@@ -15,14 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "Log.h"
-#include "CustomConfig.h"
-#include "Battleground.h"
-#include "Chat.h"
-#include "Config.h"
-#include "ObjectAccessor.h"
-#include "Player.h"
-#include "ScriptMgr.h"
+#include "Custom/Dcl.h"
 
 class BGReward_Player : public BGScript
 {
