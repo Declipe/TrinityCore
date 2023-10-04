@@ -220,7 +220,7 @@ void ObjectMgr::LoadItemTemplates2()
             if (itemTemplate.SoundOverrideSubclass != dbcitem->SoundOverrideSubclassID)
             {
                 //TC_LOG_ERROR("sql.sql", "Item (Entry: {}) does not have a correct SoundOverrideSubclass ({}), must be {} .", entry, itemTemplate.SoundOverrideSubclass, dbcitem->SoundOverrideSubclass);
-                TC_LOG_ERROR("sql.sql", "UPDATE `item_template` SET `SoundOverrideSubclass` = {} WHERE (entry = {});", dbcitem->SoundOverrideSubclassID, entry);
+                TC_LOG_ERROR("sql.sql", "UPDATE `item_template2` SET `SoundOverrideSubclass` = {} WHERE (entry = {});", dbcitem->SoundOverrideSubclassID, entry);
                 if (enforceDBCAttributes)
                     itemTemplate.SoundOverrideSubclass = dbcitem->SoundOverrideSubclassID;
             }
