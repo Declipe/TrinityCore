@@ -24,6 +24,7 @@
 #include "DatabaseEnvFwd.h"
 #include "Errors.h"
 #include "GameObjectData.h"
+#include "Item.h"
 #include "ItemTemplate.h"
 #include "IteratorPair.h"
 #include "NPCHandler.h"
@@ -997,6 +998,7 @@ class TC_GAME_API ObjectMgr
         CreatureTemplate const* GetCreatureTemplate(uint32 entry) const;
         CreatureTemplateContainer const& GetCreatureTemplates() const { return _creatureTemplateStore; }
         CreatureModelInfo const* GetCreatureModelInfo(uint32 modelId) const;
+        RandomItemStatsContainer const* GetRandomItemStats() const { return &_randomItemStatsStore; }
         CreatureModelInfo const* GetCreatureModelRandomGender(uint32* displayID) const;
         static uint32 ChooseDisplayId(CreatureTemplate const* cinfo, CreatureData const* data = nullptr);
         static void ChooseCreatureFlags(CreatureTemplate const* cinfo, uint32* npcflag, uint32* unit_flags, uint32* dynamicflags, CreatureData const* data = nullptr);
@@ -1171,6 +1173,9 @@ class TC_GAME_API ObjectMgr
         }
 
         bool LoadTrinityStrings();
+
+        void LoadRandomItemStats();
+        void LoadRandomItemStats(Field * fields, uint32 count);
 
         void LoadEventScripts();
         void LoadSpellScripts();
@@ -1718,6 +1723,7 @@ class TC_GAME_API ObjectMgr
 
         typedef std::unordered_map<uint32, ItemSetNameEntry> ItemSetNameContainer;
         ItemSetNameContainer _itemSetNameStore;
+        RandomItemStatsContainer _randomItemStatsStore;
 
         MapObjectGuids _mapObjectGuidsStore;
         CreatureDataContainer _creatureDataStore;

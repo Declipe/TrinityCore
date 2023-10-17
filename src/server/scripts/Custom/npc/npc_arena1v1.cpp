@@ -74,7 +74,7 @@ public:
             if (!player || !me)
                 return false;
 
-            if (sGameConfig->GetBoolConfig("Arena.1v1.MinLevel") > player->GetLevel())
+            if (sGameConfig->GetIntConfig("Arena.1v1.MinLevel") > player->GetLevel())
                 return false;
 
             ObjectGuid guid = player->GetGUID();
@@ -232,7 +232,7 @@ public:
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Sign up 1v1 Arena (unrated)", GOSSIP_SENDER_MAIN, 20);
 
             if (player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_5v5)) == 0)
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Create new 1v1 Arenateam", GOSSIP_SENDER_MAIN, 1, "Create 1v1 arenateam?", sGameConfig->GetBoolConfig("Arena.1v1.Costs"), false);
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Create new 1v1 Arenateam", GOSSIP_SENDER_MAIN, 1, "Create 1v1 arenateam?", sGameConfig->GetIntConfig("Arena.1v1.Costs"), false);
             else
             {
                 if (player->InBattlegroundQueueForBattlegroundQueueType(BATTLEGROUND_QUEUE_5v5) == false)
@@ -267,14 +267,14 @@ public:
             {
             case 1: // Create new Arenateam
             {
-                if (sGameConfig->GetBoolConfig("Arena.1v1.MinLevel") <= player->GetLevel())
+                if (sGameConfig->GetIntConfig("Arena.1v1.MinLevel") <= player->GetLevel())
                 {
-                    if (player->GetMoney() >= sGameConfig->GetBoolConfig("Arena.1v1.Costs") && CreateArenateam(player, me))
-                        player->ModifyMoney(sGameConfig->GetBoolConfig("Arena.1v1.Costs") * -1);
+                    if (player->GetMoney() >= sGameConfig->GetIntConfig("Arena.1v1.Costs") && CreateArenateam(player, me))
+                        player->ModifyMoney(sGameConfig->GetIntConfig("Arena.1v1.Costs") * -1);
                 }
                 else
                 {
-                    ChatHandler(player->GetSession()).PSendSysMessage("You need level {}+ to create an 1v1 arenateam.", sGameConfig->GetBoolConfig("Arena.1v1.MinLevel"));
+                    ChatHandler(player->GetSession()).PSendSysMessage("You need level {}+ to create an 1v1 arenateam.", sGameConfig->GetIntConfig("Arena.1v1.MinLevel"));
                     CloseGossipMenuFor(player);
                     return true;
                 }

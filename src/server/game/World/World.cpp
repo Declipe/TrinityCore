@@ -1585,6 +1585,12 @@ void World::LoadConfigSettings(bool reload)
     // prevent character rename on character customization
     m_bool_configs[CONFIG_PREVENT_RENAME_CUSTOMIZATION] = sConfigMgr->GetBoolDefault("PreventRenameCharacterOnCustomization", false);
 
+    // Mod Random Items Stats
+    m_bool_configs[CONFIG_MOD_RANDOM_ITEMSTATS_ENABLE] = sConfigMgr->GetBoolDefault("Random.ItemStats.Enable", true);
+    m_int_configs[CONFIG_MOD_RANDOM_ITEMSTATS_RATE] = sConfigMgr->GetIntDefault("Random.ItemStats.Rate", 10);
+    m_int_configs[CONFIG_MOD_RANDOM_ITEMSTATS_ITEMLEVEL] = sConfigMgr->GetIntDefault("Random.ItemStats.ItemLevel", 250);
+    m_int_configs[CONFIG_MOD_RANDOM_ITEMSTATS_ITEMLEVELUP] = sConfigMgr->GetIntDefault("Random.ItemStats.ItemLevelUp", 200);
+
     // Allow 5-man parties to use raid warnings
     m_bool_configs[CONFIG_CHAT_PARTY_RAID_WARNINGS] = sConfigMgr->GetBoolDefault("PartyRaidWarnings", false);
 
@@ -2169,6 +2175,12 @@ void World::SetInitialWorldSettings()
 
     TC_LOG_INFO("server.loading", "Loading Calendar data...");
     sCalendarMgr->LoadFromDB();
+
+    if (sWorld->getBoolConfig(CONFIG_MOD_RANDOM_ITEMSTATS_ENABLE))
+    {
+      TC_LOG_INFO("server.loading", "Loading Random Item Stats...");
+      sObjectMgr->LoadRandomItemStats();
+     }
 
     TC_LOG_INFO("server.loading", "Loading Petitions...");
     sPetitionMgr->LoadPetitions();

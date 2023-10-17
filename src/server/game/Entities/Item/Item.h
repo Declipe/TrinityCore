@@ -37,6 +37,15 @@ struct ItemSetEffect
     SpellInfo const* spells[8];
 };
 
+struct RandomItemStats            // random_item_stats
+{
+    uint32 ID;                    // id
+    uint32 Count;                 // stat_count
+    uint32 Amount;                // stat_amount
+};
+
+typedef std::unordered_map<uint32, RandomItemStats> RandomItemStatsContainer;
+
 #define MAX_GEM_SOCKETS               MAX_ITEM_PROTO_SOCKETS// (BONUS_ENCHANTMENT_SLOT-SOCK_ENCHANTMENT_SLOT) and item proto size, equal value expected
 
 enum EnchantmentOffset

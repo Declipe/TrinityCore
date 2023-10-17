@@ -351,6 +351,39 @@ void ObjectMgr::LoadPointOfInterestLocales()
     TC_LOG_INFO("server.loading", ">> Loaded {} points_of_interest locale strings in {} ms", uint32(_pointOfInterestLocaleStore.size()), GetMSTimeDiffToNow(oldMSTime));
 }
 
+void ObjectMgr::LoadRandomItemStats()
+{
+    uint32 oldMSTime = getMSTime();
+    //                                                0      1           2
+    QueryResult result = ZynDatabase.Query("SELECT id, stat_count, stat_amount FROM random_item_stats;");
+    if (!result)
+    {
+        TC_LOG_INFO("server.loading", ">> Loaded 0 random item stats definitions. DB table `random_item_stats` is empty.");
+        return;
+    }
+    _randomItemStatsStore.rehash(result->GetRowCount());
+    uint32 count = 0;
+    do
+    {
+        Field* fields = result->Fetch();
+        LoadRandomItemStats(fields, count);
+        ++count;
+    } while (result->NextRow());
+
+    TC_LOG_INFO("server.loading", ">> Loaded {} random item stats definitions in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
+}
+
+void ObjectMgr::LoadRandomItemStats(Field* fields, uint32 count)
+{
+    uint32 entry = fields[0].GetUInt32();
+
+    RandomItemStats& randomItemStats = _randomItemStatsStore[count];
+
+    randomItemStats.ID = entry;
+    randomItemStats.Count = fields[1].GetUInt32();
+    randomItemStats.Amount = fields[2].GetUInt32();
+}
+
 void ObjectMgr::LoadCreatureTemplates()
 {
     uint32 oldMSTime = getMSTime();
