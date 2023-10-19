@@ -3869,6 +3869,25 @@ enum WorldState : uint32
     WS_DAILY_CALENDAR_DELETION_OLD_EVENTS_TIME = 20009,      // Next daily calendar deletions of old events time
 };
 
+enum SpectatorPrefix
+{
+    //enum SpectatorPrefixFlags
+    //{
+    SPECTATOR_PREFIX_PLAYER,
+    SPECTATOR_PREFIX_STATUS,
+    SPECTATOR_PREFIX_MAXHP,
+    SPECTATOR_PREFIX_CURHP,
+    SPECTATOR_PREFIX_MAXPOWER,
+    SPECTATOR_PREFIX_CURPOWER,
+    SPECTATOR_PREFIX_POWERTYPE,
+    SPECTATOR_PREFIX_TARGET,
+    SPECTATOR_PREFIX_CLASS,
+    SPECTATOR_PREFIX_TEAM,
+    SPECTATOR_PREFIX_SPELL,
+    SPECTATOR_PREFIX_AURA,
+    SPECTATOR_PREFIX_COUNT     // must be at the end of list
+};
+
 namespace Trinity
 {
 namespace Impl

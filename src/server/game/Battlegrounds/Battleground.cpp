@@ -449,6 +449,8 @@ inline void Battleground::_ProcessJoin(uint32 diff)
         m_Events |= BG_STARTING_EVENT_2;
         if (StartMessageIds[BG_STARTING_EVENT_SECOND])
             SendBroadcastText(StartMessageIds[BG_STARTING_EVENT_SECOND], CHAT_MSG_BG_SYSTEM_NEUTRAL);
+		if (this->isArena())
+            this->SendArenaReadyCheck();
     }
     // After 30 or 15 seconds, warning is signaled
     else if (GetStartDelayTime() <= StartDelayTimes[BG_STARTING_EVENT_THIRD] && !(m_Events & BG_STARTING_EVENT_3))
@@ -480,6 +482,13 @@ inline void Battleground::_ProcessJoin(uint32 diff)
             for (BattlegroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
                 if (Player* player = ObjectAccessor::FindPlayer(itr->first))
                 {
+                    if (!m_ArenaReadyCheckMap.count(itr->first))
+                    {
+                        WorldPacket data(0x3C6, 0x1);
+                        data << uint8(0x1);
+                        player->GetSession()->SendPacket(&data);
+                    }
+					
                     // BG Status packet
                     WorldPacket status;
                     BattlegroundQueueTypeId bgQueueTypeId = sBattlegroundMgr->BGQueueTypeId(m_TypeID, GetArenaType());
@@ -505,6 +514,7 @@ inline void Battleground::_ProcessJoin(uint32 diff)
                 }
 
             CheckWinConditions();
+			m_ArenaReadyCheckMap.clear();
         }
         else
         {
@@ -1151,16 +1161,26 @@ void Battleground::EventPlayerLoggedOut(Player* player)
     m_Players[guid].OfflineRemoveTime = GameTime::GetGameTime() + MAX_OFFLINE_TIME;
     if (GetStatus() == STATUS_IN_PROGRESS)
     {
-        // drop flag and handle other cleanups
-        RemovePlayer(player, guid, GetPlayerTeam(guid));
+        if (!player->IsSpectator())
+        {
+            // drop flag and handle other cleanups
+            RemovePlayer(player, guid, GetPlayerTeam(guid));
 
-        // 1 player is logging out, if it is the last alive, then end arena!
-        if (isArena() && player->IsAlive())
-            if (GetAlivePlayersCountByTeam(player->GetTeam()) <= 1 && GetPlayersCountByTeam(GetOtherTeam(player->GetTeam())))
-                EndBattleground(GetOtherTeam(player->GetTeam()));
+            // 1 player is logging out, if it is the last, then end arena!
+            if (isArena() && player->IsAlive())
+                if (GetAlivePlayersCountByTeam(player->GetTeam()) <= 1 && GetPlayersCountByTeam(GetOtherTeam(player->GetTeam())))
+                    EndBattleground(GetOtherTeam(player->GetTeam()));
+        }
+    }
+
+    if (!player->IsSpectator())
+        player->LeaveBattleground();
+    else
+    {
+        player->TeleportToBGEntryPoint();
+        RemoveSpectator(player->GetGUID());
     }
 }
-
 // This method should be called only once ... it adds pointer to queue
 void Battleground::AddToBGFreeSlotQueue()
 {
@@ -1882,4 +1902,29 @@ bool Battleground::CheckAchievementCriteriaMeet(uint32 criteriaId, Player const*
 uint8 Battleground::GetUniqueBracketId() const
 {
     return GetMinLevel() / 10;
+}
+
+void Battleground::SendArenaReadyCheck() const
+{
+    WorldPacket packet_0x1(0x051, 0x17);
+    packet_0x1.appendPackGUID(0xFFFFFFFF);
+    packet_0x1 << uint8(0x0);
+    packet_0x1 << std::string("Arena");
+    packet_0x1 << uint8(0x0);
+    packet_0x1 << uint8(0xa);
+    packet_0x1 << uint8(0x0);
+    packet_0x1 << uint8(0x4);
+    packet_0x1 << uint8(0x0);
+
+    WorldPacket packet_0x2(0x322, 0x8);
+    packet_0x2 << uint64(0xFFFFFFFF);
+
+    for (const auto itr : m_Players)
+    {
+        if (const Player* const player = ObjectAccessor::FindPlayer(itr.first))
+        {
+            player->GetSession()->SendPacket(&packet_0x1);
+            player->GetSession()->SendPacket(&packet_0x2);
+        }
+    }
 }
