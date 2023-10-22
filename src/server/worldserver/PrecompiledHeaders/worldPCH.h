@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "World.h"
+#include "WorldSocket.h"
 #include "Log.h"
 #include "Database/DatabaseEnv.h"
 #include "Configuration/Config.h"

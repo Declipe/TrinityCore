@@ -66,3 +66,7 @@ endif()
 if(USE_COREPCH)
   add_cxx_pch(shared ${PRIVATE_PCH_HEADER})
 endif()
+
+include_directories(
+${ACE_INCLUDE_DIR}
+)
