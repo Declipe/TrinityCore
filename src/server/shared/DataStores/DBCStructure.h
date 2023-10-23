@@ -294,19 +294,20 @@ struct BarberShopStyleEntry
 
 struct BattlemasterListEntry
 {
-    uint32 ID;                                              // 0
-    int32 MapID[8];                                         // 1-8
-    uint32 InstanceType;                                    // 9 map type (3 - BG, 4 - arena)
-    std::string GroupsAllowed;                                 // 10
-    std::string Name[16];                                  // 11-26
+    uint32 ID;                                              // 1
+    int32 MapID[8];                                         // 2-9
+    uint32 InstanceType;                                    // 10 map type (3 - BG, 4 - arena)
+    //std::string GroupsAllowed;                                 // 11
+    uint32 GroupsAllowed;                                 // 11
+    std::string Name[16];                                  // 12-26
     //char const* Name[TOTAL_LOCALES];                        // 11-26
-    //uint32 Name_lang_mask;                                // 27
+    //uint32 Name_lang_mask;                                // 28
     std::string Name_Lang_Unk;
-    uint32 Name_Lang_Mask;                                  // 27
-    uint32 MaxGroupSize;                                    // 28 used for checking if queue as group
-    uint32 HolidayWorldState;                               // 29
-    uint32 MinLevel;                                      // 30
-    uint32 MaxLevel;                                      // 31
+    uint32 Name_Lang_Mask;                                  // 29
+    uint32 MaxGroupSize;                                    // 30 used for checking if queue as group
+    uint32 HolidayWorldState;                               // 31
+    uint32 MinLevel;                                      // 32
+    uint32 MaxLevel;                                      // 33
 };
 
 struct CharacterFacialHairStylesEntry
