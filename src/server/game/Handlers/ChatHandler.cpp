@@ -135,8 +135,6 @@ void PunishPlayerForBadWord(Player* _sender, uint32 _muteTime = 0, uint32 _freez
     }
 }
 
-#include "CFBGData.h"
-
 inline bool isNasty(uint8 c)
 {
     if (c == '\t')
@@ -549,27 +547,10 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
                     return;
                 }
 
-                if (!sWorld->getBoolConfig(CONFIG_CFBG_ENABLED) && GetPlayer()->GetTeam() != receiver->GetTeam() && !HasPermission(rbac::RBAC_PERM_TWO_SIDE_INTERACTION_CHAT))
+                if (GetPlayer()->GetTeam() != receiver->GetTeam() && !HasPermission(rbac::RBAC_PERM_TWO_SIDE_INTERACTION_CHAT))
                 {
                     SendWrongFactionNotice();
                     return;
-                }
-                // This could all be implemented as a oneliner, but it hurts
-                // my head even thinking about it, this is easy and readable.
-                else if (sWorld->getBoolConfig(CONFIG_CFBG_ENABLED))
-                {
-                    if (GetPlayer()->GetBattleground() == receiver->GetBattleground() &&
-                        GetPlayer()->GetTeam() != receiver->GetTeam())
-                    {
-                        SendWrongFactionNotice();
-                        return;
-                    }
-                    else if (GetPlayer()->GetBattleground() != receiver->GetBattleground() &&
-                             GetPlayer()->cfbgdata->GetOTeam() != receiver->cfbgdata->GetOTeam())
-                    {
-                        SendWrongFactionNotice();
-                        return;
-                    }
                 }
             }
 

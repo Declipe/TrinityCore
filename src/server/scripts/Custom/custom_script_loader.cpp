@@ -17,7 +17,6 @@
 
 // This is where scripts' loading functions should be declared:
 void AddSC_Grumboz_World_Ctf();
-void AddSC_CrossfactionBattlegrounds();
 void AddSC_arena_spectator_script();
 void AddSC_ex_champions();
 void AddSC_dk_trial_of_the_champion();
@@ -115,6 +114,5 @@ void AddCustomScripts()
     AddSC_dk_instance_trial_of_the_champion();
     AddSC_dk_boss_argent_challenge();
     AddSC_Grumboz_World_Ctf();
-    AddSC_CrossfactionBattlegrounds();
     AddSC_arena_spectator_script();
 }
