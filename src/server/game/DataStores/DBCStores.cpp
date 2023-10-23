@@ -1060,7 +1060,8 @@ void DBCMgr::LoadBattlemasterListStore()
         newBattlemasterList->Name_Lang_Mask = fields[29].GetUInt32();
         newBattlemasterList->MaxGroupSize = fields[30].GetUInt32();
         newBattlemasterList->HolidayWorldState = fields[31].GetUInt32();
-        newBattlemasterList->MinLevel = fields[32].GetUInt32();
+        //newBattlemasterList->MinLevel = fields[32].GetUInt32();
+        newBattlemasterList->MaxLevel = fields[32].GetUInt32();
         //newBattlemasterList->MaxLevel = fields[33].GetUInt32();
 
         BattlemasterListStore[newBattlemasterList->ID] = newBattlemasterList;
