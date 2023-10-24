@@ -996,11 +996,11 @@ void DBCMgr::LoadCharTitlesStore()
     CharTitlesStore.clear();
 
     //                                             0            1             2                 3              4               5                6              7             8                   9              10             11                  12               13                 14               15           16              17                 18            19                                                              
-    QueryResult result = WorldDatabase.Query("SELECT ID, Name_Lang_enUS, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_zhCN, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, Name1_Lang_enUS, Name1_Lang_koKR, Name1_Lang_frFR, Name1_Lang_deDE, Name1_Lang_zhCN, Name1_Lang_zhTW, Name1_Lang_esES, Name1_Lang_esMX, Name1_Lang_ruRU, Mask_ID FROM dbc_chartitles");
+    QueryResult result = ZynDatabase.Query("SELECT ID, Name_Lang_enUS, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_zhCN, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, Name1_Lang_enUS, Name1_Lang_koKR, Name1_Lang_frFR, Name1_Lang_deDE, Name1_Lang_zhCN, Name1_Lang_zhTW, Name1_Lang_esES, Name1_Lang_esMX, Name1_Lang_ruRU, Mask_ID FROM chartitles_dbc");
 
     if (!result)
     {
-        TC_LOG_ERROR("server.loading", ">> Loaded 0 chartitles entry. DB table `dbc_chartitles` is empty.");
+        TC_LOG_ERROR("server.loading", ">> Loaded 0 chartitles entry. DB table `chartitles_dbc` is empty.");
         return;
     }
 
@@ -1021,7 +1021,7 @@ void DBCMgr::LoadCharTitlesStore()
 
     } while (result->NextRow());
 
-    TC_LOG_ERROR("misc", ">> Loaded {} dbc_chartitles entries in {} ms", (unsigned long)CharTitlesStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_ERROR("misc", ">> Loaded {} chartitles_dbc entries in {} ms", (unsigned long)CharTitlesStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void DBCMgr::LoadBattlemasterListStore()
@@ -1029,7 +1029,7 @@ void DBCMgr::LoadBattlemasterListStore()
     uint32 oldMSTime = getMSTime();
     BattlemasterListStore.clear();
     //                                                0     1        2        3        4        5        6        7       8             9           10              11              12              13              14              15              16              17              18              19              20            21                22            23               24            25             26        27            28              29         30           31         32
-    QueryResult result = WorldDatabase.Query("SELECT ID, id, MapID_1, MapID_2, MapID_3, MapID_4, MapID_5, MapID_6, MapID_7, MapID_8, InstanceType, GroupsAllowed, Name_Lang_enUS, Name_Lang_enGB, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_enCN, Name_Lang_zhCN, Name_Lang_enTW, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, Name_Lang_ptPT, Name_Lang_ptBR, Name_Lang_itIT, Name_Lang_Unk, Name_Lang_Mask, MaxGroupSize, HolidayWorldState, Minlevel, MaxLevel FROM battlemasterlistdbc");
+    QueryResult result = ZynDatabase.Query("SELECT ID, id, MapID_1, MapID_2, MapID_3, MapID_4, MapID_5, MapID_6, MapID_7, MapID_8, InstanceType, GroupsAllowed, Name_Lang_enUS, Name_Lang_enGB, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_enCN, Name_Lang_zhCN, Name_Lang_enTW, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, Name_Lang_ptPT, Name_Lang_ptBR, Name_Lang_itIT, Name_Lang_Unk, Name_Lang_Mask, MaxGroupSize, HolidayWorldState, Minlevel, MaxLevel FROM battlemasterlistdbc ORDER BY id");
     if (!result)
     {
         TC_LOG_INFO("server.loading", ">> Loaded 0 battlemasterlistdbc. DB table `battlemasterlistdbc` is empty.");
@@ -1047,22 +1047,21 @@ void DBCMgr::LoadBattlemasterListStore()
 
         newBattlemasterList->ID = fields[1].GetUInt32();
 
-        for (uint8 i = 0; i < 8; i++)
+        for (uint8 i = 0; i < 7; i++)
             newBattlemasterList->MapID[i] = fields[2 + i].GetInt32();
 
         newBattlemasterList->InstanceType = fields[10].GetUInt32();
         newBattlemasterList->GroupsAllowed = fields[11].GetUInt32();
 
-        for (uint8 i = 0; i < 16; i++)
+        for (uint8 i = 0; i < 14; i++)
             newBattlemasterList->Name[i] = fields[12 + i].GetString();
 
-        newBattlemasterList->Name_Lang_Unk = fields[28].GetString();
-        newBattlemasterList->Name_Lang_Mask = fields[29].GetUInt32();
-        newBattlemasterList->MaxGroupSize = fields[30].GetUInt32();
-        newBattlemasterList->HolidayWorldState = fields[31].GetUInt32();
-        //newBattlemasterList->MinLevel = fields[32].GetUInt32();
+        newBattlemasterList->Name_Lang_Unk = fields[27].GetString();
+        newBattlemasterList->Name_Lang_Mask = fields[28].GetUInt32();
+        newBattlemasterList->MaxGroupSize = fields[29].GetUInt32();
+        newBattlemasterList->HolidayWorldState = fields[30].GetUInt32();
+        newBattlemasterList->MinLevel = fields[31].GetUInt32();
         newBattlemasterList->MaxLevel = fields[32].GetUInt32();
-        //newBattlemasterList->MaxLevel = fields[33].GetUInt32();
 
         BattlemasterListStore[newBattlemasterList->ID] = newBattlemasterList;
 
