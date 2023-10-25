@@ -217,6 +217,7 @@ typedef std::unordered_map<uint32, WorldSafeLocsEntry*> WorldSafeLocsContainer;
 typedef std::unordered_map<uint32, ItemExtendedCostEntry*> ItemExtendedCostContainer;
 typedef std::unordered_map<uint32, CharTitlesEntry*> CharTitlesContainer;
 typedef std::unordered_map<uint32, BattlemasterListEntry*> BattlemasterListContainer;
+typedef std::unordered_map<uint32,  SpelldbcListEntry*> SpelldbcListContainer;
 
 class TC_GAME_API DBCMgr
 {
@@ -232,16 +233,20 @@ public:
     void LoadItemExtendedCostStore();
     void LoadCharTitlesStore();
     void LoadBattlemasterListStore();
+    void LoadSpelldbcListStore();
 
     const ItemExtendedCostEntry* GetItemExtendedCostEntry(uint32 ID) const { ItemExtendedCostContainer::const_iterator itr = ItemExtendedCostStore.find(ID); if (itr != ItemExtendedCostStore.end()) return itr->second; return nullptr; }
     const WorldSafeLocsEntry* GetWorldSafeLocsEntry(uint32 Id) const { WorldSafeLocsContainer::const_iterator itr = WorldSafeLocsStore.find(Id); if (itr != WorldSafeLocsStore.end()) return itr->second; return nullptr; }
     const CharTitlesEntry* GetCharTitlesEntry(uint32 ID) const { CharTitlesContainer::const_iterator itr = CharTitlesStore.find(ID); if (itr != CharTitlesStore.end()) return itr->second; return nullptr; }
     const BattlemasterListEntry* GetBattlemasterListEntry(uint32 ID) const { BattlemasterListContainer::const_iterator itr = BattlemasterListStore.find(ID); if (itr != BattlemasterListStore.end()) return itr->second; return nullptr; }
+    const SpelldbcListEntry* GetSpelldbcListEntry(uint32 ID) const { SpelldbcListContainer::const_iterator itr = SpelldbcListStore.find(ID); if (itr != SpelldbcListStore.end()) return itr->second; return nullptr; }
+
 
     WorldSafeLocsContainer WorldSafeLocsStore;
     ItemExtendedCostContainer ItemExtendedCostStore;
     CharTitlesContainer CharTitlesStore;
     BattlemasterListContainer BattlemasterListStore;
+    SpelldbcListContainer SpelldbcListStore;
 };
 
 #define sDBCMgr DBCMgr::instance()
