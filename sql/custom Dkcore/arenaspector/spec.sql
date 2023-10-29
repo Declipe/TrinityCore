@@ -6,7 +6,7 @@ INSERT INTO `rbac_permissions` (`id`, `name`) VALUES
 ('1033', 'spectate reset'),
 ('1034', 'spectate leave');
 
-DELETE FROM `rbac_linked_permissions` WHERE `linkedId` IN ("1003","1004","1005","1006","1007");
+DELETE FROM `rbac_linked_permissions` WHERE `linkedId` IN ("1033","1034","1035","1036","1037");
 
 INSERT INTO `rbac_linked_permissions` (`id`, `linkedId`) VALUES
 ('195','1030'),
