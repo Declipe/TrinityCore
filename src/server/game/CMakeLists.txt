@@ -22,10 +22,6 @@ if(USE_COREPCH)
   set(PRIVATE_PCH_HEADER PrecompiledHeaders/gamePCH.h)
 endif()
 
-include_directories(
-${ACE_INCLUDE_DIR}
-)
-
 GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_definitions(-DTRINITY_API_EXPORT_GAME)

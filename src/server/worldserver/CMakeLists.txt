@@ -47,7 +47,6 @@ set_target_properties(worldserver PROPERTIES LINK_FLAGS "${worldserver_LINK_FLAG
 target_link_libraries(worldserver
   PRIVATE
     trinity-core-interface
-	${ACE_LIBRARY}
   PUBLIC
     scripts
     game
@@ -106,7 +105,3 @@ endif()
 if(USE_COREPCH)
   add_cxx_pch(worldserver ${PRIVATE_PCH_HEADER})
 endif()
-
-include_directories(
-${ACE_INCLUDE_DIR}
-)
