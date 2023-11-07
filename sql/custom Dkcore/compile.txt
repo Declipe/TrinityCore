@@ -1,5 +1,7 @@
 cmake ../ -DWITH_WARNINGS=1 -DWITH_COREDEBUG=0 -DUSE_COREPCH=1 -DUSE_SCRIPTPCH=1 -DTOOLS=1 -DSCRIPTS="dynamic" -DSERVERS=1 -DNOJEM=1 -DWITH_DYNAMIC_LINKING=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/declipe/work
 
+cmake ../ -DWITH_WARNINGS=1 -DWITH_COREDEBUG=1 -DUSE_COREPCH=1 -DUSE_SCRIPTPCH=1 -DTOOLS=1 -DSCRIPTS="dynamic" -DSERVERS=1 -DNOJEM=1 -DWITH_DYNAMIC_LINKING=1 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/home/declipe/work
+
 cmake ../ -DWITH_WARNINGS=1 -DWITH_COREDEBUG=0 -DUSE_COREPCH=1 -DUSE_SCRIPTPCH=1 -DTOOLS=1 -DSCRIPTS=1 -DSERVERS=1 -DNOJEM=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/declipe/work3
 
 cmake ../ -DWITH_WARNINGS=1 -DWITH_COREDEBUG=0 -DUSE_COREPCH=1 -DUSE_SCRIPTPCH=1 -DTOOLS=0 -DSCRIPTS="static" -DSERVERS=1 -DNOJEM=1 -DWITH_DYNAMIC_LINKING=0 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/home/declipe/work
@@ -24,7 +26,7 @@ mysql> USE mysql;
 mysql> UPDATE user SET plugin='mysql_native_password' WHERE User='root';
 mysql> FLUSH PRIVILEGES;
 3. You have to change the root password for this to work. Even just specifying the current password is fine too, but this command must be executed:
-mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password_here';
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password_here';  // ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
 mysql> exit;
 4. Lastly, restart MySQL for the changes to take effect.
 $ sudo systemctl restart mysql

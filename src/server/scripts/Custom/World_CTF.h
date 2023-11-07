@@ -1,7 +1,6 @@
 #ifndef GRUMBOZ_WORLD_CTF_H
 #define GRUMBOZ_WORLD_CTF_H
 
-#include "chat.h"
 #include "Config.h"
 #include "DatabaseEnv.h"
 #include "GameObject.h"
