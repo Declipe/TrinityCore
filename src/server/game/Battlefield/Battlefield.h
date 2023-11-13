@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2018+ AtieshCore <https://at-wow.org/>
+ * Copyright (C) 2008-2018 TrinityCore <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -24,6 +25,14 @@
 #include "ZoneScript.h"
 #include <map>
 
+namespace WorldPackets
+{
+    namespace WorldState
+    {
+        class InitWorldStates;
+    }
+}
+
 class Creature;
 class GameObject;
 class Group;
@@ -31,6 +40,7 @@ class Map;
 class Player;
 class Unit;
 class WorldPacket;
+struct QuaternionData;
 struct WorldSafeLocsEntry;
 
 class BattlefieldGraveyard;
@@ -40,6 +50,11 @@ typedef std::vector<BattlefieldGraveyard*> BattlefieldGraveyardVector;
 typedef std::vector<BattlefieldCapturePoint*> BattlefieldCapturePointVector;
 typedef std::map<ObjectGuid, time_t> PlayerTimerMap;
 
+enum BattlefieldId
+{
+    BATTLEFIELD_BATTLEID_WINTERGRASP = 1, // Wintergrasp battle
+    BATTLEFIELD_BATTLEID_MAX
+};
 
 enum BattlefieldObjectiveStates
 {
@@ -54,9 +69,9 @@ enum BattlefieldObjectiveStates
 
 enum BattlefieldSounds
 {
-    BATTLEFIELD_SOUND_HORDE_WINS = 8454,
+    BATTLEFIELD_SOUND_HORDE_WINS    = 8454,
     BATTLEFIELD_SOUND_ALLIANCE_WINS = 8455,
-    BATTLEFIELD_SOUND_START = 3439
+    BATTLEFIELD_SOUND_START         = 3439
 };
 
 enum BattlefieldTimers
@@ -79,12 +94,19 @@ enum BattlefieldSpells
 
 class TC_GAME_API Battlefield : public ZoneScript
 {
+    friend class BattlefieldMgr;
     public:
-        explicit Battlefield();
-        ~Battlefield();
+
+        // ctor
+        Battlefield();
+        // dtor
+        virtual ~Battlefield();
+
+        void RegisterBattlefield(uint32 eventId);
+        void RegisterZoneIdForBattlefield(uint32 zoneId);
 
         virtual void Update(uint32 diff);
-        virtual bool SetupBattlefield() { return true; }
+        virtual bool SetupBattlefield(bool active, bool enabled, uint32 id, uint32 cooldownTimer, uint32 durationTimer, uint32 minlevel, uint32 maxplayers, uint32 controlteam, uint32 remainingtime);
         virtual void HandleKill(Player* /*killer*/, Unit* /*killed*/) { }
         virtual uint32 GetData(uint32 dataId) const override { return _data[dataId]; }
         virtual void SetData(uint32 dataId, uint32 value) override { _data[dataId] = value; }
@@ -98,7 +120,7 @@ class TC_GAME_API Battlefield : public ZoneScript
         virtual void OnPlayerEnterZone(Player* /*player*/) { }
         virtual void DoCompleteOrIncrementAchievement(uint32 /*achievement*/, Player* /*player*/, uint8 /*incrementNumber = 1*/) { }
         virtual void SendInitWorldStatesToAll() = 0;
-        virtual void FillInitialWorldStates(WorldPacket& /*data*/) = 0;
+        virtual void FillInitialWorldStates(WorldPackets::WorldState::InitWorldStates& /*packet*/) = 0;
         virtual void AddPlayerToResurrectQueue(ObjectGuid creatureGUID, ObjectGuid playerGUID);
 
         // enables or disables the battlefield
@@ -127,17 +149,21 @@ class TC_GAME_API Battlefield : public ZoneScript
         bool AddOrSetPlayerToCorrectBfGroup(Player* player);
         void RemovePlayerFromResurrectQueue(ObjectGuid playerGUID);
         void SendAreaSpiritHealerQueryOpcode(Player* player, ObjectGuid guid);
+        //Creature* SpawnCreature(uint32 entry, Position const& pos, uint32 phaseMask); // removed by RE as wrong way
+        GameObject* SpawnGameObject(uint32 entry, Position const& pos, uint32 phaseMask, QuaternionData const& rot);
+        void HideCreature(Creature* creature);
+        void ShowCreature(Creature* creature, bool aggressive);
         void DoPlaySoundToAll(uint32 soundId);
         // packet senders
-        void BroadcastPacketToZone(WorldPacket& data) const;
-        void BroadcastPacketToQueue(WorldPacket& data) const;
-        void BroadcastPacketToWar(WorldPacket& data) const;
+        void BroadcastPacketToZone(WorldPacket const* data) const;
+        void BroadcastPacketToQueue(WorldPacket const* data) const;
+        void BroadcastPacketToWar(WorldPacket const* data) const;
         void AddCapturePoint(BattlefieldCapturePoint* capturePoint) { _capturePoints.push_back(capturePoint); }
         void TeamCastSpell(TeamId team, int32 spellId);
 
         // SpawnGroups
-        void SpawnGroupSpawn(uint32 groupId);
-        void SpawnGroupDespawn(uint32 groupId);
+        //void SpawnGroupSpawn(uint32 groupId); // removed by RE as wrong way
+        //void SpawnGroupDespawn(uint32 groupId); // removed by RE as wrong way
 
         bool IsEnabled() const { return _enabled; }
         bool IsWarTime() const { return _active; }
@@ -150,14 +176,11 @@ class TC_GAME_API Battlefield : public ZoneScript
         TeamId GetDefenderTeam() const { return _defenderTeam; }
         TeamId GetAttackerTeam() const { return TeamId(1 - _defenderTeam); }
         TeamId GetOtherTeam(TeamId team) const { return (team == TEAM_HORDE ? TEAM_ALLIANCE : TEAM_HORDE); }
-       // uint32 GetTimer() const { return _timer.GetExpiry() < 0 ? 0 : _timer.GetExpiry(); }
-       // uint32 GetTimer() const { return _timer.GetExpiry() = 0 ? 0 : _timer.GetExpiry(); }
-       // uint32 GetTimer() const { return m_Timer; }
-        uint32 GetTimer() const { return _timer; }
+        uint32 GetTimer() const { return _timer.GetExpiry() < 0 ? 0 : _timer.GetExpiry(); }
         std::list<Player*> GetPlayerListInSourceRange(WorldObject* source, float range, TeamId teamId) const;
         BattlefieldGraveyard* GetGraveyard(uint32 id) const;
         // finds which graveyard the player must be teleported to
-        WorldSafeLocsEntry const* GetClosestGraveyard(Player* player) const;
+        WorldSafeLocsEntry const* GetClosestGraveyardLocation(Player* player) const;
         // finds a not full battlefield group
         Group* GetFreeGroup(TeamId TeamId) const;
         // returns battlefield group where the player is
@@ -165,8 +188,7 @@ class TC_GAME_API Battlefield : public ZoneScript
         Creature* GetCreature(ObjectGuid guid);
         GameObject* GetGameObject(ObjectGuid guid);
 
-       // void SetTimer(uint32 timer) { _timer.Reset(timer); }
-        void SetTimer(uint32 timer) { _timer = timer; }
+        void SetTimer(uint32 timer) { _timer.Reset(timer); }
         void SetDefenderTeam(TeamId team) { _defenderTeam = team; }
         void SetGraveyardNumber(uint32 number) { _graveyardList.resize(number); }
 
@@ -177,7 +199,6 @@ class TC_GAME_API Battlefield : public ZoneScript
         GuidUnorderedSet _players[PVP_TEAMS_COUNT];
         GuidUnorderedSet _playersInWar[PVP_TEAMS_COUNT];
         GuidUnorderedSet _groups[PVP_TEAMS_COUNT]; // contains the two different raid groups
-        //GuidDeque _playerQueue[PVP_TEAMS_COUNT];
         std::deque<uint64> _playerQueue[PVP_TEAMS_COUNT];
         PlayerTimerMap _invitedPlayers[PVP_TEAMS_COUNT];
         PlayerTimerMap _playersToKick[PVP_TEAMS_COUNT];
@@ -197,8 +218,7 @@ class TC_GAME_API Battlefield : public ZoneScript
         uint32 _maxPlayerCount; // maximum number of players that can participate
         uint32 _minPlayerLevel; // required player level to participate
         uint32 _battleTime; // length of the battle
-        uint32 _noWarBattleTime; // time between two battles
-        uint32 _restartAfterCrash; // delay to restart if the server crashed during a running battle
+        uint32 _noWarBattleTime; // time between two battles        
         uint32 _acceptInviteTime; // maximum time to accept battle invite
         uint32 _startGroupingTime; // time to invite players in zone
 
@@ -216,7 +236,7 @@ class TC_GAME_API BattlefieldCapturePoint
         virtual void Update(uint32 diff);
         virtual void ChangeTeam(TeamId /*oldTeam*/) { }
         virtual void SendChangePhase();
-        virtual void FillInitialWorldStates(WorldPacket& /*data*/) { }
+        virtual void FillInitialWorldStates(WorldPackets::WorldState::InitWorldStates& /*packet*/) { }
         // Used when player is activated/inactivated in the area
         virtual bool HandlePlayerEnter(Player* player);
         virtual GuidUnorderedSet::iterator HandlePlayerLeave(Player* player);
