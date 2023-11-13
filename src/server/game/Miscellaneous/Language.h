@@ -1145,11 +1145,21 @@ enum TrinityStrings
     // unused 5081
     // unused 5082
     LANG_OBJECTINFO_AITYPE                = 5083,
-    LANG_NPCINFO_UNIT_FIELD_FLAGS_2       = 5084, // master branch ONLY
-    LANG_NPCINFO_UNIT_FIELD_FLAGS_3       = 5085, // master branch ONLY
-    LANG_NPCINFO_NPC_FLAGS                = 5086, // master branch ONLY
-    LANG_NPCINFO_PHASE_IDS                = 5087, // master branch ONLY
-    LANG_SCENARIO                         = 5088, // master branch ONLY
+    LANG_COMMAND_BF_START                 = 5093,
+    LANG_COMMAND_BF_ACTIVE                = 5084,
+    LANG_COMMAND_BF_STOP                  = 5085,
+    LANG_COMMAND_BF_ALREADY_STOPPED       = 5086,
+    LANG_COMMAND_BF_DISABLE               = 5087,
+    LANG_COMMAND_BF_ENABLE                = 5088,
+    LANG_COMMAND_BF_SWITCH                = 5089,
+    LANG_COMMAND_BF_TIMER                 = 5090,
+    LANG_COMMAND_BF_INCORRECT_ID          = 5091,
+    LANG_COMMAND_BF_DISABLED              = 5092,
+   // LANG_NPCINFO_UNIT_FIELD_FLAGS_2       = 5084, // master branch ONLY
+   // LANG_NPCINFO_UNIT_FIELD_FLAGS_3       = 5085, // master branch ONLY
+   // LANG_NPCINFO_NPC_FLAGS                = 5086, // master branch ONLY
+   // LANG_NPCINFO_PHASE_IDS                = 5087, // master branch ONLY
+   // LANG_SCENARIO                         = 5088, // master branch ONLY
 
     // Room for more Trinity strings        5089-6603
 

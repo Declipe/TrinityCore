@@ -2263,7 +2263,13 @@ private:
             SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(_mount150);
             uint32 zoneid, areaid;
             target->GetZoneAndAreaId(zoneid, areaid);
-            bool const canFly = spellInfo && (spellInfo->CheckLocation(target->GetMapId(), zoneid, areaid, target) == SPELL_CAST_OK);
+           // bool const canFly = spellInfo && (spellInfo->CheckLocation(target->GetMapId(), zoneid, areaid, target) == SPELL_CAST_OK);
+              bool canFly = spellInfo && (spellInfo->CheckLocation(target->GetMapId(), zoneid, areaid, target) == SPELL_CAST_OK);
+
+            // check battlefield
+            Battlefield* battlefield = sBattlefieldMgr->GetEnabledBattlefield(target->GetZoneId());
+            if (canFly && battlefield && !battlefield->CanFlyIn())
+                canFly = false;
 
             uint32 mount = 0;
             switch (target->GetBaseSkillValue(SKILL_RIDING))

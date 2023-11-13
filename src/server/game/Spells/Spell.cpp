@@ -6056,10 +6056,19 @@ SpellCastResult Spell::CheckCast(bool strict, uint32* param1 /*= nullptr*/, uint
                 // allow always ghost flight spells
                 if (m_originalCaster && m_originalCaster->GetTypeId() == TYPEID_PLAYER && m_originalCaster->IsAlive())
                 {
-                    Battlefield* Bf = sBattlefieldMgr->GetBattlefieldToZoneId(m_originalCaster->GetZoneId());
-                    if (AreaTableEntry const* area = sAreaTableStore.LookupEntry(m_originalCaster->GetAreaId()))
-                        if (area->Flags & AREA_FLAG_NO_FLY_ZONE  || (Bf && !Bf->CanFlyIn()))
+                    //Battlefield* Bf = sBattlefieldMgr->GetBattlefieldToZoneId(m_originalCaster->GetZoneId());
+                    if (Battlefield* battlefield = sBattlefieldMgr->GetEnabledBattlefield(m_originalCaster->GetZoneId()))
+                    {
+                        if (battlefield && !battlefield->CanFlyIn())
                             return SPELL_FAILED_NOT_HERE;
+                    }
+
+                    if (AreaTableEntry const* area = sAreaTableStore.LookupEntry(m_originalCaster->GetAreaId()))
+                       // if (area->Flags & AREA_FLAG_NO_FLY_ZONE  || (Bf && !Bf->CanFlyIn()))
+                    {
+                            if (area->Flags & AREA_FLAG_NO_FLY_ZONE)
+                            return SPELL_FAILED_NOT_HERE;
+                    }
                 }
                 break;
             }

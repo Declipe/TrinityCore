@@ -3520,7 +3520,7 @@ enum BattlegroundTypeId : uint32
 
 #define MAX_BATTLEGROUND_TYPE_ID 33
 
-enum BattlefieldBattleId : uint8
+enum BattlefieldId : uint8
 {
     BATTLEFIELD_BATTLEID_WINTERGRASP = 1, // Wintergrasp battle
     BATTLEFIELD_BATTLEID_MAX = 2

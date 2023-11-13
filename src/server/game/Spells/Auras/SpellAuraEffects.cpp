@@ -4470,8 +4470,10 @@ void AuraEffect::HandleAuraDummy(AuraApplication const* aurApp, uint8 mode, bool
                             {
                                 if (Battleground* bg = target->ToPlayer()->GetBattleground())
                                     bg->RemovePlayerFromResurrectQueue(target->GetGUID());
-                                if (Battlefield* bf = sBattlefieldMgr->GetBattlefieldToZoneId(target->GetZoneId()))
-                                    bf->RemovePlayerFromResurrectQueue(target->GetGUID());
+                                //if (Battlefield* bf = sBattlefieldMgr->GetBattlefieldToZoneId(target->GetZoneId()))
+                                 //   bf->RemovePlayerFromResurrectQueue(target->GetGUID());
+                                if (Battlefield* battlefield = sBattlefieldMgr->GetEnabledBattlefield(target->GetZoneId()))
+                                    battlefield->RemovePlayerFromResurrectQueue(target->GetGUID());
                             }
                             break;
                         case 43681: // Inactive
