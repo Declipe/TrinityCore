@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2019 TrinityCore <https://www.trinitycore.org/>
+ * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -21,83 +21,37 @@
 #include "Battlefield.h"
 #include <unordered_map>
 
-struct BattleFieldList
-{
-    std::string scriptname;
-    uint32 cooldownTimer;
-    uint32 durationTimer;    
-    bool enabled;
-    uint32 minlevel;
-    uint32 maxplayers;
-    uint8 controlteam;
-    uint32 remainingtime;
-    bool active;
-    std::string comment;
-};
-typedef std::unordered_map<uint32, BattleFieldList> BattleFieldInfoContainer;
-
 class Player;
-class BattleField;
 class ZoneScript;
 enum BattlefieldId;
 
 class TC_GAME_API BattlefieldMgr
 {
-    private:
-        BattlefieldMgr();
-        ~BattlefieldMgr() { };
-
     public:
         static BattlefieldMgr* instance();
 
-        // cleanup
-        void Die();
-
-        // create SpecialEvents
-        void InitBattleFields();
-
-        void Update(uint32 diff);
-
-        // event sector
-        void AddBattlefield(uint32 eventId, Battlefield* handle);
-
-        Battlefield* GetEnabledBattlefieldByZoneId(uint32 zoneId);
-        Battlefield* GetEnabledBattlefield(BattlefieldId battleId);
-
-        // ZoneScript
-        void AddZone(uint32 zoneId, Battlefield* handle);
-        ZoneScript* GetZoneScriptbyZoneId(uint32 zoneId) const;
-        ZoneScript* GetZoneScriptbyEventId(uint32 eventId) const;
+        // create battlefields
+        void Initialize();
 
         // called when a player enters an battlefield area
         void HandlePlayerEnterZone(Player* player, uint32 zoneId);
         // called when player leaves an battlefield area
         void HandlePlayerLeaveZone(Player* player, uint32 zoneId);
 
+        Battlefield* GetEnabledBattlefield(uint32 zoneId);
+        Battlefield* GetBattlefield(BattlefieldId battleId);
+        ZoneScript* GetZoneScript(uint32 zoneId);
+
+        void Update(uint32 diff);
+
     private:
-        typedef std::vector<Battlefield*> BattlefieldSet;
-        typedef std::unordered_map<uint32 /*eventid*/, Battlefield*> BattlefieldMap;
-        typedef std::unordered_map<uint32 /*zoneid*/, Battlefield*> BattlefieldZoneMap;
-        typedef std::array<uint32, BATTLEFIELD_BATTLEID_MAX> BattlefieldScriptIds;        
+        BattlefieldMgr();
+        ~BattlefieldMgr();
 
-        // contains all initiated outdoor pvp events
-        // used when initing / cleaning up
-        BattlefieldSet m_BattlefieldSet;
-
-        // maps the event ids to an outdoor pvp event
-        // used in player event handling
-        BattlefieldMap m_BattlefieldMap;
-
-        // maps the zone ids to an outdoor pvp event
-        // used in player event handling
-        BattlefieldZoneMap m_BattlefieldZoneMap;
-
-        // Holds the outdoor PvP templates
-        BattlefieldScriptIds m_BattlefieldScriptIds;
-
-        BattleFieldInfoContainer m_BattleFieldInfoContainer;
+        // contains all initiated battlefields
+        std::unordered_map<uint32/*zoneId*/, Battlefield*> _battlefieldContainer;
         // update interval
-        uint32 m_updateTimer;
+        uint32 _updateTimer;
 };
 
 #define sBattlefieldMgr BattlefieldMgr::instance()

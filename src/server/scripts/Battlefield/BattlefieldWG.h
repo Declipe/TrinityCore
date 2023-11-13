@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2018+ AtieshCore <https://at-wow.org/>
- * Copyright (C) 2008-2018 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -21,14 +20,6 @@
 
 #include "Battlefield.h"
 #include "GameObjectData.h"
-
-namespace WorldPackets
-{
-    namespace WorldState
-    {
-        class InitWorldStates;
-    }
-}
 
 class WintergraspCapturePoint;
 class WintergraspBuilding;
@@ -351,6 +342,11 @@ enum WintergraspQuests
     QUEST_WINTERGRASP_VICTORY_HORDE                 = 13183
 };
 
+enum WintergraspSpawnGroupIds
+{
+    SPAWNGROUP_WINTERGRASP_KEEP_CANNONS = 23
+};
+
 struct WintergraspGraveyardData
 {
     WintergraspGraveyardId Id;
@@ -440,7 +436,7 @@ class TC_GAME_API BattlefieldWintergrasp : public Battlefield
         void OnGameObjectRemove(GameObject* gameObject) override;
         void OnUnitDeath(Unit* unit) override;
         void DoCompleteOrIncrementAchievement(uint32 achievement, Player* player, uint8 incrementNumber = 1) override;
-        void FillInitialWorldStates(WorldPackets::WorldState::InitWorldStates& packet) override;
+        void FillInitialWorldStates(WorldPackets::WorldState::InitWorldStates& packet);// override;
         void SendInitWorldStatesToAll() override;
         void HandleKill(Player* killer, Unit* victim) override;
         void ProcessEvent(WorldObject* object, uint32 eventId) override;
@@ -459,17 +455,6 @@ class TC_GAME_API BattlefieldWintergrasp : public Battlefield
         void UpdateTenacity();
         void SendWarning(uint8 id, Player const* target = nullptr);
         void SendSpellAreaUpdate(uint32 areaId);
-        void SetWestTower(ObjectGuid guid) { _westtowerGUID = guid; }
-        void SetSouthTower(ObjectGuid guid) { _southtowerGUID = guid; }
-        void SetEastTower(ObjectGuid guid) { _easttowerGUID = guid; }
-        bool IsAttackTower(ObjectGuid guid) { return guid == _easttowerGUID || guid == _southtowerGUID || guid == _westtowerGUID; }
-        void SetGOwest(GameObject* GO) { GOwest_ = GO; }
-        void SetGOsouth(GameObject* GO) { GOsouth_ = GO; }
-        void SetGOeast(GameObject* GO) { GOeast_ = GO; }
-        GameObject* GetGOwest() { return GOwest_; }
-        GameObject* GetGOsouth() { return GOsouth_; }
-        GameObject* GetGOeast() { return GOeast_; }
-        void HideACannonsForTower(ObjectGuid guid);
 
         GameObject* GetRelic() { return GetGameObject(_titansRelicGUID); }
         bool CanInteractWithRelic() const { return _relicInteractible; }
@@ -485,22 +470,14 @@ class TC_GAME_API BattlefieldWintergrasp : public Battlefield
         WorkshopSet _workshopSet;
         BuildingSet _buildingSet;
         GuidUnorderedSet _vehicleSet[PVP_TEAMS_COUNT];
-        GuidUnorderedSet _creatureList[PVP_TEAMS_COUNT];
         GuidUnorderedSet _keepCannonList;
-        GuidUnorderedSet _attackCannonList;
         GuidUnorderedSet _teleporterList;
         ObjectGuid _titansRelicGUID;
         ObjectGuid _stalkerGUID;
-        ObjectGuid _westtowerGUID;
-        ObjectGuid _southtowerGUID;
-        ObjectGuid _easttowerGUID;
         TeamId _tenacityTeam;
         bool _relicInteractible;
         uint32 _tenacityStack;
         TimeTrackerSmall _saveTimer;
-        GameObject* GOwest_;
-        GameObject* GOsouth_;
-        GameObject* GOeast_;
 };
 
 class WintergraspGraveyard : public BattlefieldGraveyard
@@ -543,10 +520,10 @@ class TC_GAME_API WintergraspBuilding
         void Destroyed();
         void CleanRelatedObject(ObjectGuid guid);
         void UpdateCreatureAndGo();
+        void UpdateTurretAttack(bool disable);
         void UpdateForNoBattle(bool initialize = false);
         void FillInitialWorldStates(WorldPackets::WorldState::InitWorldStates& packet);
         void Save();
-        //TeamId GetController() const { return _teamControl; }
 
         ObjectGuid const GetGUID() const { return _buildGUID; }
         uint32 GetEntry() const { return _entry; }
@@ -564,6 +541,9 @@ class TC_GAME_API WintergraspBuilding
         uint32 _worldState;
 
         GuidVector _gameObjectList[PVP_TEAMS_COUNT];
+        GuidVector _creatureList[PVP_TEAMS_COUNT];
+        GuidVector _bottomCannonList;
+        GuidVector _topCannonList;
 };
 
 class TC_GAME_API WintergraspWorkshop
