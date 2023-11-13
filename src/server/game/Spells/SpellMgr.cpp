@@ -722,7 +722,7 @@ bool SpellArea::IsFitToRequirements(Player const* player, uint32 newZone, uint32
     {
         case 58600: // No fly Zone - Dalaran
         {
-            if (!player || !player->IsAlive())
+            if (!player)
                 return false;
 
             AreaTableEntry const* pArea = sAreaTableStore.LookupEntry(player->GetAreaId());
@@ -734,13 +734,11 @@ bool SpellArea::IsFitToRequirements(Player const* player, uint32 newZone, uint32
         }
         case 58730: // No fly Zone - Wintergrasp
         {
-            if (!player || !player->IsAlive())
+            if (!player)
                 return false;
 
-           // Battlefield* Bf = sBattlefieldMgr->GetBattlefieldToZoneId(player->GetZoneId());
-            //if (!Bf || Bf->CanFlyIn() || (!player->HasAuraType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED) && !player->HasAuraType(SPELL_AURA_FLY)))
-            Battlefield* battlefield = sBattlefieldMgr->GetEnabledBattlefield(player->GetZoneId());
-            if (!battlefield || battlefield->CanFlyIn() || (!player->HasAuraType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED) && !player->HasAuraType(SPELL_AURA_FLY)))
+            Battlefield* Bf = sBattlefieldMgr->GetBattlefieldToZoneId(player->GetZoneId());
+            if (!Bf || Bf->CanFlyIn() || (!player->HasAuraType(SPELL_AURA_MOD_INCREASE_MOUNTED_FLIGHT_SPEED) && !player->HasAuraType(SPELL_AURA_FLY)))
                 return false;
             break;
         }
@@ -750,16 +748,13 @@ bool SpellArea::IsFitToRequirements(Player const* player, uint32 newZone, uint32
             if (!player)
                 return false;
 
-           // Battlefield* bf = sBattlefieldMgr->GetBattlefieldToZoneId(player->GetZoneId());
+            Battlefield* bf = sBattlefieldMgr->GetBattlefieldToZoneId(player->GetZoneId());
 
-           // if (!bf || bf->GetTypeId() != BATTLEFIELD_WG)
-            Battlefield* battlefield = sBattlefieldMgr->GetEnabledBattlefield(player->GetZoneId());
-            if (!battlefield || battlefield->GetBattleId() != BATTLEFIELD_BATTLEID_WINTERGRASP)
-
+            if (!bf || bf->GetTypeId() != BATTLEFIELD_WG)
                 return false;
 
             // team that controls the workshop in the specified area
-            uint32 team = battlefield->GetData(newArea);
+            uint32 team = bf->GetData(newArea);
 
             if (team == TEAM_HORDE)
                 return spellId == 56618;
@@ -773,10 +768,8 @@ bool SpellArea::IsFitToRequirements(Player const* player, uint32 newZone, uint32
             if (!player)
                 return false;
 
-           // if (Battlefield* battlefieldWG = sBattlefieldMgr->GetBattlefieldByBattleId(BATTLEFIELD_BATTLEID_WG))
-             //   return battlefieldWG->IsEnabled() && (player->GetTeamId() == battlefieldWG->GetDefenderTeam()) && !battlefieldWG->IsWarTime();
-            if (Battlefield* battlefield = sBattlefieldMgr->GetBattlefield(BATTLEFIELD_BATTLEID_WINTERGRASP))
-                return battlefield->IsEnabled() && player->GetTeamId() == battlefield->GetDefenderTeam() && !battlefield->IsWarTime();
+            if (Battlefield* battlefieldWG = sBattlefieldMgr->GetBattlefieldByBattleId(BATTLEFIELD_BATTLEID_WG))
+                return battlefieldWG->IsEnabled() && (player->GetTeamId() == battlefieldWG->GetDefenderTeam()) && !battlefieldWG->IsWarTime();
             break;
         }
         case 74411: // Battleground - Dampening
@@ -784,8 +777,8 @@ bool SpellArea::IsFitToRequirements(Player const* player, uint32 newZone, uint32
             if (!player)
                 return false;
 
-            if (Battlefield* battlefield = sBattlefieldMgr->GetEnabledBattlefield(player->GetZoneId()))
-                return battlefield->IsWarTime();
+            if (Battlefield* bf = sBattlefieldMgr->GetBattlefieldToZoneId(player->GetZoneId()))
+                return bf->IsWarTime();
             break;
         }
 

@@ -23,10 +23,8 @@ Category: commandscripts
 EndScriptData */
 
 #include "ScriptMgr.h"
-#include "Battlefield.h"
 #include "BattlefieldMgr.h"
 #include "Chat.h"
-#include "Language.h"
 #include "RBAC.h"
 
 using namespace Trinity::ChatCommands;
@@ -35,17 +33,6 @@ class bf_commandscript : public CommandScript
 {
 public:
     bf_commandscript() : CommandScript("bf_commandscript") { }
-
-    static std::string GetBattleIdString(BattlefieldId battleId)
-    {
-        switch (battleId)
-        {
-        case BATTLEFIELD_BATTLEID_WINTERGRASP:
-            return "Wintergrasp";
-        default:
-            return "";
-        }
-    }
 
     ChatCommandTable GetCommands() const override
     {
@@ -63,183 +50,86 @@ public:
         };
         return commandTable;
     }
-    static bool HandleBattlefieldStart(ChatHandler* handler, char const* args)
+
+    static bool HandleBattlefieldStart(ChatHandler* handler, uint32 battleId)
     {
-        if (!*args)
+        Battlefield* bf = sBattlefieldMgr->GetBattlefieldByBattleId(battleId);
+
+        if (!bf)
             return false;
 
-        char* battleidstr = strtok((char*)args, " ");
-        if (!battleidstr)
-            return false;
+        bf->StartBattle();
 
-        uint32 battlearg = atoul(battleidstr);
-        if (battlearg == 0 || battlearg >= BATTLEFIELD_BATTLEID_MAX)
-        {
-            handler->PSendSysMessage(LANG_COMMAND_BF_INCORRECT_ID);
-            return true;
-        }
+        if (battleId == 1)
+            handler->SendGlobalGMSysMessage("Wintergrasp (Command start used)");
 
-        BattlefieldId battleId = BattlefieldId(battlearg);
-        Battlefield* battlefield = sBattlefieldMgr->GetBattlefield(battleId);
-        if (!battlefield)
-            return true;
-
-        if (!battlefield->IsEnabled())
-        {
-            handler->PSendSysMessage(LANG_COMMAND_BF_DISABLED, GetBattleIdString(battleId));
-            return true;
-        }
-
-        if (battlefield->IsWarTime())
-        {
-            handler->PSendSysMessage(LANG_COMMAND_BF_ACTIVE, GetBattleIdString(battleId));
-            return true;
-        }
-
-        battlefield->StartBattle();
-        handler->PSendSysMessage(LANG_COMMAND_BF_START, GetBattleIdString(battleId));
         return true;
     }
 
-    static bool HandleBattlefieldEnd(ChatHandler* handler, char const* args)
+    static bool HandleBattlefieldEnd(ChatHandler* handler, uint32 battleId)
     {
-        if (!*args)
+        Battlefield* bf = sBattlefieldMgr->GetBattlefieldByBattleId(battleId);
+
+        if (!bf)
             return false;
 
-        char* battleidstr = strtok((char*)args, " ");
-        if (!battleidstr)
-            return false;
+        bf->EndBattle(true);
 
-        uint32 battlearg = atoul(battleidstr);
-        if (battlearg == 0 || battlearg >= BATTLEFIELD_BATTLEID_MAX)
-        {
-            handler->PSendSysMessage(LANG_COMMAND_BF_INCORRECT_ID);
-            return true;
-        }
+        if (battleId == 1)
+            handler->SendGlobalGMSysMessage("Wintergrasp (Command stop used)");
 
-        BattlefieldId battleId = BattlefieldId(battlearg);
-        Battlefield* battlefield = sBattlefieldMgr->GetBattlefield(battleId);
-        if (!battlefield)
-            return true;
-
-        if (!battlefield->IsEnabled())
-        {
-            handler->PSendSysMessage(LANG_COMMAND_BF_DISABLED, GetBattleIdString(battleId));
-            return true;
-        }
-
-        if (!battlefield->IsWarTime())
-        {
-            handler->PSendSysMessage(LANG_COMMAND_BF_ALREADY_STOPPED, GetBattleIdString(battleId));
-            return true;
-        }
-
-        battlefield->EndBattle(true);
-        handler->PSendSysMessage(LANG_COMMAND_BF_STOP, GetBattleIdString(battleId));
         return true;
     }
 
-    static bool HandleBattlefieldEnable(ChatHandler* handler, char const* args)
+    static bool HandleBattlefieldEnable(ChatHandler* handler, uint32 battleId)
     {
-        if (!*args)
+        Battlefield* bf = sBattlefieldMgr->GetBattlefieldByBattleId(battleId);
+
+        if (!bf)
             return false;
 
-        char* battleidstr = strtok((char*)args, " ");
-        if (!battleidstr)
-            return false;
-
-        uint32 battlearg = atoul(battleidstr);
-        if (battlearg == 0 || battlearg >= BATTLEFIELD_BATTLEID_MAX)
+        if (bf->IsEnabled())
         {
-            handler->PSendSysMessage(LANG_COMMAND_BF_INCORRECT_ID);
-            return true;
-        }
-
-        BattlefieldId battleId = BattlefieldId(battlearg);
-        Battlefield* battlefield = sBattlefieldMgr->GetBattlefield(battleId);
-        if (!battlefield)
-            return true;
-
-        if (battlefield->IsEnabled())
-        {
-            battlefield->ToggleBattlefield(false);
-            handler->PSendSysMessage(LANG_COMMAND_BF_DISABLE, GetBattleIdString(battleId));
+            bf->ToggleBattlefield(false);
+            if (battleId == 1)
+                handler->SendGlobalGMSysMessage("Wintergrasp is disabled");
         }
         else
         {
-            battlefield->ToggleBattlefield(true);
-            handler->PSendSysMessage(LANG_COMMAND_BF_ENABLE, GetBattleIdString(battleId));
+            bf->ToggleBattlefield(true);
+            if (battleId == 1)
+                handler->SendGlobalGMSysMessage("Wintergrasp is enabled");
         }
+
         return true;
     }
 
-    static bool HandleBattlefieldSwitch(ChatHandler* handler, char const* args)
+    static bool HandleBattlefieldSwitch(ChatHandler* handler, uint32 battleId)
     {
-        if (!*args)
+        Battlefield* bf = sBattlefieldMgr->GetBattlefieldByBattleId(battleId);
+
+        if (!bf)
             return false;
 
-        char* battleidstr = strtok((char*)args, " ");
-        if (!battleidstr)
-            return false;
+        bf->EndBattle(false);
+        if (battleId == 1)
+            handler->SendGlobalGMSysMessage("Wintergrasp (Command switch used)");
 
-        uint32 battlearg = atoul(battleidstr);
-        if (battlearg == 0 || battlearg >= BATTLEFIELD_BATTLEID_MAX)
-        {
-            handler->PSendSysMessage(LANG_COMMAND_BF_INCORRECT_ID);
-            return true;
-        }
-
-        BattlefieldId battleId = BattlefieldId(battlearg);
-        Battlefield* battlefield = sBattlefieldMgr->GetBattlefield(battleId);
-        if (!battlefield)
-            return true;
-
-        if (battlefield->IsWarTime())
-        {
-            handler->PSendSysMessage(LANG_COMMAND_BF_ACTIVE, GetBattleIdString(battleId));
-            return true;
-        }
-
-        battlefield->EndBattle(false);
-        handler->PSendSysMessage(LANG_COMMAND_BF_SWITCH, GetBattleIdString(battleId));
         return true;
     }
 
-    static bool HandleBattlefieldTimer(ChatHandler* handler, char const* args)
+    static bool HandleBattlefieldTimer(ChatHandler* handler, uint32 battleId, uint32 time)
     {
-        if (!*args)
+        Battlefield* bf = sBattlefieldMgr->GetBattlefieldByBattleId(battleId);
+
+        if (!bf)
             return false;
 
-        char* battleidstr = strtok((char*)args, " ");
-        if (!battleidstr)
-            return false;
+        bf->SetTimer(time * IN_MILLISECONDS);
+        bf->SendInitWorldStatesToAll();
+        if (battleId == 1)
+            handler->SendGlobalGMSysMessage("Wintergrasp (Command timer used)");
 
-        char* timestr = strtok(nullptr, " ");
-        if (!timestr)
-            return false;
-
-        uint32 battlearg = atoul(battleidstr);
-        if (battlearg == 0 || battlearg >= BATTLEFIELD_BATTLEID_MAX)
-        {
-            handler->PSendSysMessage(LANG_COMMAND_BF_INCORRECT_ID);
-            return true;
-        }
-
-        BattlefieldId battleId = BattlefieldId(battlearg);
-        Battlefield* battlefield = sBattlefieldMgr->GetBattlefield(battleId);
-        if (!battlefield)
-            return true;
-
-        if (!battlefield->IsEnabled())
-        {
-            handler->PSendSysMessage(LANG_COMMAND_BF_DISABLED, GetBattleIdString(battleId));
-            return true;
-        }
-
-        uint32 time = atoul(timestr);
-        battlefield->SetTimer(time * IN_MILLISECONDS);
-        battlefield->SendInitWorldStatesToAll();
-        handler->PSendSysMessage(LANG_COMMAND_BF_TIMER, GetBattleIdString(battleId), battlefield->GetTimer(), battlefield->IsWarTime() ? "war time" : "no war time");
         return true;
     }
 };

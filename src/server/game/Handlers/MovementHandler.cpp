@@ -17,9 +17,6 @@
 
 #include "AnticheatMgr.h"
 #include "Battleground.h"
-#include "Battlefield.h"
-#include "BattlefieldMgr.h"
-//#include "Battlefield/BattlefieldWG.h"
 #include "Common.h"
 #include "Corpse.h"
 #include "GameTime.h"
@@ -138,19 +135,19 @@ void WorldSession::HandleMoveWorldportAck()
     player->SendInitialPacketsAfterAddToMap();
 
     // flight fast teleport case
-  //  if (player->IsInFlight())
-    //{
-      //  if (!player->InBattleground())
-        //{
+    if (player->IsInFlight())
+    {
+        if (!player->InBattleground())
+        {
             // short preparations to continue flight
-          //  MovementGenerator* movementGenerator = player->GetMotionMaster()->GetCurrentMovementGenerator();
-            //movementGenerator->Initialize(player);
-           // return;
-       // }
+            MovementGenerator* movementGenerator = player->GetMotionMaster()->GetCurrentMovementGenerator();
+            movementGenerator->Initialize(player);
+            return;
+        }
 
         // battleground state prepare, stop flight
-       // player->FinishTaxiFlight();
-   // }
+        player->FinishTaxiFlight();
+    }
 
     if (!player->IsAlive() && player->GetTeleportOptions() & TELE_REVIVE_AT_TELEPORT)
         player->ResurrectPlayer(0.5f);
@@ -198,32 +195,6 @@ void WorldSession::HandleMoveWorldportAck()
     uint32 newzone, newarea;
     player->GetZoneAndAreaId(newzone, newarea);
     player->UpdateZone(newzone, newarea);
-
-    bool InBattlefield = false;
-    if (loc.GetMapId() == 571 && newzone == 4197)
-    {
-        if (Battlefield* battlefield = sBattlefieldMgr->GetEnabledBattlefield(newzone))
-        {
-            if (battlefield->IsWarTime())
-                _player->RemoveAurasByType(SPELL_AURA_MOUNTED);
-            InBattlefield = true;
-        }
-    }
-
-    // flight fast teleport case
-    if (player->IsInFlight())
-        {
-            if (!player->InBattleground())
-            {
-                // short preparations to continue flight
-                MovementGenerator* movementGenerator = player->GetMotionMaster()->GetCurrentMovementGenerator();
-                movementGenerator->Initialize(player);
-                return;
-            }
-
-            // battleground state prepare, stop flight
-            player->FinishTaxiFlight();
-        }
 
     // honorless target
     if (player->pvpInfo.IsHostile)
