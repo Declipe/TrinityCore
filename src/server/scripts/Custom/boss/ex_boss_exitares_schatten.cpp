@@ -1,12 +1,4 @@
-#include "ObjectMgr.h"
-#include "ScriptMgr.h"
-#include "GameObject.h"
-#include "InstanceScript.h"
-#include "Map.h"
-#include "ObjectAccessor.h"
-#include "Player.h"
-#include "ScriptedCreature.h"
-#include "SpellInfo.h"
+#include "Custom/Dcl.h"
 
 enum Spells
 {

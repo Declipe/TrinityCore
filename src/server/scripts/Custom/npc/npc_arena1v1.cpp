@@ -269,7 +269,7 @@ public:
             {
                 if (sGameConfig->GetIntConfig("Arena.1v1.MinLevel") <= player->GetLevel())
                 {
-                    if (player->GetMoney() >= sGameConfig->GetIntConfig("Arena.1v1.Costs") && CreateArenateam(player, me))
+                    if ((int32)player->GetMoney() >= (int32)sGameConfig->GetIntConfig("Arena.1v1.Costs") && CreateArenateam(player, me))
                         player->ModifyMoney(sGameConfig->GetIntConfig("Arena.1v1.Costs") * -1);
                 }
                 else

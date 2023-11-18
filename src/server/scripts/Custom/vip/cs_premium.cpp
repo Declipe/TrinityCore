@@ -1,40 +1,6 @@
-#include "ScriptMgr.h"
+ï»¿#include "Custom/Dcl.h"
 #include "AccountMgr.h"
-#include "ArenaTeamMgr.h"
-#include "CellImpl.h"
-#include "CharacterCache.h"
-#include "Chat.h"
-#include "DatabaseEnv.h"
-#include "DisableMgr.h"
-#include "GridNotifiers.h"
-#include "Group.h"
-#include "GroupMgr.h"
-#include "CustomConfig.h"
-#include "InstanceSaveMgr.h"
-#include "Item.h"
-#include "Language.h"
-#include "LFG.h"
-#include "Log.h"
-#include "MapManager.h"
-#include "MMapFactory.h"
-#include "MovementGenerator.h"
-#include "ObjectAccessor.h"
-#include "ObjectMgr.h"
-#include "Opcodes.h"
-#include "Pet.h"
-#include "Player.h"
-#include "Realm.h"
-#include "SpellAuras.h"
 #include "SpellHistory.h"
-#include "SpellMgr.h"
-#include "ChaseMovementGenerator.h"
-#include "FollowMovementGenerator.h"
-#include "Transport.h"
-#include "Weather.h"
-#include "WeatherMgr.h"
-#include "World.h"
-#include "WorldSession.h"
-#include <boost/asio/ip/address_v4.hpp>
 
 using namespace Trinity::ChatCommands;
 
@@ -103,16 +69,16 @@ public:
         {
             me = target->GetSource();
             //INSERT BUFFLIST HERE:
-            me->CastSpell(me, 48073, TRIGGERED_FULL_MASK);  // Göttlicher Wille
-            me->CastSpell(me, 48161, TRIGGERED_FULL_MASK);  // Machtwort: Seelenstärke
-            me->CastSpell(me, 48469, TRIGGERED_FULL_MASK);  // Mark of the Wild
-            me->CastSpell(me, 58054, TRIGGERED_FULL_MASK);  // Blessing of Kings
-            me->CastSpell(me, 42995, TRIGGERED_FULL_MASK);  // Arcane Intelligence
-            me->CastSpell(me, 48102, TRIGGERED_FULL_MASK);  // Scroll of Stamina VIII
-            me->CastSpell(me, 48104, TRIGGERED_FULL_MASK);  // Scroll of Spirit VIII
-            me->CastSpell(me, 58451, TRIGGERED_FULL_MASK);  // Scroll of Agility VIII
-            me->CastSpell(me, 58449, TRIGGERED_FULL_MASK);  // Scroll of Strength VIII
-            me->CastSpell(me, 48100, TRIGGERED_FULL_MASK);  // Scroll of Intelligenc VII
+            me->CastSpell(me, 48073, TRIGGERED_FULL_MASK);
+            me->CastSpell(me, 48161, TRIGGERED_FULL_MASK);
+            me->CastSpell(me, 48469, TRIGGERED_FULL_MASK);
+            me->CastSpell(me, 58054, TRIGGERED_FULL_MASK);
+            me->CastSpell(me, 42995, TRIGGERED_FULL_MASK);
+            me->CastSpell(me, 48102, TRIGGERED_FULL_MASK);
+            me->CastSpell(me, 48104, TRIGGERED_FULL_MASK);
+            me->CastSpell(me, 58451, TRIGGERED_FULL_MASK);
+            me->CastSpell(me, 58449, TRIGGERED_FULL_MASK);
+            me->CastSpell(me, 48100, TRIGGERED_FULL_MASK);
             //END BUFFLIST
             target = target->next();
         }

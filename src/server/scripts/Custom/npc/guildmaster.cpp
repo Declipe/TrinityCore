@@ -1,25 +1,4 @@
-#include "Config.h"
-#include "CustomConfig.h"
-#include "Player.h"
-#include "ObjectMgr.h"
-#include "World.h"
-#include "ScriptMgr.h"
-#include "Language.h"
-#include "ZynDatabase.h"
-#include "DatabaseEnvFwd.h"
-#include "DatabaseEnv.h"
-#include "Log.h"
-#include "GameTime.h"
-#include "SpellMgr.h"
-#include "GossipDef.h"
-#include "ScriptedGossip.h"
-#include "GameObject.h"
-#include "GameObjectAI.h"
-
-#include "ScriptedCreature.h"
-#include "GameEventMgr.h"
-#include "WorldSession.h"
-#include "DBCStores.h"
+#include "Custom/Dcl.h"
 
 #define MSG_GOSSIP_TELE          "Teleport to GuildHouse"
 #define MSG_GOSSIP_BUY           "Buy GuildHouse"
@@ -179,7 +158,7 @@ bool isPlayerHasGuildhouse(Player *player, Creature *_creature, bool whisper = f
  //whisper to player "already have etc..."
  Field *fields = result->Fetch();
  char msg[100];
- sprintf(msg, MSG_ALREADYHAVEGH, fields[0].GetCString());
+ sprintf(msg, {}, MSG_ALREADYHAVEGH, fields[0].GetCString());
  _creature->Whisper(msg, LANG_UNIVERSAL, player);
  }
 
@@ -193,13 +172,14 @@ void buyGuildhouse(Player *player, Creature *_creature, uint32 guildhouseId)
 {
 
  bool token = sGameConfig->GetBoolConfig("GuildHouse.TokenOrGold");
- int cost = sGameConfig->GetIntConfig("GuildHouse.Cost");
+ int32 cost = sGameConfig->GetIntConfig("GuildHouse.Cost");
 
- if (player->GetMoney() < cost)
+
+ if ((int32)player->GetMoney() <= (int32)cost)
  {
  //show how much money player need to buy GH (in gold)
  char msg[100];
- sprintf(msg, MSG_NOTENOUGHMONEY, cost);
+ sprintf(msg, {}, MSG_NOTENOUGHMONEY, cost);
  _creature->Whisper(msg, LANG_UNIVERSAL, player);
  return;
  }
@@ -225,7 +205,7 @@ void buyGuildhouse(Player *player, Creature *_creature, uint32 guildhouseId)
  result = ZynDatabase.PQuery("UPDATE `guildhouses` SET `guildId` = {} WHERE `id` = {}",
  player->GetGuildId(), guildhouseId);
  uint32 myMoney = sGameConfig->GetIntConfig("GuildHouse.BuyCost");
- player->ModifyMoney(-myMoney *10000);
+ player->ModifyMoney(-(int32)myMoney *10000);
 
  //player->DestroyItemCount(token, cost, true);
  _creature->Say(MSG_CONGRATULATIONS, LANG_UNIVERSAL, player);
@@ -243,8 +223,8 @@ void sellGuildhouse(Player *player, Creature *_creature)
 
  player->ModifyMoney(myMoneys *10000);
  //display message e.g. "here your money etc."
- char msg[100];
- sprintf(msg, MSG_SOLD, myMoneys);
+ char msg[255];
+ sprintf(msg, {}, MSG_SOLD, myMoneys);
  _creature->Whisper(msg, LANG_UNIVERSAL, player);
  }
 }
