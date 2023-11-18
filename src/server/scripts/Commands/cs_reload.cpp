@@ -732,6 +732,7 @@ public:
     {
         TC_LOG_INFO("misc", "Re-Loading trinity_string Table!");
         sObjectMgr->LoadTrinityStrings();
+        sObjectMgr->LoadTrinityStrings2();
         handler->SendGlobalGMSysMessage("DB table `trinity_string` reloaded.");
         return true;
     }

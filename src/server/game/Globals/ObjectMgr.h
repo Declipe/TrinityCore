@@ -1173,6 +1173,7 @@ class TC_GAME_API ObjectMgr
         }
 
         bool LoadTrinityStrings();
+        bool LoadTrinityStrings2();
 
         void LoadRandomItemStats();
         void LoadRandomItemStats(Field * fields, uint32 count);
@@ -1489,6 +1490,17 @@ class TC_GAME_API ObjectMgr
         }
         char const* GetTrinityString(uint32 entry, LocaleConstant locale) const;
         char const* GetTrinityStringForDBCLocale(uint32 entry) const { return GetTrinityString(entry, DBCLocaleIndex); }
+
+        TrinityString const* GetTrinityString2(uint32 entry) const
+        {
+            TrinityStringContainer::const_iterator itr = _trinityStringStore2.find(entry);
+            if (itr == _trinityStringStore2.end())
+                return nullptr;
+            return &itr->second;
+        }
+        char const* GetTrinityString2(uint32 entry, LocaleConstant locale) const;
+        char const* GetTrinityStringForDBCLocale2(uint32 entry) const { return GetTrinityString2(entry, DBCLocaleIndex); }
+
         LocaleConstant GetDBCLocaleIndex() const { return DBCLocaleIndex; }
         void SetDBCLocaleIndex(LocaleConstant locale) { DBCLocaleIndex = locale; }
 
@@ -1758,6 +1770,7 @@ class TC_GAME_API ObjectMgr
         QuestGreetingLocaleContainer _questGreetingLocaleStore;
 
         TrinityStringContainer _trinityStringStore;
+        TrinityStringContainer _trinityStringStore2;
 
         CacheVendorItemContainer _cacheVendorItemStore;
         std::unordered_map<uint32, Trainer::Trainer> _trainers;

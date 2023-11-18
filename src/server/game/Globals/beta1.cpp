@@ -711,3 +711,43 @@ void SpellMgr::LoadSpellTargetPositions2()
 
     TC_LOG_INFO("server.loading", ">> Loaded {} spell teleport coordinates in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
+
+bool ObjectMgr::LoadTrinityStrings2()
+{
+    uint32 oldMSTime = getMSTime();
+
+    _trinityStringStore2.clear(); // for reload case
+
+    QueryResult result = WorldDatabase.Query("SELECT entry, content_default, content_loc1, content_loc2, content_loc3, content_loc4, content_loc5, content_loc6, content_loc7, content_loc8 FROM trinity_string2");
+   // if (!result)
+   // {
+    //    TC_LOG_INFO("server.loading", ">> Loaded 0 trinity strings. DB table `trinity_string` is empty. You have imported an incorrect database for more info search for TCE00003 on forum.");
+    //    return false;
+   // }
+
+    do
+    {
+        Field* fields = result->Fetch();
+        uint32 entry = fields[0].GetUInt32();
+        TrinityString& data = _trinityStringStore2[entry];
+        data.Content.resize(DEFAULT_LOCALE + 1);
+        for (int8 i = TOTAL_LOCALES - 1; i >= 0; --i)
+            AddLocaleString(fields[i + 1].GetString(), LocaleConstant(i), data.Content);
+    } while (result->NextRow());
+
+    TC_LOG_INFO("server.loading", ">> Loaded {} trinity strings2 in {} ms", _trinityStringStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    return true;
+}
+
+char const* ObjectMgr::GetTrinityString2(uint32 entry, LocaleConstant locale) const
+{
+    if (TrinityString const* ts = GetTrinityString2(entry))
+    {
+        if (ts->Content.size() > size_t(locale) && !ts->Content[locale].empty())
+            return ts->Content[locale].c_str();
+        return ts->Content[DEFAULT_LOCALE].c_str();
+    }
+
+    TC_LOG_ERROR("sql.sql", "Trinity string2 entry {} not found in DB.", entry);
+    return "<error>";
+}
