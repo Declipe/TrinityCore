@@ -735,7 +735,7 @@ bool ObjectMgr::LoadTrinityStrings2()
             AddLocaleString(fields[i + 1].GetString(), LocaleConstant(i), data.Content);
     } while (result->NextRow());
 
-    TC_LOG_INFO("server.loading", ">> Loaded {} trinity strings2 in {} ms", _trinityStringStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded {} trinity strings2 in {} ms", _trinityStringStore2.size(), GetMSTimeDiffToNow(oldMSTime));
     return true;
 }
 
