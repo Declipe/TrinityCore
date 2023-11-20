@@ -16,6 +16,7 @@
  */
 
 // This is where scripts' loading functions should be declared:
+void AddSC_Blocked_Zones();
 void AddSC_Grumboz_World_Ctf();
 void AddSC_arena_spectator_script();
 void AddSC_ex_champions();
@@ -69,6 +70,7 @@ void AddSC_AutoBalance();
 
 void AddCustomScripts()
 {
+    AddSC_Blocked_Zones();
     AddSC_ex_champions();
     AddSC_NPC_TransmogDisplayVendor();
     AddSC_Mod_SpecialCode();

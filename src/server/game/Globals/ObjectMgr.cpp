@@ -4718,8 +4718,8 @@ void ObjectMgr::LoadPlayerInfo()
             }
 
             PlayerClassLevelInfo& levelInfo = info->levelInfo[current_level - 1];
-            levelInfo.basehealth = fields[2].GetUInt16();
-            levelInfo.basemana   = fields[3].GetUInt16();
+            levelInfo.basehealth = fields[2].GetUInt64();
+            levelInfo.basemana   = fields[3].GetUInt64();
 
             ++count;
         }
