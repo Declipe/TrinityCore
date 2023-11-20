@@ -62,6 +62,7 @@ void AddSC_Mod_ItemUpgrade();
 void AddSC_Mod_AutoLearn();
 void AddSC_Transmogrification();
 void AddSC_mod_DefaultSpec();
+void AddSC_REFORGER_NPC();
 
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
@@ -117,4 +118,5 @@ void AddCustomScripts()
     AddSC_dk_boss_argent_challenge();
     AddSC_Grumboz_World_Ctf();
     AddSC_arena_spectator_script();
+    AddSC_REFORGER_NPC();
 }
