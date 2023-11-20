@@ -63,6 +63,7 @@ void AddSC_Mod_AutoLearn();
 void AddSC_Transmogrification();
 void AddSC_mod_DefaultSpec();
 void AddSC_REFORGER_NPC();
+void AddSC_ItemUse_item_custom();
 
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
@@ -119,4 +120,5 @@ void AddCustomScripts()
     AddSC_Grumboz_World_Ctf();
     AddSC_arena_spectator_script();
     AddSC_REFORGER_NPC();
+    AddSC_ItemUse_item_custom();
 }
