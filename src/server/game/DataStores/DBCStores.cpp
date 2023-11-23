@@ -145,7 +145,7 @@ NameValidationRegexContainer NamesReservedValidators;
 DBCStorage <OverrideSpellDataEntry> sOverrideSpellDataStore(OverrideSpellDatafmt);
 
 DBCStorage <PowerDisplayEntry> sPowerDisplayStore(PowerDisplayfmt);
-DBCStorage <PvPDifficultyEntry> sPvPDifficultyStore(PvPDifficultyfmt);
+//DBCStorage <PvPDifficultyEntry> sPvPDifficultyStore(PvPDifficultyfmt);
 
 DBCStorage <QuestSortEntry> sQuestSortStore(QuestSortEntryfmt);
 DBCStorage <QuestXPEntry>   sQuestXPStore(QuestXPfmt);
@@ -360,7 +360,7 @@ void LoadDBCStores(const std::string& dataPath)
     LOAD_DBC(sNamesReservedStore,                 "NamesReserved.dbc");
     LOAD_DBC(sOverrideSpellDataStore,             "OverrideSpellData.dbc");
     LOAD_DBC(sPowerDisplayStore,                  "PowerDisplay.dbc");
-    LOAD_DBC(sPvPDifficultyStore,                 "PvpDifficulty.dbc");
+    //LOAD_DBC(sPvPDifficultyStore,                 "PvpDifficulty.dbc");
     LOAD_DBC(sQuestXPStore,                       "QuestXP.dbc");
     LOAD_DBC(sQuestFactionRewardStore,            "QuestFactionReward.dbc");
     LOAD_DBC(sQuestSortStore,                     "QuestSort.dbc");
@@ -401,6 +401,7 @@ void LoadDBCStores(const std::string& dataPath)
     LOAD_DBC(sWorldMapOverlayStore,               "WorldMapOverlay.dbc");
     //LOAD_DBC(sWorldSafeLocsStore,                 "WorldSafeLocs.dbc");
     sDBCMgr->LoadWorldSafeLocsStore();
+    sDBCMgr->LoadPvPDifficultyStore();
 
 #undef LOAD_DBC
 
@@ -477,7 +478,13 @@ void LoadDBCStores(const std::string& dataPath)
                 NamesReservedValidators[i].emplace_back(wname, Trinity::regex::perl | Trinity::regex::icase | Trinity::regex::optimize);
     }
 
-    for (PvPDifficultyEntry const* entry : sPvPDifficultyStore)
+   // for (PvPDifficultyContainer::const_iterator itr = sDBCMgr->PvPDifficultyStore.begin(); itr != sDBCMgr->PvPDifficultyStore.end(); ++itr)
+     //   if (PvPDifficultyEntry const* entry = itr->second)
+       //     if (entry->bracketId > MAX_BATTLEGROUND_BRACKETS)
+         //       ASSERT(false && "Need update MAX_BATTLEGROUND_BRACKETS by DBC data");
+    //for (PvPDifficultyEntry const* entry : sPvPDifficultyStore)
+    for (PvPDifficultyContainer::const_iterator itr = sDBCMgr->PvPDifficultyStore.begin(); itr != sDBCMgr->PvPDifficultyStore.end(); ++itr)
+     if (PvPDifficultyEntry const* entry = itr->second)
     {
         ASSERT(entry->RangeIndex < MAX_BATTLEGROUND_BRACKETS, "PvpDifficulty bracket (%d) exceeded max allowed value (%d)", entry->RangeIndex, MAX_BATTLEGROUND_BRACKETS);
     }
@@ -841,9 +848,9 @@ MapDifficulty const* GetDownscaledMapDifficultyData(uint32 mapId, Difficulty &di
 PvPDifficultyEntry const* GetBattlegroundBracketByLevel(uint32 mapid, uint32 level)
 {
     PvPDifficultyEntry const* maxEntry = nullptr;              // used for level > max listed level case
-    for (uint32 i = 0; i < sPvPDifficultyStore.GetNumRows(); ++i)
+    for (uint32 i = 0; i < sDBCMgr->PvPDifficultyStore.size(); ++i)
     {
-        if (PvPDifficultyEntry const* entry = sPvPDifficultyStore.LookupEntry(i))
+        if (PvPDifficultyEntry const* entry = sDBCMgr->GetPvPDifficultyEntry(i))
         {
             // skip unrelated and too-high brackets
             if (entry->MapID != mapid || entry->MinLevel > level)
@@ -864,8 +871,9 @@ PvPDifficultyEntry const* GetBattlegroundBracketByLevel(uint32 mapid, uint32 lev
 
 PvPDifficultyEntry const* GetBattlegroundBracketById(uint32 mapid, BattlegroundBracketId id)
 {
-    for (uint32 i = 0; i < sPvPDifficultyStore.GetNumRows(); ++i)
-        if (PvPDifficultyEntry const* entry = sPvPDifficultyStore.LookupEntry(i))
+    //for (uint32 i = 0; i < sPvPDifficultyStore.GetNumRows(); ++i)
+    for (uint32 i = 0; i < sDBCMgr->PvPDifficultyStore.size(); ++i)
+        if (PvPDifficultyEntry const* entry = sDBCMgr->GetPvPDifficultyEntry(i))
             if (entry->MapID == mapid && entry->GetBracketId() == id)
                 return entry;
 
@@ -1130,4 +1138,37 @@ void DBCMgr::LoadWorldSafeLocsStore()
     } while (result->NextRow());
 
     TC_LOG_ERROR("misc", ">> Loaded {} WorldSafeLocs entries in {} ms", (unsigned long)WorldSafeLocsStore.size(), GetMSTimeDiffToNow(oldMSTime));
+}
+
+void DBCMgr::LoadPvPDifficultyStore()
+{
+    uint32 oldMSTime = getMSTime();
+    PvPDifficultyStore.clear();
+
+    QueryResult result = ZynDatabase.Query("SELECT ID, ID,  MapId, RangeIndex, MinLevel, MaxLevel, Difficulty FROM pvpdifficultydbc");
+    if (!result)
+    {
+        TC_LOG_ERROR("server.loading", ">> Loaded 0 PvPDifficulty entry. DB table `pvpdifficultydbc` is empty.");
+        return;
+    }
+
+    uint32 count = 0;
+    do {
+        Field* fields = result->Fetch(); // 0
+        uint32 id = fields[0].GetUInt32();
+        PvPDifficultyEntry* newPvPDifficulty = new PvPDifficultyEntry;
+        newPvPDifficulty->ID = id;
+
+        newPvPDifficulty->ID = fields[1].GetUInt32();
+        newPvPDifficulty->MapID = fields[2].GetUInt32();
+        newPvPDifficulty->RangeIndex = fields[3].GetUInt32();
+        newPvPDifficulty->MinLevel = fields[4].GetUInt32();
+        newPvPDifficulty->MaxLevel = fields[5].GetUInt32();
+        newPvPDifficulty->Difficulty = fields[6].GetUInt32();
+        PvPDifficultyStore[newPvPDifficulty->ID] = newPvPDifficulty;
+
+      ++count;
+    } while (result->NextRow());
+
+    TC_LOG_ERROR("misc", ">> Loaded {} PvPDifficulty entries in {} ms", (unsigned long)PvPDifficultyStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }

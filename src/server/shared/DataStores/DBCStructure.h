@@ -1200,7 +1200,7 @@ struct PowerDisplayEntry
 
 struct PvPDifficultyEntry
 {
-    //uint32 ID;                                            // 0
+    uint32 ID;                                              // 0
     uint32 MapID;                                           // 1
     uint32 RangeIndex;                                      // 2
     uint32 MinLevel;                                        // 3
