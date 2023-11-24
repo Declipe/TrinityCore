@@ -1,78 +1,90 @@
-/*
-REPLACE INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`, `KillCredit1`, `KillCredit2`, `modelid1`, `modelid2`, `modelid3`, `modelid4`, `name`, `subname`, `IconName`, `gossip_menu_id`, `minlevel`, `maxlevel`, `exp`, `faction_A`, `faction_H`, `npcflag`, `speed_walk`, `speed_run`, `scale`, `rank`, `mindmg`, `maxdmg`, `dmgschool`, `attackpower`, `dmg_multiplier`, `baseattacktime`, `rangeattacktime`, `unit_class`, `unit_flags`, `dynamicflags`, `family`, `trainer_type`, `trainer_spell`, `trainer_class`, `trainer_race`, `minrangedmg`, `maxrangedmg`, `rangedattackpower`, `type`, `type_flags`, `lootid`, `pickpocketloot`, `skinloot`, `resistance1`, `resistance2`, `resistance3`, `resistance4`, `resistance5`, `resistance6`, `spell1`, `spell2`, `spell3`, `spell4`, `spell5`, `spell6`, `spell7`, `spell8`, `PetSpellDataId`, `VehicleId`, `mingold`, `maxgold`, `AIName`, `MovementType`, `InhabitType`, `Health_mod`, `Mana_mod`, `Armor_mod`, `RacialLeader`, `questItem1`, `questItem2`, `questItem3`, `questItem4`, `questItem5`, `questItem6`, `movementId`, `RegenHealth`, `equipment_id`, `mechanic_immune_mask`, `flags_extra`, `ScriptName`, `WDBVerified`) VALUES
-('100005', '0', '0', '0', '0', '0', '18', '0', '18', '0', 'npc title', 'title master', '', '0', '59', '61', '0', '35', '35', '1', '1.48', '1.14286', '0.0', '0', '655.0', '663.0', '0', '158', '1.0', '1500', '1900', '1', '0', '0', '0', '0', '0', '0', '0', '0.0', '0.0', '100', '7', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '', '1', '3', '1.0', '1.0', '1.0', '0', '0', '0', '0', '0', '0', '0', '0', '1', '0', '0', '0', 'npc_title', '1');
-*/
-
 #include "Custom/Dcl.h"
+#include "GossipDef.h"
+using namespace std;
 
-#define MSG_GOSSIP_TEXT_GETTING_STARTED	"???????????? ??? ?? ???????!"
+#define DEFAULT_MESSAGE 907
 
-#define MSG_ERR_ARENA_POINT "? ??? ?? ?????????? ???!"
-#define MSG_ERR_TITLE "? ??????? ????????? ??? ???? ????? ??????!"
-#define MSG_ERR_INCOMBAT "?? ?????????? ? ???. ????? ???????????? ??????? Npc ??????? ?? ????."
+struct TitlesData
+{
+    uint32 Menu;
+    uint32 Submenu;
+    GossipOptionIcon Icon;
+    uint32 Id;
+    string Name;
+};
 
-#define MSG_GOSSIP_TEXT_NEXT_2 "[?????? ????????] ->"
-#define MSG_GOSSIP_TEXT_NEXT_3 "[?????? ????????] ->"
-#define MSG_GOSSIP_TEXT_NEXT_4 "[????????? ????????] ->"
-#define MSG_GOSSIP_TEXT_NEXT_5 "[????? ????????] ->"
+TitlesData DKDatas[] =
+{
+    { 1, 0, GOSSIP_ICON_BATTLE, 78, "The Explorer" },
+    { 1, 0, GOSSIP_ICON_BATTLE, 84, "Chef" },
+    { 1, 0, GOSSIP_ICON_BATTLE, 83, "Salty" },
+    { 1, 0, GOSSIP_ICON_BATTLE, 125, "Loremaster" },
+    { 1, 0, GOSSIP_ICON_BATTLE, 81, "The Seeker" },
+    { 1, 0, GOSSIP_ICON_BATTLE, 172, "the Patient" },
+    { 1, 0, GOSSIP_ICON_BATTLE, 74, "Elder" },
+    { 1, 0, GOSSIP_ICON_BATTLE, 135, "The Love Fool" },
+    { 1, 0, GOSSIP_ICON_BATTLE, 155, "The Noble" },
+    { 1, 0, GOSSIP_ICON_BATTLE, 133, "Brewmaster" },
+    { 1, 0, GOSSIP_ICON_BATTLE, 124, "The Hallowed" },
+    { 1, 0, GOSSIP_ICON_BATTLE, 168, "Pilgrim" },
+    { 1, 0, GOSSIP_ICON_BATTLE, 134, "Merrymaker" },
+    { 1, 0, GOSSIP_ICON_BATTLE, 143, "Jenkins" },
+    { 1, 2, GOSSIP_ICON_TALK, 0, "Next.." },
 
-#define MSG_GOSSIP_TEXT_BACK_4 "<- [????????? ????????] "
-#define MSG_GOSSIP_TEXT_BACK_3 "<- [?????? ????????] "
-#define MSG_GOSSIP_TEXT_BACK_2 "<- [?????? ????????] "
-#define MSG_GOSSIP_TEXT_BACK_1 "<- [?????? ????????] "
+    { 2, 0, GOSSIP_ICON_BATTLE, 46, "Scarab Lord" },
+    { 2, 0, GOSSIP_ICON_BATTLE, 129, "Champion of the Frozen Wastes" },
+    { 2, 0, GOSSIP_ICON_BATTLE, 142, "The Undying" },
+    { 2, 0, GOSSIP_ICON_BATTLE, 141, "The Immortal" },
+    { 2, 0, GOSSIP_ICON_BATTLE, 140, "of the Nightfall" },
+    { 2, 0, GOSSIP_ICON_BATTLE, 121, "Twilight Vanquisher" },
+    { 2, 0, GOSSIP_ICON_BATTLE, 164, "Starcaller" },
+    { 2, 0, GOSSIP_ICON_BATTLE, 165, "The Astral Walker" },
+    { 2, 0, GOSSIP_ICON_BATTLE, 166, "Herald of the Titans" },
+    { 2, 0, GOSSIP_ICON_BATTLE, 161, "Champion of Ulduar" },
+    { 2, 0, GOSSIP_ICON_BATTLE, 160, "Conqueror of Ulduar" },
+    { 2, 0, GOSSIP_ICON_BATTLE, 174, "Bane of the Fallen King" },
+    { 2, 0, GOSSIP_ICON_BATTLE, 173, "The Light of Dawn" },
+    { 2, 3, GOSSIP_ICON_TALK, 0, "Next.." },
+   // { 2, 1, GOSSIP_ICON_TALK, 0, "..Back" },
 
-#define MSG_GOSSIP_TEXT_144 "???????? ?????? ??????? ????????? ??????"
-#define MSG_GOSSIP_TEXT_62 "???????? ?????? ???????????? ?????????"
-#define MSG_GOSSIP_TEXT_135 "???????? ?????? ??????? ??????????"
-#define MSG_GOSSIP_TEXT_141 "???????? ?????? ???????????"
-#define MSG_GOSSIP_TEXT_138 "???????? ?????? ???????????"
-#define MSG_GOSSIP_TEXT_170 "???????? ?????? ??????? ???????????"
-#define MSG_GOSSIP_TEXT_28 "???????? ?????? ????????? ?????"
-#define MSG_GOSSIP_TEXT_48 "???????? ?????? ????????? ??????????"
-#define MSG_GOSSIP_TEXT_134 "???????? ?????? ?????????"
-#define MSG_GOSSIP_TEXT_72 "???????? ?????? ????????????"
-#define MSG_GOSSIP_TEXT_42 "???????? ?????? ?????????"
-#define MSG_GOSSIP_TEXT_113 "???????? ?????? ?????????????"
-#define MSG_GOSSIP_TEXT_147 "???????? ?????? ??????????"
-#define MSG_GOSSIP_TEXT_143 "???????? ?????? ????????"
-#define MSG_GOSSIP_TEXT_79 "???????? ?????? ????????"
-#define MSG_GOSSIP_TEXT_64 "???????? ?????? ????? ?'????"
-#define MSG_GOSSIP_TEXT_43 "???????? ?????? ???????"
-#define MSG_GOSSIP_TEXT_80 "???????? ?????? ???????? ?????????"
-#define MSG_GOSSIP_TEXT_47 "???????? ?????? ???????????"
-#define MSG_GOSSIP_TEXT_122 "???????? ?????? ??????????? ??????????"
-#define MSG_GOSSIP_TEXT_81 "???????? ?????? ????????"
-#define MSG_GOSSIP_TEXT_78 "???????? ?????? ?????????????"
-#define MSG_GOSSIP_TEXT_156 "???????? ?????? ???????????"
-#define MSG_GOSSIP_TEXT_83 "???????? ?????? ??????? ??????"
-#define MSG_GOSSIP_TEXT_71 "???????? ?????? ??????????? ?????????"
-#define MSG_GOSSIP_TEXT_142 "???????? ?????? ???????????"
-#define MSG_GOSSIP_TEXT_146 "???????? ?????? ?????????? ?????????"
-#define MSG_GOSSIP_TEXT_150 "???????? ?????? ?????????????"
-#define MSG_GOSSIP_TEXT_46 "???????? ?????? ?????????? ?????????"
-#define MSG_GOSSIP_TEXT_278 "???????? ?????? ?????????? ????"
-#define MSG_GOSSIP_TEXT_139 "???????? ?????? ?????????? ????????????? ?????????"
-#define MSG_GOSSIP_TEXT_77 "???????? ?????? ?????????????"
-#define MSG_GOSSIP_TEXT_74 "???????? ?????? ?????????"
-#define MSG_GOSSIP_TEXT_45 "???????? ?????? ??????????"
-#define MSG_GOSSIP_TEXT_177 "???????? ?????? ???????????? ?????????"
-#define MSG_GOSSIP_TEXT_151 "???????? ?????? ???'????????"
-#define MSG_GOSSIP_TEXT_171 "???????? ?????? ?????????? ?????????"
-#define MSG_GOSSIP_TEXT_131 "???????? ?????? ?????????? ????????"
-#define MSG_GOSSIP_TEXT_173 "???????? ?????? ?????? ????????"
-#define MSG_GOSSIP_TEXT_157 "???????? ?????? ???????????? ?????????"
-#define MSG_GOSSIP_TEXT_75 "???????? ?????? ????? ????"
-#define MSG_GOSSIP_TEXT_140 "???????? ?????? ??????????"
-#define MSG_GOSSIP_TEXT_172 "???????? ?????? ??????????"
-#define MSG_GOSSIP_TEXT_124 "???????? ?????? ??????"
-#define MSG_GOSSIP_TEXT_133 "???????? ?????? ????????"
-#define MSG_GOSSIP_TEXT_125 "???????? ?????? ????????? ????????"
-#define MSG_GOSSIP_TEXT_76 "???????? ?????? ????????? ????"
-#define MSG_GOSSIP_TEXT_145 "???????? ?????? ????????"
-#define MSG_GOSSIP_TEXT_155 "???????? ?????? ????????"
-#define MSG_GOSSIP_TEXT_84 "???????? ?????? ???-?????"
+    { 3, 0, GOSSIP_ICON_BATTLE, 175, "The Kingslayer" },
+    { 3, 0, GOSSIP_ICON_BATTLE, 63, "of the Shattered Sun" },
+    { 3, 0, GOSSIP_ICON_BATTLE, 130, "Ambassador" },
+    { 3, 0, GOSSIP_ICON_BATTLE, 144, "Bloodsail Admiral" },
+    { 3, 0, GOSSIP_ICON_BATTLE, 79, "The Diplomat" },
+    { 3, 0, GOSSIP_ICON_BATTLE, 132, "Guardian of Cenarius" },
+    { 3, 0, GOSSIP_ICON_BATTLE, 131, "The Argent Champion" },
+    { 3, 0, GOSSIP_ICON_BATTLE, 176, "of the Ashen Verdict" },
+    { 3, 0, GOSSIP_ICON_BATTLE, 77, "The Exalted" },
+    { 3, 0, GOSSIP_ICON_BATTLE, 145, "The Insane" },
+    { 3, 0, GOSSIP_ICON_BATTLE, 72, "Battlemaster" },
+    { 3, 0, GOSSIP_ICON_BATTLE, 82, "Arena Master" },
+    { 3, 0, GOSSIP_ICON_BATTLE, 43, "Duelist" },
+    { 3, 4, GOSSIP_ICON_TALK, 0, "Next.." },
+   // { 3, 2, GOSSIP_ICON_TALK, 0, "..Back" },
 
-#define CONST_ARENA_POINT 200
+    { 4, 0, GOSSIP_ICON_BATTLE, 44, "Rival" },
+    { 4, 0, GOSSIP_ICON_BATTLE, 45, "Challenger" },
+    { 4, 0, GOSSIP_ICON_BATTLE, 163, "Vanquisher" },
+    { 4, 0, GOSSIP_ICON_BATTLE, 156, "Crusader" },
+    { 4, 0, GOSSIP_ICON_BATTLE, 93, "Archmage" },
+    { 4, 0, GOSSIP_ICON_BATTLE, 53, "Champion of the Naaru" },
+    { 4, 0, GOSSIP_ICON_BATTLE, 64, "Hand of A'dal" },
+    { 4, 0, GOSSIP_ICON_BATTLE, 128, "Flawless Victor" },
+    { 4, 5, GOSSIP_ICON_TALK, 0, "Next.." },
+    { 4, 3, GOSSIP_ICON_TALK, 0, "..Back" },
+
+    { 5, 0, GOSSIP_ICON_BATTLE, 178, "beta titles1" },
+    { 5, 0, GOSSIP_ICON_BATTLE, 179, "beta titles2" },
+    { 5, 0, GOSSIP_ICON_BATTLE, 180, "beta titles3" },
+    { 5, 0, GOSSIP_ICON_BATTLE, 181, "beta titles4" },
+    { 5, 0, GOSSIP_ICON_BATTLE, 182, "beta titles5" },
+    { 5, 0, GOSSIP_ICON_BATTLE, 183, "beta titles6" },
+    { 5, 0, GOSSIP_ICON_BATTLE, 184, "beta titles7" },
+    { 5, 0, GOSSIP_ICON_BATTLE, 185, "beta titles8" },
+    { 5, 0, GOSSIP_ICON_BATTLE, 186, "beta titles9" },
+    { 5, 4, GOSSIP_ICON_TALK, 0, "..Back" }
+};
 
 class npc_title : public CreatureScript
 {
@@ -84,403 +96,69 @@ public:
 
         npc_titleAI(Creature* me) : ScriptedAI(me) { }
 
-        bool AddTitle(Player* player, CharTitlesEntry const* titleInfo)
+    void GetMenu(Player* player, Creature* creature, uint32 menuId)
+    {
+        for (uint8 i = 0; i < (sizeof(DKDatas) / sizeof(*DKDatas)); i++)
         {
-            if (player->HasTitle(titleInfo)) {
-                me->Whisper(MSG_ERR_TITLE, LANG_UNIVERSAL, player);
+            if (DKDatas[i].Menu == menuId)
+                AddGossipItemFor(player, DKDatas[i].Icon, DKDatas[i].Name, GOSSIP_SENDER_MAIN, i);
+        }
+
+        SendGossipMenuFor(player, DEFAULT_MESSAGE, me->GetGUID());
+    }
+
+    //bool OnGossipHello(Player* player, Creature* creature)
+    bool OnGossipHello(Player* player)
+    {
+        GetMenu(player, me, 1);
+        return true;
+    }
+
+    bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+    {
+        uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+        uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+        return GossipSelect(player, sender, action);
+    }
+
+   // bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action)
+    bool GossipSelect(Player* player, uint32 sender, uint32 action)
+    {
+        player->PlayerTalkClass->ClearMenus();
+
+        uint32 token = sConfigMgr->GetIntDefault("NT.Token", 0);
+        uint32 count = sConfigMgr->GetIntDefault("NT.Count", 0);
+
+        uint8 menuData = DKDatas[action].Submenu;
+       // if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+        if (menuData == 0)
+        {
+            if ((int32)!player->GetItemCount(token) < (int32)count)
+           // if (!player->HasItemCount(token, count, false))
+            {
+                ChatHandler(player->GetSession()).PSendSysMessage("Failure! You not have the token.");
                 CloseGossipMenuFor(player);
                 return false;
             }
 
-            if (player->GetArenaPoints() < CONST_ARENA_POINT) {
-                //me->Whisper(MSG_ERR_ARENA_POINT, player->GetGUID()); 
-                me->Whisper(MSG_ERR_ARENA_POINT, LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-
-            }
-            else {
-
-                player->SetTitle(titleInfo);
-                player->ModifyArenaPoints(-CONST_ARENA_POINT);
-                CloseGossipMenuFor(player);
-            }
-            return true;
+            player->SetTitle(sDBCMgr->GetCharTitlesEntry(DKDatas[action].Id));
+            player->DestroyItemCount(token, count, true);
+            //player->DestroyItemCount(token, count, true, false);
+            ChatHandler(player->GetSession()).PSendSysMessage("Success! Title added.");
+            menuData = DKDatas[action].Menu;
         }
 
-        bool OnGossipHello(Player* player) override
-        {
-            me->Whisper(MSG_GOSSIP_TEXT_GETTING_STARTED, LANG_UNIVERSAL, player);
-            player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_144, GOSSIP_SENDER_MAIN, 2);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_62, GOSSIP_SENDER_MAIN, 3);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_135, GOSSIP_SENDER_MAIN, 4);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_141, GOSSIP_SENDER_MAIN, 5);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_138, GOSSIP_SENDER_MAIN, 6);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_170, GOSSIP_SENDER_MAIN, 7);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_28, GOSSIP_SENDER_MAIN, 8);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_48, GOSSIP_SENDER_MAIN, 9);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_134, GOSSIP_SENDER_MAIN, 10);
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_72, GOSSIP_SENDER_MAIN, 11);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_2, GOSSIP_SENDER_MAIN, 12);
-            SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-            return true;
-
-        }
-
-        bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
-        {
-            uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
-            uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
-            return GossipSelect(player, sender, action);
-        }
-
-        bool GossipSelect(Player* player, uint32 sender, uint32 action)
-        {
-            if (!player->getAttackers().empty())
-            {
-                me->Whisper(MSG_ERR_INCOMBAT, LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-                return false;
-            }
-
-            switch (action)
-            {
-            case 2:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(144);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 3:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(62);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 4:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(135);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 5:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(141);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 6:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(138);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 7:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(170);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 8:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(28);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 9:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(48);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 10:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(134);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 11:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(72);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 12:
-                player->PlayerTalkClass->ClearMenus();
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_42, GOSSIP_SENDER_MAIN, 13);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_113, GOSSIP_SENDER_MAIN, 14);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_147, GOSSIP_SENDER_MAIN, 15);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_143, GOSSIP_SENDER_MAIN, 16);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_79, GOSSIP_SENDER_MAIN, 17);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_64, GOSSIP_SENDER_MAIN, 18);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_43, GOSSIP_SENDER_MAIN, 19);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_80, GOSSIP_SENDER_MAIN, 20);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_47, GOSSIP_SENDER_MAIN, 21);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_122, GOSSIP_SENDER_MAIN, 22);
-                AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BACK_1, GOSSIP_SENDER_MAIN, 56);
-                AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_3, GOSSIP_SENDER_MAIN, 23);
-                SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-                break;
-            case 13:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(42);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 14:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(113);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 15:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(147);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 16:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(143);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 17:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(79);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 18:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(64);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 19:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(43);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 20:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(80);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 21:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(47);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 22:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(122);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 23:
-                player->PlayerTalkClass->ClearMenus();
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_81, GOSSIP_SENDER_MAIN, 24);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_78, GOSSIP_SENDER_MAIN, 25);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_156, GOSSIP_SENDER_MAIN, 26);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_83, GOSSIP_SENDER_MAIN, 27);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_71, GOSSIP_SENDER_MAIN, 28);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_142, GOSSIP_SENDER_MAIN, 29);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_146, GOSSIP_SENDER_MAIN, 30);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_150, GOSSIP_SENDER_MAIN, 31);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_46, GOSSIP_SENDER_MAIN, 32);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_278, GOSSIP_SENDER_MAIN, 33);
-                AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BACK_2, GOSSIP_SENDER_MAIN, 57);
-                AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_4, GOSSIP_SENDER_MAIN, 34);
-                SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-                break;
-            case 24:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(81);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 25:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(78);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 26:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(156);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 27:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(83);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 28:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(71);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 29:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(142);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 30:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(146);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 31:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(150);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 32:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(46);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 33:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(278);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 34:
-                player->PlayerTalkClass->ClearMenus();
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_139, GOSSIP_SENDER_MAIN, 35);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_77, GOSSIP_SENDER_MAIN, 36);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_74, GOSSIP_SENDER_MAIN, 37);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_45, GOSSIP_SENDER_MAIN, 38);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_177, GOSSIP_SENDER_MAIN, 39);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_151, GOSSIP_SENDER_MAIN, 40);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_171, GOSSIP_SENDER_MAIN, 41);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_131, GOSSIP_SENDER_MAIN, 42);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_173, GOSSIP_SENDER_MAIN, 43);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_157, GOSSIP_SENDER_MAIN, 44);
-                AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BACK_3, GOSSIP_SENDER_MAIN, 58);
-                AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_NEXT_5, GOSSIP_SENDER_MAIN, 45);
-                SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-                break;
-            case 35:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(139);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 36:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(77);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 37:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(74);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 38:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(45);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 39:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(177);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 40:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(151);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 41:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(171);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 42:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(131);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 43:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(173);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 44:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(157);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 45:
-                player->PlayerTalkClass->ClearMenus();
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_75, GOSSIP_SENDER_MAIN, 46);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_140, GOSSIP_SENDER_MAIN, 47);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_172, GOSSIP_SENDER_MAIN, 48);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_124, GOSSIP_SENDER_MAIN, 49);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_133, GOSSIP_SENDER_MAIN, 50);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_76, GOSSIP_SENDER_MAIN, 51);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_125, GOSSIP_SENDER_MAIN, 52);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_145, GOSSIP_SENDER_MAIN, 53);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_155, GOSSIP_SENDER_MAIN, 54);
-                AddGossipItemFor(player, GOSSIP_ICON_TRAINER, MSG_GOSSIP_TEXT_84, GOSSIP_SENDER_MAIN, 55);
-                AddGossipItemFor(player, GOSSIP_ICON_TALK, MSG_GOSSIP_TEXT_BACK_4, GOSSIP_SENDER_MAIN, 59);
-                SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-                break;
-            case 46:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(75);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 47:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(140);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 48:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(172);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 49:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(124);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 50:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(133);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 51:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(125);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 52:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(76);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 53:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(145);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 54:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(155);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 55:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(84);
-            AddTitle(player, titleInfo);
-            }
-            break;
-            case 56:
-                OnGossipHello(player);
-                break;
-            case 57:
-                OnGossipSelect(player, sender, 12);
-                break;
-            case 58:
-                OnGossipSelect(player, sender, 23);
-                break;
-            case 59:
-                OnGossipSelect(player, sender, 34);
-                break;
-            }
-
-            return true;
-        }
-    };
+        GetMenu(player, me, menuData);
+        return true;
+    }
+};
 
     CreatureAI* GetAI(Creature* me) const override
     {
         return new npc_titleAI(me);
     }
 };
+
 void AddSC_npc_title()
 {
     new npc_title;
