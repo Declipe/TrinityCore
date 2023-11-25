@@ -1,5 +1,5 @@
 #include "Custom/Dcl.h"
-#include "GossipDef.h"
+
 using namespace std;
 
 #define DEFAULT_MESSAGE 907
@@ -45,7 +45,7 @@ TitlesData DKDatas[] =
     { 2, 0, GOSSIP_ICON_BATTLE, 174, "Bane of the Fallen King" },
     { 2, 0, GOSSIP_ICON_BATTLE, 173, "The Light of Dawn" },
     { 2, 3, GOSSIP_ICON_TALK, 0, "Next.." },
-   // { 2, 1, GOSSIP_ICON_TALK, 0, "..Back" },
+    { 2, 1, GOSSIP_ICON_TALK, 0, "..Back" },
 
     { 3, 0, GOSSIP_ICON_BATTLE, 175, "The Kingslayer" },
     { 3, 0, GOSSIP_ICON_BATTLE, 63, "of the Shattered Sun" },
@@ -61,7 +61,7 @@ TitlesData DKDatas[] =
     { 3, 0, GOSSIP_ICON_BATTLE, 82, "Arena Master" },
     { 3, 0, GOSSIP_ICON_BATTLE, 43, "Duelist" },
     { 3, 4, GOSSIP_ICON_TALK, 0, "Next.." },
-   // { 3, 2, GOSSIP_ICON_TALK, 0, "..Back" },
+    { 3, 2, GOSSIP_ICON_TALK, 0, "..Back" },
 
     { 4, 0, GOSSIP_ICON_BATTLE, 44, "Rival" },
     { 4, 0, GOSSIP_ICON_BATTLE, 45, "Challenger" },
