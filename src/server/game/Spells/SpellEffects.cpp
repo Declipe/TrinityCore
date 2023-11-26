@@ -2582,7 +2582,7 @@ void Spell::EffectEnchantItemPerm()
         if (!enchant_id)
             return;
 
-        SpellItemEnchantmentEntry const* pEnchant = sSpellItemEnchantmentStore.LookupEntry(enchant_id);
+        SpellItemEnchantmentEntry const* pEnchant = sDBCMgr->GetSpellItemEnchantmentEntry(enchant_id);
         if (!pEnchant)
             return;
 
@@ -2628,7 +2628,7 @@ void Spell::EffectEnchantItemPrismatic()
     if (!enchantId)
         return;
 
-    SpellItemEnchantmentEntry const* enchant = sSpellItemEnchantmentStore.LookupEntry(enchantId);
+    SpellItemEnchantmentEntry const* enchant = sDBCMgr->GetSpellItemEnchantmentEntry(enchantId);
     if (!enchant)
         return;
 
@@ -2746,7 +2746,7 @@ void Spell::EffectEnchantItemTmp()
         return;
     }
 
-    SpellItemEnchantmentEntry const* pEnchant = sSpellItemEnchantmentStore.LookupEntry(enchant_id);
+    SpellItemEnchantmentEntry const* pEnchant = sDBCMgr->GetSpellItemEnchantmentEntry(enchant_id);
     if (!pEnchant)
     {
         TC_LOG_ERROR("spells", "Spell {} Effect {} (SPELL_EFFECT_ENCHANT_ITEM_TEMPORARY) has a non-existing enchanting id {} ", m_spellInfo->Id, uint32(effectInfo->EffectIndex), enchant_id);
@@ -3875,7 +3875,7 @@ void Spell::EffectEnchantHeldItem()
         if (m_spellInfo->Id == 14792) // Venomhide Poison
             duration = 5 * MINUTE * IN_MILLISECONDS;
 
-        SpellItemEnchantmentEntry const* pEnchant = sSpellItemEnchantmentStore.LookupEntry(enchant_id);
+        SpellItemEnchantmentEntry const* pEnchant = sDBCMgr->GetSpellItemEnchantmentEntry(enchant_id);
         if (!pEnchant)
             return;
 
