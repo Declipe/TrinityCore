@@ -164,7 +164,7 @@ DBCStorage <SkillTiersEntry> sSkillTiersStore(SkillTiersfmt);
 
 DBCStorage <SoundEntriesEntry> sSoundEntriesStore(SoundEntriesfmt);
 
-//DBCStorage <SpellItemEnchantmentEntry> sSpellItemEnchantmentStore(SpellItemEnchantmentfmt);
+DBCStorage <SpellItemEnchantmentEntry> sSpellItemEnchantmentStore(SpellItemEnchantmentfmt);
 DBCStorage <SpellItemEnchantmentConditionEntry> sSpellItemEnchantmentConditionStore(SpellItemEnchantmentConditionfmt);
 DBCStorage <SpellEntry> sSpellStore(SpellEntryfmt);
 PetFamilySpellsStore sPetFamilySpellsStore;
@@ -376,7 +376,7 @@ void LoadDBCStores(const std::string& dataPath)
     LOAD_DBC(sSpellCategoryStore,                 "SpellCategory.dbc");
     LOAD_DBC(sSpellDurationStore,                 "SpellDuration.dbc");
     LOAD_DBC(sSpellFocusObjectStore,              "SpellFocusObject.dbc");
-   // LOAD_DBC(sSpellItemEnchantmentStore,          "SpellItemEnchantment.dbc");
+    LOAD_DBC(sSpellItemEnchantmentStore,          "SpellItemEnchantment.dbc");
     LOAD_DBC(sSpellItemEnchantmentConditionStore, "SpellItemEnchantmentCondition.dbc");
     LOAD_DBC(sSpellRadiusStore,                   "SpellRadius.dbc");
     LOAD_DBC(sSpellRangeStore,                    "SpellRange.dbc");
@@ -402,7 +402,6 @@ void LoadDBCStores(const std::string& dataPath)
     //LOAD_DBC(sWorldSafeLocsStore,                 "WorldSafeLocs.dbc");
     sDBCMgr->LoadWorldSafeLocsStore();
     sDBCMgr->LoadPvPDifficultyStore();
-    sDBCMgr->LoadSpellItemEnchantmentStore();
 
 #undef LOAD_DBC
 
@@ -1173,93 +1172,3 @@ void DBCMgr::LoadPvPDifficultyStore()
 
     TC_LOG_ERROR("misc", ">> Loaded {} PvPDifficulty entries in {} ms", (unsigned long)PvPDifficultyStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
-
-void DBCMgr::LoadSpellItemEnchantmentStore()
-{
-    uint32 oldMSTime = getMSTime();
-    SpellItemEnchantmentStore.clear();
-
-    //QueryResult result = ZynDatabase.Query("SELECT ID, Effect_1, Effect_2, Effect_3, EffectPointsMin_1, EffectPointsMin_2, EffectPointsMin_3, EffectArg_1, EffectArg_2, EffectArg_3, Name_Lang_enUS, Name_Lang_enGB, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_enCN, Name_Lang_zhCN, Name_Lang_enTW, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, Name_Lang_ptPT, Name_Lang_ptBR, Name_Lang_itIT, ItemVisual, Flags, Src_ItemID, Condition_Id, RequiredSkillID, RequiredSkillRank, MinLevel FROM dbc_spellitemenchantment");
-    //QueryResult result = ZynDatabase.Query("SELECT ID, Effect_1, Effect_2, Effect_3, EffectPointsMin_1, EffectPointsMin_2, EffectPointsMin_3, EffectArg_1, EffectArg_2, EffectArg_3, Name_Lang_enUS, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_zhCN, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, ItemVisual, Flags, Src_ItemID, Condition_Id, RequiredSkillID, RequiredSkillRank, MinLevel FROM dbc_spellitemenchantment");
-    QueryResult result = WorldDatabase.Query("SELECT Id, Effect_1, Effect_2, Effect_3, EffectPointsMin_1, EffectPointsMin_2, EffectPointsMin_3, EffectArg_1, EffectArg_2, EffectArg_3, Name_Lang_enUS, Name_Lang_ruRU, ItemVisual, Flags, Src_ItemID, Condition_ID, RequiredSkillID, RequiredSkillRank, MinLevel FROM dbc_spellitemenchantment");
-    if (!result)
-    {
-        TC_LOG_ERROR("server.loading", ">> Loaded 0 SpellItemEnchantment entry. DB table `dbc_spellitemenchantment` is empty.");
-        return;
-    }
-
-    uint32 count = 0;
-    do {
-        Field* fields = result->Fetch();
-        SpellItemEnchantmentEntry* newSpellItemEnchantment = new SpellItemEnchantmentEntry;
-        newSpellItemEnchantment->ID = fields[0].GetUInt64();
-        //newSpellItemEnchantment->Charges = fields[1].GetUInt64();
-        for (uint8 i = 0; i < 3; i++)
-            newSpellItemEnchantment->Effect[i] = fields[1 + i].GetUInt64();
-        for (uint8 i = 0; i < 3; i++)
-            newSpellItemEnchantment->EffectPointsMin[i] = fields[4 + i].GetUInt64();
-       // for (uint8 i = 0; i < 3; i++)
-           // newSpellItemEnchantment->EffectPointsMax[i] = fields[8 + i].GetUInt64();
-        for (uint8 i = 0; i < 3; i++)
-            newSpellItemEnchantment->EffectArg[i] = fields[7 + i].GetUInt64();
-                for (uint8 i = 0; i < 16; i++)
-            newSpellItemEnchantment->Name[i] = NULL;
-        newSpellItemEnchantment->Name[0] = (char*)fields[10].GetCString();
-        newSpellItemEnchantment->Name[8] = (char*)fields[11].GetCString();
-       // newSpellItemEnchantment->Name_Lang_Unk = fields[23].GetString();
-        //newSpellItemEnchantment->Name_Lang_Mask = fields[24].GetUInt32();
-        newSpellItemEnchantment->ItemVisual = fields[12].GetUInt64();
-        newSpellItemEnchantment->Flags = fields[13].GetUInt64();
-        newSpellItemEnchantment->SrcItemID = fields[14].GetUInt64();
-        newSpellItemEnchantment->ConditionID = fields[15].GetUInt64();
-        newSpellItemEnchantment->RequiredSkillID = fields[16].GetUInt64();
-        newSpellItemEnchantment->RequiredSkillRank = fields[17].GetUInt64();
-        newSpellItemEnchantment->MinLevel = fields[18].GetUInt64();
-        SpellItemEnchantmentStore[newSpellItemEnchantment->ID] = newSpellItemEnchantment;
-
-    } while (result->NextRow());
-
-    TC_LOG_ERROR("misc", ">> Loaded {} SpellItemEnchantment entries in {} ms", (unsigned long)SpellItemEnchantmentStore.size(), GetMSTimeDiffToNow(oldMSTime));
-}
-/*
-void DBCMgr::LoadSpellItemEnchantmentStore()
-{
-    uint32 oldMSTime = getMSTime();
-    SpellItemEnchantmentStore.clear();
-
-    QueryResult result = WorldDatabase.Query("SELECT Id, Type1, Type2, Type3, Amount1, Amount2, Amount3, AmountB1, AmountB2, AmountB3, SpellId1, SpellId2, SpellId3, Description, Description_loc2, AuraId, Slot, GemId, EnchantmentCondition, RequiredSkill, RequiredSkillValue, RequiredLevel FROM spellitemenchantmentdbc");
-    if (!result)
-    {
-        TC_LOG_ERROR("server.loading", ">> Loaded 0 SpellItemEnchantment entry. DB table `SpellItemEnchantment dbc` is empty.");
-        return;
-    }
-
-    do {
-        Field* fields = result->Fetch();
-
-        SpellItemEnchantmentEntry* newSpellItemEnchantment = new SpellItemEnchantmentEntry;
-        newSpellItemEnchantment->ID = fields[0].GetUInt32();
-        for (uint8 i = 0; i < 3; i++)
-            newSpellItemEnchantment->type[i] = fields[1 + i].GetUInt32();
-        for (uint8 i = 0; i < 3; i++)
-            newSpellItemEnchantment->amount[i] = fields[4 + i].GetUInt32();
-        for (uint8 i = 0; i < 3; i++)
-            newSpellItemEnchantment->spellid[i] = fields[7 + i].GetUInt32();
-        for (uint8 i = 0; i < 16; i++)
-            newSpellItemEnchantment->description[i] = NULL;
-        newSpellItemEnchantment->description[0] = (char*)fields[10].GetCString();
-        newSpellItemEnchantment->description[2] = (char*)fields[11].GetCString();
-        newSpellItemEnchantment->aura_id = fields[12].GetUInt32();
-        newSpellItemEnchantment->slot = fields[13].GetUInt32();
-        newSpellItemEnchantment->GemID = fields[14].GetUInt32();
-        newSpellItemEnchantment->EnchantmentCondition = fields[15].GetUInt32();
-        newSpellItemEnchantment->requiredSkill = fields[16].GetUInt32();
-        newSpellItemEnchantment->requiredSkillValue = fields[17].GetUInt32();
-        newSpellItemEnchantment->requiredLevel = fields[18].GetUInt32();
-        SpellItemEnchantmentStore[newSpellItemEnchantment->ID] = newSpellItemEnchantment;
-
-    } while (result->NextRow());
-
-    TC_LOG_ERROR("misc", ">> Loaded %lu SpellItemEnchantment entries in %u ms", (unsigned long)SpellItemEnchantmentStore.size(), GetMSTimeDiffToNow(oldMSTime));
-}
-*/

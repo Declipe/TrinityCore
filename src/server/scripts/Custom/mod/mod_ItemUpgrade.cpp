@@ -1,5 +1,4 @@
 #include "Custom/Dcl.h"
-#include "DBCStructure.h"
 
 enum ItemUpgradeStrings
 {
@@ -14,7 +13,6 @@ struct ItemUpgradeTemplate
     uint32 enchantId;
     uint32 prevEnchantId;
     std::string description;
-   // char const* description;
     uint32 charges;
     uint32 duration;
     uint32 golds;
@@ -63,7 +61,7 @@ class Mod_ItemUpgrade_WorldScript : public WorldScript
             ItemUpgradeTemp.charges         = 0;
             ItemUpgradeTemp.duration        = 0;
 
-            SpellItemEnchantmentEntry const* enchantEntry = sDBCMgr->GetSpellItemEnchantmentEntry(ItemUpgradeTemp.enchantId);
+            SpellItemEnchantmentEntry const* enchantEntry = sSpellItemEnchantmentStore.LookupEntry(ItemUpgradeTemp.enchantId);
             if (!enchantEntry) {
                 TC_LOG_ERROR("misc", "Item Upgrade: not exists enchantment id {}", ItemUpgradeTemp.enchantId);
                 continue;
@@ -197,7 +195,7 @@ class go_item_upgrade : public GameObjectScript
                     }
 
                     if (!isExists) {
-                        SpellItemEnchantmentEntry const* enchantEntry = sDBCMgr->GetSpellItemEnchantmentEntry(enchantId);
+                        SpellItemEnchantmentEntry const* enchantEntry = sSpellItemEnchantmentStore.LookupEntry(enchantId);
 
                         if (enchantEntry)
                             for (uint8 i = 0; i < 16; ++i)

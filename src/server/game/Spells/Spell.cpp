@@ -6865,7 +6865,7 @@ SpellCastResult Spell::CheckItems(uint32* param1 /*= nullptr*/, uint32* param2 /
                     }
                 }
 
-                SpellItemEnchantmentEntry const* enchantEntry = sDBCMgr->GetSpellItemEnchantmentEntry(spellEffectInfo.MiscValue);
+                SpellItemEnchantmentEntry const* enchantEntry = sSpellItemEnchantmentStore.LookupEntry(spellEffectInfo.MiscValue);
                 // do not allow adding usable enchantments to items that have use effect already
                 if (enchantEntry)
                 {
@@ -6911,7 +6911,7 @@ SpellCastResult Spell::CheckItems(uint32* param1 /*= nullptr*/, uint32* param2 /
                 if (item->GetOwner() != player)
                 {
                     uint32 enchant_id = spellEffectInfo.MiscValue;
-                    SpellItemEnchantmentEntry const* pEnchant = sDBCMgr->GetSpellItemEnchantmentEntry(enchant_id);
+                    SpellItemEnchantmentEntry const* pEnchant = sSpellItemEnchantmentStore.LookupEntry(enchant_id);
                     if (!pEnchant)
                         return SPELL_FAILED_ERROR;
                     if (pEnchant->Flags & ENCHANTMENT_CAN_SOULBOUND)

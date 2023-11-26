@@ -2041,8 +2041,7 @@ void SpellMgr::LoadEnchantCustomAttr()
 {
     uint32 oldMSTime = getMSTime();
 
-    //uint32 size = sDBCStoresMgr->GetNumRowSpellItemEnchantmentEntryMap();
-    uint32 size = sDBCMgr->SpellItemEnchantmentStore.size();
+    uint32 size = sSpellItemEnchantmentStore.GetNumRows();
     mEnchantCustomAttr.resize(size, false);
 
     uint32 count = 0;
@@ -2061,15 +2060,10 @@ void SpellMgr::LoadEnchantCustomAttr()
             if (spellEffectInfo.Effect == SPELL_EFFECT_ENCHANT_ITEM_TEMPORARY)
             {
                 uint32 enchId = spellEffectInfo.MiscValue;
-              /*crash*/  SpellItemEnchantmentEntry const* ench = sDBCMgr->GetSpellItemEnchantmentEntry(enchId);
+                SpellItemEnchantmentEntry const* ench = sSpellItemEnchantmentStore.LookupEntry(enchId);
                 if (!ench)
                     continue;
-                if (enchId < mEnchantCustomAttr.size())
-                {
-                    mEnchantCustomAttr[enchId] = true;
-                }
-
-                //mEnchantCustomAttr[enchId] = true;
+                mEnchantCustomAttr[enchId] = true;
                 ++count;
                 break;
             }
@@ -2100,7 +2094,7 @@ void SpellMgr::LoadSpellEnchantProcData()
 
         uint32 enchantId = fields[0].GetUInt32();
 
-        SpellItemEnchantmentEntry const* ench = sDBCMgr->GetSpellItemEnchantmentEntry(enchantId);
+        SpellItemEnchantmentEntry const* ench = sSpellItemEnchantmentStore.LookupEntry(enchantId);
         if (!ench)
         {
             TC_LOG_ERROR("sql.sql", "The enchancment {} listed in `spell_enchant_proc_data` does not exist.", enchantId);
@@ -2612,8 +2606,8 @@ void SpellMgr::LoadSpellInfoCustomAttributes()
         {
             Field* fields = result->Fetch();
 
-            uint32 spellId = fields[0].GetUInt64();
-            uint32 attributes = fields[1].GetUInt64();
+            uint32 spellId = fields[0].GetUInt32();
+            uint32 attributes = fields[1].GetUInt32();
 
             SpellInfo* spellInfo = _GetSpellInfo(spellId);
             if (!spellInfo)
@@ -2743,7 +2737,7 @@ void SpellMgr::LoadSpellInfoCustomAttributes()
                     if (IsPartOfSkillLine(SKILL_ENCHANTING, spellInfo->Id))
                     {
                         uint32 enchantId = spellEffectInfo.MiscValue;
-                        SpellItemEnchantmentEntry const* enchant = sDBCMgr->GetSpellItemEnchantmentEntry(enchantId);
+                        SpellItemEnchantmentEntry const* enchant = sSpellItemEnchantmentStore.LookupEntry(enchantId);
                         if (!enchant)
                             break;
 
