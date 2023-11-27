@@ -1,4 +1,5 @@
 #include "Custom/Dcl.h"
+#include "DBCStructure.h"
 
 enum ItemUpgradeStrings
 {
@@ -13,6 +14,7 @@ struct ItemUpgradeTemplate
     uint32 enchantId;
     uint32 prevEnchantId;
     std::string description;
+   // char const* description;
     uint32 charges;
     uint32 duration;
     uint32 golds;
@@ -61,13 +63,13 @@ class Mod_ItemUpgrade_WorldScript : public WorldScript
             ItemUpgradeTemp.charges         = 0;
             ItemUpgradeTemp.duration        = 0;
 
-            SpellItemEnchantmentEntry const* enchantEntry = sSpellItemEnchantmentStore.LookupEntry(ItemUpgradeTemp.enchantId);
+            SpellItemEnchantmentEntry const* enchantEntry = sDBCMgr->GetSpellItemEnchantmentEntry(ItemUpgradeTemp.enchantId);
             if (!enchantEntry) {
                 TC_LOG_ERROR("misc", "Item Upgrade: not exists enchantment id {}", ItemUpgradeTemp.enchantId);
                 continue;
             }
 
-            for (uint8 i = 0; i < 16; ++i)
+            for (uint8 i = 0; i < TOTAL_LOCALES; ++i)
                 if (strlen(enchantEntry->Name[i]))
                     ItemUpgradeTemp.description = enchantEntry->Name[i];
 
@@ -195,10 +197,10 @@ class go_item_upgrade : public GameObjectScript
                     }
 
                     if (!isExists) {
-                        SpellItemEnchantmentEntry const* enchantEntry = sSpellItemEnchantmentStore.LookupEntry(enchantId);
+                        SpellItemEnchantmentEntry const* enchantEntry = sDBCMgr->GetSpellItemEnchantmentEntry(enchantId);
 
                         if (enchantEntry)
-                            for (uint8 i = 0; i < 16; ++i)
+                            for (uint8 i = 0; i < TOTAL_LOCALES; ++i)
                                 if (strlen(enchantEntry->Name[i]))
                                     oldEffect = enchantEntry->Name[i];
                     }
