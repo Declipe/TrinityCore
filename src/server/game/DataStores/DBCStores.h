@@ -177,7 +177,7 @@ TC_GAME_API extern DBCStorage <SpellCategoryEntry>           sSpellCategoryStore
 TC_GAME_API extern DBCStorage <SpellDifficultyEntry>         sSpellDifficultyStore;
 TC_GAME_API extern DBCStorage <SpellDurationEntry>           sSpellDurationStore;
 TC_GAME_API extern DBCStorage <SpellFocusObjectEntry>        sSpellFocusObjectStore;
-//TC_GAME_API extern DBCStorage <SpellItemEnchantmentEntry>    sSpellItemEnchantmentStore;
+TC_GAME_API extern DBCStorage <SpellItemEnchantmentEntry>    sSpellItemEnchantmentStore;
 TC_GAME_API extern DBCStorage <SpellItemEnchantmentConditionEntry> sSpellItemEnchantmentConditionStore;
 TC_GAME_API extern PetFamilySpellsStore                      sPetFamilySpellsStore;
 TC_GAME_API extern std::unordered_set<uint32>                sPetTalentSpells;
@@ -218,7 +218,6 @@ typedef std::unordered_map<uint32, ItemExtendedCostEntry*> ItemExtendedCostConta
 typedef std::unordered_map<uint32, CharTitlesEntry*> CharTitlesContainer;
 typedef std::unordered_map<uint32, BattlemasterListEntry*> BattlemasterListContainer;
 typedef std::unordered_map<uint32, PvPDifficultyEntry*> PvPDifficultyContainer;
-typedef std::unordered_map<uint32, SpellItemEnchantmentEntry*> SpellItemEnchantmentContainer;
 
 
 class TC_GAME_API DBCMgr
@@ -231,21 +230,18 @@ public:
     }
 
 public:
-    void LoadSpellItemEnchantmentStore();
     void LoadPvPDifficultyStore();
     void LoadWorldSafeLocsStore();
     void LoadItemExtendedCostStore();
     void LoadCharTitlesStore();
     void LoadBattlemasterListStore();
 
-    const SpellItemEnchantmentEntry* GetSpellItemEnchantmentEntry(uint32 ID) const { SpellItemEnchantmentContainer::const_iterator itr = SpellItemEnchantmentStore.find(ID); if (itr != SpellItemEnchantmentStore.end()) return itr->second; return nullptr; }
-    const PvPDifficultyEntry* GetPvPDifficultyEntry(uint32 Id) const { PvPDifficultyContainer::const_iterator itr = PvPDifficultyStore.find(Id); if (itr != PvPDifficultyStore.end()) return itr->second; return nullptr; }
+    const PvPDifficultyEntry* GetPvPDifficultyEntry(uint32 Id) const { PvPDifficultyContainer::const_iterator itr = PvPDifficultyStore.find(Id); if (itr != PvPDifficultyStore.end()) return itr->second; return NULL; }
     const ItemExtendedCostEntry* GetItemExtendedCostEntry(uint32 ID) const { ItemExtendedCostContainer::const_iterator itr = ItemExtendedCostStore.find(ID); if (itr != ItemExtendedCostStore.end()) return itr->second; return nullptr; }
     const WorldSafeLocsEntry* GetWorldSafeLocsEntry(uint32 Id) const { WorldSafeLocsContainer::const_iterator itr = WorldSafeLocsStore.find(Id); if (itr != WorldSafeLocsStore.end()) return itr->second; return nullptr; }
     const CharTitlesEntry* GetCharTitlesEntry(uint32 ID) const { CharTitlesContainer::const_iterator itr = CharTitlesStore.find(ID); if (itr != CharTitlesStore.end()) return itr->second; return nullptr; }
     const BattlemasterListEntry* GetBattlemasterListEntry(uint32 ID) const { BattlemasterListContainer::const_iterator itr = BattlemasterListStore.find(ID); if (itr != BattlemasterListStore.end()) return itr->second; return nullptr; }
 
-    SpellItemEnchantmentContainer SpellItemEnchantmentStore;
     PvPDifficultyContainer PvPDifficultyStore;
     WorldSafeLocsContainer WorldSafeLocsStore;
     ItemExtendedCostContainer ItemExtendedCostStore;
