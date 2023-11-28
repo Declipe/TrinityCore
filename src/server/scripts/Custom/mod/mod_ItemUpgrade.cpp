@@ -72,7 +72,7 @@ class Mod_ItemUpgrade_WorldScript : public WorldScript
 
             for (uint8 i = 0; i < TOTAL_LOCALES; ++i)
                 if (strlen(enchantEntry->Name[i]))
-                    ItemUpgradeTemp.description /*= fields[2].GetCString();//*/ = enchantEntry->Name[i];
+                    ItemUpgradeTemp.description = fields[2].GetCString();//*/ = enchantEntry->Name[i];
 
             ItemUpgradeInfo.push_back(ItemUpgradeTemp);
             ++count;
