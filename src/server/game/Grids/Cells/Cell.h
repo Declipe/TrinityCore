@@ -95,14 +95,14 @@ struct Cell
     {
         struct
         {
-            unsigned grid_x : 8;
-            unsigned grid_y : 8;
-            unsigned cell_x : 8;
-            unsigned cell_y : 8;
-            unsigned nocreate : 8;
-            unsigned reserved : 24;
+            unsigned grid_x : 6;
+            unsigned grid_y : 6;
+            unsigned cell_x : 6;
+            unsigned cell_y : 6;
+            unsigned nocreate : 1;
+            unsigned reserved : 7;
         } Part;
-        uint64 All;
+        uint32 All;
     } data;
 
     template<class T, class CONTAINER> void Visit(CellCoord const&, TypeContainerVisitor<T, CONTAINER>& visitor, Map&, WorldObject const& obj, float radius) const;
