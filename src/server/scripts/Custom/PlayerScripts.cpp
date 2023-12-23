@@ -64,6 +64,38 @@ public: item_lvlup() : ItemScript("item_lvlup") {}
 
 };
 
+class lfg_solo_announce : public PlayerScript
+{
+public:
+    lfg_solo_announce() : PlayerScript("lfg_solo_announce") {}
+
+    void OnLogin(Player* player, bool /*firstLogin*/) override
+    {
+        // Announce Module
+        if (sConfigMgr->GetBoolDefault("SoloLFG.Announce", true))
+        {
+            ChatHandler(player->GetSession()).SendSysMessage("This server is running |cff4CFF00Solo Dungeon Finder|r.");
+        }
+    }
+};
+
+class lfg_solo : public PlayerScript
+{
+public:
+    lfg_solo() : PlayerScript("lfg_solo") { }
+
+    void OnLogin(Player* /*player*/, bool /*firstLogin*/) override
+    {
+        if (sConfigMgr->GetIntDefault("SoloLFG.Enable", true))
+        {
+            if (!sLFGMgr->IsSoloLFG())
+            {
+                sLFGMgr->ToggleSoloLFG();
+            }
+        }
+    }
+};
+
 void AddSC_ZynPlayerScripts()
 {
     new item_lvlup();
