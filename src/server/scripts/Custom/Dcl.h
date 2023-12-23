@@ -33,6 +33,7 @@
 #include "ItemTemplate.h"
 #include "Language.h"
 #include "Log.h"
+#include "LFGMgr.h"
 #include "MapManager.h"
 #include "Mail.h"
 #include "MailPackets.h"
