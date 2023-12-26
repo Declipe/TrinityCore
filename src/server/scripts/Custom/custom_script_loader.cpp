@@ -16,6 +16,7 @@
  */
 
 // This is where scripts' loading functions should be declared:
+void AddSC_script_store();
 void AddSC_Blocked_Zones();
 void AddSC_Grumboz_World_Ctf();
 void AddSC_arena_spectator_script();
@@ -121,4 +122,5 @@ void AddCustomScripts()
     AddSC_arena_spectator_script();
     AddSC_REFORGER_NPC();
     AddSC_ItemUse_item_custom();
+    AddSC_script_store();
 }
