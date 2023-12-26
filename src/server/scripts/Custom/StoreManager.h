@@ -1,7 +1,8 @@
-﻿#ifndef BOUTIQUE_MGR
+#ifndef BOUTIQUE_MGR
 #define BOUTIQUE_MGR
 
 #include "Player.h"
+#include "World.h"
 #include <map>
 
 namespace Maelstrom {
@@ -10,13 +11,11 @@ namespace Maelstrom {
 
 	public:
 
-		// Singleton ------------------------------------------------------------------------------------------
         static StoreManager* instance()
         {
             static StoreManager instance;
             return &instance;
         }
-		// Structures publiques -------------------------------------------------------------------------------
 		struct StoreItem {
 
 			// Rep ---------------------
@@ -28,7 +27,6 @@ namespace Maelstrom {
 			uint32 m_requiredAvgItemLevel;
 			//--------------------------
 
-			// Constructor -------------
 			StoreItem(uint32 id, uint32 catId, uint32 itemEntry, uint32 price, uint32 quantity, uint32 requiredAvgItemLevel) {
 				m_id = id;
 				m_catId = catId;
@@ -42,12 +40,9 @@ namespace Maelstrom {
 
 		struct StoreCategory {
 
-			// Rep ---------------------
 			uint32             m_catId;
-			std::string        m_name;      //Nom de la catйgorie dans les diffйrentes langues prises en charge
-			//--------------------------
+			std::string        m_name;     
 
-			// Constructor -------------
 			StoreCategory(uint32 catId, const std::string name) {
 				m_catId = catId;
 				m_name = name;
@@ -55,7 +50,6 @@ namespace Maelstrom {
 		};
 		//-----------------------------------------------------------------------------------------------------
 
-		// Enumйrations publiques -----------------------------------------------------------------------------
 		enum PurchaseResult {
 			PURCHASE_RESULT_ERROR,
 			PURCHASE_RESULT_NOT_ENOUGH_COINS,
@@ -65,11 +59,9 @@ namespace Maelstrom {
 
 		//-----------------------------------------------------------------------------------------------------
 
-		// Constructeur ---------------------------------------------------------------------------------------
 		StoreManager();
 		//-----------------------------------------------------------------------------------------------------
 
-		// Mйthodes publiques ---------------------------------------------------------------------------------
 		void LoadStore();
 		uint32 GetAccountCoins(uint32 accountId) const;
 		void SetAccountCoins(uint32 accountId, uint32 newCoinsValue);
@@ -81,13 +73,11 @@ namespace Maelstrom {
 
 	private:
 
-		// Mйthodes privйes -----------------------------------------------------------------------------------
 		void LoadCategories();
 		void LoadItems();
 		//-----------------------------------------------------------------------------------------------------
 
 
-		// Reprйsentation -------------------------------------------------------------------------------------
 		std::map<uint32 /*boutique_item_id*/, StoreItem>     m_items;
 		std::map<uint32 /*cat_id*/          , StoreCategory> m_categories;
 

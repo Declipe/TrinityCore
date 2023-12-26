@@ -1,13 +1,26 @@
 ﻿#include "StoreManager.h"
-#include "Custom/Dcl.h"
+#include "WorldSocket.h"
+#include "BigNumber.h"
+#include "DatabaseEnv.h"
+#include "GameTime.h"
+#include "CryptoHash.h"
+#include "CryptoRandom.h"
+#include "IPLocation.h"
+#include "Opcodes.h"
+#include "PacketLog.h"
+#include "Random.h"
+#include "RBAC.h"
+#include "Realm.h"
+#include "ScriptMgr.h"
+#include "World.h"
+#include "WorldSession.h"
+#include <memory>
+
 
 using namespace Maelstrom;
 
-// Constructeur ---------------------------------------------------------------------------------------
 StoreManager::StoreManager() : m_categories(), m_items() {}
-//-----------------------------------------------------------------------------------------------------
 
-// Mйthodes publiques  --------------------------------------------------------------------------------
 void StoreManager::LoadStore(){
 	TC_LOG_INFO("server.loading", ">> Store loading...");
 	LoadCategories();
@@ -16,7 +29,7 @@ void StoreManager::LoadStore(){
 }
 
 uint32 StoreManager::GetAccountCoins(uint32 accountId) const {
-	QueryResult result = LoginDatabase.PQuery("SELECT coins FROM account WHERE id=%u", accountId);
+	QueryResult result = LoginDatabase.PQuery("SELECT coins FROM account WHERE id={}", accountId);
 	if (!result)
 		return 0;
 
@@ -25,7 +38,7 @@ uint32 StoreManager::GetAccountCoins(uint32 accountId) const {
 }
 
 void StoreManager::SetAccountCoins(uint32 accountId, uint32 newCoinsValue) {
-	LoginDatabase.PExecute("UPDATE account SET coins=%u WHERE id=%u", newCoinsValue, accountId);
+	LoginDatabase.PExecute("UPDATE account SET coins={} WHERE id={}", newCoinsValue, accountId);
 }
 
 
@@ -52,11 +65,9 @@ std::map<uint32, StoreManager::StoreItem> StoreManager::GetItems(uint32 catId, u
 }
 
 StoreManager::PurchaseResult StoreManager::PurchaseItem(Player* player, uint32 itemEntry) {
-	//On vйrifie si le joueur existe
 	if (player == nullptr)
 		return PURCHASE_RESULT_ERROR;
 
-	//On vйrifie si l'item est bien dans la boutique
 	auto it = std::find_if(m_items.begin(), m_items.end(), [=](std::pair<uint32, StoreItem> pair) {
 		if (pair.second.m_itemEntry == itemEntry)
 			return true;
@@ -66,21 +77,17 @@ StoreManager::PurchaseResult StoreManager::PurchaseItem(Player* player, uint32 i
 	if (it == m_items.end())
 		return PURCHASE_RESULT_ERROR;
 
-	//On rйcupиre le prix de l'item
 	uint32 price = it->second.m_price;
-	//On rйcupиre les points du joueur
 	uint32 coins = GetAccountCoins(player->GetSession()->GetAccountId());
 
-	//Le joueur n'a pas assez d'argent !
 	if (price > coins)
 		return PURCHASE_RESULT_NOT_ENOUGH_COINS;
 
-	//On vйrifie si le joueur a assez de place dans son inventaire
 	bool couldAddItem = player->AddItem(itemEntry, it->second.m_quantity);
 	if (!couldAddItem) {
 		return PURCHASE_RESULT_NOT_ENOUGH_FREE_SLOTS;
 	}
-	else { //Si c'est le cas, on procиde а l'achat
+	else {
 		SetAccountCoins(player->GetSession()->GetAccountId(), GetAccountCoins(player->GetSession()->GetAccountId()) - price);
 		return PURCHASE_RESULT_SUCCESS;
 	}
@@ -88,7 +95,6 @@ StoreManager::PurchaseResult StoreManager::PurchaseItem(Player* player, uint32 i
 
 //-----------------------------------------------------------------------------------------------------
 
-// Mйthodes privйes  ----------------------------------------------------------------------------------
 void StoreManager::LoadCategories() {
 	QueryResult result = CharacterDatabase.PQuery("SELECT * FROM store_categories");
 	if (!result)

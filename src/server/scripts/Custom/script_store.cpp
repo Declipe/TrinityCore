@@ -1,6 +1,7 @@
-﻿#include "Custom/Dcl.h"
+﻿#include "ScriptMgr.h"
 #include "StoreManager.h"
 #include "ScriptedGossip.h"
+#include "WorldSession.h"
 #include "ObjectMgr.h"
 
 #define MAX_ENTRY 10000000
@@ -60,7 +61,7 @@ public:
 		}
 
 		if (action >= MAX_ENTRY && action != 9000000) {
-			//On rйcupиre l'entry de l'objet а acheter
+	
 			uint32 itemEntryToBuy = action - MAX_ENTRY;
 			Maelstrom::StoreManager::PurchaseResult purchaseResult = Maelstrom::sStoreMgr->PurchaseItem(player, itemEntryToBuy);
 			switch (purchaseResult) {
@@ -111,13 +112,15 @@ public:
 		//On rйcupиre tous les objets de la catйgorie en question
 		std::map<uint32, Maelstrom::StoreManager::StoreItem> items = Maelstrom::sStoreMgr->GetItems(catId, player->GetAverageItemLevel());
 		//ItemTemplateContainer const* itemTemplateContainer = sObjectMgr->GetItemTemplateStore();
-       // ItemTemplateContainer const* itemTemplateContainer = sObjectMgr->GetItemTemplateStore();
         ItemTemplateContainer const& itemTemplateContainer = sObjectMgr->GetItemTemplateStore();
+        //ItemTemplateContainer const& itemTemplateContainer = sObjectMgr->GetItemTemplateStore();
         //for (auto const& itemTemplatePair : its)&
-		if (!itemTemplateContainer) {
-			player->GetSession()->SendAreaTriggerMessage("Error");
-			return false;
-		}
+        // crash 64
+		//if (!itemTemplateContainer)
+       // {
+		//	player->GetSession()->SendAreaTriggerMessage("Error");
+		//	return false;
+		//}
 		//On affiche tous les items en question
 		for (auto elem : items){
 			Maelstrom::StoreManager::StoreItem currItem = elem.second;
