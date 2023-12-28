@@ -30,6 +30,8 @@ class ZynPlayerScripts: public PlayerScript
         }
 };
 
+uint32 MaxItemLevel = 255;
+
 class item_lvlup : public ItemScript
 {
 public: item_lvlup() : ItemScript("item_lvlup") {}
@@ -37,7 +39,7 @@ public: item_lvlup() : ItemScript("item_lvlup") {}
         bool OnUse(Player* player, Item* item, SpellCastTargets const& /*Targets*/)
         {
             WorldSession* session = player->GetSession();
-            if (player->GetLevel() != 255)
+            if (player->GetLevel() != MaxItemLevel)
             {
                 if (player->IsInFlight() || player->IsInCombat() || player->isDead())
                 {

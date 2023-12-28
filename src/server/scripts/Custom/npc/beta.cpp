@@ -9,6 +9,8 @@
 #define CONST_HONOR_23 29434 //??????? ??????? ????? ??????
 #define CONST_HONOR_233 0  //??????? ???? ????
 
+uint32 proff = 12;
+
 class npc_buffer : public CreatureScript
 {
 public:
@@ -21,7 +23,7 @@ public:
     void CompleteLearnProfession(Player *player, Creature* creature, SkillType skill)
     {
         if (PlayerAlreadyHasNineProfessions(player) && !IsSecondarySkill(skill))
-            creature->Whisper("2proff!", LANG_UNIVERSAL, player);
+            creature->Whisper("12proff!", LANG_UNIVERSAL, player);
         else
         {
             if (!LearnAllRecipesInProfession(player, skill))
@@ -45,7 +47,7 @@ public:
         if (pPlayer->HasSkill(SKILL_HERBALISM))
             skillCount++;
 
-        if (skillCount >= 2)
+        if (skillCount >= proff)
             return true;
 
         for (uint32 i = 0; i < sSkillLineStore.GetNumRows(); ++i)
@@ -64,7 +66,7 @@ public:
             if (pPlayer->HasSkill(skillID))
                 skillCount++;
 
-            if (skillCount >= 2)
+            if (skillCount >= proff)
                 return true;
         }
 
@@ -331,49 +333,52 @@ public:
                 me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_2, loc_idx), LANG_UNIVERSAL, player);
                 CloseGossipMenuFor(player);
             }
-            else{
+            else
+            {
                 // ????????? ????????????
                 player->CastSpell(player, 37802, true);
                 player->ModifyHonorPoints(-CONST_HONOR_2);
                 CloseGossipMenuFor(player);
-        case 21:
-            player->PlayerTalkClass->ClearMenus();
-            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_68, loc_idx), GOSSIP_SENDER_MAIN, 35);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_9, loc_idx), GOSSIP_SENDER_MAIN, 33);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_10, loc_idx), GOSSIP_SENDER_MAIN, 34);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_21, loc_idx), GOSSIP_SENDER_MAIN, 2);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_22, loc_idx), GOSSIP_SENDER_MAIN, 13);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_23, loc_idx), GOSSIP_SENDER_MAIN, 22);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_24, loc_idx), GOSSIP_SENDER_MAIN, 2233);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_25, loc_idx), GOSSIP_SENDER_MAIN, 22333);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_26, loc_idx), GOSSIP_SENDER_MAIN, 32333);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_27, loc_idx), GOSSIP_SENDER_MAIN, 32344);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_28, loc_idx), GOSSIP_SENDER_MAIN, 32355);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_30, loc_idx), GOSSIP_SENDER_MAIN, 36);
-            SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+            }
             break;
-        case 32355:
-        player->CastSpell(player, 30110, true);
-        player->CastSpell(player, 30113, true);
-        player->CastSpell(player, 30127, true);
-        player->CastSpell(player, 53094, true);
-        player->CastSpell(player, 53317, true);
-            CloseGossipMenuFor(player);
+        case 21:
+             player->PlayerTalkClass->ClearMenus();
+             AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_68, loc_idx), GOSSIP_SENDER_MAIN, 35);
+             AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_9, loc_idx), GOSSIP_SENDER_MAIN, 33);
+             AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_10, loc_idx), GOSSIP_SENDER_MAIN, 34);
+             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_21, loc_idx), GOSSIP_SENDER_MAIN, 2);
+             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_22, loc_idx), GOSSIP_SENDER_MAIN, 13);
+             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_23, loc_idx), GOSSIP_SENDER_MAIN, 22);
+             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_24, loc_idx), GOSSIP_SENDER_MAIN, 2233);
+             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_25, loc_idx), GOSSIP_SENDER_MAIN, 22333);
+             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_26, loc_idx), GOSSIP_SENDER_MAIN, 32333);
+             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_27, loc_idx), GOSSIP_SENDER_MAIN, 32344);
+             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_28, loc_idx), GOSSIP_SENDER_MAIN, 32355);
+             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_30, loc_idx), GOSSIP_SENDER_MAIN, 36);
+             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+              break;
+              case 32355:
+              player->CastSpell(player, 30110, true);
+              player->CastSpell(player, 30113, true);
+              player->CastSpell(player, 30127, true);
+              player->CastSpell(player, 53094, true);
+              player->CastSpell(player, 53317, true);
+              CloseGossipMenuFor(player);
         break;
-        case 32344:
-          player->AddItem(6893, 1);
-          player->AddItem(7146, 1);
-          player->AddItem(11000, 1);
-          player->AddItem(12382, 1);
-          player->AddItem(13704, 1);
-          player->AddItem(18249, 1);
-          player->AddItem(24490, 1);
-          player->AddItem(27991, 1);
-          player->AddItem(28395, 1);
-          player->AddItem(30633, 1);
-          player->AddItem(30635, 1);
-          player->AddItem(31084, 1);
-          player->AddItem(38555, 1);
+          case 32344:
+              player->AddItem(6893, 1);
+              player->AddItem(7146, 1);
+              player->AddItem(11000, 1);
+              player->AddItem(12382, 1);
+              player->AddItem(13704, 1);
+              player->AddItem(18249, 1);
+              player->AddItem(24490, 1);
+              player->AddItem(27991, 1);
+              player->AddItem(28395, 1);
+              player->AddItem(30633, 1);
+              player->AddItem(30635, 1);
+              player->AddItem(31084, 1);
+              player->AddItem(38555, 1);
           player->AddItem(42482, 1);
           player->AddItem(43650, 1);
           player->AddItem(44581, 1);
@@ -876,10 +881,10 @@ public:
            }
            else
             {
-            player->SetDisplayId(27569);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.1f);
-            CloseGossipMenuFor(player);
+               player->SetDisplayId(27569);
+               player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+               player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.1f);
+               CloseGossipMenuFor(player);
             }
             break;
        case 729:
@@ -890,25 +895,25 @@ public:
            }
            else
             {
-            player->SetDisplayId(23177);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
-            CloseGossipMenuFor(player);
+               player->SetDisplayId(23177);
+               player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+               player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
+               CloseGossipMenuFor(player);
             }
             break;
             case 730: 
                 if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
                 {
-                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
-                    CloseGossipMenuFor(player);
+                   me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                   CloseGossipMenuFor(player);
                 }
                 else
-            {
-            player->SetDisplayId(26623);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
-            CloseGossipMenuFor(player);
-            }
+                {
+                   player->SetDisplayId(26623);
+                   player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+                   player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
+                   CloseGossipMenuFor(player);
+                }
             break; 
             case 731: 
                 if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
@@ -917,12 +922,12 @@ public:
                     CloseGossipMenuFor(player);
                 }
                 else
-            {
-            player->SetDisplayId(25286);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
-            CloseGossipMenuFor(player);
-            }
+                {
+                    player->SetDisplayId(25286);
+                    player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+                    player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+                    CloseGossipMenuFor(player);
+                }
             break; 
             case 732: 
                 if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
@@ -994,116 +999,116 @@ public:
             CloseGossipMenuFor(player);
             }
             break; 
-            case 737: 
-                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
-                {
-                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
-                    CloseGossipMenuFor(player);
-                }
-                else
+        case 737: 
+            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
             {
-            player->SetDisplayId(775);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
-            CloseGossipMenuFor(player);
+                me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                CloseGossipMenuFor(player);
+            }
+            else
+            {
+               player->SetDisplayId(775);
+               player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+               player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+               CloseGossipMenuFor(player);
             }
             break; 
-            case 738: 
-                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
-                {
-                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
-                    CloseGossipMenuFor(player);
-                }
-                else
+        case 738: 
+            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
             {
-            player->SetDisplayId(29099);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
-            CloseGossipMenuFor(player);
+                me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                CloseGossipMenuFor(player);
+            }
+            else
+            {
+                player->SetDisplayId(29099);
+                player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+                player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+                CloseGossipMenuFor(player);
             }
             break; 
-            case 739: 
-                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
-                {
-                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
-                    CloseGossipMenuFor(player);
-                }
-                else
+        case 739: 
+            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
             {
-            player->SetDisplayId(29114);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.3f);
-            CloseGossipMenuFor(player);
+                me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                CloseGossipMenuFor(player);
+            }
+            else
+            {
+                player->SetDisplayId(29114);
+                player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+                player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.3f);
+                CloseGossipMenuFor(player);
             }
             break; 
             case 740: 
-                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
-                {
-                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
-                    CloseGossipMenuFor(player);
-                }
-                else
+            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
             {
-            player->SetDisplayId(11650);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.5f);
-            CloseGossipMenuFor(player);
+                me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                CloseGossipMenuFor(player);
+            }
+            else
+            {
+                player->SetDisplayId(11650);
+                player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+                player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.5f);
+                CloseGossipMenuFor(player);
             }
             break; 
-            case 741: 
-                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
-                {
-                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
-                    CloseGossipMenuFor(player);
-                }
-                else
+        case 741: 
+            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
             {
-            player->SetDisplayId(17035);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 2.0f);
-            CloseGossipMenuFor(player);
+                me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                CloseGossipMenuFor(player);
+            }
+            else
+            {
+                player->SetDisplayId(17035);
+                player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+                player->SetFloatValue(OBJECT_FIELD_SCALE_X, 2.0f);
+                CloseGossipMenuFor(player);
             }
             break; 
-            case 742: 
-                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
-                {
-                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
-                    CloseGossipMenuFor(player);
-                }
-                else
+        case 742: 
+            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
             {
-            player->SetDisplayId(6351);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.7f);
-            CloseGossipMenuFor(player);
+                me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                CloseGossipMenuFor(player);
+            }
+            else
+            {
+                player->SetDisplayId(6351);
+                player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+                player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.7f);
+                CloseGossipMenuFor(player);
             }
             break; 
-            case 743: 
-                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
-                {
-                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
-                    CloseGossipMenuFor(player);
-                }
-                else
+        case 743: 
+            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
             {
-            player->SetDisplayId(18038);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 2.0f);
-            CloseGossipMenuFor(player);
+                me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                CloseGossipMenuFor(player);
+            }
+            else
+            {
+                player->SetDisplayId(18038);
+                player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+                player->SetFloatValue(OBJECT_FIELD_SCALE_X, 2.0f);
+                CloseGossipMenuFor(player);
             }
             break; 
-            case 744: 
-                if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
-                {
-                    me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
-                    CloseGossipMenuFor(player);
-                }
-                else
+        case 744: 
+            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
             {
-            player->SetDisplayId(18058);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
-            CloseGossipMenuFor(player);
+                me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                CloseGossipMenuFor(player);
+            }
+            else
+            {
+                player->SetDisplayId(18058);
+                player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+                player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
+                CloseGossipMenuFor(player);
             }
             break; 
         case 745: 
@@ -1114,10 +1119,10 @@ public:
             }
             else
             {
-            player->SetDisplayId(18916);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.3f);
-            CloseGossipMenuFor(player);
+                player->SetDisplayId(18916);
+                player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+                player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.3f);
+                CloseGossipMenuFor(player);
             }
             break; 
         case 746: 
@@ -1128,13 +1133,13 @@ public:
             }
             else
             {
-            player->SetDisplayId(17715);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.7f);
-            CloseGossipMenuFor(player);
+                player->SetDisplayId(17715);
+                player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+                player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.7f);
+                CloseGossipMenuFor(player);
             }
             break; 
-            case 747:
+        case 747:
             player->PlayerTalkClass->ClearMenus();
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_81, loc_idx), GOSSIP_SENDER_MAIN, 711);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_82, loc_idx), GOSSIP_SENDER_MAIN, 712);
@@ -1157,8 +1162,8 @@ public:
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_99, loc_idx), GOSSIP_SENDER_MAIN, 729);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_32, loc_idx), GOSSIP_SENDER_MAIN, 748);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-                 break;   
-          case 748:
+            break;   
+        case 748:
             player->PlayerTalkClass->ClearMenus();
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_100, loc_idx), GOSSIP_SENDER_MAIN, 730);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_101, loc_idx), GOSSIP_SENDER_MAIN, 731);
@@ -1180,8 +1185,8 @@ public:
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_32, loc_idx), GOSSIP_SENDER_MAIN, 749);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_29, loc_idx), GOSSIP_SENDER_MAIN, 747);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-                 break;
-                 case 749:
+            break;
+        case 749:
             player->PlayerTalkClass->ClearMenus();
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_117, loc_idx), GOSSIP_SENDER_MAIN, 750);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_118, loc_idx), GOSSIP_SENDER_MAIN, 751);
@@ -1198,19 +1203,19 @@ public:
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_32, loc_idx), GOSSIP_SENDER_MAIN, 748);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_29, loc_idx), GOSSIP_SENDER_MAIN, 21);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-                 break;
-                 case 750: 
-                     if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
-                     {
-                         me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
-                         CloseGossipMenuFor(player);
-                     }
-                     else
+            break;
+        case 750: 
+            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
             {
-            player->SetDisplayId(18314);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
-            CloseGossipMenuFor(player);
+                me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
+                CloseGossipMenuFor(player);
+            }
+            else
+            {
+                player->SetDisplayId(18314);
+                player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+                player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
+                CloseGossipMenuFor(player);
             }
             break;
        case 751: 
@@ -1220,12 +1225,12 @@ public:
                CloseGossipMenuFor(player);
            }
            else
-            {
-            player->SetDisplayId(19687);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
-            CloseGossipMenuFor(player);
-            }
+           {
+               player->SetDisplayId(19687);
+               player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+               player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.5f);
+               CloseGossipMenuFor(player);
+           }
             break;
        case 752: 
            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
@@ -1235,10 +1240,10 @@ public:
            }
            else
             {
-            player->SetDisplayId(17695);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 2.0f);
-            CloseGossipMenuFor(player);
+               player->SetDisplayId(17695);
+               player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+               player->SetFloatValue(OBJECT_FIELD_SCALE_X, 2.0f);
+               CloseGossipMenuFor(player);
             }
             break;
        case 753: 
@@ -1248,12 +1253,12 @@ public:
                CloseGossipMenuFor(player);
            }
            else
-            {
-            player->SetDisplayId(17052);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
-            CloseGossipMenuFor(player);
-            }
+           {
+               player->SetDisplayId(17052);
+               player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+               player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+               CloseGossipMenuFor(player);
+           }
             break;
        case 754: 
            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
@@ -1262,12 +1267,12 @@ public:
                CloseGossipMenuFor(player);
            }
            else
-            {
-            player->SetDisplayId(22124);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
-            CloseGossipMenuFor(player);
-            }
+           {
+               player->SetDisplayId(22124);
+               player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+               player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+               CloseGossipMenuFor(player);
+           }
             break;
        case 755: 
            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
@@ -1276,12 +1281,12 @@ public:
                CloseGossipMenuFor(player);
            }
            else
-            {
-            player->SetDisplayId(20046);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.3f);
-            CloseGossipMenuFor(player);
-            }
+           {
+               player->SetDisplayId(20046);
+               player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+               player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.3f);
+               CloseGossipMenuFor(player);
+           }
             break;
        case 756:
            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
@@ -1305,10 +1310,10 @@ public:
            }
            else
             {
-            player->SetDisplayId(22786);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
-            CloseGossipMenuFor(player);
+               player->SetDisplayId(22786);
+               player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+               player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+               CloseGossipMenuFor(player);
             }
             break;
        case 758:
@@ -1319,10 +1324,10 @@ public:
            }
            else
             {
-            player->SetDisplayId(22976);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
-            CloseGossipMenuFor(player);
+               player->SetDisplayId(22976);
+               player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+               player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+               CloseGossipMenuFor(player);
             }
             break;
        case 759: 
@@ -1332,12 +1337,12 @@ public:
                CloseGossipMenuFor(player);
            }
            else
-            {
-            player->SetDisplayId(16042);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
-            CloseGossipMenuFor(player);
-            }
+          {
+               player->SetDisplayId(16042);
+               player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+               player->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
+               CloseGossipMenuFor(player);
+          }
             break;
        case 760:
            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
@@ -1346,12 +1351,12 @@ public:
                CloseGossipMenuFor(player);
            }
            else
-            {       
-            player->SetDisplayId(16540);
-            player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
-            player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.7f);
-            CloseGossipMenuFor(player);
-            }
+          {       
+               player->SetDisplayId(16540);
+               player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
+               player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.7f);
+               CloseGossipMenuFor(player);
+          }
             break;
        case 761:      
            if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
@@ -1359,16 +1364,16 @@ public:
                me->Yell(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_130, loc_idx), LANG_UNIVERSAL, player);
                CloseGossipMenuFor(player);
            }
-           else
-            {    
+          else
+           {    
             player->SetDisplayId(19329);
             player->DestroyItemCount(CONST_HONOR_23, CONST_HONOR_233, true);
             player->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.4f);
             CloseGossipMenuFor(player);
-            }
+           }
             break;
       case 23:    
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(143);
+           {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(143);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -1380,7 +1385,8 @@ public:
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
-        else{
+        else
+        {
             // ???? ?????? ????????
             player->SetTitle(titleInfo);
             player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
@@ -1389,7 +1395,7 @@ public:
         }
         break;
         case 24:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(135);
+           {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(135);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -1401,7 +1407,8 @@ public:
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
-        else{
+        else
+        {
             // ???? ?????? ??????? ??????????
             player->SetTitle(titleInfo);
             player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
@@ -1410,7 +1417,7 @@ public:
         }
         break;
         case 25:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(134);
+           {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(134);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -1421,7 +1428,8 @@ public:
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
-        else{
+        else
+        {
             // ???? ?????? ?????????
             player->SetTitle(titleInfo);
             player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
@@ -1430,7 +1438,7 @@ public:
         }
         break;
         case 26:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(46);
+           {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(46);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -1441,7 +1449,8 @@ public:
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
-        else{
+        else
+        {
             // ???? ?????? ?????????? ?????????
             player->SetTitle(titleInfo);
             player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
@@ -1450,7 +1459,7 @@ public:
         }
         break;
         case 27:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(155);
+           {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(155);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
@@ -1461,7 +1470,8 @@ public:
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
-        else{
+        else
+        {
             // ???? ?????? ????????
             player->SetTitle(titleInfo);
             player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
@@ -1470,18 +1480,20 @@ public:
         }
         break;
         case 28:
-        {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(139);
+           {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(139);
         if (player->HasTitle(titleInfo))
         {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return false;
         }
-        if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+        if (player->GetArenaPoints() < CONST_ARENA_POINT_1)
+        {
             me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
-        else{
+        else
+        {
             // ???? ?????? ?????????? ????????????? ?????????
             player->SetTitle(titleInfo);
             player->ModifyArenaPoints(-CONST_ARENA_POINT_2);
@@ -1503,7 +1515,8 @@ public:
                 me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
                 CloseGossipMenuFor(player);
             }
-            else{
+            else
+            {
                 // ?????? ??????
                 player->SetAtLoginFlag(AT_LOGIN_RENAME);
                 player->ModifyArenaPoints(-CONST_ARENA_POINT_3);
@@ -1517,7 +1530,8 @@ public:
                 me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
                 CloseGossipMenuFor(player);
             }
-            else{
+            else
+            {
                 // ?????? ????? ?????????
                 player->SetAtLoginFlag(AT_LOGIN_CUSTOMIZE);
                 player->ModifyArenaPoints(-CONST_ARENA_POINT_3);
@@ -1531,7 +1545,8 @@ public:
                 me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
                 CloseGossipMenuFor(player);
             }
-            else{
+            else
+            {
                 // ?????? ????? ?????????
                 player->SetAtLoginFlag(AT_LOGIN_CHANGE_FACTION);
                 player->ModifyArenaPoints(-CONST_ARENA_POINT_4);
@@ -1542,7 +1557,6 @@ public:
         case 33:
             player->SetHealth(player->GetMaxHealth());
             CloseGossipMenuFor(player);
-
             break;
         case 34:
             player->UpdateWeaponsSkillsToMaxSkillsForLevel();
@@ -1571,7 +1585,7 @@ public:
             AddGossipItemFor(player, GOSSIP_ICON_TRAINER, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_67, loc_idx), GOSSIP_SENDER_MAIN, 47);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_31, loc_idx), GOSSIP_SENDER_MAIN, 48);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_29, loc_idx), GOSSIP_SENDER_MAIN, 21);
-           SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+            SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             break;
         case 37:
             CompleteLearnProfession(player, me, SKILL_ALCHEMY);
@@ -1693,10 +1707,11 @@ public:
         case 61:
             player->RemoveAllAuras();
             CloseGossipMenuFor(player);
-            }
-        }
-        return true;
-        }
+            break;
+          // }
+         }
+          return true;
+       }
     };
 
     CreatureAI* GetAI(Creature* me) const override
