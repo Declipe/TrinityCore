@@ -101,5 +101,7 @@ public:
 void AddSC_ZynPlayerScripts()
 {
     new item_lvlup();
+    new lfg_solo();
+    new lfg_solo_announce();
     new ZynPlayerScripts();
 }
