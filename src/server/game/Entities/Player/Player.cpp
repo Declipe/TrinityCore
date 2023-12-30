@@ -22703,7 +22703,7 @@ WorldLocation Player::GetStartPosition() const
     PlayerInfo const* info = sObjectMgr->GetPlayerInfo(GetRace(), GetClass());
     ASSERT(info);
     uint32 mapId = info->mapId;
-    if (GetClass() == CLASS_DEATH_KNIGHT && HasSpell(HasSpell(50977) || sGameConfig->GetBoolConfig("DeathKnight.SkipQuest")))
+    if (GetClass() == CLASS_DEATH_KNIGHT && (HasSpell(50977) || sGameConfig->GetBoolConfig("DeathKnight.SkipQuest")))
         mapId = 0;
     return WorldLocation(mapId, info->positionX, info->positionY, info->positionZ, 0);
 }
