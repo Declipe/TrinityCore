@@ -1844,7 +1844,7 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
     }
     else
     {
-        if (GetClass() == CLASS_DEATH_KNIGHT && GetMapId() == 609 && !IsGameMaster() && !HasSpell(50977) && !sGameConfig->GetBoolConfig("DeathKnight.SkipQuest"))
+        if (GetClass() == CLASS_DEATH_KNIGHT && GetMapId() == 609 && !IsGameMaster() && !HasSpell(50977))
         {
             SendTransferAborted(mapid, TRANSFER_ABORT_UNIQUE_MESSAGE, 1);
             return false;
@@ -22704,7 +22704,7 @@ WorldLocation Player::GetStartPosition() const
     PlayerInfo const* info = sObjectMgr->GetPlayerInfo(GetRace(), GetClass());
     ASSERT(info);
     uint32 mapId = info->mapId;
-    if (GetClass() == CLASS_DEATH_KNIGHT && (HasSpell(50977) || sGameConfig->GetBoolConfig("DeathKnight.SkipQuest")))
+    if (GetClass() == CLASS_DEATH_KNIGHT && HasSpell(50977))
         mapId = 0;
     return WorldLocation(mapId, info->positionX, info->positionY, info->positionZ, 0);
 }
@@ -25315,7 +25315,7 @@ uint32 Player::CalculateTalentsPoints() const
 {
     uint32 base_talent = GetLevel() < 10 ? 0 : GetLevel()-9;
 
-    if (GetClass() != CLASS_DEATH_KNIGHT || GetMapId() != 609 || sGameConfig->GetBoolConfig("DeathKnight.SkipQuest"))
+    if (GetClass() != CLASS_DEATH_KNIGHT || GetMapId() != 609)
         return uint32(base_talent * sWorld->getRate(RATE_TALENT));
 
     uint32 talentPointsForLevel = GetLevel() < 56 ? 0 : GetLevel() - 55;

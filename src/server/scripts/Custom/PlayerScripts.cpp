@@ -1,4 +1,13 @@
-#include "Custom/Dcl.h"  
+#include "Custom/Dcl.h"
+
+#define buffid 48162
+#define buffid1 46668
+#define buffid2 48074
+#define buffid3 48469
+#define zoneid 14
+#define zoneid1 85
+#define zoneid2 4080
+#define zoneid3 12
 
 class ZynPlayerScripts: public PlayerScript
 {
@@ -98,8 +107,43 @@ public:
     }
 };
 
+class buff_zone : public PlayerScript
+{
+public:
+    buff_zone() : PlayerScript("buff_zone") {}
+
+    void OnUpdateZone(Player* player, uint32 newZone, uint32 /*newArea*/)
+    {
+        if (newZone == zoneid) {
+            player->AddAura(buffid, player);
+        }
+        else {
+            player->RemoveAurasDueToSpell(buffid);
+        }
+        if (newZone == zoneid1) {
+            player->AddAura(buffid1, player);
+        }
+        else {
+            player->RemoveAurasDueToSpell(buffid1);
+        }
+        if (newZone == zoneid2) {
+            player->AddAura(buffid2, player);
+        }
+        else {
+            player->RemoveAurasDueToSpell(buffid2);
+        }
+        if (newZone == zoneid3) {
+            player->AddAura(buffid3, player);
+        }
+        else {
+            player->RemoveAurasDueToSpell(buffid3);
+        }
+    }
+};
+
 void AddSC_ZynPlayerScripts()
 {
+    new buff_zone();
     new item_lvlup();
     new lfg_solo();
     new lfg_solo_announce();

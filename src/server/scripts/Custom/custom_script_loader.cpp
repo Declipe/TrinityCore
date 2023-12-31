@@ -16,8 +16,8 @@
  */
 
 // This is where scripts' loading functions should be declared:
+void AddSC_skip_StarterArea();
 void AddSC_example_ItemGossip();
-void AddSC_script_store();
 void AddSC_Blocked_Zones();
 void AddSC_Grumboz_World_Ctf();
 void AddSC_arena_spectator_script();
@@ -74,6 +74,7 @@ void AddSC_AutoBalance();
 
 void AddCustomScripts()
 {
+    AddSC_skip_StarterArea();
     AddSC_Blocked_Zones();
     AddSC_ex_champions();
     AddSC_NPC_TransmogDisplayVendor();
@@ -123,6 +124,5 @@ void AddCustomScripts()
     AddSC_arena_spectator_script();
     AddSC_REFORGER_NPC();
     AddSC_ItemUse_item_custom();
-    AddSC_script_store();
     AddSC_example_ItemGossip();
 }
