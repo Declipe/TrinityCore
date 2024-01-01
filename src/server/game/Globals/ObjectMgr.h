@@ -58,7 +58,7 @@ struct WorldSafeLocsEntry;
 struct PageText
 {
     std::string Text;
-    uint32 NextPageID;
+    uint32 NextPageID{};
 };
 
 enum SummonerType
@@ -88,10 +88,10 @@ struct TempSummonGroupKey
 /// Stores data for temp summons
 struct TempSummonData
 {
-    uint32 entry;        ///< Entry of summoned creature
+    uint32 entry{};        ///< Entry of summoned creature
     Position pos;        ///< Position, where should be creature spawned
-    TempSummonType type; ///< Summon type, see TempSummonType for available types
-    uint32 time;         ///< Despawn time, usable only with certain temp summon types
+    TempSummonType type{}; ///< Summon type, see TempSummonType for available types
+    uint32 time{};         ///< Despawn time, usable only with certain temp summon types
 };
 
 #pragma pack(pop)
@@ -780,12 +780,12 @@ struct CreatureSpecialRewards
 
 struct PointOfInterest
 {
-    uint32 ID;
-    float PositionX;
-    float PositionY;
-    uint32 Icon;
-    uint32 Flags;
-    uint32 Importance;
+    uint32 ID{};
+    float PositionX{};
+    float PositionY{};
+    uint32 Icon{};
+    uint32 Flags{};
+    uint32 Importance{};
     std::string Name;
 };
 
@@ -809,8 +809,8 @@ struct GossipMenuItems
 
 struct GossipMenus
 {
-    uint32              MenuID;
-    uint32              TextID;
+    uint32              MenuID{};
+    uint32              TextID{};
     ConditionContainer  Conditions;
 };
 

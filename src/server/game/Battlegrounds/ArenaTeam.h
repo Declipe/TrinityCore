@@ -89,13 +89,13 @@ struct TC_GAME_API ArenaTeamMember
 {
     ObjectGuid Guid;
     std::string Name;
-    uint8 Class;
-    uint16 WeekGames;
-    uint16 WeekWins;
-    uint16 SeasonGames;
-    uint16 SeasonWins;
-    uint16 PersonalRating;
-    uint16 MatchMakerRating;
+    uint8 Class{};
+    uint16 WeekGames{};
+    uint16 WeekWins{};
+    uint16 SeasonGames{};
+    uint16 SeasonWins{};
+    uint16 PersonalRating{};
+    uint16 MatchMakerRating{};
 
     void ModifyPersonalRating(Player* player, int32 mod, uint32 type);
     void ModifyMatchmakerRating(int32 mod, uint32 slot);
@@ -184,7 +184,7 @@ class TC_GAME_API ArenaTeam
         void FinishGame(int32 mod);
 
         void SetPreviousOpponents(uint32 arenaTeamId) { PreviousOpponents = arenaTeamId; }
-        uint32 GetPreviousOpponents() { return PreviousOpponents; }
+        uint32 GetPreviousOpponents() const { return PreviousOpponents; }
 
     protected:
 

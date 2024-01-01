@@ -477,16 +477,16 @@ enum InhabitTypeValues
 // `creature_addon` table
 struct CreatureAddon
 {
-    uint32 path_id;
-    uint32 mount;
+    uint32 path_id{};
+    uint32 mount{};
     uint8 standState;
-    uint8 animTier;
-    uint8 sheathState;
-    uint8 pvpFlags;
-    uint8 visFlags;
-    uint32 emote;
+    uint8 animTier{};
+    uint8 sheathState{};
+    uint8 pvpFlags{};
+    uint8 visFlags{};
+    uint32 emote{};
     std::vector<uint32> auras;
-    VisibilityDistanceType visibilityDistanceType;
+    VisibilityDistanceType visibilityDistanceType{};
 };
 
 // Vendors

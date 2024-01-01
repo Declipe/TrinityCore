@@ -165,22 +165,22 @@ typedef std::vector<MailItemInfo> MailItemInfoVec;
 
 struct TC_GAME_API Mail
 {
-    uint32 messageID;
-    uint8 messageType;
-    uint8 stationery;
-    uint16 mailTemplateId;
-    ObjectGuid::LowType sender;
-    ObjectGuid::LowType receiver;
+    uint32 messageID{};
+    uint8 messageType{};
+    uint8 stationery{};
+    uint16 mailTemplateId{};
+    ObjectGuid::LowType sender{};
+    ObjectGuid::LowType receiver{};
     std::string subject;
     std::string body;
     std::vector<MailItemInfo> items;
     std::vector<ObjectGuid::LowType> removedItems;
-    time_t expire_time;
-    time_t deliver_time;
-    uint32 money;
-    uint32 COD;
-    uint32 checked;
-    MailState state;
+    time_t expire_time{};
+    time_t deliver_time{};
+    uint32 money{};
+    uint32 COD{};
+    uint32 checked{};
+    MailState state{};
 
     void AddItem(ObjectGuid::LowType itemGuidLow, uint32 item_template)
     {

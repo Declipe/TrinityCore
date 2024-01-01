@@ -299,11 +299,11 @@ struct TC_GAME_API RespawnInfo
 {
     virtual ~RespawnInfo();
 
-    SpawnObjectType type;
-    ObjectGuid::LowType spawnId;
-    uint32 entry;
-    time_t respawnTime;
-    uint32 gridId;
+    SpawnObjectType type{};
+    ObjectGuid::LowType spawnId{};
+    uint32 entry{};
+    time_t respawnTime{};
+    uint32 gridId{};
 };
 inline bool CompareRespawnInfo::operator()(RespawnInfo const* a, RespawnInfo const* b) const
 {
