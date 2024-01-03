@@ -115,7 +115,7 @@ public:
 
     PetInfo const* GetUnslottedHunterPet() const
     {
-        return UnslottedPets.size() == 1 && UnslottedPets[0].Type & HUNTER_PET ? &UnslottedPets[0] : nullptr;
+        return UnslottedPets.size() == 1 && UnslottedPets[0].Type == HUNTER_PET ? &UnslottedPets[0] : nullptr;
     }
 };
 

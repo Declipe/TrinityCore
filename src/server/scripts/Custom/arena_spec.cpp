@@ -394,13 +394,13 @@ public:
         {
 
         }
-        if (action == NPC_SPECTATOR_ACTION_2V2_GAMES)
+        if (action = NPC_SPECTATOR_ACTION_2V2_GAMES)
         {
             AddGossipItemFor(player, GOSSIP_ICON_DOT, "Refresh", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_2V2_GAMES);
             ShowPage(player, action - NPC_SPECTATOR_ACTION_2V2_GAMES, false);
             SendGossipMenuFor(player, 1, me);
         }
-        else if (action == NPC_SPECTATOR_ACTION_3V3_GAMES)
+        else if (action = NPC_SPECTATOR_ACTION_3V3_GAMES)
         {
             AddGossipItemFor(player, GOSSIP_ICON_DOT, "Refresh", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_3V3_GAMES);
             ShowPage(player, action - NPC_SPECTATOR_ACTION_3V3_GAMES, true);
