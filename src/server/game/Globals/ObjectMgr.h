@@ -1163,6 +1163,7 @@ class TC_GAME_API ObjectMgr
 
         VehicleTemplate const* GetVehicleTemplate(Vehicle* veh) const;
         VehicleAccessoryList const* GetVehicleAccessoryList(Vehicle* veh) const;
+        ItemPresentList const* GetItemPresentList(uint32 presentId) const;
 
         DungeonEncounterList const* GetDungeonEncounterList(uint32 mapId, Difficulty difficulty) const;
 
@@ -1297,6 +1298,7 @@ class TC_GAME_API ObjectMgr
         void LoadVendors();
         void LoadTrainers();
         void LoadCreatureDefaultTrainers();
+        void LoadItemPresents();
 
         void InitializeQueriesData(QueryDataGroup mask);
 
@@ -1718,6 +1720,8 @@ class TC_GAME_API ObjectMgr
         std::unordered_map<uint32, VehicleTemplate> _vehicleTemplateStore;
         VehicleAccessoryContainer _vehicleTemplateAccessoryStore;
         VehicleAccessoryContainer _vehicleAccessoryStore;
+
+        ItemPresentContainer _itemPresentStore;
 
         LocaleConstant DBCLocaleIndex;
 

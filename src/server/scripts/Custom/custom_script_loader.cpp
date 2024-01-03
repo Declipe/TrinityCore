@@ -16,6 +16,8 @@
  */
 
 // This is where scripts' loading functions should be declared:
+void AddSC_custom_item();
+void AddSC_landro_longshot();
 void AddSC_skip_StarterArea();
 void AddSC_example_ItemGossip();
 void AddSC_Blocked_Zones();
@@ -125,4 +127,6 @@ void AddCustomScripts()
     AddSC_REFORGER_NPC();
     AddSC_ItemUse_item_custom();
     AddSC_example_ItemGossip();
+    AddSC_landro_longshot();
+    AddSC_custom_item();
 }

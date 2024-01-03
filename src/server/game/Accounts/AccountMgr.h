@@ -68,10 +68,12 @@ class TC_GAME_API AccountMgr
         static uint32 VipDaysLeft(uint32 accountId);
 
         static uint32 GetId(std::string_view username);
+        static uint32 GetCoins(uint32 accountId);
         static uint32 GetSecurity(uint32 accountId, int32 realmId);
         [[nodiscard]] static QueryCallback GetSecurityAsync(uint32 accountId, int32 realmId, std::function<void(uint32)> callback);
         static bool GetName(uint32 accountId, std::string& name);
         static bool GetEmail(uint32 accountId, std::string& email);
+        static void SetCoins(uint32 accountId, uint32 coins);
         static uint32 GetCharactersCount(uint32 accountId);
 
         static bool IsBannedAccount(std::string const& name);

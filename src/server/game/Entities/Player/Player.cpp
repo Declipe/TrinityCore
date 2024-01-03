@@ -336,6 +336,7 @@ Player::Player(WorldSession* session): Unit(true)
     m_resetTalentsTime = 0;
     m_itemUpdateQueueBlocked = false;
 
+    m_coins = 0;
     /////////////////// Instance System /////////////////////
 
     m_HomebindTimer = 0;
@@ -7953,6 +7954,24 @@ void Player::ApplyItemObtainSpells(Item* item, bool apply)
         else
             RemoveAurasDueToSpell(spellId);
     }
+}
+
+uint32 Player::GetVerifiedCoins()
+{
+    uint32 coinsCount = GetCoins();
+    if (GetSession())
+    {
+        uint32 coinsFromDB;
+        // it's nessesary, if we will change coins count through web-site or some another way, and player will in-game in this time
+        coinsFromDB = AccountMgr::GetCoins(GetSession()->GetAccountId());
+        if (coinsCount != coinsFromDB)
+        {
+            coinsCount = coinsFromDB;
+            SetCoins(coinsCount);
+        }
+    }
+
+    return coinsCount;
 }
 
 // this one rechecks weapon auras and stores them in BaseModGroup container
@@ -27497,6 +27516,32 @@ std::string Player::GetDebugInfo() const
     std::stringstream sstr;
     sstr << Unit::GetDebugInfo();
     return sstr.str();
+}
+
+void Player::InstallItemPresentBySlot(uint32 entry)
+{
+    ItemPresentList const* accessories = sObjectMgr->GetItemPresentList(entry);
+    if (!accessories)
+        return;
+
+    for (ItemPresentList::const_iterator itr = accessories->begin(); itr != accessories->end(); ++itr)
+        if (itr->ItemPresentSlot == entry)
+          //  InstallItemPresent(itr->ItemPresentSlot, itr->ItemId);
+            InstallItemPresent(itr->ItemPresentSlot, itr->ItemId, itr->Count);
+}
+
+void Player::InstallItemPresent(uint32 entry, uint32 itemId, uint32 count)
+{
+    TC_LOG_DEBUG("entities.player", "Player (Guid: {}) {}: installing itempresent (Entry: {}) for item {}",
+        GetGUID().GetCounter(), GetName().c_str(), entry, itemId);
+
+    ItemTemplate const* itemTemplate = sObjectMgr->GetItemTemplate(itemId);
+    if (!itemTemplate)
+        return;
+
+    if (!AddItem(itemId, count))
+        TC_LOG_DEBUG("entities.player", "Player (Guid: {}) {}: did not received itempresent (Entry: {}) for item {}",
+            GetGUID().GetCounter(), GetName().c_str(), entry, itemId);
 }
 
 void Player::BuildPlayerChat(WorldPacket* data, uint8 msgtype, const std::string& text, uint32 language) const

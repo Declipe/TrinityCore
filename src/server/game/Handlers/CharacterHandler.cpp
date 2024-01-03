@@ -15,6 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "AccountMgr.h"
 #include "WorldSession.h"
 #include "ArenaTeamMgr.h"
 #include "CalendarMgr.h"
@@ -53,6 +54,7 @@
 #include "SystemPackets.h"
 #include "QueryHolder.h"
 #include "World.h"
+#include "CustomConfig.h"
 #ifdef ELUNA
 #include "LuaEngine.h"
 #endif
@@ -994,6 +996,21 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder const& holder)
 
     if (pCurrChar->IsGameMaster())
         SendNotification(LANG_GM_ON);
+
+    uint32 coins = AccountMgr::GetCoins(GetAccountId());
+    pCurrChar->SetCoins(coins);
+
+    //if (sGameConfig->GetBoolConfig(CONFIG_VIP_ITEM_HELPER));
+    if (sGameConfig->GetBoolConfig("Config.Vip.Item.Helper"))
+    {
+        if (!pCurrChar->HasItemCount(973))
+            pCurrChar->AddItem(973, 1);
+    }
+    else
+    {
+        if (pCurrChar->HasItemCount(973))
+            pCurrChar->DestroyItemCount(973, 1, true);
+    }
 
     std::string IP_str = GetRemoteAddress();
     TC_LOG_INFO("entities.player.character", "Account: {} (IP: {}) Login Character:[{}] {} Level: {}, XP: {}/{} ({} left)",

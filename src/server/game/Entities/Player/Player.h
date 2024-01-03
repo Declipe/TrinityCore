@@ -1793,6 +1793,13 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void BuildPlayerRepop();
         void RepopAtGraveyard();
 
+        // ItemPresent settings
+        void InstallItemPresentBySlot(uint32 entry);
+        void InstallItemPresent(uint32 entry, uint32 itemId, uint32 count);
+        void SetCoins(uint32 coins) { m_coins = coins; }
+        uint32 GetCoins() const { return m_coins; }
+        uint32 GetVerifiedCoins();
+
         void RemoveGhoul();
 
         void SendDurabilityLoss();
@@ -2606,6 +2613,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         bool m_canTeleport;
         bool m_canKnockback;
         std::unique_ptr<PetStable> m_petStable;
+
+        uint32 m_coins;
 
         // Temporary removed pet cache
         uint32 m_temporaryUnsummonedPetNumber;

@@ -94,6 +94,8 @@
 #include "WorldSession.h"
 
 #include "CustomConfig.h"
+#include "PromotionCodeMgr.h"
+#include "ItemShopMgr.h"
 #include <boost/asio/ip/address.hpp>
 #include "CharacterDatabase.h"
 #include "Guild.h"
@@ -1965,6 +1967,9 @@ void World::SetInitialWorldSettings()
     TC_LOG_INFO("server.loading", "Loading Vehicle Accessories...");
     sObjectMgr->LoadVehicleAccessories();                       // must be after LoadCreatureTemplates() and LoadNPCSpellClickSpells()
 
+    TC_LOG_INFO("server.loading", "Loading Item Presents...");
+    sObjectMgr->LoadItemPresents();                             // must be after LoadItemTemplates()
+
     TC_LOG_INFO("server.loading", "Loading Vehicle Seat Addon Data...");
     sObjectMgr->LoadVehicleSeatAddon();                         // must be after loading DBC
 
@@ -2297,6 +2302,13 @@ void World::SetInitialWorldSettings()
 
     TC_LOG_INFO("server.loading", "Loading Transports...");
     sTransportMgr->SpawnContinentTransports();
+
+    ///- Initialize PromoCodes data
+    TC_LOG_INFO("server.loading", "Loading Promo Codes...");
+    sPromotionCodeMgr->Initialize();
+
+    TC_LOG_INFO("server.loading", "Loading ItemShop items...");
+    sItemShopMgr->Initialize();
 
     ///- Initialize Warden
     TC_LOG_INFO("server.loading", "Loading Warden Checks...");

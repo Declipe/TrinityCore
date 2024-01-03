@@ -282,6 +282,15 @@ uint32 AccountMgr::GetId(std::string_view username)
     return (result) ? (*result)[0].GetUInt32() : 0;
 }
 
+uint32 AccountMgr::GetCoins(uint32 accountId)
+{
+    LoginDatabasePreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_GET_ACCOUNT_COINS_BY_ID);
+    stmt->setUInt32(0, accountId);
+    PreparedQueryResult result = LoginDatabase.Query(stmt);
+
+    return (result) ? (*result)[0].GetUInt32() : 0;
+}
+
 uint32 AccountMgr::GetSecurity(uint32 accountId, int32 realmId)
 {
     LoginDatabasePreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_GET_GMLEVEL_BY_REALMID);
@@ -578,4 +587,12 @@ uint32 AccountMgr::VipDaysLeft(uint32 accountId)
 {
     QueryResult result = LoginDatabase.PQuery("SELECT DATEDIFF(FROM_UNIXTIME(unsetdate), NOW()) FROM account_premium WHERE id = {} AND active = 1", accountId);
     return (result) ? (*result)[0].GetUInt32() : 0;
+}
+
+void AccountMgr::SetCoins(uint32 accountId, uint32 coins)
+{
+    LoginDatabasePreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_ACCOUNT_COINS);
+    stmt->setUInt32(0, coins);
+    stmt->setUInt32(1, accountId);
+    LoginDatabase.Execute(stmt);
 }

@@ -575,11 +575,11 @@ void ObjectMgr::LoadCreatureTemplates2()
         //  0
         "SELECT entry,"
         //  1
-        "difficulty_entry_1,"
+        "ctd.DifficultyCreatureId1,"
         //  2
-        "difficulty_entry_2,"
+        "ctd.DifficultyCreatureId2,"
         //  3
-        "difficulty_entry_3,"
+        "ctd.DifficultyCreatureId3,"
         //  4
         "KillCredit1,"
         //  5
@@ -701,7 +701,8 @@ void ObjectMgr::LoadCreatureTemplates2()
         // 63
         "ScriptName"
         " FROM creature_template2 ct"
-        " LEFT JOIN creature_template_movement ctm ON ct.entry = ctm.CreatureId");
+        " LEFT JOIN creature_template_movement ctm ON ct.entry = ctm.CreatureId"
+        " LEFT JOIN creature_template2_difficulty ctd ON ct.entry = ctd.CreatureId");
 
     if (!result)
     {
@@ -10684,6 +10685,15 @@ VehicleAccessoryList const* ObjectMgr::GetVehicleAccessoryList(Vehicle* veh) con
     return nullptr;
 }
 
+ItemPresentList const* ObjectMgr::GetItemPresentList(uint32 presentId) const
+{
+    // Otherwise return entry-based
+    ItemPresentContainer::const_iterator itr = _itemPresentStore.find(presentId);
+    if (itr != _itemPresentStore.end())
+        return &itr->second;
+    return nullptr;
+}
+
 DungeonEncounterList const* ObjectMgr::GetDungeonEncounterList(uint32 mapId, Difficulty difficulty) const
 {
     auto itr = _dungeonEncounterStore.find(MAKE_PAIR32(mapId, difficulty));
@@ -10792,6 +10802,44 @@ void ObjectMgr::LoadCreatureQuestItems()
     while (result->NextRow());
 
     TC_LOG_INFO("server.loading", ">> Loaded {} creature quest items in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
+}
+
+void ObjectMgr::LoadItemPresents()
+{
+    uint32 oldMSTime = getMSTime();
+    _itemPresentStore.clear();                           // needed for reload case
+    //uint32 count = 0;
+    uint32 counter = 0;
+
+   // QueryResult result = WorldDatabase.Query("SELECT PresentSlotID, ItemId from item_present_slot");
+    QueryResult result = WorldDatabase.Query("SELECT PresentSlotID, ItemId, Counts from item_present_slot");
+
+    if (!result)
+    {
+        TC_LOG_INFO("server.loading", ">> Loaded 0 present item present slot records. DB table `item_present_slot` is empty.");
+        return;
+    }
+
+    do
+    {
+        Field* fields = result->Fetch();
+
+        uint32 presentSlotID = fields[0].GetUInt32();
+        uint32 itemId = fields[1].GetUInt32();
+        uint32 count = fields[2].GetUInt32();
+
+        ItemEntry const* dbcItem = sItemStore.LookupEntry(itemId);
+        if (!dbcItem)
+        {
+            TC_LOG_ERROR("sql.sql", "Table `item_present_slot` has nonexistent item (ID: {}) in presentSlot (entry: {}), skipped", itemId, presentSlotID);
+            continue;
+        };
+
+        _itemPresentStore[presentSlotID].push_back(ItemPresent(presentSlotID, itemId, count));
+        ++counter;
+    } while (result->NextRow());
+
+    TC_LOG_INFO("server.loading", ">> Loaded {} item present slot records in {} ms", counter, GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::InitializeQueriesData(QueryDataGroup mask)

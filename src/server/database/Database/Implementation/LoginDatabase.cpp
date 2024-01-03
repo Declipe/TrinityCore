@@ -124,6 +124,9 @@ void LoginDatabaseConnection::DoPrepareStatements()
 
     PrepareStatement(LOGIN_SEL_ACCOUNT_TOTP_SECRET, "SELECT totp_secret FROM account WHERE id = ?", CONNECTION_SYNCH);
     PrepareStatement(LOGIN_UPD_ACCOUNT_TOTP_SECRET, "UPDATE account SET totp_secret = ? WHERE id = ?", CONNECTION_ASYNC);
+
+    PrepareStatement(LOGIN_UPD_ACCOUNT_COINS, "UPDATE account SET coins = ? WHERE id = ?", CONNECTION_ASYNC);
+    PrepareStatement(LOGIN_GET_ACCOUNT_COINS_BY_ID, "SELECT coins FROM account WHERE id = ?", CONNECTION_SYNCH);
 }
 
 LoginDatabaseConnection::LoginDatabaseConnection(MySQLConnectionInfo& connInfo) : MySQLConnection(connInfo)

@@ -46,6 +46,7 @@ EndScriptData */
 #include "TicketMgr.h"
 #include "WaypointManager.h"
 #include "World.h"
+#include "ItemShopMgr.h"
 
 #if TRINITY_COMPILER == TRINITY_COMPILER_GNU
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -168,6 +169,7 @@ public:
             { "waypoint_data",                 rbac::RBAC_PERM_COMMAND_RELOAD_WAYPOINT_DATA,                    true,  &HandleReloadWpCommand,                         "" },
             { "vehicle_template",              rbac::RBAC_PERM_COMMAND_RELOAD_VEHICLE_TEMPLATE,                 true,  &HandleReloadVehicleTemplateCommand,            "" },
             { "vehicle_accessory",             rbac::RBAC_PERM_COMMAND_RELOAD_VEHICLE_ACCESORY,                 true,  &HandleReloadVehicleAccessoryCommand,           "" },
+            { "item_shop",                     rbac::RBAC_PERM_COMMAND_RELOAD_ITEM_TEMPLATE_LOCALE,             true,  &HandleReloadItemShopCommand,                   "" },
             { "vehicle_template_accessory",    rbac::RBAC_PERM_COMMAND_RELOAD_VEHICLE_TEMPLATE_ACCESSORY,       true,  &HandleReloadVehicleTemplateAccessoryCommand,   "" },
 			//CHAT_FILTER
 			{ "chat_filter",                   rbac::RBAC_PERM_COMMAND_RELOAD_CHAT_FILTER,                      true, &HandleReloadLoadChatFilterCommand,              "" },
@@ -1232,6 +1234,14 @@ public:
         TC_LOG_INFO("misc", "Reloading vehicle_template table...");
         sObjectMgr->LoadVehicleTemplate();
         handler->SendGlobalGMSysMessage("Vehicle templates reloaded.");
+        return true;
+    }
+
+    static bool HandleReloadItemShopCommand(ChatHandler* handler, char const* /*args*/)
+    {
+        TC_LOG_INFO("misc", "Reloading item_shop table...");
+        sItemShopMgr->Reload();
+        handler->SendGlobalGMSysMessage("Items from shop reloaded.");
         return true;
     }
 
