@@ -95,7 +95,7 @@ public:
         bool OnGossipSelectCode(Player* player, uint32 /*menu_id*/, uint32 gossipListId, char const* code) override
         {
             if (!player)
-                return false;;
+                return false;
 
             uint32 MenuID = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
 
