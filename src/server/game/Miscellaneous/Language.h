@@ -1317,6 +1317,7 @@ enum TrinityStrings
     LANG_ITEM_INC_7_SURE                          = 12260,
     LANG_ITEM_INC_14_SURE                         = 12261,
     LANG_ITEM_INC_31_SURE                         = 12262,
+
     LANG_ITEM_NOT_ENOUGH_COINS                    = 12263,
     LANG_ITEM_YOU_HAVE_COINS                      = 12264,
     LANG_ITEM_YOU_NEED_COINS                      = 12265,
@@ -1326,12 +1327,10 @@ enum TrinityStrings
     LANG_ITEM_SUCCESS_BOUGHT                      = 12269,
     LANG_ITEM_VIP_TIME                            = 12270,                   
     LANG_ITEM_MENU_TRADE                          = 12271,
+
     LANG_ITEM_PVP_CAP_ALIANCE                     = 12272,
     LANG_ITEM_PVP_CAP_HORDE                       = 12273,
-
     LANG_ITEM_VIP_BANK                            = 12274,
-                                                  
-    LANG_GOINFO_PHASEMASK                         = 12275,
     LANG_ITEM_START_PACK_ITEM                     = 12276,
                                                   
     LANG_ENTER_PROMO_CODE                         = 12300, // "Enter Promo - Code"

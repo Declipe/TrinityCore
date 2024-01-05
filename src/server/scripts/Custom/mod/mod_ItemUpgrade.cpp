@@ -36,7 +36,7 @@ class Mod_ItemUpgrade_WorldScript : public WorldScript
     {
         ItemUpgradeInfo.clear();
 
-        TC_LOG_ERROR("misc", "Loading ItemUpgrade...");
+        TC_LOG_INFO("misc", "Loading ItemUpgrade...");
         uint32 oldMSTime = getMSTime();
 
         //QueryResult result = ZynDatabase.PQuery("SELECT `enchant_id`, `prev_enchant_id`, `golds` FROM `world_item_upgrade`");
@@ -70,8 +70,8 @@ class Mod_ItemUpgrade_WorldScript : public WorldScript
                 continue;
             }
 
-            for (uint8 i = 0; i < TOTAL_LOCALES; ++i)
-                if (strlen(enchantEntry->Name[i]))
+          //  for (uint8 i = 0; i < TOTAL_LOCALES; ++i)
+            //    if (strlen(enchantEntry->Name[i]))
                     ItemUpgradeTemp.description = fields[2].GetCString();//*/ = enchantEntry->Name[i];
 
             ItemUpgradeInfo.push_back(ItemUpgradeTemp);
@@ -79,7 +79,7 @@ class Mod_ItemUpgrade_WorldScript : public WorldScript
         }
         while (result->NextRow());
 
-        TC_LOG_ERROR("misc", ">> Loaded {} count for ItemUpgrade in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
+        TC_LOG_INFO("misc", ">> Loaded {} count for ItemUpgrade in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
     }
 
     void OnConfigLoad(bool /*reload*/)
