@@ -330,7 +330,7 @@ public:
 							AddGossipItemFor(player, GOSSIP_ICON_CHAT, LANG_ITEM_START_PACK_ITEM, GOSSIP_SENDER_MAIN, 83);
 							break;
 						case CLASS_PALADIN:
-							AddGossipItemFor(player, GOSSIP_ICON_CHAT, LANG_ITEM_START_PACK_ITEM, GOSSIP_SENDER_MAIN, 84);
+							AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 84);
 							break;
 						case CLASS_HUNTER:
 							AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 85);
@@ -1270,7 +1270,7 @@ public:
                 case 70:
                 {
                     uint32 coins = player->GetVerifiedCoins();
-                    uint32 ostatok = coast5 - coins; // 31 day
+                    uint32 ostatok = coast5 - coins;
 
                     if (coins >= coast5)
                     {
@@ -1918,6 +1918,7 @@ public:
         if (!*code)
             return;
         // only for Promo-codes
+
         if (!action)
         {
             if (!sPromotionCodeMgr->CheckedEnteredCodeByPlayer(code, player))
