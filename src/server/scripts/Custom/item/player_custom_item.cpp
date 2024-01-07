@@ -64,6 +64,7 @@ class custom_item : public ItemScript
 public:
 	custom_item() : ItemScript("custom_item") { }
 
+    uint32 coast5 = 5;
 	uint32 coast7 = 20;
 	uint32 coast14 = 40;
 	uint32 coast31 = 80;
@@ -1266,6 +1267,37 @@ public:
 					SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
 					break;
 				}
+                case 70:
+                {
+                    uint32 coins = player->GetVerifiedCoins();
+                    uint32 ostatok = coast5 - coins; // 31 day
+
+                    if (coins >= coast5)
+                    {
+                        ostatok = coins - coast5;
+
+                        if (player->IsPlayer())
+                        {
+                            player->AddItem(44115, 10);
+                        }
+                        else
+                        {
+                            player->AddItem(44115, 10);
+                        }
+                        player->SetCoins(ostatok);
+                        AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
+                        ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_VIP_TIME, coast5);
+                        player->PlayerTalkClass->SendCloseGossip();
+                    }
+                    else
+                    {
+                        ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_NOT_ENOUGH_COINS);
+                        ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_YOU_HAVE_COINS, coins);
+                        ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_YOU_NEED_COINS, ostatok);
+                        player->PlayerTalkClass->SendCloseGossip();
+                    }
+                    break;
+                }
 				case 25:
 				{
 					// cloth
@@ -1884,8 +1916,7 @@ public:
         player->PlayerTalkClass->ClearMenus();
 
         if (!*code)
-        { 
-            // return;
+            return;
         // only for Promo-codes
         if (!action)
         {
@@ -1895,8 +1926,7 @@ public:
                 ChatHandler(player->GetSession()).PSendSysMessage(LANG_PROMO_CODE_ACEPT);
 
             player->PlayerTalkClass->SendCloseGossip();
-           // return;
-        }
+            return;
         }
 		//for GuildWars system
 		std::string guildName = code;
