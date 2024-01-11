@@ -609,6 +609,7 @@ void CharacterDatabaseConnection::DoPrepareStatements()
 
     // DeserterTracker
     PrepareStatement(CHAR_INS_DESERTER_TRACK, "INSERT INTO battleground_deserters (guid, type, datetime) VALUES (?, ?, NOW())", CONNECTION_ASYNC);
+    PrepareStatement(CHAR_GET_CHARACTERS_ONLINE_ON_ACCOUNT, "SELECT guid FROM characters WHERE online > 0 AND account = ?", CONNECTION_SYNCH);
 
 }
 

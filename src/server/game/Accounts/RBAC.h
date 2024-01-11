@@ -789,6 +789,7 @@ enum RBACPermissions
     RBAC_PERM_COMMAND_SPECTATE_VIEW                            = 1032,
     RBAC_PERM_COMMAND_SPECTATE_RESET                           = 1033,
     RBAC_PERM_COMMAND_SPECTATE_LEAVE                           = 1034,
+    RBAC_PERM_COMMAND_ADDCOIN                                  = 1114,
     RBAC_PERM_COMMAND_RELOAD_CREATURE_TEMPLATE2                = 639555,
     RBAC_PERM_COMMAND_GXP_BUFF                                 = 639556,
     RBAC_PERM_COMMAND_RELOAD_SPELL_TARGET_POSITION2            = 639557,

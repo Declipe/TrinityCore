@@ -282,6 +282,15 @@ uint32 AccountMgr::GetId(std::string_view username)
     return (result) ? (*result)[0].GetUInt32() : 0;
 }
 
+uint32 AccountMgr::GetGuidOfOnlineCharacter(uint32 accountId)
+{
+    CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_GET_CHARACTERS_ONLINE_ON_ACCOUNT);
+    stmt->setUInt32(0, accountId);
+    PreparedQueryResult result = CharacterDatabase.Query(stmt);
+
+    return (result) ? (*result)[0].GetUInt32() : 0;
+}
+
 uint32 AccountMgr::GetCoins(uint32 accountId)
 {
     LoginDatabasePreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_GET_ACCOUNT_COINS_BY_ID);

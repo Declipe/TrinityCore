@@ -1,4 +1,4 @@
-﻿#include "Custom/Dcl.h"
+#include "Custom/Dcl.h"
 #include "AccountMgr.h"
 #include "SpellHistory.h"
 
@@ -37,9 +37,17 @@ public:
 			//{ "qcomplete", rbac::RBAC_PERM_COMMAND_VIP_qcomplete, false, &HandleQuestCompletes, "" },
 		};
 
+        static ChatCommandTable coinCommandTable =
+        {
+            { "add",          HandleCoinAddCommand,    rbac::RBAC_PERM_COMMAND_ADDCOIN,         Console::No },
+            { "del",          HandleCoinDelCommand,   rbac::RBAC_PERM_COMMAND_ADDCOIN,          Console::No },
+          //  { "",             HandleCoinCommand,   rbac::RBAC_PERM_COMMAND_ACCOUNT,             Console::No },
+        };
+
 		static ChatCommandTable commandTable =
 		{
 			{ "vip", premiumCommandTable },
+            { "coin", coinCommandTable },
 		};
 
 		return commandTable;
@@ -1550,6 +1558,89 @@ public:
 
 		return true;
 	}
+
+    static bool HandleCoinCommand(ChatHandler* handler, char const* /*args*/)
+    {
+        Player* _player = handler->GetSession()->GetPlayer();
+        if (!_player)
+            return false;
+
+        Player* target = handler->getSelectedPlayerOrSelf();
+        uint32 coins;
+
+        if (handler->HasPermission(rbac::RBAC_PERM_COMMAND_ADDCOIN) && _player != target)
+        {
+            // GM should can to see the coins of target-player by .coin too
+            coins = target->GetCoins();
+            handler->PSendSysMessage("The AccountID %u [player : %s ] have %u coins", target->GetSession()->GetAccountId(), target->GetName(), coins);
+        }
+        else
+        {
+            coins = _player->GetCoins();
+            handler->PSendSysMessage("You have the %u coins", coins);
+        }
+
+        return true;
+    }
+
+    static bool HandleCoinAddCommand(ChatHandler* handler, int32 coinAdded, uint32 accountID)
+    {
+        Player* target = handler->getSelectedPlayerOrSelf();
+
+        if (!accountID)
+            accountID = target->GetSession()->GetAccountId();
+
+        if (coinAdded < 0)
+        {
+            handler->SendSysMessage(LANG_BAD_VALUE);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        uint32 coinCount = coinAdded;
+        coinCount += AccountMgr::GetCoins(accountID);
+        ObjectGuid::LowType guid = AccountMgr::GetGuidOfOnlineCharacter(accountID);
+        if (guid)
+        {
+            if (Player* p = ObjectAccessor::FindPlayerByLowGUID(guid))
+                p->SetCoins(coinCount);
+        }
+
+        AccountMgr::SetCoins(accountID, coinCount);
+        handler->PSendSysMessage("The AccountID %u has received %u coins, and now have a %u coins", accountID, coinAdded, coinCount);
+        return true;
+    }
+
+    static bool HandleCoinDelCommand(ChatHandler* handler, int32 coinRemoved, uint32 accountID)
+    {
+        Player* target = handler->getSelectedPlayerOrSelf();
+        if (!accountID)
+            accountID = target->GetSession()->GetAccountId();
+
+        if (coinRemoved < 0)
+        {
+            handler->SendSysMessage(LANG_BAD_VALUE);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+        uint32 coinCount = AccountMgr::GetCoins(accountID);
+
+        if (coinCount < uint32(coinRemoved))
+            coinCount = 0;
+        else
+            coinCount -= uint32(coinRemoved);
+
+        ObjectGuid::LowType guid = AccountMgr::GetGuidOfOnlineCharacter(accountID);
+        if (guid)
+        {
+            if (Player* p = ObjectAccessor::FindPlayerByLowGUID(guid))
+                p->SetCoins(coinCount);
+        }
+
+        AccountMgr::SetCoins(accountID, coinCount);
+        handler->PSendSysMessage("The AccountID %u has removed %u coins, and now have a %u coins", accountID, coinRemoved, coinCount);
+        return true;
+    }
 
 };
 
