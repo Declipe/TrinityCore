@@ -124,6 +124,7 @@ public:
             { "unstuck",          HandleUnstuckCommand,          rbac::RBAC_PERM_COMMAND_UNSTUCK,          Console::Yes },
             { "wchange",          HandleChangeWeather,           rbac::RBAC_PERM_COMMAND_WCHANGE,          Console::No },
             { "mailbox",          HandleMailBoxCommand,          rbac::RBAC_PERM_COMMAND_MAILBOX,          Console::No },
+            { "rtx",              HandleRtxCommand,              rbac::RBAC_PERM_COMMAND_RTX,              Console::No },
         };
         return commandTable;
     }
@@ -2643,6 +2644,28 @@ public:
         Player* player = handler->GetSession()->GetPlayer();
 
         handler->GetSession()->SendShowMailBox(player->GetGUID());
+        return true;
+    }
+
+    static bool HandleRtxCommand(ChatHandler* handler, char const* args)
+    {
+        Player* player = handler->GetSession()->GetPlayer();
+        if (!*args)
+            return false;
+
+        char* _relocate = strtok((char*)args, " ");
+        if (!_relocate)
+            return false;
+
+        char* _reason = strtok(nullptr, " ");
+        if (!_reason)
+            return false;
+
+        uint8 relocate = (uint8)atoi(_relocate);
+        uint8 reason = (uint8)atoi(_reason);
+
+        player->GetSession()->SendBattlefieldLeaveMessage(1, bool(relocate), reason);
+        handler->PSendSysMessage("relocate %u, reason %u", relocate, reason);
         return true;
     }
 };

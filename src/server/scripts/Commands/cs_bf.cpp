@@ -111,7 +111,8 @@ public:
         if (!bf)
             return false;
 
-        bf->EndBattle(false);
+        //bf->EndBattle(false);
+        bf->switchSide();
         if (battleId == 1)
             handler->SendGlobalGMSysMessage("Wintergrasp (Command switch used)");
 

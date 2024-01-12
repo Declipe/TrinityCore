@@ -57,6 +57,7 @@
 #ifdef ELUNA
 #include "LuaEngine.h"
 #endif
+#include "BattlefieldMgr.h"
 #include <openssl/opensslv.h>
 #include <openssl/crypto.h>
 #include <boost/asio/signal_set.hpp>
@@ -311,6 +312,7 @@ extern int main(int argc, char** argv)
     {
         // unload battleground templates before different singletons destroyed
         sBattlegroundMgr->DeleteAllBattlegrounds();
+        sBattlefieldMgr->prepareDelete();
 
         sInstanceSaveMgr->Unload();
         sOutdoorPvPMgr->Die();                     // unload it before MapManager

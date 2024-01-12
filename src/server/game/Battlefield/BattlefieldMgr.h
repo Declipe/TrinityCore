@@ -47,6 +47,8 @@ class TC_GAME_API BattlefieldMgr
 
         void Update(uint32 diff);
 
+        void prepareDelete();
+
     private:
         BattlefieldMgr();
         ~BattlefieldMgr();

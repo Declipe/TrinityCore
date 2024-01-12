@@ -19,6 +19,7 @@
 #include "Battlefield.h"
 #include "BattlefieldMgr.h"
 #include "Battlefield/BattlefieldWG.h"
+#include "Battlefield/WintergraspGraveyard.h"
 #include "DBCStores.h"
 #include "GameObject.h"
 #include "GameObjectAI.h"
@@ -210,7 +211,7 @@ struct npc_wg_spirit_guide : public ScriptedAI
         GraveyardVect graveyard = wintergrasp->GetGraveyardVector();
         for (uint8 i = 0; i < graveyard.size(); i++)
             if (graveyard[i]->GetControlTeamId() == player->GetTeamId())
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, player->GetSession()->GetTrinityString(((BfGraveyardWG*)graveyard[i])->GetTextId()), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + i);
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, player->GetSession()->GetTrinityString(((WintergraspGraveyard*)graveyard[i])->GetTextId()), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + i);
 
         SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
         return true;
@@ -228,7 +229,6 @@ struct npc_wg_spirit_guide : public ScriptedAI
             for (uint8 i = 0; i < gy.size(); i++)
                 if (action - GOSSIP_ACTION_INFO_DEF == i && gy[i]->GetControlTeamId() == player->GetTeamId())
                     if (WorldSafeLocsEntry const* safeLoc = sDBCMgr->GetWorldSafeLocsEntry(gy[i]->GetGraveyardId()))
-                    //if (WorldSafeLocsEntry const* safeLoc = sWorldSafeLocsStore.LookupEntry(gy[i]->GetGraveyardId()))
                         player->TeleportTo(safeLoc->Continent, safeLoc->Loc.X, safeLoc->Loc.Y, safeLoc->Loc.Z, 0);
         }
         return true;
@@ -305,13 +305,19 @@ struct npc_wg_queue : public ScriptedAI
         if (!wintergrasp)
             return true;
 
-        if (wintergrasp->IsWarTime())
-            wintergrasp->InvitePlayerToWar(player);
-        else
+        if (wintergrasp->HasPlayer(player))
+            return true;
+
+        if (wintergrasp->GetFreeslot(player->GetTeamId()))
         {
-            uint32 timer = wintergrasp->GetTimer() / 1000;
-            if (timer < 15 * MINUTE)
-                wintergrasp->InvitePlayerToQueue(player);
+            if (wintergrasp->IsWarTime())
+                wintergrasp->InviteNewPlayerToWar(player, 1, false);
+            else
+            {
+                uint32 timer = wintergrasp->GetTimer() / 1000;
+                if (timer < 15 * MINUTE)
+                    wintergrasp->InviteNewPlayerToQueue(player, 1, false);
+            }
         }
         return true;
     }
@@ -549,6 +555,22 @@ class condition_is_wintergrasp_alliance : public ConditionScript
         }
 };
 
+class wintergrasp_levelup_player : public PlayerScript
+{
+public:
+    wintergrasp_levelup_player() : PlayerScript("player_level_up") { }
+
+    void OnLevelChanged(Player* player, uint8 /*oldLevel*/) override
+    {
+        Battlefield* wintergrasp = sBattlefieldMgr->GetBattlefieldByBattleId(BATTLEFIELD_BATTLEID_WG);
+        if (!wintergrasp)
+            return;
+
+        if (player->GetLevel() >= wintergrasp->GetMinimalLevel())
+            wintergrasp->PlayerTryToReQueueByLevelUp(player);
+    }
+};
+
 void AddSC_wintergrasp()
 {
     RegisterCreatureAI(npc_wg_queue);
@@ -563,4 +585,5 @@ void AddSC_wintergrasp()
     RegisterSpellScript(spell_wintergrasp_tenacity_refresh);
     new condition_is_wintergrasp_horde();
     new condition_is_wintergrasp_alliance();
+    new wintergrasp_levelup_player();
 }

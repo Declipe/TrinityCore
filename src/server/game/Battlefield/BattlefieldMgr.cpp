@@ -163,3 +163,9 @@ void BattlefieldMgr::Update(uint32 diff)
         _updateTimer = 0;
     }
 }
+
+void BattlefieldMgr::prepareDelete()
+{
+    for (BattlefieldSet::iterator itr = _battlefieldSet.begin(); itr != _battlefieldSet.end(); ++itr)
+        (*itr)->prepareDelete();
+}

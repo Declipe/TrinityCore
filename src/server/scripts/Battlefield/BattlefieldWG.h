@@ -19,27 +19,106 @@
 #define BATTLEFIELD_WG_
 
 #include "Battlefield.h"
-
-namespace WorldPackets
-{
-    namespace WorldState
-    {
-        class InitWorldStates;
-    }
-}
+#include "GameObject.h"
 
 class Group;
 class BattlefieldWG;
 class WintergraspCapturePoint;
-
-struct BfWGGameObjectBuilding;
-struct WintergraspWorkshop;
-struct StaticWintergraspTowerInfo;
-struct StaticWintergraspWorkshopInfo;
-struct WintergraspObjectPositionData;
+class WintergraspGraveyard;
+class WintergraspWorkshop;
+class BfWGGameObjectBuilding;
 
 typedef std::vector<BfWGGameObjectBuilding*> GameObjectBuildingVect;
 typedef std::vector<WintergraspWorkshop*> WorkshopVect;
+typedef std::vector<WintergraspGraveyard*> WintergraspGraveyardVect;
+typedef std::vector<WintergraspCapturePoint*> WintergraspCapturePointVect;
+
+uint32 const WintergraspFaction[] = { FACTION_ALLIANCE_GENERIC_WG, FACTION_HORDE_GENERIC_WG, FACTION_FRIENDLY };
+
+enum WGGraveyardId
+{
+    BATTLEFIELD_WG_GY_WORKSHOP_NE,
+    BATTLEFIELD_WG_GY_WORKSHOP_NW,
+    BATTLEFIELD_WG_GY_WORKSHOP_SE,
+    BATTLEFIELD_WG_GY_WORKSHOP_SW,
+    BATTLEFIELD_WG_GY_KEEP,
+    BATTLEFIELD_WG_GY_HORDE,
+    BATTLEFIELD_WG_GY_ALLIANCE,
+    BATTLEFIELD_WG_GRAVEYARD_MAX
+};
+
+enum WintergraspGameObjectBuildingType
+{
+    BATTLEFIELD_WG_OBJECTTYPE_DOOR,
+    BATTLEFIELD_WG_OBJECTTYPE_TITANRELIC,
+    BATTLEFIELD_WG_OBJECTTYPE_WALL,
+    BATTLEFIELD_WG_OBJECTTYPE_DOOR_LAST,
+    BATTLEFIELD_WG_OBJECTTYPE_KEEP_TOWER,
+    BATTLEFIELD_WG_OBJECTTYPE_TOWER
+};
+
+struct BfWGCoordGY
+{
+    Position Pos;
+    uint32 GraveyardID;
+    uint32 TextID;          // for gossip menu
+    TeamId StartControl;
+};
+
+struct WintergraspObjectPositionData
+{
+    Position Pos;
+    uint32 HordeEntry;
+    uint32 AllianceEntry;
+};
+
+struct WintergraspGuardPositionData
+{
+    Position Pos;
+    uint32 Entry;
+};
+
+struct WintergraspTowerCannonData
+{
+    uint32 towerEntry;
+    std::vector<Position> TowerCannonBottom;
+    std::vector<Position> TurretTop;
+};
+
+struct StaticWintergraspTowerInfo
+{
+    uint8 TowerId;
+    struct
+    {
+        uint8 Damaged;
+        uint8 Destroyed;
+    } TextIds;
+};
+
+struct WintergraspGameObjectData
+{
+    Position Pos;
+    QuaternionData Rot;
+    uint32 HordeEntry;
+    uint32 AllianceEntry;
+};
+
+struct WintergraspGobjectWithCreatureData
+{
+    uint32 goEntry;                                      // Gameobject id of tower
+    std::vector<WintergraspGameObjectData> GameObject;   // Gameobject position and entry (Horde/Alliance)
+    // Creature: Turrets and Guard /// @todo: Killed on Tower destruction ? Tower damage ? Requires confirming
+    std::vector<WintergraspObjectPositionData> CreatureBottom;
+};
+
+struct WintergraspBuildingSpawnData
+{
+    uint32 entry;
+    uint32 WorldState;
+    Position pos;
+    QuaternionData rot;
+    WintergraspGameObjectBuildingType type;
+};
 
 enum WintergraspSpells
 {
@@ -132,34 +211,6 @@ enum WintergraspQuests
     QUEST_CREDIT_DEFEND_SIEGE     = 31284
 };
 
-/*#########################
- *####### Graveyards ######
- *#########################*/
-
-class BfGraveyardWG : public BfGraveyard
-{
-    public:
-        BfGraveyardWG(BattlefieldWG* Bf);
-
-        void SetTextId(uint32 textId) { m_GossipTextId = textId; }
-        uint32 GetTextId() const { return m_GossipTextId; }
-
-    protected:
-        uint32 m_GossipTextId;
-};
-
-enum WGGraveyardId
-{
-    BATTLEFIELD_WG_GY_WORKSHOP_NE,
-    BATTLEFIELD_WG_GY_WORKSHOP_NW,
-    BATTLEFIELD_WG_GY_WORKSHOP_SE,
-    BATTLEFIELD_WG_GY_WORKSHOP_SW,
-    BATTLEFIELD_WG_GY_KEEP,
-    BATTLEFIELD_WG_GY_HORDE,
-    BATTLEFIELD_WG_GY_ALLIANCE,
-    BATTLEFIELD_WG_GRAVEYARD_MAX
-};
-
 enum WGGossipText
 {
     BATTLEFIELD_WG_GOSSIPTEXT_GY_NE              = 20071,
@@ -180,29 +231,14 @@ enum WintergraspNpcs
     NPC_TAUNKA_SPIRIT_GUIDE                         = 31841, // Horde spirit guide for Wintergrasp
     NPC_DWARVEN_SPIRIT_GUIDE                        = 31842, // Alliance spirit guide for Wintergrasp
 
+    NPC_WINTERGRASP_GOBLIN_ENGINEER_ALLIANCE        = 30400,
+    NPC_WINTERGRASP_GNOMISH_ENGINEER_ALLIANCE       = 30499,
+
     NPC_WINTERGRASP_SIEGE_ENGINE_ALLIANCE           = 28312,
     NPC_WINTERGRASP_SIEGE_ENGINE_HORDE              = 32627,
     NPC_WINTERGRASP_CATAPULT                        = 27881,
     NPC_WINTERGRASP_DEMOLISHER                      = 28094,
     NPC_WINTERGRASP_TOWER_CANNON                    = 28366
-};
-
-/* ######################### *
- *  WintergraspCapturePoint  *
- * ######################### */
-
-class WintergraspCapturePoint : public BfCapturePoint
-{
-    public:
-        WintergraspCapturePoint(BattlefieldWG* battlefield, TeamId teamInControl);
-
-        void LinkToWorkshop(WintergraspWorkshop* workshop) { m_Workshop = workshop; }
-
-        void ChangeTeam(TeamId oldteam) override;
-        TeamId GetTeam() const { return m_team; }
-
-    protected:
-        WintergraspWorkshop* m_Workshop;
 };
 
 /* ######################### *
@@ -275,7 +311,7 @@ class BattlefieldWG : public Battlefield
          * - Update imunity aura from graveyard
          * \param diff : time elapsed since the last call (in ms)
          */
-        bool Update(uint32 diff) override;
+        void Update(uint32 diff) override;
 
         /**
          * \brief Called when a creature is created
@@ -322,6 +358,9 @@ class BattlefieldWG : public Battlefield
          */
         bool SetupBattlefield() override;
 
+        void prepareDelete() override;
+        void switchSide() override;
+
         /// Return pointer to relic object
         GameObject* GetRelic() { return GetGameObject(m_titansRelicGUID); }
 
@@ -353,18 +392,36 @@ class BattlefieldWG : public Battlefield
         // returns the graveyardId in the specified area.
         uint8 GetSpiritGraveyardId(uint32 areaId) const;
 
+        // Initialize : building GO and Spawns
+        void FillBuildings();
+        void FillGraveyards();
+        void FillWorkshops();
+        void SpawnPortalAndDefenders();
+        void SpawnMapGuards();
+
+        void UpdateAttackers();
+        void UpdateDefenders();
+        void UpdateWorkshopsAndGraves();
+
         uint32 GetData(uint32 data) const override;
 
-    protected:
+        bool isCreatureGuard(Creature* creature)
+        {
+            return creature->GetEntry() == BATTLEFIELD_WG_NPC_GUARD_H
+                || creature->GetEntry() == BATTLEFIELD_WG_NPC_GUARD_A;
+        }
+
+    private:
         bool m_isRelicInteractible;
 
-        WorkshopVect Workshops;
+        WintergraspGraveyardVect m_WG;
+        WintergraspCapturePointVect m_WCP;
+        WorkshopVect m_Workshops;
+        GameObjectBuildingVect m_BuildingsInZone;
 
         GuidVector DefenderPortalList[PVP_TEAMS_COUNT];
-        GameObjectBuildingVect BuildingsInZone;
-
+        GuidVector MapGuards;
         GuidUnorderedSet m_vehicles[PVP_TEAMS_COUNT];
-        GuidVector CanonList;
 
         TeamId m_tenacityTeam;
         uint32 m_tenacityStack;
@@ -373,17 +430,7 @@ class BattlefieldWG : public Battlefield
         ObjectGuid m_titansRelicGUID;
 };
 
-enum WintergraspGameObjectBuildingType
-{
-    BATTLEFIELD_WG_OBJECTTYPE_DOOR,
-    BATTLEFIELD_WG_OBJECTTYPE_TITANRELIC,
-    BATTLEFIELD_WG_OBJECTTYPE_WALL,
-    BATTLEFIELD_WG_OBJECTTYPE_DOOR_LAST,
-    BATTLEFIELD_WG_OBJECTTYPE_KEEP_TOWER,
-    BATTLEFIELD_WG_OBJECTTYPE_TOWER
-};
-
-enum WintergraspGameObjectState
+enum WintergraspGameObjectState : uint32
 {
     BATTLEFIELD_WG_OBJECTSTATE_NONE,
     BATTLEFIELD_WG_OBJECTSTATE_NEUTRAL_INTACT,
@@ -468,7 +515,9 @@ enum WintergraspText
     BATTLEFIELD_WG_TEXT_SW_KEEPTOWER_DESTROY            = 36,
 
     BATTLEFIELD_WG_TEXT_RANK_CORPORAL                   = 37,
-    BATTLEFIELD_WG_TEXT_RANK_FIRST_LIEUTENANT           = 38
+    BATTLEFIELD_WG_TEXT_RANK_FIRST_LIEUTENANT           = 38,
+
+    BATTLEFIELD_WG_TEXT_LOW_LEVEL_PLAYER_REMOVE         = 39
 };
 
 enum WintergraspGameObject
@@ -480,10 +529,10 @@ enum WintergraspGameObject
 
     GO_WINTERGRASP_TITAN_S_RELIC                 = 192829,
 
-    GO_WINTERGRASP_FORTRESS_TOWER_1              = 190221,
-    GO_WINTERGRASP_FORTRESS_TOWER_2              = 190373,
-    GO_WINTERGRASP_FORTRESS_TOWER_3              = 190377,
-    GO_WINTERGRASP_FORTRESS_TOWER_4              = 190378,
+    GO_WINTERGRASP_FORTRESS_TOWER_1              = 190221, // NW
+    GO_WINTERGRASP_FORTRESS_TOWER_2              = 190373, // SW
+    GO_WINTERGRASP_FORTRESS_TOWER_3              = 190377, // SE
+    GO_WINTERGRASP_FORTRESS_TOWER_4              = 190378, // NE
 
     GO_WINTERGRASP_SHADOWSIGHT_TOWER             = 190356,
     GO_WINTERGRASP_WINTER_S_EDGE_TOWER           = 190357,
@@ -495,88 +544,6 @@ enum WintergraspGameObject
     GO_WINTERGRASP_KEEP_COLLISION_WALL           = 194323
 };
 
-// ********************************************************************
-// *         Structs using for Building, Graveyard, Workshop          *
-// ********************************************************************
 
-// Structure for different buildings that can be destroyed during battle
-struct BfWGGameObjectBuilding
-{
-private:
-    // WG object
-    BattlefieldWG* _wg;
-
-    // Linked gameobject
-    ObjectGuid _buildGUID;
-
-    // the team that controls this point
-    TeamId _teamControl;
-
-    WintergraspGameObjectBuildingType _type;
-    uint32 _worldState;
-
-    WintergraspGameObjectState _state;
-
-    StaticWintergraspTowerInfo const* _staticTowerInfo;
-
-    // GameObject associations
-    GuidVector m_GameObjectList[PVP_TEAMS_COUNT];
-
-    // Creature associations
-    GuidVector m_CreatureBottomList[PVP_TEAMS_COUNT];
-    GuidVector m_CreatureTopList[PVP_TEAMS_COUNT];
-    GuidVector m_TowerCannonBottomList;
-    GuidVector m_TurretTopList;
-
-public:
-    BfWGGameObjectBuilding(BattlefieldWG* wg, WintergraspGameObjectBuildingType type, uint32 worldState);
-    void Init(GameObject* go);
-
-    ObjectGuid const& GetGUID() const { return _buildGUID; }
-
-    void Rebuild();
-    void RebuildGate();
-
-    // Called when associated gameobject is damaged
-    void Damaged();
-
-    // Called when associated gameobject is destroyed
-    void Destroyed();
-
-    void UpdateCreatureAndGo();
-
-    void UpdateTurretAttack(bool disable);
-
-    void FillInitialWorldStates(WorldPackets::WorldState::InitWorldStates& packet);
-
-    void Save();
-};
-
-// Structure for the 6 workshop
-struct WintergraspWorkshop
-{
-private:
-    BattlefieldWG* _wg;                             // Pointer to wintergrasp
-    ObjectGuid _buildGUID;
-    WintergraspGameObjectState _state;              // For worldstate
-    TeamId _teamControl;                            // Team witch control the workshop
-
-    StaticWintergraspWorkshopInfo const* _staticInfo;
-
-public:
-    WintergraspWorkshop(BattlefieldWG* wg, uint8 type);
-
-    uint8 GetId() const;
-    TeamId GetTeamControl() const { return _teamControl; }
-
-    // Called on change faction in CapturePoint class
-    void GiveControlTo(TeamId teamId, bool init = false);
-
-    void UpdateGraveyardAndWorkshop();
-
-    void FillInitialWorldStates(WorldPackets::WorldState::InitWorldStates& packet);
-
-    void Save();
-};
 
 #endif
