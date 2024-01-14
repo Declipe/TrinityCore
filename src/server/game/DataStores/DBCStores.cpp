@@ -1030,7 +1030,7 @@ void DBCMgr::LoadCharTitlesStore()
 
     } while (result->NextRow());
 
-    TC_LOG_ERROR("misc", ">> Loaded {} chartitles_dbc entries in {} ms", (unsigned long)CharTitlesStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded {} chartitles_dbc entries in {} ms", (unsigned long)CharTitlesStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void DBCMgr::LoadBattlemasterListStore()
@@ -1077,7 +1077,7 @@ void DBCMgr::LoadBattlemasterListStore()
         ++count;
     } while (result->NextRow());
 
-    TC_LOG_ERROR("misc", ">> Loaded {} battlemaster list entries in {} ms", (unsigned long)BattlemasterListStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded {} battlemaster list entries in {} ms", (unsigned long)BattlemasterListStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void DBCMgr::LoadItemExtendedCostStore()
@@ -1111,7 +1111,7 @@ void DBCMgr::LoadItemExtendedCostStore()
 
     } while (result->NextRow());
 
-    TC_LOG_ERROR("misc", ">> Loaded {} itemextendedcost entries in {} ms", (unsigned long)ItemExtendedCostStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded {} itemextendedcost entries in {} ms", (unsigned long)ItemExtendedCostStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void DBCMgr::LoadWorldSafeLocsStore()
@@ -1138,7 +1138,7 @@ void DBCMgr::LoadWorldSafeLocsStore()
         WorldSafeLocsStore[newWorldSafeLocs->ID] = newWorldSafeLocs;
     } while (result->NextRow());
 
-    TC_LOG_ERROR("misc", ">> Loaded {} WorldSafeLocs entries in {} ms", (unsigned long)WorldSafeLocsStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded {} WorldSafeLocs entries in {} ms", (unsigned long)WorldSafeLocsStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void DBCMgr::LoadPvPDifficultyStore()
@@ -1171,7 +1171,7 @@ void DBCMgr::LoadPvPDifficultyStore()
       ++count;
     } while (result->NextRow());
 
-    TC_LOG_ERROR("misc", ">> Loaded {} PvPDifficulty entries in {} ms", (unsigned long)PvPDifficultyStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded {} PvPDifficulty entries in {} ms", (unsigned long)PvPDifficultyStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void DBCMgr::LoadSpellItemEnchantmentStore()
@@ -1221,7 +1221,7 @@ void DBCMgr::LoadSpellItemEnchantmentStore()
 
     } while (result->NextRow());
 
-    TC_LOG_ERROR("misc", ">> Loaded {} SpellItemEnchantment entries in {} ms", (unsigned long)SpellItemEnchantmentStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded {} SpellItemEnchantment entries in {} ms", (unsigned long)SpellItemEnchantmentStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 /*
 void DBCMgr::LoadSpellItemEnchantmentStore()
