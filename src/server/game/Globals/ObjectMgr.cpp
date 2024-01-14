@@ -10812,7 +10812,7 @@ void ObjectMgr::LoadItemPresents()
     uint32 counter = 0;
 
    // QueryResult result = WorldDatabase.Query("SELECT PresentSlotID, ItemId from item_present_slot");
-    QueryResult result = WorldDatabase.Query("SELECT PresentSlotID, ItemId, Counts from item_present_slot");
+    QueryResult result = ZynDatabase.Query("SELECT PresentSlotID, ItemId, Counts from item_present_slot");
 
     if (!result)
     {

@@ -1,4 +1,4 @@
-#include "Custom/World_CTF.h"
+#include "Custom/Zone/World_CTF.h"
 #include "ScriptMgr.h"
 #include "Chat.h"
 #include "DatabaseEnv.h"

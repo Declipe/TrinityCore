@@ -48,7 +48,7 @@ void ItemShopMgr::_LoadItemsFromShop()
     _itemShopStore.clear();                                  // for reload case
 
     //                                                0     1        2         3            4        5
-    QueryResult result = WorldDatabase.Query("SELECT id, entryID, itemName, groupName, coinCost, gossipAction FROM item_shop");
+    QueryResult result = ZynDatabase.Query("SELECT id, entryID, itemName, groupName, coinCost, gossipAction FROM item_shop");
 
     if (!result)
     {
@@ -92,14 +92,14 @@ bool ItemShopMgr::AddItemFromShop(ItemFromShop& data)
 
     _itemShopStore[new_id] = data;
 
-    WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_INS_ITEM_FROM_SHOP);
+    ZynDatabasePreparedStatement* stmt = ZynDatabase.GetPreparedStatement(WORLD_INS_ITEM_FROM_SHOP);
     stmt->setUInt32(0, new_id);
     stmt->setUInt32(1, data.entryID);
     stmt->setString(2, data.itemName);
     stmt->setString(3, data.groupName);
     stmt->setUInt32(4, data.coinCost);
     stmt->setUInt32(5, data.gossipAction);
-    WorldDatabase.Execute(stmt);
+    ZynDatabase.Execute(stmt);
 
     return true;
 }
@@ -125,10 +125,10 @@ bool ItemShopMgr::DeleteItemFromShop(uint32 const& entryID, std::string const& g
 
     entryIDs.clear();
 
-    WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_DEL_ITEM_FROM_SHOP);
+    ZynDatabasePreparedStatement* stmt = ZynDatabase.GetPreparedStatement(WORLD_DEL_ITEM_FROM_SHOP);
     stmt->setUInt32(0, entryID);
     stmt->setString(1, groupName);
-    WorldDatabase.Execute(stmt);
+    ZynDatabase.Execute(stmt);
 
     return true;
 }

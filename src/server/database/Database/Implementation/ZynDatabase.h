@@ -25,6 +25,8 @@ enum ZynDatabaseStatements : uint32
     ZynDatabase1,
     ZynDatabase2,
     WORLD_SEL_CUSTOM_CONFIG,
+    WORLD_INS_ITEM_FROM_SHOP,
+    WORLD_DEL_ITEM_FROM_SHOP,
     MAX_ZYNDATABASE_STATEMENTS
 };
 
