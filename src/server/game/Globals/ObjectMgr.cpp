@@ -8781,7 +8781,7 @@ void ObjectMgr::LoadChatFilter()
 		count++;
 	} while (result->NextRow());
 
-	TC_LOG_ERROR("server.loading", ">> Loaded {} chat filter words in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
+	TC_LOG_INFO("server.loading", ">> Loaded {} chat filter words in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
 
 }
 
