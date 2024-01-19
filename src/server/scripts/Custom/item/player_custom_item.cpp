@@ -1311,11 +1311,26 @@ public:
 					// weapon
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/Inv_staff_13:25:25:-15:0|tWeapons - 10-20 coins", GOSSIP_SENDER_MAIN, 30);
 					// others
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/Inv_staff_13:25:25:-15:0|tbaka - 10-20 coins", GOSSIP_SENDER_MAIN, 33);
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/Inv_gizmo_khoriumpowercore:25:25:-15:0|tOthers - 5 coins", GOSSIP_SENDER_MAIN, 31);
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
 					SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
 					break;
 				}
+                case 33: // (FAMILY) cloth armor
+                {
+                    for (ItemShopContainer::const_iterator itr = itemshopMap.begin(); itr != itemshopMap.end(); ++itr)
+                    {
+                        if (itr->second.groupName == "family_baka")
+                        {
+                            std::string text = fmt::format("{} ({} coins)", itr->second.itemName, itr->second.coinCost);
+                            AddGossipItemFor(player, GOSSIP_ICON_VENDOR, text, GOSSIP_SENDER_MAIN, itr->second.gossipAction, "Are you sure you want to buy it?", 0, false);
+                        }
+                    }
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, std::string("|TInterface/ICONS/Spell_chargenegative:25:25:-15:0|t ") + "Back", GOSSIP_SENDER_MAIN, 25);
+                    SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
+                    break;
+                }
 				case 26: // (FAMILY) cloth armor
 				{
 					for (ItemShopContainer::const_iterator itr = itemshopMap.begin(); itr != itemshopMap.end(); ++itr)
