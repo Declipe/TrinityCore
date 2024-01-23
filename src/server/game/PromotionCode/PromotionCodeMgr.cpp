@@ -32,25 +32,25 @@ PromotionCodeMgr* PromotionCodeMgr::instance()
 
 PromotionCodeMgr::~PromotionCodeMgr()
 {
-    _promoCodesStore.clear();
+    promoCodesStore.clear();
 }
 
 void PromotionCodeMgr::Initialize()
 {
-    _LoadPromoCodes();
-    _LoadPromoCodesHistory();
+    LoadPromoCodes();
+    LoadPromoCodesHistory();
 }
 
 void PromotionCodeMgr::ReloadCodes()
 {
-    _LoadPromoCodes();
+    LoadPromoCodes();
 }
 
-void PromotionCodeMgr::_LoadPromoCodes()
+void PromotionCodeMgr::LoadPromoCodes()
 {
     uint32 oldMSTime = getMSTime();
 
-    _promoCodesStore.clear();                                  // for reload case
+    promoCodesStore.clear();                                  // for reload case
 
     //                                                0       1        2     3      4      5      6       7       8         9              10           11         12     13       14      15       16    17
     QueryResult result = WorldDatabase.Query("SELECT id, collection, code, honor, arena, money, item_1, item_2, item_3, item_count_1, item_count_2, item_count_3, aura, spell_1, spell_2, spell_3, coin, count_of_exists FROM promotion_codes");
@@ -89,7 +89,7 @@ void PromotionCodeMgr::_LoadPromoCodes()
         pc.coin = fields[16].GetUInt32();
         pc.exist_count = fields[17].GetUInt32();
 
-        _promoCodesStore[id] = pc;
+        promoCodesStore[id] = pc;
 
         ++count;
     } while (result->NextRow());
@@ -97,11 +97,11 @@ void PromotionCodeMgr::_LoadPromoCodes()
     TC_LOG_INFO("server.loading", ">> Loaded {} Promotion Codes in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
-void PromotionCodeMgr::_LoadPromoCodesHistory()
+void PromotionCodeMgr::LoadPromoCodesHistory()
 {
     uint32 oldMSTime = getMSTime();
 
-    _promoHistoryStore.clear();                                  // for reload case
+    promoHistoryStore.clear();                                  // for reload case
 
     //                                                0     1      2        3       4        5
     QueryResult result = WorldDatabase.Query("SELECT id, codeID, code, accountID, playerID, use_unix_time FROM promotion_codes_history");
@@ -126,7 +126,7 @@ void PromotionCodeMgr::_LoadPromoCodesHistory()
         ph.accountId = fields[3].GetUInt32();
         ph.playerGUID = fields[4].GetUInt32();
         ph.time = fields[5].GetUInt64();
-        _promoHistoryStore[id] = ph;
+        promoHistoryStore[id] = ph;
 
         ++count;
     } while (result->NextRow());
@@ -143,7 +143,7 @@ PromotionCodes const* PromotionCodeMgr::GetPromoCode(const std::string& name, ui
 
     id = 0;
 
-    for (PromotionCodesContainer::const_iterator itr = _promoCodesStore.begin(); itr != _promoCodesStore.end(); ++itr)
+    for (PromotionCodesContainer::const_iterator itr = promoCodesStore.begin(); itr != promoCodesStore.end(); ++itr)
     {
         if (itr->second.code == name)
         {
@@ -159,14 +159,14 @@ bool PromotionCodeMgr::AddPromoCode(PromotionCodes& promo)
 {
     // find max id
     uint32 new_id = 0;
-    for (PromotionCodesContainer::const_iterator itr = _promoCodesStore.begin(); itr != _promoCodesStore.end(); ++itr)
+    for (PromotionCodesContainer::const_iterator itr = promoCodesStore.begin(); itr != promoCodesStore.end(); ++itr)
         if (itr->first > new_id)
             new_id = itr->first;
 
     // use next
     ++new_id;
 
-    _promoCodesStore[new_id] = promo;
+    promoCodesStore[new_id] = promo;
 
     WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_INS_PROMO_CODE);
 
@@ -201,7 +201,7 @@ bool PromotionCodeMgr::DeletePromoCode(const std::string& name)
     if (!Utf8toWStr(name, wname))
         return false;
 
-    for (PromotionCodesContainer::iterator itr = _promoCodesStore.begin(); itr != _promoCodesStore.end(); ++itr)
+    for (PromotionCodesContainer::iterator itr = promoCodesStore.begin(); itr != promoCodesStore.end(); ++itr)
     {
         if (itr->second.code == name)
         {
@@ -211,7 +211,7 @@ bool PromotionCodeMgr::DeletePromoCode(const std::string& name)
 
             WorldDatabase.Execute(stmt);
 
-            _promoCodesStore.erase(itr);
+            promoCodesStore.erase(itr);
             return true;
         }
     }
@@ -219,11 +219,11 @@ bool PromotionCodeMgr::DeletePromoCode(const std::string& name)
     return false;
 }
 
-bool PromotionCodeMgr::_UpdateCountOfExistPromoCode(uint32 id, Player* player)
+bool PromotionCodeMgr::UpdateCountOfExistPromoCode(uint32 id, Player* player)
 {
     bool result = false;
     std::string code = "";
-    for (PromotionCodesContainer::iterator itr = _promoCodesStore.begin(); itr != _promoCodesStore.end(); ++itr)
+    for (PromotionCodesContainer::iterator itr = promoCodesStore.begin(); itr != promoCodesStore.end(); ++itr)
     {
         if (itr->first == id)
         {
@@ -245,7 +245,7 @@ bool PromotionCodeMgr::_UpdateCountOfExistPromoCode(uint32 id, Player* player)
     if (!result)
         return false;
 
-    return _AddCodeInHistory(id, code, player);
+    return AddCodeInHistory(id, code, player);
 }
 
 bool PromotionCodeMgr::CheckedEnteredCodeByPlayer(std::string const& code, Player* player, uint32 collection)
@@ -259,20 +259,20 @@ bool PromotionCodeMgr::CheckedEnteredCodeByPlayer(std::string const& code, Playe
         return false;
 
     // check from promotioncode history (1 player can not use 1 code more then 1 time)
-    if (!_CanUseCode(code, player->GetGUID().GetCounter()))
+    if (!CanUseCode(code, player->GetGUID().GetCounter()))
         return false;
 
-    uint32 codeid = _TryToRewardForCode(code, player, collection);
+    uint32 codeid = TryToRewardForCode(code, player, collection);
     if (!codeid)
         return false;
 
-    return _UpdateCountOfExistPromoCode(codeid, player);
+    return UpdateCountOfExistPromoCode(codeid, player);
 }
 
-uint32 PromotionCodeMgr::_TryToRewardForCode(std::string const& code, Player* player, uint32 collection)
+uint32 PromotionCodeMgr::TryToRewardForCode(std::string const& code, Player* player, uint32 collection)
 {
     uint32 result = 0;
-    for (PromotionCodesContainer::const_iterator itr = _promoCodesStore.begin(); itr != _promoCodesStore.end(); ++itr)
+    for (PromotionCodesContainer::const_iterator itr = promoCodesStore.begin(); itr != promoCodesStore.end(); ++itr)
     {
         if (itr->second.code == code && itr->second.exist_count)
         {
@@ -335,11 +335,11 @@ uint32 PromotionCodeMgr::_TryToRewardForCode(std::string const& code, Player* pl
     return result;
 }
 
-bool PromotionCodeMgr::_AddCodeInHistory(uint32 id, std::string const& code, Player* player)
+bool PromotionCodeMgr::AddCodeInHistory(uint32 id, std::string const& code, Player* player)
 {
     // find max id
     uint32 new_id = 0;
-    for (PromotionHistoryContainer::const_iterator itr = _promoHistoryStore.begin(); itr != _promoHistoryStore.end(); ++itr)
+    for (PromotionHistoryContainer::const_iterator itr = promoHistoryStore.begin(); itr != promoHistoryStore.end(); ++itr)
         if (itr->first > new_id)
             new_id = itr->first;
 
@@ -352,7 +352,7 @@ bool PromotionCodeMgr::_AddCodeInHistory(uint32 id, std::string const& code, Pla
     ph.accountId = player->GetSession()->GetAccountId();
     ph.playerGUID = player->GetGUID().GetCounter();
     ph.time = GameTime::GetGameTime();
-    _promoHistoryStore[new_id] = ph;
+    promoHistoryStore[new_id] = ph;
 
     WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_INS_PROMO_CODE_HISTORY);
 
@@ -368,10 +368,10 @@ bool PromotionCodeMgr::_AddCodeInHistory(uint32 id, std::string const& code, Pla
     return true;
 }
 
-bool PromotionCodeMgr::_CanUseCode(std::string const& code, ObjectGuid::LowType plrGUID)
+bool PromotionCodeMgr::CanUseCode(std::string const& code, ObjectGuid::LowType plrGUID)
 {
     bool result = true;
-    for (PromotionHistoryContainer::const_iterator itr = _promoHistoryStore.begin(); itr != _promoHistoryStore.end(); ++itr)
+    for (PromotionHistoryContainer::const_iterator itr = promoHistoryStore.begin(); itr != promoHistoryStore.end(); ++itr)
     {
         if (itr->second.playerGUID == plrGUID && itr->second.code == code)
             result = false;

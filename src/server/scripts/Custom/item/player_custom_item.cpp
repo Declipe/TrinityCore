@@ -1236,18 +1236,8 @@ public:
 				}
 				case 22:
 				{
-					if (player->HasAura(45523))
-					{
-						player->PlayerTalkClass->SendCloseGossip();
-						player->GetSession()->SendAreaTriggerMessage("%s", GTS(LANG_ITEM_MSG_RESET_COOLDOWN));
-					}
-					else
-					{
-						player->PlayerTalkClass->SendCloseGossip();
-						player->RemoveArenaSpellCooldowns(true);
-						player->GetSession()->SendAreaTriggerMessage("%s", GTS(LANG_ITEM_MSG_RESET_COOLDOWN));
-						player->CastSpell(player, 45523, true);
-					}
+				    player->RemoveArenaSpellCooldowns(true);
+                    player->PlayerTalkClass->SendCloseGossip();
 					break;
 				}
 				case 23:
@@ -1936,7 +1926,7 @@ public:
 
         if (!action)
         {
-            if (!sPromotionCodeMgr->CheckedEnteredCodeByPlayer(code, player))
+            if (!sPromotionCodeMgr->CheckedEnteredCodeByPlayer(code, player,9195))
                 ChatHandler(player->GetSession()).PSendSysMessage(LANG_PROMO_CODE_ERROR);
             else
                 ChatHandler(player->GetSession()).PSendSysMessage(LANG_PROMO_CODE_ACEPT);
@@ -1944,6 +1934,7 @@ public:
             player->PlayerTalkClass->SendCloseGossip();
             return;
         }
+        /*
 		//for GuildWars system
 		std::string guildName = code;
 
@@ -2001,7 +1992,7 @@ public:
 		  //  ChatHandler(player->GetSession()).PSendSysMessage(LANG_GSYSTEM_GW_STOP, guildName);
             player->PlayerTalkClass->SendCloseGossip();
 		}
-        
+        */
 		player->PlayerTalkClass->SendCloseGossip();
 	}
 };

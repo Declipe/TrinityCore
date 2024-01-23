@@ -70,12 +70,12 @@ class TC_GAME_API PromotionCodeMgr
         //Promo codes start
         PromotionCodes const* GetPromoCode(uint32 id) const
         {
-            PromotionCodesContainer::const_iterator itr = _promoCodesStore.find(id);
-            if (itr == _promoCodesStore.end()) return nullptr;
+            PromotionCodesContainer::const_iterator itr = promoCodesStore.find(id);
+            if (itr == promoCodesStore.end()) return nullptr;
             return &itr->second;
         }
         PromotionCodes const* GetPromoCode(std::string const& name, uint32& id) const;
-        PromotionCodesContainer const& GetPromotionCodesMap() const { return _promoCodesStore; }
+        PromotionCodesContainer const& GetPromotionCodesMap() const { return promoCodesStore; }
         bool AddPromoCode(PromotionCodes& data);
         bool DeletePromoCode(std::string const& name);
         //Promo codes end
@@ -83,18 +83,18 @@ class TC_GAME_API PromotionCodeMgr
         bool CheckedEnteredCodeByPlayer(std::string const& code, Player* player, uint32 collection = 0);
 
     protected:
-        void _LoadPromoCodes();
-        void _LoadPromoCodesHistory();
+        void LoadPromoCodes();
+        void LoadPromoCodesHistory();
 
-        uint32 _TryToRewardForCode(std::string const& code, Player* player, uint32 collection = 0);
-        bool _UpdateCountOfExistPromoCode(uint32 id, Player* player);
+        uint32 TryToRewardForCode(std::string const& code, Player* player, uint32 collection = 0);
+        bool UpdateCountOfExistPromoCode(uint32 id, Player* player);
 
-        bool _AddCodeInHistory(uint32 id, std::string const& code, Player* player);
-        bool _CanUseCode(std::string const& code, ObjectGuid::LowType plrGUID);
+        bool AddCodeInHistory(uint32 id, std::string const& code, Player* player);
+        bool CanUseCode(std::string const& code, ObjectGuid::LowType plrGUID);
 
     private:
-        PromotionCodesContainer _promoCodesStore;
-        PromotionHistoryContainer _promoHistoryStore;
+        PromotionCodesContainer promoCodesStore;
+        PromotionHistoryContainer promoHistoryStore;
 };
 
 #define sPromotionCodeMgr PromotionCodeMgr::instance()
