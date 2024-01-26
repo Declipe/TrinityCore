@@ -11,7 +11,7 @@ enum CustomCosts
 
 class  TC_GAME_API CustomExtendedCost
 {
-private:
+//private:
     uint32 GetCustomCost(uint32 creatureId, uint32 itemId);
     uint32 GetCustomValue(uint32 creatureId, uint32 itemId);
     void SendMessage(Player* player, uint32 customCost, uint32 customValue, uint32 itemId);
