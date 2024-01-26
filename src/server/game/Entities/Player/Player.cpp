@@ -15,6 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "CustomExtendedCost.h"
 #include "AnticheatMgr.h"
 #include "Player.h"
 #include "AccountMgr.h"
@@ -22177,6 +22178,9 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorguid, uint32 vendorslot, uin
             return false;
         }
     }
+
+    if (sCustomExtendedCost->IsEnabled(creature->GetEntry(), item))
+        sCustomExtendedCost->Initialize(this, creature->GetEntry(), item);
 
     if ((bag == NULL_BAG && slot == NULL_SLOT) || IsInventoryPos(bag, slot))
     {
