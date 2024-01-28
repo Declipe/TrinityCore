@@ -147,8 +147,7 @@ public:
             ChatHandler(player->GetSession()).PSendSysMessage("Success! Title added.");
             menuData = DKDatas[action].Menu;
         }
-        CloseGossipMenuFor(player);
-       // GetMenu(player, me, menuData);
+        GetMenu(player, me, menuData);
         return true;
     }
 };
