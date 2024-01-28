@@ -79,7 +79,7 @@ inline uint32 GetMaxLevelForExpansion(uint32 expansion)
         case EXPANSION_THE_BURNING_CRUSADE:
             return 70;
         case EXPANSION_WRATH_OF_THE_LICH_KING:
-            return 80;
+            return 255;
         default:
             break;
     }
