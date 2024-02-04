@@ -4790,7 +4790,7 @@ void ObjectMgr::LoadPlayerInfo()
                 continue;
             }
 
-            uint32 current_level = fields[2].GetUInt8();
+            uint32 current_level = fields[2].GetUInt64();
             if (current_level > sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL))
             {
                 if (current_level > STRONG_MAX_LEVEL)        // hardcoded level maximum
@@ -4810,7 +4810,7 @@ void ObjectMgr::LoadPlayerInfo()
 
                 PlayerLevelInfo& levelInfo = info->levelInfo[current_level - 1];
                 for (uint8 i = 0; i < MAX_STATS; ++i)
-                    levelInfo.stats[i] = fields[i + 3].GetUInt8();
+                    levelInfo.stats[i] = fields[i + 3].GetUInt64();
             }
 
             ++count;
