@@ -560,14 +560,14 @@ void AddSC_battle_royal_rewards() {
     new item_battle_royal_reward_title_deadly_gladiator();
     new item_battle_royal_reward_title_flame_keeper();
     new item_battle_royal_reward_title_grunt();
-    new item_battle_royal_reward_title_knight_champion();
+   // new item_battle_royal_reward_title_knight_champion();
     new item_battle_royal_reward_title_merrymaker();
-    new item_battle_royal_reward_title_vanquisher();
+   // new item_battle_royal_reward_title_vanquisher();
 
     // Win Title Rewards
-    new item_battle_royal_reward_title_bane_of_fallen_king();
+    //new item_battle_royal_reward_title_bane_of_fallen_king();
     new item_battle_royal_reward_title_crusader();
-    new item_battle_royal_reward_title_champion();
+   // new item_battle_royal_reward_title_champion();
     new item_battle_royal_reward_title_celestial_defender();
 
     /* Mounts */

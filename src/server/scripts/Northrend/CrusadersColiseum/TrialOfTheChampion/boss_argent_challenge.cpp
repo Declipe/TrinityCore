@@ -688,10 +688,12 @@ class spell_paletress_summon_memory : public SpellScriptLoader
 
 void AddSC_boss_argent_challenge()
 {
+    /*
     new boss_eadric();
     new spell_eadric_radiance();
     new boss_paletress();
     new npc_memory();
     new npc_argent_soldier();
     new spell_paletress_summon_memory();
+    */
 }

@@ -289,5 +289,5 @@ public:
 
 void AddSC_instance_trial_of_the_champion()
 {
-    new instance_trial_of_the_champion();
+   // new instance_trial_of_the_champion();
 }
