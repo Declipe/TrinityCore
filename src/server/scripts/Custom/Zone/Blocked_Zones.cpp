@@ -1,24 +1,24 @@
 #include "ScriptMgr.h"
 #include "Player.h"
 #include "WorldSession.h"
-#include "Config.h"
+#include "CustomConfig.h"
 
 class Blocked_Zones : public PlayerScript
 {
 public:
 	Blocked_Zones() : PlayerScript("Blocked_Zones") {}
 
-	bool bzEnable = sConfigMgr->GetBoolDefault("BZ.Enable", false);
+	bool bzEnable = sGameConfig->GetBoolConfig("BZ.Enable", false);
 
-	uint32 bzVipZoneID = sConfigMgr->GetIntDefault("BZ.VIP.ZoneID", 0);
-	uint32 bzVipRequiresAccountRank = sConfigMgr->GetIntDefault("BZ.VIP.Requires.AccountRank", 0);
-	uint32 bzVipRequiresItemEntry = sConfigMgr->GetIntDefault("BZ.VIP.Requires.ItemEntry", 0);
-	uint32 bzVipRequiresItemCount = sConfigMgr->GetIntDefault("BZ.VIP.Requires.ItemCount", 0);
+	uint32 bzVipZoneID = sGameConfig->GetIntConfig("BZ.VIP.ZoneID", 0);
+	uint32 bzVipRequiresAccountRank = sGameConfig->GetIntConfig("BZ.VIP.Requires.AccountRank", 0);
+	uint32 bzVipRequiresItemEntry = sGameConfig->GetIntConfig("BZ.VIP.Requires.ItemEntry", 0);
+	uint32 bzVipRequiresItemCount = sGameConfig->GetIntConfig("BZ.VIP.Requires.ItemCount", 0);
 
-	uint32 bzGmZoneID = sConfigMgr->GetIntDefault("BZ.GM.ZoneID", 0);
-	uint32 bzGmRequiresAccountRank = sConfigMgr->GetIntDefault("BZ.GM.Requires.AccountRank", 0);
-	uint32 bzGmRequiresItemEntry = sConfigMgr->GetIntDefault("BZ.GM.Requires.ItemEntry", 0);
-	uint32 bzGmRequiresItemCount = sConfigMgr->GetIntDefault("BZ.GM.Requires.ItemCount", 0);
+	uint32 bzGmZoneID = sGameConfig->GetIntConfig("BZ.GM.ZoneID", 0);
+	uint32 bzGmRequiresAccountRank = sGameConfig->GetIntConfig("BZ.GM.Requires.AccountRank", 0);
+	uint32 bzGmRequiresItemEntry = sGameConfig->GetIntConfig("BZ.GM.Requires.ItemEntry", 0);
+	uint32 bzGmRequiresItemCount = sGameConfig->GetIntConfig("BZ.GM.Requires.ItemCount", 0);
 
 	bool IsReady(Player* player, uint32 newZone, uint32 zoneID, uint32 requiresAccountRank, uint32 requiresItemEntry, uint32 requiresItemCount)
 	{

@@ -83,7 +83,7 @@ public:
     void OnLogin(Player* player, bool /*firstLogin*/) override
     {
         // Announce Module
-        if (sConfigMgr->GetBoolDefault("SoloLFG.Announce", true))
+        if (sGameConfig->GetBoolConfig("SoloLFG.Announce", true))
         {
             ChatHandler(player->GetSession()).SendSysMessage("This server is running |cff4CFF00Solo Dungeon Finder|r.");
         }
@@ -97,7 +97,7 @@ public:
 
     void OnLogin(Player* /*player*/, bool /*firstLogin*/) override
     {
-        if (sConfigMgr->GetIntDefault("SoloLFG.Enable", true))
+        if (sGameConfig->GetBoolConfig("SoloLFG.Enable", true))
         {
             if (!sLFGMgr->IsSoloLFG())
             {
