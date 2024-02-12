@@ -959,7 +959,7 @@ bool Item::GemsFitSockets() const
             ItemTemplate const* gemProto = sObjectMgr->GetItemTemplate(gemid);
             if (gemProto)
             {
-                GemPropertiesEntry const* gemProperty = sGemPropertiesStore.LookupEntry(gemProto->GemProperties);
+                GemPropertiesEntry const* gemProperty = sDBCMgr->GetGemPropertiesEntry(gemProto->GemProperties);
                 if (gemProperty)
                     GemColor = gemProperty->Type;
             }

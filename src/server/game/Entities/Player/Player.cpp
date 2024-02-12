@@ -22405,7 +22405,7 @@ bool Player::EnchantmentFitsRequirements(uint32 enchantmentcondition, int8 slot)
                 if (!gemProto)
                     continue;
 
-                GemPropertiesEntry const* gemProperty = sGemPropertiesStore.LookupEntry(gemProto->GemProperties);
+                GemPropertiesEntry const* gemProperty = sDBCMgr->GetGemPropertiesEntry(gemProto->GemProperties);
                 if (!gemProperty)
                     continue;
 

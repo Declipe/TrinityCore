@@ -126,7 +126,7 @@ TC_GAME_API extern DBCStorage <FactionEntry>                 sFactionStore;
 TC_GAME_API extern DBCStorage <FactionTemplateEntry>         sFactionTemplateStore;
 TC_GAME_API extern DBCStorage <GameObjectArtKitEntry>        sGameObjectArtKitStore;
 TC_GAME_API extern DBCStorage <GameObjectDisplayInfoEntry>   sGameObjectDisplayInfoStore;
-TC_GAME_API extern DBCStorage <GemPropertiesEntry>           sGemPropertiesStore;
+//TC_GAME_API extern DBCStorage <GemPropertiesEntry>           sGemPropertiesStore;
 TC_GAME_API extern DBCStorage <GlyphPropertiesEntry>         sGlyphPropertiesStore;
 TC_GAME_API extern DBCStorage <GlyphSlotEntry>               sGlyphSlotStore;
 
@@ -213,6 +213,7 @@ TC_GAME_API extern DBCStorage <WorldMapOverlayEntry>         sWorldMapOverlaySto
 
 TC_GAME_API void LoadDBCStores(const std::string& dataPath);
 
+typedef std::unordered_map<uint32, GemPropertiesEntry*> GemPropertiesContainer;
 typedef std::unordered_map<uint32, WorldSafeLocsEntry*> WorldSafeLocsContainer;
 typedef std::unordered_map<uint32, ItemExtendedCostEntry*> ItemExtendedCostContainer;
 typedef std::unordered_map<uint32, CharTitlesEntry*> CharTitlesContainer;
@@ -237,6 +238,7 @@ public:
     void LoadItemExtendedCostStore();
     void LoadCharTitlesStore();
     void LoadBattlemasterListStore();
+    void LoadGemPropertiesStore();
 
     const SpellItemEnchantmentEntry* GetSpellItemEnchantmentEntry(uint32 ID) const { SpellItemEnchantmentContainer::const_iterator itr = SpellItemEnchantmentStore.find(ID); if (itr != SpellItemEnchantmentStore.end()) return itr->second; return nullptr; }
     const PvPDifficultyEntry* GetPvPDifficultyEntry(uint32 Id) const { PvPDifficultyContainer::const_iterator itr = PvPDifficultyStore.find(Id); if (itr != PvPDifficultyStore.end()) return itr->second; return nullptr; }
@@ -244,6 +246,7 @@ public:
     const WorldSafeLocsEntry* GetWorldSafeLocsEntry(uint32 Id) const { WorldSafeLocsContainer::const_iterator itr = WorldSafeLocsStore.find(Id); if (itr != WorldSafeLocsStore.end()) return itr->second; return nullptr; }
     const CharTitlesEntry* GetCharTitlesEntry(uint32 ID) const { CharTitlesContainer::const_iterator itr = CharTitlesStore.find(ID); if (itr != CharTitlesStore.end()) return itr->second; return nullptr; }
     const BattlemasterListEntry* GetBattlemasterListEntry(uint32 ID) const { BattlemasterListContainer::const_iterator itr = BattlemasterListStore.find(ID); if (itr != BattlemasterListStore.end()) return itr->second; return nullptr; }
+    const GemPropertiesEntry* GetGemPropertiesEntry(uint32 Id) const { GemPropertiesContainer::const_iterator itr = GemPropertiesStore.find(Id); if (itr != GemPropertiesStore.end()) return itr->second; return nullptr; }
 
     SpellItemEnchantmentContainer SpellItemEnchantmentStore;
     PvPDifficultyContainer PvPDifficultyStore;
@@ -251,6 +254,7 @@ public:
     ItemExtendedCostContainer ItemExtendedCostStore;
     CharTitlesContainer CharTitlesStore;
     BattlemasterListContainer BattlemasterListStore;
+    GemPropertiesContainer GemPropertiesStore;
 };
 
 #define sDBCMgr DBCMgr::instance()

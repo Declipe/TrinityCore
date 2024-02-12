@@ -93,7 +93,7 @@ DBCStorage <FactionTemplateEntry> sFactionTemplateStore(FactionTemplateEntryfmt)
 DBCStorage <GameObjectArtKitEntry> sGameObjectArtKitStore(GameObjectArtKitfmt);
 
 DBCStorage <GameObjectDisplayInfoEntry> sGameObjectDisplayInfoStore(GameObjectDisplayInfofmt);
-DBCStorage <GemPropertiesEntry> sGemPropertiesStore(GemPropertiesEntryfmt);
+//DBCStorage <GemPropertiesEntry> sGemPropertiesStore(GemPropertiesEntryfmt);
 DBCStorage <GlyphPropertiesEntry> sGlyphPropertiesStore(GlyphPropertiesfmt);
 DBCStorage <GlyphSlotEntry> sGlyphSlotStore(GlyphSlotfmt);
 
@@ -322,7 +322,8 @@ void LoadDBCStores(const std::string& dataPath)
     LOAD_DBC(sFactionTemplateStore,               "FactionTemplate.dbc");
     LOAD_DBC(sGameObjectArtKitStore,              "GameObjectArtKit.dbc");
     LOAD_DBC(sGameObjectDisplayInfoStore,         "GameObjectDisplayInfo.dbc");
-    LOAD_DBC(sGemPropertiesStore,                 "GemProperties.dbc");
+    sDBCMgr->LoadGemPropertiesStore();
+   // LOAD_DBC(sGemPropertiesStore,                 "GemProperties.dbc");
     LOAD_DBC(sGlyphPropertiesStore,               "GlyphProperties.dbc");
     LOAD_DBC(sGlyphSlotStore,                     "GlyphSlot.dbc");
     LOAD_DBC(sGtBarberShopCostBaseStore,          "gtBarberShopCostBase.dbc");
@@ -670,7 +671,7 @@ void LoadDBCStores(const std::string& dataPath)
     // Check loaded DBC files proper version
     if (!sAreaTableStore.LookupEntry(4987)         ||       // last area added in 3.3.5a
        // !sCharTitlesStore.LookupEntry(177)         ||       // last char title added in 3.3.5a
-        !sGemPropertiesStore.LookupEntry(1629)     ||       // last gem property added in 3.3.5a
+        !sDBCMgr->GetGemPropertiesEntry(1629)     ||       // last gem property added in 3.3.5a
         !sItemStore.LookupEntry(56806)             ||       // last client known item added in 3.3.5a
         !sDBCMgr->GetItemExtendedCostEntry(2997)  ||       // last item extended cost added in 3.3.5a
         !sMapStore.LookupEntry(724)                ||       // last map added in 3.3.5a
@@ -1223,6 +1224,32 @@ void DBCMgr::LoadSpellItemEnchantmentStore()
 
     TC_LOG_INFO("server.loading", ">> Loaded {} SpellItemEnchantment entries in {} ms", (unsigned long)SpellItemEnchantmentStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
+void DBCMgr::LoadGemPropertiesStore()
+{
+    uint32 oldMSTime = getMSTime();
+    GemPropertiesStore.clear();
+
+    QueryResult result = ZynDatabase.Query("SELECT ID, Enchant_Id, Type FROM gempropertiesdbc");
+    if (!result)
+    {
+        TC_LOG_ERROR("server.loading", ">> Loaded 0 GemProperties entry. DB table `GemProperties dbc` is empty.");
+        return;
+    }
+
+    do {
+        Field* fields = result->Fetch();
+
+        GemPropertiesEntry* newGemProperties = new GemPropertiesEntry;
+        newGemProperties->ID = fields[0].GetUInt32();
+        newGemProperties->EnchantID = fields[1].GetUInt32();
+        newGemProperties->Type = fields[2].GetUInt32();
+        GemPropertiesStore[newGemProperties->ID] = newGemProperties;
+
+    } while (result->NextRow());
+
+    TC_LOG_INFO("misc", ">> Loaded {} GemProperties entries in {} ms", (unsigned long)GemPropertiesStore.size(), GetMSTimeDiffToNow(oldMSTime));
+}
+
 /*
 void DBCMgr::LoadSpellItemEnchantmentStore()
 {

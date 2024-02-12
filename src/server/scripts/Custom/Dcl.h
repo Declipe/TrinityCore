@@ -18,6 +18,7 @@
 #include "DBCStores.h"
 #include "DBCStructure.h"
 #include "DatabaseEnvFwd.h"
+#include "DisableMgr.h"
 #include "GameTime.h"
 #include "Guild.h"
 #include "GuildMgr.h"
