@@ -150,7 +150,9 @@ Battleground::~Battleground()
         DelObject(i);
 
 #ifdef ELUNA
-    sEluna->OnBGDestroy(this, GetTypeID(), GetInstanceID());
+    if (BattlegroundMap* bg = FindBgMap())
+        if (Eluna* e = bg->GetEluna())
+            e->OnBGDestroy(this, GetTypeID(), GetInstanceID());
 #endif
 
     sBattlegroundMgr->RemoveBattleground(GetTypeID(), GetInstanceID());
@@ -467,7 +469,8 @@ inline void Battleground::_ProcessJoin(uint32 diff)
         StartingEventOpenDoors();
 
 #ifdef ELUNA
-        sEluna->OnBGStart(this, GetTypeID(), GetInstanceID());
+        if (Eluna* e = GetBgMap()->GetEluna())
+            e->OnBGStart(this, GetTypeID(), GetInstanceID());
 #endif
 
         if (StartMessageIds[BG_STARTING_EVENT_FOURTH])
@@ -853,7 +856,8 @@ void Battleground::EndBattleground(uint32 winner)
 
 #ifdef ELUNA
     //the type of the winner,change Team to BattlegroundTeamId,it could be better.
-    sEluna->OnBGEnd(this, GetTypeID(), GetInstanceID(), Team(winner));
+    if (Eluna* e = GetBgMap()->GetEluna())
+        e->OnBGEnd(this, GetTypeID(), GetInstanceID(), Team(winner));
 #endif
 }
 
@@ -1029,10 +1033,6 @@ void Battleground::StartBattleground()
     // This must be done here, because we need to have already invited some players when first BG::Update() method is executed
     // and it doesn't matter if we call StartBattleground() more times, because m_Battlegrounds is a map and instance id never changes
     sBattlegroundMgr->AddBattleground(this);
-
-#ifdef ELUNA
-    sEluna->OnBGCreate(this, GetTypeID(), GetInstanceID());
-#endif
 
     if (m_IsRated)
         TC_LOG_DEBUG("bg.arena", "Arena match type: {} for Team1Id: {} - Team2Id: {} started.", m_ArenaType, m_ArenaTeamIds[TEAM_ALLIANCE], m_ArenaTeamIds[TEAM_HORDE]);

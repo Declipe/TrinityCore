@@ -825,7 +825,8 @@ uint32 Player::EnvironmentalDamage(EnviromentalDamage type, uint32 damage)
         UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DEATHS_FROM, 1, type);
 
 #ifdef ELUNA
-        sEluna->OnPlayerKilledByEnvironment(this, type);
+        if (Eluna* e = GetEluna())
+            e->OnPlayerKilledByEnvironment(this, type);
 #endif
     }
 
@@ -3615,7 +3616,8 @@ void Player::LearnSpell(uint32 spell_id, bool dependent, uint32 fromSkill /*= 0*
         SendDirectMessage(&data);
 
 #ifdef ELUNA
-        sEluna->OnLearnSpell(this, spell_id);
+        if (Eluna* e = GetEluna())
+            e->OnLearnSpell(this, spell_id);
 #endif
     }
 
@@ -4671,7 +4673,8 @@ void Player::ResurrectPlayer(float restore_percent, bool applySickness)
     CastAllObtainSpells();
 
 #ifdef ELUNA
-    sEluna->OnResurrect(this);
+    if (Eluna* e = GetEluna())
+        e->OnResurrect(this);
 #endif
     if (!applySickness)
         return;
@@ -5892,7 +5895,8 @@ bool Player::UpdateSkillPro(uint16 SkillId, int32 Chance, uint32 step)
         }
 
 #ifdef ELUNA
-        sEluna->OnSkillChange(this, SkillId, SkillNewValue);
+        if (Eluna* e = GetEluna())
+            e->OnSkillChange(this, SkillId, SkillNewValue);
 #endif
         UpdateSkillEnchantments(SkillId, SkillValue, SkillNewValue);
         UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL, SkillId);
@@ -6530,6 +6534,10 @@ void Player::CheckAreaExploreAndOutdoor()
 
     if (!(currFields & val))
     {
+#ifdef ELUNA
+        if (Eluna* e = GetEluna())
+            e->OnDiscoverArea(this, GetAreaId());
+#endif
         SetUInt32Value(PLAYER_EXPLORED_ZONES_1 + offset, (uint32)(currFields | val));
 
         UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EXPLORE_AREA, GetAreaId());
@@ -7158,8 +7166,9 @@ void Player::UpdateArea(uint32 newArea)
 
 #ifdef ELUNA
     // We only want the hook to trigger when the old and new area is actually different
-    if(oldArea != newArea)
-        sEluna->OnUpdateArea(this, oldArea, newArea);
+    if (Eluna* e = GetEluna())
+        if(oldArea != newArea)
+            e->OnUpdateArea(this, oldArea, newArea);
 #endif
 }
 
@@ -11970,9 +11979,12 @@ InventoryResult Player::CanUseItem(ItemTemplate const* proto) const
             return EQUIP_ERR_NONE;
 
 #ifdef ELUNA
-    InventoryResult eres = sEluna->OnCanUseItem(this, proto->ItemId);
-    if (eres != EQUIP_ERR_OK)
-        return eres;
+    if (Eluna* e = GetEluna())
+    {
+        InventoryResult eres = e->OnCanUseItem(this, proto->ItemId);
+        if (eres != EQUIP_ERR_OK)
+            return eres;
+    }
 #endif
 
     return EQUIP_ERR_OK;
@@ -12199,7 +12211,8 @@ Item* Player::StoreNewItem(ItemPosCountVec const& dest, uint32 item, bool update
         }
 
 #ifdef ELUNA
-        sEluna->OnAdd(this, pItem);
+        if (Eluna* e = GetEluna())
+            e->OnAdd(this, pItem);
 #endif
     }
     return pItem;
@@ -12446,7 +12459,8 @@ Item* Player::EquipItem(uint16 pos, Item* pItem, bool update)
         ApplyEquipCooldown(pItem2);
 
 #ifdef ELUNA
-        sEluna->OnEquip(this, pItem2, bag, slot);
+        if (Eluna* e = GetEluna())
+            e->OnEquip(this, pItem2, bag, slot);
 #endif
         return pItem2;
     }
@@ -12459,7 +12473,8 @@ Item* Player::EquipItem(uint16 pos, Item* pItem, bool update)
     UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM, slot, pItem->GetEntry());
 
 #ifdef ELUNA
-        sEluna->OnEquip(this, pItem, bag, slot);
+    if (Eluna* e = GetEluna())
+        e->OnEquip(this, pItem, bag, slot);
 #endif
     return pItem;
 }
@@ -12487,7 +12502,8 @@ void Player::QuickEquipItem(uint16 pos, Item* pItem)
         UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM, slot, pItem->GetEntry());
 
 #ifdef ELUNA
-        sEluna->OnEquip(this, pItem, (pos >> 8), slot);
+        if (Eluna* e = GetEluna())
+            e->OnEquip(this, pItem, (pos >> 8), slot);
 #endif
     }
 }
@@ -15166,7 +15182,8 @@ void Player::AddQuestAndCheckCompletion(Quest const* quest, Object* questGiver)
             PlayerTalkClass->ClearMenus();
 
 #ifdef ELUNA
-            sEluna->OnQuestAccept(this, questGiver->ToCreature(), quest);
+            if (Eluna* e = GetEluna())
+                e->OnQuestAccept(this, questGiver->ToCreature(), quest);
 #endif
             questGiver->ToCreature()->AI()->OnQuestAccept(this, quest);
 
@@ -15203,7 +15220,8 @@ void Player::AddQuestAndCheckCompletion(Quest const* quest, Object* questGiver)
             PlayerTalkClass->ClearMenus();
 
 #ifdef ELUNA
-            sEluna->OnQuestAccept(this, questGiver->ToGameObject(), quest);
+            if (Eluna* e = GetEluna())
+                e->OnQuestAccept(this, questGiver->ToGameObject(), quest);
 #endif
             questGiver->ToGameObject()->AI()->OnQuestAccept(this, quest);
 
@@ -16343,7 +16361,8 @@ QuestGiverStatus Player::GetQuestDialogStatus(Object* questgiver)
         case TYPEID_GAMEOBJECT:
         {
 #ifdef ELUNA
-            sEluna->GetDialogStatus(this, questgiver->ToGameObject());
+            if (Eluna* e = GetEluna())
+                e->GetDialogStatus(this, questgiver->ToGameObject());
 #endif
             if (auto ai = questgiver->ToGameObject()->AI())
                 if (auto questStatus = ai->GetDialogStatus(this))
@@ -16355,7 +16374,8 @@ QuestGiverStatus Player::GetQuestDialogStatus(Object* questgiver)
         case TYPEID_UNIT:
         {
 #ifdef ELUNA
-            sEluna->GetDialogStatus(this, questgiver->ToCreature());
+            if (Eluna* e = GetEluna())
+                e->GetDialogStatus(this, questgiver->ToCreature());
 #endif
             if (auto ai = questgiver->ToCreature()->AI())
                 if (auto questStatus = ai->GetDialogStatus(this))
@@ -25250,7 +25270,8 @@ void Player::StoreLootItem(uint8 lootSlot, Loot* loot)
             sLootItemStorage->RemoveStoredLootItemForContainer(loot->containerID, item->itemid, item->count, item->itemIndex);
 
 #ifdef ELUNA
-        sEluna->OnLootItem(this, newitem, item->count, this->GetLootGUID());
+        if (Eluna* e = GetEluna())
+            e->OnLootItem(this, newitem, item->count, this->GetLootGUID());
 #endif
     }
     else
@@ -25669,7 +25690,8 @@ void Player::LearnTalent(uint32 talentId, uint32 talentRank)
     SetFreeTalentPoints(CurTalentPoints - (talentRank - curtalent_maxrank + 1));
 
 #ifdef ELUNA
-    sEluna->OnLearnTalents(this, talentId, talentRank, spellid);
+    if (Eluna* e = GetEluna())
+        e->OnLearnTalents(this, talentId, talentRank, spellid);
 #endif
 }
 

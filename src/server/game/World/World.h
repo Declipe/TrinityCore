@@ -35,6 +35,9 @@
 #include <map>
 #include <unordered_map>
 
+#ifdef ELUNA
+class Eluna;
+#endif
 class Player;
 class WorldPacket;
 class WorldSession;
@@ -823,6 +826,11 @@ class TC_GAME_API World
         void LoadGuildBonusInfo();
         uint8 GetReqGuildLevelForBonus(uint8 guildBonus);
         uint8 SelectReqGuildLevelForBonus(uint8 guildBonus);
+
+#ifdef ELUNA
+        Eluna* GetEluna() const { return eluna; }
+        Eluna* eluna;
+#endif
 
     protected:
         void _UpdateGameTime();
