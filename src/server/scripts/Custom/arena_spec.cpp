@@ -266,7 +266,7 @@ public:
 
         // check for arena preperation
         // if exists than battle didn`t begin
-        if (target && target->HasAura(32728) || target->HasAura(32727))
+        if (target && (target->HasAura(32728)) || (target->HasAura(32727)))
         {
             handler->PSendSysMessage("You can't do that. The Arena match didn't start yet.");
             handler->SetSentErrorMessage(true);

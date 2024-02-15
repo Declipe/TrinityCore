@@ -398,7 +398,7 @@ void TransmogDisplayVendorMgr::HandleTransmogrify(Player* player, Creature* /*cr
             {
                 if (fakeItemTemplate->DisplayInfoID == itemTransmogrifier->DisplayInfoID)
                 {
-                    player->GetSession()->SendNotification("{} already transmogrified with {}", slotname, getItemName(itemTransmogrifier, player->GetSession()).c_str());
+                    player->GetSession()->SendNotification("%s already transmogrified with %s", slotname, getItemName(itemTransmogrifier, player->GetSession()).c_str());
                     return;
                 }
             }
@@ -478,7 +478,7 @@ void TransmogDisplayVendorMgr::HandleTransmogrify(Player* player, Creature* /*cr
                 }
                 else
                 {
-                    player->GetSession()->SendNotification("You do not have enough {}s", getItemName(sObjectMgr->GetItemTemplate(TransmogDisplayVendorMgr::TokenEntry), player->GetSession()).c_str());
+                    player->GetSession()->SendNotification("You do not have enough %s", getItemName(sObjectMgr->GetItemTemplate(TransmogDisplayVendorMgr::TokenEntry), player->GetSession()).c_str());
                     return; // LANG_ERR_TRANSMOG_NOT_ENOUGH_TOKENS
                 }
             }
@@ -521,7 +521,7 @@ void TransmogDisplayVendorMgr::HandleTransmogrify(Player* player, Creature* /*cr
             //itemTransmogrifier->ClearSoulboundTradeable(player);
         }
 
-        player->GetSession()->SendAreaTriggerMessage("{} transmogrified", slotname);
+        player->GetSession()->SendAreaTriggerMessage("%s transmogrified", slotname);
         //return LANG_ERR_TRANSMOG_OK;
     }
 }
