@@ -102,13 +102,13 @@ void PunishPlayerForBadWord(Player* _sender, uint32 _muteTime = 0, uint32 _freez
         _sender->CastSpell(_sender, SPELL_STUN_SELF_VISUAL, false);
         _sender->CastSpell(_sender, SPELL_STUN_SELF_ONE_SEC, false);
         _sender->GetSession()->m_muteTime = time(NULL) + (_muteTime / 1000);
-        _sender->GetSession()->SendNotification("Your chat has been disabled for {} minutes and {} seconds because you've used bad words.", (_muteTime / 60000), ((_muteTime % 60000) / 1000));
+        _sender->GetSession()->SendNotification("Your chat has been disabled for %u minutes and %u seconds because you've used bad words.", (_muteTime / 60000), ((_muteTime % 60000) / 1000));
     }
 
     if (_freezeTime != 0)
     {
         _sender->CastSpell(_sender, SPELL_FREEZE, false);
-        _sender->GetSession()->SendNotification("You have been frozen for {} minutes and {} seconds for using bad words.", (_freezeTime / 60000), ((_freezeTime % 60000) / 1000));
+        _sender->GetSession()->SendNotification("You have been frozen for %u minutes and %u seconds for using bad words.", (_freezeTime / 60000), ((_freezeTime % 60000) / 1000));
         _sender->SetFreezeStunTimer(true, _freezeTime);
     }
 
@@ -130,7 +130,7 @@ void PunishPlayerForBadWord(Player* _sender, uint32 _muteTime = 0, uint32 _freez
     if (_stunTime != 0)
     {
         _sender->CastSpell(_sender, SPELL_STUN, false);
-        _sender->GetSession()->SendNotification("You have been stunned for {} minutes and {} seconds for using bad words.", (_stunTime / 60000), ((_stunTime % 60000) / 1000));
+        _sender->GetSession()->SendNotification("You have been stunned for %u minutes and %u seconds for using bad words.", (_stunTime / 60000), ((_stunTime % 60000) / 1000));
         _sender->SetFreezeStunTimer(false, _stunTime);
     }
 }

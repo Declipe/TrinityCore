@@ -88,7 +88,7 @@ public:
                         if (!item)
                         {
                             if (const char* slotname = TransmogDisplayVendorMgr::getSlotName(action, player->GetSession()))
-                                session->SendNotification("No item equipped in {} slot", slotname);
+                                session->SendNotification("No item equipped in %s slot", slotname);
                             OnGossipHello(player, creature);
                             return true;
                         }
@@ -143,7 +143,7 @@ public:
                         if (player->PlayerTalkClass->GetGossipMenu().GetMenuItemCount() <= 1)
                         {
                             if (const char* slotname = TransmogDisplayVendorMgr::getSlotName(action, player->GetSession()))
-                                session->SendNotification("No transmogrifications available for {}", slotname);
+                                session->SendNotification("No transmogrifications available for %s", slotname);
                             OnGossipHello(player, creature);
                             return true;
                         }
@@ -189,16 +189,16 @@ public:
                             {
                                 TransmogDisplayVendorMgr::DeleteFakeEntry(player, newItem);
                                 if (slotname)
-                                    session->SendAreaTriggerMessage("{} transmogrification removed", slotname);
+                                    session->SendAreaTriggerMessage("%s transmogrification removed", slotname);
                             }
                             else if (slotname)
                             {
-                                session->SendNotification("No transmogrification on {} slot", slotname);
+                                session->SendNotification("No transmogrification on %s slot", slotname);
                             }
                         }
                         else if (slotname)
                         {
-                            session->SendNotification("No item equipped in {} slot", slotname);
+                            session->SendNotification("No item equipped in %s slot", slotname);
                         }
                         OnGossipSelect(player, creature, SENDER_REMOVE_MENU, 0);
                     } break;

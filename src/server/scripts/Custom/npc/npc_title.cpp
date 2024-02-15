@@ -96,7 +96,7 @@ public:
 
         npc_titleAI(Creature* me) : ScriptedAI(me) { }
 
-    void GetMenu(Player* player, Creature* creature, uint32 menuId)
+    void GetMenu(Player* player, Creature* /*creature*/, uint32 menuId)
     {
         for (uint8 i = 0; i < (sizeof(DKDatas) / sizeof(*DKDatas)); i++)
         {
@@ -108,7 +108,7 @@ public:
     }
 
     //bool OnGossipHello(Player* player, Creature* creature)
-    bool OnGossipHello(Player* player)
+    bool OnGossipHello(Player* player) override
     {
         GetMenu(player, me, 1);
         return true;
@@ -122,7 +122,7 @@ public:
     }
 
    // bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action)
-    bool GossipSelect(Player* player, uint32 sender, uint32 action)
+    bool GossipSelect(Player* player, uint32 /*sender*/, uint32 action)
     {
         player->PlayerTalkClass->ClearMenus();
 

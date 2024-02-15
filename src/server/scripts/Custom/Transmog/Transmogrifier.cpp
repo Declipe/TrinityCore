@@ -149,7 +149,7 @@ public:
                             }
                         }
                         if (removed)
-                            session->SendAreaTriggerMessage("{}", GTS(LANG_ERR_UNTRANSMOG_OK));
+                            session->SendAreaTriggerMessage("%s", GTS(LANG_ERR_UNTRANSMOG_OK));
                         else
                             session->SendNotification(LANG_ERR_UNTRANSMOG_NO_TRANSMOGS);
                         OnGossipHello(player, creature);
@@ -163,7 +163,7 @@ public:
                                 newItem->transmog = 0;
                                 newItem->SetState(ITEM_CHANGED, player);
                                 sTransmogrification->UpdateItem(player, newItem);
-                                session->SendAreaTriggerMessage("{}", GTS(LANG_ERR_UNTRANSMOG_OK));
+                                session->SendAreaTriggerMessage("%s", GTS(LANG_ERR_UNTRANSMOG_OK));
                             }
                             else
                                 session->SendNotification(LANG_ERR_UNTRANSMOG_NO_TRANSMOGS);
@@ -316,7 +316,7 @@ public:
                         // sender = slot, action = display
                         TransmogTrinityStrings res = sTransmogrification->Transmogrify(player, ObjectGuid(HighGuid::Item, 0, action), sender);
                         if (res == LANG_ERR_TRANSMOG_OK)
-                            session->SendAreaTriggerMessage("{}", GTS(LANG_ERR_TRANSMOG_OK));
+                            session->SendAreaTriggerMessage("%s", GTS(LANG_ERR_TRANSMOG_OK));
                         else
                             session->SendNotification(res);
                         // OnGossipSelect(player, EQUIPMENT_SLOT_END, sender);

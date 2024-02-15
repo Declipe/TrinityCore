@@ -256,7 +256,7 @@ public:
             return GossipSelect(player, sender, action);
         }
 
-        bool GossipSelect(Player* player, uint32 sender, uint32 action)
+        bool GossipSelect(Player* player, uint32 /*sender*/, uint32 action)
         {
             if (!player || !me)
                 return true;

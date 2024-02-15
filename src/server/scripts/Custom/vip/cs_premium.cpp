@@ -33,7 +33,7 @@ public:
 			{ "home",          HandleVipHomeCommand,         rbac::RBAC_PERM_COMMAND_VIP_HOME,  Console::No },
 			{ "teles",         HandleTelesNameCommand,       rbac::RBAC_PERM_COMMAND_VIP_HOMEs,  Console::No },
 			{ "status",        HandleVipStatusCommand,       rbac::RBAC_HandleVipStatusCommand,  Console::No },
-			{ "gbuff",         HandleGuildBuffCommand,       rbac::RBAC_PERM_COMMAND_GXP_BUFF,  Console::No },
+			{ "gbuff",         HandleGuildBuffCommand,       rbac::RBAC_PERM_COMMAND_GXP_BUFF,  Console::No }
 			//{ "qcomplete", rbac::RBAC_PERM_COMMAND_VIP_qcomplete, false, &HandleQuestCompletes, "" },
 		};
 
@@ -53,7 +53,7 @@ public:
 		return commandTable;
 	}
 
-    static bool HandleGuildBuffCommand(ChatHandler* handler, const char* args)
+    static bool HandleGuildBuffCommand(ChatHandler* handler)
     {
         Player* me = handler->GetSession()->GetPlayer();
         Guild* guild = me->GetGuild();
@@ -93,7 +93,7 @@ public:
         return true;
     }
     
-	static bool HandleVipStatusCommand(ChatHandler* handler, char const* args)
+	static bool HandleVipStatusCommand(ChatHandler* handler, const char* args)
 	{
 		uint32 accountId;
 
@@ -133,7 +133,7 @@ public:
 
 		return true;
 	}
-	/* static bool HandleQuestCompletes(ChatHandler* handler, char const* args)
+	/* static bool HandleQuestCompletes(ChatHandler* handler, const char* args)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -405,7 +405,7 @@ public:
 		return true;
 	}
 
-	static bool HandlePremiumBankCommand(ChatHandler* handler, char const* /*args*/)
+	static bool HandlePremiumBankCommand(ChatHandler* handler, const char* /*args*/)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -462,7 +462,7 @@ public:
 		return true;
 	}
 
-	static bool HandleVipResetTalentsCommand(ChatHandler* handler, char const* /*args*/)
+	static bool HandleVipResetTalentsCommand(ChatHandler* handler, const char* /*args*/)
 	{
 		Player *_player = handler->GetSession()->GetPlayer();
 
@@ -523,7 +523,7 @@ public:
 		return true;
 	}
 	//bag
-	static bool HandlePremiumMailCommand(ChatHandler* handler, char const* args)
+	static bool HandlePremiumMailCommand(ChatHandler* handler)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -579,7 +579,7 @@ public:
 		return true;
 	}
 
-	static bool HandleVipjoinArathiCommand(ChatHandler* handler, char const* /*args*/)
+	static bool HandleVipjoinArathiCommand(ChatHandler* handler, const char* /*args*/)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -631,7 +631,7 @@ public:
 		return true;
 	}
 
-	static bool HandleVipjoinEyeCommand(ChatHandler* handler, char const* /*args*/)
+	static bool HandleVipjoinEyeCommand(ChatHandler* handler, const char* /*args*/)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -683,7 +683,7 @@ public:
 		return true;
 	}
 
-	static bool HandleVipjoinWarsongCommand(ChatHandler* handler, char const* /*args*/)
+	static bool HandleVipjoinWarsongCommand(ChatHandler* handler, const char* /*args*/)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -735,7 +735,7 @@ public:
 		return true;
 	}
 
-	static bool HandleVipjoinAlteracCommand(ChatHandler* handler, char const* /*args*/)
+	static bool HandleVipjoinAlteracCommand(ChatHandler* handler, const char* /*args*/)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -786,7 +786,7 @@ public:
 		return true;
 	}
 
-	static bool HandleVipjoinArenaCommand(ChatHandler* handler, char const* /*args*/)
+	static bool HandleVipjoinArenaCommand(ChatHandler* handler, const char* /*args*/)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -837,7 +837,7 @@ public:
 		return true;
 	}
 
-	static bool HandleVipbuffsCommand(ChatHandler* handler, char const* /*args*/)
+	static bool HandleVipbuffsCommand(ChatHandler* handler, const char* /*args*/)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -913,7 +913,7 @@ public:
 		return true;
 	}
 
-	static bool HandleAppearCommand(ChatHandler* handler, char const* args)
+	static bool HandleAppearCommand(ChatHandler* handler, const char* args)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -1090,7 +1090,7 @@ public:
 		return true;
 	}
 
-	static bool HandleChangeRaceCommand(ChatHandler* handler, char const* /*args*/)
+	static bool HandleChangeRaceCommand(ChatHandler* handler, const char* /*args*/)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -1148,7 +1148,7 @@ public:
 		return true;
 	}
 
-	static bool HandleCustomizeCommand(ChatHandler* handler, char const* /*args*/)
+	static bool HandleCustomizeCommand(ChatHandler* handler, const char* /*args*/)
 	{
 
 		Player* _player = handler->GetSession()->GetPlayer();
@@ -1207,7 +1207,7 @@ public:
 		return true;
 	}
 
-	static bool HandleVipTaxiCommand(ChatHandler* handler, char const* /*args*/)
+	static bool HandleVipTaxiCommand(ChatHandler* handler, const char* /*args*/)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -1267,7 +1267,7 @@ public:
 		return true;
 	}
 
-	static bool HandleVipHomeCommand(ChatHandler* handler, char const* /*args*/)
+	static bool HandleVipHomeCommand(ChatHandler* handler, const char* /*args*/)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -1325,7 +1325,7 @@ public:
 		return true;
 	}
 
-	static bool HandleVipDebuffCommand(ChatHandler* handler, char const* /*args*/)
+	static bool HandleVipDebuffCommand(ChatHandler* handler, const char* /*args*/)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -1384,7 +1384,7 @@ public:
 		return true;
 	}
 
-	static bool HandleVipMapCommand(ChatHandler* handler, char const* /*args*/)
+	static bool HandleVipMapCommand(ChatHandler* handler, const char* /*args*/)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -1439,7 +1439,7 @@ public:
 		return true;
 	}
 
-	static bool HandleVipRepairCommand(ChatHandler* handler, char const* /*args*/)
+	static bool HandleVipRepairCommand(ChatHandler* handler, const char* /*args*/)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -1498,7 +1498,7 @@ public:
 		return true;
 	}
 
-	static bool HandleVipCapitalCommand(ChatHandler* handler, char const* /*args*/)
+	static bool HandleVipCapitalCommand(ChatHandler* handler, const char* /*args*/)
 	{
 		Player* _player = handler->GetSession()->GetPlayer();
 
@@ -1559,7 +1559,7 @@ public:
 		return true;
 	}
 
-    static bool HandleCoinCommand(ChatHandler* handler, char const* /*args*/)
+    static bool HandleCoinCommand(ChatHandler* handler, const char* /*args*/)
     {
         Player* _player = handler->GetSession()->GetPlayer();
         if (!_player)

@@ -798,18 +798,17 @@ public:
     {
         static ChatCommandTable commandTable =
         {
-            //{ "gladiator",      SEC_ADMINISTRATOR,  false, &HandleGladiatorsChatCommand,       "" }
-            { "gladiator",           HandleGladiatorsChatCommand,  rbac::RBAC_HandleGladiatorsChatCommand,         Console::Yes },
+            { "gladiator",           HandleGladiatorsChatCommand,  rbac::RBAC_HandleGladiatorsChatCommand,         Console::Yes }
         };
         return commandTable;
     }
 
-    static bool HandleGladiatorsChatCommand(ChatHandler* /*handler*/, char const* args)
+    static bool HandleGladiatorsChatCommand(ChatHandler* /*handler*/, const char* args)
     {
         if (!TournamentEnable || !*args)
             return false;
 
-        std::string param = (char*)args;
+        std::string param = args;
 
         if (param == "reload")
         {

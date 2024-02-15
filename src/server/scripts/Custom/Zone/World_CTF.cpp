@@ -406,16 +406,16 @@ public: CTF_commands() : CommandScript("CTF_commands") { };
 
 		static ChatCommandTable CTFCommandTable =
 		{
-			{ "setup",	HandleCTFSetupCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//, "world capture-the-flag command to display current settings for players." },
-            { "list",	HandleCTFPlayerLeaderBoard,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//, "Player Leaderboard." },
-            { "tele",	HandleCTFTeleCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//, "use .tele x where x is the id or null to tele to current active flag." },
-			{ "cycle",	HandleCTFCycleCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//, "use to cycle a new current active flag ." },
-            { "add",	HandleCTFAddCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No }//, "use to add a new flag ." },
+			{ "setup",	HandleCTFSetupCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//world capture-the-flag command to display current settings for players
+            { "list",	HandleCTFPlayerLeaderBoard,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//Player Leaderboard
+            { "tele",	HandleCTFTeleCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//use tele x where x is the id or null to tele to current active flag
+			{ "cycle",	HandleCTFCycleCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//use to cycle a new current active flag
+            { "add",	HandleCTFAddCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No }//use to add a new flag
         };
 
 		static ChatCommandTable commandTable =
 		{
-			{ "ctf", CTFCommandTable },//"custom world capture the flag commands by Grumbo."
+			{ "ctf", CTFCommandTable },//custom world capture the flag commands
 		};
 
 		return commandTable;
@@ -535,7 +535,7 @@ static bool HandleCTFTeleCommand(ChatHandler* handler, const char* args)
             uint32 id = 1;
 
             if (*args)
-                id = (uint32)atoi((char*)args);
+                id = (uint32)atoi(args);
 
             if (sGCTF->WorldFlags[id].id == id)
             {
