@@ -953,8 +953,8 @@ class spell_gen_clone_weapon_aura : public AuraScript
                         if (offItem->transmog)
                             target->SetVirtualItem(0, offItem->transmog);
                         else
-                            if (uint32 entry = TransmogDisplayVendorMgr::GetFakeEntry(offItem))
-                                target->SetVirtualItem(0, entry);
+                        if (uint32 entry = TransmogDisplayVendorMgr::GetFakeEntry(offItem))
+                            target->SetVirtualItem(1, entry);
                         else
                             target->SetVirtualItem(1, offItem->GetEntry());
                     }
@@ -974,7 +974,7 @@ class spell_gen_clone_weapon_aura : public AuraScript
                         if (rangedItem->transmog)
                         target->SetVirtualItem(0, rangedItem->transmog);
                         else if (uint32 entry = TransmogDisplayVendorMgr::GetFakeEntry(rangedItem))
-                            target->SetVirtualItem(0, entry);
+                            target->SetVirtualItem(2, entry);
                         else
                             target->SetVirtualItem(2, rangedItem->GetEntry());
                     }

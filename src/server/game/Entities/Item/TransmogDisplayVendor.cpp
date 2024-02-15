@@ -375,7 +375,7 @@ void TransmogDisplayVendorMgr::HandleTransmogrify(Player* player, Creature* /*cr
     if (!itemTransmogrified)
     {
         TC_LOG_DEBUG("custom.transmog", "TransmogDisplayVendorMgr::HandleTransmogrify - {} ({}) tried to transmogrify an invalid item in a valid slot (slot: {}).", player->GetName(), player->GetGUID().ToString(), slot);
-        player->GetSession()->SendNotification("No item in {} slot", slotname);
+        player->GetSession()->SendNotification("No item in %s slot", slotname);
         return; // LANG_ERR_TRANSMOG_MISSING_DEST_ITEM
     }
 
