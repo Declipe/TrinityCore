@@ -412,7 +412,7 @@ public:
                         std::ostringstream ss;
                         for (auto const & k_v : items)
                             ss << uint32(k_v.first) << ' ' << k_v.second << ' ';
-                        CharacterDatabase.PExecute("REPLACE INTO `custom_transmogrification_sets` (`Owner`, `PresetID`, `SetName`, `SetData`) VALUES ({}, {}, \"{}\", \"{}\")", player->GetGUID().GetCounter(), uint32(presetID), name.c_str(), ss.str().c_str());
+                        CharacterDatabase.PExecute("REPLACE INTO `custom_transmogrification_sets` (`Owner`, `PresetID`, `SetName`, `SetData`) VALUES ({}, {}, \"{}\", \"{}\")", player->GetGUID().GetCounter(), uint32(presetID), name, ss.str());
                     }
                 }
             }

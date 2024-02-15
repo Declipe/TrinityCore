@@ -951,7 +951,7 @@ class spell_gen_clone_weapon_aura : public AuraScript
                     if (Item* offItem = player->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND))
                     {
                         if (offItem->transmog)
-                            target->SetVirtualItem(0, offItem->transmog);
+                            target->SetVirtualItem(1, offItem->transmog);
                         else
                         if (uint32 entry = TransmogDisplayVendorMgr::GetFakeEntry(offItem))
                             target->SetVirtualItem(1, entry);
@@ -972,7 +972,7 @@ class spell_gen_clone_weapon_aura : public AuraScript
                     if (Item* rangedItem = player->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_RANGED))
                     {
                         if (rangedItem->transmog)
-                        target->SetVirtualItem(0, rangedItem->transmog);
+                        target->SetVirtualItem(2, rangedItem->transmog);
                         else if (uint32 entry = TransmogDisplayVendorMgr::GetFakeEntry(rangedItem))
                             target->SetVirtualItem(2, entry);
                         else
