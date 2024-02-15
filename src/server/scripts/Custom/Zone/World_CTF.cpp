@@ -410,7 +410,7 @@ public: CTF_commands() : CommandScript("CTF_commands") { };
             { "list",	HandleCTFPlayerLeaderBoard,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//, "Player Leaderboard." },
             { "tele",	HandleCTFTeleCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//, "use .tele x where x is the id or null to tele to current active flag." },
 			{ "cycle",	HandleCTFCycleCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//, "use to cycle a new current active flag ." },
-            { "add",	HandleCTFAddCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//, "use to add a new flag ." },
+            { "add",	HandleCTFAddCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No }//, "use to add a new flag ." },
         };
 
 		static ChatCommandTable commandTable =

@@ -49,7 +49,7 @@ public:
 		return true;
 	}
 
-	void OnUpdateZone(Player* player, uint32 newZone, uint32 newArea)
+	void OnUpdateZone(Player* player, uint32 newZone, uint32 /*newArea*/)
 	{
 		IsReady(player, newZone, bzVipZoneID, bzVipRequiresAccountRank, bzVipRequiresItemEntry, bzVipRequiresItemCount);
 		IsReady(player, newZone, bzGmZoneID, bzGmRequiresAccountRank, bzGmRequiresItemEntry, bzGmRequiresItemCount);
