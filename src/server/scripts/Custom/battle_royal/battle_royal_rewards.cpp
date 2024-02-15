@@ -43,7 +43,7 @@ public:
     item_battle_royal_reward_title_vanquisher() : ItemScript(
         "item_battle_royal_reward_title_vanquisher") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantTitleReward(VANQUISHER, player);
     }
@@ -54,7 +54,7 @@ public:
     item_battle_royal_reward_title_battlemaster() : ItemScript(
         "item_battle_royal_reward_title_battlemaster") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantTitleReward(BATTLEMASTER, player);
     }
@@ -65,7 +65,7 @@ public:
     item_battle_royal_reward_title_commander() : ItemScript(
         "item_battle_royal_reward_title_commander") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantTitleReward(COMMANDER, player);
     }
@@ -76,7 +76,7 @@ public:
     item_battle_royal_reward_title_grunt() : ItemScript(
         "item_battle_royal_reward_title_grunt") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantTitleReward(GRUNT, player);
     }
@@ -87,7 +87,7 @@ public:
     item_battle_royal_reward_title_brutual_gladiator() : ItemScript(
         "item_battle_royal_reward_title_brutual_gladiator") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantTitleReward(BRUTAL_GLADIATOR, player);
     }
@@ -98,7 +98,7 @@ public:
     item_battle_royal_reward_title_knight_champion() : ItemScript(
         "item_battle_royal_reward_title_knight_champion") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantTitleReward(KNIGHT_CHAMPION, player);
     }
@@ -109,7 +109,7 @@ public:
     item_battle_royal_reward_title_flame_keeper() : ItemScript(
         "item_battle_royal_reward_title_flame_keeper") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantTitleReward(FLAME_KEEPER, player);
     }
@@ -120,7 +120,7 @@ public:
     item_battle_royal_reward_title_deadly_gladiator() : ItemScript(
         "item_battle_royal_reward_title_deadly_gladiator") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantTitleReward(DEADLY_GLADIATOR, player);
     }
@@ -131,7 +131,7 @@ public:
     item_battle_royal_reward_title_merrymaker() : ItemScript(
         "item_battle_royal_reward_title_merrymaker") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantTitleReward(MERRYMAKER, player);
     }
@@ -142,7 +142,7 @@ public:
     item_battle_royal_reward_title_blood_guard() : ItemScript(
         "item_battle_royal_reward_title_blood_guard") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantTitleReward(BLOOD_GUARD, player);
     }
@@ -153,7 +153,7 @@ public:
     item_battle_royal_reward_title_bane_of_fallen_king() : ItemScript(
         "item_battle_royal_reward_title_bane_of_fallen_king") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantTitleReward(BANE_OF_FALLEN_KING, player);
     }
@@ -164,7 +164,7 @@ public:
     item_battle_royal_reward_title_champion() : ItemScript(
         "item_battle_royal_reward_title_champion") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantTitleReward(CHAMPION, player);
     }
@@ -175,7 +175,7 @@ public:
     item_battle_royal_reward_title_blood_sail() : ItemScript(
         "item_battle_royal_reward_title_blood_sail") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantTitleReward(BLOODSAIL, player);
     }
@@ -186,7 +186,7 @@ public:
     item_battle_royal_reward_title_crusader() : ItemScript(
         "item_battle_royal_reward_title_crusader") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantTitleReward(CRUSADER, player);
     }
@@ -197,7 +197,7 @@ public:
     item_battle_royal_reward_title_celestial_defender() : ItemScript(
         "item_battle_royal_reward_title_celestial_defender") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantTitleReward(CELESTIAL_DEFENDER, player);
     }
@@ -211,7 +211,7 @@ public:
     item_battle_royal_reward_mount_magic_rooster() : ItemScript(
         "item_battle_royal_reward_mount_magic_rooster") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantMountReward(MAGIC_ROOSTER, player);
     }
@@ -222,7 +222,7 @@ public:
     item_battle_royal_reward_mount_brewfest_ram() : ItemScript(
         "item_battle_royal_reward_mount_brewfest_ram") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantMountReward(BREWFEST_RAM, player);
     }
@@ -233,7 +233,7 @@ public:
     item_battle_royal_reward_mount_amani_warbear() : ItemScript(
         "item_battle_royal_reward_mount_amani_warbear") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantMountReward(AMANI_WAR_BEAR, player);
     }
@@ -244,7 +244,7 @@ public:
     item_battle_royal_reward_mount_zulian_tiger() : ItemScript(
         "item_battle_royal_reward_mount_zulian_tiger") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantMountReward(ZULIAN_TIGER, player);
     }
@@ -255,7 +255,7 @@ public:
     item_battle_royal_reward_mount_fiery_warhorse() : ItemScript(
         "item_battle_royal_reward_mount_fiery_warhorse") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
         return grantMountReward(FIERY_WARHORSE, player);
     }
@@ -266,7 +266,7 @@ public:
     item_battle_royal_reward_mount_war_stead() : ItemScript(
         "item_battle_royal_reward_mount_war_stead") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
 
         switch (player->GetTeam()) {
@@ -285,7 +285,7 @@ public:
     item_battle_royal_reward_mount_dark_riding_talbuk() : ItemScript(
         "item_battle_royal_reward_mount_dark_riding_talbuk") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
 
         return grantMountReward(DARK_RIDING_TALBUK, player);
@@ -298,7 +298,7 @@ public:
     item_battle_royal_reward_mount_spectral_tiger() : ItemScript(
         "item_battle_royal_reward_mount_spectral_tiger") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
 
         return grantMountReward(SPECTRAL_TIGER, player);
@@ -311,7 +311,7 @@ public:
     item_battle_royal_reward_mount_raven_lord() : ItemScript(
         "item_battle_royal_reward_mount_raven_lord") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
 
         return grantMountReward(RAVEN_LORD, player);
@@ -324,7 +324,7 @@ public:
     item_battle_royal_reward_mount_invincible() : ItemScript(
         "item_battle_royal_reward_mount_invincible") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
 
         return grantMountReward(INVINCIBLE, player);
@@ -337,7 +337,7 @@ public:
     item_battle_royal_reward_mount_ashes_of_alar() : ItemScript(
         "item_battle_royal_reward_mount_ashes_of_alar") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
 
         return grantMountReward(ASHES_OF_ALAR, player);
@@ -350,7 +350,7 @@ public:
     item_battle_royal_reward_mount_brewfest_kodo() : ItemScript(
         "item_battle_royal_reward_mount_brewfest_kodo") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
 
         return grantMountReward(BREWFEST_KODO, player);
@@ -363,7 +363,7 @@ public:
     item_battle_royal_reward_mount_celestial_steed() : ItemScript(
         "item_battle_royal_reward_mount_celestial_steed") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
 
         return grantMountReward(CELESTIAL_STEED, player);
@@ -376,7 +376,7 @@ public:
     item_battle_royal_reward_season_1_shirt() : ItemScript(
         "item_battle_royal_reward_season_1_shirt") {}
 
-    bool OnUse(Player *player, Item *item,
+    bool OnUse(Player *player, Item */*item*/,
                SpellCastTargets const & /*targets*/) override {
 
         if (!player->HasAura(SEASON_1_EFFECT)) {

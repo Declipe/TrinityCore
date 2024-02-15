@@ -107,7 +107,7 @@ class event_npc_firelord : public CreatureScript
             uint32 m_uiFuryTimer;
             uint32 m_uiBurningBiteTimer;
 
-            void Reset()
+            void Reset() override
             {
                 m_uiSunbeamTimer       =  urand(10000, 30000);
                 m_uiScorchTimer        =  urand(10000, 35000);
@@ -123,7 +123,7 @@ class event_npc_firelord : public CreatureScript
                 me->SetReactState(REACT_DEFENSIVE);
             }
 
-            void JustSummoned(Creature *summon)
+            void JustSummoned(Creature *summon) override
             {
                 if (Unit *pTarget = SelectTarget(SelectTargetMethod::Random))
                 {
@@ -136,25 +136,25 @@ class event_npc_firelord : public CreatureScript
                 summons.Summon(summon);
             }
 
-            void JustEngagedWith(Unit* /*pWho*/)
+            void JustEngagedWith(Unit* /*pWho*/) override
             {
                 Talk(FIRE_SAY_AGGRO);
                 DoCastSelf(SPELL_MANA_BARRIER, true);
                 summons.DespawnAll();
             }
 
-            void EnterEvadeMode(EvadeReason why)
+            void EnterEvadeMode(EvadeReason why) override
             {
                 ScriptedAI::EnterEvadeMode(why);
             }
             
-            void KilledUnit(Unit *victim)
+            void KilledUnit(Unit* victim) override
             {
                 if (victim->GetTypeId() == TYPEID_PLAYER)
                     Talk(FIRE_SAY_KILL);
             }
             
-            void JustDied(Unit* /*killer*/)
+            void JustDied(Unit* /*killer*/) override
             {
                 Talk(FIRE_SAY_DIE);
             }
@@ -172,7 +172,7 @@ class event_npc_firelord : public CreatureScript
                  }
                     };
                         
-            void UpdateAI(uint32 uiDiff)
+            void UpdateAI(uint32 uiDiff) override
             {
                 if (!UpdateVictim())
                     return;
@@ -1172,7 +1172,7 @@ class event_dk : public CreatureScript
             {
             }
             
-            void KilledUnit(Unit *victim)
+            void KilledUnit(Unit* /*victim*/)
             {
             }
             

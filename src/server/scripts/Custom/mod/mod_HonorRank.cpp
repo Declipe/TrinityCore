@@ -113,7 +113,7 @@ struct CustomRewardPvPTemplate
     int8 req_type_is_battleground;
     int8 req_type_is_arena;
     uint16 req_zone_id;
-    int16 req_map_id;
+    uint16 req_map_id;
     uint32 req_target_race_mask;
     uint32 req_target_class_mask;
     uint32 req_self_race_mask;
@@ -251,7 +251,7 @@ class Mod_CustomRewardPvP_PlayerScript : public PlayerScript
         if (!CustomRewardPvPEnable || killed->HasAura(15007) || killer->GetGUID().GetCounter() == killed->GetGUID().GetCounter())
             return;
 
-        uint32 killerGuid = killer->GetGUID().GetCounter();
+        //uint32 killerGuid = killer->GetGUID().GetCounter();
         uint32 killedGuid = killed->GetGUID().GetCounter();
         bool isBattleground = killer->InBattleground();
         bool isArea = killer->InArena();

@@ -128,7 +128,7 @@ public:
 
 
 
-        void SpellHit(WorldObject* caster, SpellInfo const* spellInfo) override
+        void SpellHit(WorldObject* /*caster*/, SpellInfo const* spellInfo) override
         {
 
             if (spellInfo->Id == 35395){

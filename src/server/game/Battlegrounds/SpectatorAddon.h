@@ -21,8 +21,8 @@
 #include "ScriptMgr.h"
 #include "SharedDefines.h"
 
-#define SPECTATOR_ADDON_SPELL_INTERUPTED 99999 // specific addons
-#define SPECTATOR_ADDON_SPELL_CANCELED 99998   // numbers =\
+#define SPECTATOR_ADDON_SPELL_INTERUPTED 99999
+#define SPECTATOR_ADDON_SPELL_CANCELED 99998
 
 class SpectatorAddonMsg {
     public:

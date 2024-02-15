@@ -286,7 +286,7 @@ public: CTF_Load_Conf() : WorldScript("CTF_Load_Conf") { };
 		}
 };
 
-void GCTF::SendWorldMsg(uint8 type, std::string message)
+void GCTF::SendWorldMsg(uint8 /*type*/, std::string message)
 { // type [ 1 = global via hint system // 2 = bypass hint and announce to all]
 	SessionMap sessions = sWorld->GetAllSessions();
 
@@ -347,7 +347,7 @@ public: CTF_Flag() : GameObjectScript("CTF_Flag") { };
 					return true;
 				}
 
-				void UpdateAI(uint32 diff) // override // This function updates every 1000 (I believe) and is used for the timers, etc
+				void UpdateAI(uint32 /*diff*/)  override // This function updates every 1000 (I believe) and is used for the timers, etc
 				{
                     if (sGCTF->test) { TC_LOG_INFO("server.loading", "[FLAG] UPDATE_AI"); }
 
@@ -383,11 +383,11 @@ class CTF_Player_Actions : public PlayerScript
 {
 public: CTF_Player_Actions() : PlayerScript("CTF_Player_Actions") { };
 
-		virtual void OnLogout(Player* player)
+		virtual void OnLogout(Player* /*player*/)
 		{ 
 		}
 
-		virtual void OnLogin(Player* player, bool firstLogin)
+		virtual void OnLogin(Player* player, bool /*firstLogin*/)
 		{
             uint32 guid = player->GetGUID();
 
@@ -420,7 +420,7 @@ public: CTF_commands() : CommandScript("CTF_commands") { };
 
 		return commandTable;
 	}
-static bool HandleCTFAddCommand(ChatHandler* handler, const char* args)
+static bool HandleCTFAddCommand(ChatHandler* handler, const char* /*args*/)
       {
           Player* player = handler->GetSession()->GetPlayer();
           Map* map = player->GetMap();
@@ -494,7 +494,7 @@ static bool HandleCTFAddCommand(ChatHandler* handler, const char* args)
           return true;
       }
 
-static bool HandleCTFCycleCommand(ChatHandler* handler, const char* args)
+static bool HandleCTFCycleCommand(ChatHandler* handler, const char* /*args*/)
       {
           Player* player = handler->GetSession()->GetPlayer();
 
@@ -550,7 +550,7 @@ static bool HandleCTFTeleCommand(ChatHandler* handler, const char* args)
     return true;
 }
 
-static bool HandleCTFPlayerLeaderBoard(ChatHandler* handler, const char* args)
+static bool HandleCTFPlayerLeaderBoard(ChatHandler* handler, const char* /*args*/)
 {
     Player* player = handler->GetSession()->GetPlayer();
 
@@ -569,7 +569,7 @@ static bool HandleCTFPlayerLeaderBoard(ChatHandler* handler, const char* args)
     return true;
 }
 
-static bool HandleCTFSetupCommand(ChatHandler* handler, char const* args)
+static bool HandleCTFSetupCommand(ChatHandler* handler, char const* /*args*/)
 {
     Player* player = handler->GetSession()->GetPlayer();
     uint32 guid = player->GetGUID();

@@ -207,7 +207,7 @@ void buyGuildhouse(Player *player, Creature *_creature, uint32 guildhouseId)
  uint32 myMoney = sGameConfig->GetIntConfig("GuildHouse.BuyCost");
  player->ModifyMoney(-(int32)myMoney *10000);
 
- //player->DestroyItemCount(token, cost, true);
+ player->DestroyItemCount(token, cost, true);
  _creature->Say(MSG_CONGRATULATIONS, LANG_UNIVERSAL, player);
 
 }

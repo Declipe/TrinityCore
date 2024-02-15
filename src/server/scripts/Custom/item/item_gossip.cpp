@@ -6,7 +6,7 @@ public:
 
     ItemUse_item_custom() : ItemScript("item_custom") { }
 
-    bool OnUse(Player* player, Item* item, SpellCastTargets const& targets)
+    bool OnUse(Player* player, Item* item, SpellCastTargets const& /*targets*/)
 
     {
         if ((player->IsInCombat()) || (player->IsInFlight()) || (player->isDead()))
@@ -32,7 +32,7 @@ class rip : public ItemScript
 public:
     rip() : ItemScript("rip") { }
 
-    bool OnUse(Player* player, Item* item, SpellCastTargets const& targets) override
+    bool OnUse(Player* player, Item* item, SpellCastTargets const& /*targets*/) override
     {
         if (player->IsInCombat() || player->IsInFlight() || player->GetMap()->IsBattlegroundOrArena() || player->isDead())
         {

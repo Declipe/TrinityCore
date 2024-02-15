@@ -42,7 +42,7 @@ public:
         }
 
         bool OnGossipSelect(Player *player, uint32 /*menuId*/,
-                          uint32 gossipListId) override {
+                          uint32 /*gossipListId*/) override {
             ClearGossipMenuFor(player);
             CloseGossipMenuFor(player);
             if(player->IsAlive() && !player->IsBeingTeleported()) {
@@ -87,11 +87,6 @@ public:
         void Initialize()
         {
             me->Yell("The battle royal will begin in 1 minute!", LANG_UNIVERSAL);
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-
         }
 
     private:

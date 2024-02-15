@@ -1,4 +1,4 @@
-#include "ScriptMgr.h"
+﻿#include "ScriptMgr.h"
 #include "AccountMgr.h"
 #include "ArenaTeamMgr.h"
 #include "CellImpl.h"
@@ -39,7 +39,7 @@
  public:  
         gm_hello() : PlayerScript("gm_hello") {}  
 
-    void OnLogin(Player* player, bool firstLogin)  
+    void OnLogin(Player* player, bool /*firstLogin*/)
      {  
        if (player->GetSession()->GetSecurity() == SEC_MODERATOR)  
               {  
