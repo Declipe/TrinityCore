@@ -1,31 +1,3 @@
-// © Grumboz World Capture the Flag System © 
-// © By slp13at420 of EmuDevs.com © 
-// © an EmuDevs NomSoft - Only - release © 
-// © http://emudevs.com/showthread.php/5993-CPP-Grumbo-z-Capture-the-Flag-System?p=39857#post39857
-
-// © Language:CPP © 
-// © Platform:TrinityCore © 
-// © Start:10-05-2016 © 
-// © Finish:10-07-2016 © 
-// © Release:10-07-2016 © 
-// © Primary Programmer:slp13at420 © 
-// © Secondary Programmers:none © 
-
-// © My latest version of my beloved blood shed system ;) © 
-// ©  Do NOT remove any credits © 
-// ©  Don't share/rerelease on any other site other than EmuDevs.com © 
-// © Dont attempt to claim as your own work ... © 
-
-#if TRINITY_COMPILER == TRINITY_COMPILER_GNU
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
-
-#include "AccountMgr.h"
-#include "Battleground.h"
-#include "Map.h"
-#include "SharedDefines.h"
-#include "SpellAuras.h"
-#include "World.h"
 #include "Custom/Zone/World_CTF.h"
 #include "ScriptMgr.h"
 #include "Chat.h"
@@ -47,42 +19,41 @@
 #include "WorldSession.h"
 #include <iterator>
 #include <map>
-#include "Config.h"
 #include "Common.h"
 #include <unordered_map>
 
-WorldCtf::WorldCtf() { }
+#if TRINITY_COMPILER == TRINITY_COMPILER_GNU
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 
-WorldCtf::~WorldCtf()
+GCTF::GCTF() { }
+
+GCTF::~GCTF()
 {
-    if (sWorldCtf->test) { TC_LOG_INFO("server.loading", "", ">>    <[{DEFINE + CLEAR TABLES}]>    <<"); }
-   // if (sWorldCtf->test) { TC_LOG_INFO("server.loading", ">>    <[{DEFINE + CLEAR TABLES}]>    <<"); }
+    if (sGCTF->test) { TC_LOG_INFO("server.loading", "", ">>    <[{DEFINE + CLEAR TABLES}]>    <<"); }
 
-    for (std::unordered_map<uint32, WorldFlagGps_Elements>::iterator itr = WorldFlagGps.begin(); itr != WorldFlagGps.end(); ++itr)
+    for (std::unordered_map<uint32, WorldFlags_Elements>::iterator itr = WorldFlags.begin(); itr != WorldFlags.end(); ++itr)
 		delete &itr->second;
-	for (std::unordered_map<uint32, WorldCtfPlayerInfo_Elements>::iterator itr = WorldCtfPlayerInfo.begin(); itr != WorldCtfPlayerInfo.end(); ++itr)
+    for (std::unordered_map<uint32, FlagList_Elements>::iterator itr = FlagList.begin(); itr != FlagList.end(); ++itr)
+        delete& itr->second;
+    for (std::unordered_map<uint32, WorldPlayerData_Elements>::iterator itr = WorldPlayerData.begin(); itr != WorldPlayerData.end(); ++itr)
 		delete &itr->second;
-	for (std::unordered_map<uint32, WorldCtfScore_Elements>::iterator itr = WorldCtfScore.begin(); itr != WorldCtfScore.end(); ++itr)
-		delete &itr->second;
-	for (std::unordered_map<uint8, WorldCtfAura_Elements>::iterator itr = WorldCtfAura.begin(); itr != WorldCtfAura.end(); ++itr)
-		delete &itr->second;
-	for (std::unordered_map<uint8, WorldCtfFlagInfo_Elements>::iterator itr = WorldCtfFlagInfo.begin(); itr != WorldCtfFlagInfo.end(); ++itr)
-		delete &itr->second;
+    for (std::unordered_map<uint32, PlayerLeaderBoard_Elements>::iterator itr = PlayerLeaderBoard.begin(); itr != PlayerLeaderBoard.end(); ++itr)
+        delete& itr->second;
 
-	WorldFlagGps.clear();
-	WorldCtfPlayerInfo.clear();
-	WorldCtfScore.clear();
-	WorldCtfAura.clear();
-	WorldCtfFlagInfo.clear();
+    WorldFlags.clear();
+    FlagList.clear();
+    WorldPlayerData.clear();
+    PlayerLeaderBoard.clear();
 }
 
-WorldCtf* WorldCtf::instance()
+GCTF* GCTF::instance()
 {
-	static WorldCtf instance;
+	static GCTF instance;
 	return &instance;
 }
 
-std::string WorldCtf::ConvertNumberToString(uint64 numberX)
+std::string GCTF::ConvertNumberToString(uint64 numberX)
 {
 	auto number = numberX;
 	std::stringstream convert;
@@ -93,13 +64,13 @@ std::string WorldCtf::ConvertNumberToString(uint64 numberX)
 	return number32_to_string;
 };
 
-void WorldCtf::LoadWorldFlags()
+void GCTF::LoadWorldFlags()
 {
 	// Loading prestored World Flag's info from db
 
 	uint32 flag_count = 1;
 
-	QueryResult WorldFlagGps_Query = ZynDatabase.PQuery("SELECT * FROM grumboz_wctf_flag_gps;"); // id, guid, name, map_id, area_id, zone_id, x, y, z, o
+	QueryResult WorldFlagGps_Query = WorldDatabase.PQuery("SELECT `guid`, `map`, `zoneId`, `areaId`, `position_x`, `position_y`, `position_z`, `orientation` FROM gameobject WHERE `id` = {};", sGCTF->GetDefaultWorldFlagID()); // id, guid, name, map_id, area_id, zone_id, x, y, z, o
 
 	if (WorldFlagGps_Query)
 	{
@@ -107,174 +78,176 @@ void WorldCtf::LoadWorldFlags()
 		{
 			Field* fields = WorldFlagGps_Query->Fetch();
 			uint32 guid = fields[0].GetUInt32();
-			std::string name = fields[1].GetString();
-			uint32 map_id = fields[2].GetUInt32();
+			uint32 map_id = fields[1].GetUInt32();
+			uint32 zone_id = fields[2].GetUInt32();
 			uint32 area_id = fields[3].GetUInt32();
-			uint32 zone_id = fields[4].GetUInt32();
-			float x = fields[5].GetFloat();
-			float y = fields[6].GetFloat();
-			float z = fields[7].GetFloat();
-			float o = fields[8].GetFloat();
+            float x = fields[4].GetFloat();
+            float y = fields[5].GetFloat();
+            float z = fields[6].GetFloat();
+            float o = fields[7].GetFloat();
 
-			WorldFlagGps_Elements& data = sWorldCtf->WorldFlagGps[flag_count];
+			WorldFlags_Elements& data = sGCTF->WorldFlags[guid];
 			// Save the DB values to the MyData object
 			data.id = flag_count;
 			data.guid = guid;
-			data.name = name;
 			data.map_id = map_id;
 			data.area_id = area_id;
 			data.zone_id = zone_id;
-			data.x = x;
-			data.y = y;
-			data.z = z;
-			data.o = o;
+            data.x = x;
+            data.y = y;
+            data.z = z;
+            data.o = o;
 
-			flag_count += 1;
+            FlagList_Elements& data1 = sGCTF->FlagList[flag_count];
+            // Save the DB values to the MyData object
+            data1.id = flag_count;
+            data1.guid = guid;
+
+            flag_count += 1;
 
 		} while (WorldFlagGps_Query->NextRow());
 	}
 }
 
-uint32 WorldCtf::GetFlagCtfID(uint32 guid)
+void GCTF::GenerateNewRandomFlagGps()
 {
-	if (sWorldCtf->WorldFlagGps.size() != 0)
-	{
-		uint32 id;
+    int id = 1;
 
-		for (id = 1; id < WorldFlagGps.size(); id++)
-		{
-			if (sWorldCtf->WorldFlagGps[id].guid == guid)
-			{
-				return id;
+    if (sGCTF->FlagList.size() > 0)
+    {
+        id = urand(1, sGCTF->FlagList.size());
 
-					if (sWorldCtf->test) { TC_LOG_INFO("server.loading", "GET_ACTIVE_FLAG_ID:{}", id); }
+        if (!sGCTF->FlagList[id].guid)
+        {
+            sGCTF->GenerateNewRandomFlagGps();
+        }
+    }
 
-				break;
-			}
-		}
+    sGCTF->SetActiveGO_ID(id);
 
-			if (sWorldCtf->test) { TC_LOG_INFO("server.loading", "GET_ACTIVE_FLAG_ID:{}", id); }
-	}
-	return false;
+    Map* map = sMapMgr->FindMap(sGCTF->WorldFlags[sGCTF->FlagList[id].guid].map_id, 0);
+
+    std::string map_name = map->GetMapName();
+    std::string message = "new world flag spawned at " + map_name;
+
+    sGCTF->SendWorldMsg(1, message);
+
+    if (sGCTF->test) { TC_LOG_INFO("server.loading", "GENERATE_NEW_ACTIVE_FLAG ID:{} of {}", id, sGCTF->FlagList.size()); }
 }
 
-void WorldCtf::GenerateNewRandomFlagGps()
+void GCTF::AddFlag(GameObject* go)
 {
-	int id = 1;
+    uint32 flag_count = (sGCTF->WorldFlags.size()) + 1;
+    uint32 guid = go->GetSpawnId();
 
-		if (sWorldCtf->GetWilOWhisp() && sWorldCtf->WorldFlagGps.size() > 1)
-		{
-			id = urand(1, sWorldCtf->WorldFlagGps.size()); 
+    WorldFlags_Elements& data = sGCTF->WorldFlags[guid];
+    // Save the DB values to the MyData object
+    data.id = flag_count;
+    data.guid = guid;
+    data.map_id = go->GetMapId();
+    data.area_id = go->GetAreaId();
+    data.zone_id = go->GetZoneId();
+    data.x = go->GetPositionX();
+    data.y = go->GetPositionY();
+    data.z = go->GetPositionZ();
+    data.o = go->GetOrientation();
 
-			if (!sWorldCtf->WorldFlagGps[id].guid) { sWorldCtf->GenerateNewRandomFlagGps(); }
-		}
+    FlagList_Elements& data1 = sGCTF->FlagList[flag_count];
+    // Save the DB values to the MyData object
+    data1.id = flag_count;
+    data1.guid = guid;
 
-	sWorldCtf->SetActiveGO_ID(id);
-
-	if (sWorldCtf->test) { TC_LOG_INFO("server.loading", "GENERATE_NEW_ACTIVE_FLAG ID:{}", id); }
+    if (sGCTF->test) { TC_LOG_INFO("server.loading", "ADD_NEW__FLAG ID:{}", flag_count); }
 }
 
-void WorldCtf::AddNewWorldFlag(Player* player)
+void GCTF::LoadPlayerData()
 {
-	Map* map = player->GetMap();
+    uint32 player_count = 1;
 
-	uint32 id = sWorldCtf->GetDefaultWorldFlagID() + 2;
+    QueryResult WorldPlayerData_Query = ZynDatabase.PQuery("SELECT `acct_id`, `guid`, `name`, `captures` FROM grumboz_ctf;"); // id, guid, name, map_id, area_id, zone_id, x, y, z, o
 
-	float x = player->GetPositionX();
-	float y = player->GetPositionY();
-	float z = player->GetPositionZ();
-	float o = player->GetOrientation();
+    if (WorldPlayerData_Query)
+    {
+        do
+        {
+            Field* fields = WorldPlayerData_Query->Fetch();
+            uint32 acct_id = fields[0].GetUInt32();
+            uint32 guid = fields[1].GetUInt32();
+            std::string name = fields[2].GetString();
+            uint32 captures = fields[3].GetUInt32();
 
-	int startphasemask = player->GetPhaseMask();
-	
-	GameObjectTemplate const* objectInfo = sObjectMgr->GetGameObjectTemplate(id);
+            WorldPlayerData_Elements& data = sGCTF->WorldPlayerData[guid];
+            // Save the DB values to the MyData object
+            data.acct_id = acct_id;
+            data.guid = guid;
+            data.name = name;
+            data.captures = captures;
 
-	if (objectInfo)
-	{
-		GameObject* GO = new GameObject(); // creating an empty GameObject shell.
+            player_count += 1;
 
-		ObjectGuid::LowType guidLow = map->GenerateLowGuid<HighGuid::GameObject>();
+        } while (WorldPlayerData_Query->NextRow());
+    }
 
-		QuaternionData gps = QuaternionData::fromEulerAnglesZYX(player->GetOrientation(), 0.f, 0.f);
-
-		if (!GO->Create(guidLow, id, map, startphasemask, *player, gps, 255, GO_STATE_READY)) // attempt to create a GO with the guidlow, id and fill the shell with data retrieved with id.
-		{
-			ChatHandler(player->GetSession()).PSendSysMessage("Flag build error..");
-			delete GO;
-			sWorldCtf->AddNewWorldFlag(player);
-		};
-
-		map->AddToMap(GO); // attempt to add th object to the map.
-
-		if (!GO->isSpawned())
-		{
-			ChatHandler(player->GetSession()).PSendSysMessage("Flag spawn error..");
-			delete GO;
-			sWorldCtf->AddNewWorldFlag(player);
-		}
-
-		if (GO->isSpawned())
-		{
-			GO->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()), startphasemask); // finally passes all checks, so save it to DB.
-		}
-	}
 }
 
-void WorldCtf::UpdateWorldFlagDataBase(uint8 key, uint32 guid, std::string name, uint32 map_id, uint32 area_id, uint32 zone_id, float x, float y, float z, float o)
+void GCTF::AddCharacter(Player* player)
 {
-	std::string wctf_query;
-	uint32 id;
+    std::string WorldPlayerData_Query;
+    uint32 player_count = (sGCTF->WorldPlayerData.size());
 
-	if (key == 0) // add entry
-	{
-		//wctf_query = "INSERT INTO grumboz_wctf_flag_gps VALUES('%u', '%s', '%u', '%u', '%u', '%.4f', '%.4f', '%.4f', '%.4f');"; // (`guid`, `name`, `map_id`, `area_id`, `zone_id`, `x`, `y`, `z`, `o`) 
-		wctf_query = "INSERT INTO grumboz_wctf_flag_gps VALUES('{}', '{}', '{}', '{}', '{}', '{:.4f}', '{:.4f}', '{:.4f}', '{:.4f}');";
+    uint32 acct_id = player->GetSession()->GetAccountId();
+    uint32 guid = player->GetGUID();
+    std::string name = player->GetName();
+    uint32 captures = 0;
+    
+    ZynDatabase.PExecute("INSERT INTO grumboz_ctf VALUES('{}', '{}', '{}', '0');" ,guid  , acct_id, name, captures);
 
-		id = sWorldCtf->WorldFlagGps.size() + 1;
-
-		WorldFlagGps_Elements& data = sWorldCtf->WorldFlagGps[id];
-		// Save the DB values to the MyData object
-		data.id = id;
-		data.guid = guid;
-		data.name = name;
-		data.map_id = map_id;
-		data.area_id = area_id;
-		data.zone_id = zone_id;
-		data.x = x;
-		data.y = y;
-		data.z = z;
-		data.o = o;
-
-		if (id == 1) { sWorldCtf->GenerateNewRandomFlagGps(); }
-
-		if(sWorldCtf->test) {TC_LOG_INFO("server.loading", "UPDATE_GO_DATABASE ID:{}", id); }
-	}
-
-	if (key == 1) // remove entry
-	{
-		wctf_query = "DELETE FROM grumboz_wctf_flag_gps WHERE `guid` = '{}';";
-
-		id = sWorldCtf->GetFlagCtfID(guid);
-
-		sWorldCtf->WorldFlagGps[id].guid = 0;
-	}
-
-	//if(sWorldCtf->GetFlagStorageType()) { ZynDatabase.PExecute(wctf_query, guid, name.c_str(), map_id, area_id, zone_id, x, y, z, o); }
-    if (sWorldCtf->GetFlagStorageType()) { ZynDatabase.PExecute("DELETE FROM grumboz_wctf_flag_gps WHERE `guid` = '{}';", guid, name.c_str(), map_id, area_id, zone_id, x, y, z, o); }
+    WorldPlayerData_Elements& data = sGCTF->WorldPlayerData[guid];
+    // Save the DB values to the MyData object
+    data.acct_id = acct_id;
+    data.guid = guid;
+    data.name = name;
+    data.captures = captures;
 }
 
-void WorldCtf::GenerateCoolDownTimer()
+void GCTF::UpdatePlayerLeaderBoard()
 {
-	uint32 t = sWorldCtf->GetDefaultTimerDuration();
+    PlayerLeaderBoard.clear();
 
-	if (sWorldCtf->GetTimerType()) {t = urand(t, sWorldCtf->GetDefaultTimerDuration());}
+    uint32 rank = 1;
 
-	sWorldCtf->SetCooldownTimer(t);
+    QueryResult RankQry = ZynDatabase.Query("SELECT `name`,`captures`  FROM grumboz_ctf  ORDER BY `captures` DESC;");
+    if (RankQry)
+    {
+        do
+        {
+            Field* fields = RankQry->Fetch();
+            // Save the DB values to the LocData object
+            std::string name = fields[0].GetString();
+            uint32 captures = fields[1].GetUInt32();
+
+            PlayerLeaderBoard[rank].name = name;
+            PlayerLeaderBoard[rank].captures = captures;
+
+            rank = rank + 1;
+
+        } while (RankQry->NextRow());
+    }
 }
 
-class WCTF_Load_Conf  : public WorldScript
+void GCTF::PlayerAddWin(Player* player, uint32 value)
 {
-public: WCTF_Load_Conf() : WorldScript("WCTF_Load_Conf") { };
+    uint32 guid = player->GetGUID();
+    uint32 captures = sGCTF->WorldPlayerData[guid].captures + value;
+
+    ZynDatabase.PExecute("UPDATE grumboz_ctf SET `captures` = {} WHERE `guid` = {};", captures, guid); // id, guid, name, map_id, area_id, zone_id, x, y, z, o
+
+    sGCTF->WorldPlayerData[guid].captures = captures;
+}
+
+class CTF_Load_Conf  : public WorldScript
+{
+public: CTF_Load_Conf() : WorldScript("CTF_Load_Conf") { };
 
 		virtual void OnConfigLoad(bool /*reload*/)
 		{
@@ -283,88 +256,42 @@ public: WCTF_Load_Conf() : WorldScript("WCTF_Load_Conf") { };
 			TC_LOG_INFO("server.loading", "___________________________________");
 
 			// Storing flag carrier aura ids by teamId
-			WorldCtfAura_Elements& data3 = sWorldCtf->WorldCtfAura[0];
-			data3.aura = 23335;
-			WorldCtfAura_Elements& data4 = sWorldCtf->WorldCtfAura[1];
-			data4.aura = 23333;
-
 			// Load and Store the World conf entries
-			sWorldCtf->SetWilOWhisp(sConfigMgr->GetBoolDefault("CTF.WIL_O_WHISP", true));
-			sWorldCtf->SetFlagReset(sConfigMgr->GetBoolDefault("CTF.FLAG_RESET", false));
-			sWorldCtf->SetTimerType(sConfigMgr->GetBoolDefault("CTF.CD_TIMER_TYPE", true));
-			sWorldCtf->SetDefaultTimerDurationMinimum(sConfigMgr->GetIntDefault("CTF.CD_TIMER_MINIMUM", 60));
-			sWorldCtf->SetDefaultTimerDuration(sConfigMgr->GetIntDefault("CTF.CD_TIMER", 300));
-			sWorldCtf->SetDefaultWorldFlagID(sConfigMgr->GetIntDefault("CTF.DEFAULT_WORLD_FLAG_ID", 600002));
-			sWorldCtf->SetDefaultWorldFlagScale(sConfigMgr->GetFloatDefault("CTF.DEFAULT_WORLD_FLAG_SCALE", 30.00));
-			sWorldCtf->SetHintSystem(sConfigMgr->GetIntDefault("CTF.HINT_SYSTEM", 0));
-			sWorldCtf->SetRequireFlagAura(sConfigMgr->GetBoolDefault("CTF.REQUIRE_FLAG_AURA", true));
-			sWorldCtf->SetRequiredGMMinimumRank(sConfigMgr->GetIntDefault("CTF.GM_RANK", 3));
-			sWorldCtf->SetFlagStorageType(sConfigMgr->GetBoolDefault("CTF.FLAG_STORAGE_TYPE", true));
-			sWorldCtf->SetPlayerAuraCheckerTimer(sConfigMgr->GetIntDefault("CTF.PLAYER_AURA_CHECK_TIMER", 5));
-			sWorldCtf->SetTest(sConfigMgr->GetBoolDefault("CTF.TEST", false));
+			sGCTF->SetDefaultWorldFlagID(sConfigMgr->GetIntDefault("CTF.DEFAULT_WORLD_FLAG_ID", 600002));
+			sGCTF->SetDefaultWorldFlagScale(sConfigMgr->GetFloatDefault("CTF.DEFAULT_WORLD_FLAG_SCALE", 30.00));
+			sGCTF->SetHintSystem(sConfigMgr->GetIntDefault("CTF.HINT_SYSTEM", 0));
+			sGCTF->SetRequiredGMMinimumRank(sConfigMgr->GetIntDefault("CTF.GM_RANK", 3));
+			sGCTF->SetTest(sConfigMgr->GetBoolDefault("CTF.TEST", false));
 
-			if(sWorldCtf->GetFlagStorageType()) { sWorldCtf->LoadWorldFlags(); }
+            sGCTF->LoadWorldFlags();
 
-			uint32 flag_count = sWorldCtf->WorldFlagGps.size();
+			uint32 flag_count = sGCTF->WorldFlags.size();
 
 			TC_LOG_INFO("server.loading", "- {} flag locations loaded", flag_count);
 
-				// Post Settings to console
-				if (sWorldCtf->GetWilOWhisp()) { TC_LOG_INFO("server.loading", "- Wil-o-Whisp:Active. (Random spawning)"); }
-				if (sWorldCtf->GetTimerType()) { TC_LOG_INFO("server.loading", "- Random Cooldown:Active."); }
-				if (sWorldCtf->GetHintSystem() == 0) { TC_LOG_INFO("server.loading", "- Hint System:Idle."); }
-				if (sWorldCtf->GetHintSystem() == 1) { TC_LOG_INFO("server.loading", "- Hint System:Hint to Holding Team."); }
-				if (sWorldCtf->GetHintSystem() == 2) { TC_LOG_INFO("server.loading", "- Hint System:Hint to both Teams."); }
-				if (sWorldCtf->GetRequireFlagAura()) { TC_LOG_INFO("server.loading", "- Flag Holder Aura:required."); }
-				if (!sWorldCtf->GetFlagStorageType()) { TC_LOG_INFO("server.loading", "- Storage Type:Dynamic."); }
-				if (sWorldCtf->GetFlagStorageType()) { TC_LOG_INFO("server.loading", "- Storage Type:PreStored."); }
-				if (!sWorldCtf->GetFlagReset()) { TC_LOG_INFO("server.loading", "- Flag morphs to winning team."); }
-				if (sWorldCtf->GetFlagReset()) { TC_LOG_INFO("server.loading", "- Flag resets at each capture."); }
+            sGCTF->LoadPlayerData();
 
-				TC_LOG_INFO("server.loading", "- Player aura check timer duration:{} seconds.", sWorldCtf->GetPlayerAuraCheckerTimer());
-				TC_LOG_INFO("server.loading", "- World Flag Scale Size :{:.2f}.", sWorldCtf->GetDefaultWorldFlagScale());
-				TC_LOG_INFO("server.loading", "- Minimum required GM rank:{}.", sWorldCtf->GetRequiredGMMinimumRank());
+            uint32 player_count = sGCTF->WorldPlayerData.size();
 
-				if (sWorldCtf->test) { TC_LOG_INFO("server.loading", "", ">>    <[{Test Mode Active}]>    <<"); }
+            TC_LOG_INFO("server.loading", "- {} characters loaded.", player_count);
 
-			TC_LOG_INFO("server.loading", "___________________________________");
+            // Post Settings to console
+				if (sGCTF->GetHintSystem() == 0) { TC_LOG_INFO("server.loading", "- Hint System:Idle."); }
+				if (sGCTF->GetHintSystem() == 1) { TC_LOG_INFO("server.loading", "- Hint System:Active."); }
 
-			sWorldCtf->WorldCtfScore[0].score = 0;
-			sWorldCtf->WorldCtfScore[1].score = 0;
-			sWorldCtf->SetActiveGO_Team_ID(2);
-			sWorldCtf->SetWinningGameTime(0);
+				TC_LOG_INFO("server.loading", "- World Flag Scale Size :{:.2f}.", sGCTF->GetDefaultWorldFlagScale());
+				TC_LOG_INFO("server.loading", "- Minimum required GM rank:{}.", sGCTF->GetRequiredGMMinimumRank());
 
-				if (flag_count >= 1) { sWorldCtf->GenerateNewRandomFlagGps(); }
-				
-				// Storing flag info  / SMSG_GAMEOBJECT_RESET_STATE
-				WorldCtfFlagInfo_Elements& data5 = sWorldCtf->WorldCtfFlagInfo[0];
-				data5.entry_id = sWorldCtf->GetDefaultWorldFlagID();
-				data5.type = GAMEOBJECT_TYPE_GOOBER; // GAMEOBJECT_TYPE_BUTTON / GAMEOBJECT_TYPE_GOOBER / GAMEOBJECT_TYPE_GENERIC / GAMEOBJECT_TYPE_DOOR
-				data5.display_id = 5912;
-				data5.name = "Alliance"; 
-				data5.size = sWorldCtf->GetDefaultWorldFlagScale();
-				data5.faction_id = 2; // 2; // 35; // 83; // 2;
+				if (sGCTF->test) { TC_LOG_INFO("server.loading", "", ">>    <[{Test Mode Active}]>    <<"); }
 
-				WorldCtfFlagInfo_Elements& data6 = sWorldCtf->WorldCtfFlagInfo[1];
-				data6.entry_id = sWorldCtf->GetDefaultWorldFlagID() + 1;
-				data6.type = GAMEOBJECT_TYPE_GOOBER;
-				data6.display_id = 5913;
-				data6.name = "Horde";
-				data6.size = sWorldCtf->GetDefaultWorldFlagScale();
-				data6.faction_id = 1; // 1; // 35; // 84; // 1;
+    			TC_LOG_INFO("server.loading", "___________________________________");
 
-				WorldCtfFlagInfo_Elements& data7 = sWorldCtf->WorldCtfFlagInfo[2];
-				data7.entry_id = sWorldCtf->GetDefaultWorldFlagID() + 2;
-				data7.type = GAMEOBJECT_TYPE_GOOBER;
-				data7.display_id = 7953;
-				data7.name = "Realm";
-				data7.size = sWorldCtf->GetDefaultWorldFlagScale();
-				data7.faction_id = 35;
+				if (flag_count >= 1) { sGCTF->GenerateNewRandomFlagGps(); }
 		}
 };
 
-void WorldCtf::SendWorldMsg(uint8 type, std::string message)
-{ // type [ 0 = global via hint system // 1 = team via hint system // 2 = bypass hint and announce to all]
+void GCTF::SendWorldMsg(uint8 /*type*/, std::string message)
+{ // type [ 1 = global via hint system // 2 = bypass hint and announce to all]
 	SessionMap sessions = sWorld->GetAllSessions();
 
 	for (SessionMap::iterator itr = sessions.begin(); itr != sessions.end(); ++itr)
@@ -375,155 +302,14 @@ void WorldCtf::SendWorldMsg(uint8 type, std::string message)
 
 		Player *player = itr->second->GetPlayer();
 
-		if ((player->GetTeamId() == sWorldCtf->GetActiveGO_Team_ID() && sWorldCtf->GetHintSystem() == 1) || (sWorldCtf->GetHintSystem() == 2 && type == 0) || type == 2)
-		{
 			ChatHandler(player->GetSession()).PSendSysMessage(message.c_str());
-		}
 	}
 
 };
 
-void WorldCtf::UpdateGameObject(GameObject* go)
+class CTF_Flag : public GameObjectScript
 {
-	uint32 defaultflagid = sWorldCtf->GetDefaultWorldFlagID();
-	uint32 ActiveGO_ID = sWorldCtf->GetActiveGO_ID();
-
-	if (sWorldCtf->GetFlagReset())
-		{ 
-			sWorldCtf->SetActiveGO_Team_ID(2); 
-		}
-
-	uint8 activeteamid = sWorldCtf->GetActiveGO_Team_ID();
-
-		if (go->GetDisplayId() != sWorldCtf->WorldCtfFlagInfo[activeteamid].display_id)
-		{
-			go->SetDisplayId(sWorldCtf->WorldCtfFlagInfo[activeteamid].display_id);
-			go->Respawn();
-
-			if (sWorldCtf->test) { TC_LOG_INFO("server.loading", "UPDATE_GO DISPLAY_ID:{}", sWorldCtf->WorldCtfFlagInfo[activeteamid].display_id); }
-		}
-
-		if (go->GetFaction() != sWorldCtf->WorldCtfFlagInfo[activeteamid].faction_id)
-		{
-			go->SetFaction(sWorldCtf->WorldCtfFlagInfo[activeteamid].faction_id);
-
-			if (sWorldCtf->test) { TC_LOG_INFO("server.loading", "UPDATE_GO FACTION_ID:{}", sWorldCtf->WorldCtfFlagInfo[activeteamid].faction_id); }
-		}
-	
-		if (go->GetName() != sWorldCtf->WorldCtfFlagInfo[activeteamid].name)
-		{
-			go->SetName(sWorldCtf->WorldCtfFlagInfo[activeteamid].name);
-
-			if (sWorldCtf->test) { TC_LOG_INFO("server.loading", "UPDATE_GO NAME:{}", sWorldCtf->WorldCtfFlagInfo[activeteamid].name); }
-		}
-
-		if (go->GetObjectScale() != sWorldCtf->WorldCtfFlagInfo[activeteamid].size)
-		{
-			go->SetObjectScale(sWorldCtf->WorldCtfFlagInfo[activeteamid].size);
-
-			if (sWorldCtf->test) { TC_LOG_INFO("server.loading", "UPDATE_GO SCALE:{:.2f}", sWorldCtf->WorldCtfFlagInfo[activeteamid].size); }
-		}
-
-		if (go->GetPhaseMask() != PHASEMASK_NORMAL) // Adjust phase mask. PHASEMASK_NORMAL = 1 PHASEMASK_ANYWHERE = -1
-		{
-			go->SetPhaseMask(PHASEMASK_NORMAL, true);
-
-			std::string msg = "The " + sWorldCtf->WorldCtfFlagInfo[activeteamid].name + " World Flag has spawned.";
-
-			sWorldCtf->SendWorldMsg(2, msg);
-
-			msg = "At " + sWorldCtf->WorldFlagGps[defaultflagid].name; // activeteamid
-
-			sWorldCtf->SendWorldMsg(1, msg);
-
-			if (sWorldCtf->test) { TC_LOG_INFO("server.loading", "UPDATE_GO PHASE_MASK"); }
-		}
-}
-
-class WCTF_Reset_Timer : public BasicEvent
-{
-public: 
-
-	WCTF_Reset_Timer(Player* player) : player(player)
-    {
-		uint64 current_time = GameTime::GetGameTime();
-
-		player->m_Events.AddEvent(this, player->m_Events.CalculateTime(sWorldCtf->GetPlayerAuraCheckerTimer() * 1s)); // timed events are in ms while everything else is stored in seconds...
-	}
-
-	bool Execute(uint64, uint32) override
-	{
-		if (player->IsInWorld()) // here we will add catch-22's
-		{
-			uint32 guid = player->GetGUID();
-
-			if (sWorldCtf->WorldCtfPlayerInfo[guid].aura)
-			{
-				uint32 aura_id = sWorldCtf->WorldCtfAura[player->GetTeamId()].aura;
-
-					if (!player->HasAura(aura_id)) { player->AddAura(aura_id, player); }
-
-					// Checking player eligibility to continue to carry flag aura.
-
-					if (player->IsGameMaster())
-					{
-						ChatHandler(player->GetSession()).PSendSysMessage("You are in GM mode. Aura removed.");
-
-						sWorldCtf->ResetPlayer(player);
-
-						return true;
-					}
-
-					if (sWorldCtf->WorldCtfPlayerInfo[guid].aura) { new WCTF_Reset_Timer(player); }
-			}
-		}
-		return true;
-	}
-
-	Player* player;
-};
-
-class WCTF_Team_Flag : public GameObjectScript
-{
-public: WCTF_Team_Flag() : GameObjectScript("WCTF_Team_Flag") { };
-
-	struct WCTF_Team_FlagAI : public GameObjectAI
-	{
-		WCTF_Team_FlagAI(GameObject* go) : GameObjectAI(go) { }
-
-		bool OnGossipHello(Player* player/*, GameObject* go*/) override
-		{
-			if (player->IsGameMaster())
-			{
-				ChatHandler(player->GetSession()).PSendSysMessage("You are in GM mode. Exit GM mode to enjoy.|r");
-
-				return true;
-			}
-			else
-			{
-				auto team_id = player->GetTeamId();
-				uint32 aura_id = sWorldCtf->WorldCtfAura[player->GetTeamId()].aura;
-				
-				if (!player->HasAura(aura_id)) { player->AddAura(aura_id, player); }
-
-				sWorldCtf->WorldCtfPlayerInfo[player->GetGUID()].aura = true;
-
-				new WCTF_Reset_Timer(player);
-
-				return true;
-			}
-		}
-	};
-
-	GameObjectAI* GetAI(GameObject* go) const override
-	{
-		return new WCTF_Team_FlagAI(go);
-	}
-};
-
-class WCTF_World_Flag : public GameObjectScript
-{
-public: WCTF_World_Flag() : GameObjectScript("WCTF_World_Flag") { };
+public: CTF_Flag() : GameObjectScript("CTF_Flag") { };
 
 			struct World_Flag : public GameObjectAI
 			{
@@ -532,101 +318,62 @@ public: WCTF_World_Flag() : GameObjectScript("WCTF_World_Flag") { };
 
 				bool GossipHello(Player* player/*, GameObject* go*/) // override // virtual
 				{
-					if (player->IsGameMaster())
-					{
-						ChatHandler(player->GetSession()).PSendSysMessage("You are in GM mode. Exit GM mode to enjoy.|r");
+                    if (~sGCTF->WorldFlags[me->GetSpawnId()].id == sGCTF->GetActiveGO_ID())
+                    {
+                        me->SetPhaseMask(0, true);
+                    }
+                    else {
+                        if (player->IsGameMaster())
+                        {
+                            ChatHandler(player->GetSession()).PSendSysMessage("You are in GM mode. Exit GM mode to enjoy.|r");
 
-						return true;
-					}
-					else
-					{
-						auto team_id = player->GetTeamId();
+                            return true;
+                        }
+                        else
+                        {
+                            uint32 guid = player->GetGUID();
 
-							if(sWorldCtf->GetRequireFlagAura() && !player->HasAura(sWorldCtf->WorldCtfAura[team_id].aura))
-							{
-								ChatHandler(player->GetSession()).PSendSysMessage("You need your `Flag Carrier` aura to tag this flag.");
+                            me->SetPhaseMask(0, true);
 
-								return true;
-							}
+                            sGCTF->SetActiveGO_ID(0);
 
-							if (!sWorldCtf->GetRequireFlagAura() || player->HasAura(sWorldCtf->WorldCtfAura[team_id].aura))
-							{
-								if (team_id != sWorldCtf->GetActiveGO_Team_ID())
-								{
-									GameObject* go = me;
-									uint64 currTime = GameTime::GetGameTime();
-									uint32 guid = player->GetGUID();
+                            std::string msg1 = player->GetName() + " has claimed the World flag.";
 
-									sWorldCtf->WorldCtfScore[team_id].score += 1;
-									sWorldCtf->WorldCtfPlayerInfo[guid].captures += 1;
+                            sGCTF->SendWorldMsg(2, msg1);
 
-									sWorldCtf->ResetPlayer(player);
-									sWorldCtf->ResetAllPlayers();
+                            sGCTF->GenerateNewRandomFlagGps();
 
-									std::string msg1 = player->GetName() + " of the " + sWorldCtf->WorldCtfFlagInfo[team_id].name + " has claimed the World flag.";
+                            ChatHandler(player->GetSession()).PSendSysMessage("Captures:%u", sGCTF->WorldPlayerData[guid].captures + 1);
 
-									std::string msg2 = "Current Score - Alliance:" + sWorldCtf->ConvertNumberToString(sWorldCtf->WorldCtfScore[0].score);
-									msg2 += " || Horde:" + sWorldCtf->ConvertNumberToString(sWorldCtf->WorldCtfScore[1].score);
-
-									ChatHandler(player->GetSession()).PSendSysMessage("Captures:%u", sWorldCtf->WorldCtfPlayerInfo[guid].captures);
-
-										if (!sWorldCtf->GetFlagReset()) 
-										{ 
-											sWorldCtf->SetActiveGO_Team_ID(team_id); 
-										} 
-										else 
-										{ 
-											sWorldCtf->SetActiveGO_Team_ID(2); 
-										}
-
-									sWorldCtf->SetWinningGameTime(currTime);
-									sWorldCtf->GenerateCoolDownTimer();
-									sWorldCtf->GenerateNewRandomFlagGps();
-							
-									sWorldCtf->SendWorldMsg(2, msg1);
-									sWorldCtf->SendWorldMsg(2, msg2);
-
-									go->SetPhaseMask(0, true);
-								}
-
-							}
-					}
-
+                            sGCTF->PlayerAddWin(player, 1);
+                        }
+                    }
 					return true;
 				}
 
-				void UpdateAI(uint32 diff) // override // This function updates every 1000 (I believe) and is used for the timers, etc
+				void UpdateAI(uint32 /*diff*/)  override // This function updates every 1000 (I believe) and is used for the timers, etc
 				{
-					GameObject* go = me;
-					uint32 guid = go->GetSpawnId();
+                    if (sGCTF->test) { TC_LOG_INFO("server.loading", "[FLAG] UPDATE_AI"); }
 
-						if(!sWorldCtf->GetFlagCtfID(guid))
-						{
-							if (sWorldCtf->test) { TC_LOG_INFO("server.loading", "NEW_GO_UPDATE_AI GUID:{}", guid); }
-					
-							sWorldCtf->UpdateWorldFlagDataBase(0, guid, sWorldCtf->WorldCtfFlagInfo[2].name, go->GetMapId(), go->GetAreaId(), go->GetZoneId(), go->GetPositionX(), go->GetPositionY(), go->GetPositionZ(), go->GetOrientation());
-						}
-						else
-						{
-							uint32 defaultflagid = sWorldCtf->GetDefaultWorldFlagID();
-							uint8 activeteamid = sWorldCtf->GetActiveGO_Team_ID();
+					uint32 guid = me->GetSpawnId();
+                    uint32 phasemask = me->GetPhaseMask();
+                    uint32 activeGuid = sGCTF->FlagList[sGCTF->GetActiveGO_ID()].guid;
+					uint32 defaultflagid = sGCTF->GetDefaultWorldFlagID();
 
-							uint64 currTime = GameTime::GetGameTime();
-							uint32 delay = sWorldCtf->GetCooldownTimer();
-							uint64 winTime = sWorldCtf->GetWinningGameTime();
+                    if (sGCTF->WorldFlags[guid].guid != guid) { sGCTF->AddFlag(me); }
 
-							if (guid == sWorldCtf->WorldFlagGps[sWorldCtf->GetActiveGO_ID()].guid)
-							{
-								if (currTime > (winTime + uint64(delay)))
-								{
-									sWorldCtf->UpdateGameObject(go);
-								}
-							}
-							else
-							{
-								go->SetPhaseMask(0, true); // PHASEMASK_ANYWHERE -1
-							}
-						}
+                    if (guid == activeGuid && phasemask == 0)
+					{
+						me->SetPhaseMask(1, true); // PHASEMASK_ANYWHERE -1
+                        if (sGCTF->test) { TC_LOG_INFO("server.loading", "[FLAG] UPDATE_AI PHASEMASK 1 {} {}", guid, activeGuid); }
+                    }
+
+                    if (guid != activeGuid && phasemask == 1)
+                    {
+                        me->SetPhaseMask(0, true); // PHASEMASK_ANYWHERE -1
+
+                    if (sGCTF->test) { TC_LOG_INFO("server.loading", "[FLAG] UPDATE_AI PHASEMASK 0 {} {}", guid, activeGuid); }
+                    }
 				}
 		};
 
@@ -636,369 +383,238 @@ public: WCTF_World_Flag() : GameObjectScript("WCTF_World_Flag") { };
 		}
 };
 
-void WorldCtf::ResetPlayer(Player* player)
+class CTF_Player_Actions : public PlayerScript
 {
-	uint32 guid = player->GetGUID();
+public: CTF_Player_Actions() : PlayerScript("CTF_Player_Actions") { };
 
-	if (sWorldCtf->WorldCtfPlayerInfo[guid].aura)
-	{
-		sWorldCtf->WorldCtfPlayerInfo[guid].aura = false;
-		player->RemoveAura(sWorldCtf->WorldCtfAura[player->GetTeamId()].aura);
-	}
-}
-
-void WorldCtf::ResetAllPlayers()
-{
-	SessionMap sessions = sWorld->GetAllSessions();
-
-	for (SessionMap::iterator itr = sessions.begin(); itr != sessions.end(); ++itr)
-	{
-
-		if (!itr->second)
-			continue;
-
-		Player *player = itr->second->GetPlayer();
-
-		auto team_id = player->GetTeamId();
-		uint32 guid = player->GetGUID();
-
-		if (sWorldCtf->WorldCtfPlayerInfo[guid].aura)
-		{
-			sWorldCtf->WorldCtfPlayerInfo[guid].aura = false;
-			player->RemoveAura(sWorldCtf->WorldCtfAura[team_id].aura);
-		}
-	}
-}
-
-class WCTF_Player_Actions : public PlayerScript
-{
-public: WCTF_Player_Actions() : PlayerScript("WCTF_Player_Actions") { };
-
-		int BannedAreaZone[1][3] = { {0,0,0}, }; // {{map_id, area_id, zone_id}, {map_id, area_id, zone_id}, ... . .  .   .  .}
-
-		virtual void OnLogout(Player* player)
+		virtual void OnLogout(Player* /*player*/)
 		{ 
-			sWorldCtf->WorldCtfPlayerInfo.erase(player->GetGUID());
 		}
 
-		virtual void OnLogin(Player* player, bool firstLogin)
+		virtual void OnLogin(Player* player, bool /*firstLogin*/)
 		{
-			WorldCtfPlayerInfo_Elements& data = sWorldCtf->WorldCtfPlayerInfo[player->GetGUID()];
-			data.aura = false;
-			data.captures = 0;
-		}
-		
-		void OnPVPKill(Player* killer, Player* killed)
-		{
-			sWorldCtf->ResetPlayer(killed);
-		}
+            uint32 guid = player->GetGUID();
 
-		void OnPlayerKilledByCreature(Creature* killer, Player* killed)
-		{
-			sWorldCtf->ResetPlayer(killed);
-		}
-
-		virtual void OnUpdateZone(Player* player, uint32 newZone, uint32 newArea)
-		{
-			uint32 guid = player->GetGUID();
-			uint32 aura_id = sWorldCtf->WorldCtfAura[player->GetTeamId()].aura;
-
-				if (sWorldCtf->WorldCtfPlayerInfo[guid].aura)
-				{
-					if (!player->HasAura(aura_id)) { player->AddAura(aura_id, player); }
-
-					for (uint8 i = 0; i < (sizeof(BannedAreaZone) / sizeof(*BannedAreaZone)); i++)
-					{
-						if (BannedAreaZone[i][1] == player->GetMapId() && BannedAreaZone[i][2] == player->GetAreaId() && BannedAreaZone[i][3] == player->GetZoneId())
-						{
-							sWorldCtf->ResetPlayer(player);
-							break;
-						}
-					}
-				}
+            if (!sGCTF->WorldPlayerData[guid].guid) { sGCTF->AddCharacter(player); }
 		}
 };
 
 using namespace Trinity::ChatCommands;
 
-class WCTF_commands : public CommandScript
+class CTF_commands : public CommandScript
 {
-public: WCTF_commands() : CommandScript("WCTF_commands") { };
+public: CTF_commands() : CommandScript("CTF_commands") { };
 
-    ChatCommandTable GetCommands() const override
+      ChatCommandTable GetCommands() const override
 	{
-        static ChatCommandTable  WCTFSpawnCommandTable =
-		{
-            //{ "setup",	HandleCTFSetupCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//world capture-the-flag command to display current settings for players
-			{ "world",		HandleWCTFSpawnWorldFlagCommand, rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//  world capture-the-flag command to display settings.
-		};
 
-        static ChatCommandTable WCTFCommandTable =
+		static ChatCommandTable CTFCommandTable =
 		{
-          //{ "setup",	HandleCTFSetupCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//world capture-the-flag command to display current settings for players
-			{ "setup",		HandleWCTFSetupCommand, rbac::RBAC_PERM_COMMAND_SERVER, Console::No },// world capture-the-flag command to display current settings for players.
-			{ "tele",		HandleWCTFTeleCommand,  rbac::RBAC_PERM_COMMAND_SERVER, Console::No },// use .tele x where x is the id or null to tele to current active flag.
-			{ "cycle",		HandleWCTFCycleCommand, rbac::RBAC_PERM_COMMAND_SERVER, Console::No },// use to cycle a new current active flag .
-			{ "random",		HandleWCTFRandomCommand, rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//use to set random spawning on/off.
-			{ "reset",		HandleWCTFFlagResetCommand, rbac::RBAC_PERM_COMMAND_SERVER, Console::No },// use to set `reset flag team after capture` on/off.
-			{ "despawn",	HandleWCTFDeSpawnWorldFlagCommand, rbac::RBAC_PERM_COMMAND_SERVER, Console::No },// despawn nearby World Flag. must be close to it. use teleport command.
-			{ "spawn",	    WCTFSpawnCommandTable },//spawn flag commands.", 
-		};
+			{ "setup",	HandleCTFSetupCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//world capture-the-flag command to display current settings for players
+            { "list",	HandleCTFPlayerLeaderBoard,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//Player Leaderboard
+            { "tele",	HandleCTFTeleCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//use tele x where x is the id or null to tele to current active flag
+			{ "cycle",	HandleCTFCycleCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//use to cycle a new current active flag
+            { "add",	HandleCTFAddCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No }//use to add a new flag
+        };
 
-        static ChatCommandTable commandTable =
+		static ChatCommandTable commandTable =
 		{
-            { "ctf", WCTFCommandTable },//custom world capture the flag commands
-			//{ "wctf", rbac::RBAC_PERM_COMMAND_SERVER, true, NULL, "custom world capture the flag commands by Grumbo.", WCTFCommandTable },
+			{ "ctf", CTFCommandTable },//custom world capture the flag commands
 		};
 
 		return commandTable;
 	}
+static bool HandleCTFAddCommand(ChatHandler* handler, const char* /*args*/)
+      {
+          Player* player = handler->GetSession()->GetPlayer();
+          Map* map = player->GetMap();
 
-	static bool HandleWCTFSetupCommand(ChatHandler* handler, const char* args)
-	{
-		Player* player = handler->GetSession()->GetPlayer();
-		uint32 guid = player->GetGUID();
+          if (!player->IsGameMaster())
+          {
+              ChatHandler(player->GetSession()).PSendSysMessage("You need to be in GM mode.");
+          }
+          else
+          {
+              if (handler->GetSession()->GetSecurity() < sGCTF->GetRequiredGMMinimumRank())
+              {
+                  ChatHandler(player->GetSession()).PSendSysMessage("You need to be GM with rank:%u.", sGCTF->GetRequiredGMMinimumRank());
+              }
+              else
+              {
+                  uint32 objectId = sGCTF->GetDefaultWorldFlagID();
 
-		ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
-		ChatHandler(player->GetSession()).PSendSysMessage("     World Capture the Flag settings           ");
-		ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+                  GameObjectTemplate const* objectInfo = sObjectMgr->GetGameObjectTemplate(objectId);
+                  if (!objectInfo)
+                  {
+                      handler->PSendSysMessage(LANG_GAMEOBJECT_NOT_EXIST, objectId);
+                      handler->SetSentErrorMessage(true);
+                      return false;
+                  }
 
-		ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
-		ChatHandler(player->GetSession()).PSendSysMessage("                  Global data                  ");
-		ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+                  if (objectInfo->displayId && !sGameObjectDisplayInfoStore.LookupEntry(objectInfo->displayId))
+                  {
+                      // report to DB errors log as in loading case
+                      TC_LOG_ERROR("sql.sql", "Gameobject (Entry {} GoType: {}) have invalid displayId ({}), not spawned.", objectId, objectInfo->type, objectInfo->displayId);
+                      handler->PSendSysMessage(LANG_GAMEOBJECT_HAVE_INVALID_DATA, objectId);
+                      handler->SetSentErrorMessage(true);
+                      return false;
+                  }
 
-		if (!sWorldCtf->GetWilOWhisp()) { ChatHandler(player->GetSession()).PSendSysMessage("- Single Fixed flag spawning."); }
-		if (sWorldCtf->GetWilOWhisp()) { ChatHandler(player->GetSession()).PSendSysMessage("- Wil-o-Whisp:Active. (Random spawning)"); }
-		if (sWorldCtf->GetTimerType()) { ChatHandler(player->GetSession()).PSendSysMessage("- Random Cooldown:Active."); }
-		if (sWorldCtf->GetHintSystem() == 0) { ChatHandler(player->GetSession()).PSendSysMessage("- Hint System:Idle."); }
-		if (sWorldCtf->GetHintSystem() == 1) { ChatHandler(player->GetSession()).PSendSysMessage("- Hint System:Hint to Holding Team."); }
-		if (sWorldCtf->GetHintSystem() == 2) { ChatHandler(player->GetSession()).PSendSysMessage("- Hint System:Hint to both Teams."); }
-		if (!sWorldCtf->GetRequireFlagAura()) { ChatHandler(player->GetSession()).PSendSysMessage("- Flag Holder Aura:ByPassed. (instant captures allowed)"); }
-		if (sWorldCtf->GetRequireFlagAura()) { ChatHandler(player->GetSession()).PSendSysMessage("- Flag Holder Aura:required."); }
-		if (!sWorldCtf->GetFlagReset()) { ChatHandler(player->GetSession()).PSendSysMessage("- Flags owned by winning team. defending required."); }
-		if (sWorldCtf->GetFlagReset()) { ChatHandler(player->GetSession()).PSendSysMessage("- Flag resets each round. Recapture required."); }
-		if (!sWorldCtf->GetFlagStorageType()) { ChatHandler(player->GetSession()).PSendSysMessage("- Storage Type:Dynamic."); }
-		if (sWorldCtf->GetFlagStorageType()) { ChatHandler(player->GetSession()).PSendSysMessage("- Storage Type:PreStored."); }
+                  GameObject* object = new GameObject();
+                  ObjectGuid::LowType guidLow = map->GenerateLowGuid<HighGuid::GameObject>();
+                  QuaternionData rot = QuaternionData::fromEulerAnglesZYX(player->GetOrientation(), 0.f, 0.f);
 
-		ChatHandler(player->GetSession()).PSendSysMessage("- Player aura check timer duration :%u seconds.", sWorldCtf->GetPlayerAuraCheckerTimer() / 1000);
+                  if (!object->Create(guidLow, objectInfo->entry, map, player->GetPhaseMaskForSpawn(), *player, rot, 255, GO_STATE_READY))
+                  {
+                      delete object;
+                      return false;
+                  }
 
-		ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
-		ChatHandler(player->GetSession()).PSendSysMessage("                 Player data                   ");
-		ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+                  // fill the gameobject data and save to the db
+                  object->SaveToDB(map->GetId(), (1 << map->GetSpawnMode()), player->GetPhaseMaskForSpawn());
+                  guidLow = object->GetSpawnId();
 
-		if (sWorldCtf->WorldCtfPlayerInfo[guid].aura) { ChatHandler(player->GetSession()).PSendSysMessage("Aura  :Active"); }
+                  // delete the old object and do a clean load from DB with a fresh new GameObject instance.
+                  // this is required to avoid weird behavior and memory leaks
+                  delete object;
 
-		ChatHandler(player->GetSession()).PSendSysMessage("- Current Flag Holder:%s", (sWorldCtf->WorldCtfFlagInfo[sWorldCtf->GetActiveGO_Team_ID()].name).c_str());
-		ChatHandler(player->GetSession()).PSendSysMessage("- Captures:%u", sWorldCtf->WorldCtfPlayerInfo[guid].captures);
-		ChatHandler(player->GetSession()).PSendSysMessage("- Total Active Flags:%u", sWorldCtf->WorldFlagGps.size());
-		ChatHandler(player->GetSession()).PSendSysMessage("- Current Score:");
-		ChatHandler(player->GetSession()).PSendSysMessage("- Alliance:%u || Horde:%u", sWorldCtf->WorldCtfScore[0].score, sWorldCtf->WorldCtfScore[1].score);
+                  object = new GameObject();
+                  // this will generate a new guid if the object is in an instance
+                  if (!object->LoadFromDB(guidLow, map, true))
+                  {
+                      delete object;
+                      return false;
+                  }
 
-		if (handler->GetSession()->GetSecurity() >= sWorldCtf->GetRequiredGMMinimumRank())
-		{ 
-			ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
-			ChatHandler(player->GetSession()).PSendSysMessage("                    GM data                    ");
-			ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+                  /// @todo is it really necessary to add both the real and DB table guid here ?
+                  sObjectMgr->AddGameobjectToGrid(guidLow, sObjectMgr->GetGameObjectData(guidLow));
 
-			ChatHandler(player->GetSession()).PSendSysMessage("- Minimum required GM rank:%u.", sWorldCtf->GetRequiredGMMinimumRank());
-		}
+                  handler->PSendSysMessage(LANG_GAMEOBJECT_ADD, objectId, objectInfo->name.c_str(), guidLow, player->GetPositionX(), player->GetPositionY(), player->GetPositionZ());
+                  //                return true;
 
-		ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+                  sGCTF->AddFlag(object);
+              }
+          }
+          return true;
+      }
 
-		return true;
-	}
+static bool HandleCTFCycleCommand(ChatHandler* handler, const char* /*args*/)
+      {
+          Player* player = handler->GetSession()->GetPlayer();
 
-	static bool HandleWCTFTeleCommand(ChatHandler* handler, const char* args)
-	{
-		Player* player = handler->GetSession()->GetPlayer();
+          if (!player->IsGameMaster())
+          {
+              ChatHandler(player->GetSession()).PSendSysMessage("You need to be in GM mode.");
+          }
+          else
+          {
+              if (handler->GetSession()->GetSecurity() < sGCTF->GetRequiredGMMinimumRank())
+              {
+                  ChatHandler(player->GetSession()).PSendSysMessage("You need to be GM with rank:%u.", sGCTF->GetRequiredGMMinimumRank());
+              }
+              else
+              {
+                  sGCTF->GenerateNewRandomFlagGps();
+              }
+          }
+          return true;
+      }
 
-		if (!player->IsGameMaster())
-		{
-			ChatHandler(player->GetSession()).PSendSysMessage("You need to be in GM mode.");
-		}
-		else
-		{
-			if (handler->GetSession()->GetSecurity() < sWorldCtf->GetRequiredGMMinimumRank())
-			{
-				ChatHandler(player->GetSession()).PSendSysMessage("You need to be GM with rank:%u.", sWorldCtf->GetRequiredGMMinimumRank());
-			}
-			else
-			{
-				uint32 id = 1;
+static bool HandleCTFTeleCommand(ChatHandler* handler, const char* args)
+{
+    Player* player = handler->GetSession()->GetPlayer();
 
-				if (*args)
-					id = (uint32)atoi((char*)args);
+    if (!player->IsGameMaster())
+    {
+        ChatHandler(player->GetSession()).PSendSysMessage("You need to be in GM mode.");
+    }
+    else
+    {
+        if (handler->GetSession()->GetSecurity() < sGCTF->GetRequiredGMMinimumRank())
+        {
+            ChatHandler(player->GetSession()).PSendSysMessage("You need to be GM with rank:%u.", sGCTF->GetRequiredGMMinimumRank());
+        }
+        else
+        {
+            uint32 id = 1;
 
-				if (sWorldCtf->WorldFlagGps[id].id == id)
-				{
-					player->TeleportTo(sWorldCtf->WorldFlagGps[id].map_id, sWorldCtf->WorldFlagGps[id].x, sWorldCtf->WorldFlagGps[id].y, sWorldCtf->WorldFlagGps[id].z, sWorldCtf->WorldFlagGps[id].o);
-				}
-				else
-				{
-					ChatHandler(player->GetSession()).PSendSysMessage("Bad flag id:%u.", id);
-				}
-			}
-		}
-		return true;
-	}
+            if (*args)
+                id = (uint32)atoi(args);
 
-	static bool HandleWCTFSpawnWorldFlagCommand(ChatHandler* handler, const char* args)
-	{
-		Player* player = handler->GetSession()->GetPlayer();
+            if (sGCTF->WorldFlags[id].id == id)
+            {
+                player->TeleportTo(sGCTF->WorldFlags[id].map_id, sGCTF->WorldFlags[id].x, sGCTF->WorldFlags[id].y, sGCTF->WorldFlags[id].z, sGCTF->WorldFlags[id].o);
+            }
+            else
+            {
+                ChatHandler(player->GetSession()).PSendSysMessage("Bad flag id:%u.", id);
+            }
+        }
+    }
+    return true;
+}
 
-		if (!player->IsGameMaster())
-		{
-			ChatHandler(player->GetSession()).PSendSysMessage("You need to be in GM mode.");
-		}
-		else
-		{
-			if (handler->GetSession()->GetSecurity() < sWorldCtf->GetRequiredGMMinimumRank())
-			{
-				ChatHandler(player->GetSession()).PSendSysMessage("You need to be GM with rank:%u.", sWorldCtf->GetRequiredGMMinimumRank());
-			}
-			else
-			{
-				sWorldCtf->AddNewWorldFlag(player);
-			}
-		}
+static bool HandleCTFPlayerLeaderBoard(ChatHandler* handler, const char* /*args*/)
+{
+    Player* player = handler->GetSession()->GetPlayer();
 
-		return true;
-	}
-	
-	static bool HandleWCTFDeSpawnWorldFlagCommand(ChatHandler* handler, const char* args)
-	{
-		Player* player = handler->GetSession()->GetPlayer();
+    sGCTF->UpdatePlayerLeaderBoard();
 
-		if (!player->IsGameMaster())
-		{
-			ChatHandler(player->GetSession()).PSendSysMessage("You need to be in GM mode.");
-		}
-		else
-		{
-			if (handler->GetSession()->GetSecurity() < sWorldCtf->GetRequiredGMMinimumRank())
-			{
-				ChatHandler(player->GetSession()).PSendSysMessage("You need to be GM with rank:%u.", sWorldCtf->GetRequiredGMMinimumRank());
-			}
-			else
-			{
-				GameObject *object = player->FindNearestGameObject(sWorldCtf->GetDefaultWorldFlagID(), 5);
+    uint8 id;
 
-				if (!object)
-				{
-					ChatHandler(player->GetSession()).PSendSysMessage("You must stand closer to a flag.|r");
-				}
+    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+    ChatHandler(player->GetSession()).PSendSysMessage("               Player LeaderBoard              ");
+    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
 
-				if (object)
-				{
-					object->RemoveFromWorld();
-					object->DeleteFromDB(object->GetSpawnId());
+    for (id = 1; id <= 10; id++)
+    {
+        ChatHandler(player->GetSession()).PSendSysMessage("%u %s %u", id, sGCTF->PlayerLeaderBoard[id].name, sGCTF->PlayerLeaderBoard[id].captures);
+    }
+    return true;
+}
 
-					sWorldCtf->UpdateWorldFlagDataBase(1, object->GetSpawnId(), "", 0, 0, 0, 0.0, 0.0, 0.0, 0.0);
-				}
-			}
-		}
-		return true;
-	}
+static bool HandleCTFSetupCommand(ChatHandler* handler, char const* /*args*/)
+{
+    Player* player = handler->GetSession()->GetPlayer();
+    uint32 guid = player->GetGUID();
 
-	static bool HandleWCTFCycleCommand(ChatHandler* handler, const char* args)
-	{
-		Player* player = handler->GetSession()->GetPlayer();
+    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+    ChatHandler(player->GetSession()).PSendSysMessage("           Capture the Flag settings           ");
+    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
 
-		if (!player->IsGameMaster())
-		{
-			ChatHandler(player->GetSession()).PSendSysMessage("You need to be in GM mode.");
-		}
-		else
-		{
-			if (handler->GetSession()->GetSecurity() < sWorldCtf->GetRequiredGMMinimumRank())
-			{
-				ChatHandler(player->GetSession()).PSendSysMessage("You need to be GM with rank:%u.", sWorldCtf->GetRequiredGMMinimumRank());
-			}
-			else
-			{
-				sWorldCtf->GenerateNewRandomFlagGps();
-			}
-		}
-		return true;
-	}
+    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+    ChatHandler(player->GetSession()).PSendSysMessage("                  Global data                  ");
+    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
 
-	static bool HandleWCTFRandomCommand(ChatHandler* handler, const char* args)
-	{
-		Player* player = handler->GetSession()->GetPlayer();
+    if (sGCTF->GetHintSystem() == 0) { ChatHandler(player->GetSession()).PSendSysMessage("- Hint System:Idle."); }
+    if (sGCTF->GetHintSystem() == 2) { ChatHandler(player->GetSession()).PSendSysMessage("- Hint System:Active."); }
 
-		if (!player->IsGameMaster())
-		{
-			ChatHandler(player->GetSession()).PSendSysMessage("You need to be in GM mode.");
-		}
-		else
-		{
-			if (handler->GetSession()->GetSecurity() < sWorldCtf->GetRequiredGMMinimumRank())
-			{
-				ChatHandler(player->GetSession()).PSendSysMessage("You need to be GM with rank:%u.", sWorldCtf->GetRequiredGMMinimumRank());
-			}
-			else
-			{
-				if (*args)
-				{
-					std::string param = (char*)args;
 
-					if ((param == "on") || (param == "off"))
-					{
-						bool v;
+    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+    ChatHandler(player->GetSession()).PSendSysMessage("                 Player data                   ");
+    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
 
-						if (param == "on") { v = true; }
-						if (param == "off") { v = false; }
+    ChatHandler(player->GetSession()).PSendSysMessage("- Captures:%u", sGCTF->WorldPlayerData[guid].captures);
+    ChatHandler(player->GetSession()).PSendSysMessage("- Total Active Flags:%u", sGCTF->WorldFlags.size());
 
-						sWorldCtf->SetWilOWhisp(v);
-					}
-				}
-			}
-		}
-		return true;
-	}
+    if (handler->GetSession()->GetSecurity() >= sGCTF->GetRequiredGMMinimumRank())
+    {
+        ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+        ChatHandler(player->GetSession()).PSendSysMessage("                    GM data                    ");
+        ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+        ChatHandler(player->GetSession()).PSendSysMessage("- Minimum required GM rank:%u.", sGCTF->GetRequiredGMMinimumRank());
+    }
+    
+    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+    return true;
+}
 
-	static bool HandleWCTFFlagResetCommand(ChatHandler* handler, const char* args)
-	{
-		Player* player = handler->GetSession()->GetPlayer();
-
-		if (!player->IsGameMaster())
-		{
-			ChatHandler(player->GetSession()).PSendSysMessage("You need to be in GM mode.");
-		}
-		else
-		{
-			if (handler->GetSession()->GetSecurity() < sWorldCtf->GetRequiredGMMinimumRank())
-			{
-				ChatHandler(player->GetSession()).PSendSysMessage("You need to be GM with rank:%u.", sWorldCtf->GetRequiredGMMinimumRank());
-			}
-			else
-			{
-				if (*args)
-				{
-					std::string param = (char*)args;
-
-					if ((param == "on") || (param == "off"))
-					{
-						bool v;
-
-							if (param == "on") { v = true; }
-							if (param == "off") { v = false; }
-
-						sWorldCtf->SetFlagReset(v);
-					}
-				}
-			}
-		}
-		return true;
-	}
 };
 
 void AddSC_Grumboz_World_Ctf()
-//void AddSC_Grumboz_CTF()
 {
-	new WCTF_Load_Conf();
-	new WCTF_Team_Flag();
-	new WCTF_World_Flag();
-	new WCTF_Player_Actions();
-	new WCTF_commands();
+	new CTF_Load_Conf();
+	new CTF_Flag();
+	new CTF_Player_Actions();
+	new CTF_commands();
 }
