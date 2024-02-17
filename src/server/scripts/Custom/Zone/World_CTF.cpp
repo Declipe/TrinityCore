@@ -200,7 +200,7 @@ void GCTF::AddCharacter(Player* player)
     std::string name = player->GetName();
     uint32 captures = 0;
     
-    ZynDatabase.PExecute("INSERT INTO grumboz_ctf VALUES('{}', '{}', '{}', '0');" ,guid  , acct_id, name, captures);
+    ZynDatabase.PExecute("INSERT INTO grumboz_ctf VALUES('{}', '{}', '{}', '{}');" ,guid  , acct_id, name, captures);
 
     WorldPlayerData_Elements& data = sGCTF->WorldPlayerData[guid];
     // Save the DB values to the MyData object
