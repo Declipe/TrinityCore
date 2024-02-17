@@ -22,7 +22,11 @@
 #include "Common.h"
 #include <unordered_map>
 
-GCTF::GCTF() {}
+#if TRINITY_COMPILER == TRINITY_COMPILER_GNU
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
+GCTF::GCTF() { }
 
 GCTF::~GCTF()
 {
@@ -339,7 +343,7 @@ public: CTF_Flag() : GameObjectScript("CTF_Flag") { };
 
                             sGCTF->GenerateNewRandomFlagGps();
 
-                            ChatHandler(player->GetSession()).PSendSysMessage("Captures:{}", sGCTF->WorldPlayerData[guid].captures + 1);
+                            ChatHandler(player->GetSession()).PSendSysMessage("Captures:%u", sGCTF->WorldPlayerData[guid].captures + 1);
 
                             sGCTF->PlayerAddWin(player, 1);
                         }
@@ -433,7 +437,7 @@ static bool HandleCTFAddCommand(ChatHandler* handler, const char* /*args*/)
           {
               if (handler->GetSession()->GetSecurity() < sGCTF->GetRequiredGMMinimumRank())
               {
-                  ChatHandler(player->GetSession()).PSendSysMessage("You need to be GM with rank:{}.", sGCTF->GetRequiredGMMinimumRank());
+                  ChatHandler(player->GetSession()).PSendSysMessage("You need to be GM with rank:%u.", sGCTF->GetRequiredGMMinimumRank());
               }
               else
               {
@@ -506,7 +510,7 @@ static bool HandleCTFCycleCommand(ChatHandler* handler, const char* /*args*/)
           {
               if (handler->GetSession()->GetSecurity() < sGCTF->GetRequiredGMMinimumRank())
               {
-                  ChatHandler(player->GetSession()).PSendSysMessage("You need to be GM with rank:{}.", sGCTF->GetRequiredGMMinimumRank());
+                  ChatHandler(player->GetSession()).PSendSysMessage("You need to be GM with rank:%u.", sGCTF->GetRequiredGMMinimumRank());
               }
               else
               {
@@ -528,7 +532,7 @@ static bool HandleCTFTeleCommand(ChatHandler* handler, const char* args)
     {
         if (handler->GetSession()->GetSecurity() < sGCTF->GetRequiredGMMinimumRank())
         {
-            ChatHandler(player->GetSession()).PSendSysMessage("You need to be GM with rank:{}.", sGCTF->GetRequiredGMMinimumRank());
+            ChatHandler(player->GetSession()).PSendSysMessage("You need to be GM with rank:%u.", sGCTF->GetRequiredGMMinimumRank());
         }
         else
         {
@@ -543,7 +547,7 @@ static bool HandleCTFTeleCommand(ChatHandler* handler, const char* args)
             }
             else
             {
-                ChatHandler(player->GetSession()).PSendSysMessage("Bad flag id:{}.", id);
+                ChatHandler(player->GetSession()).PSendSysMessage("Bad flag id:%u.", id);
             }
         }
     }
@@ -564,7 +568,7 @@ static bool HandleCTFPlayerLeaderBoard(ChatHandler* handler, const char* /*args*
 
     for (id = 1; id <= 10; id++)
     {
-        ChatHandler(player->GetSession()).PSendSysMessage("{} {} {}", id, sGCTF->PlayerLeaderBoard[id].name, sGCTF->PlayerLeaderBoard[id].captures);
+        ChatHandler(player->GetSession()).PSendSysMessage("%u %s %u", id, sGCTF->PlayerLeaderBoard[id].name, sGCTF->PlayerLeaderBoard[id].captures);
     }
     return true;
 }
@@ -590,15 +594,15 @@ static bool HandleCTFSetupCommand(ChatHandler* handler, char const* /*args*/)
     ChatHandler(player->GetSession()).PSendSysMessage("                 Player data                   ");
     ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
 
-    ChatHandler(player->GetSession()).PSendSysMessage("- Captures:{}", sGCTF->WorldPlayerData[guid].captures);
-    ChatHandler(player->GetSession()).PSendSysMessage("- Total Active Flags:{}", sGCTF->WorldFlags.size());
+    ChatHandler(player->GetSession()).PSendSysMessage("- Captures:%u", sGCTF->WorldPlayerData[guid].captures);
+    ChatHandler(player->GetSession()).PSendSysMessage("- Total Active Flags:%u", sGCTF->WorldFlags.size());
 
     if (handler->GetSession()->GetSecurity() >= sGCTF->GetRequiredGMMinimumRank())
     {
         ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
         ChatHandler(player->GetSession()).PSendSysMessage("                    GM data                    ");
         ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
-        ChatHandler(player->GetSession()).PSendSysMessage("- Minimum required GM rank:{}.", sGCTF->GetRequiredGMMinimumRank());
+        ChatHandler(player->GetSession()).PSendSysMessage("- Minimum required GM rank:%u.", sGCTF->GetRequiredGMMinimumRank());
     }
     
     ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
