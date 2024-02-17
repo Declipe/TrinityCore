@@ -316,7 +316,7 @@ public: CTF_Flag() : GameObjectScript("CTF_Flag") { };
 
 				World_Flag(GameObject* go) : GameObjectAI(go) { }
 
-				bool GossipHello(Player* player/*, GameObject* go*/) // override // virtual
+				bool OnGossipHello(Player* player) override // virtual
 				{
                     if (~sGCTF->WorldFlags[me->GetSpawnId()].id == sGCTF->GetActiveGO_ID())
                     {
