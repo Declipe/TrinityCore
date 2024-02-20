@@ -273,8 +273,8 @@ public:
 
         handler->PSendSysMessage("%s", GitRevision::GetFullVersion());
         handler->PSendSysMessage("|cff00FFEBCore: DkCore 3.3.5a|r");
-        handler->PSendSysMessage("|cff00FFEBTdb: rev.3.3.5a.23061|r");
-        handler->PSendSysMessage("|cff00FFEBUP: 12.01.2024|r");
+        handler->PSendSysMessage("|cff00FFEBTdb: rev.3.3.5a.24011|r");
+        handler->PSendSysMessage("|cff00FFEBUP: 20.01.2024|r");
         handler->PSendSysMessage(LANG_CONNECTED_PLAYERS, playersNum, maxPlayersNum);
         handler->PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
         handler->PSendSysMessage(LANG_UPTIME, uptime.c_str());

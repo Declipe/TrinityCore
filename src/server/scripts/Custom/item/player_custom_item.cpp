@@ -31,6 +31,7 @@
 #include "World.h"
 #include "ItemShopMgr.h"
 #include "Language.h"
+#include "CustomConfig.h"
 
 #define CONST_ARENA_RENAME 100
 #define CONST_ARENA_CUSTOMIZE 100
@@ -1136,29 +1137,29 @@ public:
 				}
 				case 13: // Vip info
 				{
-				//    ChatHandler(player->GetSession()).PSendSysMessage("|cff006699The next VIP commands are available for you:");
-				//    if (sWorld->customGetBoolConfig(CONFIG_VIP_DEBUFF))
-				//        ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip debuff|r - Drop debuff Deserter and Resurrection Sickness");
-				  //  if (sWorld->customGetBoolConfig(CONFIG_VIP_BANK))
-					//    ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip bank|r - Open bank window");
-			   //     //if (sWorld->customGetBoolConfig(CONFIG_VIP_MAIL))
-			   //         ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip mail|r - Open mail box");
-			 //       if (sWorld->customGetBoolConfig(CONFIG_VIP_REPAIR))
-				 //       ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip repair|r - Repair without costs");
-				 //   if (sWorld->customGetBoolConfig(CONFIG_VIP_RESET_TALENTS))
-				 //       ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip resettalents|r - Reset talents");
-			  //      if (sWorld->customGetBoolConfig(CONFIG_VIP_TAXI))
-				//        ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip taxi|r - Open taxi window");
-				//    if (sWorld->customGetBoolConfig(CONFIG_VIP_HOME))
-				 //       ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip home|r - Teleport at Home position (Hearthstone)");
-				 //   if (sWorld->customGetBoolConfig(CONFIG_VIP_CAPITAL))
-				 //       ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip capital|r - Teleport at your main city");
-				 //   if (sWorld->customGetBoolConfig(CONFIG_VIP_CHANGE_RACE))
-				 //       ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip changerace|r - Change Race");
-				 //   if (sWorld->customGetBoolConfig(CONFIG_VIP_CUSTOMIZE))
-				  //      ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip customize|r - Customize character");
-				 //   if (sWorld->customGetBoolConfig(CONFIG_VIP_APPEAR))
-				 //       ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip app|r - Teleport at your mate in Group");
+				    ChatHandler(player->GetSession()).PSendSysMessage("|cff006699The next VIP commands are available for you:");
+				    if (sGameConfig->GetBoolConfig("Vip.Debuff.Command"))
+				        ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip debuff|r - Drop debuff Deserter and Resurrection Sickness");
+				    if (sGameConfig->GetBoolConfig("Command.Bank.Premium"))
+					    ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip bank|r - Open bank window");
+			        if (sGameConfig->GetBoolConfig("Command.Mail.Premium"))
+			           ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip mail|r - Open mail box");
+			        if (sGameConfig->GetBoolConfig("Vip.Repair.Command"))
+				        ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip repair|r - Repair without costs");
+				    if (sGameConfig->GetBoolConfig("Vip.Reset.Talents.Command"))
+				        ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip resettalents|r - Reset talents");
+			        if (sGameConfig->GetBoolConfig("Vip.Taxi.Command"))
+				       ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip taxi|r - Open taxi window");
+				    if (sGameConfig->GetBoolConfig("Vip.Home.Command"))
+				        ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip home|r - Teleport at Home position (Hearthstone)");
+				    if (sGameConfig->GetBoolConfig("Vip.Capital.Command"))
+				        ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip capital|r - Teleport at your main city");
+				    if (sGameConfig->GetBoolConfig("Vip.Changerace.Command"))
+				        ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip changerace|r - Change Race");
+				    if (sGameConfig->GetBoolConfig("Vip.Customize.Command"))
+				        ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip customize|r - Customize character");
+				    if (sGameConfig->GetBoolConfig("Vip.Appear.Command"))
+				        ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip app|r - Teleport at your mate in Group");
 					player->PlayerTalkClass->SendCloseGossip();
 					break;
 				}
