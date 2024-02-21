@@ -10,7 +10,6 @@ Compatible with Transmogrification 6.1 by Rochet2
 http://rochet2.github.io/Transmogrification
 */
 
-#include "TransmogDisplayVendorConf.h"
 #include "Bag.h"
 #include "Common.h"
 #include "Config.h"
@@ -25,15 +24,16 @@ http://rochet2.github.io/Transmogrification
 #include "ItemTemplate.h"
 #include "Language.h"
 #include "Log.h"
-#include "Player.h"
 #include "ObjectGuid.h"
 #include "ObjectMgr.h"
+#include "Player.h"
 #include "QueryResult.h"
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
 #include "ScriptMgr.h"
 #include "SharedDefines.h"
 #include "Transaction.h"
+#include "TransmogDisplayVendorConf.h"
 #include "WorldSession.h"
 #include <sstream>
 #include <string>

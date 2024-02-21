@@ -14,7 +14,6 @@ Cant transmogrify rediculus items // Foereaper: would be fun to stab people with
 -- Cant think of any good way to handle this easily, could rip flagged items from cata DB
 */
 
-#include "Transmogrification.h"
 #include "Bag.h"
 #include "Common.h"
 #include "Config.h"
@@ -29,15 +28,16 @@ Cant transmogrify rediculus items // Foereaper: would be fun to stab people with
 #include "ItemTemplate.h"
 #include "Language.h"
 #include "Log.h"
-#include "Player.h"
 #include "ObjectGuid.h"
 #include "ObjectMgr.h"
+#include "Player.h"
 #include "QueryResult.h"
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
 #include "ScriptMgr.h"
 #include "SharedDefines.h"
 #include "Transaction.h"
+#include "Transmogrification.h"
 #include "WorldSession.h"
 #include <sstream>
 #include <string>

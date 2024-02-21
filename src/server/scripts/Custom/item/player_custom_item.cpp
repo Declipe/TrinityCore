@@ -16,24 +16,24 @@
 * You should have received a copy of the GNU General Public License along
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-#include "ObjectMgr.h"
-#include "DatabaseEnv.h"
-#include "AditionalData.h"
 #include "AccountMgr.h"
+#include "AditionalData.h"
 #include "Chat.h"
+#include "CustomConfig.h"
+#include "DatabaseEnv.h"
 #include "GameTime.h"
 #include "Guild.h"
 #include "GuildMgr.h"
-#include "ScriptedGossip.h"
-#include "ScriptMgr.h"
-#include "Map.h"
-#include "PromotionCodeMgr.h"
-#include "WorldSession.h"
 #include "Item.h"
-#include "World.h"
 #include "ItemShopMgr.h"
 #include "Language.h"
-#include "CustomConfig.h"
+#include "Map.h"
+#include "ObjectMgr.h"
+#include "PromotionCodeMgr.h"
+#include "ScriptedGossip.h"
+#include "ScriptMgr.h"
+#include "World.h"
+#include "WorldSession.h"
 
 #define CONST_ARENA_RENAME 100
 #define CONST_ARENA_CUSTOMIZE 100
@@ -127,7 +127,7 @@ public:
 		//    AddGossipItemFor(player, GOSSIP_ICON_CHAT, flag + " )", GOSSIP_SENDER_MAIN, 3);
 	 //   }
 		// promo
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Enter Promo-Code", GOSSIP_SENDER_MAIN, 0, "Are you sure that the entered code is correct?", 0, true);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ENTER_PROMO_CODE), GOSSIP_SENDER_MAIN, 0, GTS(LANG_ENTERED_PROMO_CODE_CORRECT), 0, true);
 		//AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ENTER_PROMO_CODE), GOSSIP_SENDER_MAIN, 0, GTS(LANG_ENTERED_PROMO_CODE_CORRECT), 0, true);//true);
 		// Shops
 		AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_MENU_TRADE), GOSSIP_SENDER_MAIN, 2);
