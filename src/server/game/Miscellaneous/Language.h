@@ -1254,6 +1254,10 @@ enum TrinityStrings
     LANG_VIP_GROUP                                = 11118,
     LANG_VIP_GROUP1                               = 11119,
 
+    LANG_PLAYER_VIP_TIME_EXIST                    = 12180,
+    LANG_PLAYER_VIP_TIME_NEAR_END                 = 12181,
+    LANG_PLAYER_VIP_TIME_EXPIRED                  = 12182,
+    LANG_TARGETPLAYER_VIP_TIME_EXIST              = 12183,
     LANG_ITEM_MSG_ALREADY_ITEM                    = 12200,
     LANG_ITEM_MSG_RENAME_COMPLETE                 = 12201,
     LANG_ITEM_MSG_CUSTOMIZE_COMPLETE              = 12202,

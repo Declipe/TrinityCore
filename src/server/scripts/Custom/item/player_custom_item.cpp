@@ -17,6 +17,8 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 #include "ObjectMgr.h"
+#include "DatabaseEnv.h"
+#include "AditionalData.h"
 #include "AccountMgr.h"
 #include "Chat.h"
 #include "GameTime.h"
@@ -1607,18 +1609,19 @@ public:
 					{
 						ostatok = coins - coast7;
 						time_t unsetdate;
-						if (player->IsPlayer())
+                        if (player->GetAditionalData()->isPremium())
 						{
-						  //  unsetdate = player->GetPremiumUnsetdate() + 604800; // 7 day
-						  //  AccountMgr::UpdateVipStatus(player->GetSession()->GetAccountId(), unsetdate);
+						    unsetdate = player->GetAditionalData()->getPremiumUnsetdate() + 604800; // 7 day
+						    AccountMgr::UpdateVipStatus(player->GetSession()->GetAccountId(), unsetdate);
 						}
 						else
 						{
-						 //   unsetdate = GameTime::GetGameTime() + 604800; // 7 day
-						  //  AccountMgr::SetVipStatus(player->GetSession()->GetAccountId(), unsetdate);
+						    unsetdate = GameTime::GetGameTime() + 604800; // 7 day
+						    AccountMgr::SetVipStatus(player->GetSession()->GetAccountId(), unsetdate);
 						}
-					   // player->SetPremiumUnsetdate(unsetdate);
-					   // player->SetPremiumStatus(true);
+                        //GetAditionalData()->
+					    player->GetAditionalData()->setPremiumUnsetdate(unsetdate);
+					    player->GetAditionalData()->setPremiumStatus(true);
 						player->SetCoins(ostatok);
 						AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
 						ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_VIP_TIME, coast7);
@@ -1642,18 +1645,18 @@ public:
 					{
 						ostatok = coins - coast14;
 						time_t unsetdate;
-						if (player->IsPlayer())
+						if (player->GetAditionalData()->isPremium())
 						{
-						  //  unsetdate = player->GetPremiumUnsetdate() + 1209600; // 14 day
-						  //  AccountMgr::UpdateVipStatus(player->GetSession()->GetAccountId(), unsetdate);
+                            unsetdate = player->GetAditionalData()->getPremiumUnsetdate() + 1209600; // 14 day
+						    AccountMgr::UpdateVipStatus(player->GetSession()->GetAccountId(), unsetdate);
 						}
 						else
 						{
-						   // unsetdate = GameTime::GetGameTime() + 1209600; // 14 day
-						  //  AccountMgr::SetVipStatus(player->GetSession()->GetAccountId(), unsetdate);
+						    unsetdate = GameTime::GetGameTime() + 1209600; // 14 day
+						    AccountMgr::SetVipStatus(player->GetSession()->GetAccountId(), unsetdate);
 						}
-					   // player->SetPremiumUnsetdate(unsetdate);
-					   // player->SetPremiumStatus(true);
+                        player->GetAditionalData()->setPremiumUnsetdate(unsetdate);
+                        player->GetAditionalData()->setPremiumStatus(true);
 						player->SetCoins(ostatok);
 						AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
 						ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_VIP_TIME, coast14);
@@ -1677,18 +1680,19 @@ public:
 					{
 						ostatok = coins - coast31;
 						time_t unsetdate;
-						if (player->IsPlayer())
+						//if (player->IsPlayer())
+                        if (player->GetAditionalData()->isPremium())
 						{
-						   // unsetdate = player->GetPremiumUnsetdate() + 2678400; // 31 day
-						   // AccountMgr::UpdateVipStatus(player->GetSession()->GetAccountId(), unsetdate);
+                            unsetdate = player->GetAditionalData()->getPremiumUnsetdate() + 2678400; // 31 day
+						    AccountMgr::UpdateVipStatus(player->GetSession()->GetAccountId(), unsetdate);
 						}
 						else
 						{
-						 //   unsetdate = GameTime::GetGameTime() + 2678400; // 31 day
-						   // AccountMgr::SetVipStatus(player->GetSession()->GetAccountId(), unsetdate);
+						    unsetdate = GameTime::GetGameTime() + 2678400; // 31 day
+						    AccountMgr::SetVipStatus(player->GetSession()->GetAccountId(), unsetdate);
 						}
-						//player->SetPremiumUnsetdate(unsetdate);
-					   // player->SetPremiumStatus(true);
+                        player->GetAditionalData()->setPremiumUnsetdate(unsetdate);
+                        player->GetAditionalData()->setPremiumStatus(true);
 						player->SetCoins(ostatok);
 						AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
 						ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_VIP_TIME, coast31);
@@ -1921,13 +1925,18 @@ public:
     {
         player->PlayerTalkClass->ClearMenus();
 
+        uint32 codeUINT = (uint32)atol(code);
+        if (!codeUINT)
+            return;
+        QueryResult SearchForCode = WorldDatabase.PQuery("SELECT id FROM promotion_codes WHERE code = {} AND collection = {} AND count_of_exists = 0", codeUINT, action);
+
         if (!*code)
             return;
         // only for Promo-codes
 
         if (!action)
         {
-            if (!sPromotionCodeMgr->CheckedEnteredCodeByPlayer(code, player,9195))
+            if (!sPromotionCodeMgr->CheckedEnteredCodeByPlayer(code, player, codeUINT))
                 ChatHandler(player->GetSession()).PSendSysMessage(LANG_PROMO_CODE_ERROR);
             else
                 ChatHandler(player->GetSession()).PSendSysMessage(LANG_PROMO_CODE_ACEPT);

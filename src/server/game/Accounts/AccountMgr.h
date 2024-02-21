@@ -70,6 +70,13 @@ class TC_GAME_API AccountMgr
         static uint32 GetId(std::string_view username);
         static uint32 GetCoins(uint32 accountId);
         static uint32 GetGuidOfOnlineCharacter(uint32 accountId);
+        static time_t GetVIPunsetDate(uint32 accountId);
+
+        static bool GetVipStatus(uint32 accountId);
+        static void SetVipStatus(uint32 accountId, time_t unsetdate);
+        static void RemoveVipStatus(uint32 accountId);
+        static void UpdateVipStatus(uint32 accountId, time_t unsetdate);
+
         static uint32 GetSecurity(uint32 accountId, int32 realmId);
         [[nodiscard]] static QueryCallback GetSecurityAsync(uint32 accountId, int32 realmId, std::function<void(uint32)> callback);
         static bool GetName(uint32 accountId, std::string& name);

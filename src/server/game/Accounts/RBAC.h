@@ -791,10 +791,10 @@ enum RBACPermissions
     RBAC_PERM_COMMAND_SPECTATE_LEAVE                           = 1034,
     RBAC_PERM_COMMAND_ADDCOIN                                  = 1114,
     RBAC_PERM_COMMAND_RTX                                      = 1115,
-    /*
-    RBAC_PERM_COMMAND_RTX1                                     = 1116,
-    RBAC_PERM_COMMAND_RTX2                                     = 1117,
-    RBAC_PERM_COMMAND_RTX3                                     = 1118,
+    
+    RBAC_PERM_COMMAND_VIP_SET                                  = 1116,
+    RBAC_PERM_COMMAND_VIP_REMOVE                               = 1117,
+    /* RBAC_PERM_COMMAND_RTX3                                     = 1118,
     RBAC_PERM_COMMAND_RTX4                                     = 1119,
     RBAC_PERM_COMMAND_RTX5                                     = 1120,
     RBAC_PERM_COMMAND_RTX6                                     = 1121,

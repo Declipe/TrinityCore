@@ -1,6 +1,7 @@
 #include "Custom/Dcl.h"
 #include "AccountMgr.h"
 #include "SpellHistory.h"
+#include "AditionalData.h"
 
 #if TRINITY_COMPILER == TRINITY_COMPILER_GNU
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -37,7 +38,10 @@ public:
 			{ "home",          HandleVipHomeCommand,         rbac::RBAC_PERM_COMMAND_VIP_HOME,  Console::No },
 			{ "teles",         HandleTelesNameCommand,       rbac::RBAC_PERM_COMMAND_VIP_HOMEs,  Console::No },
 			{ "status",        HandleVipStatusCommand,       rbac::RBAC_HandleVipStatusCommand,  Console::No },
-			{ "gbuff",         HandleGuildBuffCommand,       rbac::RBAC_PERM_COMMAND_GXP_BUFF,  Console::No }
+			{ "gbuff",         HandleGuildBuffCommand,       rbac::RBAC_PERM_COMMAND_GXP_BUFF,  Console::No },
+            { "set",           HandleSetVipCommand,          rbac::RBAC_PERM_COMMAND_VIP_SET,  Console::No },
+            { "del",           HandleDelVipCommand,          rbac::RBAC_PERM_COMMAND_VIP_REMOVE,  Console::No },
+
 			//{ "qcomplete", rbac::RBAC_PERM_COMMAND_VIP_qcomplete, false, &HandleQuestCompletes, "" },
 		};
 
@@ -56,6 +60,70 @@ public:
 
 		return commandTable;
 	}
+
+    static bool HandleSetVipCommand(ChatHandler* handler, uint32 days_bonus, uint32 accountID)
+    {
+        Player* target = handler->getSelectedPlayerOrSelf();
+
+        if (!accountID)
+            accountID = target->GetSession()->GetAccountId();
+
+        time_t current_time = GameTime::GetGameTime();
+        time_t unsetdate = current_time + 24 * 60 * 60 * days_bonus;
+
+        bool vip = AccountMgr::GetVipStatus(accountID);
+
+        if (vip)
+            AccountMgr::UpdateVipStatus(accountID, unsetdate);
+        else
+            AccountMgr::SetVipStatus(accountID, unsetdate);
+
+        // check on online
+        ObjectGuid::LowType guid = AccountMgr::GetGuidOfOnlineCharacter(accountID);
+        if (guid)
+        {
+            if (Player* player = ObjectAccessor::FindPlayerByLowGUID(guid))
+            {
+                player->GetAditionalData()->setPremiumStatus(true);
+                player->GetAditionalData()->setPremiumUnsetdate(unsetdate);
+                handler->PSendSysMessage("VIP privileges has been set for Account: %u Character:[%s] (online) (GUID: %u), for %u days", accountID, player->GetName(), player->GetGUID().GetCounter(), days_bonus);
+            }
+        }
+        else
+            handler->PSendSysMessage("VIP privileges has been set for Account: %u, for %u days, no characters online", accountID, days_bonus);
+        return true;
+    }
+
+    static bool HandleDelVipCommand(ChatHandler* handler, uint32 accountID)
+    {
+        Player* target = handler->getSelectedPlayerOrSelf();
+
+        if (!accountID)
+            accountID = target->GetSession()->GetAccountId();
+
+        bool vip = AccountMgr::GetVipStatus(accountID);
+        if (!vip)
+        {
+            handler->SendSysMessage(LANG_PLAYER_NOT_VIP);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        AccountMgr::RemoveVipStatus(accountID);
+        ObjectGuid::LowType guid = AccountMgr::GetGuidOfOnlineCharacter(accountID);
+        if (guid)
+        {
+            if (Player* p = ObjectAccessor::FindPlayerByLowGUID(guid))
+            {
+                p->GetAditionalData()->setPremiumStatus(false);
+                p->GetAditionalData()->setPremiumUnsetdate(0);
+                handler->PSendSysMessage("VIP privileges were removed for Account: %u Character:[%s] (online) (GUID: %u)", accountID, p->GetName(), p->GetGUID().GetCounter());
+            }
+        }
+        else
+            handler->PSendSysMessage("VIP privileges were removed for Account: %u, no characters online", accountID);
+        return true;
+    }
 
     static bool HandleGuildBuffCommand(ChatHandler* handler)
     {

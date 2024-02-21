@@ -15,11 +15,11 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "AditionalData.h"
 #include "AnticheatMgr.h"
 #include "Player.h"
 #include "AccountMgr.h"
 #include "AchievementMgr.h"
-#include "AnticheatMgr.h"
 #include "ArenaTeam.h"
 #include "ArenaTeamMgr.h"
 #include "Bag.h"
@@ -438,6 +438,7 @@ Player::Player(WorldSession* session): Unit(true)
     m_reputationMgr = new ReputationMgr(this);
 
     m_groupUpdateTimer.Reset(5000);
+    p_aditionalData = new AditionalData(this);
 }
 
 Player::~Player()
@@ -473,6 +474,7 @@ Player::~Player()
     delete m_achievementMgr;
     delete m_reputationMgr;
     delete _cinematicMgr;
+    delete p_aditionalData;
 
     sWorld->DecreasePlayerCount();
 }
@@ -1328,6 +1330,7 @@ void Player::Update(uint32 p_time)
             m_zoneUpdateTimer -= p_time;
     }
 
+    GetAditionalData()->update(p_time);
     sScriptMgr->OnPlayerUpdate(this, p_time);
 
     if (IsAlive())

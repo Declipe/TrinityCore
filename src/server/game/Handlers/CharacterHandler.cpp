@@ -15,6 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "AditionalData.h"
 #include "AccountMgr.h"
 #include "WorldSession.h"
 #include "ArenaTeamMgr.h"
@@ -1010,6 +1011,21 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder const& holder)
         if (pCurrChar->HasItemCount(973))
             pCurrChar->DestroyItemCount(973, 1, true);
     }
+
+    bool vip = AccountMgr::GetVipStatus(GetAccountId());
+    if (vip)
+    {
+        time_t unsetdate = AccountMgr::GetVIPunsetDate(GetAccountId());
+        if (GameTime::GetGameTime() > unsetdate)
+        {
+            vip = false;
+            AccountMgr::RemoveVipStatus(GetAccountId());
+            ChatHandler(pCurrChar->GetSession()).PSendSysMessage(pCurrChar->GetSession()->GetTrinityString(LANG_PLAYER_VIP_TIME_EXPIRED));
+        }
+        else
+            pCurrChar->GetAditionalData()->setPremiumUnsetdate(unsetdate);
+    }
+    pCurrChar->GetAditionalData()->setPremiumStatus(vip);
 
     std::string IP_str = GetRemoteAddress();
     TC_LOG_INFO("entities.player.character", "Account: {} (IP: {}) Login Character:[{}] {} Level: {}, XP: {}/{} ({} left)",

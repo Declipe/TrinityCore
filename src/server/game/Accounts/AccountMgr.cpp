@@ -300,6 +300,15 @@ uint32 AccountMgr::GetCoins(uint32 accountId)
     return (result) ? (*result)[0].GetUInt32() : 0;
 }
 
+time_t AccountMgr::GetVIPunsetDate(uint32 accountId)
+{
+    LoginDatabasePreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_GET_ACCOUNT_PREMIUM_UNSETDATE_BY_ID);
+    stmt->setUInt32(0, accountId);
+    PreparedQueryResult result = LoginDatabase.Query(stmt);
+
+    return (result) ? (*result)[0].GetUInt64() : 0;
+}
+
 uint32 AccountMgr::GetSecurity(uint32 accountId, int32 realmId)
 {
     LoginDatabasePreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_GET_GMLEVEL_BY_REALMID);
@@ -349,6 +358,41 @@ bool AccountMgr::GetEmail(uint32 accountId, std::string& email)
     }
 
     return false;
+}
+
+bool AccountMgr::GetVipStatus(uint32 accountId)
+{
+    LoginDatabasePreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_GET_ACCOUNT_PREMIUM_STATUS_BY_ID);
+    stmt->setUInt32(0, accountId);
+    PreparedQueryResult result = LoginDatabase.Query(stmt);
+    if (result)
+        return true;
+
+    return false;
+}
+
+void AccountMgr::SetVipStatus(uint32 accountId, time_t unsetdate)
+{
+    LoginDatabasePreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SET_ACCOUNT_PREMIUM);
+    stmt->setUInt32(0, accountId);
+    stmt->setUInt64(1, unsetdate);
+    stmt->setBool(2, true);
+    LoginDatabase.Execute(stmt);
+}
+
+void AccountMgr::RemoveVipStatus(uint32 accountId)
+{
+    LoginDatabasePreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_DEL_ACCOUNT_PREMIUM);
+    stmt->setUInt32(0, accountId);
+    LoginDatabase.Execute(stmt);
+}
+
+void AccountMgr::UpdateVipStatus(uint32 accountId, time_t unsetdata)
+{
+    LoginDatabasePreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_ACCOUNT_PREMIUM);
+    stmt->setUInt64(0, unsetdata);
+    stmt->setUInt32(1, accountId);
+    LoginDatabase.Execute(stmt);
 }
 
 bool AccountMgr::CheckPassword(uint32 accountId, std::string password)

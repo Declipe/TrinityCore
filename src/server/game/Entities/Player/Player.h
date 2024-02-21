@@ -54,6 +54,7 @@ struct ScalingStatValuesEntry;
 struct TrainerSpell;
 struct VendorItem;
 
+class AditionalData;
 class AchievementMgr;
 class Bag;
 class Battleground;
@@ -1256,6 +1257,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void TradeCancel(bool sendback, TradeStatus status = TRADE_STATUS_TRADE_CANCELED);
 
         CinematicMgr* GetCinematicMgr() const { return _cinematicMgr; }
+        AditionalData* GetAditionalData() const { return p_aditionalData; }
 
         void UpdateEnchantTime(uint32 time);
         void UpdateSoulboundTradeItems();
@@ -2641,6 +2643,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         uint32 healthBeforeDuel;
         uint32 manaBeforeDuel;
 
+        AditionalData* p_aditionalData;
         WorldLocation _corpseLocation;
 };
 
