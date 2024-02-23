@@ -23,67 +23,6 @@
 #include "Map.h"
 #include "ScriptMgr.h"
 
- /*######
-  ## go_brazier_of_madness
-  ######*/
-
-enum EventGameIds
-{
-    EVENT_EDGE_OF_MADNESS_GRILEK = 27,
-    EVENT_EDGE_OF_MADNESS_HAZZARAH = 28,
-    EVENT_EDGE_OF_MADNESS_RENATAKI = 29,
-    EVENT_EDGE_OF_MADNESS_WUSHOOLAY = 30
-};
-
-struct EventPair
-{
-    EventGameIds eventId;
-    ZGCreatureIds npcEntry;
-};
-
-uint8 const MAX_EVENT_PAIRS = 4;
-EventPair const EventPairs[MAX_EVENT_PAIRS] =
-{
-    { EVENT_EDGE_OF_MADNESS_GRILEK,     NPC_GRILEK      },
-    { EVENT_EDGE_OF_MADNESS_HAZZARAH,   NPC_HAZZARAH    },
-    { EVENT_EDGE_OF_MADNESS_RENATAKI,   NPC_RENATAKI    },
-    { EVENT_EDGE_OF_MADNESS_WUSHOOLAY,  NPC_WUSHOOLAY   }
-};
-
-Position const MadnessSpawnPos = { -11901.229f, -1906.366f, 65.358f, 0.942f };
-
-class go_brazier_of_madness : public GameObjectScript
-{
-public:
-    go_brazier_of_madness() : GameObjectScript("go_brazier_of_madness") { }
-
-    struct go_brazier_of_madnessAI : public GameObjectAI
-    {
-        go_brazier_of_madnessAI(GameObject* go) : GameObjectAI(go) { }
-
-        bool OnGossipHello(Player* /*player*/) override
-        {
-            uint32 bossEntry = 0;
-            for (uint8 i = 0; i < MAX_EVENT_PAIRS; ++i)
-            {
-                if (sGameEventMgr->IsActiveEvent(EventPairs[i].eventId))
-                {
-                    bossEntry = EventPairs[i].npcEntry;
-                    break;
-                }
-            }
-            if (bossEntry)
-                me->SummonCreature(bossEntry, MadnessSpawnPos, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 2s * HOUR * IN_MILLISECONDS);
-            return false;
-        }
-    };
-
-    GameObjectAI* GetAI(GameObject* go) const override
-    {
-        return new go_brazier_of_madnessAI(go);
-    }
-};
-
 enum ZulGurubGameEventIds
 {
     EVENT_MUDSKUNK_LURE = 9104
@@ -167,6 +106,5 @@ class instance_zulgurub : public InstanceMapScript
 
 void AddSC_instance_zulgurub()
 {
-    new go_brazier_of_madness();
     new instance_zulgurub();
 }
