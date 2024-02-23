@@ -1162,7 +1162,7 @@ public:
 				        ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip customize|r - Customize character");
 				    if (sGameConfig->GetBoolConfig("Vip.Appear.Command"))
 				        ChatHandler(player->GetSession()).PSendSysMessage("|cff006699 .vip app|r - Teleport at your mate in Group");
-					player->PlayerTalkClass->SendCloseGossip();
+                    CloseGossipMenuFor(player);
 					break;
 				}
 				case 14: //sub menu

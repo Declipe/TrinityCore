@@ -1,6 +1,11 @@
 /*
 ** Experimental!!!
 */
+
+#if TRINITY_COMPILER == TRINITY_COMPILER_GNU
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 #include "Custom/Dcl.h"
 
 #define SQL_TEMPLATE "SELECT `entry`, `level`, `time_limit`, `say_start`, `say_win`, `say_lose`, `chest_id`, `point_id`, `req_quest_id`, `kill_credit`, `menu_string` FROM `world_tournaments` ORDER BY `entry`, `level` DESC"

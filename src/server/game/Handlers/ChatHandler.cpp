@@ -152,7 +152,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
     recvData >> type;
     recvData >> lang;
 
-  /*  if (sWorld->getBoolConfig(BATTLEGROUND_CROSSFACTION_ENABLED) /*&& lang != LANG_ADDON)
+  /*  if (sWorld->getBoolConfig(BATTLEGROUND_CROSSFACTION_ENABLED) && lang != LANG_ADDON)
     {
         switch (type)
         {

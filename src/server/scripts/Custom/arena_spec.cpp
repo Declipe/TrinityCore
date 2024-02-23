@@ -23,6 +23,10 @@ Comment: Script allow spectate arena games
 Category: Custom Script
 EndScriptData */
 
+#if TRINITY_COMPILER == TRINITY_COMPILER_GNU
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 #include "Chat.h"
 #include "ArenaTeamMgr.h"
 #include "BattlegroundMgr.h"

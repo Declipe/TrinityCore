@@ -1179,11 +1179,7 @@ void DBCMgr::LoadSpellItemEnchantmentStore()
 {
     uint32 oldMSTime = getMSTime();
     SpellItemEnchantmentStore.clear();
-    //                                                      1         2         3        4             5                 6                  7                   8                  9                   10                11      12            13             14            15              16                   17          18                  19           20           21                   22          23                24             25              26               27             28                  29            30         31          32      33           34           35                  36             37                                                                                                                                                                                   
-    // QueryResult result = ZynDatabase.Query("SELECT ID, Charges, Effect_1, Effect_2, Effect_3, EffectPointsMin_1, EffectPointsMin_2, EffectPointsMin_3, EffectPointsMax_1, EffectPointsMax_2, EffectPointsMax_3, EffectArg_1, EffectArg_2, EffectArg_3, Name_Lang_enUS, Name_Lang_enGB, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_enCN, Name_Lang_zhCN, Name_Lang_enTW, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, Name_Lang_ptPT, Name_Lang_ptBR, Name_Lang_itIT, Name_Lang_Unk, Name_Lang_Mask, ItemVisual, Flags, Src_ItemID, Condition_Id, RequiredSkillID, RequiredSkillRank, MinLevel FROM dbc_spellitemenchantment");
-    //QueryResult result = ZynDatabase.Query("SELECT ID, Effect_1, Effect_2, Effect_3, EffectPointsMin_1, EffectPointsMin_2, EffectPointsMin_3, EffectArg_1, EffectArg_2, EffectArg_3, Name_Lang_enUS, Name_Lang_enGB, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_enCN, Name_Lang_zhCN, Name_Lang_enTW, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, Name_Lang_ptPT, Name_Lang_ptBR, Name_Lang_itIT, ItemVisual, Flags, Src_ItemID, Condition_Id, RequiredSkillID, RequiredSkillRank, MinLevel FROM dbc_spellitemenchantment");
-    //QueryResult result = ZynDatabase.Query("SELECT ID, Effect_1, Effect_2, Effect_3, EffectPointsMin_1, EffectPointsMin_2, EffectPointsMin_3, EffectArg_1, EffectArg_2, EffectArg_3, Name_Lang_enUS, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_zhCN, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, ItemVisual, Flags, Src_ItemID, Condition_Id, RequiredSkillID, RequiredSkillRank, MinLevel FROM dbc_spellitemenchantment");
-   // {need update for item upgrade}  QueryResult result = ZynDatabase.Query("SELECT Id, Effect_1, Effect_2, Effect_3, EffectPointsMin_1, EffectPointsMin_2, EffectPointsMin_3, EffectArg_1, EffectArg_2, EffectArg_3, Name_Lang_enUS, Name_Lang_ruRU, ItemVisual, Flags, Src_ItemID, Condition_ID, RequiredSkillID, RequiredSkillRank, MinLevel FROM dbc_spellitemenchantment");
+
     QueryResult result = ZynDatabase.Query("SELECT Id, Effect_1, Effect_2, Effect_3, EffectPointsMin_1, EffectPointsMin_2, EffectPointsMin_3, EffectArg_1, EffectArg_2, EffectArg_3, Name_Lang_enUS, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_zhCN, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, ItemVisual, Flags, Src_ItemID, Condition_ID, RequiredSkillID, RequiredSkillRank, MinLevel FROM dbc_spellitemenchantment");
     if (!result)
     {
@@ -1191,7 +1187,7 @@ void DBCMgr::LoadSpellItemEnchantmentStore()
         return;
     }
 
-    uint32 count = 0;
+   // uint32 count = 0;
     do {
         Field* fields = result->Fetch();
         SpellItemEnchantmentEntry* newSpellItemEnchantment = new SpellItemEnchantmentEntry;
@@ -1224,6 +1220,7 @@ void DBCMgr::LoadSpellItemEnchantmentStore()
 
     TC_LOG_INFO("server.loading", ">> Loaded {} SpellItemEnchantment entries in {} ms", (unsigned long)SpellItemEnchantmentStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
+
 void DBCMgr::LoadGemPropertiesStore()
 {
     uint32 oldMSTime = getMSTime();
