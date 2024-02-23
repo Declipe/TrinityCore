@@ -1,6 +1,6 @@
-#include "Custom/Zone/World_CTF.h"
-#include "ScriptMgr.h"
 #include "Chat.h"
+#include "Common.h"
+#include "Custom/Zone/World_CTF.h"
 #include "DatabaseEnv.h"
 #include "DBCStores.h"
 #include "GameEventMgr.h"
@@ -16,10 +16,10 @@
 #include "Player.h"
 #include "PoolMgr.h"
 #include "RBAC.h"
+#include "ScriptMgr.h"
 #include "WorldSession.h"
 #include <iterator>
 #include <map>
-#include "Common.h"
 #include <unordered_map>
 
 #if TRINITY_COMPILER == TRINITY_COMPILER_GNU
@@ -33,11 +33,11 @@ GCTF::~GCTF()
     if (sGCTF->test) { TC_LOG_INFO("server.loading", "", ">>    <[{DEFINE + CLEAR TABLES}]>    <<"); }
 
     for (std::unordered_map<uint32, WorldFlags_Elements>::iterator itr = WorldFlags.begin(); itr != WorldFlags.end(); ++itr)
-		delete &itr->second;
+        delete& itr->second;
     for (std::unordered_map<uint32, FlagList_Elements>::iterator itr = FlagList.begin(); itr != FlagList.end(); ++itr)
         delete& itr->second;
     for (std::unordered_map<uint32, WorldPlayerData_Elements>::iterator itr = WorldPlayerData.begin(); itr != WorldPlayerData.end(); ++itr)
-		delete &itr->second;
+        delete& itr->second;
     for (std::unordered_map<uint32, PlayerLeaderBoard_Elements>::iterator itr = PlayerLeaderBoard.begin(); itr != PlayerLeaderBoard.end(); ++itr)
         delete& itr->second;
 
@@ -49,50 +49,50 @@ GCTF::~GCTF()
 
 GCTF* GCTF::instance()
 {
-	static GCTF instance;
-	return &instance;
+    static GCTF instance;
+    return &instance;
 }
 
 std::string GCTF::ConvertNumberToString(uint64 numberX)
 {
-	auto number = numberX;
-	std::stringstream convert;
-	std::string number32_to_string;
-	convert << number;
-	number32_to_string = convert.str();
+    auto number = numberX;
+    std::stringstream convert;
+    std::string number32_to_string;
+    convert << number;
+    number32_to_string = convert.str();
 
-	return number32_to_string;
+    return number32_to_string;
 };
 
 void GCTF::LoadWorldFlags()
 {
-	// Loading prestored World Flag's info from db
+    // Loading prestored World Flag's info from db
 
-	uint32 flag_count = 1;
+    uint32 flag_count = 1;
 
-	QueryResult WorldFlagGps_Query = WorldDatabase.PQuery("SELECT `guid`, `map`, `zoneId`, `areaId`, `position_x`, `position_y`, `position_z`, `orientation` FROM gameobject WHERE `id` = {};", sGCTF->GetDefaultWorldFlagID()); // id, guid, name, map_id, area_id, zone_id, x, y, z, o
+    QueryResult WorldFlagGps_Query = WorldDatabase.PQuery("SELECT `guid`, `map`, `zoneId`, `areaId`, `position_x`, `position_y`, `position_z`, `orientation` FROM gameobject WHERE `id` = {};", sGCTF->GetDefaultWorldFlagID()); // id, guid, name, map_id, area_id, zone_id, x, y, z, o
 
-	if (WorldFlagGps_Query)
-	{
-		do
-		{
-			Field* fields = WorldFlagGps_Query->Fetch();
-			uint32 guid = fields[0].GetUInt32();
-			uint32 map_id = fields[1].GetUInt32();
-			uint32 zone_id = fields[2].GetUInt32();
-			uint32 area_id = fields[3].GetUInt32();
+    if (WorldFlagGps_Query)
+    {
+        do
+        {
+            Field* fields = WorldFlagGps_Query->Fetch();
+            uint32 guid = fields[0].GetUInt32();
+            uint32 map_id = fields[1].GetUInt32();
+            uint32 zone_id = fields[2].GetUInt32();
+            uint32 area_id = fields[3].GetUInt32();
             float x = fields[4].GetFloat();
             float y = fields[5].GetFloat();
             float z = fields[6].GetFloat();
             float o = fields[7].GetFloat();
 
-			WorldFlags_Elements& data = sGCTF->WorldFlags[guid];
-			// Save the DB values to the MyData object
-			data.id = flag_count;
-			data.guid = guid;
-			data.map_id = map_id;
-			data.area_id = area_id;
-			data.zone_id = zone_id;
+            WorldFlags_Elements& data = sGCTF->WorldFlags[guid];
+            // Save the DB values to the MyData object
+            data.id = flag_count;
+            data.guid = guid;
+            data.map_id = map_id;
+            data.area_id = area_id;
+            data.zone_id = zone_id;
             data.x = x;
             data.y = y;
             data.z = z;
@@ -105,8 +105,8 @@ void GCTF::LoadWorldFlags()
 
             flag_count += 1;
 
-		} while (WorldFlagGps_Query->NextRow());
-	}
+        } while (WorldFlagGps_Query->NextRow());
+    }
 }
 
 void GCTF::GenerateNewRandomFlagGps()
@@ -199,8 +199,8 @@ void GCTF::AddCharacter(Player* player)
     uint32 guid = player->GetGUID();
     std::string name = player->GetName();
     uint32 captures = 0;
-    
-    ZynDatabase.PExecute("INSERT INTO grumboz_ctf VALUES('{}', '{}', '{}', '{}');" ,guid  , acct_id, name, captures);
+
+    ZynDatabase.PExecute("INSERT INTO grumboz_ctf VALUES('{}', '{}', '{}', '{}');", guid, acct_id, name, captures);
 
     WorldPlayerData_Elements& data = sGCTF->WorldPlayerData[guid];
     // Save the DB values to the MyData object
@@ -245,65 +245,65 @@ void GCTF::PlayerAddWin(Player* player, uint32 value)
     sGCTF->WorldPlayerData[guid].captures = captures;
 }
 
-class CTF_Load_Conf  : public WorldScript
+class CTF_Load_Conf : public WorldScript
 {
 public: CTF_Load_Conf() : WorldScript("CTF_Load_Conf") { };
 
-		virtual void OnConfigLoad(bool /*reload*/)
-		{
-			TC_LOG_INFO("server.loading", "___________________________________");
-			TC_LOG_INFO("server.loading", "-        Grumboz World CTF        -");
-			TC_LOG_INFO("server.loading", "___________________________________");
+      virtual void OnConfigLoad(bool /*reload*/)
+      {
+          TC_LOG_INFO("server.loading", "___________________________________");
+          TC_LOG_INFO("server.loading", "-        Grumboz World CTF        -");
+          TC_LOG_INFO("server.loading", "___________________________________");
 
-			// Storing flag carrier aura ids by teamId
-			// Load and Store the World conf entries
-			sGCTF->SetDefaultWorldFlagID(sConfigMgr->GetIntDefault("CTF.DEFAULT_WORLD_FLAG_ID", 600002));
-			sGCTF->SetDefaultWorldFlagScale(sConfigMgr->GetFloatDefault("CTF.DEFAULT_WORLD_FLAG_SCALE", 30.00));
-			sGCTF->SetHintSystem(sConfigMgr->GetIntDefault("CTF.HINT_SYSTEM", 0));
-			sGCTF->SetRequiredGMMinimumRank(sConfigMgr->GetIntDefault("CTF.GM_RANK", 3));
-			sGCTF->SetTest(sConfigMgr->GetBoolDefault("CTF.TEST", false));
+          // Storing flag carrier aura ids by teamId
+          // Load and Store the World conf entries
+          sGCTF->SetDefaultWorldFlagID(sConfigMgr->GetIntDefault("CTF.DEFAULT_WORLD_FLAG_ID", 600002));
+          sGCTF->SetDefaultWorldFlagScale(sConfigMgr->GetFloatDefault("CTF.DEFAULT_WORLD_FLAG_SCALE", 30.00));
+          sGCTF->SetHintSystem(sConfigMgr->GetIntDefault("CTF.HINT_SYSTEM", 0));
+          sGCTF->SetRequiredGMMinimumRank(sConfigMgr->GetIntDefault("CTF.GM_RANK", 3));
+          sGCTF->SetTest(sConfigMgr->GetBoolDefault("CTF.TEST", false));
 
-            sGCTF->LoadWorldFlags();
+          sGCTF->LoadWorldFlags();
 
-			uint32 flag_count = sGCTF->WorldFlags.size();
+          uint32 flag_count = sGCTF->WorldFlags.size();
 
-			TC_LOG_INFO("server.loading", "- {} flag locations loaded", flag_count);
+          TC_LOG_INFO("server.loading", "- {} flag locations loaded", flag_count);
 
-            sGCTF->LoadPlayerData();
+          sGCTF->LoadPlayerData();
 
-            uint32 player_count = sGCTF->WorldPlayerData.size();
+          uint32 player_count = sGCTF->WorldPlayerData.size();
 
-            TC_LOG_INFO("server.loading", "- {} characters loaded.", player_count);
+          TC_LOG_INFO("server.loading", "- {} characters loaded.", player_count);
 
-            // Post Settings to console
-				if (sGCTF->GetHintSystem() == 0) { TC_LOG_INFO("server.loading", "- Hint System:Idle."); }
-				if (sGCTF->GetHintSystem() == 1) { TC_LOG_INFO("server.loading", "- Hint System:Active."); }
+          // Post Settings to console
+          if (sGCTF->GetHintSystem() == 0) { TC_LOG_INFO("server.loading", "- Hint System:Idle."); }
+          if (sGCTF->GetHintSystem() == 1) { TC_LOG_INFO("server.loading", "- Hint System:Active."); }
 
-				TC_LOG_INFO("server.loading", "- World Flag Scale Size :{:.2f}.", sGCTF->GetDefaultWorldFlagScale());
-				TC_LOG_INFO("server.loading", "- Minimum required GM rank:{}.", sGCTF->GetRequiredGMMinimumRank());
+          TC_LOG_INFO("server.loading", "- World Flag Scale Size :{:.2f}.", sGCTF->GetDefaultWorldFlagScale());
+          TC_LOG_INFO("server.loading", "- Minimum required GM rank:{}.", sGCTF->GetRequiredGMMinimumRank());
 
-				if (sGCTF->test) { TC_LOG_INFO("server.loading", "", ">>    <[{Test Mode Active}]>    <<"); }
+          if (sGCTF->test) { TC_LOG_INFO("server.loading", "", ">>    <[{Test Mode Active}]>    <<"); }
 
-    			TC_LOG_INFO("server.loading", "___________________________________");
+          TC_LOG_INFO("server.loading", "___________________________________");
 
-				if (flag_count >= 1) { sGCTF->GenerateNewRandomFlagGps(); }
-		}
+          if (flag_count >= 1) { sGCTF->GenerateNewRandomFlagGps(); }
+      }
 };
 
 void GCTF::SendWorldMsg(uint8 /*type*/, std::string message)
 { // type [ 1 = global via hint system // 2 = bypass hint and announce to all]
-	SessionMap sessions = sWorld->GetAllSessions();
+    SessionMap sessions = sWorld->GetAllSessions();
 
-	for (SessionMap::iterator itr = sessions.begin(); itr != sessions.end(); ++itr)
-	{
+    for (SessionMap::iterator itr = sessions.begin(); itr != sessions.end(); ++itr)
+    {
 
-		if (!itr->second)
-			continue;
+        if (!itr->second)
+            continue;
 
-		Player *player = itr->second->GetPlayer();
+        Player* player = itr->second->GetPlayer();
 
-			ChatHandler(player->GetSession()).PSendSysMessage(message.c_str());
-	}
+        ChatHandler(player->GetSession()).PSendSysMessage(message.c_str());
+    }
 
 };
 
@@ -311,92 +311,92 @@ class CTF_Flag : public GameObjectScript
 {
 public: CTF_Flag() : GameObjectScript("CTF_Flag") { };
 
-			struct World_Flag : public GameObjectAI
-			{
+      struct World_Flag : public GameObjectAI
+      {
 
-				World_Flag(GameObject* go) : GameObjectAI(go) { }
+          World_Flag(GameObject* go) : GameObjectAI(go) { }
 
-				bool OnGossipHello(Player* player) override // virtual
-				{
-                    if (~sGCTF->WorldFlags[me->GetSpawnId()].id == sGCTF->GetActiveGO_ID())
-                    {
-                        me->SetPhaseMask(0, true);
-                    }
-                    else {
-                        if (player->IsGameMaster())
-                        {
-                            ChatHandler(player->GetSession()).PSendSysMessage("You are in GM mode. Exit GM mode to enjoy.|r");
+          bool OnGossipHello(Player* player) override // virtual
+          {
+              if (~sGCTF->WorldFlags[me->GetSpawnId()].id == sGCTF->GetActiveGO_ID())
+              {
+                  me->SetPhaseMask(0, true);
+              }
+              else {
+                  if (player->IsGameMaster())
+                  {
+                      ChatHandler(player->GetSession()).PSendSysMessage("You are in GM mode. Exit GM mode to enjoy.|r");
 
-                            return true;
-                        }
-                        else
-                        {
-                            uint32 guid = player->GetGUID();
+                      return true;
+                  }
+                  else
+                  {
+                      uint32 guid = player->GetGUID();
 
-                            me->SetPhaseMask(0, true);
+                      me->SetPhaseMask(0, true);
 
-                            sGCTF->SetActiveGO_ID(0);
+                      sGCTF->SetActiveGO_ID(0);
 
-                            std::string msg1 = player->GetName() + " has claimed the World flag.";
+                      std::string msg1 = player->GetName() + " has claimed the World flag.";
 
-                            sGCTF->SendWorldMsg(2, msg1);
+                      sGCTF->SendWorldMsg(2, msg1);
 
-                            sGCTF->GenerateNewRandomFlagGps();
+                      sGCTF->GenerateNewRandomFlagGps();
 
-                            ChatHandler(player->GetSession()).PSendSysMessage("Captures:%u", sGCTF->WorldPlayerData[guid].captures + 1);
+                      ChatHandler(player->GetSession()).PSendSysMessage("Captures:%u", sGCTF->WorldPlayerData[guid].captures + 1);
 
-                            sGCTF->PlayerAddWin(player, 1);
-                        }
-                    }
-					return true;
-				}
+                      sGCTF->PlayerAddWin(player, 1);
+                  }
+              }
+              return true;
+          }
 
-				void UpdateAI(uint32 /*diff*/)  override // This function updates every 1000 (I believe) and is used for the timers, etc
-				{
-                    if (sGCTF->test) { TC_LOG_INFO("server.loading", "[FLAG] UPDATE_AI"); }
+          void UpdateAI(uint32 /*diff*/)  override // This function updates every 1000 (I believe) and is used for the timers, etc
+          {
+              if (sGCTF->test) { TC_LOG_INFO("server.loading", "[FLAG] UPDATE_AI"); }
 
-					uint32 guid = me->GetSpawnId();
-                    uint32 phasemask = me->GetPhaseMask();
-                    uint32 activeGuid = sGCTF->FlagList[sGCTF->GetActiveGO_ID()].guid;
-					uint32 defaultflagid = sGCTF->GetDefaultWorldFlagID();
+              uint32 guid = me->GetSpawnId();
+              uint32 phasemask = me->GetPhaseMask();
+              uint32 activeGuid = sGCTF->FlagList[sGCTF->GetActiveGO_ID()].guid;
+              uint32 defaultflagid = sGCTF->GetDefaultWorldFlagID();
 
-                    if (sGCTF->WorldFlags[guid].guid != guid) { sGCTF->AddFlag(me); }
+              if (sGCTF->WorldFlags[guid].guid != guid) { sGCTF->AddFlag(me); }
 
-                    if (guid == activeGuid && phasemask == 0)
-					{
-						me->SetPhaseMask(1, true); // PHASEMASK_ANYWHERE -1
-                        if (sGCTF->test) { TC_LOG_INFO("server.loading", "[FLAG] UPDATE_AI PHASEMASK 1 {} {}", guid, activeGuid); }
-                    }
+              if (guid == activeGuid && phasemask == 0)
+              {
+                  me->SetPhaseMask(1, true); // PHASEMASK_ANYWHERE -1
+                  if (sGCTF->test) { TC_LOG_INFO("server.loading", "[FLAG] UPDATE_AI PHASEMASK 1 {} {}", guid, activeGuid); }
+              }
 
-                    if (guid != activeGuid && phasemask == 1)
-                    {
-                        me->SetPhaseMask(0, true); // PHASEMASK_ANYWHERE -1
+              if (guid != activeGuid && phasemask == 1)
+              {
+                  me->SetPhaseMask(0, true); // PHASEMASK_ANYWHERE -1
 
-                    if (sGCTF->test) { TC_LOG_INFO("server.loading", "[FLAG] UPDATE_AI PHASEMASK 0 {} {}", guid, activeGuid); }
-                    }
-				}
-		};
+                  if (sGCTF->test) { TC_LOG_INFO("server.loading", "[FLAG] UPDATE_AI PHASEMASK 0 {} {}", guid, activeGuid); }
+              }
+          }
+      };
 
-		GameObjectAI* GetAI(GameObject* go) const override
-		{
-			return new World_Flag(go);
-		}
+      GameObjectAI* GetAI(GameObject* go) const override
+      {
+          return new World_Flag(go);
+      }
 };
 
 class CTF_Player_Actions : public PlayerScript
 {
 public: CTF_Player_Actions() : PlayerScript("CTF_Player_Actions") { };
 
-		virtual void OnLogout(Player* /*player*/)
-		{ 
-		}
+      virtual void OnLogout(Player* /*player*/)
+      {
+      }
 
-		virtual void OnLogin(Player* player, bool /*firstLogin*/)
-		{
-            uint32 guid = player->GetGUID();
+      virtual void OnLogin(Player* player, bool /*firstLogin*/)
+      {
+          uint32 guid = player->GetGUID();
 
-            if (!sGCTF->WorldPlayerData[guid].guid) { sGCTF->AddCharacter(player); }
-		}
+          if (!sGCTF->WorldPlayerData[guid].guid) { sGCTF->AddCharacter(player); }
+      }
 };
 
 using namespace Trinity::ChatCommands;
@@ -406,25 +406,25 @@ class CTF_commands : public CommandScript
 public: CTF_commands() : CommandScript("CTF_commands") { };
 
       ChatCommandTable GetCommands() const override
-	{
+      {
 
-		static ChatCommandTable CTFCommandTable =
-		{
-			{ "setup",	HandleCTFSetupCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//world capture-the-flag command to display current settings for players
-            { "list",	HandleCTFPlayerLeaderBoard,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//Player Leaderboard
-            { "tele",	HandleCTFTeleCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//use tele x where x is the id or null to tele to current active flag
-			{ "cycle",	HandleCTFCycleCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//use to cycle a new current active flag
-            { "add",	HandleCTFAddCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No }//use to add a new flag
-        };
+          static ChatCommandTable CTFCommandTable =
+          {
+              { "setup",	HandleCTFSetupCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//world capture-the-flag command to display current settings for players
+              { "list",	HandleCTFPlayerLeaderBoard,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//Player Leaderboard
+              { "tele",	HandleCTFTeleCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//use tele x where x is the id or null to tele to current active flag
+              { "cycle",	HandleCTFCycleCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No },//use to cycle a new current active flag
+              { "add",	HandleCTFAddCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No }//use to add a new flag
+          };
 
-		static ChatCommandTable commandTable =
-		{
-			{ "ctf", CTFCommandTable },//custom world capture the flag commands
-		};
+          static ChatCommandTable commandTable =
+          {
+              { "ctf", CTFCommandTable },//custom world capture the flag commands
+          };
 
-		return commandTable;
-	}
-static bool HandleCTFAddCommand(ChatHandler* handler, const char* /*args*/)
+          return commandTable;
+      }
+      static bool HandleCTFAddCommand(ChatHandler* handler, const char* /*args*/)
       {
           Player* player = handler->GetSession()->GetPlayer();
           Map* map = player->GetMap();
@@ -498,7 +498,7 @@ static bool HandleCTFAddCommand(ChatHandler* handler, const char* /*args*/)
           return true;
       }
 
-static bool HandleCTFCycleCommand(ChatHandler* handler, const char* /*args*/)
+      static bool HandleCTFCycleCommand(ChatHandler* handler, const char* /*args*/)
       {
           Player* player = handler->GetSession()->GetPlayer();
 
@@ -520,101 +520,101 @@ static bool HandleCTFCycleCommand(ChatHandler* handler, const char* /*args*/)
           return true;
       }
 
-static bool HandleCTFTeleCommand(ChatHandler* handler, const char* args)
-{
-    Player* player = handler->GetSession()->GetPlayer();
+      static bool HandleCTFTeleCommand(ChatHandler* handler, const char* args)
+      {
+          Player* player = handler->GetSession()->GetPlayer();
 
-    if (!player->IsGameMaster())
-    {
-        ChatHandler(player->GetSession()).PSendSysMessage("You need to be in GM mode.");
-    }
-    else
-    {
-        if (handler->GetSession()->GetSecurity() < sGCTF->GetRequiredGMMinimumRank())
-        {
-            ChatHandler(player->GetSession()).PSendSysMessage("You need to be GM with rank:%u.", sGCTF->GetRequiredGMMinimumRank());
-        }
-        else
-        {
-            uint32 id = 1;
+          if (!player->IsGameMaster())
+          {
+              ChatHandler(player->GetSession()).PSendSysMessage("You need to be in GM mode.");
+          }
+          else
+          {
+              if (handler->GetSession()->GetSecurity() < sGCTF->GetRequiredGMMinimumRank())
+              {
+                  ChatHandler(player->GetSession()).PSendSysMessage("You need to be GM with rank:%u.", sGCTF->GetRequiredGMMinimumRank());
+              }
+              else
+              {
+                  uint32 id = 1;
 
-            if (*args)
-                id = (uint32)atoi(args);
+                  if (*args)
+                      id = (uint32)atoi(args);
 
-            if (sGCTF->WorldFlags[id].id == id)
-            {
-                player->TeleportTo(sGCTF->WorldFlags[id].map_id, sGCTF->WorldFlags[id].x, sGCTF->WorldFlags[id].y, sGCTF->WorldFlags[id].z, sGCTF->WorldFlags[id].o);
-            }
-            else
-            {
-                ChatHandler(player->GetSession()).PSendSysMessage("Bad flag id:%u.", id);
-            }
-        }
-    }
-    return true;
-}
+                  if (sGCTF->WorldFlags[id].id == id)
+                  {
+                      player->TeleportTo(sGCTF->WorldFlags[id].map_id, sGCTF->WorldFlags[id].x, sGCTF->WorldFlags[id].y, sGCTF->WorldFlags[id].z, sGCTF->WorldFlags[id].o);
+                  }
+                  else
+                  {
+                      ChatHandler(player->GetSession()).PSendSysMessage("Bad flag id:%u.", id);
+                  }
+              }
+          }
+          return true;
+      }
 
-static bool HandleCTFPlayerLeaderBoard(ChatHandler* handler, const char* /*args*/)
-{
-    Player* player = handler->GetSession()->GetPlayer();
+      static bool HandleCTFPlayerLeaderBoard(ChatHandler* handler, const char* /*args*/)
+      {
+          Player* player = handler->GetSession()->GetPlayer();
 
-    sGCTF->UpdatePlayerLeaderBoard();
+          sGCTF->UpdatePlayerLeaderBoard();
 
-    uint8 id;
+          uint8 id;
 
-    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
-    ChatHandler(player->GetSession()).PSendSysMessage("               Player LeaderBoard              ");
-    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+          ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+          ChatHandler(player->GetSession()).PSendSysMessage("               Player LeaderBoard              ");
+          ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
 
-    for (id = 1; id <= 10; id++)
-    {
-        ChatHandler(player->GetSession()).PSendSysMessage("%u %s %u", id, sGCTF->PlayerLeaderBoard[id].name, sGCTF->PlayerLeaderBoard[id].captures);
-    }
-    return true;
-}
+          for (id = 1; id <= 10; id++)
+          {
+              ChatHandler(player->GetSession()).PSendSysMessage("%u %s %u", id, sGCTF->PlayerLeaderBoard[id].name, sGCTF->PlayerLeaderBoard[id].captures);
+          }
+          return true;
+      }
 
-static bool HandleCTFSetupCommand(ChatHandler* handler, char const* /*args*/)
-{
-    Player* player = handler->GetSession()->GetPlayer();
-    uint32 guid = player->GetGUID();
+      static bool HandleCTFSetupCommand(ChatHandler* handler, char const* /*args*/)
+      {
+          Player* player = handler->GetSession()->GetPlayer();
+          uint32 guid = player->GetGUID();
 
-    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
-    ChatHandler(player->GetSession()).PSendSysMessage("           Capture the Flag settings           ");
-    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+          ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+          ChatHandler(player->GetSession()).PSendSysMessage("           Capture the Flag settings           ");
+          ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
 
-    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
-    ChatHandler(player->GetSession()).PSendSysMessage("                  Global data                  ");
-    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+          ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+          ChatHandler(player->GetSession()).PSendSysMessage("                  Global data                  ");
+          ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
 
-    if (sGCTF->GetHintSystem() == 0) { ChatHandler(player->GetSession()).PSendSysMessage("- Hint System:Idle."); }
-    if (sGCTF->GetHintSystem() == 2) { ChatHandler(player->GetSession()).PSendSysMessage("- Hint System:Active."); }
+          if (sGCTF->GetHintSystem() == 0) { ChatHandler(player->GetSession()).PSendSysMessage("- Hint System:Idle."); }
+          if (sGCTF->GetHintSystem() == 2) { ChatHandler(player->GetSession()).PSendSysMessage("- Hint System:Active."); }
 
 
-    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
-    ChatHandler(player->GetSession()).PSendSysMessage("                 Player data                   ");
-    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+          ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+          ChatHandler(player->GetSession()).PSendSysMessage("                 Player data                   ");
+          ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
 
-    ChatHandler(player->GetSession()).PSendSysMessage("- Captures:%u", sGCTF->WorldPlayerData[guid].captures);
-    ChatHandler(player->GetSession()).PSendSysMessage("- Total Active Flags:%u", sGCTF->WorldFlags.size());
+          ChatHandler(player->GetSession()).PSendSysMessage("- Captures:%u", sGCTF->WorldPlayerData[guid].captures);
+          ChatHandler(player->GetSession()).PSendSysMessage("- Total Active Flags:%u", sGCTF->WorldFlags.size());
 
-    if (handler->GetSession()->GetSecurity() >= sGCTF->GetRequiredGMMinimumRank())
-    {
-        ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
-        ChatHandler(player->GetSession()).PSendSysMessage("                    GM data                    ");
-        ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
-        ChatHandler(player->GetSession()).PSendSysMessage("- Minimum required GM rank:%u.", sGCTF->GetRequiredGMMinimumRank());
-    }
-    
-    ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
-    return true;
-}
+          if (handler->GetSession()->GetSecurity() >= sGCTF->GetRequiredGMMinimumRank())
+          {
+              ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+              ChatHandler(player->GetSession()).PSendSysMessage("                    GM data                    ");
+              ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+              ChatHandler(player->GetSession()).PSendSysMessage("- Minimum required GM rank:%u.", sGCTF->GetRequiredGMMinimumRank());
+          }
+
+          ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
+          return true;
+      }
 
 };
 
 void AddSC_Grumboz_World_Ctf()
 {
-	new CTF_Load_Conf();
-	new CTF_Flag();
-	new CTF_Player_Actions();
-	new CTF_commands();
+    new CTF_Load_Conf();
+    new CTF_Flag();
+    new CTF_Player_Actions();
+    new CTF_commands();
 }

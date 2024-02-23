@@ -125,14 +125,13 @@ public:
             handler->SetSentErrorMessage(true);
             return false;
         }
-        
+
         if (player->IsMounted())
         {
             handler->PSendSysMessage("Cannot Spectate while mounted.");
             handler->SetSentErrorMessage(true);
             return false;
         }
-
 
         // all's well, set bg id
         // when porting out from the bg, it will be reset to 0
@@ -152,7 +151,7 @@ public:
             player->SaveRecallPosition();
 
         // search for two teams
-        Battleground *bGround = target->GetBattleground();
+        Battleground* bGround = target->GetBattleground();
         if (bGround->isRated())
         {
             uint32 slot = bGround->GetArenaType() - 2;
@@ -160,8 +159,8 @@ public:
                 slot = 2;
             uint32 firstTeamID = target->GetArenaTeamId(slot);
             uint32 secondTeamID = 0;
-            Player *firstTeamMember  = target;
-            Player *secondTeamMember = NULL;
+            Player* firstTeamMember = target;
+            Player* secondTeamMember = NULL;
             for (Battleground::BattlegroundPlayerMap::const_iterator itr = bGround->GetPlayers().begin(); itr != bGround->GetPlayers().end(); ++itr)
                 if (Player* tmpPlayer = ObjectAccessor::FindPlayer(itr->first))
                 {
@@ -177,19 +176,19 @@ public:
                     }
                 }
 
-                if (firstTeamID > 0 && secondTeamID > 0 && secondTeamMember)
+            if (firstTeamID > 0 && secondTeamID > 0 && secondTeamMember)
+            {
+                ArenaTeam* firstTeam = sArenaTeamMgr->GetArenaTeamById(firstTeamID);
+                ArenaTeam* secondTeam = sArenaTeamMgr->GetArenaTeamById(secondTeamID);
+                if (firstTeam && secondTeam)
                 {
-                    ArenaTeam *firstTeam  = sArenaTeamMgr->GetArenaTeamById(firstTeamID);
-                    ArenaTeam *secondTeam = sArenaTeamMgr->GetArenaTeamById(secondTeamID);
-                    if (firstTeam && secondTeam)
-                    {
-                        handler->PSendSysMessage("You entered a Rated Arena.");
-                        handler->PSendSysMessage("Teams:");
-                        handler->PSendSysMessage("|cFFffffff%s|r vs |cFFffffff%s|r", firstTeam->GetName().c_str(), secondTeam->GetName().c_str());
-                        handler->PSendSysMessage("|cFFffffff%u(%u)|r -- |cFFffffff%u(%u)|r", firstTeam->GetRating(), firstTeam->GetAverageMMR(firstTeamMember->GetGroup()),
-                            secondTeam->GetRating(), secondTeam->GetAverageMMR(secondTeamMember->GetGroup()));
-                    }
+                    handler->PSendSysMessage("You entered a Rated Arena.");
+                    handler->PSendSysMessage("Teams:");
+                    handler->PSendSysMessage("|cFFffffff%s|r vs |cFFffffff%s|r", firstTeam->GetName().c_str(), secondTeam->GetName().c_str());
+                    handler->PSendSysMessage("|cFFffffff%u(%u)|r -- |cFFffffff%u(%u)|r", firstTeam->GetRating(), firstTeam->GetAverageMMR(firstTeamMember->GetGroup()),
+                        secondTeam->GetRating(), secondTeam->GetAverageMMR(secondTeamMember->GetGroup()));
                 }
+            }
         }
 
         // to point to see at target with same orientation
@@ -206,7 +205,7 @@ public:
 
     static bool HandleSpectateCancelCommand(ChatHandler* handler, const char* /*args*/)
     {
-        Player* player =  handler->GetSession()->GetPlayer();
+        Player* player = handler->GetSession()->GetPlayer();
 
         if (!player->IsSpectator() || player->IsSpectateCanceled())
         {
@@ -223,7 +222,7 @@ public:
         return true;
     }
 
-    static bool HandleSpectateFromCommand(ChatHandler* handler, const char *args)
+    static bool HandleSpectateFromCommand(ChatHandler* handler, const char* args)
     {
         Player* target;
         ObjectGuid target_guid;
@@ -284,7 +283,7 @@ public:
         return true;
     }
 
-    static bool HandleSpectateResetCommand(ChatHandler* handler, const char* )
+    static bool HandleSpectateResetCommand(ChatHandler* handler, const char*)
     {
         Player* player = handler->GetSession()->GetPlayer();
 
@@ -295,15 +294,15 @@ public:
             return false;
         }
 
-        Battleground *bGround = player->GetBattleground();
+        Battleground* bGround = player->GetBattleground();
         if (!bGround)
             return false;
 
         if (bGround->GetStatus() != STATUS_IN_PROGRESS)
             return true;
 
-       // for (Battleground::BattlegroundPlayerMap::const_iterator itr = bGround->GetPlayers().begin(); itr != bGround->GetPlayers().end(); ++itr)
-          for (Battleground::BattlegroundPlayerMap::const_iterator itr = bGround->GetPlayers().begin(); itr != bGround->GetPlayers().end(); ++itr)
+        // for (Battleground::BattlegroundPlayerMap::const_iterator itr = bGround->GetPlayers().begin(); itr != bGround->GetPlayers().end(); ++itr)
+        for (Battleground::BattlegroundPlayerMap::const_iterator itr = bGround->GetPlayers().begin(); itr != bGround->GetPlayers().end(); ++itr)
             if (Player* tmpPlayer = ObjectAccessor::FindPlayer(itr->first))
             {
                 if (tmpPlayer->IsSpectator())
@@ -315,7 +314,7 @@ public:
                 std::string pName = tmpPlayer->GetName();
                 std::string tName = "";
 
-                if (Player *target = tmpPlayer->GetSelectedPlayer())
+                if (Player* target = tmpPlayer->GetSelectedPlayer())
                     tName = target->GetName();
 
                 SpectatorAddonMsg msg;
@@ -334,7 +333,7 @@ public:
                 msg.SendPacket(player->GetGUID());
             }
 
-            return true;
+        return true;
     }
 
     ChatCommandTable GetCommands() const override
@@ -343,17 +342,17 @@ public:
         {
             { "player",	 HandleSpectateCommand,       rbac::RBAC_PERM_COMMAND_SPECTATE_PLAYER, Console::No },
             { "view",	 HandleSpectateFromCommand,   rbac::RBAC_PERM_COMMAND_SPECTATE_VIEW,   Console::No },
-           // { "reset",   HandleSpectateResetCommand,  rbac::RBAC_PERM_COMMAND_SPECTATE_RESET,  Console::No },
-            { "leave",   HandleSpectateCancelCommand, rbac::RBAC_PERM_COMMAND_SPECTATE_LEAVE,  Console::No },
-            //{ "add",	HandleCTFAddCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No }
-            //{ NULL,					0,						 false,				NULL,			  "" }
+            // { "reset",   HandleSpectateResetCommand,  rbac::RBAC_PERM_COMMAND_SPECTATE_RESET,  Console::No },
+             { "leave",   HandleSpectateCancelCommand, rbac::RBAC_PERM_COMMAND_SPECTATE_LEAVE,  Console::No },
+             //{ "add",	HandleCTFAddCommand,	rbac::RBAC_PERM_COMMAND_SERVER, Console::No }
+             //{ NULL,					0,						 false,				NULL,			  "" }
         };
 
         static ChatCommandTable commandTable =
         {
             { "spectate", spectateCommandTable },
-           // { "ctf", CTFCommandTable },
-            //{ NULL, 0, false, NULL, "", NULL }
+            // { "ctf", CTFCommandTable },
+             //{ NULL, 0, false, NULL, "", NULL }
         };
 
         return commandTable;
@@ -362,15 +361,15 @@ public:
 
 enum NpcSpectatorAtions {
     // will be used for scrolling
-    NPC_SPECTATOR_ACTION_2V2_GAMES          = 1000,
-    NPC_SPECTATOR_ACTION_3V3_GAMES          = 2000,
-    NPC_SPECTATOR_ACTION_SPECIFIC           = 500,
+    NPC_SPECTATOR_ACTION_2V2_GAMES = 1000,
+    NPC_SPECTATOR_ACTION_3V3_GAMES = 2000,
+    NPC_SPECTATOR_ACTION_SPECIFIC = 500,
 
     // NPC_SPECTATOR_ACTION_SELECTED_PLAYER + player.Guid()
-    NPC_SPECTATOR_ACTION_SELECTED_PLAYER    = 3000
+    NPC_SPECTATOR_ACTION_SELECTED_PLAYER = 3000
 };
 
-const uint8  GamesOnPage    = 15;
+const uint8  GamesOnPage = 15;
 
 class npc_arena_spectator : public CreatureScript
 {
@@ -382,86 +381,86 @@ public:
     {
         NPC_PassiveAI(Creature* creature) : ScriptedAI(creature) { }
 
-    bool OnGossipHello(Player* pPlayer)
-    {
-        AddGossipItemFor(pPlayer, GOSSIP_ICON_CHAT, "|TInterface\\icons\\Achievement_Arena_2v2_7:35:35:-30:0|tGames: 2v2", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_2V2_GAMES);
-        AddGossipItemFor(pPlayer, GOSSIP_ICON_CHAT, "|TInterface\\icons\\Achievement_Arena_3v3_7:35:35:-30:0|tGames: 3v3", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_3V3_GAMES);
-        AddGossipItemFor(pPlayer, GOSSIP_ICON_CHAT, "|TInterface\\icons\\Spell_Holy_DevineAegis:35:35:-30:0|tSpectate Specific Player.", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_SPECIFIC, "", 0, true);
-        SendGossipMenuFor(pPlayer, 1, me);
-        return true;
-    }
-
-    bool OnGossipSelect(Player* player, uint32 /*sender*/, uint32 action)
-    {
-        player->PlayerTalkClass->ClearMenus();
-        if (action == NPC_SPECTATOR_ACTION_SPECIFIC)
+        bool OnGossipHello(Player* pPlayer)
         {
-
+            AddGossipItemFor(pPlayer, GOSSIP_ICON_CHAT, "|TInterface\\icons\\Achievement_Arena_2v2_7:35:35:-30:0|tGames: 2v2", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_2V2_GAMES);
+            AddGossipItemFor(pPlayer, GOSSIP_ICON_CHAT, "|TInterface\\icons\\Achievement_Arena_3v3_7:35:35:-30:0|tGames: 3v3", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_3V3_GAMES);
+            AddGossipItemFor(pPlayer, GOSSIP_ICON_CHAT, "|TInterface\\icons\\Spell_Holy_DevineAegis:35:35:-30:0|tSpectate Specific Player.", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_SPECIFIC, "", 0, true);
+            SendGossipMenuFor(pPlayer, 1, me);
+            return true;
         }
-        if (action = NPC_SPECTATOR_ACTION_2V2_GAMES)
-        {
-            AddGossipItemFor(player, GOSSIP_ICON_DOT, "Refresh", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_2V2_GAMES);
-            ShowPage(player, action - NPC_SPECTATOR_ACTION_2V2_GAMES, false);
-            SendGossipMenuFor(player, 1, me);
-        }
-        else if (action = NPC_SPECTATOR_ACTION_3V3_GAMES)
-        {
-            AddGossipItemFor(player, GOSSIP_ICON_DOT, "Refresh", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_3V3_GAMES);
-            ShowPage(player, action - NPC_SPECTATOR_ACTION_3V3_GAMES, true);
-            SendGossipMenuFor(player, 1, me);
-        }
-        else
-        {
 
-            ObjectGuid guid = ObjectGuid(HighGuid::Player, action - NPC_SPECTATOR_ACTION_SELECTED_PLAYER);
-            if (Player* target = ObjectAccessor::FindPlayer(guid))
+        bool OnGossipSelect(Player* player, uint32 /*sender*/, uint32 action)
+        {
+            player->PlayerTalkClass->ClearMenus();
+            if (action == NPC_SPECTATOR_ACTION_SPECIFIC)
             {
-                ChatHandler handler(player->GetSession());
-                char const* pTarget = target->GetName().c_str();
-                arena_spectator_commands::HandleSpectateCommand(&handler, pTarget);
+
             }
-        }
-        return true;
-    }
-
-    std::string GetClassNameById(uint8 id)
-    {
-        std::string sClass = "";
-        switch (id)
-        {
-        case CLASS_WARRIOR:         sClass = "Warrior ";           break;
-        case CLASS_PALADIN:         sClass = "Paladin ";           break;
-        case CLASS_HUNTER:          sClass = "Hunter  ";           break;
-        case CLASS_ROGUE:           sClass = "Rogue   ";           break;
-        case CLASS_PRIEST:          sClass = "Priest  ";           break;
-        case CLASS_DEATH_KNIGHT:    sClass = "DKnight ";           break;
-        case CLASS_SHAMAN:          sClass = "Shaman  ";           break;
-        case CLASS_MAGE:            sClass = "Mage    ";           break;
-        case CLASS_WARLOCK:         sClass = "Warlock ";           break;
-        case CLASS_DRUID:           sClass = "Druid   ";           break;
-        }
-        return sClass;
-    }
-
-    std::string GetGamesStringData(Battleground* team, uint16 mmr, uint16 mmrTwo)
-    {
-        std::string teamsMember[COUNT_OF_PLAYERS_TO_AVERAGE_WAIT_TIME];
-        uint32 firstTeamId = 0;
-        for (Battleground::BattlegroundPlayerMap::const_iterator itr = team->GetPlayers().begin(); itr != team->GetPlayers().end(); ++itr)
-            if (Player* player = ObjectAccessor::FindPlayer(itr->first))
+            if (action = NPC_SPECTATOR_ACTION_2V2_GAMES)
             {
-                if (player->IsSpectator())
-                    continue;
-
-                if (player->IsGameMaster())
-                    continue; 
-
-                uint32 team = itr->second.Team;
-                if (!firstTeamId)
-                    firstTeamId = team;
-
-                teamsMember[firstTeamId == team] += GetClassNameById(player->GetClass());
+                AddGossipItemFor(player, GOSSIP_ICON_DOT, "Refresh", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_2V2_GAMES);
+                ShowPage(player, action - NPC_SPECTATOR_ACTION_2V2_GAMES, false);
+                SendGossipMenuFor(player, 1, me);
             }
+            else if (action = NPC_SPECTATOR_ACTION_3V3_GAMES)
+            {
+                AddGossipItemFor(player, GOSSIP_ICON_DOT, "Refresh", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_3V3_GAMES);
+                ShowPage(player, action - NPC_SPECTATOR_ACTION_3V3_GAMES, true);
+                SendGossipMenuFor(player, 1, me);
+            }
+            else
+            {
+
+                ObjectGuid guid = ObjectGuid(HighGuid::Player, action - NPC_SPECTATOR_ACTION_SELECTED_PLAYER);
+                if (Player* target = ObjectAccessor::FindPlayer(guid))
+                {
+                    ChatHandler handler(player->GetSession());
+                    char const* pTarget = target->GetName().c_str();
+                    arena_spectator_commands::HandleSpectateCommand(&handler, pTarget);
+                }
+            }
+            return true;
+        }
+
+        std::string GetClassNameById(uint8 id)
+        {
+            std::string sClass = "";
+            switch (id)
+            {
+            case CLASS_WARRIOR:         sClass = "Warrior ";           break;
+            case CLASS_PALADIN:         sClass = "Paladin ";           break;
+            case CLASS_HUNTER:          sClass = "Hunter  ";           break;
+            case CLASS_ROGUE:           sClass = "Rogue   ";           break;
+            case CLASS_PRIEST:          sClass = "Priest  ";           break;
+            case CLASS_DEATH_KNIGHT:    sClass = "DKnight ";           break;
+            case CLASS_SHAMAN:          sClass = "Shaman  ";           break;
+            case CLASS_MAGE:            sClass = "Mage    ";           break;
+            case CLASS_WARLOCK:         sClass = "Warlock ";           break;
+            case CLASS_DRUID:           sClass = "Druid   ";           break;
+            }
+            return sClass;
+        }
+
+        std::string GetGamesStringData(Battleground* team, uint16 mmr, uint16 mmrTwo)
+        {
+            std::string teamsMember[COUNT_OF_PLAYERS_TO_AVERAGE_WAIT_TIME];
+            uint32 firstTeamId = 0;
+            for (Battleground::BattlegroundPlayerMap::const_iterator itr = team->GetPlayers().begin(); itr != team->GetPlayers().end(); ++itr)
+                if (Player* player = ObjectAccessor::FindPlayer(itr->first))
+                {
+                    if (player->IsSpectator())
+                        continue;
+
+                    if (player->IsGameMaster())
+                        continue;
+
+                    uint32 team = itr->second.Team;
+                    if (!firstTeamId)
+                        firstTeamId = team;
+
+                    teamsMember[firstTeamId == team] += GetClassNameById(player->GetClass());
+                }
 
             std::string data = teamsMember[0] + "(";
             std::stringstream sstwo;
@@ -473,159 +472,159 @@ public:
             data += teamsMember[1] + "(" + sstwo.str();
             data += ")";
             return data;
-    }
+        }
 
-    ObjectGuid GetFirstPlayerGuid(Battleground* team)
-    {
-        for (Battleground::BattlegroundPlayerMap::const_iterator itr = team->GetPlayers().begin(); itr != team->GetPlayers().end(); ++itr)
-            if (Player* player = ObjectAccessor::FindPlayer(itr->first))
-                return itr->first;
-        return ObjectGuid::Empty;
-    }
-
-    void ShowPage(Player* player, uint16 page, bool IsTop)
-    {
-        uint32 firstTeamId = 0;
-        uint16 TypeTwo = 0;
-        uint16 TypeThree = 0;
-        uint16 mmr = 0;
-        uint16 mmrTwo = 0;
-        bool haveNextPage = false;
-        for (uint8 i = 0; i <= MAX_BATTLEGROUND_TYPE_ID; ++i)
+        ObjectGuid GetFirstPlayerGuid(Battleground* team)
         {
-            if (!sBattlegroundMgr->IsArenaType(BattlegroundTypeId(i)))
-                continue;
+            for (Battleground::BattlegroundPlayerMap::const_iterator itr = team->GetPlayers().begin(); itr != team->GetPlayers().end(); ++itr)
+                if (Player* player = ObjectAccessor::FindPlayer(itr->first))
+                    return itr->first;
+            return ObjectGuid::Empty;
+        }
 
-            BattlegroundData* arenas = sBattlegroundMgr->GetAllBattlegroundsWithTypeId(BattlegroundTypeId(i));
-
-            if (!arenas || arenas->m_Battlegrounds.empty())
-                continue;
-
-            for (BattlegroundContainer::const_iterator itr = arenas->m_Battlegrounds.begin(); itr != arenas->m_Battlegrounds.end(); ++itr)
+        void ShowPage(Player* player, uint16 page, bool IsTop)
+        {
+            uint32 firstTeamId = 0;
+            uint16 TypeTwo = 0;
+            uint16 TypeThree = 0;
+            uint16 mmr = 0;
+            uint16 mmrTwo = 0;
+            bool haveNextPage = false;
+            for (uint8 i = 0; i <= MAX_BATTLEGROUND_TYPE_ID; ++i)
             {
-                Battleground* arena = itr->second;
-                Player* target = ObjectAccessor::FindPlayer(GetFirstPlayerGuid(arena));
-                if (!target)
+                if (!sBattlegroundMgr->IsArenaType(BattlegroundTypeId(i)))
                     continue;
 
-                if (target->HasAura(32728) || target->HasAura(32727))
+                BattlegroundData* arenas = sBattlegroundMgr->GetAllBattlegroundsWithTypeId(BattlegroundTypeId(i));
+
+                if (!arenas || arenas->m_Battlegrounds.empty())
                     continue;
 
-                if (!arena->GetPlayersSize())
-                    continue;
-
-                if (!arena->isRated())
-                    continue;
-
-                if (arena->GetArenaType() == ARENA_TYPE_2v2)
+                for (BattlegroundContainer::const_iterator itr = arenas->m_Battlegrounds.begin(); itr != arenas->m_Battlegrounds.end(); ++itr)
                 {
-					mmr = arena->GetArenaMatchmakerRating(0);
-                    firstTeamId = target->GetArenaTeamId(0);
-                    Battleground::BattlegroundPlayerMap::const_iterator citr = arena->GetPlayers().begin();
-                    for (; citr != arena->GetPlayers().end(); ++citr)
-                        if (Player* plrs = ObjectAccessor::FindPlayer(citr->first))
-                            if (plrs->GetArenaTeamId(0) != firstTeamId)
-                                mmrTwo = arena->GetArenaMatchmakerRating(citr->second.Team);
-                }
-                else
-                {
-					mmr = arena->GetArenaMatchmakerRating(1);
-                    firstTeamId = target->GetArenaTeamId(1);
-                    Battleground::BattlegroundPlayerMap::const_iterator citr = arena->GetPlayers().begin();
-                    for (; citr != arena->GetPlayers().end(); ++citr)
-                        if (Player* plrs = ObjectAccessor::FindPlayer(citr->first))
-                            if (plrs->GetArenaTeamId(1) != firstTeamId)
-                                mmrTwo = arena->GetArenaMatchmakerRating(citr->second.Team);
-                }
+                    Battleground* arena = itr->second;
+                    Player* target = ObjectAccessor::FindPlayer(GetFirstPlayerGuid(arena));
+                    if (!target)
+                        continue;
 
-                if (IsTop && arena->GetArenaType() == ARENA_TYPE_3v3)
-                {
-                    TypeThree++;
-                    if (TypeThree > (page + 1) * GamesOnPage)
+                    if (target->HasAura(32728) || target->HasAura(32727))
+                        continue;
+
+                    if (!arena->GetPlayersSize())
+                        continue;
+
+                    if (!arena->isRated())
+                        continue;
+
+                    if (arena->GetArenaType() == ARENA_TYPE_2v2)
                     {
-                        haveNextPage = true;
-                        break;
+                        mmr = arena->GetArenaMatchmakerRating(0);
+                        firstTeamId = target->GetArenaTeamId(0);
+                        Battleground::BattlegroundPlayerMap::const_iterator citr = arena->GetPlayers().begin();
+                        for (; citr != arena->GetPlayers().end(); ++citr)
+                            if (Player* plrs = ObjectAccessor::FindPlayer(citr->first))
+                                if (plrs->GetArenaTeamId(0) != firstTeamId)
+                                    mmrTwo = arena->GetArenaMatchmakerRating(citr->second.Team);
+                    }
+                    else
+                    {
+                        mmr = arena->GetArenaMatchmakerRating(1);
+                        firstTeamId = target->GetArenaTeamId(1);
+                        Battleground::BattlegroundPlayerMap::const_iterator citr = arena->GetPlayers().begin();
+                        for (; citr != arena->GetPlayers().end(); ++citr)
+                            if (Player* plrs = ObjectAccessor::FindPlayer(citr->first))
+                                if (plrs->GetArenaTeamId(1) != firstTeamId)
+                                    mmrTwo = arena->GetArenaMatchmakerRating(citr->second.Team);
                     }
 
-                    if (TypeThree >= page * GamesOnPage)
-                        AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GetGamesStringData(arena, mmr, mmrTwo), GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_SELECTED_PLAYER + GetFirstPlayerGuid(arena));
-                }
-                else if (!IsTop && arena->GetArenaType() == ARENA_TYPE_2v2)
-                {
-                    TypeTwo++;
-                    if (TypeTwo > (page + 1) * GamesOnPage)
+                    if (IsTop && arena->GetArenaType() == ARENA_TYPE_3v3)
                     {
-                        haveNextPage = true;
-                        break;
-                    }
+                        TypeThree++;
+                        if (TypeThree > (page + 1) * GamesOnPage)
+                        {
+                            haveNextPage = true;
+                            break;
+                        }
 
-                    if (TypeTwo >= page * GamesOnPage)
-                        AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GetGamesStringData(arena, mmr, mmrTwo), GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_SELECTED_PLAYER + GetFirstPlayerGuid(arena));
+                        if (TypeThree >= page * GamesOnPage)
+                            AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GetGamesStringData(arena, mmr, mmrTwo), GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_SELECTED_PLAYER + GetFirstPlayerGuid(arena));
+                    }
+                    else if (!IsTop && arena->GetArenaType() == ARENA_TYPE_2v2)
+                    {
+                        TypeTwo++;
+                        if (TypeTwo > (page + 1) * GamesOnPage)
+                        {
+                            haveNextPage = true;
+                            break;
+                        }
+
+                        if (TypeTwo >= page * GamesOnPage)
+                            AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GetGamesStringData(arena, mmr, mmrTwo), GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_SELECTED_PLAYER + GetFirstPlayerGuid(arena));
+                    }
                 }
+            }
+
+            if (page > 0)
+            {
+                AddGossipItemFor(player, GOSSIP_ICON_DOT, "Prev..", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_2V2_GAMES + page - 1);
+                AddGossipItemFor(player, GOSSIP_ICON_DOT, "Prev..", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_3V3_GAMES + page - 1);
+            }
+
+            if (haveNextPage)
+            {
+                AddGossipItemFor(player, GOSSIP_ICON_DOT, "Next..", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_2V2_GAMES + page + 1);
+                AddGossipItemFor(player, GOSSIP_ICON_DOT, "Next..", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_3V3_GAMES + page + 1);
             }
         }
 
-        if (page > 0)
+        bool OnGossipSelectCode(Player* player, uint32 sender, uint32 action, const char* code)
         {
-            AddGossipItemFor(player, GOSSIP_ICON_DOT, "Prev..", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_2V2_GAMES + page - 1);
-            AddGossipItemFor(player, GOSSIP_ICON_DOT, "Prev..", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_3V3_GAMES + page - 1);
-        }
-
-        if (haveNextPage)
-        {
-            AddGossipItemFor(player, GOSSIP_ICON_DOT, "Next..", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_2V2_GAMES + page + 1);
-            AddGossipItemFor(player, GOSSIP_ICON_DOT, "Next..", GOSSIP_SENDER_MAIN, NPC_SPECTATOR_ACTION_3V3_GAMES + page + 1);
-        }
-    }
-
-    bool OnGossipSelectCode(Player* player, uint32 sender, uint32 action, const char* code)
-    {
-        if (!player)
-            return true;
-
-        player->PlayerTalkClass->ClearMenus();
-        CloseGossipMenuFor(player);
-        if (sender == GOSSIP_SENDER_MAIN)
-        {
-            switch (action)
-            {
-            case NPC_SPECTATOR_ACTION_SPECIFIC: // choosing a player
-
-                const char* plrName = code;
-
-                char playerName[50];
-                strcpy(playerName, plrName);
-
-                for (int i = 0; i < 13; i++)
-                {
-                    if (playerName[i] == NULL)
-                        break;
-                    if (i == 0 && playerName[i] > 96)
-                        playerName[0] -= 32;
-                    else if (playerName[i] < 97)
-                        playerName[i] += 32;
-                }
-
-                if (Player* target = ObjectAccessor::FindPlayerByName(playerName))
-                {
-                    ChatHandler handler(player->GetSession());
-                    char const* pTarget = target->GetName().c_str();
-                    arena_spectator_commands::HandleSpectateCommand(&handler, pTarget);
-                }
-                ChatHandler(player->GetSession()).PSendSysMessage("Player is not online or does not exist.");
+            if (!player)
                 return true;
+
+            player->PlayerTalkClass->ClearMenus();
+            CloseGossipMenuFor(player);
+            if (sender == GOSSIP_SENDER_MAIN)
+            {
+                switch (action)
+                {
+                case NPC_SPECTATOR_ACTION_SPECIFIC: // choosing a player
+
+                    const char* plrName = code;
+
+                    char playerName[50];
+                    strcpy(playerName, plrName);
+
+                    for (int i = 0; i < 13; i++)
+                    {
+                        if (playerName[i] == NULL)
+                            break;
+                        if (i == 0 && playerName[i] > 96)
+                            playerName[0] -= 32;
+                        else if (playerName[i] < 97)
+                            playerName[i] += 32;
+                    }
+
+                    if (Player* target = ObjectAccessor::FindPlayerByName(playerName))
+                    {
+                        ChatHandler handler(player->GetSession());
+                        char const* pTarget = target->GetName().c_str();
+                        arena_spectator_commands::HandleSpectateCommand(&handler, pTarget);
+                    }
+                    ChatHandler(player->GetSession()).PSendSysMessage("Player is not online or does not exist.");
+                    return true;
+                }
             }
+
+            return false;
         }
+    };
 
-        return false;
+    // CREATURE AI
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new NPC_PassiveAI(creature);
     }
-};
-
-// CREATURE AI
-CreatureAI* GetAI(Creature* creature) const override
-{
-    return new NPC_PassiveAI(creature);
-}
 };
 
 

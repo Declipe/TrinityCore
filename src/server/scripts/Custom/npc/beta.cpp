@@ -6,8 +6,8 @@
 #define CONST_ARENA_POINT_2  0//1000
 #define CONST_ARENA_POINT_3  0//3000
 #define CONST_ARENA_POINT_4  0//5000
-#define CONST_HONOR_23 29434 //??????? ??????? ????? ??????
-#define CONST_HONOR_233 0  //??????? ???? ????
+#define CONST_HONOR_23 29434
+#define CONST_HONOR_233 0
 
 uint32 proff = 12;
 
@@ -418,183 +418,192 @@ public:
                 SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                 break;
             case 22334:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(178);
-            if (player->HasTitle(titleInfo))
             {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-                return false;
-            }
-            if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-            }
-            else {
-                // ???? ?????? ?????????
-                player->SetTitle(titleInfo);
-                player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
-                CloseGossipMenuFor(player);
-            }
+                CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(178);
+                if (player->HasTitle(titleInfo))
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                    return false;
+                }
+                if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else {
+                    // ???? ?????? ?????????
+                    player->SetTitle(titleInfo);
+                    player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+                    CloseGossipMenuFor(player);
+                }
             }
             break;
             case 22335:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(179);
-            if (player->HasTitle(titleInfo))
             {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-                return false;
-            }
-            if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-            }
-            else {
-                // ???? ?????? ?????????
-                player->SetTitle(titleInfo);
-                player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
-                CloseGossipMenuFor(player);
-            }
+                CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(179);
+                if (player->HasTitle(titleInfo))
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                    return false;
+                }
+                if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else {
+                    // ???? ?????? ?????????
+                    player->SetTitle(titleInfo);
+                    player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+                    CloseGossipMenuFor(player);
+                }
             }
             break;
             case 22336:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(180);
-            if (player->HasTitle(titleInfo))
             {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-                return false;
-            }
-            if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-            }
-            else {
-                // ???? ?????? ?????????
-                player->SetTitle(titleInfo);
-                player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
-                CloseGossipMenuFor(player);
-            }
+                CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(180);
+                if (player->HasTitle(titleInfo))
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                    return false;
+                }
+                if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else {
+                    // ???? ?????? ?????????
+                    player->SetTitle(titleInfo);
+                    player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+                    CloseGossipMenuFor(player);
+                }
             }
             break;
             case 22337:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(181);
-            if (player->HasTitle(titleInfo))
             {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-                return false;
-            }
-            if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-            }
-            else {
-                // ???? ?????? ?????????
-                player->SetTitle(titleInfo);
-                player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
-                CloseGossipMenuFor(player);
-            }
+                CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(181);
+                if (player->HasTitle(titleInfo))
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                    return false;
+                }
+                if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else {
+                    // ???? ?????? ?????????
+                    player->SetTitle(titleInfo);
+                    player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+                    CloseGossipMenuFor(player);
+                }
             }
             break;
             case 22338:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(182);
-            if (player->HasTitle(titleInfo))
             {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-                return false;
-            }
-            if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-            }
-            else {
-                // ???? ?????? ?????????
-                player->SetTitle(titleInfo);
-                player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
-                CloseGossipMenuFor(player);
-            }
+                CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(182);
+                if (player->HasTitle(titleInfo))
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                    return false;
+                }
+                if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else {
+                    // ???? ?????? ?????????
+                    player->SetTitle(titleInfo);
+                    player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+                    CloseGossipMenuFor(player);
+                }
             }
             break;
             case 22339:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(183);
-            if (player->HasTitle(titleInfo))
             {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-                return false;
-            }
-            if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-            }
-            else {
-                // ???? ?????? ?????????
-                player->SetTitle(titleInfo);
-                player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
-                CloseGossipMenuFor(player);
-            }
+                CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(183);
+                if (player->HasTitle(titleInfo))
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                    return false;
+                }
+                if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else {
+                    // ???? ?????? ?????????
+                    player->SetTitle(titleInfo);
+                    player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+                    CloseGossipMenuFor(player);
+                }
             }
             break;
             case 22340:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(184);
-            if (player->HasTitle(titleInfo))
             {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-                return false;
-            }
-            if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-            }
-            else {
-                // ???? ?????? ?????????
-                player->SetTitle(titleInfo);
-                player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
-                CloseGossipMenuFor(player);
-            }
+                CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(184);
+                if (player->HasTitle(titleInfo))
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                    return false;
+                }
+                if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else {
+                    // ???? ?????? ?????????
+                    player->SetTitle(titleInfo);
+                    player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+                    CloseGossipMenuFor(player);
+                }
             }
             break;
             case 22341:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(185);
-            if (player->HasTitle(titleInfo))
             {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-                return false;
-            }
-            if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-            }
-            else {
-                // ???? ?????? ?????????
-                player->SetTitle(titleInfo);
-                player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
-                CloseGossipMenuFor(player);
-            }
+                CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(185);
+                if (player->HasTitle(titleInfo))
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                    return false;
+                }
+                if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else {
+                    // ???? ?????? ?????????
+                    player->SetTitle(titleInfo);
+                    player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+                    CloseGossipMenuFor(player);
+                }
             }
             break;
             case 22342:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(186);
-            if (player->HasTitle(titleInfo))
             {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-                return false;
-            }
-            if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-            }
-            else {
-                // ???? ?????? ?????????
-                player->SetTitle(titleInfo);
-                player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
-                CloseGossipMenuFor(player);
-            }
+                CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(186);
+                if (player->HasTitle(titleInfo))
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                    return false;
+                }
+                if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else {
+                    // ???? ?????? ?????????
+                    player->SetTitle(titleInfo);
+                    player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+                    CloseGossipMenuFor(player);
+                }
             }
             break;
 
@@ -1373,132 +1382,138 @@ public:
                 }
                 break;
             case 23:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(143);
-            if (player->HasTitle(titleInfo))
             {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-                return false;
-            }
-            if (player->GetArenaPoints() < CONST_ARENA_POINT_1)
-            {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-            }
-            else
-            {
-                // ???? ?????? ????????
-                player->SetTitle(titleInfo);
-                player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
-                CloseGossipMenuFor(player);
-            }
+                CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(143);
+                if (player->HasTitle(titleInfo))
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                    return false;
+                }
+                if (player->GetArenaPoints() < CONST_ARENA_POINT_1)
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
+                {
+                    // ???? ?????? ????????
+                    player->SetTitle(titleInfo);
+                    player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+                    CloseGossipMenuFor(player);
+                }
             }
             break;
             case 24:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(135);
-            if (player->HasTitle(titleInfo))
             {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-                return false;
-            }
-            if (player->GetArenaPoints() < CONST_ARENA_POINT_1)
-            {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-            }
-            else
-            {
-                // ???? ?????? ??????? ??????????
-                player->SetTitle(titleInfo);
-                player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
-                CloseGossipMenuFor(player);
-            }
+                CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(135);
+                if (player->HasTitle(titleInfo))
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                    return false;
+                }
+                if (player->GetArenaPoints() < CONST_ARENA_POINT_1)
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
+                {
+                    // ???? ?????? ??????? ??????????
+                    player->SetTitle(titleInfo);
+                    player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+                    CloseGossipMenuFor(player);
+                }
             }
             break;
             case 25:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(134);
-            if (player->HasTitle(titleInfo))
             {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-                return false;
-            }
-            if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-            }
-            else
-            {
-                // ???? ?????? ?????????
-                player->SetTitle(titleInfo);
-                player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
-                CloseGossipMenuFor(player);
-            }
+                CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(134);
+                if (player->HasTitle(titleInfo))
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                    return false;
+                }
+                if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
+                {
+                    // ???? ?????? ?????????
+                    player->SetTitle(titleInfo);
+                    player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+                    CloseGossipMenuFor(player);
+                }
             }
             break;
             case 26:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(46);
-            if (player->HasTitle(titleInfo))
             {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-                return false;
-            }
-            if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-            }
-            else
-            {
-                // ???? ?????? ?????????? ?????????
-                player->SetTitle(titleInfo);
-                player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
-                CloseGossipMenuFor(player);
-            }
+                CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(46);
+                if (player->HasTitle(titleInfo))
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                    return false;
+                }
+                if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
+                {
+                    // ???? ?????? ?????????? ?????????
+                    player->SetTitle(titleInfo);
+                    player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+                    CloseGossipMenuFor(player);
+                }
             }
             break;
             case 27:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(155);
-            if (player->HasTitle(titleInfo))
             {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-                return false;
-            }
-            if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-            }
-            else
-            {
-                // ???? ?????? ????????
-                player->SetTitle(titleInfo);
-                player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
-                CloseGossipMenuFor(player);
-            }
+                CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(155);
+                if (player->HasTitle(titleInfo))
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                    return false;
+                }
+                if (player->GetArenaPoints() < CONST_ARENA_POINT_1) {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
+                {
+                    // ???? ?????? ????????
+                    player->SetTitle(titleInfo);
+                    player->ModifyArenaPoints(-CONST_ARENA_POINT_1);
+                    CloseGossipMenuFor(player);
+                }
             }
             break;
             case 28:
-            {CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(139);
-            if (player->HasTitle(titleInfo))
             {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-                return false;
-            }
-            if (player->GetArenaPoints() < CONST_ARENA_POINT_1)
-            {
-                me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
-                CloseGossipMenuFor(player);
-            }
-            else
-            {
-                // ???? ?????? ?????????? ????????????? ?????????
-                player->SetTitle(titleInfo);
-                player->ModifyArenaPoints(-CONST_ARENA_POINT_2);
-                CloseGossipMenuFor(player);
-            }
+                CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(139);
+                if (player->HasTitle(titleInfo))
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_4, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                    return false;
+                }
+                if (player->GetArenaPoints() < CONST_ARENA_POINT_1)
+                {
+                    me->Whisper(sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_3, loc_idx), LANG_UNIVERSAL, player);
+                    CloseGossipMenuFor(player);
+                }
+                else
+                {
+                    // ???? ?????? ?????????? ????????????? ?????????
+                    player->SetTitle(titleInfo);
+                    player->ModifyArenaPoints(-CONST_ARENA_POINT_2);
+                    CloseGossipMenuFor(player);
+                }
             }
             break;
             case 29:

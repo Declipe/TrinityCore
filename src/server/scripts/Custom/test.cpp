@@ -1,20 +1,20 @@
 #include "Chat.h"
 #include "Config.h"
-#include "Player.h"
-#include "ObjectMgr.h"
-#include "World.h"
-#include "ScriptMgr.h"
-#include "Language.h"
-#include "ZynDatabase.h"
-#include "DatabaseEnvFwd.h"
 #include "DatabaseEnv.h"
-#include "Log.h"
-#include "GameTime.h"
-#include "SpellMgr.h"
-#include "GossipDef.h"
-#include "ScriptedGossip.h"
+#include "DatabaseEnvFwd.h"
 #include "GameObject.h"
 #include "GameObjectAI.h"
+#include "GameTime.h"
+#include "GossipDef.h"
+#include "Language.h"
+#include "Log.h"
+#include "ObjectMgr.h"
+#include "Player.h"
+#include "ScriptedGossip.h"
+#include "ScriptMgr.h"
+#include "SpellMgr.h"
+#include "World.h"
+#include "ZynDatabase.h"
 
 enum Spells
 {
@@ -110,10 +110,6 @@ public:
             }
         }
 
-        void JustDied(Unit* /*pPlayer*/) override
-        {
-        }
-
         void KilledUnit(Unit* victim) override
         {
 
@@ -140,7 +136,7 @@ public:
                     _events.ScheduleEvent(EVENT_FEAR, 8s);
                     break;
                 case EVENT_ENRAGE:
-                   // Talk(SAY_RANDOM);
+                    // Talk(SAY_RANDOM);
                     DoCast(SPELL_ENRAGE);
                     break;
                 case EVENT_BLIZZARD:
@@ -150,12 +146,12 @@ public:
                     _events.ScheduleEvent(EVENT_BLIZZARD, 15s);
                     break;
                 case EVENT_POISON_SHOCK:
-                   // Talk(SAY_BERSERK);
+                    // Talk(SAY_BERSERK);
                     DoCastVictim(SPELL_POISON_SHOCK);
                     _events.ScheduleEvent(EVENT_POISON_SHOCK, 12s);
                     break;
                 case EVENT_ARCANE_BOMB:
-                   // Talk(SAY_ENRAGE);
+                    // Talk(SAY_ENRAGE);
                     DoCast(SPELL_ARCANE_BOMB);
                     _events.ScheduleEvent(EVENT_ARCANE_BOMB, 10s);
                     break;
@@ -192,8 +188,6 @@ public:
     }
 
 };
-
-
 
 void AddSC_test()
 {
