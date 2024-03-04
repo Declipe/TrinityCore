@@ -1107,8 +1107,8 @@ public:
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_REMOVE_WEAKNESS), GOSSIP_SENDER_MAIN, 18);
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_GIVE_BUFFS), GOSSIP_SENDER_MAIN, 19);
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_VIP_BANK), GOSSIP_SENDER_MAIN, 20);
-					if (!player->IsInCombat() || !player->IsInFlight() || !player->GetMap()->IsBattlegroundOrArena() || !player->HasStealthAura() || !player->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH) || !player->isDead())
-						AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_REMOVE_COOLDOWN), GOSSIP_SENDER_MAIN, 22);
+					//if (!player->IsInCombat() || !player->IsInFlight() || !player->GetMap()->IsBattlegroundOrArena() || !player->HasStealthAura() || !player->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH) || !player->isDead())
+					//	AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_REMOVE_COOLDOWN), GOSSIP_SENDER_MAIN, 22);
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
 					SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
 					break;
