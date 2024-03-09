@@ -47,6 +47,7 @@ EndScriptData */
 #include "WaypointManager.h"
 #include "World.h"
 #include "ItemShopMgr.h"
+#include "PromotionCodeMgr.h"
 
 #if TRINITY_COMPILER == TRINITY_COMPILER_GNU
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -1280,6 +1281,7 @@ public:
         sObjectMgr->LoadGameObjectTemplate();
         sObjectMgr->LoadAreaCustomFlags();
         sObjectMgr->LoadCreatureSpecialRewards();
+        sPromotionCodeMgr->ReloadCodes();
         handler->SendGlobalGMSysMessage("Creature and Item_template has been reloaded!");
         return true;
     }

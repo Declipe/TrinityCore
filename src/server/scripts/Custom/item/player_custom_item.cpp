@@ -21,6 +21,7 @@
 #include "Chat.h"
 #include "CustomConfig.h"
 #include "DatabaseEnv.h"
+#include "DBCStores.h"
 #include "GameTime.h"
 #include "Guild.h"
 #include "GuildMgr.h"
@@ -30,7 +31,11 @@
 #include "Map.h"
 #include "ObjectMgr.h"
 #include "PromotionCodeMgr.h"
+#include "Player.h"
+#include "RBAC.h"
 #include "ScriptedGossip.h"
+#include "SpellInfo.h"
+#include "SpellMgr.h"
 #include "ScriptMgr.h"
 #include "World.h"
 #include "WorldSession.h"
@@ -57,10 +62,11 @@ std::string getString(std::string string, uint32 number)
 	return fmt::format("{}{}", string, number);
 }
 
-std::string NextTimeDalaranEvent(time_t possible)
-{
-	return fmt::format("({})", TimeToHumanReadable(possible));
-}
+//std::string NextTimeDalaranEvent(time_t possible)
+//{
+//	return fmt::format("({})", TimeToHumanReadable(possible));
+//}
+//uint32 proff1 = 12;
 
 class custom_item : public ItemScript
 {
@@ -131,6 +137,7 @@ public:
 		//AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ENTER_PROMO_CODE), GOSSIP_SENDER_MAIN, 0, GTS(LANG_ENTERED_PROMO_CODE_CORRECT), 0, true);//true);
 		// Shops
 		AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_MENU_TRADE), GOSSIP_SENDER_MAIN, 2);
+       // AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Test menu", GOSSIP_SENDER_MAIN, 121);
 		// trainer
 	   // AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_ITEM_CLASS_SKILLS), GOSSIP_SENDER_MAIN, 4);
 		if (player->GetCFSTeam() == ALLIANCE)
@@ -278,6 +285,7 @@ public:
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/spell_frost_wizardmark:25:25:-15:0|tBuy Honor Token - 2000 Honor points", GOSSIP_SENDER_MAIN, 24);
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/Inv_chest_chain_07:25:25:-15:0|tBuy Heirloom items", GOSSIP_SENDER_MAIN, 25);
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/ability_mount_spectraltiger:25:25:-15:0|tBuy Mounts", GOSSIP_SENDER_MAIN, 32);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/Inv_staff_13:25:25:-15:0|tbaka - 200-2000 coins", GOSSIP_SENDER_MAIN, 33);
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
 					SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
 					break;
@@ -1304,7 +1312,6 @@ public:
 					// weapon
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/Inv_staff_13:25:25:-15:0|tWeapons - 10-20 coins", GOSSIP_SENDER_MAIN, 30);
 					// others
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/Inv_staff_13:25:25:-15:0|tbaka - 10-20 coins", GOSSIP_SENDER_MAIN, 33);
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/Inv_gizmo_khoriumpowercore:25:25:-15:0|tOthers - 5 coins", GOSSIP_SENDER_MAIN, 31);
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
 					SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());

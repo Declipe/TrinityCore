@@ -803,7 +803,7 @@ public:
     {
         static ChatCommandTable commandTable =
         {
-            { "gladiator",           HandleGladiatorsChatCommand,  rbac::RBAC_HandleGladiatorsChatCommand,         Console::Yes }
+            { "gladiator", HandleGladiatorsChatCommand, rbac::RBAC_HandleGladiatorsChatCommand, Console::Yes }
         };
         return commandTable;
     }

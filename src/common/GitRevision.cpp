@@ -90,7 +90,7 @@ char const* GitRevision::GetFullDatabase()
 
 char const* GitRevision::GetFullVersion()
 {
-  return "TrinityCore rev. " VER_PRODUCTVERSION_STR
+  return "Ctulhunet.ru rev. " VER_PRODUCTVERSION_STR
     " (" TRINITY_PLATFORM_STR ", " _BUILD_DIRECTIVE ", " TRINITY_LINKAGE_TYPE_STR ")";
 }
 
