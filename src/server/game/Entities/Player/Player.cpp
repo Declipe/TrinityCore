@@ -12457,7 +12457,10 @@ Item* Player::EquipItem(uint16 pos, Item* pItem, bool update)
 
 #ifdef ELUNA
         if (Eluna* e = GetEluna())
-            e->OnEquip(this, pItem2, bag, slot);
+        {
+            e->OnEquip(this, pItem2, bag, slot); // This should be removed in the future
+            e->OnItemEquip(this, pItem2, slot);
+        }
 #endif
         return pItem2;
     }
@@ -12471,7 +12474,10 @@ Item* Player::EquipItem(uint16 pos, Item* pItem, bool update)
 
 #ifdef ELUNA
     if (Eluna* e = GetEluna())
-        e->OnEquip(this, pItem, bag, slot);
+    {
+        e->OnEquip(this, pItem, bag, slot); // This should be removed in the future
+        e->OnItemEquip(this, pItem, slot);
+    }
 #endif
     return pItem;
 }
@@ -12500,7 +12506,10 @@ void Player::QuickEquipItem(uint16 pos, Item* pItem)
 
 #ifdef ELUNA
         if (Eluna* e = GetEluna())
-            e->OnEquip(this, pItem, (pos >> 8), slot);
+        {
+            e->OnEquip(this, pItem, (pos >> 8), slot); // This should be removed in the future
+            e->OnItemEquip(this, pItem, slot);
+        }
 #endif
     }
 }
@@ -12616,6 +12625,10 @@ void Player::RemoveItem(uint8 bag, uint8 slot, bool update)
                         default:
                             break;
                     }
+#ifdef ELUNA
+                    if (Eluna* e = GetEluna())
+                        e->OnItemUnEquip(this, pItem, slot);
+#endif
                 }
             }
 
@@ -12759,6 +12772,10 @@ void Player::DestroyItem(uint8 bag, uint8 slot, bool update)
 
                 // equipment visual show
                 SetVisibleItemSlot(slot, nullptr);
+#ifdef ELUNA
+                if (Eluna* e = GetEluna())
+                    e->OnItemUnEquip(this, pItem, slot);
+#endif
             }
 
             m_items[slot] = nullptr;

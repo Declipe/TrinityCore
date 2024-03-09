@@ -4910,6 +4910,7 @@ std::string InstanceMap::GetDebugInfo() const
     return sstr.str();
 }
 
+#ifdef ELUNA
 Eluna *Map::GetEluna() const
 {
     if(sElunaConfig->IsElunaCompatibilityMode())
@@ -4917,5 +4918,6 @@ Eluna *Map::GetEluna() const
 
     return eluna;
 }
+#endif
 
 template class TC_GAME_API TypeUnorderedMapContainer<AllMapStoredObjectTypes, ObjectGuid>;
