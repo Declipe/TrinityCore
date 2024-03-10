@@ -338,7 +338,7 @@ public:
 						switch (player->GetClass())
 						{
 						case CLASS_WARRIOR:
-							AddGossipItemFor(player, GOSSIP_ICON_CHAT, LANG_ITEM_START_PACK_ITEM, GOSSIP_SENDER_MAIN, 83);
+							AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 83);
 							break;
 						case CLASS_PALADIN:
 							AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 84);
