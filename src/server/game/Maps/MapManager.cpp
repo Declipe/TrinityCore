@@ -38,6 +38,7 @@
 #include "LuaEngine.h"
 #include "ElunaConfig.h"
 #endif
+#include "ScriptMgr.h"
 #include <numeric>
 
 MapManager::MapManager()
@@ -103,6 +104,8 @@ Map* MapManager::CreateBaseMap(uint32 id)
         Trinity::unique_trackable_ptr<Map>& ptr = i_maps[id];
         ptr.reset(map);
         map->SetWeakPtr(ptr);
+
+        sScriptMgr->OnCreateMap(map);
     }
 
     ASSERT(map);
@@ -274,7 +277,11 @@ void MapManager::UnloadAll()
 {
     // first unload maps
     for (auto iter = i_maps.begin(); iter != i_maps.end(); ++iter)
+    {
         iter->second->UnloadAll();
+
+        sScriptMgr->OnDestroyMap(iter->second.get());
+    }
 
     // then delete them
     i_maps.clear();
