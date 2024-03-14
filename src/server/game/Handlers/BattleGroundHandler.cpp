@@ -448,12 +448,12 @@ void WorldSession::HandleBattleFieldPortOpcode(WorldPacket &recvData)
             TC_LOG_DEBUG("bg.battleground", "Player {} {} has a deserter debuff, do not port him to battleground!", _player->GetName(), _player->GetGUID().ToString());
         }
         //if player don't match battleground max level, then do not allow him to enter! (this might happen when player leveled up during his waiting in queue
-       /* if (_player->GetLevel() > bg->GetMaxLevel())
+        if (_player->GetLevel() < bg->GetMaxLevel())
         {
             TC_LOG_ERROR("network", "Player {} {} has level ({}) higher than maxlevel ({}) of battleground ({})! Do not port him to battleground!",
                 _player->GetName(), _player->GetGUID().ToString(), _player->GetLevel(), bg->GetMaxLevel(), bg->GetTypeID());
             action = 0;
-        }*/
+        }
     }
     uint32 queueSlot = _player->GetBattlegroundQueueIndex(bgQueueTypeId);
     WorldPacket data;
