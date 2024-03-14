@@ -79,7 +79,47 @@ void OnLevelChanged(Player* player, uint8 newLevel)
 }
 };
 
+enum ShallowG
+{
+    NPC_ZOMBIER = 90034,
+    NPC_DEAD_HEROES = 90037,
+    CHANCE_ZOMBIES = 65,
+    CHANCE_DEAD_HEROES = 35
+};
+
+class go_grave : public GameObjectScript
+{
+public:
+    go_grave() : GameObjectScript("go_grave") { }
+
+    struct go_graveAI : public GameObjectAI
+    {
+        go_graveAI(GameObject* go) : GameObjectAI(go) { }
+
+        bool OnGossipHello(Player* /*player*/) override
+        {
+            if (me->GetUseCount() == 0)
+            {
+                uint32 randomchance = urand(0, 100);
+                if (randomchance < CHANCE_ZOMBIES)
+                    me->SummonCreature(NPC_ZOMBIER, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30s);
+                else
+                    if ((randomchance - CHANCE_ZOMBIES) < CHANCE_DEAD_HEROES)
+                        me->SummonCreature(NPC_DEAD_HEROES, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 30s);
+            }
+            me->AddUse();
+            return false;
+        }
+    };
+
+    GameObjectAI* GetAI(GameObject* go) const override
+    {
+        return new go_graveAI(go);
+    }
+};
+
 void AddSC_level_award()
 {
+new go_grave();
 new level_award();
 }
