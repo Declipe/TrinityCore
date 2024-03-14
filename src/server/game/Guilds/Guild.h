@@ -22,6 +22,7 @@
 #include "ObjectGuid.h"
 #include "Optional.h"
 #include "SharedDefines.h"
+#include "UniqueTrackablePtr.h"
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
@@ -737,7 +738,7 @@ class TC_GAME_API Guild
         // Members
         // Adds member to guild. If rankId == GUILD_RANK_NONE, lowest rank is assigned.
         bool AddMember(CharacterDatabaseTransaction trans, ObjectGuid guid, uint8 rankId = GUILD_RANK_NONE);
-        void DeleteMember(CharacterDatabaseTransaction trans, ObjectGuid guid, bool isDisbanding = false, bool isKicked = false, bool canDeleteGuild = false);
+        bool DeleteMember(CharacterDatabaseTransaction trans, ObjectGuid guid, bool isDisbanding = false, bool isKicked = false);
         bool ChangeMemberRank(CharacterDatabaseTransaction trans, ObjectGuid guid, uint8 newRank);
         uint64 GetMemberAvailableMoneyForRepairItems(ObjectGuid guid) const;
 
@@ -757,6 +758,9 @@ class TC_GAME_API Guild
         uint8 GetLevel() const { return m_guild_level; };
         uint32 GetCurrentXP() const { return m_current_guildXp; };
         uint32 GetXpForNextLevel() const { return m_xp_for_next_level; };
+
+        Trinity::unique_weak_ptr<Guild> GetWeakPtr() const { return m_weakRef; }
+        void SetWeakPtr(Trinity::unique_weak_ptr<Guild> weakRef) { m_weakRef = std::move(weakRef); }
 
     protected:
         ObjectGuid::LowType m_id;
@@ -782,6 +786,8 @@ class TC_GAME_API Guild
         uint8 m_guild_level;
         uint32 m_current_guildXp;
         uint32 m_xp_for_next_level;
+
+        Trinity::unique_weak_ptr<Guild> m_weakRef;
 
     private:
         inline uint8 _GetRanksSize() const { return uint8(m_ranks.size()); }

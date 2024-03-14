@@ -502,7 +502,7 @@ public:
 
                 for (BattlegroundContainer::const_iterator itr = arenas->m_Battlegrounds.begin(); itr != arenas->m_Battlegrounds.end(); ++itr)
                 {
-                    Battleground* arena = itr->second;
+                    Battleground* arena = itr->second.get();
                     Player* target = ObjectAccessor::FindPlayer(GetFirstPlayerGuid(arena));
                     if (!target)
                         continue;

@@ -144,8 +144,6 @@ public:
             return false;
 
         targetGuild->Disband();
-        delete targetGuild;
-
         return true;
     }
 
@@ -193,7 +191,7 @@ public:
             return false;
 
         CharacterDatabaseTransaction trans(nullptr);
-        targetGuild->DeleteMember(trans, targetGuid, false, true, true);
+        targetGuild->DeleteMember(trans, targetGuid, false, true);
         return true;
     }
 
