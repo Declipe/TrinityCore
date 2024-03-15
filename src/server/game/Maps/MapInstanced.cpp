@@ -271,16 +271,12 @@ BattlegroundMap* MapInstanced::CreateBattleground(uint32 InstanceId, Battlegroun
     map->SetBG(bg);
     bg->SetBgMap(map);
 
-#ifdef ELUNA
-    if (Eluna* e = map->GetEluna())
-        e->OnBGCreate(bg, bg->GetTypeID(), InstanceId);
-#endif
-
     Trinity::unique_trackable_ptr<Map>& ptr = m_InstancedMaps[InstanceId];
     ptr.reset(map);
     map->SetWeakPtr(ptr);
 
     sScriptMgr->OnCreateMap(map);
+
     return map;
 }
 

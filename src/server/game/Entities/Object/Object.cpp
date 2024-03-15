@@ -1862,13 +1862,12 @@ void WorldObject::SetMap(Map* map)
         elunaEvents = nullptr; // set to null in case map doesn't use eluna
     }
 
-    if(Eluna * e = map->GetEluna())
-        if(!elunaEvents)
+    if (Eluna* e = map->GetEluna())
+        if (!elunaEvents)
             elunaEvents = new ElunaEventProcessor(e, this);
 #endif
-
     if (IsStoredInWorldObjectGridContainer())
-        m_currMap->AddWorldObject(this);
+       m_currMap->AddWorldObject(this);
 }
 
 void WorldObject::ResetMap()
