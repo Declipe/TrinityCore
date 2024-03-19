@@ -53,7 +53,8 @@
 #define CONST_HONOR_POINT5 200000
 
 #define GTS session->GetTrinityString
-#define GTS2 sObjectMgr->GetTrinityString2
+#define GTS2 session->GetTrinityString2
+//#define GTS3 sObjectMgr->GetTrinityString2
 
 uint32 constexpr aurassSize = 13;
 uint32 aurass[aurassSize] = { 15366, 16609, 48162, 48074, 48170, 43223, 36880, 69994, 33081, 26035, 48469, 57623, 47440 };
@@ -84,7 +85,7 @@ public:
 		WorldSession* session = player->GetSession();
 		player->PlayerTalkClass->ClearMenus();
 
-        LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
+       // LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
 
 		if (player->GetMap()->IsBattlegroundOrArena())
 		{
@@ -144,7 +145,8 @@ public:
 		// trainer
 	   // AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_ITEM_CLASS_SKILLS), GOSSIP_SENDER_MAIN, 4);
 		
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_7, loc_idx), GOSSIP_SENDER_MAIN, 192);
+       // AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_7, loc_idx), GOSSIP_SENDER_MAIN, 192);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_7), GOSSIP_SENDER_MAIN, 192);
 		if (player->IsGameMaster())
 		{
 			if (player->GetSession()->HasPermission(rbac::RBAC_PERM_COMMAND_SERVER_RESTART))
@@ -247,7 +249,7 @@ public:
 	{
 		WorldSession* session = player->GetSession();
 
-        LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
+        /*LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();*/
 
 		std::string XP = GTS(LANG_ITEM_RATES_XP_KILL);
 		std::string XP_quest = GTS(LANG_ITEM_RATES_XP_QUEST);
@@ -1927,12 +1929,12 @@ public:
 				  }
                 case 192: // Teleport
                 {
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_1, loc_idx), GOSSIP_SENDER_MAIN, 193);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_2, loc_idx), GOSSIP_SENDER_MAIN, 194);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_3, loc_idx), GOSSIP_SENDER_MAIN, 195);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_4, loc_idx), GOSSIP_SENDER_MAIN, 196);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_5, loc_idx), GOSSIP_SENDER_MAIN, 197);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_6, loc_idx), GOSSIP_SENDER_MAIN, 198);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_1/*, loc_idx*/), GOSSIP_SENDER_MAIN, 193);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_2/*, loc_idx*/), GOSSIP_SENDER_MAIN, 194);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_3/*, loc_idx*/), GOSSIP_SENDER_MAIN, 195);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_4/*, loc_idx*/), GOSSIP_SENDER_MAIN, 196);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_5/*, loc_idx*/), GOSSIP_SENDER_MAIN, 197);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_6/*, loc_idx*/), GOSSIP_SENDER_MAIN, 198);
                     if (player->GetCFSTeam() == ALLIANCE)
                         AddGossipItemFor(player, GOSSIP_ICON_TAXI, GTS(LANG_ITEM_STORMWIND), GOSSIP_SENDER_MAIN, 5, GTS(LANG_ITEM_STORMWIND_SURE), 0, false);
                     else
@@ -1946,7 +1948,7 @@ public:
                     if (player->GetLevel() <= 79)
                     {
                         CloseGossipMenuFor(player);
-                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_8, loc_idx));
+                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_8/*, loc_idx*/));
                         return;
                     }
 
@@ -1974,7 +1976,7 @@ public:
                     if (player->GetLevel() <= 79)
                     {
                         CloseGossipMenuFor(player);
-                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_8, loc_idx));
+                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_8/*, loc_idx*/));
                         return;
                     }
 
@@ -1988,7 +1990,7 @@ public:
                     if (player->GetLevel() <= 79)
                     {
                         CloseGossipMenuFor(player);
-                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_8, loc_idx));
+                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_8));
                         return;
                     }
 

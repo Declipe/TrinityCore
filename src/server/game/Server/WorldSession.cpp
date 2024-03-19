@@ -726,9 +726,44 @@ void WorldSession::SendNotification(const char *format, ...)
     }
 }
 
+void WorldSession::SendNotification2(const char* format, ...)
+{
+    if (format)
+    {
+        va_list ap;
+        char szStr[1024];
+        szStr[0] = '\0';
+        va_start(ap, format);
+        vsnprintf(szStr, 1024, format, ap);
+        va_end(ap);
+
+        WorldPacket data(SMSG_NOTIFICATION, (strlen(szStr) + 1));
+        data << szStr;
+        SendPacket(&data);
+    }
+}
+
 void WorldSession::SendNotification(uint32 string_id, ...)
 {
     char const* format = GetTrinityString(string_id);
+    if (format)
+    {
+        va_list ap;
+        char szStr[1024];
+        szStr[0] = '\0';
+        va_start(ap, string_id);
+        vsnprintf(szStr, 1024, format, ap);
+        va_end(ap);
+
+        WorldPacket data(SMSG_NOTIFICATION, (strlen(szStr) + 1));
+        data << szStr;
+        SendPacket(&data);
+    }
+}
+
+void WorldSession::SendNotification2(uint32 string_id, ...)
+{
+    char const* format = GetTrinityString2(string_id);
     if (format)
     {
         va_list ap;
@@ -752,6 +787,11 @@ bool WorldSession::CanSpeak() const
 char const* WorldSession::GetTrinityString(uint32 entry) const
 {
     return sObjectMgr->GetTrinityString(entry, GetSessionDbLocaleIndex());
+}
+
+char const* WorldSession::GetTrinityString2(uint32 entry) const
+{
+    return sObjectMgr->GetTrinityString2(entry, GetSessionDbLocaleIndex());
 }
 
 void WorldSession::ResetTimeOutTime(bool onlyActive)
