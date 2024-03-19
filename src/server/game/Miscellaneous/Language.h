@@ -1481,5 +1481,14 @@ enum TrinityStrings
     LANG_GUILDINFO_LEVEL                          = 40131,
     LANG_GUILDINFO_XP_INFO                        = 40132,
     LANG_GOSSIP_OPTION_133                        = 40133,
+
+    NOT_USED_1                                    = 40134,
+    NOT_USED_2                                    = 40135,
+    NOT_USED_3                                    = 40136,
+    NOT_USED_4                                    = 40137,
+    NOT_USED_5                                    = 40138,
+    NOT_USED_6                                    = 40139,
+    NOT_USED_7                                    = 40140,
+    NOT_USED_8                                    = 40141,
 };
 #endif

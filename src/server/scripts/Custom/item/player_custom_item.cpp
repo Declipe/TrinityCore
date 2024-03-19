@@ -53,6 +53,7 @@
 #define CONST_HONOR_POINT5 200000
 
 #define GTS session->GetTrinityString
+#define GTS2 sObjectMgr->GetTrinityString2
 
 uint32 constexpr aurassSize = 13;
 uint32 aurass[aurassSize] = { 15366, 16609, 48162, 48074, 48170, 43223, 36880, 69994, 33081, 26035, 48469, 57623, 47440 };
@@ -82,6 +83,8 @@ public:
 	{
 		WorldSession* session = player->GetSession();
 		player->PlayerTalkClass->ClearMenus();
+
+        LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
 
 		if (player->GetMap()->IsBattlegroundOrArena())
 		{
@@ -140,11 +143,8 @@ public:
        // AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Test menu", GOSSIP_SENDER_MAIN, 121);
 		// trainer
 	   // AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_ITEM_CLASS_SKILLS), GOSSIP_SENDER_MAIN, 4);
-		if (player->GetCFSTeam() == ALLIANCE)
-			AddGossipItemFor(player, GOSSIP_ICON_TAXI, GTS(LANG_ITEM_STORMWIND), GOSSIP_SENDER_MAIN, 5, GTS(LANG_ITEM_STORMWIND_SURE), 0, false);
-		else
-			AddGossipItemFor(player, GOSSIP_ICON_TAXI, GTS(LANG_ITEM_ORGRIMMAR), GOSSIP_SENDER_MAIN, 6, GTS(LANG_ITEM_ORGRIMMAR_SURE), 0, false);
-
+		
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_7, loc_idx), GOSSIP_SENDER_MAIN, 192);
 		if (player->IsGameMaster())
 		{
 			if (player->GetSession()->HasPermission(rbac::RBAC_PERM_COMMAND_SERVER_RESTART))
@@ -246,6 +246,8 @@ public:
 	void OnGossipSelect(Player* player, Item* item, uint32 sender, uint32 action) override
 	{
 		WorldSession* session = player->GetSession();
+
+        LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
 
 		std::string XP = GTS(LANG_ITEM_RATES_XP_KILL);
 		std::string XP_quest = GTS(LANG_ITEM_RATES_XP_QUEST);
@@ -1923,6 +1925,86 @@ public:
 					CloseGossipMenuFor(player);
 					break;
 				  }
+                case 192: // Teleport
+                {
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_1, loc_idx), GOSSIP_SENDER_MAIN, 193);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_2, loc_idx), GOSSIP_SENDER_MAIN, 194);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_3, loc_idx), GOSSIP_SENDER_MAIN, 195);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_4, loc_idx), GOSSIP_SENDER_MAIN, 196);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_5, loc_idx), GOSSIP_SENDER_MAIN, 197);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_6, loc_idx), GOSSIP_SENDER_MAIN, 198);
+                    if (player->GetCFSTeam() == ALLIANCE)
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, GTS(LANG_ITEM_STORMWIND), GOSSIP_SENDER_MAIN, 5, GTS(LANG_ITEM_STORMWIND_SURE), 0, false);
+                    else
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, GTS(LANG_ITEM_ORGRIMMAR), GOSSIP_SENDER_MAIN, 6, GTS(LANG_ITEM_ORGRIMMAR_SURE), 0, false);
+                    SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
+                    break;
+                }
+
+                case 193:
+                {
+                    if (player->GetLevel() <= 79)
+                    {
+                        CloseGossipMenuFor(player);
+                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_8, loc_idx));
+                        return;
+                    }
+
+                    CloseGossipMenuFor(player);
+                    player->TeleportTo(1, 5063.1f, -2078.97f, 1369.29f, 5.96975f);
+                    break;
+                }
+
+                case 194:
+                {
+                    CloseGossipMenuFor(player);
+                    player->TeleportTo(0, 4262.23f, -2809.17f, 5.14639f, 5.86462f);
+                    break;
+                }
+
+                case 195:
+                {
+                    CloseGossipMenuFor(player);
+                    player->TeleportTo(0, -11820.1f, 1232.7f, 1.1f, 5.12f);
+                    break;
+                }
+
+                case 196:
+                {
+                    if (player->GetLevel() <= 79)
+                    {
+                        CloseGossipMenuFor(player);
+                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_8, loc_idx));
+                        return;
+                    }
+
+                    CloseGossipMenuFor(player);
+                    player->TeleportTo(1, -6801.19f, -2893.02f, 9.00388f, 0.158639f);
+                    break;
+                }
+
+                case 197:
+                {
+                    if (player->GetLevel() <= 79)
+                    {
+                        CloseGossipMenuFor(player);
+                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_8, loc_idx));
+                        return;
+                    }
+
+                    CloseGossipMenuFor(player);
+                    player->TeleportTo(0, -11916.7f, -1215.72f, 92.289f, 4.72454f);
+                    player->CastSpell(player, 45523, true);
+                    break;
+                }
+
+                case 198:
+                {
+                    CloseGossipMenuFor(player);
+                    player->TeleportTo(0, -4137.27f, -1059.16f, 167.925f, 4.77061f);
+                    player->CastSpell(player, 45523, true);
+                    break;
+                }
 				}
 			}
 		}
