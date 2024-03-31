@@ -1736,7 +1736,7 @@ public:
 				case 85: // CLASS_HUNTER start-pack
 				{
 					player->InstallItemPresentBySlot(3);
-//player->SetCanReceiveStartPack(0);
+                    //player->SetCanReceiveStartPack(0);
 					player->PlayerTalkClass->SendCloseGossip();
 					break;
 				}

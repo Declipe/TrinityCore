@@ -1490,5 +1490,6 @@ enum TrinityStrings
     NOT_USED_6                                    = 40139,
     NOT_USED_7                                    = 40140,
     NOT_USED_8                                    = 40141,
+    NOT_USED_9                                    = 40142,
 };
 #endif
