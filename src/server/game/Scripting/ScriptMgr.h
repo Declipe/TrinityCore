@@ -22,6 +22,7 @@
 #include "ObjectGuid.h"
 #include "Tuples.h"
 #include "Types.h"
+#include "Unit.h"
 #include <memory>
 #include <vector>
 
@@ -263,14 +264,14 @@ class TC_GAME_API WorldScript : public ScriptObject
         // Called when the world is started.
         virtual void OnStartup();
 
-        // Called before init server
-        virtual void OnLoadCustomScripts() { }
+        // Called when the world is actually shut down.
+        virtual void OnShutdown();
 
         // Called at End of SetInitialWorldSettings.
         virtual void SetInitialWorldSettings() { }
 
-        // Called when the world is actually shut down.
-        virtual void OnShutdown();
+        // Called before init server
+        virtual void OnLoadCustomScripts() { }
 };
 
 class TC_GAME_API FormulaScript : public ScriptObject
@@ -428,14 +429,14 @@ class TC_GAME_API UnitScript : public ScriptObject
         // Called when Melee Damage is being Dealt
         virtual void ModifyMeleeDamage(Unit* target, Unit* attacker, uint32& damage);
 
+        // Called when Spell Damage is being Dealt
+        virtual void ModifySpellDamageTaken(Unit* target, Unit* attacker, int32& damage);
+
         // Called when an unit exits a vehicle
         virtual void ModifyVehiclePassengerExitPos(Unit* /*passenger*/, Vehicle* /*vehicle*/, Position& /*pos*/) { }
 
         //Auto Balance VAS
         virtual void ModifyHealRecieved(Unit* /*target*/, Unit* /*attacker*/, uint32& /*damage*/) { }
-
-        // Called when Spell Damage is being Dealt
-        virtual void ModifySpellDamageTaken(Unit* target, Unit* attacker, int32& damage);
 };
 
 class TC_GAME_API CreatureScript : public ScriptObject

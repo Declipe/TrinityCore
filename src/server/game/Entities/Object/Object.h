@@ -222,9 +222,9 @@ class TC_GAME_API Object
 
         virtual std::string GetDebugInfo() const;
 
-        DataMap CustomData;
-
         Trinity::unique_weak_ptr<Object> GetWeakPtr() const { return m_scriptRef; }
+
+        DataMap CustomData;
 
     protected:
         Object();

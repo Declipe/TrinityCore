@@ -379,7 +379,7 @@ public:
                         {
                             ChatHandler chatHandle = ChatHandler(playerHandle->GetSession());
                             chatHandle.PSendSysMessage("|cffFF0000 [AutoBalance]|r|cffFF8000 {} entered the Instance {}. Auto setting player count to {} (Player Difficulty Offset = {}) |r",
-                                player->GetName().c_str(), map->GetMapName(), mapABInfo->playerCount + PlayerCountDifficultyOffset, PlayerCountDifficultyOffset);
+                                player->GetName(), map->GetMapName(), mapABInfo->playerCount + PlayerCountDifficultyOffset, PlayerCountDifficultyOffset);
                         }
                     }
                 }
@@ -425,7 +425,7 @@ public:
                         {
                             ChatHandler chatHandle = ChatHandler(playerHandle->GetSession());
                             chatHandle.PSendSysMessage("|cffFF0000 [-AutoBalance]|r|cffFF8000 {} left the Instance {}. Auto setting player count to {} (Player Difficulty Offset = {}) |r",
-                                player->GetName().c_str(), map->GetMapName(), mapABInfo->playerCount, PlayerCountDifficultyOffset);
+                                player->GetName(), map->GetMapName(), mapABInfo->playerCount, PlayerCountDifficultyOffset);
                         }
                     }
                 }
@@ -830,14 +830,14 @@ public:
 
     static bool HandleABSetOffsetCommand(ChatHandler* handler, uint32 offseti)
     {
-        handler->PSendSysMessage("Changing Player Difficulty Offset to %i.", offseti);
+        handler->PSendSysMessage("Changing Player Difficulty Offset to {}.", offseti);
         PlayerCountDifficultyOffset = offseti;
         return true;
     }
 
     static bool HandleABGetOffsetCommand(ChatHandler* handler)
     {
-        handler->PSendSysMessage("Current Player Difficulty Offset = %i", PlayerCountDifficultyOffset);
+        handler->PSendSysMessage("Current Player Difficulty Offset = {}", PlayerCountDifficultyOffset);
         return true;
     }
 

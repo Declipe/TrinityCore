@@ -32,8 +32,8 @@
 #include "SpawnData.h"
 #include "Timer.h"
 #include "Transaction.h"
-#include "DataMap.h"
 #include "UniqueTrackablePtr.h"
+#include "DataMap.h"
 #include <bitset>
 #include <list>
 #include <memory>
