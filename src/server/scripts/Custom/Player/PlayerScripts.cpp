@@ -90,23 +90,6 @@ public:
     }
 };
 
-class lfg_solo : public PlayerScript
-{
-public:
-    lfg_solo() : PlayerScript("lfg_solo") { }
-
-    void OnLogin(Player* /*player*/, bool /*firstLogin*/) override
-    {
-        if (sGameConfig->GetBoolConfig("SoloLFG.Enable", true))
-        {
-            if (!sLFGMgr->IsSoloLFG())
-            {
-                sLFGMgr->ToggleSoloLFG();
-            }
-        }
-    }
-};
-
 class buff_zone : public PlayerScript
 {
 public:
@@ -145,7 +128,6 @@ void AddSC_ZynPlayerScripts()
 {
     new buff_zone();
     new item_lvlup();
-    new lfg_solo();
     new lfg_solo_announce();
     new ZynPlayerScripts();
 }

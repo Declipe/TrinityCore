@@ -22,6 +22,7 @@
 #include "LFGScripts.h"
 #include "Common.h"
 #include "Config.h"
+#include "CustomConfig.h"
 #include "Group.h"
 #include "LFGMgr.h"
 #include "Log.h"
@@ -53,7 +54,7 @@ void LFGPlayerScript::OnLogout(Player* player)
 
 void LFGPlayerScript::OnLogin(Player* player, bool /*loginFirst*/)
 {
-    if (sConfigMgr->GetIntDefault("SoloLFG.Enable", true))
+    if (sGameConfig->GetBoolConfig("SoloLFG.Enable", true))
     {
         if (!sLFGMgr->IsSoloLFG())
         {
