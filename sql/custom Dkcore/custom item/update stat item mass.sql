@@ -1,0 +1,21 @@
+UPDATE `item_template` SET `stat_value1`= `stat_value1` *5;  
+UPDATE `item_template` SET `stat_value2`= `stat_value2` *5;  
+UPDATE `item_template` SET `stat_value3`= `stat_value3` *5;  
+UPDATE `item_template` SET `stat_value4`= `stat_value4` *5;  
+UPDATE `item_template` SET `stat_value5`= `stat_value5` *5;  
+UPDATE `item_template` SET `stat_value6`= `stat_value6` *5;  
+UPDATE `item_template` SET `stat_value7`= `stat_value7` *5;  
+UPDATE `item_template` SET `stat_value8`= `stat_value8` *5;  
+UPDATE `item_template` SET `stat_value9`= `stat_value9` *5;  
+UPDATE `item_template` SET `stat_value10`= `stat_value10` *5;
+
+UPDATE `item_template` SET `stat_value1`= `stat_value1` /10 where stat_type1 in (35);  
+UPDATE `item_template` SET `stat_value2`= `stat_value2` /10 where stat_type2 in (35);  
+UPDATE `item_template` SET `stat_value3`= `stat_value3` /10 where stat_type3 in (35);  
+UPDATE `item_template` SET `stat_value4`= `stat_value4` /10 where stat_type4 in (35);  
+UPDATE `item_template` SET `stat_value5`= `stat_value5` /10 where stat_type5 in (35);  
+UPDATE `item_template` SET `stat_value6`= `stat_value6` /10 where stat_type6 in (35);  
+UPDATE `item_template` SET `stat_value7`= `stat_value7` /10 where stat_type7 in (35);  
+UPDATE `item_template` SET `stat_value8`= `stat_value8` /10 where stat_type8 in (35);  
+UPDATE `item_template` SET `stat_value9`= `stat_value9` /10 where stat_type9 in (35);  
+UPDATE `item_template` SET `stat_value10`= `stat_value10` /10 where stat_type10 in (35);
