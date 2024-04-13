@@ -1,5 +1,5 @@
 -- Delete Record
-DELETE FROM `world`.`player_levelstats`
+DELETE FROM `player_levelstats`
 WHERE `level` > 80;
 -- ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Set the starting level and maximum level
@@ -9,14 +9,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 2;
 SET @class = 9;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -46,14 +46,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 6;
 SET @class = 3;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -83,14 +83,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 7;
 SET @class = 6;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -120,14 +120,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 6;
 SET @class = 6;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -157,14 +157,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 11;
 SET @class = 5;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -194,14 +194,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 1;
 SET @class = 1;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -231,14 +231,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 3;
 SET @class = 1;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -268,14 +268,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 7;
 SET @class = 8;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -305,14 +305,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 5;
 SET @class = 4;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -342,14 +342,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 10;
 SET @class = 4;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -379,14 +379,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 11;
 SET @class = 1;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -416,14 +416,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 1;
 SET @class = 2;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -453,14 +453,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 4;
 SET @class = 4;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -490,14 +490,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 3;
 SET @class = 2;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -527,14 +527,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 8;
 SET @class = 8;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -564,14 +564,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 7;
 SET @class = 9;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -601,14 +601,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 8;
 SET @class = 7;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -638,14 +638,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 7;
 SET @class = 4;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -675,14 +675,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 8;
 SET @class = 3;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -712,14 +712,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 10;
 SET @class = 5;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -749,14 +749,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 1;
 SET @class = 4;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -786,14 +786,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 4;
 SET @class = 6;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -823,14 +823,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 5;
 SET @class = 5;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -860,14 +860,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 8;
 SET @class = 4;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -897,14 +897,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 1;
 SET @class = 5;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -934,14 +934,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 3;
 SET @class = 3;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -971,14 +971,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 3;
 SET @class = 5;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1008,14 +1008,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 3;
 SET @class = 6;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1045,14 +1045,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 4;
 SET @class = 5;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1082,14 +1082,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 6;
 SET @class = 7;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1119,14 +1119,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 1;
 SET @class = 6;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1156,14 +1156,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 11;
 SET @class = 3;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1193,14 +1193,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 10;
 SET @class = 3;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1230,14 +1230,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 1;
 SET @class = 8;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1267,14 +1267,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 10;
 SET @class = 6;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1304,14 +1304,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 1;
 SET @class = 9;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1341,14 +1341,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 11;
 SET @class = 6;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1378,14 +1378,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 3;
 SET @class = 4;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1415,14 +1415,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 2;
 SET @class = 1;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1452,14 +1452,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 4;
 SET @class = 3;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1489,14 +1489,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 11;
 SET @class = 2;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1526,14 +1526,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 5;
 SET @class = 6;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1563,14 +1563,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 6;
 SET @class = 11;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1600,14 +1600,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 8;
 SET @class = 1;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1637,14 +1637,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 10;
 SET @class = 8;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1674,14 +1674,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 2;
 SET @class = 3;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1711,14 +1711,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 5;
 SET @class = 1;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1748,14 +1748,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 5;
 SET @class = 8;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1785,14 +1785,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 2;
 SET @class = 4;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1822,14 +1822,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 10;
 SET @class = 9;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1859,14 +1859,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 5;
 SET @class = 9;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1896,14 +1896,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 8;
 SET @class = 5;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1933,14 +1933,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 11;
 SET @class = 7;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -1970,14 +1970,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 6;
 SET @class = 1;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -2007,14 +2007,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 2;
 SET @class = 6;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -2044,14 +2044,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 11;
 SET @class = 8;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -2081,14 +2081,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 7;
 SET @class = 1;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -2118,14 +2118,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 2;
 SET @class = 7;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -2155,14 +2155,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 8;
 SET @class = 6;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -2192,14 +2192,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 10;
 SET @class = 2;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -2229,14 +2229,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 4;
 SET @class = 1;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,
@@ -2266,14 +2266,14 @@ SET @maxLevel = 255;
 -- Get the base values for the starting level
 SET @race = 4;
 SET @class = 11;
-SET @str = (SELECT `str` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @agi = (SELECT `agi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @sta = (SELECT `sta` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @inte = (SELECT `inte` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
-SET @spi = (SELECT `spi` FROM `world`.`player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @str = (SELECT `str` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @agi = (SELECT `agi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @sta = (SELECT `sta` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @inte = (SELECT `inte` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
+SET @spi = (SELECT `spi` FROM `player_levelstats` WHERE `level` = @startLevel AND `race` = @race AND `class` = @class);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
+INSERT IGNORE INTO `player_levelstats` (`race`, `class`, `level`, `str`, `agi`, `sta`, `inte`, `spi`)
 SELECT @race AS `race`,
        @class AS `class`,
        tl.`level` AS `level`,

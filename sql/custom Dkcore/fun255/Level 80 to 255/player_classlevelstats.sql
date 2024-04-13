@@ -1,5 +1,5 @@
 -- Delete Record
-DELETE FROM `world`.`player_classlevelstats`
+DELETE FROM `player_classlevelstats`
 WHERE `level` > 80;
 
 -- ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -9,11 +9,11 @@ SET @maxLevel = 255;
 
 -- Get the base values for the starting level
 SET @class = 1;
-SET @basehp = (SELECT `basehp` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
-SET @basemana = (SELECT `basemana` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basehp = (SELECT `basehp` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basemana = (SELECT `basemana` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
+INSERT IGNORE INTO `player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
 SELECT @class AS `class`,
        tl.`level` AS `level`,
        (@basehp * POW(1.01, tl.`level` - @startLevel)) AS `basehp`,
@@ -38,11 +38,11 @@ SET @maxLevel = 255;
 
 -- Get the base values for the starting level
 SET @class = 2;
-SET @basehp = (SELECT `basehp` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
-SET @basemana = (SELECT `basemana` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basehp = (SELECT `basehp` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basemana = (SELECT `basemana` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
+INSERT IGNORE INTO `player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
 SELECT @class AS `class`,
        tl.`level` AS `level`,
        (@basehp * POW(1.01, tl.`level` - @startLevel)) AS `basehp`,
@@ -67,11 +67,11 @@ SET @maxLevel = 255;
 
 -- Get the base values for the starting level
 SET @class = 3;
-SET @basehp = (SELECT `basehp` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
-SET @basemana = (SELECT `basemana` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basehp = (SELECT `basehp` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basemana = (SELECT `basemana` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
+INSERT IGNORE INTO `player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
 SELECT @class AS `class`,
        tl.`level` AS `level`,
        (@basehp * POW(1.01, tl.`level` - @startLevel)) AS `basehp`,
@@ -96,11 +96,11 @@ SET @maxLevel = 255;
 
 -- Get the base values for the starting level
 SET @class = 4;
-SET @basehp = (SELECT `basehp` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
-SET @basemana = (SELECT `basemana` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basehp = (SELECT `basehp` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basemana = (SELECT `basemana` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
+INSERT IGNORE INTO `player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
 SELECT @class AS `class`,
        tl.`level` AS `level`,
        (@basehp * POW(1.01, tl.`level` - @startLevel)) AS `basehp`,
@@ -125,11 +125,11 @@ SET @maxLevel = 255;
 
 -- Get the base values for the starting level
 SET @class = 5;
-SET @basehp = (SELECT `basehp` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
-SET @basemana = (SELECT `basemana` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basehp = (SELECT `basehp` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basemana = (SELECT `basemana` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
+INSERT IGNORE INTO `player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
 SELECT @class AS `class`,
        tl.`level` AS `level`,
        (@basehp * POW(1.01, tl.`level` - @startLevel)) AS `basehp`,
@@ -154,11 +154,11 @@ SET @maxLevel = 255;
 
 -- Get the base values for the starting level
 SET @class = 6;
-SET @basehp = (SELECT `basehp` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
-SET @basemana = (SELECT `basemana` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basehp = (SELECT `basehp` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basemana = (SELECT `basemana` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
+INSERT IGNORE INTO `player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
 SELECT @class AS `class`,
        tl.`level` AS `level`,
        (@basehp * POW(1.01, tl.`level` - @startLevel)) AS `basehp`,
@@ -183,11 +183,11 @@ SET @maxLevel = 255;
 
 -- Get the base values for the starting level
 SET @class = 7;
-SET @basehp = (SELECT `basehp` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
-SET @basemana = (SELECT `basemana` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basehp = (SELECT `basehp` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basemana = (SELECT `basemana` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
+INSERT IGNORE INTO `player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
 SELECT @class AS `class`,
        tl.`level` AS `level`,
        (@basehp * POW(1.01, tl.`level` - @startLevel)) AS `basehp`,
@@ -212,11 +212,11 @@ SET @maxLevel = 255;
 
 -- Get the base values for the starting level
 SET @class = 8;
-SET @basehp = (SELECT `basehp` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
-SET @basemana = (SELECT `basemana` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basehp = (SELECT `basehp` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basemana = (SELECT `basemana` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
+INSERT IGNORE INTO `player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
 SELECT @class AS `class`,
        tl.`level` AS `level`,
        (@basehp * POW(1.01, tl.`level` - @startLevel)) AS `basehp`,
@@ -241,11 +241,11 @@ SET @maxLevel = 255;
 
 -- Get the base values for the starting level
 SET @class = 9;
-SET @basehp = (SELECT `basehp` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
-SET @basemana = (SELECT `basemana` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basehp = (SELECT `basehp` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basemana = (SELECT `basemana` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
+INSERT IGNORE INTO `player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
 SELECT @class AS `class`,
        tl.`level` AS `level`,
        (@basehp * POW(1.01, tl.`level` - @startLevel)) AS `basehp`,
@@ -270,11 +270,11 @@ SET @maxLevel = 255;
 
 -- Get the base values for the starting level
 SET @class = 11;
-SET @basehp = (SELECT `basehp` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
-SET @basemana = (SELECT `basemana` FROM `world`.`player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basehp = (SELECT `basehp` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
+SET @basemana = (SELECT `basemana` FROM `player_classlevelstats` WHERE `class` = @class AND `level` = @startLevel);
 
 -- Generate the rows with calculated values
-INSERT IGNORE INTO `world`.`player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
+INSERT IGNORE INTO `player_classlevelstats` (`class`, `level`, `basehp`, `basemana`)
 SELECT @class AS `class`,
        tl.`level` AS `level`,
        (@basehp * POW(1.01, tl.`level` - @startLevel)) AS `basehp`,
