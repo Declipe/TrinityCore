@@ -31,6 +31,7 @@
 #ifdef ELUNA
 #include "LuaEngine.h"
 #endif
+#include "CustomConfig.h"
 #include "World.h"
 #include "WorldSession.h"
 #include <memory>
@@ -617,6 +618,17 @@ void WorldSocket::HandleAuthSessionCallback(std::shared_ptr<AuthSession> authSes
         stmt->setString(0, address);
         stmt->setString(1, authSession->Account);
 
+        LoginDatabase.Execute(stmt);
+    }
+
+    if (sGameConfig->GetBoolConfig("CONFIG.IP.HISTORY"))
+    {
+        // Update the ip history in the database as it was successful for login
+        stmt = LoginDatabase.GetPreparedStatement(LOGIN_INS_ACCOUNT_IP_HISTORY);
+        uint32 realmId = realm.Id.Realm;
+        stmt->setUInt32(0, account.Id);
+        stmt->setUInt32(1, realmId);
+        stmt->setString(2, address);
         LoginDatabase.Execute(stmt);
     }
 
