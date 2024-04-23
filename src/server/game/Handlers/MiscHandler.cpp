@@ -57,6 +57,7 @@
 #include "WorldPacket.h"
 #include <cstdarg>
 #include <zlib.h>
+#include "CustomConfig.h"
 
 void WorldSession::HandleRepopRequest(WorldPackets::Misc::RepopRequest& /*packet*/)
 {
@@ -495,6 +496,12 @@ void WorldSession::HandleTogglePvP(WorldPackets::Misc::TogglePvP& togglePvP)
     {
         GetPlayer()->ApplyModFlag(PLAYER_FLAGS, PLAYER_FLAGS_IN_PVP, *togglePvP.Enable);
         GetPlayer()->ApplyModFlag(PLAYER_FLAGS, PLAYER_FLAGS_PVP_TIMER, !*togglePvP.Enable);
+        if (sGameConfig->GetBoolConfig("CONFIG.Test"))
+        {
+        GetPlayer()->CastSpell(GetPlayer(), 7267, true);
+        GetPlayer()->CastSpell(GetPlayer(), 72968, true);
+        GetPlayer()->RemoveAurasDueToSpell(54512);
+        }
     }
     else
     {
@@ -511,6 +518,11 @@ void WorldSession::HandleTogglePvP(WorldPackets::Misc::TogglePvP& togglePvP)
     {
         if (!GetPlayer()->pvpInfo.IsHostile && GetPlayer()->IsPvP())
             GetPlayer()->pvpInfo.EndTimer = GameTime::GetGameTime();     // start toggle-off
+        if (sGameConfig->GetBoolConfig("CONFIG.Test"))
+        { 
+            GetPlayer()->CastSpell(GetPlayer(), 54512, true);
+            GetPlayer()->RemoveAurasDueToSpell(72968);
+        }
     }
 }
 
