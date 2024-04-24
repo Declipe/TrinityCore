@@ -290,6 +290,7 @@ public:
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/Inv_chest_chain_07:25:25:-15:0|tBuy Heirloom items", GOSSIP_SENDER_MAIN, 25);
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/ability_mount_spectraltiger:25:25:-15:0|tBuy Mounts", GOSSIP_SENDER_MAIN, 32);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/Inv_staff_13:25:25:-15:0|tbaka - 200-2000 coins", GOSSIP_SENDER_MAIN, 33);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_10), GOSSIP_SENDER_MAIN, 34);
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
 					SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
 					break;
@@ -1321,6 +1322,20 @@ public:
 					SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
 					break;
 				}
+                case 34: // (FAMILY) cloth armor GTS2(NOT_USED_11)
+                {
+                    for (ItemShopContainer::const_iterator itr = itemshopMap.begin(); itr != itemshopMap.end(); ++itr)
+                    {
+                        if (itr->second.groupName == "rx")
+                        {
+                            std::string text = fmt::format("{} ({} coins)", itr->second.itemName, itr->second.coinCost);
+                            AddGossipItemFor(player, GOSSIP_ICON_VENDOR, text, GOSSIP_SENDER_MAIN, itr->second.gossipAction, "Are you sure you want to buy it?", 0, false);
+                        }
+                    }
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, std::string("|TInterface/ICONS/Spell_chargenegative:25:25:-15:0|t ") + "Back", GOSSIP_SENDER_MAIN, 25);
+                    SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
+                    break;
+                }
                 case 33: // (FAMILY) cloth armor
                 {
                     for (ItemShopContainer::const_iterator itr = itemshopMap.begin(); itr != itemshopMap.end(); ++itr)
