@@ -364,8 +364,6 @@ Player::Player(WorldSession* session) : Unit(true)
 
     m_achievementMgr = new AchievementMgr(this);
     m_reputationMgr = new ReputationMgr(this);
-
-    m_groupUpdateTimer.Reset(5000);
     p_aditionalData = new AditionalData(this);
 }
 
@@ -1334,14 +1332,6 @@ void Player::Update(uint32 p_time)
         }
     }
 
-    // group update
-    m_groupUpdateTimer.Update(p_time);
-    if (m_groupUpdateTimer.Passed())
-    {
-        SendUpdateToOutOfRangeGroupMembers();
-        m_groupUpdateTimer.Reset(5000);
-    }
-
     Pet* pet = GetPet();
     if (pet && !pet->IsWithinDistInMap(this, GetMap()->GetVisibilityRange()) && !pet->isPossessed())
         //if (pet && !pet->IsWithinDistInMap(this, GetMap()->GetVisibilityDistance()) && (GetCharmGUID() && (pet->GetGUID() != GetCharmGUID())))
@@ -1361,6 +1351,14 @@ void Player::Update(uint32 p_time)
 
     if (IsHasDelayedTeleport())
         TeleportTo(m_teleport_dest, m_teleport_options);
+}
+
+void Player::Heartbeat()
+{
+    Unit::Heartbeat();
+
+    // Group update
+    SendUpdateToOutOfRangeGroupMembers();
 }
 
 void Player::setDeathState(DeathState s)
