@@ -1953,6 +1953,7 @@ public:
                         AddGossipItemFor(player, GOSSIP_ICON_TAXI, GTS(LANG_ITEM_STORMWIND), GOSSIP_SENDER_MAIN, 5, GTS(LANG_ITEM_STORMWIND_SURE), 0, false);
                     else
                         AddGossipItemFor(player, GOSSIP_ICON_TAXI, GTS(LANG_ITEM_ORGRIMMAR), GOSSIP_SENDER_MAIN, 6, GTS(LANG_ITEM_ORGRIMMAR_SURE), 0, false);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
                     break;
                 }
