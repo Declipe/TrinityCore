@@ -160,7 +160,7 @@ public:
 		if (player->IsPlayer())
 			AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_VIP_MENU), GOSSIP_SENDER_MAIN, 10);
 
-		if (player->GetClass())
+		if (player->GetClass() && player->GetLevel() >= 80)
 	   // if (player->CanReceiveStartPack() && player->GetLevel() == DEFAULT_MAX_LEVEL)
 		{
 			// Start pack
@@ -335,7 +335,7 @@ public:
                     if (player->IsPlayer())
                         AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_VIP_MENU), GOSSIP_SENDER_MAIN, 10);
 
-                    if (player->GetClass())
+                    if (player->GetClass() && player->GetLevel() >= 80)
                         // if (player->CanReceiveStartPack() && player->GetLevel() == DEFAULT_MAX_LEVEL)
                     {
                         // Start pack

@@ -39,7 +39,7 @@ class ZynPlayerScripts: public PlayerScript
         }
 };
 
-uint32 MaxItemLevel = 255;
+uint32 MaxItemLevel = 80;
 
 class item_lvlup : public ItemScript
 {
