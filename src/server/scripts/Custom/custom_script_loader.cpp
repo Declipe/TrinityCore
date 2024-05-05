@@ -16,6 +16,7 @@
  */
 
 // This is where scripts' loading functions should be declared:
+void AddSC_AutoShutdown();
 void AddSC_custom_item();
 void AddSC_landro_longshot();
 void AddSC_skip_StarterArea();
@@ -129,4 +130,5 @@ void AddCustomScripts()
     AddSC_example_ItemGossip();
     AddSC_landro_longshot();
     AddSC_custom_item();
+    AddSC_AutoShutdown();
 }
