@@ -73,6 +73,7 @@ public:
         static ChatCommandTable commandTable =
         {
             { "additem",          HandleAddItemCommand,          rbac::RBAC_PERM_COMMAND_ADDITEM,          Console::No },
+            { "additem to",       HandleAddItemToCommand,        rbac::RBAC_PERM_COMMAND_ADDITEM,          Console::No },
             { "additem set",      HandleAddItemSetCommand,       rbac::RBAC_PERM_COMMAND_ADDITEMSET,       Console::No },
             { "appear",           HandleAppearCommand,           rbac::RBAC_PERM_COMMAND_APPEAR,           Console::No },
             { "aura",             HandleAuraCommand,             rbac::RBAC_PERM_COMMAND_AURA,             Console::No },
@@ -1431,8 +1432,6 @@ public:
         Player* playerTarget = handler->getSelectedPlayer();
         if (!playerTarget)
             playerTarget = player;
-
-        TC_LOG_DEBUG("misc", "handler->GetTrinityString(LANG_ADDITEMSET)", itemSetId);
 
         bool found = false;
         ItemTemplateContainer const& its = sObjectMgr->GetItemTemplateStore();
