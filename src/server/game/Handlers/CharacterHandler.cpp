@@ -827,7 +827,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder const& holder)
 
             // send new char string if not empty
             if (!sWorld->GetNewCharString().empty())
-                chH.PSendSysMessage("{}", sWorld->GetNewCharString().c_str());
+                chH.PSendSysMessage("%s", sWorld->GetNewCharString().c_str());
         }
     }
 
