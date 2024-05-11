@@ -2018,7 +2018,7 @@ public:
                 case 198:
                 {
                     CloseGossipMenuFor(player);
-                    player->TeleportTo(0, -4137.27f, -1059.16f, 167.925f, 4.77061f);
+                    player->TeleportTo(1, 16265.27f, 16261.16f, 18.925f, 4.77061f);
                     player->CastSpell(player, 45523, true);
                     break;
                 }

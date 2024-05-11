@@ -3727,6 +3727,14 @@ void Spell::EffectStuck()
     if (!player)
         return;
 
+    // Prevent players from trying to unstuck themselves in the Jail box.
+    if (player->GetMapId() == 13 && AccountMgr::IsPlayerAccount(player->GetSession()->GetSecurity()))
+     {
+       // TC_LOG_ERROR("spells",
+          TC_LOG_ERROR("spells", "Player {} (guid {}) tried to use unstuck in Jail box.", player->GetName(), player->GetGUID().ToString());
+        return;
+     }
+
     TC_LOG_DEBUG("spells", "Spell Effect: Stuck");
     TC_LOG_DEBUG("spells", "Player {} {} used the auto-unstuck feature at map {} ({}, {}, {}).", player->GetName(), player->GetGUID().ToString(), player->GetMapId(), player->GetPositionX(), player->GetPositionY(), player->GetPositionZ());
 
