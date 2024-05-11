@@ -91,8 +91,6 @@ enum WorldTimers
 /// Configuration elements
 enum WorldBoolConfigs : uint32
 {
-    CONFIG_GMISLAND_PLAYERS_NOACCESS_ENABLE,
-    CONFIG_GMISLAND_BAN_ENABLE,
     CONFIG_DURABILITY_LOSS_IN_PVP = 0,
     CONFIG_ADDON_CHANNEL,
     CONFIG_CLEAN_CHARACTER_DB,

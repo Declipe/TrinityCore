@@ -1514,9 +1514,6 @@ void World::LoadConfigSettings(bool reload)
     m_bool_configs[CONFIG_PDUMP_NO_PATHS] = sConfigMgr->GetBoolDefault("PlayerDump.DisallowPaths", true);
     m_bool_configs[CONFIG_PDUMP_NO_OVERWRITE] = sConfigMgr->GetBoolDefault("PlayerDump.DisallowOverwrite", true);
 
-    m_bool_configs[CONFIG_GMISLAND_PLAYERS_NOACCESS_ENABLE] = sConfigMgr->GetBoolDefault("GMIsland.PlayersNoAccess.Enable", true);
-    m_bool_configs[CONFIG_GMISLAND_BAN_ENABLE] = sConfigMgr->GetBoolDefault("GMIsland.Ban.Enable", false);
-
     // ANTICHEAT
     m_bool_configs[CONFIG_ANTICHEAT_ENABLE] = sConfigMgr->GetBoolDefault("Anticheat.Enable", false);
     m_bool_configs[CONFIG_ANTICHEAT_ENABLE_ON_GM] = sConfigMgr->GetBoolDefault("Anticheat.EnabledOnGmAccounts", false);

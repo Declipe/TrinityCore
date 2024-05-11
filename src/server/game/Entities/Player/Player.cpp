@@ -7261,14 +7261,15 @@ void Player::UpdateZone(uint32 newZone, uint32 newArea)
             guild->UpdateMemberData(this, GUILD_MEMBER_DATA_ZONEID, newZone);
     }
     // Prevent players from accessing GM Island
-     if (sWorld->getBoolConfig(CONFIG_GMISLAND_PLAYERS_NOACCESS_ENABLE) == true)
-         {
+    if (sGameConfig->GetBoolConfig("config.gmisland.player.noaccess.enable"))
+    {
         if (newZone == 876 && AccountMgr::IsPlayerAccount(GetSession()->GetSecurity()))
              {
             uint32 map = 13;
             double coords[4] = { 1.118799, 0.477914, -144.708650, 3.133046 }; // Jail Box
-            
-                std::string config = sConfigMgr->GetStringDefault("GMIsland.TeleportTo", "");
+
+            std::string config = sGameConfig->GetStringConfig("GMIsland.TeleportTo");
+               // std::string config = sConfigMgr->GetStringDefault("GMIsland.TeleportTo", "");
             if (config != "")
                  {
                std::istringstream ss(config);
@@ -7288,7 +7289,6 @@ void Player::UpdateZone(uint32 newZone, uint32 newArea)
                 if (map == 876)
                  {
                 TC_LOG_ERROR("entities.unit", "Error: Cannot set tele to GM Island (map: 876). Sending possible hacker to default location. (Jail Box)");
-                //sLog->outError("Error: Cannot set tele to GM Island (map: 876). Sending possible hacker to default location. (Jail Box)");
                 map = 13;
                 coords[0] = 1.118799; // x
                 coords[1] = 0.477914; // y
@@ -7297,19 +7297,18 @@ void Player::UpdateZone(uint32 newZone, uint32 newArea)
                 }
 
             TC_LOG_ERROR("entities.unit", "Player (GUID: {}) tried to access GM Island.", GetGUID().ToString());
-           // sLog->outError("Player (GUID: %u) tried to access GM Island.", GetGUIDLow());
             TeleportTo(map, coords[0], coords[1], coords[2], coords[3]); // Tele to Jail Box
+            if (sGameConfig->GetBoolConfig("config.gmisland.Freeze.enable"))
+            {
             if (map == 13)
                  CastSpell(this, 9454, true); // Cast GM Freeze on player
-            
-                if (sWorld->getBoolConfig(CONFIG_GMISLAND_BAN_ENABLE) == true)
-                 {
+            }
+            if (sGameConfig->GetBoolConfig("config.gmisland.ban.enable"))
+            {
                 TC_LOG_ERROR("entities.unit", "Player (GUID: {}) tried to access GM Island. Banning Player Account.", GetGUID().ToString());
-                //sLog->outError("Player (GUID: %u) tried to access GM Island. Banning Player Account.", GetGUIDLow());
-               // sWorld->BanAccount(BAN_ACCOUNT, accountName, sWorld->getIntConfig(CONFIG_WARDEN_CLIENT_BAN_DURATION), banReason.str(), "Server");
                 std::string accountName;
                 AccountMgr::GetName(this->GetSession()->GetAccountId(), accountName);
-                 sWorld->BanAccount(BAN_ACCOUNT, accountName, "0s" /*true).c_str()*/, "Being on GM Island", "Anticheat protection");
+                 sWorld->BanAccount(BAN_ACCOUNT, accountName, "30s" /*true).c_str()*/, "Being on GM Island", "Anticheat protection");
                 //sWorld->BanAccount(BAN_ACCOUNT, this->GetName(), secsToTimeString(TimeStringToSecs("-1"), TimeFormat::ShortText).c_str() /*true).c_str()*/, "Being on GM Island", "Anticheat protection");
                 }
              }

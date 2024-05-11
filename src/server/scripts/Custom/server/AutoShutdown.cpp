@@ -1,5 +1,6 @@
 #include "AutoShutdown.h"
 #include "Config.h"
+#include "CustomConfig.h"
 #include "Duration.h"
 #include "Language.h"
 #include "Log.h"
@@ -38,12 +39,12 @@ AutoShutdown* AutoShutdown::instance()
 
 void AutoShutdown::Init()
 {
-    isEnable = sConfigMgr->GetBoolDefault("AutoShutdown.Enabled", false);
+    isEnable = sGameConfig->GetBoolConfig("AutoShutdown.Enabled");
 
     if (!isEnable)
         return;
 
-    std::string configTime = sConfigMgr->GetStringDefault("AutoShutdown.Time", "04:00:00");
+    std::string configTime = sGameConfig->GetStringConfig("AutoShutdown.Time");
     auto const& tokens = Trinity::Tokenize(configTime, ':', false);
 
     if (tokens.size() != 3)
@@ -113,7 +114,7 @@ void AutoShutdown::Init()
     TC_LOG_INFO("server", "> AutoShutdown: Remaining time to shutdown - {}", secsToTimeString(diffToShutdown));
     TC_LOG_INFO("server", " ");
 
-    uint32 preAnnSeconds = sConfigMgr->GetIntDefault("AutoShutdown.PreAnnounce.Seconds", 3600);
+    uint32 preAnnSeconds = sGameConfig->GetIntConfig("AutoShutdown.PreAnnounce.Seconds");
     if (preAnnSeconds > DAY)
     {
         TC_LOG_ERROR("server", "> AutoShutdown: Ahah, how could this happen? Time to preannouce more 1 day? ({}). Set to 1 hour (3600)", preAnnSeconds);
@@ -132,7 +133,7 @@ void AutoShutdown::Init()
 
     scheduler.Schedule(Seconds(diffToPreAnn), [preAnnSeconds](TaskContext /*context*/)
     {
-        std::string preAnnMessForm = sConfigMgr->GetStringDefault("AutoShutdown.PreAnnounce.Message", " ");
+        std::string preAnnMessForm = sGameConfig->GetStringConfig("AutoShutdown.PreAnnounce.Message");
         std::string mge = std::string((preAnnMessForm, secsToTimeString(preAnnSeconds)));
 
         TC_LOG_INFO("server", "> {}", mge);
