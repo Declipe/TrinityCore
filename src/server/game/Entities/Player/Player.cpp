@@ -4765,7 +4765,7 @@ Corpse* Player::CreateCorpse()
     _corpseLocation.WorldRelocate(*this);
 
     _uf = getCFSRace();
-    uint8 race = (uint8)(_uf);
+    [[maybe_unused]] uint8 race = (uint8)(_uf);
 
     _cfb1 = ((0x00) | (GetRace() << 8) | (GetNativeGender() << 16) | (GetSkinId() << 24));
     _cfb2 = (GetFaceId() | (GetHairStyleId() << 8) | (GetHairColorId() << 16) | (GetFacialStyle() << 24));
@@ -27400,7 +27400,7 @@ void Player::RemoveRestFlag(RestFlag restFlag)
 
 void Player::SetSelection(ObjectGuid guid)
 {
-    uint32 m_curSelection = guid;
+    [[maybe_unused]] uint32 m_curSelection = guid;
     SetUInt64Value(UNIT_FIELD_TARGET, guid);
 }
 

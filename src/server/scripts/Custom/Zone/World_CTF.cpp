@@ -193,7 +193,7 @@ void GCTF::LoadPlayerData()
 void GCTF::AddCharacter(Player* player)
 {
     std::string WorldPlayerData_Query;
-    uint32 player_count = (sGCTF->WorldPlayerData.size());
+    [[maybe_unused]] uint32 player_count = (sGCTF->WorldPlayerData.size());
 
     uint32 acct_id = player->GetSession()->GetAccountId();
     uint32 guid = player->GetGUID();
@@ -358,7 +358,7 @@ public: CTF_Flag() : GameObjectScript("CTF_Flag") { };
               uint32 guid = me->GetSpawnId();
               uint32 phasemask = me->GetPhaseMask();
               uint32 activeGuid = sGCTF->FlagList[sGCTF->GetActiveGO_ID()].guid;
-              uint32 defaultflagid = sGCTF->GetDefaultWorldFlagID();
+              [[maybe_unused]] uint32 defaultflagid = sGCTF->GetDefaultWorldFlagID();
 
               if (sGCTF->WorldFlags[guid].guid != guid) { sGCTF->AddFlag(me); }
 
