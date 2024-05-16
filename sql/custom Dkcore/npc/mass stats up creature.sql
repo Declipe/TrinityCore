@@ -1,0 +1,1 @@
+UPDATE `creature_template` SET `exp` = 2, `minlevel` = 85, `maxlevel` = 85, `DamageModifier` = `DamageModifier` *2, `HealthModifier` = `HealthModifier` *6,`ManaModifier` = `ManaModifier` *6;
