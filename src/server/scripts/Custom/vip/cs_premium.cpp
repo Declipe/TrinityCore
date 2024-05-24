@@ -41,15 +41,12 @@ public:
 			{ "gbuff",         HandleGuildBuffCommand,       rbac::RBAC_PERM_COMMAND_GXP_BUFF,  Console::No },
             { "set",           HandleSetVipCommand,          rbac::RBAC_PERM_COMMAND_VIP_SET,  Console::No },
             { "del",           HandleDelVipCommand,          rbac::RBAC_PERM_COMMAND_VIP_REMOVE,  Console::No },
-
-			//{ "qcomplete", rbac::RBAC_PERM_COMMAND_VIP_qcomplete, false, &HandleQuestCompletes, "" },
 		};
 
         static ChatCommandTable coinCommandTable =
         {
             { "add",          HandleCoinAddCommand,    rbac::RBAC_PERM_COMMAND_ADDCOIN,         Console::No },
             { "del",          HandleCoinDelCommand,   rbac::RBAC_PERM_COMMAND_ADDCOIN,          Console::No },
-          //  { "",             HandleCoinCommand,   rbac::RBAC_PERM_COMMAND_ACCOUNT,             Console::No },
         };
 
 		static ChatCommandTable commandTable =
@@ -205,146 +202,6 @@ public:
 
 		return true;
 	}
-	/* static bool HandleQuestCompletes(ChatHandler* handler, const char* args)
-	{
-		Player* _player = handler->GetSession()->GetPlayer();
-
-		if (!handler->GetSession()->IsPremium())
-		{
-			handler->SendSysMessage(LANG_PLAYER_NOT_VIP);
-			handler->SetSentErrorMessage(true);
-			return false;
-		}
-
-		if (_player->IsInCombat())
-		{
-			handler->SendSysMessage(LANG_YOU_IN_COMBAT);
-			handler->SetSentErrorMessage(true);
-			return false;
-		}
-
-		if (_player->IsInFlight())
-		{
-			handler->SendSysMessage(LANG_YOU_IN_FLIGHT);
-			handler->SetSentErrorMessage(true);
-			return false;
-		}
-
-		if (_player->HasStealthAura())
-		{
-			handler->SendSysMessage(LANG_VIP_STEALTH);
-			handler->SetSentErrorMessage(true);
-			return false;
-		}
-
-		if (_player->isDead() || _player->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH))
-		{
-			handler->SendSysMessage(LANG_VIP_DEAD);
-			handler->SetSentErrorMessage(true);
-			return false;
-		}
-
-		Player* player = handler->getSelectedPlayerOrSelf();
-		if (!player)
-		{
-			handler->SendSysMessage(LANG_NO_CHAR_SELECTED);
-			handler->SetSentErrorMessage(true);
-			return false;
-		}
-
-		// .quest complete #entry
-		// number or [name] Shift-click form |color|Hquest:quest_id:quest_level|h[name]|h|r
-		char* cId = handler->extractKeyFromLink((char*)args, "Hquest");
-		if (!cId)
-			return false;
-
-		uint32 entry = atoul(cId);
-
-		Quest const* quest = sObjectMgr->GetQuestTemplate(entry);
-
-		// If player doesn't have the quest
-		if (!quest || player->GetQuestStatus(entry) == QUEST_STATUS_NONE)
-		{
-			handler->PSendSysMessage(LANG_COMMAND_QUEST_NOTFOUND, entry);
-			handler->SetSentErrorMessage(true);
-			return false;
-		}
-
-		// Add quest items for quests that require items
-		for (uint8 x = 0; x < QUEST_ITEM_OBJECTIVES_COUNT; ++x)
-		{
-			uint32 id = quest->RequiredItemId[x];
-			uint32 count = quest->RequiredItemCount[x];
-			if (!id || !count)
-				continue;
-
-			uint32 curItemCount = player->GetItemCount(id, true);
-
-			ItemPosCountVec dest;
-			uint8 msg = player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, id, count - curItemCount);
-			if (msg == EQUIP_ERR_OK)
-			{
-				Item* item = player->StoreNewItem(dest, id, true);
-				player->SendNewItem(item, count - curItemCount, true, false);
-			}
-		}
-
-		// All creature/GO slain/cast (not required, but otherwise it will display "Creature slain 0/10")
-		for (uint8 i = 0; i < QUEST_OBJECTIVES_COUNT; ++i)
-		{
-			int32 creature = quest->RequiredNpcOrGo[i];
-			uint32 creatureCount = quest->RequiredNpcOrGoCount[i];
-
-			if (creature > 0)
-			{
-				if (CreatureTemplate const* creatureInfo = sObjectMgr->GetCreatureTemplate(creature))
-					for (uint16 z = 0; z < creatureCount; ++z)
-						player->KilledMonster(creatureInfo, ObjectGuid::Empty);
-			}
-			else if (creature < 0)
-				for (uint16 z = 0; z < creatureCount; ++z)
-					player->KillCreditGO(creature);
-		}
-
-		// If the quest requires reputation to complete
-		if (uint32 repFaction = quest->GetRepObjectiveFaction())
-		{
-			uint32 repValue = quest->GetRepObjectiveValue();
-			uint32 curRep = player->GetReputationMgr().GetReputation(repFaction);
-			if (curRep < repValue)
-				if (FactionEntry const* factionEntry = sFactionStore.LookupEntry(repFaction))
-					player->GetReputationMgr().SetReputation(factionEntry, repValue);
-		}
-
-		// If the quest requires a SECOND reputation to complete
-		if (uint32 repFaction = quest->GetRepObjectiveFaction2())
-		{
-			uint32 repValue2 = quest->GetRepObjectiveValue2();
-			uint32 curRep = player->GetReputationMgr().GetReputation(repFaction);
-			if (curRep < repValue2)
-				if (FactionEntry const* factionEntry = sFactionStore.LookupEntry(repFaction))
-					player->GetReputationMgr().SetReputation(factionEntry, repValue2);
-		}
-
-		// If the quest requires money
-		int32 ReqOrRewMoney = quest->GetRewOrReqMoney();
-		if (ReqOrRewMoney < 0)
-			player->ModifyMoney(-ReqOrRewMoney);
-
-		if (sWorld->getBoolConfig(CONFIG_QUEST_ENABLE_QUEST_TRACKER)) // check if Quest Tracker is enabled
-		{
-			// prepare Quest Tracker datas
-			PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_QUEST_TRACK_GM_COMPLETE);
-			stmt->setUInt32(0, quest->GetQuestId());
-			stmt->setUInt32(1, player->GetGUID().GetCounter());
-
-			// add to Quest Tracker
-			CharacterDatabase.Execute(stmt);
-		}
-
-		player->CompleteQuest(entry);
-		return true;
-	}*/
 
 	static bool HandleTelesNameCommand(ChatHandler* handler, Optional<PlayerIdentifier> player, Variant<GameTele const*, EXACT_SEQUENCE("$home")> where)
 	{
@@ -356,13 +213,6 @@ public:
 			handler->SetSentErrorMessage(true);
 			return false;
 		}
-
-		//if (!sWorld->getBoolConfig(COMMAND_BANK_PREMIUM))
-		//{
-		//	handler->SendSysMessage(LANG_VIP_COMMAND_DISABLED);
-		//	handler->SetSentErrorMessage(true);
-		//	return false;
-		//}
 
 		if (_player->IsInCombat())
 		{
@@ -751,8 +601,7 @@ public:
 
 			BattlegroundTypeId bgTypeId = BATTLEGROUND_EY;
 			handler->GetSession()->SendBattleGroundList(handler->GetSession()->GetPlayer()->GetGUID(), bgTypeId);
-			//handler->PSendSysMessage(LANG_QUEUE_EYE);
-		return true;
+		    return true;
 	}
 
 	static bool HandleVipjoinWarsongCommand(ChatHandler* handler, const char* /*args*/)

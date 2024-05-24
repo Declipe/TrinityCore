@@ -141,13 +141,16 @@ public:
             AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_10, loc_idx), GOSSIP_SENDER_MAIN, 34);
             //AddGossipItemFor(player, NPC_buba, 0, loc_idx), GOSSIP_SENDER_MAIN, 2);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_21, loc_idx), GOSSIP_SENDER_MAIN, 2);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_22, loc_idx), GOSSIP_SENDER_MAIN, 13);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_23, loc_idx), GOSSIP_SENDER_MAIN, 22);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_24, loc_idx), GOSSIP_SENDER_MAIN, 2233);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_25, loc_idx), GOSSIP_SENDER_MAIN, 22333);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_26, loc_idx), GOSSIP_SENDER_MAIN, 32333);
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_27, loc_idx), GOSSIP_SENDER_MAIN, 32344);
-            AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_28, loc_idx), GOSSIP_SENDER_MAIN, 32355);
+            if (sGameConfig->GetBoolConfig("CONFIG.Test"))
+            {
+                AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_22, loc_idx), GOSSIP_SENDER_MAIN, 13);
+                AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_25, loc_idx), GOSSIP_SENDER_MAIN, 22333);
+                AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_28, loc_idx), GOSSIP_SENDER_MAIN, 32355);
+            }
             AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_30, loc_idx), GOSSIP_SENDER_MAIN, 36);
             SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
             return true;
@@ -347,13 +350,16 @@ public:
                 AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_9, loc_idx), GOSSIP_SENDER_MAIN, 33);
                 AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_10, loc_idx), GOSSIP_SENDER_MAIN, 34);
                 AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_21, loc_idx), GOSSIP_SENDER_MAIN, 2);
-                AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_22, loc_idx), GOSSIP_SENDER_MAIN, 13);
                 AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_23, loc_idx), GOSSIP_SENDER_MAIN, 22);
                 AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_24, loc_idx), GOSSIP_SENDER_MAIN, 2233);
-                AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_25, loc_idx), GOSSIP_SENDER_MAIN, 22333);
                 AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_26, loc_idx), GOSSIP_SENDER_MAIN, 32333);
                 AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_27, loc_idx), GOSSIP_SENDER_MAIN, 32344);
-                AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_28, loc_idx), GOSSIP_SENDER_MAIN, 32355);
+                if (sGameConfig->GetBoolConfig("CONFIG.Test"))
+                {
+                    AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_22, loc_idx), GOSSIP_SENDER_MAIN, 13);
+                    AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_25, loc_idx), GOSSIP_SENDER_MAIN, 22333);
+                    AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_28, loc_idx), GOSSIP_SENDER_MAIN, 32355);
+                }
                 AddGossipItemFor(player, GOSSIP_ICON_TALK, sObjectMgr->GetTrinityString(LANG_GOSSIP_OPTION_30, loc_idx), GOSSIP_SENDER_MAIN, 36);
                 SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
                 break;
