@@ -1677,6 +1677,12 @@ void World::SetInitialWorldSettings()
     {
         TC_LOG_INFO("server.loading", "Loading Lua scripts...");
         sElunaLoader->LoadScripts();
+
+        if (sElunaConfig->GetConfig(CONFIG_ELUNA_SCRIPT_RELOADER))
+        {
+            TC_LOG_INFO("server.loading", "Loading Eluna script reloader...");
+            sElunaLoader->InitializeFileWatcher();
+        }
     }
 #endif
 
