@@ -63,9 +63,10 @@ namespace fs = boost::filesystem;
 
 #if TRINITY_PLATFORM == TRINITY_PLATFORM_WINDOWS
 #include "ServiceWin32.h"
-char serviceName[] = "authserver";
-char serviceLongName[] = "Ctulhunet.ru auth service";
-char serviceDescription[] = "Ctulhunet.ru World of Warcraft emulator auth service";
+#include <tchar.h>
+TCHAR serviceName[] = _T("authserver");
+TCHAR serviceLongName[] = _T("Ctulhunet.ru auth service");
+TCHAR serviceDescription[] = _T("Ctulhunet.ru World of Warcraft emulator auth service");
 /*
 * -1 - not in service mode
 *  0 - stopped
