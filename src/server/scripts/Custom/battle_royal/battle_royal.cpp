@@ -2,6 +2,7 @@
 #include "Containers.h"
 #include <utility>
 #include <ScriptPCH.h>
+#include "CustomConfig.h"
 #include "GameObject.h"
 #include "GameObjectAI.h"
 #include "Player.h"
@@ -88,6 +89,8 @@ public:
 BattleRoyale::BattleRoyale() {
     m_TypeId = OUTDOOR_PVP_BR;
     m_zoneId = 493;
+    royaleEnabled = sGameConfig->GetBoolConfig("Battle.Royale.Core.Enable");
+    requiredPlayers = sGameConfig->GetIntConfig("Battle.Royale.Core.RequiredPlayers");
     spawnPointNighthaven = Position(7830.34f, -2433.79f, 488.01f, 4.74f);
     spawnPointShrine = Position(7842.36f, -2225.37f, 468.40f, 4.05f);
     spawnPointDens = Position(7563.89f, -2951.61f, 466.69f, 1.51f);
@@ -450,7 +453,7 @@ void BattleRoyale::infectPlayers() {
 }
 
 bool BattleRoyale::checkShouldStart() {
-    return !gameStarted && queue.size() >= 3;
+    return royaleEnabled && !gameStarted && queue.size() >= requiredPlayers;
 }
 
 void BattleRoyale::RemoveExtraPlayers() {

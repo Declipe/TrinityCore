@@ -41,6 +41,7 @@ public:
 			{ "gbuff",         HandleGuildBuffCommand,       rbac::RBAC_PERM_COMMAND_GXP_BUFF,  Console::No },
             { "set",           HandleSetVipCommand,          rbac::RBAC_PERM_COMMAND_VIP_SET,  Console::No },
             { "del",           HandleDelVipCommand,          rbac::RBAC_PERM_COMMAND_VIP_REMOVE,  Console::No },
+            { "Activate",      HandleActivateCommand,        rbac::RBAC_PERM_COMMAND_GM,  Console::No },
 		};
 
         static ChatCommandTable coinCommandTable =
@@ -57,6 +58,34 @@ public:
 
 		return commandTable;
 	}
+
+    static bool HandleActivateCommand(ChatHandler* handler)
+    {
+        Player* player = handler->GetSession()->GetPlayer();
+        time_t unsetdate;
+        /*time_t setdate;*/
+
+        if (player->HasItemCount(37742, 3000, false))
+        {
+            if (player->GetAditionalData()->isPremium())
+            {
+                unsetdate = player->GetAditionalData()->getPremiumUnsetdate() + 604800; // 7 day
+                AccountMgr::UpdateVipStatus(player->GetSession()->GetAccountId(), unsetdate);
+            }
+            else
+            {
+                unsetdate = GameTime::GetGameTime() + 604800; // 7 day
+                AccountMgr::SetVipStatus(player->GetSession()->GetAccountId(), unsetdate);
+            }
+            player->GetAditionalData()->setPremiumUnsetdate(unsetdate);
+            player->GetAditionalData()->setPremiumStatus(true);
+            //player->AddItem(184, 1);
+            player->DestroyItemCount(37742, 3000, true, false);
+            handler->PSendSysMessage("Your VIP rank has been updated.Login to get it active");
+            return true;
+        }
+        return true;
+    }
 
     static bool HandleSetVipCommand(ChatHandler* handler, uint32 days_bonus, uint32 accountID)
     {

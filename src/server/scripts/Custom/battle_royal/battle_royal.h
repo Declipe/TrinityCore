@@ -9,7 +9,6 @@
 
 using namespace std;
 
-
 class BattleRoyale : public OutdoorPvP {
 public:
     BattleRoyale();
@@ -87,10 +86,12 @@ private:
     Creature *game_master;
     std::deque<ObjectGuid> queue;
     GuidSet playersInRoyale;
+    bool royaleEnabled = true;
     bool gameStarted = false;
     bool aggressivePlayers = false;
     bool startInfecting = false;
     int playerLimit = 40;
+    int requiredPlayers = 3;
     int currentIteration = 1;
     int startTimer = 60000;
     int relicSwitchTimer = 60000;
