@@ -9,6 +9,7 @@
 #include "Chat.h"
 #include "ScriptMgr.h"
 #include "MapManager.h"
+#include "Map.h"
 #include "Creature.h"
 #include "World.h"
 #include "WorldSession.h"
@@ -103,7 +104,7 @@ void BattleRoyale::HandleInfectionKill(Player* player)
     snprintf(msg, 250,
              "%s was killed by the infection! Quicker next time!",
              player->GetName().c_str());
-    sWorld->SendZoneText(m_zoneId, msg);
+    m_map->SendZoneText(m_zoneId, msg);
     RemovePlayerFromRoyal(player);
 }
 
@@ -117,7 +118,7 @@ void BattleRoyale::HandleKill(Player* player, Unit *killed) {
         snprintf(msg, 250,
                  "%s killed %s! Better luck next time!",
                  player->GetName().c_str(), victim->GetName().c_str());
-        sWorld->SendZoneText(m_zoneId, msg);
+        m_map->SendZoneText(m_zoneId, msg);
     }
 }
 
