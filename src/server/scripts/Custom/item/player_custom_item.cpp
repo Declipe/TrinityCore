@@ -27,6 +27,8 @@
 #include "GuildMgr.h"
 #include "Item.h"
 #include "ItemShopMgr.h"
+#include "InstanceSaveMgr.h"
+//#include "InstanceScript.h"
 #include "Language.h"
 #include "Map.h"
 #include "ObjectMgr.h"
@@ -51,6 +53,8 @@
 #define CONST_HONOR_POINT3 10000
 #define CONST_HONOR_POINT4 100000
 #define CONST_HONOR_POINT5 200000
+//#define COST_id 49426
+//#define COST_colvo 5
 
 #define GTS session->GetTrinityString
 #define GTS2 session->GetTrinityString2
@@ -147,6 +151,7 @@ public:
 		
        // AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_7, loc_idx), GOSSIP_SENDER_MAIN, 192);
         AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_7), GOSSIP_SENDER_MAIN, 192);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_11) /*"?? ??????"*/, GOSSIP_SENDER_MAIN, 199, GTS2(NOT_USED_12)/*"?? ????????????? ?????? ???????? ???"*/, 0, false);
 		if (player->IsGameMaster())
 		{
 			if (player->GetSession()->HasPermission(rbac::RBAC_PERM_COMMAND_SERVER_RESTART))
@@ -2022,6 +2027,49 @@ public:
                     player->CastSpell(player, 45523, true);
                     break;
                 }
+                case 199:
+                {
+                    uint32 pt = sGameConfig->GetIntConfig("COST_id"); //49426
+                    uint32 pt2 = sGameConfig->GetIntConfig("COST_colvo"); //5
+                    if (player->HasItemCount(pt, pt2))
+                    {
+                        player->DestroyItemCount(pt, pt2, true);
+                    if (!player)
+                        player = player->GetSession()->GetPlayer();
+
+                    int8 diff = -1;
+                    uint16 counter = 0;
+                    uint16 MapId = 0;
+
+                    for (uint8 i = 0; i < MAX_DIFFICULTY; ++i)
+                    {
+                        Player::BoundInstancesMap& binds = player->GetBoundInstances(Difficulty(i));
+                        for (Player::BoundInstancesMap::iterator itr = binds.begin(); itr != binds.end();)
+                        {
+                            InstanceSave* save = itr->second.save;
+                            if (itr->first != player->GetMapId() && (!MapId || MapId == itr->first) && (diff == -1 || diff == save->GetDifficulty()))
+                            {
+                                std::string timeleft = secsToTimeString(save->GetResetTime() - GameTime::GetGameTime(), TimeFormat::ShortText);
+                                player->UnbindInstance(itr, Difficulty(i));
+                                counter++;
+                            }
+                            else
+                                ++itr;
+                        }
+                    }
+                    ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_13));
+                   player->PlayerTalkClass->SendCloseGossip();
+                    break;
+                    }
+                    else
+                        player->PlayerTalkClass->SendCloseGossip();
+                    player->GetSession()->SendAreaTriggerMessage(GTS2(NOT_USED_14));
+                    ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_14));
+
+                    player->PlayerTalkClass->SendCloseGossip();
+                    break;
+                }
+
 				}
 			}
 		}
