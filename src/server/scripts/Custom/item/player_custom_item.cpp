@@ -53,8 +53,6 @@
 #define CONST_HONOR_POINT3 10000
 #define CONST_HONOR_POINT4 100000
 #define CONST_HONOR_POINT5 200000
-//#define COST_id 49426
-//#define COST_colvo 5
 
 #define GTS session->GetTrinityString
 #define GTS2 session->GetTrinityString2
@@ -2058,8 +2056,8 @@ public:
                         }
                     }
                     ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_13));
-                   player->PlayerTalkClass->SendCloseGossip();
-                    break;
+                    player->PlayerTalkClass->SendCloseGossip();
+                     break;
                     }
                     else
                         player->PlayerTalkClass->SendCloseGossip();
