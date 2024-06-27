@@ -15,6 +15,10 @@
 #include "ScriptedGossip.h"
 #include "GameObject.h"
 #include "GameObjectAI.h"
+#include "DBCStores.h"
+#include "WorldSession.h"
+
+#define GTS2 session->GetTrinityString2
 
 class level_award : public PlayerScript
 {
@@ -96,8 +100,41 @@ public:
     {
         go_graveAI(GameObject* go) : GameObjectAI(go) { }
 
-        bool OnGossipHello(Player* /*player*/) override
+        bool OnGossipHello(Player* player) override
         {
+            WorldSession* session = player->GetSession();
+
+            if (me->HasFlag(GO_FLAG_IN_USE))
+                return true;
+
+            bool hasKey = true;
+            if (LockEntry const* lock = sLockStore.LookupEntry(me->GetGOInfo()->goober.lockId))
+            {
+                hasKey = false;
+                for (uint8 i = 0; i < MAX_LOCK_CASE; ++i)
+                {
+                    if (!lock->Index[i])
+                        continue;
+
+                    if (player->HasItemCount(8886,1))
+                    {
+                        hasKey = true;
+                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_15));
+                        break;
+                    }
+                    else
+                        player->PlayerTalkClass->SendCloseGossip();
+                    player->GetSession()->SendAreaTriggerMessage(GTS2(NOT_USED_16));
+                    ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_16));
+
+                    player->PlayerTalkClass->SendCloseGossip();
+                    break;
+                }
+            }
+
+            if (!hasKey)
+                return false;
+
             if (me->GetUseCount() == 0)
             {
                 uint32 randomchance = urand(0, 100);

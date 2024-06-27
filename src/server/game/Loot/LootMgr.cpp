@@ -545,7 +545,7 @@ void LootTemplate::LootGroup::Verify(LootStore const& lootstore, uint32 id, uint
     if (chance > 2000.0f)                                    /// @todo replace with 100% when DBs will be ready
         TC_LOG_ERROR("sql.sql", "Table '{}' entry {} group {} has total chance > 100% ({})", lootstore.GetName(), id, group_id, chance);
 
-    if (chance >= 2000.0f && !EqualChanced.empty())
+    if (chance >= 100.0f && !EqualChanced.empty())
         TC_LOG_ERROR("sql.sql", "Table '{}' entry {} group {} has items with chance=0% but group total chance >= 100% ({})", lootstore.GetName(), id, group_id, chance);
 }
 

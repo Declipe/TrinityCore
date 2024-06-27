@@ -33,7 +33,6 @@ http://rochet2.github.io/Transmogrification
 #include "Config.h"
 #include "DBCStores.h"
 #include "Define.h"
-#include "GameEventMgr.h"
 #include "ScriptMgr.h"
 #include "SharedDefines.h"
 #include "World.h"
