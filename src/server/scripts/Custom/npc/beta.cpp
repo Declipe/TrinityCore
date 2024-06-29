@@ -1748,12 +1748,12 @@ public:
 
     void OnChat(Player* player, uint32 /*type*/, uint32 /*lang*/, std::string& msg, Channel* channel)
     {
-       // ChatHandler handler(player->GetSession());
+        // ChatHandler handler(player->GetSession());
 
         if (!sGameConfig->GetBoolConfig("chat.system.icon"))
         {
-        //    handler.PSendSysMessage("error #24");
-         //   handler.SetSentErrorMessage(true);
+            //    handler.PSendSysMessage("error #24");
+             //   handler.SetSentErrorMessage(true);
             return;
         }
 

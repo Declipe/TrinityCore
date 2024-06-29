@@ -39,9 +39,9 @@ enum LandrosTexts
 
 enum LandroMenus
 {
-    WELCOME             = 8855,
+    WELCOME = 8855,
     PROMOTION_MENU_TEXT = 8856,
-    PROMOTION           = 9197
+    PROMOTION = 9197
 };
 
 class landro_longshot : public CreatureScript

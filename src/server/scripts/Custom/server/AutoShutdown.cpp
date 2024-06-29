@@ -55,19 +55,19 @@ void AutoShutdown::Init()
     }
 
     auto CheckTime = [tokens](std::initializer_list<uint8> index)
-    {
-        for (auto const& itr : index)
         {
-            if (Trinity::StringTo<uint8>(tokens.at(itr)) == std::nullopt)
-                return false;
-        }
+            for (auto const& itr : index)
+            {
+                if (Trinity::StringTo<uint8>(tokens.at(itr)) == std::nullopt)
+                    return false;
+            }
 
-        return true;
-    };
+            return true;
+        };
 
     if (!CheckTime({ 0, 1, 2 }))
     {
-        TC_LOG_ERROR("server","> AutoShutdown: Incorrect time in config option 'AutoShutdown.Time' - '{}'", configTime);
+        TC_LOG_ERROR("server", "> AutoShutdown: Incorrect time in config option 'AutoShutdown.Time' - '{}'", configTime);
         isEnable = false;
         return;
     }
@@ -105,7 +105,7 @@ void AutoShutdown::Init()
     diffToShutdown = nextResetTime - static_cast<uint32>(nowTime);
 
     TC_LOG_INFO("server", " ");
-    TC_LOG_INFO("server","> AutoShutdown: System loading");
+    TC_LOG_INFO("server", "> AutoShutdown: System loading");
 
     scheduler.CancelAll();
     sWorld->ShutdownCancel();
@@ -132,16 +132,16 @@ void AutoShutdown::Init()
     }
 
     scheduler.Schedule(Seconds(diffToPreAnn), [preAnnSeconds](TaskContext /*context*/)
-    {
-        std::string preAnnMessForm = sGameConfig->GetStringConfig("AutoShutdown.PreAnnounce.Message");
-        std::string mge = std::string((preAnnMessForm, secsToTimeString(preAnnSeconds)));
+        {
+            std::string preAnnMessForm = sGameConfig->GetStringConfig("AutoShutdown.PreAnnounce.Message");
+            std::string mge = std::string((preAnnMessForm, secsToTimeString(preAnnSeconds)));
 
-        TC_LOG_INFO("server", "> {}", mge);
+            TC_LOG_INFO("server", "> {}", mge);
 
-       // sWorld->SendServerMessage(SERVER_MSG_STRING, message.c_str());
-        sWorld->SendServerMessage(SERVER_MSG_STRING, preAnnMessForm);
-        sWorld->ShutdownServ(preAnnSeconds, SHUTDOWN_MASK_RESTART, SHUTDOWN_EXIT_CODE);
-    });
+            // sWorld->SendServerMessage(SERVER_MSG_STRING, message.c_str());
+            sWorld->SendServerMessage(SERVER_MSG_STRING, preAnnMessForm);
+            sWorld->ShutdownServ(preAnnSeconds, SHUTDOWN_MASK_RESTART, SHUTDOWN_EXIT_CODE);
+        });
 }
 
 void AutoShutdown::OnUpdate(uint32 diff)

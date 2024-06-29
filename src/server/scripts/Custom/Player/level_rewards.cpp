@@ -1,86 +1,87 @@
 #include "Chat.h"
 #include "Config.h"
-#include "Player.h"
-#include "ObjectMgr.h"
-#include "World.h"
-#include "ScriptMgr.h"
-#include "Language.h"
-#include "ZynDatabase.h"
-#include "DatabaseEnvFwd.h"
+#include "CustomConfig.h"
 #include "DatabaseEnv.h"
-#include "Log.h"
-#include "GameTime.h"
-#include "SpellMgr.h"
-#include "GossipDef.h"
-#include "ScriptedGossip.h"
+#include "DatabaseEnvFwd.h"
+#include "DBCStores.h"
 #include "GameObject.h"
 #include "GameObjectAI.h"
-#include "DBCStores.h"
+#include "GameTime.h"
+#include "GossipDef.h"
+#include "Language.h"
+#include "Log.h"
+#include "ObjectMgr.h"
+#include "Player.h"
+#include "ScriptedGossip.h"
+#include "ScriptMgr.h"
+#include "SpellMgr.h"
+#include "World.h"
 #include "WorldSession.h"
+#include "ZynDatabase.h"
 
 #define GTS2 session->GetTrinityString2
 
 class level_award : public PlayerScript
 {
 public:
-level_award() : PlayerScript("level_award") {}
+    level_award() : PlayerScript("level_award") {}
 
-void OnLevelChanged(Player* player, uint8 newLevel)
-{
-    switch (++newLevel)
+    void OnLevelChanged(Player* player, uint8 newLevel)
     {
-    case 10:
-       // player->CastSpell(player, SPELL, true);
-        player->ModifyMoney(100000, true);
-        player->AddItem(49426, 10);
-        ChatHandler(player->GetSession()).PSendSysMessage("LANG_VIP_GROUP1");
-        break;
-    case 20:
-        //player->CastSpell(player, SPELL, true);
-        player->AddItem(49426, 10);
-        player->ModifyMoney(100000, true);
-        ChatHandler(player->GetSession()).PSendSysMessage("LANG_VIP_GROUP1");
-        break;
-    case 30:
-        //player->CastSpell(player, SPELL, true);
-        player->AddItem(49426, 10);
-        player->ModifyMoney(100000, true);
-        ChatHandler(player->GetSession()).PSendSysMessage("LANG_VIP_GROUP1");
-        break;
-    case 40:
-        //player->CastSpell(player, SPELL, true);
-        player->AddItem(49426, 10);
-        player->ModifyMoney(100000, true);
-        ChatHandler(player->GetSession()).PSendSysMessage("LANG_VIP_GROUP1");
-        break;
-    case 50:
-        //player->CastSpell(player, SPELL, true);
-        player->AddItem(49426, 10);
-        player->ModifyMoney(100000, true);
-        ChatHandler(player->GetSession()).PSendSysMessage("LANG_VIP_GROUP1");
-        break;
-    case 60:
-        //player->CastSpell(player, SPELL, true);
-        player->AddItem(49426, 10);
-        player->ModifyMoney(100000, true);
-        ChatHandler(player->GetSession()).PSendSysMessage("LANG_VIP_GROUP1");
-        break;
-    case 70:
-        //player->CastSpell(player, SPELL, true);
-        player->AddItem(49426, 10);
-        player->ModifyMoney(100000, true);
-        ChatHandler(player->GetSession()).PSendSysMessage("LANG_VIP_GROUP1");
-        break;
-    case 80:
-        //player->CastSpell(player, SPELL, true);
-        player->AddItem(49426, 10);
-        player->ModifyMoney(100000, true);
-        //CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(TITLE_ID);
-        //player->SetTitle(titleInfo);
-        ChatHandler(player->GetSession()).PSendSysMessage("LANG_VIP_GROUP1");
-        break;
+        switch (++newLevel)
+        {
+        case 10:
+            // player->CastSpell(player, SPELL, true);
+            player->ModifyMoney(100000, true);
+            player->AddItem(49426, 10);
+            ChatHandler(player->GetSession()).PSendSysMessage("LANG_VIP_GROUP1");
+            break;
+        case 20:
+            //player->CastSpell(player, SPELL, true);
+            player->AddItem(49426, 10);
+            player->ModifyMoney(100000, true);
+            ChatHandler(player->GetSession()).PSendSysMessage("LANG_VIP_GROUP1");
+            break;
+        case 30:
+            //player->CastSpell(player, SPELL, true);
+            player->AddItem(49426, 10);
+            player->ModifyMoney(100000, true);
+            ChatHandler(player->GetSession()).PSendSysMessage("LANG_VIP_GROUP1");
+            break;
+        case 40:
+            //player->CastSpell(player, SPELL, true);
+            player->AddItem(49426, 10);
+            player->ModifyMoney(100000, true);
+            ChatHandler(player->GetSession()).PSendSysMessage("LANG_VIP_GROUP1");
+            break;
+        case 50:
+            //player->CastSpell(player, SPELL, true);
+            player->AddItem(49426, 10);
+            player->ModifyMoney(100000, true);
+            ChatHandler(player->GetSession()).PSendSysMessage("LANG_VIP_GROUP1");
+            break;
+        case 60:
+            //player->CastSpell(player, SPELL, true);
+            player->AddItem(49426, 10);
+            player->ModifyMoney(100000, true);
+            ChatHandler(player->GetSession()).PSendSysMessage("LANG_VIP_GROUP1");
+            break;
+        case 70:
+            //player->CastSpell(player, SPELL, true);
+            player->AddItem(49426, 10);
+            player->ModifyMoney(100000, true);
+            ChatHandler(player->GetSession()).PSendSysMessage("LANG_VIP_GROUP1");
+            break;
+        case 80:
+            //player->CastSpell(player, SPELL, true);
+            player->AddItem(49426, 10);
+            player->ModifyMoney(100000, true);
+            //CharTitlesEntry const* titleInfo = sCharTitlesStore.LookupEntry(TITLE_ID);
+            //player->SetTitle(titleInfo);
+            ChatHandler(player->GetSession()).PSendSysMessage("LANG_VIP_GROUP1");
+            break;
+        }
     }
-}
 };
 
 enum ShallowG
@@ -116,9 +117,13 @@ public:
                     if (!lock->Index[i])
                         continue;
 
-                    if (player->HasItemCount(8886,1))
+                    uint32 pt3 = sGameConfig->GetIntConfig("cost_id2");
+                    uint32 pt4 = sGameConfig->GetIntConfig("cost_colvo2");
+
+                    if (player->HasItemCount(pt3, pt4))
                     {
                         hasKey = true;
+                        player->DestroyItemCount(pt3, pt4, true);
                         ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_15));
                         break;
                     }
@@ -157,6 +162,6 @@ public:
 
 void AddSC_level_award()
 {
-new go_grave();
-new level_award();
+    new go_grave();
+    new level_award();
 }

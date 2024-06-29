@@ -1,8 +1,8 @@
-#include "ScriptMgr.h"
 #include "Creature.h"
 #include "Player.h"
-#include "ScriptedGossip.h"
 #include "ScriptedCreature.h"
+#include "ScriptedGossip.h"
+#include "ScriptMgr.h"
 #include "WorldSession.h"
 
 class MultivendorExample : public CreatureScript
