@@ -567,7 +567,7 @@ void BattlefieldWG::HandlePromotion(Player* playerKiller, Unit* unitKilled)
     {
         if (itr->second.inWar)
         {
-            if (itr->second.team == teamId)
+            if (unsigned(itr->second.team) == teamId)
                 if (Player* player = ObjectAccessor::FindPlayer(itr->first))
                     if (player->GetDistance2d(unitKilled) < 40.0f)
                         PromotePlayer(player);
