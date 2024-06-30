@@ -1439,17 +1439,17 @@ void ScriptMgr::OnCreateMap(Map* map)
 {
     ASSERT(map);
 
-//#ifdef ELUNA
-//    if (Eluna* e = map->GetEluna())
-//    {
-//        e->OnCreate(map);
-//        if (map->IsBattleground())
-//        {
-//            Battleground* bg = map->ToBattlegroundMap()->GetBG();
-//            e->OnBGCreate(bg, bg->GetTypeID(), bg->GetInstanceID());
-//        }
-//    }
-//#endif
+#ifdef ELUNA
+    if (Eluna* e = map->GetEluna())
+    {
+        e->OnCreate(map);
+        if (map->IsBattleground())
+        {
+            Battleground* bg = map->ToBattlegroundMap()->GetBG();
+            e->OnBGCreate(bg, bg->GetTypeID(), bg->GetInstanceID());
+        }
+    }
+#endif
 
     SCR_MAP_BGN(WorldMapScript, map, itr, end, entry, IsWorldMap);
         itr->second->OnCreate(map);
@@ -1468,18 +1468,10 @@ void ScriptMgr::OnDestroyMap(Map* map)
 {
     ASSERT(map);
 
-//#ifdef ELUNA
-//    if (Eluna* e = map->GetEluna())
-//    {
-//        e->OnDestroy(map);
-//
-//        if (map->IsBattleground())
-//        {
-//            Battleground* bg = map->ToBattlegroundMap()->GetBG();
-//            e->OnBGDestroy(bg, bg->GetTypeID(), bg->GetInstanceID());
-//        }
-//    }
-//#endif
+#ifdef ELUNA
+    if (Eluna* e = map->GetEluna())
+        e->OnDestroy(map);
+#endif
 
     SCR_MAP_BGN(WorldMapScript, map, itr, end, entry, IsWorldMap);
         itr->second->OnDestroy(map);
@@ -1733,10 +1725,6 @@ CreatureAI* ScriptMgr::GetCreatureAI(Creature* creature)
 GameObjectAI* ScriptMgr::GetGameObjectAI(GameObject* gameobject)
 {
     ASSERT(gameobject);
-#ifdef ELUNA
-    if (Eluna* e = gameobject->GetEluna())
-        e->OnSpawn(gameobject);
-#endif
 
     GET_SCRIPT_RET(GameObjectScript, gameobject->GetScriptId(), tmpscript, nullptr);
     return tmpscript->GetAI(gameobject);
