@@ -112,7 +112,7 @@ public:
             { "loadcells",          HandleDebugLoadCellsCommand,           rbac::RBAC_PERM_COMMAND_DEBUG,   Console::Yes },
             { "boundary",           HandleDebugBoundaryCommand,            rbac::RBAC_PERM_COMMAND_DEBUG,   Console::No },
             { "raidreset",          HandleDebugRaidResetCommand,           rbac::RBAC_PERM_COMMAND_DEBUG,   Console::No },
-           // { "neargraveyard",      HandleDebugNearGraveyard,              rbac::RBAC_PERM_COMMAND_DEBUG,   Console::No },
+            { "neargraveyard",      HandleDebugNearGraveyard,              rbac::RBAC_PERM_COMMAND_DEBUG,   Console::No },
             { "instancespawn",      HandleDebugInstanceSpawns,             rbac::RBAC_PERM_COMMAND_DEBUG,   Console::No },
             { "dummy",              HandleDebugDummyCommand,               rbac::RBAC_PERM_COMMAND_DEBUG,   Console::No },
             { "asan memoryleak",    HandleDebugMemoryLeak,                 rbac::RBAC_PERM_COMMAND_DEBUG,   Console::Yes },
@@ -1520,7 +1520,6 @@ public:
         return true;
     }
 
-/*
     static bool HandleDebugNearGraveyard(ChatHandler* handler, Optional<EXACT_SEQUENCE("linked")> linked)
     {
         Player* player = handler->GetPlayer();
@@ -1545,9 +1544,10 @@ public:
             float z = player->GetPositionZ();
             float distNearest = std::numeric_limits<float>::max();
 
-            for (uint32 i = 0; i < sWorldSafeLocsStore.GetNumRows(); ++i)
+            //for (uint32 i = 0; i < sWorldSafeLocsStore.GetNumRows(); ++i)
+            for (uint32 i = 0; i < sDBCMgr->WorldSafeLocsStore.size(); ++i)
             {
-                WorldSafeLocsEntry const* loc = sWorldSafeLocsStore.LookupEntry(i);
+                WorldSafeLocsEntry const* loc = sDBCMgr->GetWorldSafeLocsEntry(i);
                 if (loc && loc->Continent == player->GetMapId())
                 {
                     float dist = (loc->Loc.X - x) * (loc->Loc.X - x) + (loc->Loc.Y - y) * (loc->Loc.Y - y) + (loc->Loc.Z - z) * (loc->Loc.Z - z);
@@ -1567,7 +1567,7 @@ public:
 
         return true;
     }
-    */
+    
 
     static bool HandleDebugInstanceSpawns(ChatHandler* handler, Variant<uint32, EXACT_SEQUENCE("explain")> optArg)
     {
