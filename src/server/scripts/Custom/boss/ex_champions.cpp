@@ -16,6 +16,7 @@
  */
 
 #include "Custom/Dcl.h"
+#include "CreatureAIImpl.h"
 
 #define ExCrScriptName "ExCrScriptName"
 

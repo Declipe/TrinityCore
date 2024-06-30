@@ -1,7 +1,17 @@
-#include "BfWGGameObjectBuilding.h"
 #include "Battleground.h"
+#include "BfWGGameObjectBuilding.h"
 #include "GameObject.h"
+#include "InstanceScript.h"
 #include "Log.h"
+#include "MotionMaster.h"
+#include "ObjectAccessor.h"
+#include "Player.h"
+#include "ScriptedCreature.h"
+#include "ScriptMgr.h"
+#include "SpellAuras.h"
+#include "SpellMgr.h"
+#include "SpellScript.h"
+#include "TemporarySummon.h"
 #include "World.h"
 #include "WorldStatePackets.h"
 
@@ -43,101 +53,101 @@ WintergraspTowerCannonData const TowerCannon[WG_MAX_TOWER] =
         // SW
         190373,
         {
-            // no cannons at bottom
-        },
-        {
-            { 5138.59f, 2935.16f, 439.845f, 3.11723f },
-            { 5163.06f, 2959.52f, 439.846f, 1.47258f },
-            // south side
-            { 5148.086426f, 2862.041748f, 421.630615f, 3.034440f },
-            // north side
-            { 5234.837891f, 2948.438721f, 420.880768f, 1.624634f },
-            // inside gate
-            { 5264.302246f, 2861.482666f, 421.585876f, 3.131782f }
-        }
+        // no cannons at bottom
     },
     {
-        // SE
-        190377,
-        {
-            // no cannons at bottom
-        },
-        {
-            { 5163.945312f, 2722.740215f, 439.844727f, 4.802916f },
-            { 5139.69f, 2747.40f, 439.844f, 3.17221f },
-            // north side
-            { 5236.270508f, 2733.033203f, 421.649200f, 4.539250f },
-            // south side
-            { 5149.091797f, 2820.385254f, 421.620453f, 3.242571f },
-            // inside gate
-            { 5265.062988f, 2819.833740f, 421.655670f, 3.241718f }
-        }
-    },
-    {
-        // NE
-        190378,
-        {
-            { 5363.749512f, 2756.457275f, 421.629364f, 4.651138f },
-            { 5322.226562f, 2756.932129f, 421.645691f, 4.706134f }
-        },
-        {
-            { 5278.21f, 2607.23f, 439.755f, 4.71944f },
-            { 5255.01f, 2631.98f, 439.755f, 3.15257f },
-            // north side
-            { 5350.896973f, 2616.032471f, 421.242920f, 4.649218f },
-            { 5390.979980f, 2615.694824f, 421.125641f, 4.543185f },
-            // south
-            { 5264.946289f, 2704.760254f, 421.700623f, 3.086273f }
-        }
-    },
-    {
-        // WEST GO_WINTERGRASP_SHADOWSIGHT_TOWER
-        190356,
-        {
-            { 4582.242676f, 3603.601318f, 402.89f, 5.617138f },
-            { 4536.583008f, 3598.400391f, 402.89f, 3.999214f },
-            { 4577.682129f, 3649.093506f, 402.89f, 0.896894f },
-            { 4532.182617f, 3644.367188f, 402.89f, 2.448015f }
-        },
-        {
-            { 4559.875488f, 3598.626953f, 426.539185f, 4.813988f },
-            { 4581.895996f, 3626.438477f, 426.539062f, 0.117806f },
-            { 4532.264648f, 3621.135254f, 426.539093f, 3.263357f },
-            { 4554.439941f, 3648.943604f, 426.539703f, 1.692559f }
-        }
-    },
-    {
-        // SOUTH GO_WINTERGRASP_WINTER_S_EDGE_TOWER
-        190357,
-        {
-            { 4421.640137f, 2799.935791f, 412.630920f, 5.459298f },
-            { 4420.263184f, 2845.340332f, 412.630951f, 0.742197f },
-            { 4375.524902f, 2798.990723f, 412.630951f, 4.022082f },
-            { 4374.833008f, 2845.260010f, 412.630890f, 2.333508f }
-        },
-        {
-            { 4423.430664f, 2822.762939f, 436.283142f, 6.223487f },
-            { 4397.825684f, 2847.629639f, 436.283325f, 1.579430f },
-            { 4398.814941f, 2797.266357f, 436.283051f, 4.703747f },
-            { 4373.095215f, 2822.046143f, 436.283173f, 3.098424f }
-        }
-    },
-    {
-        // EAST GO_WINTERGRASP_FLAMEWATCH_TOWER
-        190358,
-        {
-            { 4448.138184f, 1974.998779f, 441.995911f, 1.967238f },
-            { 4489.559082f, 1955.785767f, 441.995453f, 0.252363f },
-            { 4470.388184f, 1913.816284f, 441.995544f, 4.929419f },
-            { 4428.538086f, 1933.141724f, 441.995148f, 3.515702f }
-        },
-        {
-            { 4469.448242f, 1966.623779f, 465.647217f, 1.153573f },
-            { 4481.996582f, 1933.658325f, 465.647186f, 5.873029f },
-            { 4448.316406f, 1921.195557f, 465.647247f, 4.301141f },
-            { 4436.086914f, 1954.907715f, 465.647064f, 2.738204f }
-        }
+        { 5138.59f, 2935.16f, 439.845f, 3.11723f },
+        { 5163.06f, 2959.52f, 439.846f, 1.47258f },
+        // south side
+        { 5148.086426f, 2862.041748f, 421.630615f, 3.034440f },
+        // north side
+        { 5234.837891f, 2948.438721f, 420.880768f, 1.624634f },
+        // inside gate
+        { 5264.302246f, 2861.482666f, 421.585876f, 3.131782f }
     }
+},
+{
+    // SE
+    190377,
+    {
+        // no cannons at bottom
+    },
+    {
+        { 5163.945312f, 2722.740215f, 439.844727f, 4.802916f },
+        { 5139.69f, 2747.40f, 439.844f, 3.17221f },
+        // north side
+        { 5236.270508f, 2733.033203f, 421.649200f, 4.539250f },
+        // south side
+        { 5149.091797f, 2820.385254f, 421.620453f, 3.242571f },
+        // inside gate
+        { 5265.062988f, 2819.833740f, 421.655670f, 3.241718f }
+    }
+},
+{
+    // NE
+    190378,
+    {
+        { 5363.749512f, 2756.457275f, 421.629364f, 4.651138f },
+        { 5322.226562f, 2756.932129f, 421.645691f, 4.706134f }
+    },
+    {
+        { 5278.21f, 2607.23f, 439.755f, 4.71944f },
+        { 5255.01f, 2631.98f, 439.755f, 3.15257f },
+        // north side
+        { 5350.896973f, 2616.032471f, 421.242920f, 4.649218f },
+        { 5390.979980f, 2615.694824f, 421.125641f, 4.543185f },
+        // south
+        { 5264.946289f, 2704.760254f, 421.700623f, 3.086273f }
+    }
+},
+{
+    // WEST GO_WINTERGRASP_SHADOWSIGHT_TOWER
+    190356,
+    {
+        { 4582.242676f, 3603.601318f, 402.89f, 5.617138f },
+        { 4536.583008f, 3598.400391f, 402.89f, 3.999214f },
+        { 4577.682129f, 3649.093506f, 402.89f, 0.896894f },
+        { 4532.182617f, 3644.367188f, 402.89f, 2.448015f }
+    },
+    {
+        { 4559.875488f, 3598.626953f, 426.539185f, 4.813988f },
+        { 4581.895996f, 3626.438477f, 426.539062f, 0.117806f },
+        { 4532.264648f, 3621.135254f, 426.539093f, 3.263357f },
+        { 4554.439941f, 3648.943604f, 426.539703f, 1.692559f }
+    }
+},
+{
+    // SOUTH GO_WINTERGRASP_WINTER_S_EDGE_TOWER
+    190357,
+    {
+        { 4421.640137f, 2799.935791f, 412.630920f, 5.459298f },
+        { 4420.263184f, 2845.340332f, 412.630951f, 0.742197f },
+        { 4375.524902f, 2798.990723f, 412.630951f, 4.022082f },
+        { 4374.833008f, 2845.260010f, 412.630890f, 2.333508f }
+    },
+    {
+        { 4423.430664f, 2822.762939f, 436.283142f, 6.223487f },
+        { 4397.825684f, 2847.629639f, 436.283325f, 1.579430f },
+        { 4398.814941f, 2797.266357f, 436.283051f, 4.703747f },
+        { 4373.095215f, 2822.046143f, 436.283173f, 3.098424f }
+    }
+},
+{
+    // EAST GO_WINTERGRASP_FLAMEWATCH_TOWER
+    190358,
+    {
+        { 4448.138184f, 1974.998779f, 441.995911f, 1.967238f },
+        { 4489.559082f, 1955.785767f, 441.995453f, 0.252363f },
+        { 4470.388184f, 1913.816284f, 441.995544f, 4.929419f },
+        { 4428.538086f, 1933.141724f, 441.995148f, 3.515702f }
+    },
+    {
+        { 4469.448242f, 1966.623779f, 465.647217f, 1.153573f },
+        { 4481.996582f, 1933.658325f, 465.647186f, 5.873029f },
+        { 4448.316406f, 1921.195557f, 465.647247f, 4.301141f },
+        { 4436.086914f, 1954.907715f, 465.647064f, 2.738204f }
+    }
+}
 };
 
 uint8 const WG_MAX_DEFENDERS = 58;
@@ -435,18 +445,18 @@ void BfWGGameObjectBuilding::Rebuild()
 {
     switch (_type)
     {
-        case BATTLEFIELD_WG_OBJECTTYPE_KEEP_TOWER:
-        case BATTLEFIELD_WG_OBJECTTYPE_DOOR_LAST:
-        case BATTLEFIELD_WG_OBJECTTYPE_DOOR:
-        case BATTLEFIELD_WG_OBJECTTYPE_WALL:
-            _teamControl = _wg->GetDefenderTeam();      // Objects that are part of the keep should be the defender's
-            break;
-        case BATTLEFIELD_WG_OBJECTTYPE_TOWER:
-            _teamControl = _wg->GetAttackerTeam();      // The towers in the south should be the attacker's
-            break;
-        default:
-            _teamControl = TEAM_NEUTRAL;
-            break;
+    case BATTLEFIELD_WG_OBJECTTYPE_KEEP_TOWER:
+    case BATTLEFIELD_WG_OBJECTTYPE_DOOR_LAST:
+    case BATTLEFIELD_WG_OBJECTTYPE_DOOR:
+    case BATTLEFIELD_WG_OBJECTTYPE_WALL:
+        _teamControl = _wg->GetDefenderTeam();      // Objects that are part of the keep should be the defender's
+        break;
+    case BATTLEFIELD_WG_OBJECTTYPE_TOWER:
+        _teamControl = _wg->GetAttackerTeam();      // The towers in the south should be the attacker's
+        break;
+    default:
+        _teamControl = TEAM_NEUTRAL;
+        break;
     }
 
     if (GameObject* build = _wg->GetGameObject(_buildGUID))
@@ -513,22 +523,22 @@ void BfWGGameObjectBuilding::Destroyed()
     switch (_type)
     {
         // Inform the global wintergrasp script of the destruction of this object
-        case BATTLEFIELD_WG_OBJECTTYPE_TOWER:
-        case BATTLEFIELD_WG_OBJECTTYPE_KEEP_TOWER:
-            _wg->UpdatedDestroyedTowerCount(_teamControl);
-            break;
-        case BATTLEFIELD_WG_OBJECTTYPE_DOOR_LAST:
-            if (GameObject* build = _wg->GetGameObject(_buildGUID))
-                if (GameObject* go = build->FindNearestGameObject(GO_WINTERGRASP_KEEP_COLLISION_WALL, 50.0f))
-                    go->SetGoState(GO_STATE_ACTIVE);
-            _wg->SetRelicInteractible(true);
-            if (_wg->GetRelic())
-                _wg->GetRelic()->RemoveFlag(GO_FLAG_IN_USE | GO_FLAG_NOT_SELECTABLE);
-            else
-                TC_LOG_ERROR("bg.battlefield", "Titan Relic not found.");
-            break;
-        default:
-            break;
+    case BATTLEFIELD_WG_OBJECTTYPE_TOWER:
+    case BATTLEFIELD_WG_OBJECTTYPE_KEEP_TOWER:
+        _wg->UpdatedDestroyedTowerCount(_teamControl);
+        break;
+    case BATTLEFIELD_WG_OBJECTTYPE_DOOR_LAST:
+        if (GameObject* build = _wg->GetGameObject(_buildGUID))
+            if (GameObject* go = build->FindNearestGameObject(GO_WINTERGRASP_KEEP_COLLISION_WALL, 50.0f))
+                go->SetGoState(GO_STATE_ACTIVE);
+        _wg->SetRelicInteractible(true);
+        if (_wg->GetRelic())
+            _wg->GetRelic()->RemoveFlag(GO_FLAG_IN_USE | GO_FLAG_NOT_SELECTABLE);
+        else
+            TC_LOG_ERROR("bg.battlefield", "Titan Relic not found.");
+        break;
+    default:
+        break;
     }
 
     _wg->BrokenWallOrTower(_teamControl, this);
@@ -544,76 +554,76 @@ void BfWGGameObjectBuilding::Init(GameObject* go)
 
     switch (_type)
     {
-        case BATTLEFIELD_WG_OBJECTTYPE_KEEP_TOWER:
-        case BATTLEFIELD_WG_OBJECTTYPE_DOOR_LAST:
-        case BATTLEFIELD_WG_OBJECTTYPE_DOOR:
-        case BATTLEFIELD_WG_OBJECTTYPE_WALL:
-            _teamControl = _wg->GetDefenderTeam();           // Objects that are part of the keep should be the defender's
-            break;
-        case BATTLEFIELD_WG_OBJECTTYPE_TOWER:
-            _teamControl = _wg->GetAttackerTeam();           // The towers in the south should be the attacker's
-            break;
-        default:
-            _teamControl = TEAM_NEUTRAL;
-            break;
+    case BATTLEFIELD_WG_OBJECTTYPE_KEEP_TOWER:
+    case BATTLEFIELD_WG_OBJECTTYPE_DOOR_LAST:
+    case BATTLEFIELD_WG_OBJECTTYPE_DOOR:
+    case BATTLEFIELD_WG_OBJECTTYPE_WALL:
+        _teamControl = _wg->GetDefenderTeam();           // Objects that are part of the keep should be the defender's
+        break;
+    case BATTLEFIELD_WG_OBJECTTYPE_TOWER:
+        _teamControl = _wg->GetAttackerTeam();           // The towers in the south should be the attacker's
+        break;
+    default:
+        _teamControl = TEAM_NEUTRAL;
+        break;
     }
 
     //TODO loading from worldstate for restart setups? need it?
     //_state = WintergraspGameObjectState(sWorld->getWorldState(_worldState));
     switch (_teamControl)
     {
-        case TEAM_ALLIANCE: _state = BATTLEFIELD_WG_OBJECTSTATE_ALLIANCE_INTACT; break;
-            case TEAM_HORDE: _state = BATTLEFIELD_WG_OBJECTSTATE_HORDE_INTACT; break;
-            case TEAM_NEUTRAL: _state = BATTLEFIELD_WG_OBJECTSTATE_NEUTRAL_INTACT; break;
-            default:
-                break;
+    case TEAM_ALLIANCE: _state = BATTLEFIELD_WG_OBJECTSTATE_ALLIANCE_INTACT; break;
+    case TEAM_HORDE: _state = BATTLEFIELD_WG_OBJECTSTATE_HORDE_INTACT; break;
+    case TEAM_NEUTRAL: _state = BATTLEFIELD_WG_OBJECTSTATE_NEUTRAL_INTACT; break;
+    default:
+        break;
     }
 
     switch (_state)
     {
-        case BATTLEFIELD_WG_OBJECTSTATE_NEUTRAL_INTACT:
-        case BATTLEFIELD_WG_OBJECTSTATE_ALLIANCE_INTACT:
-        case BATTLEFIELD_WG_OBJECTSTATE_HORDE_INTACT:
-            go->SetDestructibleState(GO_DESTRUCTIBLE_REBUILDING, nullptr, true);
-            break;
-        case BATTLEFIELD_WG_OBJECTSTATE_NEUTRAL_DESTROY:
-        case BATTLEFIELD_WG_OBJECTSTATE_ALLIANCE_DESTROY:
-        case BATTLEFIELD_WG_OBJECTSTATE_HORDE_DESTROY:
-            go->SetDestructibleState(GO_DESTRUCTIBLE_DESTROYED);
-            break;
-        case BATTLEFIELD_WG_OBJECTSTATE_NEUTRAL_DAMAGE:
-        case BATTLEFIELD_WG_OBJECTSTATE_ALLIANCE_DAMAGE:
-        case BATTLEFIELD_WG_OBJECTSTATE_HORDE_DAMAGE:
-            go->SetDestructibleState(GO_DESTRUCTIBLE_DAMAGED);
-            break;
-        default:
-            break;
+    case BATTLEFIELD_WG_OBJECTSTATE_NEUTRAL_INTACT:
+    case BATTLEFIELD_WG_OBJECTSTATE_ALLIANCE_INTACT:
+    case BATTLEFIELD_WG_OBJECTSTATE_HORDE_INTACT:
+        go->SetDestructibleState(GO_DESTRUCTIBLE_REBUILDING, nullptr, true);
+        break;
+    case BATTLEFIELD_WG_OBJECTSTATE_NEUTRAL_DESTROY:
+    case BATTLEFIELD_WG_OBJECTSTATE_ALLIANCE_DESTROY:
+    case BATTLEFIELD_WG_OBJECTSTATE_HORDE_DESTROY:
+        go->SetDestructibleState(GO_DESTRUCTIBLE_DESTROYED);
+        break;
+    case BATTLEFIELD_WG_OBJECTSTATE_NEUTRAL_DAMAGE:
+    case BATTLEFIELD_WG_OBJECTSTATE_ALLIANCE_DAMAGE:
+    case BATTLEFIELD_WG_OBJECTSTATE_HORDE_DAMAGE:
+        go->SetDestructibleState(GO_DESTRUCTIBLE_DAMAGED);
+        break;
+    default:
+        break;
     }
 
     int32 towerId = -1;
     switch (go->GetEntry())
     {
-        case GO_WINTERGRASP_FORTRESS_TOWER_1:
-            towerId = BATTLEFIELD_WG_TOWER_FORTRESS_NW;
-            break;
-        case GO_WINTERGRASP_FORTRESS_TOWER_2:
-            towerId = BATTLEFIELD_WG_TOWER_FORTRESS_SW;
-            break;
-        case GO_WINTERGRASP_FORTRESS_TOWER_3:
-            towerId = BATTLEFIELD_WG_TOWER_FORTRESS_SE;
-            break;
-        case GO_WINTERGRASP_FORTRESS_TOWER_4:
-            towerId = BATTLEFIELD_WG_TOWER_FORTRESS_NE;
-            break;
-        case GO_WINTERGRASP_SHADOWSIGHT_TOWER:
-            towerId = BATTLEFIELD_WG_TOWER_SHADOWSIGHT;
-            break;
-        case GO_WINTERGRASP_WINTER_S_EDGE_TOWER:
-            towerId = BATTLEFIELD_WG_TOWER_WINTER_S_EDGE;
-            break;
-        case GO_WINTERGRASP_FLAMEWATCH_TOWER:
-            towerId = BATTLEFIELD_WG_TOWER_FLAMEWATCH;
-            break;
+    case GO_WINTERGRASP_FORTRESS_TOWER_1:
+        towerId = BATTLEFIELD_WG_TOWER_FORTRESS_NW;
+        break;
+    case GO_WINTERGRASP_FORTRESS_TOWER_2:
+        towerId = BATTLEFIELD_WG_TOWER_FORTRESS_SW;
+        break;
+    case GO_WINTERGRASP_FORTRESS_TOWER_3:
+        towerId = BATTLEFIELD_WG_TOWER_FORTRESS_SE;
+        break;
+    case GO_WINTERGRASP_FORTRESS_TOWER_4:
+        towerId = BATTLEFIELD_WG_TOWER_FORTRESS_NE;
+        break;
+    case GO_WINTERGRASP_SHADOWSIGHT_TOWER:
+        towerId = BATTLEFIELD_WG_TOWER_SHADOWSIGHT;
+        break;
+    case GO_WINTERGRASP_WINTER_S_EDGE_TOWER:
+        towerId = BATTLEFIELD_WG_TOWER_WINTER_S_EDGE;
+        break;
+    case GO_WINTERGRASP_FLAMEWATCH_TOWER:
+        towerId = BATTLEFIELD_WG_TOWER_FLAMEWATCH;
+        break;
     }
 
     if (towerId >= BATTLEFIELD_WG_TOWER_SHADOWSIGHT) // Attacker towers
@@ -660,28 +670,28 @@ void BfWGGameObjectBuilding::Init(GameObject* go)
                 m_TowerCannonBottomList.push_back(turret->GetGUID());
                 switch (go->GetEntry())
                 {
-                    case GO_WINTERGRASP_FORTRESS_TOWER_1:
-                    case GO_WINTERGRASP_FORTRESS_TOWER_2:
-                    case GO_WINTERGRASP_FORTRESS_TOWER_3:
-                    case GO_WINTERGRASP_FORTRESS_TOWER_4:
-                        turret->SetFaction(WintergraspFaction[_wg->GetDefenderTeam()]);
-                        break;
-                    case GO_WINTERGRASP_SHADOWSIGHT_TOWER:
-                    case GO_WINTERGRASP_WINTER_S_EDGE_TOWER:
-                    case GO_WINTERGRASP_FLAMEWATCH_TOWER:
-                        turret->SetFaction(WintergraspFaction[_wg->GetAttackerTeam()]);
-                        break;
+                case GO_WINTERGRASP_FORTRESS_TOWER_1:
+                case GO_WINTERGRASP_FORTRESS_TOWER_2:
+                case GO_WINTERGRASP_FORTRESS_TOWER_3:
+                case GO_WINTERGRASP_FORTRESS_TOWER_4:
+                    turret->SetFaction(WintergraspFaction[_wg->GetDefenderTeam()]);
+                    break;
+                case GO_WINTERGRASP_SHADOWSIGHT_TOWER:
+                case GO_WINTERGRASP_WINTER_S_EDGE_TOWER:
+                case GO_WINTERGRASP_FLAMEWATCH_TOWER:
+                    turret->SetFaction(WintergraspFaction[_wg->GetAttackerTeam()]);
+                    break;
                 }
 
                 switch (_state)
                 {
-                    case BATTLEFIELD_WG_OBJECTSTATE_NEUTRAL_DESTROY:
-                    case BATTLEFIELD_WG_OBJECTSTATE_ALLIANCE_DESTROY:
-                    case BATTLEFIELD_WG_OBJECTSTATE_HORDE_DESTROY:
-                        _wg->HideNpc(turret);
-                        break;
-                    default:
-                        break;
+                case BATTLEFIELD_WG_OBJECTSTATE_NEUTRAL_DESTROY:
+                case BATTLEFIELD_WG_OBJECTSTATE_ALLIANCE_DESTROY:
+                case BATTLEFIELD_WG_OBJECTSTATE_HORDE_DESTROY:
+                    _wg->HideNpc(turret);
+                    break;
+                default:
+                    break;
                 }
             }
         }
@@ -694,28 +704,28 @@ void BfWGGameObjectBuilding::Init(GameObject* go)
                 m_TurretTopList.push_back(turret->GetGUID());
                 switch (go->GetEntry())
                 {
-                    case GO_WINTERGRASP_FORTRESS_TOWER_1:
-                    case GO_WINTERGRASP_FORTRESS_TOWER_2:
-                    case GO_WINTERGRASP_FORTRESS_TOWER_3:
-                    case GO_WINTERGRASP_FORTRESS_TOWER_4:
-                        turret->SetFaction(WintergraspFaction[_wg->GetDefenderTeam()]);
-                        break;
-                    case GO_WINTERGRASP_SHADOWSIGHT_TOWER:
-                    case GO_WINTERGRASP_WINTER_S_EDGE_TOWER:
-                    case GO_WINTERGRASP_FLAMEWATCH_TOWER:
-                        turret->SetFaction(WintergraspFaction[_wg->GetAttackerTeam()]);
-                        break;
+                case GO_WINTERGRASP_FORTRESS_TOWER_1:
+                case GO_WINTERGRASP_FORTRESS_TOWER_2:
+                case GO_WINTERGRASP_FORTRESS_TOWER_3:
+                case GO_WINTERGRASP_FORTRESS_TOWER_4:
+                    turret->SetFaction(WintergraspFaction[_wg->GetDefenderTeam()]);
+                    break;
+                case GO_WINTERGRASP_SHADOWSIGHT_TOWER:
+                case GO_WINTERGRASP_WINTER_S_EDGE_TOWER:
+                case GO_WINTERGRASP_FLAMEWATCH_TOWER:
+                    turret->SetFaction(WintergraspFaction[_wg->GetAttackerTeam()]);
+                    break;
                 }
 
                 switch (_state)
                 {
-                    case BATTLEFIELD_WG_OBJECTSTATE_NEUTRAL_DESTROY:
-                    case BATTLEFIELD_WG_OBJECTSTATE_ALLIANCE_DESTROY:
-                    case BATTLEFIELD_WG_OBJECTSTATE_HORDE_DESTROY:
-                        _wg->HideNpc(turret);
-                        break;
-                    default:
-                        break;
+                case BATTLEFIELD_WG_OBJECTSTATE_NEUTRAL_DESTROY:
+                case BATTLEFIELD_WG_OBJECTSTATE_ALLIANCE_DESTROY:
+                case BATTLEFIELD_WG_OBJECTSTATE_HORDE_DESTROY:
+                    _wg->HideNpc(turret);
+                    break;
+                default:
+                    break;
                 }
             }
         }
@@ -762,21 +772,21 @@ void BfWGGameObjectBuilding::UpdateTurretAttack(bool disable)
 
             switch (_buildGUID.GetEntry())
             {
-                case GO_WINTERGRASP_FORTRESS_TOWER_1:
-                case GO_WINTERGRASP_FORTRESS_TOWER_2:
-                case GO_WINTERGRASP_FORTRESS_TOWER_3:
-                case GO_WINTERGRASP_FORTRESS_TOWER_4:
-                {
-                    creature->SetFaction(WintergraspFaction[_wg->GetDefenderTeam()]);
-                    break;
-                }
-                case GO_WINTERGRASP_SHADOWSIGHT_TOWER:
-                case GO_WINTERGRASP_WINTER_S_EDGE_TOWER:
-                case GO_WINTERGRASP_FLAMEWATCH_TOWER:
-                {
-                    creature->SetFaction(WintergraspFaction[_wg->GetAttackerTeam()]);
-                    break;
-                }
+            case GO_WINTERGRASP_FORTRESS_TOWER_1:
+            case GO_WINTERGRASP_FORTRESS_TOWER_2:
+            case GO_WINTERGRASP_FORTRESS_TOWER_3:
+            case GO_WINTERGRASP_FORTRESS_TOWER_4:
+            {
+                creature->SetFaction(WintergraspFaction[_wg->GetDefenderTeam()]);
+                break;
+            }
+            case GO_WINTERGRASP_SHADOWSIGHT_TOWER:
+            case GO_WINTERGRASP_WINTER_S_EDGE_TOWER:
+            case GO_WINTERGRASP_FLAMEWATCH_TOWER:
+            {
+                creature->SetFaction(WintergraspFaction[_wg->GetAttackerTeam()]);
+                break;
+            }
             }
         }
     }
@@ -792,21 +802,21 @@ void BfWGGameObjectBuilding::UpdateTurretAttack(bool disable)
 
             switch (_buildGUID.GetEntry())
             {
-                case GO_WINTERGRASP_FORTRESS_TOWER_1:
-                case GO_WINTERGRASP_FORTRESS_TOWER_2:
-                case GO_WINTERGRASP_FORTRESS_TOWER_3:
-                case GO_WINTERGRASP_FORTRESS_TOWER_4:
-                {
-                    creature->SetFaction(WintergraspFaction[_wg->GetDefenderTeam()]);
-                    break;
-                }
-                case GO_WINTERGRASP_SHADOWSIGHT_TOWER:
-                case GO_WINTERGRASP_WINTER_S_EDGE_TOWER:
-                case GO_WINTERGRASP_FLAMEWATCH_TOWER:
-                {
-                    creature->SetFaction(WintergraspFaction[_wg->GetAttackerTeam()]);
-                    break;
-                }
+            case GO_WINTERGRASP_FORTRESS_TOWER_1:
+            case GO_WINTERGRASP_FORTRESS_TOWER_2:
+            case GO_WINTERGRASP_FORTRESS_TOWER_3:
+            case GO_WINTERGRASP_FORTRESS_TOWER_4:
+            {
+                creature->SetFaction(WintergraspFaction[_wg->GetDefenderTeam()]);
+                break;
+            }
+            case GO_WINTERGRASP_SHADOWSIGHT_TOWER:
+            case GO_WINTERGRASP_WINTER_S_EDGE_TOWER:
+            case GO_WINTERGRASP_FLAMEWATCH_TOWER:
+            {
+                creature->SetFaction(WintergraspFaction[_wg->GetAttackerTeam()]);
+                break;
+            }
             }
         }
     }

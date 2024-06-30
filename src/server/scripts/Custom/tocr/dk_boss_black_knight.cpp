@@ -15,12 +15,12 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* ScriptData
-SDName: Boss Black Knight
-SD%Complete: 10%
-SDComment:
-SDCategory: Trial of the Champion
-EndScriptData */
+ /* ScriptData
+ SDName: Boss Black Knight
+ SD%Complete: 10%
+ SDComment:
+ SDCategory: Trial of the Champion
+ EndScriptData */
 
 #include "Creature.h"
 #include "Player.h"
@@ -32,20 +32,35 @@ EndScriptData */
 #include "SpellInfo.h"
 #include "SpellScript.h"
 #include "dk_trial_of_the_champion.h"
+#include "CreatureAIImpl.h"
+#include "CombatAI.h"
+#include "CreatureTextMgr.h"
+#include "G3DPosition.hpp"
+#include "GameObject.h"
+#include "GameObjectAI.h"
+#include "Log.h"
+#include "MotionMaster.h"
+#include "MoveSplineInit.h"
+#include "ObjectAccessor.h"
+#include "ObjectMgr.h"
+#include "PassiveAI.h"
+#include "ScriptedGossip.h"
+#include "TemporarySummon.h"
+#include "Vehicle.h"
 
 enum Yells
 {
-    SAY_AGGRO               = 3,
-    SAY_PHASE_2             = 4,
-    SAY_PHASE_3             = 5,
-    SAY_KILL                = 6,
-    SAY_DEATH               = 7
+    SAY_AGGRO = 3,
+    SAY_PHASE_2 = 4,
+    SAY_PHASE_3 = 5,
+    SAY_KILL = 6,
+    SAY_DEATH = 7
 };
 
 enum Events
 {
     // The Black Knight
-    EVENT_ICY_TOUCH         = 1,
+    EVENT_ICY_TOUCH = 1,
     EVENT_PLAGUE_STRIKE,
     EVENT_DEATH_RESPITE,
     EVENT_OBLITERATE,
@@ -62,57 +77,57 @@ enum Events
 enum Spells
 {
     // Phase 1
-    SPELL_PLAGUE_STRIKE     = 67724,
-    SPELL_ICY_TOUCH         = 67718,
-    SPELL_DEATH_RESPITE     = 67745,
-    SPELL_OBLITERATE        = 67725,
-    SPELL_RAISE_ARELAS      = 67705,
-    SPELL_RAISE_JAEREN      = 67715,
+    SPELL_PLAGUE_STRIKE = 67724,
+    SPELL_ICY_TOUCH = 67718,
+    SPELL_DEATH_RESPITE = 67745,
+    SPELL_OBLITERATE = 67725,
+    SPELL_RAISE_ARELAS = 67705,
+    SPELL_RAISE_JAEREN = 67715,
 
     // Phase 2
-    SPELL_ARMY_DEAD         = 67761,
-    SPELL_DESECRATION       = 67778,
-    SPELL_GHOUL_EXPLODE     = 67751,
+    SPELL_ARMY_DEAD = 67761,
+    SPELL_DESECRATION = 67778,
+    SPELL_GHOUL_EXPLODE = 67751,
 
     // Phase 3
-    SPELL_DEATH_BITE        = 67808,
-    SPELL_MARKED_DEATH      = 67882,
+    SPELL_DEATH_BITE = 67808,
+    SPELL_MARKED_DEATH = 67882,
 
     // Ghouls
-    SPELL_CLAW              = 67774,
-    SPELL_LEAP              = 67749,
+    SPELL_CLAW = 67774,
+    SPELL_LEAP = 67749,
 
     SPELL_DEATH_RESPITE_DND = 66798, // casted on announcer
-    SPELL_FEIGN_DEATH       = 66804,
-    SPELL_BLACK_KNIGHT_DIE  = 67691,
-    SPELL_BLACK_KNIGHT_RES  = 67693,
-    SPELL_FROST_FEVER       = 67719,
-    SPELL_BLOOD_PLAGUE      = 67722,
-    SPELL_EXPLODE           = 67729,
-    SPELL_DESECRATION_DND   = 67782,
-    SPELL_DESECRATION_ARM   = 67803,
-    SPELL_FROST_FEVER_H     = 67878,
-    SPELL_BLOOD_PLAGUE_H    = 67885,
-    SPELL_EXPLODE_H         = 67886,
-    SPELL_KILL_CREDIT       = 68663
+    SPELL_FEIGN_DEATH = 66804,
+    SPELL_BLACK_KNIGHT_DIE = 67691,
+    SPELL_BLACK_KNIGHT_RES = 67693,
+    SPELL_FROST_FEVER = 67719,
+    SPELL_BLOOD_PLAGUE = 67722,
+    SPELL_EXPLODE = 67729,
+    SPELL_DESECRATION_DND = 67782,
+    SPELL_DESECRATION_ARM = 67803,
+    SPELL_FROST_FEVER_H = 67878,
+    SPELL_BLOOD_PLAGUE_H = 67885,
+    SPELL_EXPLODE_H = 67886,
+    SPELL_KILL_CREDIT = 68663
 };
 
 enum Models
 {
-    MODEL_SKELETON          = 29846,
-    MODEL_GHOST             = 21300
+    MODEL_SKELETON = 29846,
+    MODEL_GHOST = 21300
 };
 
 enum Equipment
 {
-    EQUIP_SWORD             = 40343
+    EQUIP_SWORD = 40343
 };
 
 enum Phases
 {
-    PHASE_UNDEAD            = 1,
-    PHASE_SKELETON          = 2,
-    PHASE_GHOST             = 3
+    PHASE_UNDEAD = 1,
+    PHASE_SKELETON = 2,
+    PHASE_GHOST = 3
 };
 
 class dk_npc_risen_ghoul : public CreatureScript
@@ -220,26 +235,26 @@ public:
             {
                 switch (eventId)
                 {
-                    case EVENT_CLAW:
-                        DoCastVictim(SPELL_CLAW);
-                        if (Unit* target = SelectTarget(SelectTargetMethod::Random, 1, 50.0f, true))
-                        {
-                            ResetThreatList();
-                            AddThreat(target, 10.0f);
-                            me->AI()->AttackStart(target);
-                        }
-                        events.ScheduleEvent(EVENT_CLAW, randtime(12s, 15s));
-                        break;
-                    case EVENT_LEAP:
-                        if (me->GetEntry() == NPC_RISEN_ARELAS || me->GetEntry() == NPC_RISEN_JAEREN)
-                        {
-                            if (Unit* target = SelectTarget(SelectTargetMethod::Random, 1, 30.0f, true))
-                                DoCast(target, SPELL_LEAP);
-                            events.ScheduleEvent(EVENT_LEAP, randtime(8s, 10s));
-                        }
-                        break;
-                    default:
-                        break;
+                case EVENT_CLAW:
+                    DoCastVictim(SPELL_CLAW);
+                    if (Unit* target = SelectTarget(SelectTargetMethod::Random, 1, 50.0f, true))
+                    {
+                        ResetThreatList();
+                        AddThreat(target, 10.0f);
+                        me->AI()->AttackStart(target);
+                    }
+                    events.ScheduleEvent(EVENT_CLAW, randtime(12s, 15s));
+                    break;
+                case EVENT_LEAP:
+                    if (me->GetEntry() == NPC_RISEN_ARELAS || me->GetEntry() == NPC_RISEN_JAEREN)
+                    {
+                        if (Unit* target = SelectTarget(SelectTargetMethod::Random, 1, 30.0f, true))
+                            DoCast(target, SPELL_LEAP);
+                        events.ScheduleEvent(EVENT_LEAP, randtime(8s, 10s));
+                    }
+                    break;
+                default:
+                    break;
                 }
             }
             DoMeleeAttackIfReady();
@@ -442,43 +457,43 @@ public:
             {
                 switch (eventId)
                 {
-                    case EVENT_ICY_TOUCH:
-                        DoCastVictim(SPELL_ICY_TOUCH);
-                        events.ScheduleEvent(EVENT_PLAGUE_STRIKE, 1s);
-                        break;
-                    case EVENT_PLAGUE_STRIKE:
-                        DoCastVictim(SPELL_PLAGUE_STRIKE);
-                        events.ScheduleEvent(EVENT_OBLITERATE, 5s);
-                        break;
-                    case EVENT_OBLITERATE:
-                        DoCastVictim(SPELL_OBLITERATE);
-                        events.ScheduleEvent(EVENT_ICY_TOUCH, randtime(5s, 8s));
-                        break;
-                    case EVENT_DEATH_RESPITE:
-                        // TODO: fixing this later
-                        if (Unit* target = SelectTarget(SelectTargetMethod::Random, 1, 50.0f, true))
-                            DoCast(target, SPELL_DEATH_RESPITE);
-                        events.ScheduleEvent(EVENT_DEATH_RESPITE, randtime(15s, 16s));
-                        break;
-                    case EVENT_DESECRATION:
-                        DoCastVictim(SPELL_DESECRATION);
-                        events.ScheduleEvent(EVENT_DESECRATION, randtime(15s, 16s));
-                        break;
-                    case EVENT_GHOUL_EXPLODE:
-                        DoCastAOE(SPELL_GHOUL_EXPLODE);
-                        events.ScheduleEvent(EVENT_GHOUL_EXPLODE, randtime(15s, 16s));
-                        break;
-                    case EVENT_DEATH_BITE:
-                        DoCastAOE(SPELL_DEATH_BITE);
-                        events.ScheduleEvent(EVENT_DEATH_BITE, 3s);
-                        break;
-                    case EVENT_MARKED_DEATH:
-                        if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 50.0f))
-                            DoCast(target, SPELL_MARKED_DEATH);
-                        events.ScheduleEvent(EVENT_MARKED_DEATH, randtime(13s, 15s));
-                        break;
-                    default:
-                        break;
+                case EVENT_ICY_TOUCH:
+                    DoCastVictim(SPELL_ICY_TOUCH);
+                    events.ScheduleEvent(EVENT_PLAGUE_STRIKE, 1s);
+                    break;
+                case EVENT_PLAGUE_STRIKE:
+                    DoCastVictim(SPELL_PLAGUE_STRIKE);
+                    events.ScheduleEvent(EVENT_OBLITERATE, 5s);
+                    break;
+                case EVENT_OBLITERATE:
+                    DoCastVictim(SPELL_OBLITERATE);
+                    events.ScheduleEvent(EVENT_ICY_TOUCH, randtime(5s, 8s));
+                    break;
+                case EVENT_DEATH_RESPITE:
+                    // TODO: fixing this later
+                    if (Unit* target = SelectTarget(SelectTargetMethod::Random, 1, 50.0f, true))
+                        DoCast(target, SPELL_DEATH_RESPITE);
+                    events.ScheduleEvent(EVENT_DEATH_RESPITE, randtime(15s, 16s));
+                    break;
+                case EVENT_DESECRATION:
+                    DoCastVictim(SPELL_DESECRATION);
+                    events.ScheduleEvent(EVENT_DESECRATION, randtime(15s, 16s));
+                    break;
+                case EVENT_GHOUL_EXPLODE:
+                    DoCastAOE(SPELL_GHOUL_EXPLODE);
+                    events.ScheduleEvent(EVENT_GHOUL_EXPLODE, randtime(15s, 16s));
+                    break;
+                case EVENT_DEATH_BITE:
+                    DoCastAOE(SPELL_DEATH_BITE);
+                    events.ScheduleEvent(EVENT_DEATH_BITE, 3s);
+                    break;
+                case EVENT_MARKED_DEATH:
+                    if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 50.0f))
+                        DoCast(target, SPELL_MARKED_DEATH);
+                    events.ScheduleEvent(EVENT_MARKED_DEATH, randtime(13s, 15s));
+                    break;
+                default:
+                    break;
                 }
             }
             DoMeleeAttackIfReady();
@@ -586,114 +601,114 @@ public:
 
 class dk_spell_black_knight_deaths_push : public SpellScriptLoader
 {
-    public:
-        dk_spell_black_knight_deaths_push() : SpellScriptLoader("dk_spell_black_knight_deaths_push") { }
+public:
+    dk_spell_black_knight_deaths_push() : SpellScriptLoader("dk_spell_black_knight_deaths_push") { }
 
-        class dk_spell_black_knight_deaths_push_AuraScript : public AuraScript
+    class dk_spell_black_knight_deaths_push_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(dk_spell_black_knight_deaths_push_AuraScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            PrepareAuraScript(dk_spell_black_knight_deaths_push_AuraScript);
-
-            bool Validate(SpellInfo const* /*spellInfo*/) override
-            {
-                return ValidateSpellInfo({ SPELL_DEATH_RESPITE_DND, SPELL_FEIGN_DEATH });
-            }
-
-            void HandleScript(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-            {
-                // The spell applies a dummy aura with short duration
-                // when the dummy aura is removed, announcer 'dies'
-                GetTarget()->RemoveAura(SPELL_DEATH_RESPITE_DND);
-                GetTarget()->CastSpell(GetTarget(), SPELL_FEIGN_DEATH, true);
-                GetTarget()->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNINTERACTIBLE);
-            }
-
-            void Register() override
-            {
-                AfterEffectRemove += AuraEffectRemoveFn(dk_spell_black_knight_deaths_push_AuraScript::HandleScript, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-            }
-        };
-
-        AuraScript* GetAuraScript() const override
-        {
-            return new dk_spell_black_knight_deaths_push_AuraScript();
+            return ValidateSpellInfo({ SPELL_DEATH_RESPITE_DND, SPELL_FEIGN_DEATH });
         }
+
+        void HandleScript(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            // The spell applies a dummy aura with short duration
+            // when the dummy aura is removed, announcer 'dies'
+            GetTarget()->RemoveAura(SPELL_DEATH_RESPITE_DND);
+            GetTarget()->CastSpell(GetTarget(), SPELL_FEIGN_DEATH, true);
+            GetTarget()->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNINTERACTIBLE);
+        }
+
+        void Register() override
+        {
+            AfterEffectRemove += AuraEffectRemoveFn(dk_spell_black_knight_deaths_push_AuraScript::HandleScript, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new dk_spell_black_knight_deaths_push_AuraScript();
+    }
 };
 
 class dk_spell_black_knight_obliterate : public SpellScriptLoader
 {
-    public:
-        dk_spell_black_knight_obliterate() : SpellScriptLoader("dk_spell_black_knight_obliterate") { }
+public:
+    dk_spell_black_knight_obliterate() : SpellScriptLoader("dk_spell_black_knight_obliterate") { }
 
-        class dk_spell_black_knight_obliterate_SpellScript : public SpellScript
+    class dk_spell_black_knight_obliterate_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(dk_spell_black_knight_obliterate_SpellScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/) override
         {
-            PrepareSpellScript(dk_spell_black_knight_obliterate_SpellScript);
-
-            bool Validate(SpellInfo const* /*spellInfo*/) override
-            {
-                return ValidateSpellInfo({ SPELL_BLOOD_PLAGUE, SPELL_FROST_FEVER, SPELL_BLOOD_PLAGUE_H, SPELL_FROST_FEVER_H });
-            }
-
-            void CalculateDamage()
-            {
-                if (!GetHitUnit())
-                    return;
-                uint32 bloodPlague = GetCaster()->GetMap()->IsHeroic() ? SPELL_BLOOD_PLAGUE_H : SPELL_BLOOD_PLAGUE;
-                uint32 frostFever = GetCaster()->GetMap()->IsHeroic() ? SPELL_FROST_FEVER_H : SPELL_FROST_FEVER;
-
-                int32 damage = GetHitDamage();
-                int32 bonus = 0;
-                if (GetHitUnit()->HasAura(frostFever))
-                {
-                    bonus += int32(damage * 0.3f);
-                    GetHitUnit()->RemoveAurasDueToSpell(frostFever);
-                }
-                if (GetHitUnit()->HasAura(bloodPlague))
-                {
-                    bonus += int32(damage * 0.3f);
-                    GetHitUnit()->RemoveAurasDueToSpell(bloodPlague);
-                }
-                SetHitDamage(damage + bonus);
-            }
-
-            void Register() override
-            {
-                OnHit += SpellHitFn(dk_spell_black_knight_obliterate_SpellScript::CalculateDamage);
-            }
-        };
-
-        SpellScript* GetSpellScript() const override
-        {
-            return new dk_spell_black_knight_obliterate_SpellScript();
+            return ValidateSpellInfo({ SPELL_BLOOD_PLAGUE, SPELL_FROST_FEVER, SPELL_BLOOD_PLAGUE_H, SPELL_FROST_FEVER_H });
         }
+
+        void CalculateDamage()
+        {
+            if (!GetHitUnit())
+                return;
+            uint32 bloodPlague = GetCaster()->GetMap()->IsHeroic() ? SPELL_BLOOD_PLAGUE_H : SPELL_BLOOD_PLAGUE;
+            uint32 frostFever = GetCaster()->GetMap()->IsHeroic() ? SPELL_FROST_FEVER_H : SPELL_FROST_FEVER;
+
+            int32 damage = GetHitDamage();
+            int32 bonus = 0;
+            if (GetHitUnit()->HasAura(frostFever))
+            {
+                bonus += int32(damage * 0.3f);
+                GetHitUnit()->RemoveAurasDueToSpell(frostFever);
+            }
+            if (GetHitUnit()->HasAura(bloodPlague))
+            {
+                bonus += int32(damage * 0.3f);
+                GetHitUnit()->RemoveAurasDueToSpell(bloodPlague);
+            }
+            SetHitDamage(damage + bonus);
+        }
+
+        void Register() override
+        {
+            OnHit += SpellHitFn(dk_spell_black_knight_obliterate_SpellScript::CalculateDamage);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new dk_spell_black_knight_obliterate_SpellScript();
+    }
 };
 
 class dk_spell_black_knight_army_of_the_dead : public SpellScriptLoader
 {
-    public:
-        dk_spell_black_knight_army_of_the_dead() : SpellScriptLoader("dk_spell_black_knight_army_of_the_dead") { }
+public:
+    dk_spell_black_knight_army_of_the_dead() : SpellScriptLoader("dk_spell_black_knight_army_of_the_dead") { }
 
-        class dk_spell_black_knight_army_of_the_dead_AuraScript : public AuraScript
+    class dk_spell_black_knight_army_of_the_dead_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(dk_spell_black_knight_army_of_the_dead_AuraScript);
+
+        void RemoveFlag(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
-            PrepareAuraScript(dk_spell_black_knight_army_of_the_dead_AuraScript);
-
-            void RemoveFlag(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-            {
-                // that is wrong, movement disabled by spell (channel)
-                // On aura remove we must remove disable movement flag
-                if (Unit* caster = GetCaster())
-                    caster->SetControlled(false, UNIT_STATE_ROOT);
-            }
-
-            void Register() override
-            {
-                AfterEffectRemove += AuraEffectRemoveFn(dk_spell_black_knight_army_of_the_dead_AuraScript::RemoveFlag, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
-            }
-        };
-
-        AuraScript* GetAuraScript() const override
-        {
-            return new dk_spell_black_knight_army_of_the_dead_AuraScript();
+            // that is wrong, movement disabled by spell (channel)
+            // On aura remove we must remove disable movement flag
+            if (Unit* caster = GetCaster())
+                caster->SetControlled(false, UNIT_STATE_ROOT);
         }
+
+        void Register() override
+        {
+            AfterEffectRemove += AuraEffectRemoveFn(dk_spell_black_knight_army_of_the_dead_AuraScript::RemoveFlag, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new dk_spell_black_knight_army_of_the_dead_AuraScript();
+    }
 };
 
 // 67751 - Ghoul Explode
@@ -742,17 +757,17 @@ class dk_spell_black_knight_ghoul_explode_risen_ghoul : public SpellScript
 // Achievement id 3804 - I've Had Worse
 class dk_achievement_ive_had_worse : public AchievementCriteriaScript
 {
-    public:
-        dk_achievement_ive_had_worse() : AchievementCriteriaScript("dk_achievement_ive_had_worse") { }
+public:
+    dk_achievement_ive_had_worse() : AchievementCriteriaScript("dk_achievement_ive_had_worse") { }
 
-        bool OnCheck(Player* /*player*/, Unit* target) override
-        {
-            if (target->GetEntry() != NPC_BLACK_KNIGHT)
-                return false;
-            if (!ENSURE_AI(dk_boss_black_knight::dk_boss_black_knightAI, target->GetAI())->achievementCredit)
-                return false;
-            return true;
-        }
+    bool OnCheck(Player* /*player*/, Unit* target) override
+    {
+        if (target->GetEntry() != NPC_BLACK_KNIGHT)
+            return false;
+        if (!ENSURE_AI(dk_boss_black_knight::dk_boss_black_knightAI, target->GetAI())->achievementCredit)
+            return false;
+        return true;
+    }
 };
 
 void AddSC_dk_boss_black_knight()

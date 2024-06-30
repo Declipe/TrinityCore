@@ -20,6 +20,10 @@
 
 #include "Battlefield.h"
 #include "GameObject.h"
+#include "Creature.h"
+#include "CreatureAISelector.h"
+#include "CreatureAIFactory.h"
+
 
 class Group;
 class BattlefieldWG;

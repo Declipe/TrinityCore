@@ -18,6 +18,7 @@
 #ifndef TRINITY_DBCSTRUCTURE_H
 #define TRINITY_DBCSTRUCTURE_H
 
+#include "Common.h"
 #include "Define.h"
 #include "DBCEnums.h"
 #include "SharedDefines.h"

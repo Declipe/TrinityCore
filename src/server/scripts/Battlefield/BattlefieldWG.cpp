@@ -15,18 +15,20 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/// @todo Implement proper support for vehicle+player teleportation
-/// @todo Use spell victory/defeat in wg instead of RewardMarkOfHonor() && RewardHonor
-/// @todo Add proper implement of achievement
+ /// @todo Implement proper support for vehicle+player teleportation
+ /// @todo Use spell victory/defeat in wg instead of RewardMarkOfHonor() && RewardHonor
+ /// @todo Add proper implement of achievement
 
 #include "BattlefieldWG.h"
 #include "BfWGGameObjectBuilding.h"
 #include "AchievementMgr.h"
 #include "BattlefieldMgr.h"
 #include "Battleground.h"
+#include "Creature.h"
 #include "CreatureTextMgr.h"
 #include "GameTime.h"
 #include "Log.h"
+#include "MotionMaster.h"
 #include "MapManager.h"
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
@@ -44,10 +46,10 @@
 #include "WintergraspGraveyard.h"
 #include "WintergraspWorkshop.h"
 
-uint32 const ClockWorldState[]         = { 3781, 4354 };
-Position const WintergraspStalkerPos   = { 4948.985f, 2937.789f, 550.5172f,  1.815142f };
-Position const WintergraspRelicPos     = { 5440.379f, 2840.493f, 430.2816f, -1.832595f };
-QuaternionData const WintergraspRelicRot    = { 0.f, 0.f, -0.7933531f, 0.6087617f };
+uint32 const ClockWorldState[] = { 3781, 4354 };
+Position const WintergraspStalkerPos = { 4948.985f, 2937.789f, 550.5172f,  1.815142f };
+Position const WintergraspRelicPos = { 5440.379f, 2840.493f, 430.2816f, -1.832595f };
+QuaternionData const WintergraspRelicRot = { 0.f, 0.f, -0.7933531f, 0.6087617f };
 
 uint8 const WG_MAX_MAP_GUARDS = 48;
 WintergraspGuardPositionData const WGMapGuards[WG_MAX_MAP_GUARDS] =
@@ -179,13 +181,13 @@ bool BattlefieldWG::SetupBattlefield()
 
     RegisterZone(m_ZoneId);
     m_Data32.resize(BATTLEFIELD_WG_DATA_MAX);
-    m_saveTimer = 60000;        
+    m_saveTimer = 60000;
 
     // Load from db
     m_isActive = sWorld->getWorldState(WS_BATTLEFIELD_WG_ACTIVE) != 0;
     m_DefenderTeam = TeamId(sWorld->getWorldState(WS_BATTLEFIELD_WG_DEFENDER));
     m_Timer = sWorld->getWorldState(ClockWorldState[0]);
-    
+
     FillBuildings();
     FillGraveyards();
     FillWorkshops();
@@ -469,17 +471,17 @@ void BattlefieldWG::DoCompleteOrIncrementAchievement(uint32 achievement, Player*
 
     switch (achievement)
     {
-        case ACHIEVEMENTS_WIN_WG_100:
-        {
-            // player->UpdateAchievementCriteria();
-            break;
-        }
-        default:
-        {
-            if (player)
-                player->CompletedAchievement(achievementEntry);
-            break;
-        }
+    case ACHIEVEMENTS_WIN_WG_100:
+    {
+        // player->UpdateAchievementCriteria();
+        break;
+    }
+    default:
+    {
+        if (player)
+            player->CompletedAchievement(achievementEntry);
+        break;
+    }
     }
 
 }
@@ -493,23 +495,23 @@ uint8 BattlefieldWG::GetSpiritGraveyardId(uint32 areaId) const
 {
     switch (areaId)
     {
-        case AREA_WINTERGRASP_FORTRESS:
-            return BATTLEFIELD_WG_GY_KEEP;
-        case AREA_THE_SUNKEN_RING:
-            return BATTLEFIELD_WG_GY_WORKSHOP_NE;
-        case AREA_THE_BROKEN_TEMPLATE:
-            return BATTLEFIELD_WG_GY_WORKSHOP_NW;
-        case AREA_WESTPARK_WORKSHOP:
-            return BATTLEFIELD_WG_GY_WORKSHOP_SW;
-        case AREA_EASTPARK_WORKSHOP:
-            return BATTLEFIELD_WG_GY_WORKSHOP_SE;
-        case AREA_WINTERGRASP:
-            return BATTLEFIELD_WG_GY_ALLIANCE;
-        case AREA_THE_CHILLED_QUAGMIRE:
-            return BATTLEFIELD_WG_GY_HORDE;
-        default:
-            TC_LOG_ERROR("bg.battlefield", "BattlefieldWG::GetSpiritGraveyardId: Unexpected Area Id {}", areaId);
-            break;
+    case AREA_WINTERGRASP_FORTRESS:
+        return BATTLEFIELD_WG_GY_KEEP;
+    case AREA_THE_SUNKEN_RING:
+        return BATTLEFIELD_WG_GY_WORKSHOP_NE;
+    case AREA_THE_BROKEN_TEMPLATE:
+        return BATTLEFIELD_WG_GY_WORKSHOP_NW;
+    case AREA_WESTPARK_WORKSHOP:
+        return BATTLEFIELD_WG_GY_WORKSHOP_SW;
+    case AREA_EASTPARK_WORKSHOP:
+        return BATTLEFIELD_WG_GY_WORKSHOP_SE;
+    case AREA_WINTERGRASP:
+        return BATTLEFIELD_WG_GY_ALLIANCE;
+    case AREA_THE_CHILLED_QUAGMIRE:
+        return BATTLEFIELD_WG_GY_HORDE;
+    default:
+        TC_LOG_ERROR("bg.battlefield", "BattlefieldWG::GetSpiritGraveyardId: Unexpected Area Id {}", areaId);
+        break;
     }
 
     return 0;
@@ -648,7 +650,7 @@ void BattlefieldWG::OnPlayerJoinWar(Player* player)
     else
     {
         if (GetData(BATTLEFIELD_WG_DATA_BROKEN_TOWER_ATT) > 0)
-           player->SetAuraStack(SPELL_TOWER_CONTROL, player, GetData(BATTLEFIELD_WG_DATA_BROKEN_TOWER_ATT));
+            player->SetAuraStack(SPELL_TOWER_CONTROL, player, GetData(BATTLEFIELD_WG_DATA_BROKEN_TOWER_ATT));
     }
     SendInitWorldStatesTo(player);
 }
@@ -698,16 +700,16 @@ uint32 BattlefieldWG::GetData(uint32 data) const
     {
         // Used to determine when the phasing spells must be cast
         // See: SpellArea::IsFitToRequirements
-        case AREA_THE_SUNKEN_RING:
-        case AREA_THE_BROKEN_TEMPLATE:
-        case AREA_WESTPARK_WORKSHOP:
-        case AREA_EASTPARK_WORKSHOP:
-            // Graveyards and Workshops are controlled by the same team.
-            if (BfGraveyard const* graveyard = GetGraveyardById(GetSpiritGraveyardId(data)))
-                return graveyard->GetControlTeamId();
-            break;
-        default:
-            break;
+    case AREA_THE_SUNKEN_RING:
+    case AREA_THE_BROKEN_TEMPLATE:
+    case AREA_WESTPARK_WORKSHOP:
+    case AREA_EASTPARK_WORKSHOP:
+        // Graveyards and Workshops are controlled by the same team.
+        if (BfGraveyard const* graveyard = GetGraveyardById(GetSpiritGraveyardId(data)))
+            return graveyard->GetControlTeamId();
+        break;
+    default:
+        break;
     }
 
     return Battlefield::GetData(data);
@@ -851,9 +853,9 @@ void BattlefieldWG::UpdateDamagedTowerCount(TeamId team)
 // Update vehicle count WorldState to player
 void BattlefieldWG::UpdateVehicleCountWG()
 {
-    SendUpdateWorldState(WS_BATTLEFIELD_WG_VEHICLE_H,     GetData(BATTLEFIELD_WG_DATA_VEHICLE_H));
+    SendUpdateWorldState(WS_BATTLEFIELD_WG_VEHICLE_H, GetData(BATTLEFIELD_WG_DATA_VEHICLE_H));
     SendUpdateWorldState(WS_BATTLEFIELD_WG_MAX_VEHICLE_H, GetData(BATTLEFIELD_WG_DATA_MAX_VEHICLE_H));
-    SendUpdateWorldState(WS_BATTLEFIELD_WG_VEHICLE_A,     GetData(BATTLEFIELD_WG_DATA_VEHICLE_A));
+    SendUpdateWorldState(WS_BATTLEFIELD_WG_VEHICLE_A, GetData(BATTLEFIELD_WG_DATA_VEHICLE_A));
     SendUpdateWorldState(WS_BATTLEFIELD_WG_MAX_VEHICLE_A, GetData(BATTLEFIELD_WG_DATA_MAX_VEHICLE_A));
 }
 

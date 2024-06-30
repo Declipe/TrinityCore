@@ -23,6 +23,7 @@
 #include "EnumFlag.h"
 #include "SmartEnum.h"
 #include <map>
+#include <vector>
 
 struct ItemPresent
 {
