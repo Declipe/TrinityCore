@@ -833,9 +833,6 @@ enum TrinityStrings
     LANG_COMMAND_QUEST_OBJECTIVE_NOTFOUND = 884, // master branch ONLY
     // Room for in-game strings             885-999 not used
 
-    // Arena Spectator
-    LANG_SPEC_CAN_NOT_CHAT                = 882,
-
     // Level 4 (CLI only commands)
     LANG_COMMAND_EXIT                     = 1000,
     LANG_ACCOUNT_DELETED                  = 1001,

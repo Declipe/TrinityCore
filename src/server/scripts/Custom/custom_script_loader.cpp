@@ -23,7 +23,6 @@ void AddSC_skip_StarterArea();
 void AddSC_example_ItemGossip();
 void AddSC_Blocked_Zones();
 void AddSC_Grumboz_World_Ctf();
-void AddSC_arena_spectator_script();
 void AddSC_ex_champions();
 void AddSC_dk_trial_of_the_champion();
 void AddSC_dk_boss_grand_champions();
@@ -124,7 +123,6 @@ void AddCustomScripts()
     AddSC_dk_instance_trial_of_the_champion();
     AddSC_dk_boss_argent_challenge();
     AddSC_Grumboz_World_Ctf();
-    AddSC_arena_spectator_script();
     AddSC_REFORGER_NPC();
     AddSC_ItemUse_item_custom();
     AddSC_example_ItemGossip();

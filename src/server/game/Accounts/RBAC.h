@@ -783,12 +783,7 @@ enum RBACPermissions
     RBAC_HandleAnticheatWarnCommand                            = 1027,
     RBAC_HandleGladiatorsChatCommand                           = 1028,
     RBAC_HandleVipStatusCommand                                = 1029,
-    //Arena Spectator
-    RBAC_PERM_COMMAND_SPECTATE                                 = 1030,
-    RBAC_PERM_COMMAND_SPECTATE_PLAYER                          = 1031,
-    RBAC_PERM_COMMAND_SPECTATE_VIEW                            = 1032,
-    RBAC_PERM_COMMAND_SPECTATE_RESET                           = 1033,
-    RBAC_PERM_COMMAND_SPECTATE_LEAVE                           = 1034,
+
     RBAC_PERM_COMMAND_ADDCOIN                                  = 1114,
     RBAC_PERM_COMMAND_RTX                                      = 1115,
     

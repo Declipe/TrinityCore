@@ -421,11 +421,6 @@ Player::Player(WorldSession* session): Unit(true)
 
     m_SeasonalQuestChanged = false;
 
-    // Arena Spectator
-    spectatorFlag = false;
-    spectateCanceled = false;
-    spectateFrom = NULL;
-
     SetPendingBind(0, 0);
 
     _activeCheats = CHEAT_NONE;
@@ -1986,18 +1981,7 @@ bool Player::TeleportToBGEntryPoint()
 
     ScheduleDelayedOperation(DELAYED_BG_MOUNT_RESTORE);
     ScheduleDelayedOperation(DELAYED_BG_TAXI_RESTORE);
-    //return TeleportTo(m_bgData.joinPos);
-
-    Battleground* oldBg = GetBattleground();
-    bool result = TeleportTo(m_bgData.joinPos);
-
-    if (IsSpectator() && result)
-    {
-        SetSpectate(false);
-        if (oldBg)
-            oldBg->RemoveSpectator(GetGUID());
-    }
-    return result;
+    return TeleportTo(m_bgData.joinPos);
 }
 
 void Player::ProcessDelayedOperations()
@@ -24778,16 +24762,7 @@ void Player::StopCastingBindSight() const
 void Player::SetViewpoint(WorldObject* target, bool apply)
 {
     if (apply)
-{
-    if (target->ToPlayer() == this)
-       return;
-
- // Remove viewpoint if already have
-    if (IsSpectator() && spectateFrom)
     {
-        SetViewpoint(spectateFrom, false);
-        spectateFrom = NULL;
-}
         TC_LOG_DEBUG("maps", "Player::CreateViewpoint: Player '{}' ({}) creates seer (Entry: {}, TypeId: {}).",
             GetName(), GetGUID().ToString(), target->GetEntry(), target->GetTypeId());
 
@@ -27351,93 +27326,6 @@ void Player::RemoveRestFlag(RestFlag restFlag)
         _restTime = 0;
         RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_RESTING);
     }
-}
-
-void Player::SetSelection(ObjectGuid guid)
-{
-    [[maybe_unused]] uint32 m_curSelection = guid;
-    SetUInt64Value(UNIT_FIELD_TARGET, guid);
-}
-
-void Player::SetSpectate(bool on)
-{
-    if (on)
-    {
-        SetSpeed(MOVE_RUN, 5.0);
-        spectatorFlag = true;
-
-        m_ExtraFlags |= PLAYER_EXTRA_GM_ON;
-        SetFaction(35);
-
-        if (Pet* pet = GetPet())
-        {
-            RemovePet(pet, PET_SAVE_AS_CURRENT);
-        }
-        UnsummonPetTemporaryIfAny();
-
-        RemoveByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP);
-        ResetContestedPvP();
-
-        GroupMemberOnlineStatus
-        SetOnlineOfflineState();
-        CombatStopWithPets();
-
-        m_serverSideVisibility.SetValue(SERVERSIDE_VISIBILITY_GM, SEC_ADMINISTRATOR);
-    }
-    else
-    {
-        uint32 newPhase = 0;
-        AuraEffectList const& phases = GetAuraEffectsByType(SPELL_AURA_PHASE);
-        if (!phases.empty())
-            for (AuraEffectList::const_iterator itr = phases.begin(); itr != phases.end(); ++itr)
-                newPhase |= (*itr)->GetMiscValue();
-
-        if (!newPhase)
-            newPhase = PHASEMASK_NORMAL;
-
-        SetPhaseMask(newPhase, false);
-
-        m_ExtraFlags &= ~PLAYER_EXTRA_GM_ON;
-        SetFactionForRace(GetRace());
-        RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_GM);
-        RemoveFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_ALLOW_CHEAT_SPELLS);
-
-        if (spectateFrom)
-            SetViewpoint(spectateFrom, false);
-
-        // restore FFA PvP Server state
-        if (sWorld->IsFFAPvPRealm())
-            SetByteFlag(UNIT_FIELD_BYTES_2, 1, UNIT_BYTE2_FLAG_FFA_PVP);
-
-        // restore FFA PvP area state, remove not allowed for GM mounts
-        UpdateArea(m_areaUpdateId);
-
-        GroupMemberOnlineStatus
-        SetOnlineOfflineState();
-        m_serverSideVisibility.SetValue(SERVERSIDE_VISIBILITY_GM, SEC_PLAYER);
-        spectateCanceled = false;
-        spectatorFlag = false;
-        RestoreDisplayId();
-        UpdateSpeed(MOVE_FLIGHT);
-    }
-    UpdateObjectVisibility();
-}
-
-bool Player::HaveSpectators()
-{
-    if (IsSpectator())
-        return false;
-
-    if (Battleground* bg = GetBattleground())
-        if (bg->isArena())
-        {
-            if (bg->GetStatus() != STATUS_IN_PROGRESS)
-                return false;
-
-            return bg->HaveSpectators();
-        }
-
-    return false;
 }
 
 uint32 Player::DoRandomRoll(uint32 minimum, uint32 maximum)

@@ -5235,10 +5235,6 @@ SpellCastResult Spell::CheckCast(bool strict, uint32* param1 /*= nullptr*/, uint
             return SPELL_FAILED_ONLY_INDOORS;
     }
 
-    if (Player* tmpPlayer = m_caster->ToPlayer())
-        if (tmpPlayer->IsSpectator())
-            return SPELL_FAILED_SPELL_UNAVAILABLE;
-
     if (Unit* unitCaster = m_caster->ToUnit())
     {
         // only check at first call, Stealth auras are already removed at second call

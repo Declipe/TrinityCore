@@ -1,6 +1,0 @@
-## Interface: 30300
-## Title: Arena Spectator UI
-## Version: 27
-## SavedVariables: teamname, teamscore, tournamentMode
-ArenaSpectator.lua
-combatfeedback.lua

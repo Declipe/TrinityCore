@@ -26,7 +26,6 @@
 #include "UniqueTrackablePtr.h"
 #include <deque>
 #include <map>
-#include "SpectatorAddon.h"
 
 namespace WorldPackets
 {
@@ -266,7 +265,7 @@ class TC_GAME_API Battleground
         virtual bool IsAllNodesControlledByTeam(uint32 /*team*/) const { return false; }
         void StartTimedAchievement(AchievementCriteriaTimedTypes type, uint32 entry);
         virtual bool CheckAchievementCriteriaMeet(uint32 /*criteriaId*/, Player const* /*player*/, Unit const* /*target*/ = nullptr, uint32 /*miscvalue1*/ = 0);
-        
+
         /* Battleground */
         // Get methods:
         std::string const& GetName() const  { return m_Name; }
@@ -331,13 +330,6 @@ class TC_GAME_API Battleground
         uint32 GetInvitedCount(uint32 team) const   { return (team == ALLIANCE) ? m_InvitedAlliance : m_InvitedHorde; }
         bool HasFreeSlots() const;
         uint32 GetFreeSlotsForTeam(uint32 Team) const;
-
-        /* Arena Spectator */
-        typedef std::set<uint32> SpectatorList;
-        void AddSpectator(uint32 playerId) { m_Spectators.insert(playerId); }
-        void RemoveSpectator(uint32 playerId) { m_Spectators.erase(playerId); }
-        bool HaveSpectators() { return (m_Spectators.size() > 0); }
-        /* Arena Spectator */
 
         bool isArena() const        { return m_IsArena; }
         bool isBattleground() const { return !m_IsArena; }
@@ -503,9 +495,6 @@ class TC_GAME_API Battleground
         uint32 GetTeamScore(uint32 TeamID) const;
 
         virtual uint32 GetPrematureWinner();
-		
-        std::set<uint64> m_ArenaReadyCheckMap;
-        void SendArenaReadyCheck() const;
 
         // because BattleGrounds with different types and same level range has different m_BracketId
         uint8 GetUniqueBracketId() const;
@@ -623,9 +612,6 @@ class TC_GAME_API Battleground
 
         // Players count by team
         uint32 m_PlayersCount[PVP_TEAMS_COUNT];
-
-        // Arena Spectator
-        SpectatorList m_Spectators;
 
         // Arena team ids by team
         uint32 m_ArenaTeamIds[PVP_TEAMS_COUNT];
