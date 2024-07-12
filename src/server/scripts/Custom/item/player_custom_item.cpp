@@ -1122,6 +1122,7 @@ public:
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_REMOVE_WEAKNESS), GOSSIP_SENDER_MAIN, 18);
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_GIVE_BUFFS), GOSSIP_SENDER_MAIN, 19);
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_VIP_BANK), GOSSIP_SENDER_MAIN, 20);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(NOT_USED_26), GOSSIP_SENDER_MAIN, 201);
 					//if (!player->IsInCombat() || !player->IsInFlight() || !player->GetMap()->IsBattlegroundOrArena() || !player->HasStealthAura() || !player->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH) || !player->isDead())
 					//	AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_REMOVE_COOLDOWN), GOSSIP_SENDER_MAIN, 22);
 					AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
@@ -1952,6 +1953,7 @@ public:
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_4/*, loc_idx*/), GOSSIP_SENDER_MAIN, 196);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_5/*, loc_idx*/), GOSSIP_SENDER_MAIN, 197);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_6/*, loc_idx*/), GOSSIP_SENDER_MAIN, 198);
+
                     if (player->GetCFSTeam() == ALLIANCE)
                         AddGossipItemFor(player, GOSSIP_ICON_TAXI, GTS(LANG_ITEM_STORMWIND), GOSSIP_SENDER_MAIN, 5, GTS(LANG_ITEM_STORMWIND_SURE), 0, false);
                     else
@@ -2066,6 +2068,34 @@ public:
 
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
+                }
+
+                case 200:
+                {
+                    uint32 coins = player->GetVerifiedCoins();
+                    uint32 ostatok = 10000 + coins;
+
+                    uint32 pt = sGameConfig->GetIntConfig("COST_id"); //49426
+                    uint32 pt2 = sGameConfig->GetIntConfig("COST_colvo"); //5
+                    if (player->HasItemCount(pt, pt2))
+                    {
+                        player->DestroyItemCount(pt, pt2, true);
+                      {
+                        ostatok = coins + 10000;
+                        player->SetCoins(ostatok);
+                        AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
+                        ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_SUCCESS_BOUGHT, ostatok);
+                        CloseGossipMenuFor(player);
+                      }
+                    }
+                    break;
+                }
+
+                case 201: //money obmen menu
+                {
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_25/*, loc_idx*/), GOSSIP_SENDER_MAIN, 200);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                    SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
                 }
 
 				}
