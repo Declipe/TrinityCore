@@ -214,6 +214,11 @@ namespace WorldPackets
         class TrainerBuySpell;
     }
 
+    namespace Party
+    {
+        class PartyInviteClient;
+    }
+
     namespace Pet
     {
         class DismissCritter;
@@ -595,7 +600,7 @@ class TC_GAME_API WorldSession
         void UpdateInstanceEnterTimes();
 
         //auction
-        void SendAuctionHello(ObjectGuid guid, Creature* unit);
+        void SendAuctionHello(ObjectGuid guid, Unit const* unit);
         void SendAuctionCommandResult(uint32 auctionItemId, AuctionAction command, AuctionError errorCode, InventoryResult bagResult = InventoryResult(0));
         void SendAuctionBidderNotification(uint32 location, uint32 auctionId, ObjectGuid bidder, uint32 bidSum, uint32 diff, uint32 item_template);
         void SendAuctionOwnerNotification(AuctionEntry* auction);
@@ -797,7 +802,7 @@ class TC_GAME_API WorldSession
 
         void HandleBattlefieldStatusOpcode(WorldPacket& recvData);
 
-        void HandleGroupInviteOpcode(WorldPacket& recvPacket);
+        void HandleGroupInviteOpcode(WorldPackets::Party::PartyInviteClient& packet);
         void HandleGroupAcceptOpcode(WorldPacket& recvPacket);
         void HandleGroupDeclineOpcode(WorldPacket& recvPacket);
         void HandleGroupUninviteOpcode(WorldPacket& recvPacket);
