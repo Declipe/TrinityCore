@@ -597,6 +597,9 @@ void WorldSession::LogoutPlayer(bool save)
         ///- Remove pet
         _player->RemovePet(nullptr, PET_SAVE_AS_CURRENT);
 
+        if (_player->HasAura(48018))
+            _player->RemoveAurasDueToSpell(48018);
+
         ///- Clear whisper whitelist
         _player->ClearWhisperWhiteList();
 
