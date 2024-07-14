@@ -2,7 +2,6 @@
 # Trinity Core World Server configuration file #
 ################################################
 [worldserver]
-PrepatchGI.Added = 0
 ###################################################################################################
 # SECTION INDEX
 #
@@ -38,7 +37,6 @@ PrepatchGI.Added = 0
 #    PACKET SPOOF PROTECTION SETTINGS
 #    MISC ANTI-CHEAT SETTINGS
 #    METRIC SETTINGS
-#    SOLO LFG
 #
 ###################################################################################################
 
@@ -82,8 +80,8 @@ RealmID = 1
 #                     Logs directory must exists, or log file creation will be disabled.
 #        Default:     "" - (Log files will be stored in the current path)
 
-DataDir = "E:\core\TrinityCore\build\bin\RelWithDebInfo2\data"
-LogsDir = "log"
+DataDir = "data"
+LogsDir = "logs"
 
 #
 #    LoginDatabaseInfo
@@ -108,12 +106,12 @@ LogsDir = "log"
 #    The SSL option will enable TLS when connecting to the specified database. If not provided or
 #    any value other than 'ssl' is set, TLS will not be used.
 
-LoginDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;auth"
-WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world3.3.5"
-#WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;tdb2"
-#WorldDatabaseInfo     = "127.0.0.1;3306;trinity;trinity;world3"
-CharacterDatabaseInfo = "127.0.0.1;3306;trinity;trinity;characters"
-ZynDatabaseInfo       = "127.0.0.1;3306;trinity;trinity;zyn"
+LoginDatabaseInfo     = "127.0.0.1;3306;root;root;auth"
+WorldDatabaseInfo     = "127.0.0.1;3306;root;root;world3.3.5_beta"
+#WorldDatabaseInfo     = "127.0.0.1;3306;root;root;tdb"
+#WorldDatabaseInfo     = "127.0.0.1;3306;root;root;world"
+CharacterDatabaseInfo = "127.0.0.1;3306;root;root;characters"
+ZynDatabaseInfo       = "127.0.0.1;3306;root;root;zyn"
 ZynDatabase.WorkerThreads       = 1
 ZynDatabase.SynchThreads        = 1
 #
@@ -195,7 +193,7 @@ CMakeCommand  = "C:/Program Files/CMake/bin/cmake.exe"
 #        Example:     "../TrinityCore"
 #        Default:     ""
 
-BuildDirectory  = "E:\core\TrinityCore\build"
+BuildDirectory  = "C:\Users\Declipe\Desktop\TrinityCore\build"
 
 #
 #    SourceDirectory
@@ -204,7 +202,7 @@ BuildDirectory  = "E:\core\TrinityCore\build"
 #        Example:     "../TrinityCore"
 #        Default:     ""
 
-SourceDirectory  = "E:\core\TrinityCore"
+SourceDirectory  = "C:\Users\Declipe\Desktop\TrinityCore"
 
 #
 #    MySQLExecutable
@@ -215,7 +213,7 @@ SourceDirectory  = "E:\core\TrinityCore"
 #                     "/usr/bin/mysql"
 #        Default:     ""
 
-MySQLExecutable = "C:/Program Files/MySQL/MySQL Server 5.7/bin/mysql.exe"
+MySQLExecutable = "C:/Program Files/MySQL/MySQL Server 8.0/bin/mysql.exe"
 
 #
 #    IPLocationFile
@@ -249,7 +247,7 @@ UseProcessors = 0
 #        Default:     0 - (Normal)
 #                     1 - (High)
 
-ProcessPriority = 0
+ProcessPriority = 1
 
 #
 #    Compression
@@ -258,7 +256,7 @@ ProcessPriority = 0
 #        Default:     1   - (Speed)
 #                     9   - (Best compression)
 
-Compression = 1
+Compression = 5
 
 #
 #    PlayerLimit
@@ -296,7 +294,7 @@ GridUnload = 1
 #        Default:     0 - (Don't preload all base maps, dynamically load as used)
 #                     1 - (Preload all grids in all base maps upon load)
 
-BaseMapLoadAllGrids = 0
+BaseMapLoadAllGrids = 1
 
 #
 #    InstanceMapLoadAllGrids
@@ -305,7 +303,7 @@ BaseMapLoadAllGrids = 0
 #        Default:     0 - (Don't preload all base maps, dynamically load as used)
 #                     1 - (Preload all grids in the instance upon load)
 
-InstanceMapLoadAllGrids = 0
+InstanceMapLoadAllGrids = 1
 
 #
 #    SocketTimeOutTime
@@ -349,7 +347,7 @@ MinWorldUpdateTime = 1
 #
 #    MapUpdateInterval
 #        Description: Time (milliseconds) for map update interval.
-#        Default:     10 - (0.01 second)
+#        Default:     100 - (0.1 second)
 
 MapUpdateInterval = 10
 
@@ -401,7 +399,7 @@ mmap.enablePathFinding = 1
 #
 #    vmap.enableLOS
 #    vmap.enableHeight
-#        Description: Vmap support for line of sight and height calculation.
+#        Description: VMmap support for line of sight and height calculation.
 #        Default:     1 - (Enabled, vmap.enableLOS)
 #                     1 - (Enabled, vmap.enableHeight)
 #                     0 - (Disabled)
@@ -788,7 +786,7 @@ CharactersPerRealm = 10
 #        Range:       1-10
 #        Default:     1
 
-DeathKnightsPerRealm = 1
+DeathKnightsPerRealm = 3
 
 #
 #    CharacterCreating.MinLevelForDeathKnight
@@ -855,7 +853,7 @@ StartPlayerMoney = 800000000
 #        Description: Maximum honor points a character can have.
 #        Default:     75000
 
-MaxHonorPoints = 7500000000
+MaxHonorPoints = 7500000
 
 #
 #    StartHonorPoints
@@ -869,7 +867,7 @@ StartHonorPoints = 0
 #        Description: Maximum arena points a character can have.
 #        Default:     10000
 
-MaxArenaPoints = 7500000000
+MaxArenaPoints = 7500000
 
 #
 #    StartArenaPoints
@@ -962,7 +960,7 @@ Instance.IgnoreLevel = 0
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-Instance.IgnoreRaid = 0
+Instance.IgnoreRaid = 1
 
 #
 #    Instance.ResetTimeHour
@@ -1233,7 +1231,7 @@ Motd = "Welcome to a Trinity Core server."
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-Server.LoginInfo = 0
+Server.LoginInfo = 1
 
 #
 #    Command.LookupMaxResults
@@ -1314,7 +1312,7 @@ BirthdayTime = 1222964635
 #
 #
 
-CacheDataQueries = 1
+CacheDataQueries = 0
 
 #
 #    AllowLoggingIPAddressesInDatabase
@@ -1343,7 +1341,6 @@ AllowLoggingIPAddressesInDatabase = 1
 #
 
 TOTPMasterSecret =
-
 #
 ###################################################################################################
 
@@ -1430,7 +1427,7 @@ HotSwap.Enabled = 1
 #        Example:     "/usr/local/scripts"
 #        Default:     "scripts"
 
-HotSwap.ScriptDir = "E:\core\TrinityCore\build\bin\RelWithDebInfo\scripts"
+HotSwap.ScriptDir = "C:\Users\Declipe\Desktop\TrinityCore\build\bin\RelWithDebInfo\scripts"
 
 #    HotSwap.EnableReCompiler
 #        Description: Enables the dynamic script recompiler.
@@ -1480,7 +1477,7 @@ HotSwap.EnablePrefixCorrection = 1
 #                     "Release" - Release builds only
 #                     "Debug" - Debug builds only
 
-HotSwap.ReCompilerBuildType = "Debug"
+HotSwap.ReCompilerBuildType = "RelWithDebInfo"
 
 #
 ###################################################################################################
@@ -1721,11 +1718,11 @@ Rate.Corpse.Decay.Looted = 0.5
 #                     1 - (Rate.Creature.Elite.WORLDBOSS.Damage)
 #
 
-Rate.Creature.Normal.Damage          = 1
-Rate.Creature.Elite.Elite.Damage     = 1
-Rate.Creature.Elite.RARE.Damage      = 1
-Rate.Creature.Elite.RAREELITE.Damage = 1
-Rate.Creature.Elite.WORLDBOSS.Damage = 1
+Rate.Creature.Normal.Damage          = 0.4
+Rate.Creature.Elite.Elite.Damage     = 0.4
+Rate.Creature.Elite.RARE.Damage      = 0.4
+Rate.Creature.Elite.RAREELITE.Damage = 0.4
+Rate.Creature.Elite.WORLDBOSS.Damage = 0.4
 
 #
 #    Rate.Creature.Normal.SpellDamage
@@ -1740,11 +1737,11 @@ Rate.Creature.Elite.WORLDBOSS.Damage = 1
 #                     1 - (Rate.Creature.Elite.RAREELITE.SpellDamage)
 #                     1 - (Rate.Creature.Elite.WORLDBOSS.SpellDamage)
 
-Rate.Creature.Normal.SpellDamage          = 1
-Rate.Creature.Elite.Elite.SpellDamage     = 1
-Rate.Creature.Elite.RARE.SpellDamage      = 1
-Rate.Creature.Elite.RAREELITE.SpellDamage = 1
-Rate.Creature.Elite.WORLDBOSS.SpellDamage = 1
+Rate.Creature.Normal.SpellDamage          = 0.4
+Rate.Creature.Elite.Elite.SpellDamage     = 0.4
+Rate.Creature.Elite.RARE.SpellDamage      = 0.4
+Rate.Creature.Elite.RAREELITE.SpellDamage = 0.4
+Rate.Creature.Elite.WORLDBOSS.SpellDamage = 0.4
 
 #
 #    Rate.Creature.Normal.HP
@@ -1984,13 +1981,6 @@ ChatStrictLinkChecking.Kick = 0
 ChatFlood.MessageCount = 10
 
 #
-#    ChatFlood.MessageDelay
-#        Description: Time (in seconds) between messages to be counted into ChatFlood.MessageCount.
-#        Default:     1
-
-ChatFlood.MessageDelay = 1
-
-#
 #    ChatFlood.AddonMessageCount
 #        Description: Chat flood protection, number of addon messages before player gets muted.
 #        Default:     100 - (Enabled)
@@ -2006,8 +1996,15 @@ ChatFlood.AddonMessageCount = 100
 ChatFlood.AddonMessageDelay = 1
 
 #
+#    ChatFlood.MessageDelay
+#        Description: Time (in seconds) between messages to be counted into ChatFlood.MessageCount.
+#        Default:     1
+
+ChatFlood.MessageDelay = 1
+
+#
 #    ChatFlood.MuteTime
-#        Description: Time (in seconds) characters get muted for violating ChatFlood.MessageCount / ChatFlood.AddonMessageCount.
+#        Description: Time (in seconds) characters get muted for violating ChatFlood.MessageCount.
 #        Default:     10
 
 ChatFlood.MuteTime = 10
@@ -2155,7 +2152,7 @@ GM.InWhoList.Level = 3
 #        Description: GM character starting level.
 #        Default:     1
 
-GM.StartLevel = 1
+GM.StartLevel = 80
 
 #
 #    GM.AllowInvite
@@ -2303,22 +2300,22 @@ Rate.Skill.Discovery = 1
 #                     1 - (Rate.Drop.Item.Referenced)
 #                     1 - (Rate.Drop.Money)
 
-Rate.Drop.Item.Poor             = 1
-Rate.Drop.Item.Normal           = 1
-Rate.Drop.Item.Uncommon         = 1
-Rate.Drop.Item.Rare             = 1
+Rate.Drop.Item.Poor             = 10
+Rate.Drop.Item.Normal           = 10
+Rate.Drop.Item.Uncommon         = 10
+Rate.Drop.Item.Rare             = 10
 Rate.Drop.Item.Epic             = 1
 Rate.Drop.Item.Legendary        = 1
-Rate.Drop.Item.Artifact         = 1
+Rate.Drop.Item.Artifact         = 10
 Rate.Drop.Item.Referenced       = 1
-Rate.Drop.Money                 = 1
+Rate.Drop.Money                 = 100
 
 #
 #    Rate.Drop.Item.ReferencedAmount
 #        Description: Multiplier for referenced loot amount.
 #        Default:     1
 
-Rate.Drop.Item.ReferencedAmount = 1
+Rate.Drop.Item.ReferencedAmount = 2
 
 #
 #    Rate.XP.Kill
@@ -2329,9 +2326,9 @@ Rate.Drop.Item.ReferencedAmount = 1
 #                     1 - (Rate.XP.Quest)
 #                     1 - (Rate.XP.Explore)
 
-Rate.XP.Kill    = 100
-Rate.XP.Quest   = 1000
-Rate.XP.Explore = 1000
+Rate.XP.Kill    = 50
+Rate.XP.Quest   = 50
+Rate.XP.Explore = 50
 
 #
 #    Rate.XP.BattlegroundKill
@@ -2339,7 +2336,7 @@ Rate.XP.Explore = 1000
 #                     it works when Battleground.GiveXPForKills = 1
 #        Default:     1
 
-Rate.XP.BattlegroundKill = 1
+Rate.XP.BattlegroundKill = 50
 
 #
 #    Rate.Quest.Money.Reward
@@ -2772,7 +2769,7 @@ Battleground.ReportAFK = 3
 #         Default:     0 - (Disabled)
 #                      1 - (Enabled, Experimental as in incomplete, bugged and with crashes)
 
-Wintergrasp.Enable = 0
+Wintergrasp.Enable = 1
 
 #
 #     Wintergrasp.PlayerMax
@@ -2786,7 +2783,7 @@ Wintergrasp.PlayerMax = 100
 #         Description: Minimum number of players required for Wintergrasp.
 #         Default:     0
 
-Wintergrasp.PlayerMin = 0
+Wintergrasp.PlayerMin = 1
 
 #
 #     Wintergrasp.PlayerMinLvl
@@ -2807,7 +2804,7 @@ Wintergrasp.BattleTimer = 30
 #         Description: Time (in minutes) between Wintergrasp battles.
 #         Default:     150
 
-Wintergrasp.NoBattleTimer = 150
+Wintergrasp.NoBattleTimer = 1
 
 #
 #     Wintergrasp.CrashRestartTimer
@@ -2815,7 +2812,7 @@ Wintergrasp.NoBattleTimer = 150
 #                      crashed during a running battle.
 #         Default:     10
 
-Wintergrasp.CrashRestartTimer = 10
+Wintergrasp.CrashRestartTimer = 1
 
 #
 ###################################################################################################
@@ -3263,7 +3260,7 @@ ShowKickInWorld = 0
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-ShowMuteInWorld = 0
+ShowMuteInWorld = 1
 
 #
 #     ShowBanInWorld
@@ -3272,7 +3269,7 @@ ShowMuteInWorld = 0
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-ShowBanInWorld = 0
+ShowBanInWorld = 1
 
 #
 #     PlayerStart.String
@@ -3309,7 +3306,6 @@ LevelReq.Auction = 1
 
 LevelReq.Mail = 1
 
-#
 #     Anticheat.Enable
 #       Description: Enables or disables the Anticheat System functionality
 #       Default:     1 - (Enabled)
@@ -3322,7 +3318,7 @@ Anticheat.Enable = 1
 #       Default:    0 - (Disabled)
 #                   1 - (Enabled)
 
-Anticheat.EnabledOnGmAccounts = 0
+Anticheat.EnabledOnGmAccounts = 1
 
 #     Anticheat.ReportsForIngameWarnings
 #       Description: How many reports the player must have to notify to GameMasters ingame when he generates a new report.
@@ -3368,7 +3364,7 @@ Anticheat.DetectFlyHack = 0
 Anticheat.DetectWaterWalkHack = 0
 Anticheat.DetectJumpHack = 0
 Anticheat.DetectTelePlaneHack = 0
-Anticheat.DetectSpeedHack = 0
+Anticheat.DetectSpeedHack = 1
 Anticheat.DetectClimbHack = 0
 Anticheat.DetectTelePortHack = 0
 Anticheat.IgnoreControlHack = 0
@@ -3385,7 +3381,7 @@ Anticheat.OpAckOrderHack = 0
 #       Default:    0 - (Disabled)
 #                   1 - (Enabled)
 
-Anticheat.StricterFlyHackCheck = 0
+Anticheat.StricterFlyHackCheck = 1
 
 #     Automatic Moderation Features
 #
@@ -3442,7 +3438,6 @@ Anticheat.AnnounceJail = 0
 
 Appender.Anticheat=2,3,15,anticheat.log,a
 Logger.anticheat=3,Server Anticheat
-
 #
 #     PlayerDump.DisallowPaths
 #        Description: Disallow using paths in PlayerDump output files
@@ -4007,71 +4002,6 @@ AuctionHouseBot.Buyer.Recheck.Interval = 20
 ###################################################################################################
 
 ###################################################################################################
-
-#  ELUNA SETTINGS
-#
-#   Eluna.Enabled
-#       Description: Enable or disable Eluna LuaEngine
-#       Default:     true  - (enabled)
-#                    false - (disabled)
-#
-#   Eluna.CompatibilityMode
-#       Description: Toggles Eluna between compatibility mode (single-threaded) or multistate mode. 
-#                    Compatibility mode limits the core to a single map update thread.
-#       Default:     true  - (enabled)
-#                    false - (disabled)
-#
-#   Eluna.ScriptReloader
-#       Description: Enable or disable the automated script reloader.
-#                    This will automatically reload Eluna when it detects changes to scripts.
-#       Default:     false - (disabled)
-#                    true  - (enabled)
-#
-#   Eluna.OnlyOnMaps
-#       Description: When Eluna is enabled, a state will only be created for a list of specified maps
-#                    This only works for multistate mode.
-#       Default:     ""  - (enabled on all maps)
-#                    "0,1,2,..." - (enabled on specific maps only)
-#
-#   Eluna.TraceBack
-#       Description: Sets whether to use debug.traceback function on a lua error or not.
-#                    Notice that you can redefine the function.
-#       Default:     false - (use default error output)
-#                    true  - (use debug.traceback function)
-#
-#   Eluna.ScriptPath
-#       Description: Sets the location of the script folder to load scripts from
-#                    The path can be relative or absolute.
-#       Default:     "lua_scripts"
-#
-#   Eluna.RequirePaths
-#       Description: Sets the location of additional require paths.
-#                    These paths are absolute and follows the standard Lua require path patterns.
-#                    Below are a set of "standard" paths used by most package managers.
-#                    "/usr/share/%s/?.lua;/usr/local/share/lua/%s/?.lua;/usr/local/share/lua/%s/?/init.lua;/usr/share/lua/%s/?.lua;/usr/share/lua/%s/?/init.lua;"
-#       Default:     ""
-#
-#   Eluna.RequireCPaths
-#       Description: Sets the location of additional require C paths.
-#                    These paths are absolute and follows the standard Lua require path patterns.
-#                    Below are a set of "standard" paths used by most package managers.
-#                    "/usr/local/lib/lua/%s/?.so;/usr/lib/x86_64-linux-gnu/lua/%s/?.so;/usr/local/lib/lua/%s/loadall.so;"
-#       Default:     ""
-#
-
-Eluna.Enabled = true
-Eluna.CompatibilityMode = true
-Eluna.ScriptReloader = false
-Eluna.OnlyOnMaps = ""
-Eluna.TraceBack = false
-Eluna.ScriptPath = "lua_scripts"
-Eluna.RequirePaths = ""
-Eluna.RequireCPaths = ""
-
-#
-###################################################################################################
-
-###################################################################################################
 # LOGGING SYSTEM SETTINGS
 #
 #  Appender config values: Given an appender "name"
@@ -4138,11 +4068,13 @@ Eluna.RequireCPaths = ""
 #                         Example:  536870912 (512 MB)
 #
 
-Appender.Console=1,3,0
+#Appender.Console=1,3,0
+#Appender.Console=1,3,0,13 11 9 5 3 1
+Appender.Console=1,3,0,13 11 9 5 3 1
 Appender.Hots=2,2,0,Hots.log,w
-Appender.Server=2,2,0,Server.log,w
+Appender.Server=2,2,15,Server_%s.log,w
 Appender.GM=2,2,15,GM_%s.log
-Appender.DBErrors=2,2,0,DBErrors.log
+Appender.DBErrors=2,2,15,DBErrors_%s.log
 Appender.Eluna=2,5,3,Eluna.log,a
 
 #  Logger config values: Given a logger "name"
@@ -4326,7 +4258,7 @@ Metric.Enable = 0
 #        Default:     10 seconds
 #
 
-Metric.Interval = 1
+Metric.Interval = 10
 
 #
 #    Metric.ConnectionInfo
@@ -4374,7 +4306,7 @@ Tournaments.Enable = 1
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-Tournaments.Debug = 1
+Tournaments.Debug = 0
 
 #    Tournaments.Ladder
 #        Description: Enable/Disable Ladder system for Tournaments. (1..2..3..levels, die: reset)
@@ -4397,7 +4329,6 @@ Tournaments.LadderText = 0
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-ItemUpgrade.Enable = 1
 
 # String ID from `trinity_string` for gossip menu
 
@@ -4511,7 +4442,7 @@ Guildhouse.SellCost = 500
 
 #
 ###################################################################################################
-Rate.XP.Kill.Premium     = 1
+Rate.XP.Kill.Premium     = 50
 Rate.XP.Quest.Premium    = 1
 Rate.XP.Explore.Premium  = 1
 Rate.Honor.Premium       = 1
@@ -4549,7 +4480,6 @@ Vip.Appear.Command       = 1
  Item.Disable3             = 1
  Item.Disable4             = 1
  Item.Disable5             = 0
-###################################################################################################
 # 1V1 ARENA CONFIG
 #
 #     Arena.1v1.Enable
@@ -4611,7 +4541,7 @@ Arena.1v1.ArenaPointsMulti = 0.64
 
 Arena.1v1.BlockForbiddenTalents = 1
 Ip.enabled = 0
-###################################################################################################
+#
 #    Transmogrification config
 ###################################################################################################
 #
@@ -4641,7 +4571,7 @@ Ip.enabled = 0
 
 Logger.custom.transmog = 3, Console Server
 
-Transmogrification.EnableTransmogInfo = 1
+Transmogrification.EnableTransmogInfo = 0
 Transmogrification.TransmogNpcText = 65000
 
 Transmogrification.Allowed = ""
@@ -4814,24 +4744,118 @@ Transmogrification.SetNpcText = 65001
 
 Transmogrification.SetCostModifier = 3.0
 Transmogrification.SetCopperCost = 0
-###################################################################################################
 DefaultSpec.Enable = 1
-###################################################################################################
-DeathKnight.SkipQuest = 0
-###################################################################################################
+DeathKnight.SkipQuest = 1
 #on/off guild default
 GuildDefault.IDA = 0
 GuildDefault.IDH = 0
-###################################################################################################
 HonorRank.Enable = 0
-###################################################################################################
 CustomRewardPvP.Enable = 0
-###################################################################################################
 BossHistory.Enable = 0
-###################################################################################################
 CrossfactionBG.enable = 1
 #CrossFactionBattlegrounds.Enable = 1
 ###################################################################################################
+# Cross Faction Battlegrounds#
+##############################
+#
+#    CrossFactionBattlegrounds.Enable
+#        Description: Enables Cross Faction Battlegrounds modules.
+#                     This module will enable both factions to team up for Battlegrounds play.
+#
+#        Default:     1    - (Enabled)
+#                     0    - (Disable)
+#
+
+CrossFactionBattlegrounds.Enable = 1
+
+#
+#    CrossFactionBattlegrounds.ReplaceLanguages
+#        Description: Disable Languages so everyone regardless of race.
+#                     This will enable both factions to comunicate on the same team for
+#                     unified team communifcations.
+#
+#        Default:     1    - (Enabled)
+#                     0    - (Disable)
+#
+
+CrossFactionBattlegrounds.ReplaceLanguages = 1
+
+#
+#    CrossFactionBattlegrounds.ReplaceRacials
+#        Description: Replaces Racial with default Skills.
+#                     This Ensures there are no racial exploits or advantage for Battlegounds play.
+#
+#        Default:     0    - (Disable)
+#                     1    - (Enabled)
+#
+
+CrossFactionBattlegrounds.ReplaceRacials = 0
+
+#
+###################################################################################################
+
+#  ELUNA SETTINGS
+#
+#   Eluna.Enabled
+#       Description: Enable or disable Eluna LuaEngine
+#       Default:     true  - (enabled)
+#                    false - (disabled)
+#
+#   Eluna.CompatibilityMode
+#       Description: Toggles Eluna between compatibility mode (single-threaded) or multistate mode. 
+#                    Compatibility mode limits the core to a single map update thread.
+#       Default:     true  - (enabled)
+#                    false - (disabled)
+#
+#   Eluna.ScriptReloader
+#       Description: Enable or disable the automated script reloader.
+#                    This will automatically reload Eluna when it detects changes to scripts.
+#       Default:     false - (disabled)
+#                    true  - (enabled)
+#
+#   Eluna.OnlyOnMaps
+#       Description: When Eluna is enabled, a state will only be created for a list of specified maps
+#                    This only works for multistate mode.
+#       Default:     ""  - (enabled on all maps)
+#                    "0,1,2,..." - (enabled on specific maps only)
+#
+#   Eluna.TraceBack
+#       Description: Sets whether to use debug.traceback function on a lua error or not.
+#                    Notice that you can redefine the function.
+#       Default:     false - (use default error output)
+#                    true  - (use debug.traceback function)
+#
+#   Eluna.ScriptPath
+#       Description: Sets the location of the script folder to load scripts from
+#                    The path can be relative or absolute.
+#       Default:     "lua_scripts"
+#
+#   Eluna.RequirePaths
+#       Description: Sets the location of additional require paths.
+#                    These paths are absolute and follows the standard Lua require path patterns.
+#                    Below are a set of "standard" paths used by most package managers.
+#                    "/usr/share/%s/?.lua;/usr/local/share/lua/%s/?.lua;/usr/local/share/lua/%s/?/init.lua;/usr/share/lua/%s/?.lua;/usr/share/lua/%s/?/init.lua;"
+#       Default:     ""
+#
+#   Eluna.RequireCPaths
+#       Description: Sets the location of additional require C paths.
+#                    These paths are absolute and follows the standard Lua require path patterns.
+#                    Below are a set of "standard" paths used by most package managers.
+#                    "/usr/local/lib/lua/%s/?.so;/usr/lib/x86_64-linux-gnu/lua/%s/?.so;/usr/local/lib/lua/%s/loadall.so;"
+#       Default:     ""
+#
+
+Eluna.Enabled = true
+Eluna.CompatibilityMode = true
+Eluna.ScriptReloader = false
+Eluna.OnlyOnMaps = ""
+Eluna.TraceBack = false
+Eluna.ScriptPath = "C:\Users\Declipe\Desktop\TrinityCore\build\bin\RelWithDebInfo\lua_scripts"
+Eluna.RequirePaths = ""
+Eluna.RequireCPaths = ""
+#
+###################################################################################################
+
 BGReward.Enable = 1
 
 BGReward.ItemID.WSG = 20558
@@ -4846,7 +4870,6 @@ BGReward.LoserTeam.Count = 1
 ###################################################################################################
 #on/off special code
 SpecialCode.Enable = 0
-
 ###################################################################################################
 #
 # AUTOBALANCE ANNOUNCE
@@ -4881,20 +4904,20 @@ AutoBalance.enable = 1
 #
 #        Default:     0.5
 
-AutoBalance.InflectionPoint = 0.5
-AutoBalance.InflectionPointHeroic = 0.5
+AutoBalance.InflectionPoint = 0.8
+AutoBalance.InflectionPointHeroic = 0.8
 
-AutoBalance.InflectionPointRaid10M = 0.5
-AutoBalance.InflectionPointRaid10MHeroic = 0.5
+AutoBalance.InflectionPointRaid10M = 0.8
+AutoBalance.InflectionPointRaid10MHeroic = 0.8
 
-AutoBalance.InflectionPointRaid25M = 0.5
-AutoBalance.InflectionPointRaid25MHeroic = 0.5
+AutoBalance.InflectionPointRaid25M = 0.8
+AutoBalance.InflectionPointRaid25MHeroic = 0.8
 
-AutoBalance.InflectionPointRaid30M = 0.5
-AutoBalance.InflectionPointRaid30MHeroic = 0.5
+AutoBalance.InflectionPointRaid30M = 0.8
+AutoBalance.InflectionPointRaid30MHeroic = 0.8
 
-AutoBalance.InflectionPointRaid = 0.5
-AutoBalance.InflectionPointRaidHeroic = 0.5
+AutoBalance.InflectionPointRaid = 0.8
+AutoBalance.InflectionPointRaidHeroic = 0.8
 
 #
 #     AutoBalance.BossInflectionMult
@@ -4912,7 +4935,7 @@ AutoBalance.BossInflectionMult = 1.0
 #        1 = Enabled (only in dungeons/raids)
 #        Default:     1
 
-AutoBalance.levelScaling = 0
+AutoBalance.levelScaling = 1
 
 #
 #     AutoBalance.levelHigherOffset
@@ -4923,7 +4946,7 @@ AutoBalance.levelScaling = 0
 #        default: 3 (higher), 0 (lower)
 
 AutoBalance.levelHigherOffset = 3
-AutoBalance.levelLowerOffset  = 0
+AutoBalance.levelLowerOffset  = 1
 
 #
 #     AutoBalance.levelUseDbValuesWhenExists
@@ -4943,7 +4966,7 @@ AutoBalance.levelUseDbValuesWhenExists = 0
 #
 #        Default:     1 (1 = ON, 0 = OFF)
 
-AutoBalance.LevelEndGameBoost = 1
+AutoBalance.LevelEndGameBoost = 0
 
 #
 #     AutoBalance.DungeonScaleDownXP
@@ -4971,7 +4994,7 @@ AutoBalance.DungeonsOnly = 1
 #        3 = All  Info
 #        Default:     2
 
-AutoBalance.DebugLevel = 2
+AutoBalance.DebugLevel = 3
 
 #
 #     AutoBalance.PlayerChangeNotify
@@ -4985,7 +5008,7 @@ AutoBalance.PlayerChangeNotify = 1
 #        Minimum Modifier setting for Health Modification
 #        Default:     0.01
 
-AutoBalance.MinHPModifier = 0.01
+AutoBalance.MinHPModifier = 0.9
 
 #
 #     AutoBalance.MinManaModifier
@@ -5009,7 +5032,7 @@ AutoBalance.MinDamageModifier = 0.01
 #        Default:     1.0
 
 AutoBalance.rate.global = 1.0
-AutoBalance.rate.health = 1.0
+AutoBalance.rate.health = 3.5
 AutoBalance.rate.mana   = 1.0
 AutoBalance.rate.armor  = 1.0
 AutoBalance.rate.damage = 1.0
@@ -5041,7 +5064,6 @@ AutoBalance.ForcedID2  = ""
 
 AutoBalance.DisabledID = ""
 ###################################################################################################
-
 ###################################################################################################
 # Grumbo'z Capture the Flag
 # by slp13at420 of EmuDevs.com
@@ -5055,7 +5077,7 @@ AutoBalance.DisabledID = ""
 #		Default: 600002 // custom item id . sql included with the System files.
 #			you must also set the ScriptName in the gameobject_template.
 
-CTF.DEFAULT_WORLD_FLAG_ID = 600000
+CTF.DEFAULT_WORLD_FLAG_ID = 600002
 
 # This setting is where you set the scale/size for the World Flags.
 #	CTF.DEFAULT_WORLD_FLAG_SCALE
@@ -5071,7 +5093,7 @@ CTF.DEFAULT_WORLD_FLAG_SCALE = 30.00
 #				 has spawned.
 #		Default: 0 // 0 = no hint // 1 = announce to whole world.
 
-CTF.HINT_SYSTEM = 1
+CTF.HINT_SYSTEM = 0
 
 # This setting is where you can allow GM with minimum rank of x to use the spawn
 # commands
@@ -5157,7 +5179,8 @@ BZ.GM.Requires.ItemCount    = 0
 
 #
 ###################################################################################################
-
+NT.Token  = 0
+NT.Count  = 0
 ###################################################################################################
 # SOLO LFG
 #
@@ -5223,3 +5246,228 @@ Skip.Deathknight.Optional.Enable = 1
 
 #
 ###################################################################################################
+########################################
+# ServerAutoShutdown module configuration
+########################################
+#
+#    ServerAutoShutdown.Enabled
+#        Description: Enable to automatically shut down the server, so it can be restarted on a daily basis
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+
+AutoShutdown.Enabled = 1
+
+#
+#    ServerAutoShutdown.Time
+#        Description: Time (in HH:MM:SS) - 24 hours format
+#        Default:     04:00:00
+#
+
+AutoShutdown.Time = "12:47:00"
+
+#
+#    ServerAutoShutdown.PreAnnounce.Seconds
+#        Description: Seconds of delay, so the players will be informed about the server restart
+#        Default:     3600 (1 hour)
+#
+
+AutoShutdown.PreAnnounce.Seconds = 60
+
+#
+#    ServerAutoShutdown.PreAnnounce.Message
+#        Description: An announcement to be broadcasted in-game
+#        Default:     "[SERVER]: Automated (quick) server restart in %s"
+#
+
+AutoShutdown.PreAnnounce.Message = "[SERVER]: Automated (quick) server restart in %s"
+
+# GMIsland.PlayersNoAccess.Enable
+# Prevent access for players to gm island
+# Default: 1 - Enable
+# 0 - Disable
+
+GMIsland.PlayersNoAccess.Enable = 1
+
+#
+# GMIsland.TeleportTo
+# Teleport player to this coordinates (map, x, y, z, orientation)
+# Default: "13 1.118799 0.477914 -144.708650 3.133046" (Jailbox)
+
+GMIsland.TeleportTo = "13 1.118799 0.477914 -144.708650 3.133046"
+
+#
+# GMIsland.Ban.Enable
+# Enable to ban players that tries to access GM Island without proper Access
+# Default: 0 - Disable
+# 1 - Enable
+
+GMIsland.Ban.Enable = 0
+
+#
+###################################################################################################
+
+########################################
+# Item upgrade module configuration
+########################################
+#
+#    ItemUpgrade.Enable
+#        Description: Enable the module or not. If the module is toggled off, items that were previously upgraded will lose their upgrade bonus.
+#                     Re-enabling the module will restore the already upgraded item bonuses.
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+
+ItemUpgrade.Enable = 1
+
+#
+#    ItemUpgrade.AllowedStats
+#        Description: Stats that are allowed to be upgraded. These correspond to the ItemModType enum from ItemTemplate.h
+#                     For example, to allow "Attack power" to be upgraded, there is ITEM_MOD_ATTACK_POWER = 38 in the enum,
+#                     so just add it to the list of allowed stats. Values are separated by ,
+#                     Items that were upgraded with a certain stat will LOSE their upgrade bonus if you remove the stat from
+#                     allowed list. If you re-add the stat, the items will GAIN back their upgrade bonus for that stat.
+#        Default:     3,4,5,6,7,32,36,45
+#
+
+ItemUpgrade.AllowedStats = 3,4,5,6,7,32,36,45
+
+#
+#    ItemUpgrade.SendUpgradedItemsPackets
+#        Description: Whether to send SMSG_ITEM_QUERY_SINGLE_RESPONSE for upgraded items. This will ensure that owner will see the stats correctly
+#                     when reading item description. ONLY the owner will see the stats though and this DOES NOT work for items that have random
+#                     properties (stats that are random after acquiring the item, such as "of the Bear" or "of Intellect" items). The limitation
+#                     is due to WOTLK client nature and is not possible to be solved.
+#                     THIS ONLY AFFECTS VISUALS, UPGRADED STATS WILL BE THERE NONETHELESS!
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+
+ItemUpgrade.SendUpgradedItemsPackets = 1
+
+#
+#    ItemUpgrade.AllowUpgradesPurge
+#        Description: Allows the players to purge upgrades from their items.
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+
+ItemUpgrade.AllowUpgradesPurge = 1
+
+#
+#    ItemUpgrade.UpgradePurgeToken
+#        Description: Give the player a token (item) when purging an upgrade. This is just an item entry, can be anything. Only active when
+#                     ItemUpgrade.AllowUpgradesPurge = 1
+#        Default:     0 - No token
+#                     Item Entry - the entry of token
+#
+
+ItemUpgrade.UpgradePurgeToken = 0
+
+#
+#    ItemUpgrade.UpgradePurgeTokenCount
+#        Description: How many ItemUpgrade.UpgradePurgeToken to give when players purge an upgrade. Only active when ItemUpgrade.AllowUpgradesPurge = 1
+#                     and ItemUpgrade.UpgradePurgeToken is a valid item entry
+#        Default:     0 - No effect
+#                     1+ - count
+#
+
+ItemUpgrade.UpgradePurgeTokenCount = 0
+
+#
+#    ItemUpgrade.RefundAllOnPurge
+#        Description: Refund all items/gold/honor/arena when purging that were used to upgrade the item. EVERYTHING is refunded, meaning if the item
+#                     has rank 3 stamina for example, it will refund everything from rank 1 to 3. Only active when
+#                     ItemUpgrade.AllowUpgradesPurge = 1
+#        Default:     1 - Refund everything that was used to upgrade the item
+#
+
+ItemUpgrade.RefundAllOnPurge = 1
+
+#
+#    ItemUpgrade.RandomUpgradesOnLoot
+#        Description: Whether looted items (including from party loot, quest items) can be automatically upgraded. Titanforging-like system.
+#        Default:     0 - No
+#                     1 - Yes, automatic item upgrades enabled
+#
+
+ItemUpgrade.RandomUpgradesOnLoot = 0
+
+#
+#    ItemUpgrade.RandomUpgradesBroadcastLoginMsg
+#        Description: Let players know that random item upgrades are ON via a message that will be sent when player logs in.
+#                     Only has effect when ItemUpgrade.RandomUpgradesOnLoot = 1. Just set to "" (double quotes) if you don't want to broadcast anything.
+#        Default:     |cffeb891a[ITEM UPGRADES SYSTEM]:|r Random item upgrades are active. You have a chance to gain stat upgrades on loot for eligible items.
+#
+
+ItemUpgrade.RandomUpgradesBroadcastLoginMsg = |cffeb891a[ITEM UPGRADES SYSTEM]:|r Random item upgrades are active. You have a chance to gain stat upgrades on loot for eligible items.
+
+#
+#    ItemUpgrade.RandomUpgradeChance
+#        Description: Automatic upgrade chance, only has effect when ItemUpgrade.RandomUpgradesOnLoot = 1. Must be > 0.
+#        Default:     2 - 2% chance for items to be automatically upgraded when looted
+#
+
+ItemUpgrade.RandomUpgradeChance = 2
+
+#
+#    ItemUpgrade.RandomUpgradeMaxStatCount
+#        Description: How many stats can be automatically upgraded. This will always be a roll between 1 and the value that you choose here. So if
+#                     you choose 4 for example, a value between 1 and 4 will be rolled. If 3 is rolled, then 3 stats will be upgraded up to ItemUpgrade.RandomUpgradeMaxRank.
+#                     The chosen stats are also random. If an item has LESS stats than the rolled value, then ALL stats will be upgraded up to ItemUpgrade.RandomUpgradeMaxRank.
+#                     Choose a value between 1 and 10.
+#        Default:     2 - maximum 2 stats will be upgraded (so always 1 or 2 stats)
+#
+
+ItemUpgrade.RandomUpgradeMaxStatCount = 13
+
+#
+#    ItemUpgrade.RandomUpgradeMaxRank
+#        Description: Maximum upgrade rank that can be chosen. This will always be a roll between 1 and the value that you choose here. So if
+#                     you choose 3 for example, a value between 1 and 3 will be rolled. If 2 is rolled, then the stat will be upgraded to RANK 2.
+#                     If there is no RANK n, then RANK n-1 is chosen, if RANK n-1 is still not available, then the next available rank is searched
+#                     until found.
+#        Default:     3 - each stat can go up to RANK 3
+#
+
+ItemUpgrade.RandomUpgradeMaxRank = 13
+
+#
+#    ItemUpgrade.RandomUpgradeWhenBuying
+#        Description: Whether items that are bought from vendors can be randomly upgraded
+#        Default:     0 - don't randomly upgrade bought items
+#
+
+ItemUpgrade.RandomUpgradeWhenBuying = 0
+
+#
+#    ItemUpgrade.RandomUpgradeWhenLooting
+#        Description: Whether items that are looted can be randomly upgraded
+#        Default:     1 - randomly upgrade looted items
+#
+
+ItemUpgrade.RandomUpgradeWhenLooting = 1
+
+#
+#    ItemUpgrade.RandomUpgradeWhenWinning
+#        Description: Whether items that are won by Need/Greel rolls in raid/party can be randomly upgraded
+#        Default:     1 - randomly upgrade won items
+#
+
+ItemUpgrade.RandomUpgradeWhenWinning = 1
+
+#
+#    ItemUpgrade.RandomUpgradeOnQuestReward
+#        Description: Whether quest rewarded items can be randomly upgraded
+#        Default:     1 - randomly upgrade quest rewarded items
+#
+
+ItemUpgrade.RandomUpgradeOnQuestReward = 1
+
+#
+#    ItemUpgrade.RandomUpgradeWhenCrafting
+#        Description: Whether crafted items can be randomly upgraded
+#        Default:     1 - randomly upgrade crafted items
+#
+
+ItemUpgrade.RandomUpgradeWhenCrafting = 1

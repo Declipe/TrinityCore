@@ -18,6 +18,20 @@
 #ifndef SC_SCRIPTMGR_H
 #define SC_SCRIPTMGR_H
 
+#include "WorldSession.h"
+#include "Bag.h"
+#include "DatabaseEnv.h"
+#include "DBCStores.h"
+#include "Opcodes.h"
+#include "Item.h"
+#include "Log.h"
+#include "ObjectMgr.h"
+#include "Player.h"
+#include "SpellInfo.h"
+#include "QueryPackets.h"
+#include "World.h"
+#include "WorldPacket.h"
+
 #include "Common.h"
 #include "ObjectGuid.h"
 #include "Tuples.h"
@@ -388,6 +402,8 @@ class TC_GAME_API ItemScript : public ScriptObject
 
     public:
 
+        [[nodiscard]] virtual bool CanItemRemove(Player* /*player*/, Item* /*item*/) { return true; }
+
         // Called when a player accepts a quest from the item.
         virtual bool OnQuestAccept(Player* player, Item* item, Quest const* quest);
 
@@ -687,6 +703,16 @@ class TC_GAME_API PlayerScript : public ScriptObject
         explicit PlayerScript(char const* name);
 
     public:
+
+        virtual void OnAfterStoreOrEquipNewItem(Player* /*player*/, uint32 /*vendorslot*/, Item* /*item*/, uint8 /*count*/, uint8 /*bag*/, uint8 /*slot*/, ItemTemplate const* /*pProto*/, Creature* /*pVendor*/, VendorItem const* /*crItem*/, bool /*bStore*/) { };
+        virtual void OnCreateItem(Player* /*player*/, Item* /*item*/, uint32 /*count*/) { }
+        virtual void OnQuestRewardItem(Player* /*player*/, Item* /*item*/, uint32 /*count*/) { }
+        virtual void OnLootItem(Player* /*player*/, Item* /*item*/, uint32 /*count*/, ObjectGuid /*lootguid*/) { }
+        virtual void OnDeleteFromDB(CharacterDatabaseTransaction /*trans*/, uint32 /*guid*/) { }
+        virtual void OnAfterMoveItemFromInventory(Player* /*player*/, Item* /*it*/, uint8 /*bag*/, uint8 /*slot*/, bool /*update*/) { }
+        virtual void OnApplyEnchantmentItemModsBefore(Player* /*player*/, Item* /*item*/, EnchantmentSlot /*slot*/, bool /*apply*/, uint32 /*enchant_spell_id*/, uint32& /*enchant_amount*/) { }
+
+        virtual void OnApplyItemModsBefore(Player* /*player*/, uint8 /*slot*/, bool /*apply*/, uint8 /*itemProtoStatNumber*/, uint32 /*statType*/, int32& /*val*/) { }
 
         // Called when a player kills another player
         virtual void OnPVPKill(Player* killer, Player* killed);
@@ -1135,6 +1161,15 @@ class TC_GAME_API ScriptMgr
 
     public: /* PlayerScript */
 
+        void OnAfterStoreOrEquipNewItem(Player* player, uint32 vendorslot, Item* item, uint8 count, uint8 bag, uint8 slot, ItemTemplate const* pProto, Creature* pVendor, VendorItem const* crItem, bool bStore);
+        void OnCreateItem(Player* player, Item* item, uint32 count);
+        void OnQuestRewardItem(Player* player, Item* item, uint32 count);
+        //void OnAfterMoveItemFromInventory(Player* player, Item* it, uint8 bag, uint8 slot, bool update) { }
+        void OnLootItem(Player* player, Item* item, uint32 count, ObjectGuid lootguid);
+        void OnDeleteFromDB(CharacterDatabaseTransaction trans, uint32 guid);
+        void OnAfterPlayerMoveItemFromInventory(Player* player, Item* it, uint8 bag, uint8 slot, bool update);
+        void OnApplyEnchantmentItemModsBefore(Player* player, Item* item, EnchantmentSlot slot, bool apply, uint32 enchant_spell_id, uint32& enchant_amount);
+        void OnApplyItemModsBefore(Player* player, uint8 slot, bool apply, uint8 itemProtoStatNumber, uint32 statType, int32& val);
         void OnPVPKill(Player* killer, Player* killed);
         void OnCreatureKill(Player* killer, Creature* killed);
         void OnPlayerKilledByCreature(Creature* killer, Player* killed);

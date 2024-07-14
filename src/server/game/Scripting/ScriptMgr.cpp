@@ -1663,6 +1663,7 @@ bool ScriptMgr::OnItemRemove(Player* player, Item* item)
 
     GET_SCRIPT_RET(ItemScript, item->GetScriptId(), tmpscript, false);
     return tmpscript->OnRemove(player, item);
+    return tmpscript->CanItemRemove(player, item);
 }
 
 bool ScriptMgr::OnCastItemCombatSpell(Player* player, Unit* victim, SpellInfo const* spellInfo, Item* item)
@@ -2002,6 +2003,45 @@ void ScriptMgr::OnShutdown()
 void ScriptMgr::OnLoadCustomScripts()
 {
     FOREACH_SCRIPT(WorldScript)->OnLoadCustomScripts();
+}
+
+void ScriptMgr::OnAfterStoreOrEquipNewItem(Player* player, uint32 vendorslot, Item* item, uint8 count, uint8 bag, uint8 slot, ItemTemplate const* pProto, Creature* pVendor, VendorItem const* crItem, bool bStore)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnAfterStoreOrEquipNewItem(player, vendorslot, item, count, bag, slot, pProto, pVendor, crItem, bStore);
+}
+
+void ScriptMgr::OnCreateItem(Player* player, Item* item, uint32 count)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnCreateItem(player, item, count);
+}
+
+void ScriptMgr::OnDeleteFromDB(CharacterDatabaseTransaction trans, uint32 guid)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnDeleteFromDB(trans, guid);
+}
+
+void ScriptMgr::OnQuestRewardItem(Player* player, Item* item, uint32 count)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnQuestRewardItem(player, item, count);
+}
+
+void ScriptMgr::OnLootItem(Player* player, Item* item, uint32 count, ObjectGuid lootguid)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnLootItem(player, item, count, lootguid);
+}
+void ScriptMgr::OnAfterPlayerMoveItemFromInventory(Player* player, Item* it, uint8 bag, uint8 slot, bool update)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnAfterMoveItemFromInventory(player, it, bag, slot, update);
+}
+
+void ScriptMgr::OnApplyEnchantmentItemModsBefore(Player* player, Item* item, EnchantmentSlot slot, bool apply, uint32 enchant_spell_id, uint32& enchant_amount)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnApplyEnchantmentItemModsBefore(player, item, slot, apply, enchant_spell_id, enchant_amount);
+}
+
+void ScriptMgr::OnApplyItemModsBefore(Player* player, uint8 slot, bool apply, uint8 itemProtoStatNumber, uint32 statType, int32& val)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnApplyItemModsBefore(player, slot, apply, itemProtoStatNumber, statType, val);
 }
 
 bool ScriptMgr::OnCriteriaCheck(uint32 scriptId, Player* source, Unit* target)
