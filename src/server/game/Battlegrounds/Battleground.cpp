@@ -140,8 +140,9 @@ Battleground::Battleground()
 Battleground::~Battleground()
 {
 #ifdef ELUNA
-    if (Eluna* e = GetBgMap()->GetEluna())
-        e->OnBGDestroy(this, GetTypeID(), GetInstanceID());
+    if(m_Map)
+        if (Eluna* e = m_Map->GetEluna())
+            e->OnBGDestroy(this, GetTypeID(), GetInstanceID());
 #endif
 
     // remove objects and creatures
