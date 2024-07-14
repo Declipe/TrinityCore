@@ -57,7 +57,7 @@ public:
         {
             ItemUpgrade::SendMessage(player, "Item Upgrade data is being reloaded by an administrator, please retry.");
             CloseGossipMenuFor(player);
-            return true/* CloseGossip(player)*/;
+            //return true/* CloseGossip(player)*/;
         }
 
         sItemUpgrade->GetPagedData(player).reloaded = false;
@@ -123,13 +123,13 @@ public:
                 sItemUpgrade->UpdateVisualCache(player);
                 sItemUpgrade->VisualFeedback(player);
                 CloseGossipMenuFor(player);
-                return true/*CloseGossip*//*(player)*/;
+               // return true/*CloseGossip*//*(player)*/;
             }
             else if (action == GOSSIP_ACTION_INFO_DEF + 5)
             {
                 sItemUpgrade->SetReloading(true);
                 CloseGossipMenuFor(player);
-                return true/* CloseGossip*//*(player)*/;
+               // return true/* CloseGossip*//*(player)*/;
             }
             else if (action == GOSSIP_ACTION_INFO_DEF + 6)
             {
@@ -162,7 +162,7 @@ public:
             Item* item = GetPagedDataItem(pagedData, player);
             if (item == nullptr)
                 CloseGossipMenuFor(player);
-                return false /*CloseGossip*//*(player, false)*/;
+               // return false /*CloseGossip*//*(player, false)*/;
 
             sItemUpgrade->BuildStatsUpgradeCatalogue(player, item);
             return sItemUpgrade->AddPagedData(player, me, 0);
@@ -182,7 +182,7 @@ public:
             Item* item = GetPagedDataItem(pagedData, player);
             if (item == nullptr)
                 CloseGossipMenuFor(player);
-                return false/*CloseGossip*//*(player, false)*/;
+                //return false/*CloseGossip*//*(player, false)*/;
 
             sItemUpgrade->BuildStatsUpgradeCatalogueBulk(player, item);
             return sItemUpgrade->AddPagedData(player, me, 0);
@@ -192,7 +192,7 @@ public:
             Item* item = GetPagedDataItem(pagedData, player);
             if (item == nullptr)
                 CloseGossipMenuFor(player);
-                return false/*CloseGossip*//*(player, false)*/;
+                //return false/*CloseGossip*//*(player, false)*/;
 
             sItemUpgrade->BuildStatsUpgradeByPctCatalogueBulk(player, item, pagedData.pct);
             return sItemUpgrade->AddPagedData(player, me, 0);
