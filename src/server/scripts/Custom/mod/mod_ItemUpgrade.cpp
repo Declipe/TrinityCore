@@ -128,7 +128,8 @@ class go_item_upgrade : public GameObjectScript
         for (uint8 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; i++)
         {
             Item* item = player->GetUseableItemByPos(INVENTORY_SLOT_BAG_0, i);
-            
+            WorldSession* session = player->GetSession();
+
             if (item)
             {
                 ItemTemplate const *itemTemplate = item->GetTemplate();
@@ -136,7 +137,9 @@ class go_item_upgrade : public GameObjectScript
                 if (loc_idx >= 0)
                     if (ItemLocale const* il = sObjectMgr->GetItemLocale(itemTemplate->ItemId))
                         ObjectMgr::GetLocaleString(il->Name, loc_idx, Name);
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, Name.c_str(), senderValue(i,0), GOSSIP_ACTION_INFO_DEF);
+                
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, sTransmogrification->GetItemIcon(item->GetEntry(), 30, 30, -18, 0) + sTransmogrification->GetItemLink(item, session), senderValue(i, 0), GOSSIP_ACTION_INFO_DEF);
+               // AddGossipItemFor(player, GOSSIP_ICON_CHAT, Name.c_str(), senderValue(i,0), GOSSIP_ACTION_INFO_DEF);
             }
         }
         SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
