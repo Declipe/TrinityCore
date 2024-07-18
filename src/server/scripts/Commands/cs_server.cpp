@@ -49,6 +49,8 @@ EndScriptData */
 #include <openssl/opensslv.h>
 #include <numeric>
 
+#define GTS2 session->GetTrinityString2
+
 #if TRINITY_COMPILER == TRINITY_COMPILER_GNU
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
@@ -261,6 +263,8 @@ public:
 
     static bool HandleServerInfoCommand(ChatHandler* handler, char const* /*args*/)
     {
+        WorldSession* session = handler->GetSession();
+
         uint32 playersNum           = sWorld->GetPlayerCount();
         uint32 maxPlayersNum        = sWorld->GetMaxPlayerCount();
         uint32 activeClientsNum     = sWorld->GetActiveSessionCount();
@@ -271,9 +275,10 @@ public:
         uint32 updateTime           = sWorldUpdateTime.GetLastUpdateTime();
 
         handler->PSendSysMessage("%s", GitRevision::GetFullVersion());
-        handler->PSendSysMessage("|cff00FFEBCore: DkCore 3.3.5a|r");
-        handler->PSendSysMessage("|cff00FFEBTdb: rev.3.3.5a.24041|r");
-        handler->PSendSysMessage("|cff00FFEBUP: 03.06.2024|r");
+        handler->PSendSysMessage(GTS2(NOT_USED_30));
+        handler->PSendSysMessage(GTS2(NOT_USED_29));
+        handler->PSendSysMessage(GTS2(NOT_USED_28));
+        handler->PSendSysMessage(GTS2(NOT_USED_27));
         handler->PSendSysMessage(LANG_CONNECTED_PLAYERS, playersNum, maxPlayersNum);
         handler->PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
         handler->PSendSysMessage(LANG_UPTIME, uptime.c_str());
