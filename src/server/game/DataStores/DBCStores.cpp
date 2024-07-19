@@ -602,11 +602,12 @@ void LoadDBCStores(const std::string& dataPath)
                 if (sInfo->Effect[j] == SPELL_EFFECT_SEND_TAXI)
                     spellPaths.insert(sInfo->EffectMiscValue[j]);
 
-        sTaxiNodesMask.fill(0);
-        sOldContinentsNodesMask.fill(0);
-        sHordeTaxiNodesMask.fill(0);
-        sAllianceTaxiNodesMask.fill(0);
-        sDeathKnightTaxiNodesMask.fill(0);
+        // reinitialize internal storage for globals after loading TaxiNodes.db2
+        sTaxiNodesMask = {};
+        sOldContinentsNodesMask = {};
+        sHordeTaxiNodesMask = {};
+        sAllianceTaxiNodesMask = {};
+        sDeathKnightTaxiNodesMask = {};
         for (TaxiNodesEntry const* node : sTaxiNodesStore)
         {
             TaxiPathSetBySource::const_iterator src_i = sTaxiPathSetBySource.find(node->ID);
@@ -1289,3 +1290,12 @@ void DBCMgr::LoadSpellItemEnchantmentStore()
     TC_LOG_ERROR("misc", ">> Loaded %lu SpellItemEnchantment entries in %u ms", (unsigned long)SpellItemEnchantmentStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 */
+
+TaxiMask::TaxiMask()
+{
+    if (sTaxiNodesStore.GetNumRows())
+    {
+        _data.resize((sTaxiNodesStore.GetNumRows() + (8 * sizeof(uint64) - 1)) / (8 * sizeof(uint64)) * (sizeof(uint64) / sizeof(value_type)), 0);
+        ASSERT((_data.size() % (8 / sizeof(value_type))) == 0, "TaxiMask byte size must be aligned to a multiple of uint64");
+    }
+}
