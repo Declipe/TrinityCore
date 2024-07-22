@@ -531,10 +531,10 @@ const char * TransmogDisplayVendorMgr::getQualityName(uint32 quality)
     {
         case ITEM_QUALITY_POOR: return "|CFF9d9d9d[Poor]";
         case ITEM_QUALITY_NORMAL: return "|CFFffffff[Common]";
-        case ITEM_QUALITY_UNCOMMON: return "|CFF1eff00[Uncommon]";
-        case ITEM_QUALITY_RARE: return "|CFF0070dd[Rare]";
-        case ITEM_QUALITY_EPIC: return "|CFFa335ee[Epic]";
-        case ITEM_QUALITY_LEGENDARY: return "|CFFff8000[Legendary]";
+        case ITEM_QUALITY_UNCOMMON: return "|CFF006400[Uncommon]";
+        case ITEM_QUALITY_RARE: return "|CFF00008b[Rare]";
+        case ITEM_QUALITY_EPIC: return "|CFF4b0082[Epic]";
+        case ITEM_QUALITY_LEGENDARY: return "|CFFff8c00[Legendary]";
         case ITEM_QUALITY_ARTIFACT: return "|CFFe6cc80[Artifact]";
         case ITEM_QUALITY_HEIRLOOM: return "|CFFe5cc80[Heirloom]";
         default: return "[Unknown]";
