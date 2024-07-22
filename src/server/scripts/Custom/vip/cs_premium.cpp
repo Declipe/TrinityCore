@@ -858,7 +858,7 @@ public:
             _player->AddAura(30089, _player);
             _player->AddAura(131, _player);
             _player->AddAura(34906, _player);
-            _player->AddAura(53642, _player);
+            //_player->AddAura(53642, _player);
         }
         return true;
     }
@@ -1533,7 +1533,7 @@ public:
         return true;
     }
 
-    static bool HandleCoinAddCommand(ChatHandler* handler, int32 coinAdded, uint32 accountID)
+    static bool HandleCoinAddCommand(ChatHandler* handler, uint32 accountID, int32 coinAdded)
     {
         Player* target = handler->getSelectedPlayerOrSelf();
 
@@ -1561,7 +1561,7 @@ public:
         return true;
     }
 
-    static bool HandleCoinDelCommand(ChatHandler* handler, int32 coinRemoved, uint32 accountID)
+    static bool HandleCoinDelCommand(ChatHandler* handler, uint32 accountID, int32 coinRemoved)
     {
         Player* target = handler->getSelectedPlayerOrSelf();
         if (!accountID)
