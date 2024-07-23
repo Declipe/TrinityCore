@@ -390,14 +390,16 @@ enum SpellVisualKit
     SPELL_VISUAL_KIT_DRINK          = 438
 };
 
+// test color item
+
 uint32 constexpr ItemQualityColors[MAX_ITEM_QUALITY] =
 {
     0xff9d9d9d,        //GREY
     0xffffffff,        //WHITE
-    0xff1eff00,        //GREEN
-    0xff0070dd,        //BLUE
-    0xffa335ee,        //PURPLE
-    0xffff8000,        //ORANGE
+    0xff006400,         //GREEN
+    0xff00008b,       //BLUE
+    0xff4b0082,       //PURPLE
+    0xffff8c00,       //ORANGE
     0xffe6cc80,        //LIGHT YELLOW
     0xffe6cc80         //LIGHT YELLOW
 };
