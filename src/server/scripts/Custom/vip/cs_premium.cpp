@@ -42,6 +42,7 @@ public:
             { "set",           HandleSetVipCommand,          rbac::RBAC_PERM_COMMAND_VIP_SET,  Console::No },
             { "del",           HandleDelVipCommand,          rbac::RBAC_PERM_COMMAND_VIP_REMOVE,  Console::No },
             { "Activate",      HandleActivateCommand,        rbac::RBAC_PERM_COMMAND_GM,  Console::No },
+            { "transfer",      HandleTransferCommand,        rbac::RBAC_ROLE_PLAYER,  Console::No },
         };
 
         static ChatCommandTable coinCommandTable =
@@ -58,6 +59,165 @@ public:
 
         return commandTable;
     }
+
+    static bool CanUseCommand(Player* player, ChatHandler* handler)
+    {
+        if (player->IsInFlight())
+        {
+            handler->PSendSysMessage("Failure! You are flying.");
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        if (player->IsInCombat())
+        {
+            handler->PSendSysMessage("Failure! You are in combat.");
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        if (player->isDead() || player->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_GHOST))
+        {
+            handler->PSendSysMessage("Failure! You are dead.");
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        return true;
+    }
+
+    static bool AccountExists(std::string accountName)
+    {
+        QueryResult result = LoginDatabase.PQuery("SELECT id FROM account WHERE username = '{}'", accountName.c_str());
+
+        if (!result)
+            return false;
+
+        return true;
+    }
+
+    static bool CharacterExists(std::string characterName)
+    {
+        QueryResult result = CharacterDatabase.PQuery("SELECT guid FROM characters WHERE name = '{}'", characterName.c_str());
+
+        if (!result)
+            return false;
+
+        return true;
+    }
+
+    static bool AccountHasCharacter(uint32 accountId, std::string characterName)
+    {
+        QueryResult result = CharacterDatabase.PQuery("SELECT guid FROM characters WHERE account = {} AND name = '{}'", accountId, characterName.c_str());
+
+        if (!result)
+            return false;
+
+        return true;
+    }
+
+    static bool HasRealmCharacter(uint32 accountId)
+    {
+        QueryResult result = LoginDatabase.PQuery("SELECT acctid FROM realmcharacters WHERE acctid = {}", accountId);
+
+        if (!result)
+            return false;
+
+        return true;
+    }
+
+    static uint32 GetCharacterAccountId(std::string characterName)
+    {
+        QueryResult result = CharacterDatabase.PQuery("SELECT account FROM characters WHERE name = '{}'", characterName.c_str());
+
+        if (!result)
+            return NULL;
+
+        return result->Fetch()[0].GetUInt32();
+    }
+
+    static std::string GetAccountNameById(uint32 accountId)
+    {
+        QueryResult result = LoginDatabase.PQuery("SELECT username FROM account WHERE id = {}", accountId);
+
+        if (!result)
+            return NULL;
+
+        return result->Fetch()[0].GetString();
+    }
+    static bool HandleTransferCommand(ChatHandler* handler, const char* args)
+    {
+        Player* player = handler->GetSession()->GetPlayer();
+
+        if (!CanUseCommand(player, handler))
+            return false;
+
+        if (!*args)
+        {
+            handler->PSendSysMessage("Syntax: .transfer #characterName #newAccountName");
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        char* c_CharName = strtok((char*)args, " ");
+        char* c_NewAccountName = strtok(NULL, " ");
+        if (!c_CharName || !c_NewAccountName)
+            return false;
+
+        std::string CharName = c_CharName;
+        CharName[0] = toupper(CharName[0]);
+
+        if (!CharacterExists(CharName))
+        {
+            handler->PSendSysMessage("Failure! The character %s not exists.", CharName.c_str());
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        std::string NewAccountName = c_NewAccountName;
+        NewAccountName[0] = toupper(NewAccountName[0]);
+
+        if (!AccountExists(NewAccountName))
+        {
+            handler->PSendSysMessage("Failure! The account %s not exists.", NewAccountName.c_str());
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        uint32 OldAccountId = GetCharacterAccountId(CharName);
+        uint32 NewAccountId = AccountMgr::GetId(NewAccountName);
+
+        if (!AccountHasCharacter(OldAccountId, CharName))
+        {
+            handler->PSendSysMessage("Failure! The account %s not has the character %s.", GetAccountNameById(OldAccountId).c_str(), CharName.c_str());
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        if (AccountMgr::GetCharactersCount(NewAccountId) >= sWorld->getIntConfig(CONFIG_CHARACTERS_PER_REALM))
+        {
+            handler->PSendSysMessage("Failure! The account %s is full.", NewAccountName.c_str());
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        if (Player* player = ObjectAccessor::FindConnectedPlayerByName(CharName.c_str()))
+        {
+            player->SaveToDB();
+            player->GetSession()->KickPlayer("Bonk");
+        }
+
+        if (!HasRealmCharacter(NewAccountId))
+            LoginDatabase.PQuery("INSERT INTO realmcharacters (realmid, acctid, numchars) VALUES ('1', '%u', '0')", NewAccountId);
+
+        LoginDatabase.PQuery("UPDATE realmcharacters SET numchars = numchars - 1 WHERE acctid = {}", OldAccountId);
+        LoginDatabase.PQuery("UPDATE realmcharacters SET numchars = numchars + 1 WHERE acctid = {}", NewAccountId);
+        CharacterDatabase.PQuery("UPDATE characters SET account = {} WHERE name = '{}'", NewAccountId, CharName.c_str());
+
+        handler->PSendSysMessage("Success! The character %s was transferred to the account %s.", CharName.c_str(), NewAccountName.c_str());
+        return true;
+    }
+
 
     static bool HandleActivateCommand(ChatHandler* handler)
     {
