@@ -42,7 +42,7 @@ public:
             { "set",           HandleSetVipCommand,          rbac::RBAC_PERM_COMMAND_VIP_SET,  Console::No },
             { "del",           HandleDelVipCommand,          rbac::RBAC_PERM_COMMAND_VIP_REMOVE,  Console::No },
             { "Activate",      HandleActivateCommand,        rbac::RBAC_PERM_COMMAND_GM,  Console::No },
-            { "transfer",      HandleTransferCommand,        rbac::RBAC_ROLE_PLAYER,  Console::No },
+            { "transfer",      HandleTransferCommand,        rbac::RBAC_PERM_COMMAND_GM,  Console::No },
         };
 
         static ChatCommandTable coinCommandTable =
@@ -141,7 +141,7 @@ public:
         QueryResult result = LoginDatabase.PQuery("SELECT username FROM account WHERE id = {}", accountId);
 
         if (!result)
-            return NULL;
+            return nullptr;
 
         return result->Fetch()[0].GetString();
     }
