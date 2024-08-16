@@ -86,9 +86,9 @@ public:
         return true;
     }
 
-    static bool AccountExists(std::string accountName)
+    static bool AccountExists(std::string const& accountName)
     {
-        QueryResult result = LoginDatabase.PQuery("SELECT id FROM account WHERE username = '{}'", accountName.c_str());
+        QueryResult result = LoginDatabase.PQuery("SELECT id FROM account WHERE username = '{}'", accountName);
 
         if (!result)
             return false;
@@ -96,9 +96,9 @@ public:
         return true;
     }
 
-    static bool CharacterExists(std::string characterName)
+    static bool CharacterExists(std::string const& characterName)
     {
-        QueryResult result = CharacterDatabase.PQuery("SELECT guid FROM characters WHERE name = '{}'", characterName.c_str());
+        QueryResult result = CharacterDatabase.PQuery("SELECT guid FROM characters WHERE name = '{}'", characterName);
 
         if (!result)
             return false;
@@ -106,9 +106,9 @@ public:
         return true;
     }
 
-    static bool AccountHasCharacter(uint32 accountId, std::string characterName)
+    static bool AccountHasCharacter(uint32 accountId, std::string const& characterName)
     {
-        QueryResult result = CharacterDatabase.PQuery("SELECT guid FROM characters WHERE account = {} AND name = '{}'", accountId, characterName.c_str());
+        QueryResult result = CharacterDatabase.PQuery("SELECT guid FROM characters WHERE account = {} AND name = '{}'", accountId, characterName);
 
         if (!result)
             return false;
@@ -126,9 +126,9 @@ public:
         return true;
     }
 
-    static uint32 GetCharacterAccountId(std::string characterName)
+    static uint32 GetCharacterAccountId(std::string const& characterName)
     {
-        QueryResult result = CharacterDatabase.PQuery("SELECT account FROM characters WHERE name = '{}'", characterName.c_str());
+        QueryResult result = CharacterDatabase.PQuery("SELECT account FROM characters WHERE name = '{}'", characterName);
 
         if (!result)
             return NULL;
@@ -141,13 +141,14 @@ public:
         QueryResult result = LoginDatabase.PQuery("SELECT username FROM account WHERE id = {}", accountId);
 
         if (!result)
-            return nullptr;
+            return NULL;
 
         return result->Fetch()[0].GetString();
     }
     static bool HandleTransferCommand(ChatHandler* handler, const char* args)
     {
         Player* player = handler->GetSession()->GetPlayer();
+        //Player* player = handler->getSelectedPlayerOrSelf();
 
         if (!CanUseCommand(player, handler))
             return false;
