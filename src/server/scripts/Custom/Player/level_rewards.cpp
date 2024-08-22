@@ -26,9 +26,9 @@ class level_award : public PlayerScript
 public:
     level_award() : PlayerScript("level_award") {}
 
-    void OnLevelChanged(Player* player, uint8 newLevel)
+    void OnLevelChanged(Player* player, uint8 oldlevel)
     {
-        switch (++newLevel)
+        switch (++oldlevel)
         {
         case 10:
             // player->CastSpell(player, SPELL, true);
@@ -160,8 +160,37 @@ public:
     }
 };
 
+uint32 questId = 70001;
+uint32 MaxLevels = 80;
+
+class QuestOnLevelUp : public PlayerScript
+{
+public:
+    QuestOnLevelUp() : PlayerScript("QuestOnLevelUp") { }
+
+    void OnLevelChanged(Player* player, uint8 oldLevel)
+    {
+        if (player->GetLevel() == MaxLevels && oldLevel < MaxLevels)
+        {
+            WorldSession* session = player->GetSession();
+
+            const Quest* quest = sObjectMgr->GetQuestTemplate(questId);
+            if (!quest)
+                return;
+
+            if (player->GetQuestStatus(questId) == QUEST_STATUS_NONE)
+            {
+                player->AddQuest(quest, player);
+                player->SendQuestUpdate(questId);
+                player->GetSession()->SendNotification(GTS2(NOT_USED_40));
+            }
+        }
+    }
+};
+
 void AddSC_level_award()
 {
     new go_grave();
     new level_award();
+    new QuestOnLevelUp();
 }
