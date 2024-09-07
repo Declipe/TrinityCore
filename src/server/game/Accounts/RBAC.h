@@ -789,24 +789,19 @@ enum RBACPermissions
     
     RBAC_PERM_COMMAND_VIP_SET                                  = 1116,
     RBAC_PERM_COMMAND_VIP_REMOVE                               = 1117,
-    /* RBAC_PERM_COMMAND_RTX3                                     = 1118,
-    RBAC_PERM_COMMAND_RTX4                                     = 1119,
-    RBAC_PERM_COMMAND_RTX5                                     = 1120,
-    RBAC_PERM_COMMAND_RTX6                                     = 1121,
-    RBAC_PERM_COMMAND_RTX7                                     = 1122,
-    RBAC_PERM_COMMAND_RTX8                                     = 1123,
+    /*
     RBAC_PERM_COMMAND_RTX9                                     = 1124,
     RBAC_PERM_COMMAND_RTX10                                    = 1125,
     RBAC_PERM_COMMAND_RTX11                                    = 1126,
     RBAC_PERM_COMMAND_RTX12                                    = 1127,
     RBAC_PERM_COMMAND_RTX13                                    = 1128,
     */
-    RBAC_PERM_COMMAND_RELOAD_CREATURE_TEMPLATE2                = 639555,
-    RBAC_PERM_COMMAND_GXP_BUFF                                 = 639556,
-    RBAC_PERM_COMMAND_RELOAD_SPELL_TARGET_POSITION2            = 639557,
-    RBAC_PERM_COMMAND_GUILD_LINFO                              = 639558,
-    RBAC_PERM_COMMAND_GUILD_SET_LEVEL                          = 639559,
-    RBAC_PERM_COMMAND_GUILD_GIVE_XP                            = 639560,
+    RBAC_PERM_COMMAND_RELOAD_CREATURE_TEMPLATE2                = 1118,
+    RBAC_PERM_COMMAND_GXP_BUFF                                 = 1119,
+    RBAC_PERM_COMMAND_RELOAD_SPELL_TARGET_POSITION2            = 1120,
+    RBAC_PERM_COMMAND_GUILD_LINFO                              = 1121,
+    RBAC_PERM_COMMAND_GUILD_SET_LEVEL                          = 1122,
+    RBAC_PERM_COMMAND_GUILD_GIVE_XP                            = 1123,
 
     RBAC_PERM_MAX
 };

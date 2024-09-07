@@ -37,7 +37,39 @@ public:
     }
 };
 
+class item_lv : public ItemScript
+{
+public: item_lv() : ItemScript("item_lv") {}
+
+      bool OnUse(Player* player, Item* item, SpellCastTargets const& /*Targets*/)
+      {
+          if (player->IsPlayer())
+          {
+              if (player->IsInFlight() || player->IsInCombat() || player->isDead())
+              {
+                  player->SendEquipError(EQUIP_ERR_NOT_IN_COMBAT, item, NULL);
+                  return true;
+              }
+              else
+              {
+                  player->LearnSpell(46917, false);
+                  player->DestroyItemCount(item->GetEntry(), 1, true);
+                  return true;
+              }
+              return true;
+          }
+          else
+          {
+              // ChatHandler(session).PSendSysMessage(LANG_ERROR_LVL_UP_ITEM);
+              return true;
+          }
+          return true;
+      }
+
+};
+
 void AddSC_example_ItemGossip() // Add to scriptloader normally
 {
     new example_ItemGossip();
+    new item_lv();
 }
