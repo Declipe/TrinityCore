@@ -15,12 +15,12 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* ScriptData
-Name: reload_commandscript
-%Complete: 100
-Comment: All reload related commands
-Category: commandscripts
-EndScriptData */
+ /* ScriptData
+ Name: reload_commandscript
+ %Complete: 100
+ Comment: All reload related commands
+ Category: commandscripts
+ EndScriptData */
 
 #include "ScriptMgr.h"
 #include "AccountMgr.h"
@@ -172,9 +172,9 @@ public:
             { "vehicle_accessory",             rbac::RBAC_PERM_COMMAND_RELOAD_VEHICLE_ACCESORY,                 true,  &HandleReloadVehicleAccessoryCommand,           "" },
             { "item_shop",                     rbac::RBAC_PERM_COMMAND_RELOAD_ITEM_TEMPLATE_LOCALE,             true,  &HandleReloadItemShopCommand,                   "" },
             { "vehicle_template_accessory",    rbac::RBAC_PERM_COMMAND_RELOAD_VEHICLE_TEMPLATE_ACCESSORY,       true,  &HandleReloadVehicleTemplateAccessoryCommand,   "" },
-			//CHAT_FILTER
-			{ "chat_filter",                   rbac::RBAC_PERM_COMMAND_RELOAD_CHAT_FILTER,                      true, &HandleReloadLoadChatFilterCommand,              "" },
-			{ "full",                          rbac::RBAC_PERM_COMMAND_RELOAD_full,                             true, &HandleReloadItemTemplateCommand,                "" },
+            //CHAT_FILTER
+            { "chat_filter",                   rbac::RBAC_PERM_COMMAND_RELOAD_CHAT_FILTER,                      true, &HandleReloadLoadChatFilterCommand,              "" },
+            { "full",                          rbac::RBAC_PERM_COMMAND_RELOAD_full,                             true, &HandleReloadItemTemplateCommand,                "" },
         };
         static std::vector<ChatCommand> commandTable =
         {
@@ -217,7 +217,7 @@ public:
         HandleReloadVehicleTemplateAccessoryCommand(handler, "");
 
         //CHAT_FILTER
-		HandleReloadLoadChatFilterCommand(handler, "");
+        HandleReloadLoadChatFilterCommand(handler, "");
 
         HandleReloadAutobroadcastCommand(handler, "");
         HandleReloadBattlegroundTemplate(handler, "");
@@ -252,7 +252,7 @@ public:
     static bool HandleReloadAllNpcCommand(ChatHandler* handler, char const* args)
     {
         if (*args != 'a')                                          // will be reloaded from all_gossips
-        HandleReloadTrainerCommand(handler, "a");
+            HandleReloadTrainerCommand(handler, "a");
         HandleReloadNpcVendorCommand(handler, "a");
         HandleReloadPointsOfInterestCommand(handler, "a");
         HandleReloadSpellClickSpellsCommand(handler, "a");
@@ -314,7 +314,7 @@ public:
         HandleReloadGossipMenuCommand(handler, "a");
         HandleReloadGossipMenuOptionCommand(handler, "a");
         if (*args != 'a')                                          // already reload from all_scripts
-        HandleReloadPointsOfInterestCommand(handler, "a");
+            HandleReloadPointsOfInterestCommand(handler, "a");
         return true;
     }
 
@@ -779,7 +779,7 @@ public:
 
     static bool HandleReloadQuestPOICommand(ChatHandler* handler, char const* /*args*/)
     {
-        TC_LOG_INFO("misc", "Re-Loading Quest POI ..." );
+        TC_LOG_INFO("misc", "Re-Loading Quest POI ...");
         sObjectMgr->LoadQuestPOI();
         sObjectMgr->InitializeQueriesData(QUERY_DATA_POIS);
         handler->SendGlobalGMSysMessage("DB Table `quest_poi` and `quest_poi_points` reloaded.");
@@ -804,7 +804,7 @@ public:
 
     static bool HandleReloadReputationRewardRateCommand(ChatHandler* handler, char const* /*args*/)
     {
-        TC_LOG_INFO("misc", "Re-Loading `reputation_reward_rate` Table!" );
+        TC_LOG_INFO("misc", "Re-Loading `reputation_reward_rate` Table!");
         sObjectMgr->LoadReputationRewardRate();
         handler->SendGlobalSysMessage("DB table `reputation_reward_rate` reloaded.");
         return true;
@@ -812,7 +812,7 @@ public:
 
     static bool HandleReloadReputationSpilloverTemplateCommand(ChatHandler* handler, char const* /*args*/)
     {
-        TC_LOG_INFO("misc", "Re-Loading `reputation_spillover_template` Table!" );
+        TC_LOG_INFO("misc", "Re-Loading `reputation_spillover_template` Table!");
         sObjectMgr->LoadReputationSpilloverTemplate();
         handler->SendGlobalSysMessage("DB table `reputation_spillover_template` reloaded.");
         return true;
@@ -1262,18 +1262,18 @@ public:
         return true;
     }
 
-	//CHAT_FILTER
-	static bool HandleReloadLoadChatFilterCommand(ChatHandler* handler, char const* /*args*/)
-	{
-		TC_LOG_INFO("misc", "Reloading chat_filter table...");
-		sObjectMgr->LoadChatFilter();
-		handler->SendGlobalGMSysMessage("Chat Filter words reloaded.");
-		return true;
-	}
-	
-	static bool HandleReloadItemTemplateCommand(ChatHandler* handler, const char* /*args*/)
-	{
-	    TC_LOG_INFO("misc", "Reloading Creature and Item_template..");
+    //CHAT_FILTER
+    static bool HandleReloadLoadChatFilterCommand(ChatHandler* handler, char const* /*args*/)
+    {
+        TC_LOG_INFO("misc", "Reloading chat_filter table...");
+        sObjectMgr->LoadChatFilter();
+        handler->SendGlobalGMSysMessage("Chat Filter words reloaded.");
+        return true;
+    }
+
+    static bool HandleReloadItemTemplateCommand(ChatHandler* handler, const char* /*args*/)
+    {
+        TC_LOG_INFO("misc", "Reloading Creature and Item_template..");
         sObjectMgr->LoadItemTemplates2();
         sObjectMgr->LoadItemTemplates();
         sObjectMgr->LoadCreatureTemplates();
@@ -1285,7 +1285,7 @@ public:
         handler->SendGlobalGMSysMessage("Creature and Item_template has been reloaded!");
         return true;
     }
-    
+
     static bool HandleReloadRBACCommand(ChatHandler* handler, const char* /*args*/)
     {
         TC_LOG_INFO("misc", "Reloading RBAC tables...");

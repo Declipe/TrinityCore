@@ -15,9 +15,9 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/// \addtogroup Trinityd Trinity Daemon
-/// @{
-/// \file
+ /// \addtogroup Trinityd Trinity Daemon
+ /// @{
+ /// \file
 
 #include "Common.h"
 #include "AppenderDB.h"
@@ -71,11 +71,11 @@ using namespace boost::program_options;
 namespace fs = boost::filesystem;
 
 #ifndef _TRINITY_CORE_CONFIG
-    #define _TRINITY_CORE_CONFIG  "worldserver.conf"
+#define _TRINITY_CORE_CONFIG  "worldserver.conf"
 #endif
 
 #ifndef _TRINITY_CORE_CONFIG_DIR
-    #define _TRINITY_CORE_CONFIG_DIR "worldserver.conf.d"
+#define _TRINITY_CORE_CONFIG_DIR "worldserver.conf.d"
 #endif
 
 #ifdef _WIN32
@@ -97,26 +97,26 @@ int m_ServiceStatus = -1;
 
 class FreezeDetector
 {
-    public:
+public:
     FreezeDetector(Trinity::Asio::IoContext& ioContext, uint32 maxCoreStuckTime)
         : _timer(ioContext), _worldLoopCounter(0), _lastChangeMsTime(getMSTime()), _maxCoreStuckTimeInMs(maxCoreStuckTime) { }
 
-        static void Start(std::shared_ptr<FreezeDetector> const& freezeDetector)
-        {
-            freezeDetector->_timer.expires_from_now(boost::posix_time::seconds(5));
-            freezeDetector->_timer.async_wait([freezeDetectorRef = std::weak_ptr<FreezeDetector>(freezeDetector)](boost::system::error_code const& error)
+    static void Start(std::shared_ptr<FreezeDetector> const& freezeDetector)
+    {
+        freezeDetector->_timer.expires_from_now(boost::posix_time::seconds(5));
+        freezeDetector->_timer.async_wait([freezeDetectorRef = std::weak_ptr<FreezeDetector>(freezeDetector)](boost::system::error_code const& error)
             {
                 return Handler(freezeDetectorRef, error);
             });
-        }
+    }
 
-        static void Handler(std::weak_ptr<FreezeDetector> freezeDetectorRef, boost::system::error_code const& error);
+    static void Handler(std::weak_ptr<FreezeDetector> freezeDetectorRef, boost::system::error_code const& error);
 
-    private:
-        Trinity::Asio::DeadlineTimer _timer;
-        uint32 _worldLoopCounter;
-        uint32 _lastChangeMsTime;
-        uint32 _maxCoreStuckTimeInMs;
+private:
+    Trinity::Asio::DeadlineTimer _timer;
+    uint32 _worldLoopCounter;
+    uint32 _lastChangeMsTime;
+    uint32 _maxCoreStuckTimeInMs;
 };
 
 void SignalHandler(boost::system::error_code const& error, int signalNumber);
@@ -140,7 +140,7 @@ extern int main(int argc, char** argv)
     Trinity::Locale::Init();
 
     auto configFile = fs::absolute(_TRINITY_CORE_CONFIG);
-    auto configDir  = fs::absolute(_TRINITY_CORE_CONFIG_DIR);
+    auto configDir = fs::absolute(_TRINITY_CORE_CONFIG_DIR);
     std::string winServiceAction;
 
     auto vm = GetConsoleArguments(argc, argv, configFile, configDir, winServiceAction);
@@ -159,19 +159,19 @@ extern int main(int argc, char** argv)
     Optional<UINT> newTimerResolution;
     boost::system::error_code dllError;
     std::shared_ptr<boost::dll::shared_library> winmm(new boost::dll::shared_library("winmm.dll", dllError, boost::dll::load_mode::search_system_folders), [&](boost::dll::shared_library* lib)
-    {
-        try
         {
-            if (newTimerResolution)
-                lib->get<decltype(timeEndPeriod)>("timeEndPeriod")(*newTimerResolution);
-        }
-        catch (std::exception const&)
-        {
-            // ignore
-        }
+            try
+            {
+                if (newTimerResolution)
+                    lib->get<decltype(timeEndPeriod)>("timeEndPeriod")(*newTimerResolution);
+            }
+            catch (std::exception const&)
+            {
+                // ignore
+            }
 
-        delete lib;
-    });
+            delete lib;
+        });
 
     if (winmm->is_loaded())
     {
@@ -197,8 +197,8 @@ extern int main(int argc, char** argv)
 
     std::string configError;
     if (!sConfigMgr->LoadInitial(configFile.generic_string(),
-                                 std::vector<std::string>(argv, argv + argc),
-                                 configError))
+        std::vector<std::string>(argv, argv + argc),
+        configError))
     {
         printf("Error in config file: %s\n", configError.c_str());
         return 1;
@@ -301,42 +301,42 @@ extern int main(int argc, char** argv)
     LoadRealmInfo(*ioContext);
 
     sMetric->Initialize(realm.Name, *ioContext, []()
-    {
-        TC_METRIC_VALUE("online_players", sWorld->GetPlayerCount());
-        TC_METRIC_VALUE("db_queue_login", uint64(LoginDatabase.QueueSize()));
-        TC_METRIC_VALUE("db_queue_character", uint64(CharacterDatabase.QueueSize()));
-        TC_METRIC_VALUE("db_queue_world", uint64(WorldDatabase.QueueSize()));
-    });
+        {
+            TC_METRIC_VALUE("online_players", sWorld->GetPlayerCount());
+            TC_METRIC_VALUE("db_queue_login", uint64(LoginDatabase.QueueSize()));
+            TC_METRIC_VALUE("db_queue_character", uint64(CharacterDatabase.QueueSize()));
+            TC_METRIC_VALUE("db_queue_world", uint64(WorldDatabase.QueueSize()));
+        });
 
     TC_METRIC_EVENT("events", "Worldserver started", "");
 
     std::shared_ptr<void> sMetricHandle(nullptr, [](void*)
-    {
-        TC_METRIC_EVENT("events", "Worldserver shutdown", "");
-        sMetric->Unload();
-    });
+        {
+            TC_METRIC_EVENT("events", "Worldserver shutdown", "");
+            sMetric->Unload();
+        });
 
     sScriptMgr->SetScriptLoader(AddScripts);
     std::shared_ptr<void> sScriptMgrHandle(nullptr, [](void*)
-    {
-        sScriptMgr->Unload();
-        sScriptReloadMgr->Unload();
-    });
+        {
+            sScriptMgr->Unload();
+            sScriptReloadMgr->Unload();
+        });
 
     // Initialize the World
     sSecretMgr->Initialize();
     sWorld->SetInitialWorldSettings();
 
     std::shared_ptr<void> mapManagementHandle(nullptr, [](void*)
-    {
-        // unload battleground templates before different singletons destroyed
-        sBattlegroundMgr->DeleteAllBattlegrounds();
-        sBattlefieldMgr->prepareDelete();
+        {
+            // unload battleground templates before different singletons destroyed
+            sBattlegroundMgr->DeleteAllBattlegrounds();
+            sBattlefieldMgr->prepareDelete();
 
-        sInstanceSaveMgr->Unload();
-        sOutdoorPvPMgr->Die();                     // unload it before MapManager
-        sMapMgr->UnloadAll();                      // unload all grids (including locked in memory)
-    });
+            sInstanceSaveMgr->Unload();
+            sOutdoorPvPMgr->Die();                     // unload it before MapManager
+            sMapMgr->UnloadAll();                      // unload all grids (including locked in memory)
+        });
 
     // Start the Remote Access port (acceptor) if enabled
     std::unique_ptr<AsyncAcceptor> raAcceptor;
@@ -349,10 +349,10 @@ extern int main(int argc, char** argv)
     {
         soapThread.reset(new std::thread(TCSoapThread, sConfigMgr->GetStringDefault("SOAP.IP", "127.0.0.1"), uint16(sConfigMgr->GetIntDefault("SOAP.Port", 7878))),
             [](std::thread* thr)
-        {
-            thr->join();
-            delete thr;
-        });
+            {
+                thr->join();
+                delete thr;
+            });
     }
 
     // Launch the worldserver listener socket
@@ -376,15 +376,15 @@ extern int main(int argc, char** argv)
     }
 
     std::shared_ptr<void> sWorldSocketMgrHandle(nullptr, [](void*)
-    {
-        sWorld->KickAll();              // save and kick all players
-        sWorld->UpdateSessions(1);      // real players unload required UpdateSessions call
+        {
+            sWorld->KickAll();              // save and kick all players
+            sWorld->UpdateSessions(1);      // real players unload required UpdateSessions call
 
-        sWorldSocketMgr.StopNetwork();
+            sWorldSocketMgr.StopNetwork();
 
-        ///- Clean database before leaving
-        ClearOnlineAccounts();
-    });
+            ///- Clean database before leaving
+            ClearOnlineAccounts();
+        });
 
     // Set server online (allow connecting now)
     LoginDatabase.DirectPExecute("UPDATE realmlist SET flag = flag & ~{}, population = 0 WHERE id = '{}'", REALM_FLAG_OFFLINE, realm.Id.Realm);
@@ -451,7 +451,7 @@ void ShutdownCLIThread(std::thread* cliThread)
             LPCSTR errorBuffer;
 
             DWORD formatReturnCode = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS,
-                                                   nullptr, errorCode, 0, (LPTSTR)&errorBuffer, 0, nullptr);
+                nullptr, errorCode, 0, (LPTSTR)&errorBuffer, 0, nullptr);
             if (!formatReturnCode)
                 errorBuffer = "Unknown error";
 
@@ -583,9 +583,9 @@ void FreezeDetector::Handler(std::weak_ptr<FreezeDetector> freezeDetectorRef, bo
 
             freezeDetector->_timer.expires_from_now(boost::posix_time::seconds(1));
             freezeDetector->_timer.async_wait([freezeDetectorRef](boost::system::error_code const& timerError)
-            {
-                return Handler(freezeDetectorRef, timerError);
-            });
+                {
+                    return Handler(freezeDetectorRef, timerError);
+                });
         }
     }
 }
@@ -665,7 +665,7 @@ bool StartDB()
         .AddDatabase(LoginDatabase, "Login")
         .AddDatabase(CharacterDatabase, "Character")
         .AddDatabase(WorldDatabase, "World")
-	    .AddDatabase(ZynDatabase, "Zyn");
+        .AddDatabase(ZynDatabase, "Zyn");
 
     if (!loader.Load())
         return false;
@@ -697,7 +697,7 @@ void StopDB()
     CharacterDatabase.Close();
     WorldDatabase.Close();
     LoginDatabase.Close();
-	ZynDatabase.Close();
+    ZynDatabase.Close();
 
     MySQL::Library_End();
 }
@@ -724,9 +724,9 @@ variables_map GetConsoleArguments(int argc, char** argv, fs::path& configFile, f
         ("help,h", "print usage message")
         ("version,v", "print version build info")
         ("config,c", value<fs::path>(&configFile)->default_value(fs::absolute(_TRINITY_CORE_CONFIG)),
-                     "use <arg> as configuration file")
+            "use <arg> as configuration file")
         ("config-dir,cd", value<fs::path>(&configDir)->default_value(fs::absolute(_TRINITY_CORE_CONFIG_DIR)),
-                     "use <arg> as directory with additional config files")
+            "use <arg> as directory with additional config files")
         ("update-databases-only,u", "updates databases only")
         ;
 #ifdef _WIN32

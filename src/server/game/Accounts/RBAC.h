@@ -786,7 +786,6 @@ enum RBACPermissions
 
     RBAC_PERM_COMMAND_ADDCOIN                                  = 1114,
     RBAC_PERM_COMMAND_RTX                                      = 1115,
-    
     RBAC_PERM_COMMAND_VIP_SET                                  = 1116,
     RBAC_PERM_COMMAND_VIP_REMOVE                               = 1117,
     /*

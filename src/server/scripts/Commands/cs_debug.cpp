@@ -15,12 +15,12 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* ScriptData
-Name: debug_commandscript
-%Complete: 100
-Comment: All debug related commands
-Category: commandscripts
-EndScriptData */
+ /* ScriptData
+ Name: debug_commandscript
+ %Complete: 100
+ Comment: All debug related commands
+ Category: commandscripts
+ EndScriptData */
 
 #include "ScriptMgr.h"
 #include "Bag.h"
@@ -480,7 +480,7 @@ public:
 
     static bool HandleDebugSendChannelNotifyCommand(ChatHandler* handler, ChatNotify type)
     {
-        WorldPacket data(SMSG_CHANNEL_NOTIFY, (1+10));
+        WorldPacket data(SMSG_CHANNEL_NOTIFY, (1 + 10));
         data << uint8(type);
         data << "test";
         data << uint32(0);
@@ -585,18 +585,18 @@ public:
                 std::string st;
                 switch (item->GetState())
                 {
-                    case ITEM_UNCHANGED:
-                        st = "unchanged";
-                        break;
-                    case ITEM_CHANGED:
-                        st = "changed";
-                        break;
-                    case ITEM_NEW:
-                        st = "new";
-                        break;
-                    case ITEM_REMOVED:
-                        st = "removed";
-                        break;
+                case ITEM_UNCHANGED:
+                    st = "unchanged";
+                    break;
+                case ITEM_CHANGED:
+                    st = "changed";
+                    break;
+                case ITEM_NEW:
+                    st = "new";
+                    break;
+                case ITEM_REMOVED:
+                    st = "removed";
+                    break;
                 }
 
                 handler->PSendSysMessage("bag: %d slot: %d guid: %d - state: %s", bagSlot, item->GetSlot(), item->GetGUID().GetCounter(), st.c_str());
@@ -844,14 +844,14 @@ public:
                     char const* onlineStr;
                     switch (ref->GetOnlineState())
                     {
-                        case ThreatReference::ONLINE_STATE_SUPPRESSED:
-                            onlineStr = " [SUPPRESSED]";
-                            break;
-                        case ThreatReference::ONLINE_STATE_OFFLINE:
-                            onlineStr = " [OFFLINE]";
-                            break;
-                        default:
-                            onlineStr = "";
+                    case ThreatReference::ONLINE_STATE_SUPPRESSED:
+                        onlineStr = " [SUPPRESSED]";
+                        break;
+                    case ThreatReference::ONLINE_STATE_OFFLINE:
+                        onlineStr = " [OFFLINE]";
+                        break;
+                    default:
+                        onlineStr = "";
                     }
                     char const* tauntStr;
                     if (unit == fixateVictim)
@@ -859,14 +859,14 @@ public:
                     else
                         switch (ref->GetTauntState())
                         {
-                            case ThreatReference::TAUNT_STATE_TAUNT:
-                                tauntStr = " [TAUNT]";
-                                break;
-                            case ThreatReference::TAUNT_STATE_DETAUNT:
-                                tauntStr = " [DETAUNT]";
-                                break;
-                            default:
-                                tauntStr = "";
+                        case ThreatReference::TAUNT_STATE_TAUNT:
+                            tauntStr = " [TAUNT]";
+                            break;
+                        case ThreatReference::TAUNT_STATE_DETAUNT:
+                            tauntStr = " [DETAUNT]";
+                            break;
+                        default:
+                            tauntStr = "";
                         }
                     handler->PSendSysMessage("   %u.   %s   (GUID %u)  - threat %f%s%s", ++count, unit->GetName().c_str(), unit->GetGUID().GetCounter(), ref->GetThreat(), tauntStr, onlineStr);
                 }
@@ -902,13 +902,13 @@ public:
         {
             auto& mods = mgr._singleSchoolModifiers;
             handler->SendSysMessage(" - Single-school threat modifiers:");
-            handler->PSendSysMessage(" |-- Physical: %.2f%%", mods[SPELL_SCHOOL_NORMAL]*100.0f);
-            handler->PSendSysMessage(" |-- Holy    : %.2f%%", mods[SPELL_SCHOOL_HOLY]*100.0f);
-            handler->PSendSysMessage(" |-- Fire    : %.2f%%", mods[SPELL_SCHOOL_FIRE]*100.0f);
-            handler->PSendSysMessage(" |-- Nature  : %.2f%%", mods[SPELL_SCHOOL_NATURE]*100.0f);
-            handler->PSendSysMessage(" |-- Frost   : %.2f%%", mods[SPELL_SCHOOL_FROST]*100.0f);
-            handler->PSendSysMessage(" |-- Shadow  : %.2f%%", mods[SPELL_SCHOOL_SHADOW]*100.0f);
-            handler->PSendSysMessage(" |-- Arcane  : %.2f%%", mods[SPELL_SCHOOL_ARCANE]*100.0f);
+            handler->PSendSysMessage(" |-- Physical: %.2f%%", mods[SPELL_SCHOOL_NORMAL] * 100.0f);
+            handler->PSendSysMessage(" |-- Holy    : %.2f%%", mods[SPELL_SCHOOL_HOLY] * 100.0f);
+            handler->PSendSysMessage(" |-- Fire    : %.2f%%", mods[SPELL_SCHOOL_FIRE] * 100.0f);
+            handler->PSendSysMessage(" |-- Nature  : %.2f%%", mods[SPELL_SCHOOL_NATURE] * 100.0f);
+            handler->PSendSysMessage(" |-- Frost   : %.2f%%", mods[SPELL_SCHOOL_FROST] * 100.0f);
+            handler->PSendSysMessage(" |-- Shadow  : %.2f%%", mods[SPELL_SCHOOL_SHADOW] * 100.0f);
+            handler->PSendSysMessage(" |-- Arcane  : %.2f%%", mods[SPELL_SCHOOL_ARCANE] * 100.0f);
         }
 
         // _multiSchoolModifiers
@@ -1295,8 +1295,8 @@ public:
         else
         {
             static uint32 const FlagsWithHandlers = MOVEMENTFLAG_MASK_HAS_PLAYER_STATUS_OPCODE |
-                                                    MOVEMENTFLAG_WALKING | MOVEMENTFLAG_SWIMMING |
-                                                    MOVEMENTFLAG_SPLINE_ENABLED;
+                MOVEMENTFLAG_WALKING | MOVEMENTFLAG_SWIMMING |
+                MOVEMENTFLAG_SPLINE_ENABLED;
 
             bool unhandledFlag = ((*moveFlags ^ target->GetUnitMovementFlags()) & ~FlagsWithHandlers) != 0;
 
@@ -1567,7 +1567,7 @@ public:
 
         return true;
     }
-    
+
 
     static bool HandleDebugInstanceSpawns(ChatHandler* handler, Variant<uint32, EXACT_SEQUENCE("explain")> optArg)
     {
@@ -1791,9 +1791,9 @@ public:
         std::vector<std::pair<uint32, uint32>> GetTopCreatureCount(uint32 count)
         {
             auto comp = [](std::pair<uint32, uint32> const& a, std::pair<uint32, uint32> const& b)
-            {
-                return a.second > b.second;
-            };
+                {
+                    return a.second > b.second;
+                };
             std::set<std::pair<uint32, uint32>, decltype(comp)> set(creatureIds.begin(), creatureIds.end(), comp);
 
             count = std::min(count, uint32(set.size()));

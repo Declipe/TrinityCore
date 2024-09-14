@@ -15,11 +15,11 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "DBUpdater.h"
 #include "BuiltInConfig.h"
 #include "Config.h"
 #include "DatabaseEnv.h"
 #include "DatabaseLoader.h"
+#include "DBUpdater.h"
 #include "GitRevision.h"
 #include "Log.h"
 #include "QueryResult.h"
@@ -68,27 +68,27 @@ std::string& DBUpdaterUtil::corrected_path()
 template<>
 std::string DBUpdater<ZynDatabaseConnection>::GetConfigEntry()
 {
-	return "Updates.Zyn";
+    return "Updates.Zyn";
 }
 
 template<>
 std::string DBUpdater<ZynDatabaseConnection>::GetTableName()
 {
-	return "Zyn";
+    return "Zyn";
 }
 
 template<>
 std::string DBUpdater<ZynDatabaseConnection>::GetBaseFile()
 {
-	return BuiltInConfig::GetSourceDirectory() +
-		"/sql/base/Zyn_database.sql";
+    return BuiltInConfig::GetSourceDirectory() +
+        "/sql/base/Zyn_database.sql";
 }
 
 template<>
 bool DBUpdater<ZynDatabaseConnection>::IsEnabled(uint32 const updateMask)
 {
-	// This way silences warnings under msvc
-	return (updateMask & DatabaseLoader::DATABASE_ZynDatabase) ? true : false;
+    // This way silences warnings under msvc
+    return (updateMask & DatabaseLoader::DATABASE_ZynDatabase) ? true : false;
 }
 
 // Auth Database
@@ -247,7 +247,7 @@ bool DBUpdater<T>::Update(DatabaseWorkerPool<T>& pool)
 
     UpdateFetcher updateFetcher(sourceDirectory, [&](std::string const& query) { DBUpdater<T>::Apply(pool, query); },
         [&](Path const& file) { DBUpdater<T>::ApplyFile(pool, file); },
-            [&](std::string const& query) -> QueryResult { return DBUpdater<T>::Retrieve(pool, query); });
+        [&](std::string const& query) -> QueryResult { return DBUpdater<T>::Retrieve(pool, query); });
 
     UpdateResult result;
     try
@@ -300,21 +300,21 @@ bool DBUpdater<T>::Populate(DatabaseWorkerPool<T>& pool)
     {
         switch (DBUpdater<T>::GetBaseLocationType())
         {
-            case LOCATION_REPOSITORY:
-            {
-                TC_LOG_ERROR("sql.updates", ">> Base file \"{}\" is missing. Try fixing it by cloning the source again.",
-                    base.generic_string());
+        case LOCATION_REPOSITORY:
+        {
+            TC_LOG_ERROR("sql.updates", ">> Base file \"{}\" is missing. Try fixing it by cloning the source again.",
+                base.generic_string());
 
-                break;
-            }
-            case LOCATION_DOWNLOAD:
-            {
-                std::string const filename = base.filename().generic_string();
-                std::string const workdir = boost::filesystem::current_path().generic_string();
-                TC_LOG_ERROR("sql.updates", ">> File \"{}\" is missing, download it from \"https://github.com/TrinityCore/TrinityCore/releases\"" \
-                    " uncompress it and place the file \"{}\" in the directory \"{}\".", filename, filename, workdir);
-                break;
-            }
+            break;
+        }
+        case LOCATION_DOWNLOAD:
+        {
+            std::string const filename = base.filename().generic_string();
+            std::string const workdir = boost::filesystem::current_path().generic_string();
+            TC_LOG_ERROR("sql.updates", ">> File \"{}\" is missing, download it from \"https://github.com/TrinityCore/TrinityCore/releases\"" \
+                " uncompress it and place the file \"{}\" in the directory \"{}\".", filename, filename, workdir);
+            break;
+        }
         }
         return false;
     }
@@ -419,7 +419,7 @@ void DBUpdater<T>::ApplyFile(DatabaseWorkerPool<T>& pool, std::string const& hos
 
     // Invokes a mysql process which doesn't leak credentials to logs
     int const ret = Trinity::StartProcess(DBUpdaterUtil::GetCorrectedMySQLExecutable(), args,
-                                 "sql.updates", "", true);
+        "sql.updates", "", true);
 
     if (ret != EXIT_SUCCESS)
     {

@@ -1304,7 +1304,6 @@ enum TrinityStrings
     LANG_ITEM_CHANGE_OF_APPEARANCE                = 12242,
     LANG_ITEM_CHANGE_FACTION                      = 12243,
     LANG_ITEM_CHANGE_RACE                         = 12244,
-                                                  
     LANG_ITEM_RATES                               = 12245,
     LANG_ITEM_RATES_XP_KILL                       = 12246,
     LANG_ITEM_RATES_XP_QUEST                      = 12247,
@@ -1316,7 +1315,7 @@ enum TrinityStrings
     LANG_ITEM_BUY_31                              = 12253,
     LANG_ITEM_BUY_7_SURE                          = 12254,
     LANG_ITEM_BUY_14_SURE                         = 12255,
-    LANG_ITEM_BUY_31_SURE                         = 12256,                                  
+    LANG_ITEM_BUY_31_SURE                         = 12256,
     LANG_ITEM_INC_7                               = 12257,
     LANG_ITEM_INC_14                              = 12258,
     LANG_ITEM_INC_31                              = 12259,
@@ -1338,7 +1337,6 @@ enum TrinityStrings
     LANG_ITEM_PVP_CAP_HORDE                       = 12273,
     LANG_ITEM_VIP_BANK                            = 12274,
     LANG_ITEM_START_PACK_ITEM                     = 12276,
-                                                  
     LANG_ENTER_PROMO_CODE                         = 12300, // "Enter Promo - Code"
     LANG_ENTERED_PROMO_CODE_CORRECT               = 12301, // "Are you sure that the entered code is correct?"
     LANG_MENU_CLASS_SKILLS_GM                     = 12302, // "|TInterface\\icons\\achievement_level_80:25:25:-15:0|t Class skills - GM|r"
