@@ -4192,7 +4192,7 @@ void ObjectMgr::LoadPetLevelInfo()
         pLevelInfo->minDamage = fields[10].GetUInt16();
         pLevelInfo->maxDamage = fields[11].GetUInt16();
 
-        for (uint8 i = 0; i < MAX_STATS; i++)
+        for (uint64 i = 0; i < MAX_STATS; i++)
             pLevelInfo->stats[i] = fields[i + 4].GetUInt16();
 
         ++count;
@@ -4791,7 +4791,7 @@ void ObjectMgr::LoadPlayerInfo()
                     info->levelInfo = std::make_unique<PlayerLevelInfo[]>(sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL));
 
                 PlayerLevelInfo& levelInfo = info->levelInfo[current_level - 1];
-                for (uint8 i = 0; i < MAX_STATS; ++i)
+                for (uint64 i = 0; i < MAX_STATS; ++i)
                     levelInfo.stats[i] = fields[i + 3].GetUInt64();
             }
 

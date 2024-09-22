@@ -669,7 +669,7 @@ struct PlayerClassInfo
 
 struct PlayerLevelInfo
 {
-    uint8 stats[MAX_STATS] = { };
+    uint64 stats[MAX_STATS] = { };
 };
 
 typedef std::vector<uint32> PlayerCreateInfoSpells;
@@ -719,7 +719,7 @@ typedef std::pair<ExclusiveQuestGroups::const_iterator, ExclusiveQuestGroups::co
 
 struct PetLevelInfo
 {
-    uint16 stats[MAX_STATS] = {};
+    uint64 stats[MAX_STATS] = {};
     uint16 health = 0;
     uint16 mana = 0;
     uint32 armor = 0;

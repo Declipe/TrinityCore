@@ -181,7 +181,7 @@ namespace WorldPackets
             uint32 Level = 0;
             uint32 HealthDelta = 0;
             std::array<uint32, MAX_POWERS> PowerDelta = { };
-            std::array<uint32, MAX_STATS> StatDelta = { };
+            std::array<uint64, MAX_STATS> StatDelta = { };
         };
 
         class TC_GAME_API PlayMusic final : public ServerPacket

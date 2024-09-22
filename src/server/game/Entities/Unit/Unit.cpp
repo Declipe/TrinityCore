@@ -365,7 +365,7 @@ Unit::Unit(bool isWorldObject) :
         m_weaponDamage[i][MAXDAMAGE][1] = 0.f;
     }
 
-    for (uint8 i = 0; i < MAX_STATS; ++i)
+    for (uint64 i = 0; i < MAX_STATS; ++i)
         m_createStats[i] = 0.0f;
 
     m_attacking = nullptr;
@@ -4939,9 +4939,9 @@ void Unit::UpdateResistanceBuffModsMod(SpellSchools school)
 
 void Unit::InitStatBuffMods()
 {
-    for (uint8 i = STAT_STRENGTH; i < MAX_STATS; ++i)
+    for (uint64 i = STAT_STRENGTH; i < MAX_STATS; ++i)
         SetFloatValue(UNIT_FIELD_POSSTAT0+i, 0);
-    for (uint8 i = STAT_STRENGTH; i < MAX_STATS; ++i)
+    for (uint64 i = STAT_STRENGTH; i < MAX_STATS; ++i)
         SetFloatValue(UNIT_FIELD_NEGSTAT0+i, 0);
 }
 

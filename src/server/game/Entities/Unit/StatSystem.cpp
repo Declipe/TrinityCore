@@ -1343,10 +1343,10 @@ bool Guardian::UpdateAllStats()
 {
     UpdateMaxHealth();
 
-    for (uint8 i = STAT_STRENGTH; i < MAX_STATS; ++i)
+    for (uint64 i = STAT_STRENGTH; i < MAX_STATS; ++i)
         UpdateStats(Stats(i));
 
-    for (uint8 i = POWER_MANA; i < MAX_POWERS; ++i)
+    for (uint64 i = POWER_MANA; i < MAX_POWERS; ++i)
         UpdateMaxPower(Powers(i));
 
     UpdateAllResistances();
