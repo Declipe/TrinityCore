@@ -25676,12 +25676,13 @@ bool Player::LearnTalent(uint32 talentId, uint32 talentRank)
 
     // update free talent points
     SetFreeTalentPoints(CurTalentPoints - (talentRank - curtalent_maxrank + 1));
-    return true;
 
 #ifdef ELUNA
     if (Eluna* e = GetEluna())
         e->OnLearnTalents(this, talentId, talentRank, spellid);
 #endif
+
+    return true;
 }
 
 void Player::LearnPetTalent(ObjectGuid petGuid, uint32 talentId, uint32 talentRank)
