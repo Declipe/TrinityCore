@@ -107,7 +107,6 @@ public:
             SendGossipMenuFor(player, DEFAULT_MESSAGE, me->GetGUID());
         }
 
-        //bool OnGossipHello(Player* player, Creature* creature)
         bool OnGossipHello(Player* player) override
         {
             GetMenu(player, me, 1);
@@ -121,7 +120,6 @@ public:
             return GossipSelect(player, sender, action);
         }
 
-        // bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action)
         bool GossipSelect(Player* player, uint32 /*sender*/, uint32 action)
         {
             player->PlayerTalkClass->ClearMenus();
@@ -130,11 +128,10 @@ public:
             uint32 count = sConfigMgr->GetIntDefault("NT.Count", 0);
 
             uint8 menuData = DKDatas[action].Submenu;
-            // if (/*player->HasItemCount(CONST_HONOR_23, CONST_HONOR_233) || */player->GetItemCount(CONST_HONOR_23) < CONST_HONOR_233)
+
             if (menuData == 0)
             {
                 if ((int32)!player->GetItemCount(token) < (int32)count)
-                    // if (!player->HasItemCount(token, count, false))
                 {
                     ChatHandler(player->GetSession()).PSendSysMessage("Failure! You not have the token.");
                     CloseGossipMenuFor(player);
@@ -143,7 +140,6 @@ public:
 
                 player->SetTitle(sDBCMgr->GetCharTitlesEntry(DKDatas[action].Id));
                 player->DestroyItemCount(token, count, true);
-                //player->DestroyItemCount(token, count, true, false);
                 ChatHandler(player->GetSession()).PSendSysMessage("Success! Title added.");
                 menuData = DKDatas[action].Menu;
             }

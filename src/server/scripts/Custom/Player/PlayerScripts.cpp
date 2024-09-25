@@ -1,14 +1,5 @@
 #include "Custom/Dcl.h"
 
-#define buffid 48162
-#define buffid1 46668
-#define buffid2 48074
-#define buffid3 48469
-#define zoneid 14
-#define zoneid1 85
-#define zoneid2 4080
-#define zoneid3 12
-
 class ZynPlayerScripts : public PlayerScript
 {
 public:
@@ -90,43 +81,52 @@ public:
     }
 };
 
-class buff_zone : public PlayerScript
+class buff_zones : public PlayerScript
 {
 public:
-    buff_zone() : PlayerScript("buff_zone") {}
+    buff_zones() : PlayerScript("buff_zone") {}
 
-    void OnUpdateZone(Player* player, uint32 newZone, uint32 /*newArea*/)
+    void OnUpdateZone(Player* player, uint32 newZone, uint32 /*newArea*/) override
     {
-        if (newZone == zoneid) {
-            player->AddAura(buffid, player);
+        LoadZoneBuffs();
+
+        auto it = zoneBuffs.find(newZone);
+        if (it != zoneBuffs.end())
+        {
+            uint32 buffId = it->second;
+            player->AddAura(buffId, player);
         }
-        else {
-            player->RemoveAurasDueToSpell(buffid);
-        }
-        if (newZone == zoneid1) {
-            player->AddAura(buffid1, player);
-        }
-        else {
-            player->RemoveAurasDueToSpell(buffid1);
-        }
-        if (newZone == zoneid2) {
-            player->AddAura(buffid2, player);
-        }
-        else {
-            player->RemoveAurasDueToSpell(buffid2);
-        }
-        if (newZone == zoneid3) {
-            player->AddAura(buffid3, player);
-        }
-        else {
-            player->RemoveAurasDueToSpell(buffid3);
+        else
+        {
+            for (const auto& pair : zoneBuffs)
+            {
+                player->RemoveAurasDueToSpell(pair.second);
+            }
         }
     }
+
+    void LoadZoneBuffs()
+    {
+        QueryResult result = ZynDatabase.PQuery("SELECT zone_id, buff_id FROM zone_buffs");
+        if (result)
+        {
+            do
+            {
+                Field* fields = result->Fetch();
+                uint32 zoneId = fields[0].GetUInt32();
+                uint32 buffId = fields[1].GetUInt32();
+                zoneBuffs[zoneId] = buffId;
+            } while (result->NextRow());
+        }
+    }
+
+private:
+    std::map<uint32, uint32> zoneBuffs;
 };
 
 void AddSC_ZynPlayerScripts()
 {
-    new buff_zone();
+    new buff_zones();
     new item_lvlup();
     new lfg_solo_announce();
     new ZynPlayerScripts();
