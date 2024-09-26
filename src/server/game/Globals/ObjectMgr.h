@@ -1660,8 +1660,8 @@ private:
     std::atomic<uint32> _mailId;
     std::atomic<uint32> _hiPetNumber;
 
-    ObjectGuid::LowType _creatureSpawnId;
-    ObjectGuid::LowType _gameObjectSpawnId;
+    uint64 _creatureSpawnId;
+    uint64 _gameObjectSpawnId;
 
     // first free low guid for selected guid type
     ObjectGuidGenerator& GetGuidSequenceGenerator(HighGuid high);

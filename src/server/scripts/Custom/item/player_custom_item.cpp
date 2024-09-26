@@ -2063,7 +2063,7 @@ public:
                     }
                     else
                         player->PlayerTalkClass->SendCloseGossip();
-                    player->GetSession()->SendAreaTriggerMessage(GTS2(NOT_USED_14));
+                    player->GetSession()->SendAreaTriggerMessage("%s", GTS2(NOT_USED_14));
                     ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_14));
 
                     player->PlayerTalkClass->SendCloseGossip();

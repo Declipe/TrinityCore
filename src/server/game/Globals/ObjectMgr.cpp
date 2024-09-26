@@ -7777,11 +7777,11 @@ void ObjectMgr::SetHighestGuids()
 
     result = WorldDatabase.Query("SELECT MAX(guid) FROM creature");
     if (result)
-        _creatureSpawnId = (*result)[0].GetUInt32() + 1;
+        _creatureSpawnId = (*result)[0].GetUInt64() + 1;
 
     result = WorldDatabase.Query("SELECT MAX(guid) FROM gameobject");
     if (result)
-        _gameObjectSpawnId = (*result)[0].GetUInt32() + 1;
+        _gameObjectSpawnId = (*result)[0].GetUInt64() + 1;
 }
 
 ObjectGuidGenerator& ObjectMgr::GetGuidSequenceGenerator(HighGuid high)
