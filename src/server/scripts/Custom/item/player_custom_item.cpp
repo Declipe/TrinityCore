@@ -2038,7 +2038,6 @@ public:
                             player = player->GetSession()->GetPlayer();
 
                         int8 diff = -1;
-                        uint16 counter = 0;
                         uint16 MapId = 0;
 
                         for (uint8 i = 0; i < MAX_DIFFICULTY; ++i)
@@ -2051,7 +2050,6 @@ public:
                                 {
                                     std::string timeleft = secsToTimeString(save->GetResetTime() - GameTime::GetGameTime(), TimeFormat::ShortText);
                                     player->UnbindInstance(itr, Difficulty(i));
-                                    counter++;
                                 }
                                 else
                                     ++itr;
