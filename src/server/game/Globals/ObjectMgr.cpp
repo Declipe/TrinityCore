@@ -528,7 +528,9 @@ void ObjectMgr::LoadCreatureTemplates()
         // 62
         "flags_extra,"
         // 63
-        "ScriptName"
+        "ScriptName,"
+        // 64
+        "StringId"
         " FROM creature_template ct"
         " LEFT JOIN creature_template_movement ctm ON ct.entry = ctm.CreatureId");
 
@@ -699,7 +701,9 @@ void ObjectMgr::LoadCreatureTemplates2()
         // 62
         "flags_extra,"
         // 63
-        "ScriptName"
+        "ScriptName,"
+
+        "StringId"
         " FROM creature_template2 ct"
         " LEFT JOIN creature_template_movement ctm ON ct.entry = ctm.CreatureId"
         " LEFT JOIN creature_template2_difficulty ctd ON ct.entry = ctd.CreatureId");
@@ -821,6 +825,7 @@ void ObjectMgr::LoadCreatureTemplate(Field* fields)
     creatureTemplate.SpellSchoolImmuneMask = fields[61].GetUInt32();
     creatureTemplate.flags_extra = fields[62].GetUInt32();
     creatureTemplate.ScriptID = GetScriptId(fields[63].GetString());
+    creatureTemplate.StringId = fields[64].GetString();
 }
 
 void ObjectMgr::LoadCreatureTemplate2(Field* fields)
@@ -917,6 +922,7 @@ void ObjectMgr::LoadCreatureTemplate2(Field* fields)
     creatureTemplate.flags_extra = fields[62].GetUInt32();
     //creatureTemplate.ScriptID = sObjectMgr->GetScriptId(fields[63].GetString());
     creatureTemplate.ScriptID = GetScriptId(fields[63].GetString());
+    creatureTemplate.StringId              = fields[64].GetString();
 }
 
 void ObjectMgr::LoadCreatureTemplateResistances()
@@ -2460,8 +2466,8 @@ void ObjectMgr::LoadCreatures()
     QueryResult result = WorldDatabase.Query("SELECT creature.guid, id, map, position_x, position_y, position_z, orientation, modelid, equipment_id, spawntimesecs, wander_distance, "
         //   11               12         13       14            15         16          17          18                19                   20                    21
         "currentwaypoint, curhealth, curmana, MovementType, spawnMask, phaseMask, eventEntry, poolSpawnId, creature.npcflag, creature.unit_flags, creature.dynamicflags, "
-        //   22
-        "creature.ScriptName "
+    //   22                   23
+        "creature.ScriptName, creature.StringId "
         "FROM creature "
         "LEFT OUTER JOIN game_event_creature ON creature.guid = game_event_creature.guid "
         "LEFT OUTER JOIN pool_members ON pool_members.type = 0 AND creature.guid = pool_members.spawnId");
@@ -2501,22 +2507,23 @@ void ObjectMgr::LoadCreatures()
         data.id = entry;
         data.mapId = fields[2].GetUInt16();
         data.spawnPoint.Relocate(fields[3].GetFloat(), fields[4].GetFloat(), fields[5].GetFloat(), fields[6].GetFloat());
-        data.displayid = fields[7].GetUInt32();
-        data.equipmentId = fields[8].GetInt8();
-        data.spawntimesecs = fields[9].GetUInt32();
-        data.wander_distance = fields[10].GetFloat();
-        data.currentwaypoint = fields[11].GetUInt32();
-        data.curhealth = fields[12].GetUInt32();
-        data.curmana = fields[13].GetUInt32();
-        data.movementType = fields[14].GetUInt8();
-        data.spawnMask = fields[15].GetUInt8();
-        data.phaseMask = fields[16].GetUInt32();
-        int16 gameEvent = fields[17].GetInt8();
-        uint32 PoolId = fields[18].GetUInt32();
-        data.npcflag = fields[19].GetUInt32();
-        data.unit_flags = fields[20].GetUInt32();
-        data.dynamicflags = fields[21].GetUInt32();
-        data.scriptId = GetScriptId(fields[22].GetString());
+        data.displayid      = fields[7].GetUInt32();
+        data.equipmentId    = fields[8].GetInt8();
+        data.spawntimesecs  = fields[9].GetUInt32();
+        data.wander_distance      = fields[10].GetFloat();
+        data.currentwaypoint= fields[11].GetUInt32();
+        data.curhealth      = fields[12].GetUInt32();
+        data.curmana        = fields[13].GetUInt32();
+        data.movementType   = fields[14].GetUInt8();
+        data.spawnMask      = fields[15].GetUInt8();
+        data.phaseMask      = fields[16].GetUInt32();
+        int16 gameEvent     = fields[17].GetInt8();
+        uint32 PoolId       = fields[18].GetUInt32();
+        data.npcflag        = fields[19].GetUInt32();
+        data.unit_flags     = fields[20].GetUInt32();
+        data.dynamicflags   = fields[21].GetUInt32();
+        data.scriptId       = GetScriptId(fields[22].GetString());
+        data.StringId       = fields[23].GetString();
         data.spawnGroupData = GetDefaultSpawnGroup();
 
         MapEntry const* mapEntry = sMapStore.LookupEntry(data.mapId);
@@ -2780,8 +2787,8 @@ void ObjectMgr::LoadGameObjects()
     QueryResult result = WorldDatabase.Query("SELECT gameobject.guid, id, map, position_x, position_y, position_z, orientation, "
         //   7          8          9          10         11             12            13     14         15         16          17
         "rotation0, rotation1, rotation2, rotation3, spawntimesecs, animprogress, state, spawnMask, phaseMask, eventEntry, poolSpawnId, "
-        //   18
-        "ScriptName "
+    //   18          19
+        "ScriptName, StringId "
         "FROM gameobject LEFT OUTER JOIN game_event_gameobject ON gameobject.guid = game_event_gameobject.guid "
         "LEFT OUTER JOIN pool_members ON pool_members.type = 1 AND gameobject.guid = pool_members.spawnId");
 
@@ -2885,6 +2892,7 @@ void ObjectMgr::LoadGameObjects()
         uint32 PoolId = fields[17].GetUInt32();
 
         data.scriptId = GetScriptId(fields[18].GetString());
+        data.StringId = fields[19].GetString();
 
         if (data.rotation.x < -1.0f || data.rotation.x > 1.0f)
         {
@@ -7948,11 +7956,11 @@ void ObjectMgr::LoadGameObjectTemplate()
 
     //                                                 0      1      2        3       4             5          6     7
     QueryResult result = WorldDatabase.Query("SELECT entry, type, displayId, name, IconName, castBarCaption, unk1, size, "
-        //                                         8      9      10     11     12     13     14     15     16     17     18      19      20
-        "Data0, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, "
-        //                                         21      22      23      24      25      26      27      28      29      30      31      32      33
-        "Data13, Data14, Data15, Data16, Data17, Data18, Data19, Data20, Data21, Data22, Data23, AIName, ScriptName "
-        "FROM gameobject_template");
+    //                                         8      9      10     11     12     13     14     15     16     17     18      19      20
+                                             "Data0, Data1, Data2, Data3, Data4, Data5, Data6, Data7, Data8, Data9, Data10, Data11, Data12, "
+    //                                         21      22      23      24      25      26      27      28      29      30      31      32      33          34
+                                             "Data13, Data14, Data15, Data16, Data17, Data18, Data19, Data20, Data21, Data22, Data23, AIName, ScriptName, StringId "
+                                             "FROM gameobject_template");
 
     if (!result)
     {
@@ -7982,6 +7990,7 @@ void ObjectMgr::LoadGameObjectTemplate()
 
         got.AIName = fields[32].GetString();
         got.ScriptId = GetScriptId(fields[33].GetString());
+        got.StringId = fields[34].GetString();
 
         // Checks
         if (!got.AIName.empty() && !sGameObjectAIRegistry->HasItem(got.AIName))

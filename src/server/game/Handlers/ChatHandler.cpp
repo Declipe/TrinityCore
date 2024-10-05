@@ -960,17 +960,20 @@ void WorldSession::HandleTextEmoteOpcode(WorldPacket& recvData)
 
     switch (emote)
     {
-    case EMOTE_STATE_SLEEP:
-    case EMOTE_STATE_SIT:
-    case EMOTE_STATE_KNEEL:
-    case EMOTE_ONESHOT_NONE:
-        break;
-    default:
-        // Only allow text-emotes for "dead" entities (feign death included)
-        if (GetPlayer()->HasUnitState(UNIT_STATE_DIED))
+        case EMOTE_STATE_SLEEP:
+        case EMOTE_STATE_SIT:
+        case EMOTE_STATE_KNEEL:
+        case EMOTE_ONESHOT_NONE:
             break;
-        GetPlayer()->HandleEmoteCommand(emote);
-        break;
+        case EMOTE_STATE_DANCE:
+            GetPlayer()->SetEmoteState(emote);
+            break;
+        default:
+            // Only allow text-emotes for "dead" entities (feign death included)
+            if (GetPlayer()->HasUnitState(UNIT_STATE_DIED))
+                break;
+            GetPlayer()->HandleEmoteCommand(emote);
+            break;
     }
 
     Unit* unit = ObjectAccessor::GetUnit(*_player, guid);
