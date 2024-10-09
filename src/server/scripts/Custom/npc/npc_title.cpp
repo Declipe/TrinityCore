@@ -154,7 +154,50 @@ public:
     }
 };
 
+struct npc_ten : public ScriptedAI
+{
+    npc_ten(Creature* creature) : ScriptedAI(creature)
+    {
+        Initialize();
+    }
+
+    void Initialize()
+    {
+        _events.ScheduleEvent(1, 6s);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        _events.Update(diff);
+
+        while (uint32 eventId = _events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+            case 1:
+            {
+                //FindCreatureOptions& options = FindCreatureOptions().SetStringId("1");
+                FindCreatureOptions& options = FindCreatureOptions().SetCreatureId(500146);
+                //FindCreatureOptions& options2 = FindCreatureOptions().SetCreatureId(90071);
+
+                if (Creature* creature = me->FindNearestCreatureWithOptions(100.f, options))
+                    if (creature)
+                    creature->Say("Hello i love spamm", LANG_UNIVERSAL);
+                _events.ScheduleEvent(1, 10s);
+                break;
+            }
+            default:
+                break;
+            }
+        }
+    }
+
+private:
+    EventMap _events;
+};
+
 void AddSC_npc_title()
 {
+    RegisterCreatureAI(npc_ten);
     new npc_title;
 }

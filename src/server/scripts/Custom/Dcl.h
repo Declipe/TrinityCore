@@ -40,6 +40,7 @@
 #include "MailPackets.h"
 #include "MapManager.h"
 #include "MotionMaster.h"
+#include "Object.h"
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
 #include "Opcodes.h"
