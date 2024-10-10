@@ -177,10 +177,10 @@ struct npc_ten : public ScriptedAI
             case 1:
             {
                 //FindCreatureOptions& options = FindCreatureOptions().SetStringId("1");
-                FindCreatureOptions& options = FindCreatureOptions().SetCreatureId(500146);
-                //FindCreatureOptions& options2 = FindCreatureOptions().SetCreatureId(90071);
+                //Creature* creature = me->FindNearestCreatureWithOptions(100.0f, { .CreatureId = 500146, .IgnorePhases = true });
 
-                if (Creature* creature = me->FindNearestCreatureWithOptions(100.f, options))
+                //if (Creature* creature = me->FindNearestCreatureWithOptions(100.f, options))
+                if (Creature* creature = me->FindNearestCreatureWithOptions(100.f, { .CreatureId = 500146, .IgnorePhases = true }))//;
                     if (creature)
                     creature->Say("Hello i love spamm", LANG_UNIVERSAL);
                 _events.ScheduleEvent(1, 10s);
