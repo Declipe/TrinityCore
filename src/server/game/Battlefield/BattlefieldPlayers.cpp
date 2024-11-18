@@ -76,7 +76,7 @@ void Battlefield::KickPlayerFromBattlefield(ObjectGuid guid)
                 player->ResurrectPlayer(100);
                 player->SpawnCorpseBones();
             }
-                
+
             player->TeleportTo(KickPosition);
             RemovePlayer(player);
             player->GetSession()->SendBattlefieldLeaveMessage(BATTLEFIELD_WG, true, player->GetLevel() < GetMinimalLevel() ? BF_LEAVE_REASON_LOW_LEVEL : BF_LEAVE_REASON_EXITED);
@@ -437,7 +437,7 @@ void Battlefield::TeamCastSpell(TeamId team, int32 spellId)
                     player->CastSpell(player, uint32(spellId), true);
                 else
                     player->RemoveAuraFromStack(uint32(-spellId));
-            }                
+            }
         }
 }
 

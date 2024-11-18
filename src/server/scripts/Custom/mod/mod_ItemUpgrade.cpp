@@ -105,7 +105,7 @@ class go_item_upgrade : public GameObjectScript
         struct go_item_upgradeAI : public GameObjectAI
         {
             go_item_upgradeAI(GameObject* go) : GameObjectAI(go) { }
-            
+
     uint16 getSlot(uint32 sender) {
         return (uint16) ((sender - GOSSIP_SENDER_MAIN) >> 16);
     }
@@ -115,14 +115,14 @@ class go_item_upgrade : public GameObjectScript
     uint32 senderValue(uint16 slot, uint16 enchant) {
         return (uint32) (GOSSIP_SENDER_MAIN + ((slot << 16) | (enchant & 0xFFFF)));
     }
- 
+
     bool OnGossipHello(Player* player) override
     {
         if (!ItemUpgradeEnable) {
             SendGossipMenuFor(player, player->GetGossipTextId(me), me->GetGUID());
             return true;
         }
-        
+
         LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
 
         for (uint8 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; i++)
@@ -137,7 +137,7 @@ class go_item_upgrade : public GameObjectScript
                 if (loc_idx >= 0)
                     if (ItemLocale const* il = sObjectMgr->GetItemLocale(itemTemplate->ItemId))
                         ObjectMgr::GetLocaleString(il->Name, loc_idx, Name);
-                
+
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, sTransmogrification->GetItemIcon(item->GetEntry(), 30, 30, -18, 0) + sTransmogrification->GetItemLink(item, session), senderValue(i, 0), GOSSIP_ACTION_INFO_DEF);
                // AddGossipItemFor(player, GOSSIP_ICON_CHAT, Name.c_str(), senderValue(i,0), GOSSIP_ACTION_INFO_DEF);
             }

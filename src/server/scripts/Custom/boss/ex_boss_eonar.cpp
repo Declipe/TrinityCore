@@ -185,7 +185,7 @@ public:
                     _events.ScheduleEvent(EVENT_BRAIN_LINK_DAMAGE, 8s);
                     break;
                 case EVENT_MANA_DESTRUCTION:
-                    
+
                     DoCastVictim(SPELL_MANA_DESTRUCTION);
                     _events.ScheduleEvent(EVENT_MANA_DESTRUCTION, 1s);
                     break;

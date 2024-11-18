@@ -42,7 +42,7 @@ enum Creatures
         CREATURE_GONDRIA                                = 33776,
         CREATURE_ARCTURIS                               = 38453,
 };
- 
+
 #define main    100
 #define pets    200
 #define exotic  300
@@ -65,7 +65,7 @@ enum Creatures
 #define katzeloewe 216
 #define katzeluchs 217
 #define raptorgruen 218
-#define raptorrot 219  
+#define raptorrot 219
 #define weitschreiter 220
 #define wesperot 221
 #define wespeblau 222
@@ -86,20 +86,20 @@ enum Creatures
 #define skoll 336
 #define loque 337
 #define gondria 338
-#define arcturis 339 
- 
- 
+#define arcturis 339
+
+
  //Preise
 #define PRICE_PET_TYP_1    250000
 #define PRICE_PET_TYP_2    5000000
 #define MSG_NOT_MONEY "You have not enough gold!"
 #define MSG_PET_SUMMON "The creature will be summoned"
- 
+
 class npc_hunterpetvendor : public CreatureScript
 {
 public:
      npc_hunterpetvendor() : CreatureScript("npc_hunterpetvendor") { }
-        
+
      struct npc_hunterpetvendorAI : public ScriptedAI
     {
         npc_hunterpetvendorAI(Creature* me) : ScriptedAI(me) { }
@@ -119,7 +119,7 @@ public:
                 return true;
         }
 }
- 
+
 bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
     {
         //uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
@@ -154,10 +154,10 @@ player->PlayerTalkClass->ClearMenus();
                         //AddGossipItemFor(player, 2, "Wolf (Wilder Worg)", GOSSIP_SENDER_MAIN, wolfgrau);
                         //AddGossipItemFor(player, 2, "Wolf (Blutdurstiger Tundrawolf)", GOSSIP_SENDER_MAIN, wolfwei?);
                         //AddGossipItemFor(player, 0, "I would prefer a exotic list...", GOSSIP_SENDER_MAIN, exotic);
- 
+
                         SendGossipMenuFor(player, 40011, me->GetGUID());
                 break;
-               
+
                 case exotic:
                         AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Nuramoc", GOSSIP_SENDER_MAIN, schimaere);
                         AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Vekniss Warrior", GOSSIP_SENDER_MAIN, silithidgelb);
@@ -173,7 +173,7 @@ player->PlayerTalkClass->ClearMenus();
                         AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Gondria", GOSSIP_SENDER_MAIN, gondria);
                         AddGossipItemFor(player, GOSSIP_ICON_TAXI, "Arcturis", GOSSIP_SENDER_MAIN, arcturis);
                         //AddGossipItemFor(player,0, "I would prefer a non-exotic list...", GOSSIP_SENDER_MAIN, pets);
-                       
+
                         SendGossipMenuFor(player, 40011, me->GetGUID());
                 break;
                 /*
@@ -191,7 +191,7 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_FLEDERMAUS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;				
+                    break;
 
                 case netherrochen:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
@@ -203,7 +203,7 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_NETHERROCHEN, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;				
+                    break;
 
                 case raubvogelrot:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
@@ -215,7 +215,7 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_RAUBVOGELROT, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;				
+                    break;
 
                 case raubvogelschwarz:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
@@ -227,8 +227,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_RAUBVOGELSCHWARZ, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;						
-                       
+                    break;
+
                 case raubvogelweiss:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
                     {
@@ -239,8 +239,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_RAUBVOGELWEISS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;					
-                /*      
+                    break;
+                /*
                 case schlange:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
                     {
@@ -251,8 +251,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_SCHLANGE, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;						
-                */      
+                    break;
+                */
                 case spinne:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
                     {
@@ -263,8 +263,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_SPINNE, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;				
-                       
+                    break;
+
                 case gorillaschwarz:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
                     {
@@ -275,8 +275,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_GORILLASCHWARZ, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;							
-                       
+                    break;
+
                 case gorillaweiss:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
                     {
@@ -287,8 +287,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_GORILLAWEISS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;					
-                       
+                    break;
+
                 case krebs:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
                     {
@@ -299,8 +299,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_KREBS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;						
-                       
+                    break;
+
                 case hyaene:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
                     {
@@ -311,8 +311,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_HYAENE, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;						
-                       
+                    break;
+
                 case katzetiger:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
                     {
@@ -323,8 +323,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_KATZETIGER, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;						
-                       
+                    break;
+
                 case katzeloewe:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
                     {
@@ -335,7 +335,7 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_KATZELOEWE, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;						
+                    break;
                         /*
                 case katzeluchs:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
@@ -347,7 +347,7 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_KATZELUCHS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;						
+                    break;
                         */
                 case raptorgruen:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
@@ -359,8 +359,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_RAPTORGRUEN, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;							
-                       
+                    break;
+
                 case raptorrot:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
                     {
@@ -371,8 +371,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_RAPTORROT, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;							
-                       
+                    break;
+
                 case weitschreiter:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
                     {
@@ -383,8 +383,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_WEITSCHREITER, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;						
-                       
+                    break;
+
                 case wesperot:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
                     {
@@ -395,8 +395,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_WESPEROT, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;						
-                       
+                    break;
+
                 case wespeblau:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
                     {
@@ -407,8 +407,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_WESPEBLAU, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;						
-                       
+                    break;
+
                 case wolfruestung:
                     if (player->GetMoney() < PRICE_PET_TYP_1)
                     {
@@ -419,10 +419,10 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_WOLFRUESTUNG, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;					
-                       
+                    break;
+
                         // -- Exotics -- //
-                       
+
                 case schimaere:
                     if (player->GetMoney() < PRICE_PET_TYP_2)
                     {
@@ -433,8 +433,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_SCHIMAERE, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;						
-                       
+                    break;
+
                 case silithidgelb:
                     if (player->GetMoney() < PRICE_PET_TYP_2)
                     {
@@ -445,8 +445,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_SILITHIDGELB, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;							
-                       
+                    break;
+
                 case silithidrot:
                     if (player->GetMoney() < PRICE_PET_TYP_2)
                     {
@@ -457,8 +457,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_SILITHIDROT, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;						
-                       
+                    break;
+
                 case rhinozeros:
                     if (player->GetMoney() < PRICE_PET_TYP_2)
                     {
@@ -469,8 +469,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_RHINOZEROS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;								
-       
+                    break;
+
                 case wurmgelb:
                     if (player->GetMoney() < PRICE_PET_TYP_2)
                     {
@@ -481,8 +481,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_WURMGELB, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;								
-                       
+                    break;
+
                 case kernhundweiss:
                     if (player->GetMoney() < PRICE_PET_TYP_2)
                     {
@@ -493,8 +493,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_KERNHUNDWEISS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;						
-                       
+                    break;
+
                 case kernhundrot:
                     if (player->GetMoney() < PRICE_PET_TYP_2)
                     {
@@ -505,8 +505,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_KERNHUNDROT, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;						
-                       
+                    break;
+
                 case teufelssaurierweiss:
                     if (player->GetMoney() < PRICE_PET_TYP_2)
                     {
@@ -517,8 +517,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_TEUFELSSAURIERWEISS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;							
-                       
+                    break;
+
                 case teufelssaurierschwarz:
                     if (player->GetMoney() < PRICE_PET_TYP_2)
                     {
@@ -529,8 +529,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_TEUFELSSAURIERSCHWARZ, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;					
-                       
+                    break;
+
                 case skoll:
                     if (player->GetMoney() < PRICE_PET_TYP_2)
                     {
@@ -541,8 +541,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_SKOLL, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;						
-                       
+                    break;
+
                 case loque:
                     if (player->GetMoney() < PRICE_PET_TYP_2)
                     {
@@ -553,8 +553,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_LOQUE, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;					
-                       
+                    break;
+
                 case gondria:
                     if (player->GetMoney() < PRICE_PET_TYP_2)
                     {
@@ -565,8 +565,8 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_GONDRIA, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;							
-                       
+                    break;
+
                 case arcturis:
                     if (player->GetMoney() < PRICE_PET_TYP_2)
                     {
@@ -577,13 +577,13 @@ player->PlayerTalkClass->ClearMenus();
                         me->SummonCreature(CREATURE_ARCTURIS, me->GetPositionX()+4, me->GetPositionY(), me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
                     }
                     CloseGossipMenuFor(player);
-                    break;						
+                    break;
     }
- 
+
     return true;
      }
 };
-    
+
     CreatureAI* GetAI(Creature* me) const
     {
         return new npc_hunterpetvendorAI(me);
@@ -602,7 +602,7 @@ class go_dedication_of_honor : public GameObjectScript
 {
 public:
     go_dedication_of_honor() : GameObjectScript("go_dedication_of_honor") { }
-    
+
     struct  go_dedication_of_honorAI : public GameObjectAI
     {
         go_dedication_of_honorAI(GameObject* go) : GameObjectAI(go) { }

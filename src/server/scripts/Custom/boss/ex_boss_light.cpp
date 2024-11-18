@@ -35,7 +35,7 @@ enum Events
     EVENT_EISBLITZ = 11,
     EVENT_ERNEUERUNG = 12,
     EVENT_SEUCHENBOMBE = 13
-    
+
 };
 
 enum Phases
@@ -57,7 +57,7 @@ enum Texts
     SAY_KILL = 2,
     SAY_DEAD = 3,
     SAY_BLIZZARD = 4
-    
+
 };
 
 class light : public CreatureScript
@@ -67,13 +67,13 @@ public:
 
     struct lightAI : public ScriptedAI
     {
-        lightAI(Creature* creature) : ScriptedAI(creature), Summons(me)   
+        lightAI(Creature* creature) : ScriptedAI(creature), Summons(me)
         {
         }
 
         uint32 playerdie = 0;
-        
-        
+
+
         void Reset() override
         {
             _events.Reset();
@@ -152,7 +152,7 @@ public:
                 _events.ScheduleEvent(EVENT_BLIZZARD, 12s);
                 _events.ScheduleEvent(EVENT_ARKANE_AUFLADUNG, 10s);
                 _events.ScheduleEvent(EVENT_ENRAGE, 120s);
-                
+
 
             }
         }
@@ -176,7 +176,7 @@ public:
             /*char msg[250];
             snprintf(msg, 250, "|cffff0000[Boss System]|r Boss|cffff6060 Lightshadow|r wurde getoetet! Respawn in 4h 33min. Darkshadow ist nun der rechtmaessige Prinz! %u",playerdie, pPlayer->GetName());
             sWorld->SendGlobalText(msg, nullptr);*/
-    
+
             Map::PlayerList const &PlList = pPlayer->GetMap()->GetPlayers();
             if (PlList.isEmpty())
                 return;
@@ -203,7 +203,7 @@ public:
             Talk(SAY_KILL);
             if (victim->GetTypeId() != TYPEID_PLAYER)
                 return;
-            //char msg[250];		
+            //char msg[250];
             DoCast(me, SPELL_ERNEUERUNG);
             DoCast(me, SPELL_ENRAGE);
             DoCast(SPELL_SEUCHENSTROM);
@@ -213,7 +213,7 @@ public:
             //snprintf(msg, 250, "|cffff0000[Boss System]|r |cffff6060 Lightshadow|r hat einen Mitstreiter Darkshadows getoetet! Was fuer eine Schmach. Der Killcounter steht bei : %u", playerdie);
             //sWorld->SendGlobalText(msg, nullptr);
         }
-        
+
         void UpdateAI(uint32 diff) override
         {
             if (!UpdateVictim())

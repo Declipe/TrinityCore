@@ -114,7 +114,7 @@ public:
             {
             case NPC_PUSTELIGER_SCHRECKEN:
                 if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 300.0f))
-                    summon->AI()->AttackStart(target); 
+                    summon->AI()->AttackStart(target);
                 break;
             }
         }
@@ -124,10 +124,10 @@ public:
             //char msg[250];
             //snprintf(msg, 250, "|cffff0000[Boss System]|r Boss|cffff6060 Exitares Schatten|r wurde getoetet! Respawn in 6h 33min.");
             //sWorld->SendGlobalText(msg, nullptr);
-            
+
         }
 
-                
+
 
         void UpdateAI(uint32 diff) override
         {
@@ -186,7 +186,7 @@ public:
                     if (Unit* target = SelectTarget(SelectTargetMethod::MaxThreat,0)){
                         DoCast(target,SPELL_FLAME_BREATH);
                     }
-                    
+
                     _events.ScheduleEvent(EVENT_BREATH, 35s);
                     break;
 

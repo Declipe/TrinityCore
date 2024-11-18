@@ -519,7 +519,7 @@ void WorldSession::HandleTogglePvP(WorldPackets::Misc::TogglePvP& togglePvP)
         if (!GetPlayer()->pvpInfo.IsHostile && GetPlayer()->IsPvP())
             GetPlayer()->pvpInfo.EndTimer = GameTime::GetGameTime();     // start toggle-off
         if (sGameConfig->GetBoolConfig("CONFIG.Test"))
-        { 
+        {
             GetPlayer()->CastSpell(GetPlayer(), 54512, true);
             GetPlayer()->RemoveAurasDueToSpell(72968);
         }

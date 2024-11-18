@@ -132,7 +132,7 @@ public:
         /*
          *  If reqType = 4 THEN item count required to purchase rank
          *  NOT USED otherwise
-         */ 
+         */
         float reqVal2;
 
         UpgradeStatReq()

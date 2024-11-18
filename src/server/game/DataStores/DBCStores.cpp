@@ -1006,7 +1006,7 @@ void DBCMgr::LoadCharTitlesStore()
     uint32 oldMSTime = getMSTime();
     CharTitlesStore.clear();
 
-    //                                             0            1             2                 3              4               5                6              7             8                   9              10             11                  12               13                 14               15           16              17                 18            19                                                              
+    //                                             0            1             2                 3              4               5                6              7             8                   9              10             11                  12               13                 14               15           16              17                 18            19
     QueryResult result = ZynDatabase.Query("SELECT ID, Name_Lang_enUS, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_zhCN, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, Name1_Lang_enUS, Name1_Lang_koKR, Name1_Lang_frFR, Name1_Lang_deDE, Name1_Lang_zhCN, Name1_Lang_zhTW, Name1_Lang_esES, Name1_Lang_esMX, Name1_Lang_ruRU, Mask_ID FROM chartitles_dbc");
 
     if (!result)

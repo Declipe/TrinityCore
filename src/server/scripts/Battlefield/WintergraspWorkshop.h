@@ -47,7 +47,7 @@ StaticWintergraspWorkshopInfo const WorkshopData[WG_MAX_WORKSHOP] =
 class WintergraspWorkshop
 {
 private:
-    BattlefieldWG* _wg;                             // Pointer to wintergrasp    
+    BattlefieldWG* _wg;                             // Pointer to wintergrasp
     WintergraspGameObjectState _state;              // For worldstate
     TeamId _teamControl;                            // Team witch control the workshop
     WintergraspCapturePoint* _capturePoint;         // Pointer to CapturePoint

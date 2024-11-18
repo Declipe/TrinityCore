@@ -1330,7 +1330,7 @@ enum TrinityStrings
     LANG_ITEM_NOT_USED_STEALTH                    = 12267,
     LANG_ITEM_NOT_USED_DEAD                       = 12268,
     LANG_ITEM_SUCCESS_BOUGHT                      = 12269,
-    LANG_ITEM_VIP_TIME                            = 12270,                   
+    LANG_ITEM_VIP_TIME                            = 12270,
     LANG_ITEM_MENU_TRADE                          = 12271,
 
     LANG_ITEM_PVP_CAP_ALIANCE                     = 12272,

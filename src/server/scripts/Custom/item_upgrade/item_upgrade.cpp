@@ -743,7 +743,7 @@ bool ItemUpgrade::_AddPagedData(Player* player, const PagedData& pagedData, uint
             ilvloss << "|cff056e3a" << itemLevel.second << "|r]";
             itemLevel = CalculateItemLevel(player, item);
             ilvloss << " [CURRENT: " << itemLevel.second << "]";
-            
+
             AddGossipItemFor(player, GOSSIP_ICON_CHAT, oss.str(), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
             AddGossipItemFor(player, GOSSIP_ICON_CHAT, ilvloss.str(), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
         }
@@ -868,7 +868,7 @@ bool ItemUpgrade::AddPagedData(Player* player, Creature* creature, uint32 page)
         else
             page--;
     }
-    
+
     pagedData.currentPage = page;
 
     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());

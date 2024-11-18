@@ -10,7 +10,7 @@ struct ttlForPvP
     uint16 tH;
 };
 
-ttlForPvP ttl[] = 
+ttlForPvP ttl[] =
 {
     {100, 1, 15}, // 0
     {250, 2, 16}, // 1

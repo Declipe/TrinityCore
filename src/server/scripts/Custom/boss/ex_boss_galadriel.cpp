@@ -66,7 +66,7 @@ public:
             _events.ScheduleEvent(EVENT_COLD, 1s);
             _events.ScheduleEvent(EVENT_BEBENDE_ERDE,10s);
             _events.ScheduleEvent(EVENT_WASTE, 8s);
-                        
+
         }
 
         void DamageTaken(Unit* /*attacker*/, uint32& damage, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
@@ -76,7 +76,7 @@ public:
                 _events.SetPhase(PHASE_TWO);
                 _events.ScheduleEvent(EVENT_SLIME_BOLT, 10s);
                 _events.ScheduleEvent(EVENT_WASTE, 20s);
-            
+
             }
 
             if (me->HealthBelowPctDamaged(35, damage) && _events.IsInPhase(PHASE_TWO))
@@ -104,7 +104,7 @@ public:
         void JustDied(Unit* /*killer*/) override
         {
             //char msg[250];
-            //snprintf(msg, 250, "|cffff0000[Boss System]|r Boss|cffff6060 Galadriel|r wurde getoetet! Der Respawn ist in 7 Tagen ab jetzt! "); 
+            //snprintf(msg, 250, "|cffff0000[Boss System]|r Boss|cffff6060 Galadriel|r wurde getoetet! Der Respawn ist in 7 Tagen ab jetzt! ");
             //sWorld->SendGlobalText(msg, nullptr);
             Summons.DespawnAll();
         }
@@ -152,7 +152,7 @@ public:
                     DoCast(SPELL_TOXIC_WASTE);
                     _events.ScheduleEvent(EVENT_WASTE, 15s);
                     break;
-                
+
                 default:
                     break;
                 }

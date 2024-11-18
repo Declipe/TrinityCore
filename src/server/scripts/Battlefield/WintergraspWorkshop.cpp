@@ -315,7 +315,7 @@ void BattlefieldWG::FillWorkshops()
 
             AddCapturePoint(capturePoint);
             m_WCP.push_back(capturePoint);
-        }        
+        }
 
         if (i < BATTLEFIELD_WG_WORKSHOP_NE)
             workshop->GiveControlTo(GetAttackerTeam(), true);

@@ -54,13 +54,13 @@ class mod_BossHistory_AllCreatureScript : public AllCreatureScript
 
 		uint32 Entry = creature->GetEntry();
 		InstanceMap* instance = map->ToInstanceMap();
-		
+
 		if (BossHistoryInstance && (!map->Instanceable() || !instance))
 			return;
-		
+
 		std::string bossName(creature->GetNameForLocaleIdx(sObjectMgr->GetDBCLocaleIndex()));
 		std::string mapName(creature->GetMap()->GetMapName());
-		
+
 		uint8 spawnMode = map->GetSpawnMode();
 		uint32 GuildId = 0;
 		bool IsGuildKill = true;
@@ -123,7 +123,7 @@ class mod_BossHistory_AllCreatureScript : public AllCreatureScript
 
 		if (!IsGuildKill)
 			GuildId = 0;
-			
+
 		uint32 mapMaxPlayers = instance ? instance->GetMaxPlayers() : 40;
 
 		if (BossHistoryAnnounce && IsGuildKill)

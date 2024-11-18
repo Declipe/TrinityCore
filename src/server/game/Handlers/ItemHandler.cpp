@@ -627,7 +627,7 @@ void WorldSession::SendListInventory(ObjectGuid vendorGuid, uint32 vendorEntry)
         vendor->PauseMovement(pause);
     vendor->SetHomePosition(vendor->GetPosition());
     SetCurrentVendor(vendorEntry);
-    
+
     VendorItemData const* items = vendorEntry ? sObjectMgr->GetNpcVendorItemList(vendorEntry) : vendor->GetVendorItems();
     if (!items)
     {

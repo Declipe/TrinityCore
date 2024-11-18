@@ -18,5 +18,5 @@ public:
     void prepareDelete();
 
 private:
-    WintergraspWorkshop* m_Workshop;    
+    WintergraspWorkshop* m_Workshop;
 };

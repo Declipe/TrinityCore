@@ -35,7 +35,7 @@ enum Spells
 
 enum Events
 {
-    
+
     // druid healer
     EVENT_LIFEBLOOM                 = 1,
     EVENT_NOURISH                   = 2,

@@ -422,7 +422,7 @@ GameObject* Battlefield::SpawnGameObject(uint32 entry, Position const& pos, Quat
         TC_LOG_ERROR("bg.battlefield", "Battlefield::SpawnGameObject: Can't create gameobject entry: {}, map not found.", entry);
         return nullptr;
     }
-    
+
     // Create gameobject
     GameObject* go = new GameObject;
     if (!go->Create(m_Map->GenerateLowGuid<HighGuid::GameObject>(), entry, m_Map, PHASEMASK_NORMAL, pos, rot, 255, GO_STATE_READY))

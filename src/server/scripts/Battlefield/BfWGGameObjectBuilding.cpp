@@ -154,7 +154,7 @@ uint8 const WG_MAX_DEFENDERS = 58;
 WintergraspGameObjectData const WGPortalAndDefenderData[WG_MAX_DEFENDERS] =
 {
     // Player teleporter
-    //                  Position                                QuaternionData                Horde    Alliance 
+    //                  Position                                QuaternionData                Horde    Alliance
     { { 5153.408f, 2901.349f, 409.1913f, -0.06981169f }, { 0.f, 0.f, -0.03489876f, 0.9993908f }, 190763, 191575 },
     { { 5268.698f, 2666.421f, 409.0985f, -0.71558490f }, { 0.f, 0.f, -0.35020730f, 0.9366722f }, 190763, 191575 },
     { { 5197.050f, 2944.814f, 409.1913f,  2.33874000f }, { 0.f, 0.f,  0.92050460f, 0.3907318f }, 190763, 191575 },

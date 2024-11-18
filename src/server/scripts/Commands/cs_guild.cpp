@@ -359,7 +359,7 @@ public:
             return false;
         }
     }
-    
+
     static bool HandleGuildSetLevelCommand(ChatHandler* handler, char const* args)
     {
         if (!*args)

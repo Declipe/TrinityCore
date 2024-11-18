@@ -55,7 +55,7 @@ public:
         {
             _events.Reset();
             Summons.DespawnAll();
-            
+
         }
 
         void JustEngagedWith(Unit* /*who*/) override
@@ -65,7 +65,7 @@ public:
             _events.ScheduleEvent(EVENT_SHADOW_SPIKE, 8s);
             _events.ScheduleEvent(EVENT_FEAR, 10s);
             _events.ScheduleEvent(EVENT_BLIZZARD, 30s);
-        
+
         }
 
         void DamageTaken(Unit* /*attacker*/, uint32& damage, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
@@ -100,7 +100,7 @@ public:
 
         void KilledUnit(Unit* victim) override
         {
-            
+
             if (victim->GetTypeId() != TYPEID_PLAYER)
                 return;
             //char msg[250];
@@ -108,7 +108,7 @@ public:
             //snprintf(msg, 250, "|cffff0000[Boss System]|r |cffff6060 Orrig|r hat einen Spieler getoetet! Was fuer eine Schmach. Insgesamt steht der Killcounter seit dem letzten Restart bei: %u", kills);
             //sWorld->SendGlobalText(msg, nullptr);
         }
-        
+
         void UpdateAI(uint32 diff) override
         {
             if (!UpdateVictim())
@@ -155,7 +155,7 @@ public:
                     DoCast(SPELL_CHAIN_LIGHTNING);
                     _events.ScheduleEvent(EVENT_CHAIN_LIGHTNING, 10s);
                     break;
-        
+
 
                 default:
                     break;

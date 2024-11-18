@@ -115,7 +115,7 @@ void BfGraveyard::GiveControlTo(TeamId team)
         newSpirit->SetVisible(true);
     else
         TC_LOG_ERROR("bg.battlefield", "BfGraveyard::GiveControlTo: newSpirit - Invalid Spirit.");
-    
+
     // Teleport to other graveyard, player witch were on this graveyard
     RelocateDeadPlayers();
 }
