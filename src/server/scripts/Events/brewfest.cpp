@@ -20,6 +20,7 @@
 #include "Player.h"
 #include "SpellAuraEffects.h"
 #include "SpellScript.h"
+#include "Spell.h"
 #include "World.h"
 
 enum RamBlaBla
@@ -663,6 +664,111 @@ class spell_brewfest_botm_empty_bottle_throw_resolve : public SpellScript
     }
 };
 
+enum fillKeg
+{
+    GREEN_EMPTY_KEG = 37892,
+    BLUE_EMPTY_KEG = 33016,
+    YELLOW_EMPTY_KEG = 32912,
+};
+
+class spell_brewfest_fill_keg : public SpellScript
+{
+    PrepareSpellScript(spell_brewfest_fill_keg);
+
+    void HandleAfterHit()
+    {
+        if (GetCaster() && GetCaster()->ToPlayer())
+        {
+            if (Item* itemCaster = GetCastItem())
+            {
+                Player* player = GetCaster()->ToPlayer();
+                uint32 item = 0;
+                switch (itemCaster->GetEntry())
+                {
+                case GREEN_EMPTY_KEG:
+                case BLUE_EMPTY_KEG:
+                    item = itemCaster->GetEntry() + urand(1, 5); // 5 items, id in range empty+1-5
+                    break;
+                case YELLOW_EMPTY_KEG:
+                    if (uint8 num = urand(0, 4))
+                        item = 32916 + num;
+                    else
+                        item = 32915;
+                    break;
+                }
+
+                if (item && player->AddItem(item, 1)) // ensure filled keg is stored
+                {
+                    player->DestroyItemCount(itemCaster->GetEntry(), 1, true);
+                    GetSpell()->m_CastItem = nullptr;
+                    GetSpell()->m_castItemGUID.Clear();
+                }
+            }
+        }
+    }
+
+    void Register() override
+    {
+        AfterHit += SpellHitFn(spell_brewfest_fill_keg::HandleAfterHit);
+    }
+};
+
+class spell_brewfest_unfill_keg : public SpellScript
+{
+    PrepareSpellScript(spell_brewfest_unfill_keg);
+
+    uint32 GetEmptyEntry(uint32 baseEntry)
+    {
+        switch (baseEntry)
+        {
+        case 37893:
+        case 37894:
+        case 37895:
+        case 37896:
+        case 37897:
+            return GREEN_EMPTY_KEG;
+        case 33017:
+        case 33018:
+        case 33019:
+        case 33020:
+        case 33021:
+            return BLUE_EMPTY_KEG;
+        case 32915:
+        case 32917:
+        case 32918:
+        case 32919:
+        case 32920:
+            return YELLOW_EMPTY_KEG;
+        }
+
+        return 0;
+    }
+
+    void HandleAfterHit()
+    {
+        if (GetCaster() && GetCaster()->ToPlayer())
+        {
+            if (Item* itemCaster = GetCastItem())
+            {
+                uint32 item = GetEmptyEntry(itemCaster->GetEntry());
+                Player* player = GetCaster()->ToPlayer();
+
+                if (item && player->AddItem(item, 1)) // ensure filled keg is stored
+                {
+                    player->DestroyItemCount(itemCaster->GetEntry(), 1, true);
+                    GetSpell()->m_CastItem = nullptr;
+                    GetSpell()->m_castItemGUID.Clear();
+                }
+            }
+        }
+    }
+
+    void Register() override
+    {
+        AfterHit += SpellHitFn(spell_brewfest_unfill_keg::HandleAfterHit);
+    }
+};
+
 void AddSC_event_brewfest()
 {
     RegisterSpellScript(spell_brewfest_giddyup);
@@ -683,4 +789,6 @@ void AddSC_event_brewfest()
     RegisterSpellScript(spell_brewfest_botm_teach_language);
     RegisterSpellScript(spell_brewfest_botm_weak_alcohol);
     RegisterSpellScript(spell_brewfest_botm_empty_bottle_throw_resolve);
+    RegisterSpellScript(spell_brewfest_fill_keg);
+    RegisterSpellScript(spell_brewfest_unfill_keg);
 }
