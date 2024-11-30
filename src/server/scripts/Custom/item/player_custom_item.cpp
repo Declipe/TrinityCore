@@ -1122,7 +1122,7 @@ public:
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_REMOVE_WEAKNESS), GOSSIP_SENDER_MAIN, 18);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_GIVE_BUFFS), GOSSIP_SENDER_MAIN, 19);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_VIP_BANK), GOSSIP_SENDER_MAIN, 20);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_26), GOSSIP_SENDER_MAIN, 201);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_26), GOSSIP_SENDER_MAIN, 202);
                     //if (!player->IsInCombat() || !player->IsInFlight() || !player->GetMap()->IsBattlegroundOrArena() || !player->HasStealthAura() || !player->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH) || !player->isDead())
                     //	AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_REMOVE_COOLDOWN), GOSSIP_SENDER_MAIN, 22);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
@@ -1958,7 +1958,7 @@ public:
                         AddGossipItemFor(player, GOSSIP_ICON_TAXI, GTS(LANG_ITEM_STORMWIND), GOSSIP_SENDER_MAIN, 5, GTS(LANG_ITEM_STORMWIND_SURE), 0, false);
                     else
                         AddGossipItemFor(player, GOSSIP_ICON_TAXI, GTS(LANG_ITEM_ORGRIMMAR), GOSSIP_SENDER_MAIN, 6, GTS(LANG_ITEM_ORGRIMMAR_SURE), 0, false);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_42/*, loc_idx*/), GOSSIP_SENDER_MAIN, 202);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_42/*, loc_idx*/), GOSSIP_SENDER_MAIN, 201);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
                     break;
@@ -2090,20 +2090,19 @@ public:
                     break;
                 }
 
-                case 201: //money obmen menu
-                {
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_25/*, loc_idx*/), GOSSIP_SENDER_MAIN, 200);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
-                    SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
-                }
-
-                case 202:
+                case 201:
                 {
                     CloseGossipMenuFor(player);
                     player->TeleportTo(0, -4137.27f, -1059.16f, 167.925f, 4.77061f);
                     break;
                 }
 
+                case 202: //money obmen menu
+                {
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_25/*, loc_idx*/), GOSSIP_SENDER_MAIN, 200);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                    SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
+                }
                 }
             }
         }
