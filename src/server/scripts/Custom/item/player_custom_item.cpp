@@ -2097,15 +2097,15 @@ public:
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
                 }
 
+
+                case 202:
+                {
+                    CloseGossipMenuFor(player);
+                    player->TeleportTo(0, -4137.27f, -1059.16f, 167.925f, 4.77061f);
+                    break;
                 }
 
-            case 202:
-            {
-                CloseGossipMenuFor(player);
-                player->TeleportTo(0, -4137.27f, -1059.16f, 167.925f, 4.77061f);
-                break;
-            }
-
+                }
             }
         }
     }
