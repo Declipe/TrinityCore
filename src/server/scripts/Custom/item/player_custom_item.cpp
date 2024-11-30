@@ -1335,7 +1335,7 @@ public:
                             AddGossipItemFor(player, GOSSIP_ICON_VENDOR, text, GOSSIP_SENDER_MAIN, itr->second.gossipAction, "Are you sure you want to buy it?", 0, false);
                         }
                     }
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, std::string("|TInterface/ICONS/Spell_chargenegative:25:25:-15:0|t ") + "Back", GOSSIP_SENDER_MAIN, 25);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, std::string("|TInterface/ICONS/Spell_chargenegative:25:25:-15:0|t ") + "Back", GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
                     break;
                 }
@@ -1349,7 +1349,7 @@ public:
                             AddGossipItemFor(player, GOSSIP_ICON_VENDOR, text, GOSSIP_SENDER_MAIN, itr->second.gossipAction, "Are you sure you want to buy it?", 0, false);
                         }
                     }
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, std::string("|TInterface/ICONS/Spell_chargenegative:25:25:-15:0|t ") + "Back", GOSSIP_SENDER_MAIN, 25);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, std::string("|TInterface/ICONS/Spell_chargenegative:25:25:-15:0|t ") + "Back", GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
                     break;
                 }
