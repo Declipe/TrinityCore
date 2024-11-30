@@ -2097,7 +2097,6 @@ public:
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
                 }
 
-
                 case 202:
                 {
                     CloseGossipMenuFor(player);
