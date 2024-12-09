@@ -103,11 +103,11 @@ public:
 
     static void Start(std::shared_ptr<FreezeDetector> const& freezeDetector)
     {
-        freezeDetector->_timer.expires_from_now(boost::posix_time::seconds(5));
-        freezeDetector->_timer.async_wait([freezeDetectorRef = std::weak_ptr<FreezeDetector>(freezeDetector)](boost::system::error_code const& error)
-            {
-                return Handler(freezeDetectorRef, error);
-            });
+        freezeDetector->_timer.expires_after(5s);
+        freezeDetector->_timer.async_wait([freezeDetectorRef = std::weak_ptr(freezeDetector)](boost::system::error_code const& error) mutable
+        {
+            Handler(std::move(freezeDetectorRef), error);
+        });
     }
 
     static void Handler(std::weak_ptr<FreezeDetector> freezeDetectorRef, boost::system::error_code const& error);
@@ -581,11 +581,11 @@ void FreezeDetector::Handler(std::weak_ptr<FreezeDetector> freezeDetectorRef, bo
                 }
             }
 
-            freezeDetector->_timer.expires_from_now(boost::posix_time::seconds(1));
-            freezeDetector->_timer.async_wait([freezeDetectorRef](boost::system::error_code const& timerError)
-                {
-                    return Handler(freezeDetectorRef, timerError);
-                });
+            freezeDetector->_timer.expires_after(1s);
+            freezeDetector->_timer.async_wait([freezeDetectorRef = std::move(freezeDetectorRef)](boost::system::error_code const& error) mutable
+            {
+                Handler(std::move(freezeDetectorRef), error);
+            });
         }
     }
 }
