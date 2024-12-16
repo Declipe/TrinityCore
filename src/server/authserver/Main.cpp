@@ -49,6 +49,7 @@
 #include <openssl/opensslv.h>
 #include <iostream>
 #include <csignal>
+#include "Patcher.h"
 
 using boost::asio::ip::tcp;
 using namespace boost::program_options;
@@ -197,6 +198,9 @@ int main(int argc, char** argv)
         TC_LOG_ERROR("server.authserver", "No valid realms specified.");
         return 1;
     }
+
+    // Initialize patcher
+    sPatcher->Initialize();
 
     // Start the listening port (acceptor) for auth connections
     int32 port = sConfigMgr->GetIntDefault("RealmServerPort", 3724);

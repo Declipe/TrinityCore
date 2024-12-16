@@ -27,6 +27,8 @@
 #include "Socket.h"
 #include "SRP6.h"
 #include <boost/asio/ip/tcp.hpp>
+#include <openssl/md5.h>
+#include "Patcher.h"
 
 using boost::asio::ip::tcp;
 
@@ -42,6 +44,33 @@ enum AuthStatus
     STATUS_WAITING_FOR_REALM_LIST,
     STATUS_CLOSED
 };
+
+#pragma pack(push, 1)
+
+typedef struct XFER_INIT_C {
+    uint8 cmd;
+    uint8 nameLength;
+    uint8 fileName[5];
+    uint64 fileSize;
+    uint8 MD5[MD5_DIGEST_LENGTH];
+} sXferInit_C;
+
+typedef struct XFER_RESUME_C {
+    uint8 cmd;
+    uint64 pos;
+} sXferResume_C;;
+
+typedef struct XFER_RESUME_S {
+    uint8 cmd;
+    uint64 pos;
+} sXferResume_S;
+
+struct TransferDataPacket {
+    uint8 cmd;
+    uint16 chunk_size;
+};
+
+#pragma pack(pop)
 
 struct AccountInfo
 {
@@ -66,12 +95,14 @@ public:
     static std::unordered_map<uint8, AuthHandler> InitHandlers();
 
     AuthSession(tcp::socket&& socket);
+    ~AuthSession();
 
     void Start() override;
     bool Update() override;
 
     void SendPacket(ByteBuffer& packet);
 
+    Patcher* _patcher;
 protected:
     void ReadHandler() override;
 
@@ -82,6 +113,10 @@ private:
     bool HandleReconnectProof();
     bool HandleRealmList();
 
+    //data transfer handle for patch
+    bool HandleXferResume();
+    bool HandleXferCancel();
+    bool HandleXferAccept();
     void CheckIpCallback(PreparedQueryResult result);
     void LogonChallengeCallback(PreparedQueryResult result);
     void ReconnectChallengeCallback(PreparedQueryResult result);
