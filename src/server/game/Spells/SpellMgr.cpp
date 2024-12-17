@@ -4722,6 +4722,17 @@ void SpellMgr::LoadSpellInfoCorrections()
             spellInfo->ManaPerSecond = 0;
         });
 
+    ApplySpellFix({ 40672, 39211, 36242, 36238 }, [](SpellInfo* spellInfo)
+        {
+            //m_spellValue->EffectBasePoints[1] = m_spellInfo->GetEffect(EFFECT_1).CalcBaseValue(1000);
+            spellInfo->_GetEffect(EFFECT_0).BasePoints = +10000;
+            //spellInfo->_GetEffect(EFFECT_1).BasePoints = +100000;
+           // spellInfo->_GetEffect(EFFECT_2).BasePoints = +100000;
+            /*spellInfo->_GetEffect(EFFECT_0).BasePoints += 30000;
+            spellInfo->_GetEffect(EFFECT_1).BasePoints += 30000;
+            spellInfo->_GetEffect(EFFECT_2).BasePoints += 30000;*/
+
+        });
     // Threatening Gaze
     ApplySpellFix({ 24314 }, [](SpellInfo* spellInfo)
         {
