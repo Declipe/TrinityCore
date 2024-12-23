@@ -21,6 +21,7 @@
 #include "Define.h"
 #include "DatabaseEnvFwd.h"
 #include <vector>
+#include <unordered_map>
 
 class TC_DATABASE_API ResultSet
 {
@@ -35,11 +36,13 @@ class TC_DATABASE_API ResultSet
 
         Field* Fetch() const { return _currentRow; }
         Field const& operator[](std::size_t index) const;
+        Field const& operator[](std::string_view const& alias) const;
 
         QueryResultFieldMetadata const& GetFieldMetadata(std::size_t index) const;
 
     protected:
         std::vector<QueryResultFieldMetadata> _fieldMetadata;
+        std::unordered_map<std::string_view, std::size_t> _fieldIndexByAlias;
         uint64 _rowCount;
         Field* _currentRow;
         uint32 _fieldCount;
@@ -65,11 +68,13 @@ class TC_DATABASE_API PreparedResultSet
 
         Field* Fetch() const;
         Field const& operator[](std::size_t index) const;
+        Field const& operator[](std::string_view const& alias) const;
 
         QueryResultFieldMetadata const& GetFieldMetadata(std::size_t index) const;
 
     protected:
         std::vector<QueryResultFieldMetadata> m_fieldMetadata;
+        std::unordered_map<std::string_view, std::size_t> m_fieldIndexByAlias;
         std::vector<Field> m_rows;
         uint64 m_rowCount;
         uint64 m_rowPosition;
