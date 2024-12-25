@@ -4169,7 +4169,7 @@ void ObjectMgr::LoadPetLevelInfo()
             continue;
         }
 
-        uint32 current_level = fields[1].GetUInt8();
+        uint32 current_level = fields[1].GetUInt32();
         if (current_level > sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL))
         {
             if (current_level > STRONG_MAX_LEVEL)        // hardcoded level maximum
@@ -4194,14 +4194,14 @@ void ObjectMgr::LoadPetLevelInfo()
         // data for level 1 stored in [0] array element, ...
         PetLevelInfo* pLevelInfo = &pInfoMapEntry[current_level - 1];
 
-        pLevelInfo->health = fields[2].GetUInt16();
-        pLevelInfo->mana = fields[3].GetUInt16();
+        pLevelInfo->health = fields[2].GetUInt32();
+        pLevelInfo->mana = fields[3].GetUInt32();
         pLevelInfo->armor = fields[9].GetUInt32();
-        pLevelInfo->minDamage = fields[10].GetUInt16();
-        pLevelInfo->maxDamage = fields[11].GetUInt16();
+        pLevelInfo->minDamage = fields[10].GetUInt32();
+        pLevelInfo->maxDamage = fields[11].GetUInt32();
 
         for (uint64 i = 0; i < MAX_STATS; i++)
-            pLevelInfo->stats[i] = fields[i + 4].GetUInt16();
+            pLevelInfo->stats[i] = fields[i + 4].GetUInt32();
 
         ++count;
     } while (result->NextRow());
@@ -4944,7 +4944,7 @@ void ObjectMgr::BuildPlayerLevelInfo(uint8 race, uint8 _class, uint8 level, Play
     *info = _playerInfo[race][_class]->levelInfo[sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL) - 1];
 
     // if conversion from uint32 to uint8 causes unexpected behaviour, change lvl to uint32
-    for (uint8 lvl = sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL) - 1; lvl < level; ++lvl)
+    for (uint32 lvl = sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL) - 1; lvl < level; ++lvl)
     {
         switch (_class)
         {
@@ -10341,8 +10341,8 @@ void ObjectMgr::LoadCreatureClassLevelStats()
     {
         Field* fields = result->Fetch();
 
-        uint8 Level = fields[0].GetUInt8();
-        uint8 Class = fields[1].GetUInt8();
+        uint8 Level = fields[0].GetUInt32();
+        uint8 Class = fields[1].GetUInt32();
 
         if (!Class || ((1 << (Class - 1)) & CLASSMASK_ALL_CREATURES) == 0)
             TC_LOG_ERROR("sql.sql", "Creature base stats for level {} has invalid class {}", Level, Class);
@@ -10351,7 +10351,7 @@ void ObjectMgr::LoadCreatureClassLevelStats()
 
         for (uint8 i = 0; i < MAX_EXPANSIONS; ++i)
         {
-            stats.BaseHealth[i] = fields[2 + i].GetUInt16();
+            stats.BaseHealth[i] = fields[2 + i].GetUInt32();
 
             if (stats.BaseHealth[i] == 0)
             {
@@ -10367,11 +10367,11 @@ void ObjectMgr::LoadCreatureClassLevelStats()
             }
         }
 
-        stats.BaseMana = fields[5].GetUInt16();
-        stats.BaseArmor = fields[6].GetUInt16();
+        stats.BaseMana = fields[5].GetUInt32();
+        stats.BaseArmor = fields[6].GetUInt32();
 
-        stats.AttackPower = fields[7].GetUInt16();
-        stats.RangedAttackPower = fields[8].GetUInt16();
+        stats.AttackPower = fields[7].GetUInt32();
+        stats.RangedAttackPower = fields[8].GetUInt32();
 
         _creatureBaseStatsStore[MAKE_PAIR16(Level, Class)] = stats;
 
