@@ -57,6 +57,8 @@ class TC_GAME_API TempSummon : public Creature
         SummonPropertiesEntry const* const m_Properties;
 
         std::string GetDebugInfo() const override;
+
+        void CheckSummonPropertiesFlags(Unit* caster);
     private:
         TempSummonType m_type;
         uint32 m_timer;

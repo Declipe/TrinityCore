@@ -18,6 +18,7 @@
 #include "TemporarySummon.h"
 #include "CreatureAI.h"
 #include "DBCStructure.h"
+#include "DBCEnums.h"
 #include "GameObject.h"
 #include "GameObjectAI.h"
 #include "Log.h"
@@ -279,6 +280,45 @@ bool ForcedUnsummonDelayEvent::Execute(uint64 /*e_time*/, uint32 /*p_time*/)
 {
     m_owner.UnSummon();
     return true;
+}
+
+void TempSummon::CheckSummonPropertiesFlags(Unit* caster)
+{
+    if (!m_Properties)
+        return;
+
+    if (m_Properties->Flags & SUMMON_PROP_FLAG_ATTACK_SUMMONER)
+        if (CombatManager::CanBeginCombat(this, caster) && CanStartAttack(caster, true))
+            AI()->AttackStart(caster);
+
+    if (m_Properties->Flags & SUMMON_PROP_FLAG_ASSIST_COMBAT_SUMMON)
+    {
+        if (!caster->CanHaveThreatList())
+        {
+            for (auto ref : caster->GetCombatManager().GetPvECombatRefs())
+                if (Unit* victim = ref.second->GetOther(caster))
+                    if (CanStartAttack(victim, true))
+                    {
+                        AI()->AttackStart(victim);
+                        break;
+                    }
+        }
+        else
+        {
+            for (auto ref : caster->GetThreatManager().GetSortedThreatList())
+                if (Unit* victim = ref->GetVictim())
+                    if (CanStartAttack(victim, true))
+                    {
+                        AI()->AttackStart(victim);
+                        break;
+                    }
+        }
+
+        if (!GetThreatManager().IsThreatListEmpty())
+            if (Unit* enemy = GetThreatManager().GetAnyTarget())
+                if (CanStartAttack(enemy, true))
+                    AI()->AttackStart(enemy);
+    }
 }
 
 void TempSummon::RemoveFromWorld()

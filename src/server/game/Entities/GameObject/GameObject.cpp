@@ -2038,6 +2038,15 @@ void GameObject::Use(Unit* user)
                 if (owner)
                     owner->FinishSpell(CURRENT_CHANNELED_SPELL);
 
+                if (info->summoningRitual.animSpell)
+                {
+                    for (auto it = m_unique_users.begin(); it != m_unique_users.end(); ++it)
+                    {
+                        if (Player* target = ObjectAccessor::GetPlayer(*this, *it))
+                            target->FinishSpell(CURRENT_CHANNELED_SPELL);
+                    }
+                }
+
                 // can be deleted now, if
                 if (!info->summoningRitual.ritualPersistent)
                     SetLootState(GO_JUST_DEACTIVATED);
@@ -2566,8 +2575,16 @@ void GameObject::SetLootState(LootState state, Unit* unit)
     AI()->OnLootStateChanged(state, unit);
 
     // Start restock timer if the chest is partially looted or not looted at all
-    if (GetGoType() == GAMEOBJECT_TYPE_CHEST && state == GO_ACTIVATED && GetGOInfo()->chest.chestRestockTime > 0 && m_restockTime == 0)
-        m_restockTime = GameTime::GetGameTime() + GetGOInfo()->chest.chestRestockTime;
+    if (GetGoType() == GAMEOBJECT_TYPE_CHEST && state == GO_ACTIVATED)
+    {
+        GameObjectTemplate const* goInfo = GetGOInfo();
+
+        if (goInfo->chest.chestRestockTime > 0 && m_restockTime == 0)
+            m_restockTime = GameTime::GetGameTime() + goInfo->chest.chestRestockTime;
+
+        if (goInfo->chest.chestRestockTime == 0 && m_restockTime == 0 && GetMap() && GetMap()->IsWorldMap())
+            DespawnOrUnsummon(300s);
+    }
 
     if (GetGoType() == GAMEOBJECT_TYPE_DOOR) // only set collision for doors on SetGoState
         return;

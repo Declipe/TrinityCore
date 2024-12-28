@@ -43,6 +43,7 @@
 #include "StringConvert.h"
 #include "TemporarySummon.h"
 #include "Totem.h"
+#include "TotemAI.h"
 #ifdef ELUNA
 #include "LuaEngine.h"
 #include "ElunaConfig.h"
@@ -1688,6 +1689,8 @@ bool WorldObject::CanDetect(WorldObject const* obj, bool implicitDetect, bool ch
 bool WorldObject::CanDetectInvisibilityOf(WorldObject const* obj) const
 {
     uint32 mask = obj->m_invisibility.GetFlags() & m_invisibilityDetect.GetFlags();
+    // xinef: include invisible flags of caster in the mask, 2 invisible objects should be able to detect eachother
+    mask |= obj->m_invisibility.GetFlags() & m_invisibility.GetFlags();
 
     // Check for not detected types
     if (mask != obj->m_invisibility.GetFlags())
@@ -1697,12 +1700,42 @@ bool WorldObject::CanDetectInvisibilityOf(WorldObject const* obj) const
     // (it's at least true for spell: 66)
     // It seems like that only Units are affected by this check (couldn't see arena doors with preparation invisibility)
     if (obj->ToUnit())
-        if ((m_invisibility.GetFlags() & obj->m_invisibilityDetect.GetFlags()) != m_invisibility.GetFlags())
-            return false;
+    {
+        // Permanently invisible creatures should be able to engage non-invisible targets.
+        // ex. Skulking Witch (20882) / Greater Invisibility (16380)
+        bool isPermInvisibleCreature = false;
+        if (Creature const* baseObj = ToCreature())
+        {
+            auto auraEffects = baseObj->GetAuraEffectsByType(SPELL_AURA_MOD_INVISIBILITY);
+            for (auto const effect : auraEffects)
+            {
+                if (SpellInfo const* spell = effect->GetSpellInfo())
+                {
+                    if (spell->GetMaxDuration() == -1)
+                    {
+                        isPermInvisibleCreature = true;
+                    }
+                }
+            }
+        }
+
+        if (!isPermInvisibleCreature)
+        {
+            uint32 objMask = m_invisibility.GetFlags() & obj->m_invisibilityDetect.GetFlags();
+            // xinef: include invisible flags of caster in the mask, 2 invisible objects should be able to detect eachother
+            objMask |= m_invisibility.GetFlags() & obj->m_invisibility.GetFlags();
+            if (objMask != m_invisibility.GetFlags())
+                return false;
+        }
+    }
 
     for (uint32 i = 0; i < TOTAL_INVISIBILITY_TYPES; ++i)
     {
         if (!(mask & (1 << i)))
+            continue;
+
+        // visible for the same invisibility type:
+        if (m_invisibility.GetValue(InvisibilityType(i)) && obj->m_invisibility.GetValue(InvisibilityType(i)))
             continue;
 
         int32 objInvisibilityValue = obj->m_invisibility.GetValue(InvisibilityType(i));
@@ -3153,15 +3186,26 @@ Unit* WorldObject::GetMagicHitRedirectTarget(Unit* victim, SpellInfo const* spel
             if (spellInfo->CheckExplicitTarget(this, magnet) == SPELL_CAST_OK && IsValidAttackTarget(magnet, spellInfo))
             {
                 /// @todo handle this charge drop by proc in cast phase on explicit target
-                if (spellInfo->Speed > 0.0f)
+                if (magnet->IsTotem())
                 {
-                    // Set up missile speed based delay
-                    uint32 delay = uint32(std::floor(std::max<float>(victim->GetDistance(this), 5.0f) / spellInfo->Speed * 1000.0f));
-                    // Schedule charge drop
-                    aurEff->GetBase()->DropChargeDelayed(delay, AURA_REMOVE_BY_EXPIRE);
+                    // We should choose minimum between flight time and queue time as in reflect, however we dont know flight time at this point, use arbitrary small number
+                    uint32 delay = 100;
+
+                    /// @todo handle this charge drop by proc in cast phase on explicit target
+                    if (spellInfo->Speed > 0.0f)
+                    {
+                        // Set up missile speed based delay
+                        delay = uint32(std::floor(std::max<float>(victim->GetDistance(this), 5.0f) / spellInfo->Speed * 1000.0f));
+                        // Schedule charge drop
+                        aurEff->GetBase()->DropChargeDelayed(delay, AURA_REMOVE_BY_EXPIRE);
+                    }
+                    else
+                    {
+                        aurEff->GetBase()->DropCharge(AURA_REMOVE_BY_EXPIRE);
+                    }
+
+                    magnet->m_Events.AddEvent(new KillMagnetEvent(*magnet), magnet->m_Events.CalculateTime(Milliseconds(delay)));
                 }
-                else
-                    aurEff->GetBase()->DropCharge(AURA_REMOVE_BY_EXPIRE);
 
                 return magnet;
             }

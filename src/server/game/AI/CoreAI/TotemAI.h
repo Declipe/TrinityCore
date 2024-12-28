@@ -31,6 +31,7 @@ class TC_GAME_API TotemAI : public NullCreatureAI
         explicit TotemAI(Creature* creature);
 
         void AttackStart(Unit* victim) override;
+        void DamageTaken(Unit* attacker, uint32& /*damage*/, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override { AttackStart(attacker); }
 
         void UpdateAI(uint32 diff) override;
         static int32 Permissible(Creature const* creature);
@@ -38,4 +39,19 @@ class TC_GAME_API TotemAI : public NullCreatureAI
     private:
         ObjectGuid _victimGUID;
 };
+
+class TC_GAME_API KillMagnetEvent : public BasicEvent
+{
+public:
+    KillMagnetEvent(Unit& self) : _self(self) {}
+    bool Execute(uint64 /*e_time*/, uint32 /*p_time*/) override
+    {
+        _self.setDeathState(DEAD);
+        return true;
+    }
+
+protected:
+    Unit& _self;
+};
+
 #endif

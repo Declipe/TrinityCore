@@ -2888,6 +2888,16 @@ float Map::GetWaterLevel(float x, float y) const
 
 bool Map::isInLineOfSight(float x1, float y1, float z1, float x2, float y2, float z2, uint32 phasemask, LineOfSightChecks checks, VMAP::ModelIgnoreFlags ignoreFlags) const
 {
+    if (sWorld->getBoolConfig(CONFIG_VMAP_ENHANCED_LOS_PVP) && IsBattlegroundOrArena())
+    {
+        ignoreFlags = VMAP::ModelIgnoreFlags::Nothing;
+    }
+
+    if (sWorld->getBoolConfig(CONFIG_VMAP_ENHANCED_LOS_WORLD) && IsWorldMap())
+    {
+        ignoreFlags = VMAP::ModelIgnoreFlags::Nothing;
+    }
+
     if ((checks & LINEOFSIGHT_CHECK_VMAP)
       && !VMAP::VMapFactory::createOrGetVMapManager()->isInLineOfSight(GetId(), x1, y1, z1, x2, y2, z2, ignoreFlags))
         return false;
@@ -4304,6 +4314,11 @@ bool Map::Is25ManRaid() const
 bool Map::IsBattleground() const
 {
     return i_mapEntry && i_mapEntry->IsBattleground();
+}
+
+bool Map::IsWorldMap() const
+{
+    return i_mapEntry && i_mapEntry->IsWorldMap();
 }
 
 bool Map::IsBattleArena() const
