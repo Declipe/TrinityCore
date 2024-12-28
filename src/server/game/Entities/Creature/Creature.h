@@ -228,6 +228,7 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         bool CanGeneratePickPocketLoot() const;
         ObjectGuid GetLootRecipientGUID() const { return m_lootRecipient; }
         Player* GetLootRecipient() const;
+        ObjectGuid::LowType GetLootRecipientGroupGUID() const { return m_lootRecipientGroup; }
         Group* GetLootRecipientGroup() const;
         bool hasLootRecipient() const { return !m_lootRecipient.IsEmpty() || m_lootRecipientGroup; }
         bool isTappedBy(Player const* player) const;                          // return true if the creature is tapped by the player or a member of his party.
@@ -397,7 +398,7 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         static float _GetHealthMod(int32 Rank);
 
         ObjectGuid m_lootRecipient;
-        uint32 m_lootRecipientGroup;
+        ObjectGuid::LowType m_lootRecipientGroup;
 
         /// Timers
         time_t _pickpocketLootRestore;

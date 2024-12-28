@@ -1279,21 +1279,42 @@ void Creature::SetLootRecipient(Unit* unit, bool withGroup)
         m_lootRecipient.Clear();
         m_lootRecipientGroup = 0;
         RemoveDynamicFlag(UNIT_DYNFLAG_LOOTABLE|UNIT_DYNFLAG_TAPPED);
+        ResetAllowedLooters();
         return;
     }
-
-    if (unit->GetTypeId() != TYPEID_PLAYER && !unit->IsVehicle())
-        return;
 
     Player* player = unit->GetCharmerOrOwnerPlayerOrPlayerItself();
     if (!player)                                             // normal creature, no player involved
         return;
 
     m_lootRecipient = player->GetGUID();
+
+    Map* map = GetMap();
+    if (map && map->IsDungeon() && (isWorldBoss() || IsDungeonBoss()))
+        AddAllowedLooter(m_lootRecipient);
+
     if (withGroup)
     {
         if (Group* group = player->GetGroup())
+        {
             m_lootRecipientGroup = group->GetLowGUID();
+
+            if (map && map->IsDungeon() && (isWorldBoss() || IsDungeonBoss()))
+            {
+                Map::PlayerList const& PlayerList = map->GetPlayers();
+                for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+                {
+                    if (Player* groupMember = i->GetSource())
+                    {
+                        if (groupMember->IsGameMaster() /* || groupMember->IsSpectator() */) // No spectator in TC
+                            continue;
+
+                        if (groupMember->GetGroup() == group)
+                            AddAllowedLooter(groupMember->GetGUID());
+                    }
+                }
+            }
+        }
     }
     else
         m_lootRecipientGroup = ObjectGuid::Empty;

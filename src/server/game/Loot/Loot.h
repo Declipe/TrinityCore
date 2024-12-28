@@ -245,7 +245,7 @@ struct TC_GAME_API Loot
     void RemoveLooter(ObjectGuid GUID) { PlayersLooting.erase(GUID); }
 
     void generateMoneyLoot(uint32 minAmount, uint32 maxAmount);
-    bool FillLoot(uint32 lootId, LootStore const& store, Player* lootOwner, bool personal, bool noEmptyError = false, uint16 lootMode = LOOT_MODE_DEFAULT);
+    bool FillLoot(uint32 lootId, LootStore const& store, Player* lootOwner, bool personal, bool noEmptyError = false, uint16 lootMode = LOOT_MODE_DEFAULT, WorldObject* lootSource = nullptr);
 
     // Inserts the item into the loot (called by LootTemplate processors)
     void AddItem(LootStoreItem const & item);
@@ -257,10 +257,10 @@ struct TC_GAME_API Loot
     bool hasOverThresholdItem() const;
 
     private:
-        void FillNotNormalLootFor(Player* player, bool presentAtLooting);
+        void FillNotNormalLootFor(Player* player);
         NotNormalLootItemList* FillFFALoot(Player* player);
         NotNormalLootItemList* FillQuestLoot(Player* player);
-        NotNormalLootItemList* FillNonQuestNonFFAConditionalLoot(Player* player, bool presentAtLooting);
+        NotNormalLootItemList* FillNonQuestNonFFAConditionalLoot(Player* player);
 
         GuidSet PlayersLooting;
         NotNormalLootItemMap PlayerQuestItems;

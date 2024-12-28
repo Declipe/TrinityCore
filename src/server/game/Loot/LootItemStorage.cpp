@@ -182,6 +182,12 @@ bool LootItemStorage::LoadStoredLoot(Item* item, Player* player)
         }
     }
 
+    // Not sure if needed in TC?
+    // if (loot->unlootedCount)
+    // {
+    //     loot->FillNotNormalLootFor(player);
+    // }
+
     // Mark the item if it has loot so it won't be generated again on open
     item->m_lootGenerated = true;
     return true;
