@@ -4733,6 +4733,11 @@ void SpellMgr::LoadSpellInfoCorrections()
             spellInfo->_GetEffect(EFFECT_2).BasePoints += 30000;*/
         });
 
+    ApplySpellFix({ 50740 }, [](SpellInfo* spellInfo)
+        {
+            spellInfo->_GetEffect(EFFECT_0).BasePoints = 8000*4;
+        });
+
     // Threatening Gaze
     ApplySpellFix({ 24314 }, [](SpellInfo* spellInfo)
         {
