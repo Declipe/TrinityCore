@@ -2088,6 +2088,12 @@ public:
                             CloseGossipMenuFor(player);
                         }
                     }
+                    else
+                    {
+                        player->GetSession()->SendAreaTriggerMessage("%s", GTS2(NOT_USED_43));
+                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_43) );
+                        CloseGossipMenuFor(player);
+                    }
                     break;
                 }
 
