@@ -26,8 +26,14 @@ void ZynDatabaseConnection::DoPrepareStatements()
     PrepareStatement(ZynDatabase1, "SELECT `enchant_id`, `prev_enchant_id`, `description`, `golds` FROM `world_item_upgrade`", CONNECTION_SYNCH);
     PrepareStatement(ZynDatabase2, "SELECT SpellId, SpellMask, RequiredClassMask, RequiredRaceMask, RequiredLevel, RequiredSpellId, RequiredSkillId, RequiredSkillValue FROM `world_autolearn`", CONNECTION_SYNCH);
     PrepareStatement(WORLD_SEL_CUSTOM_CONFIG, "SELECT `OptionName`, `Type`, `DefaultValue`, `CustomValue` FROM custom_config", CONNECTION_SYNCH);
-    PrepareStatement(WORLD_INS_ITEM_FROM_SHOP, "INSERT INTO item_shop (id, entryID, groupName, coinCost) VALUES (?, ?, ?, ?)", CONNECTION_ASYNC);
-    PrepareStatement(WORLD_DEL_ITEM_FROM_SHOP, "DELETE FROM item_shop WHERE entryID = ? AND groupName = ?", CONNECTION_ASYNC);
+    PrepareStatement(ZYN_INS_ITEM_FROM_SHOP, "INSERT INTO item_shop (id, entryID, groupName, coinCost) VALUES (?, ?, ?, ?)", CONNECTION_ASYNC);
+    PrepareStatement(ZYN_DEL_ITEM_FROM_SHOP, "DELETE FROM item_shop WHERE entryID = ? AND groupName = ?", CONNECTION_ASYNC);
+
+    PrepareStatement(ZYN_INS_PROMO_CODE, "INSERT INTO promotion_codes (id, collection, code, honor, arena, money, item_1, item_2, item_3, item_4, item_5, item_6, item_7, item_8, item_9, item_10, item_count_1, item_count_2, item_count_3, item_count_4, item_count_5, item_count_6, item_count_7, item_count_8, item_count_9, item_count_10, aura, spell_1, spell_2, spell_3, coin, count_of_exists) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", CONNECTION_ASYNC);
+    PrepareStatement(ZYN_DEL_PROMO_CODE, "DELETE FROM promotion_codes WHERE code = ?", CONNECTION_ASYNC);
+    PrepareStatement(ZYN_UPD_PROMO_CODE_USED, "UPDATE promotion_codes SET count_of_exists = ? WHERE id = ?", CONNECTION_ASYNC);
+    PrepareStatement(ZYN_INS_PROMO_CODE_HISTORY, "INSERT INTO promotion_codes_history (id, codeID, code, accountID, playerID, use_time, use_unix_time) VALUES (?, ?, ?, ?, ?, NOW(), ?)", CONNECTION_ASYNC);
+
 }
 ZynDatabaseConnection::ZynDatabaseConnection(MySQLConnectionInfo& connInfo) : MySQLConnection(connInfo)
 {

@@ -53,7 +53,7 @@ void PromotionCodeMgr::LoadPromoCodes()
     promoCodesStore.clear();                                  // for reload case
 
     //                                                0       1        2     3      4      5      6       7       8         9              10           11         12     13       14      15       16    17
-    QueryResult result = WorldDatabase.Query("SELECT id, collection, code, honor, arena, money, item_1, item_2, item_3, item_count_1, item_count_2, item_count_3, aura, spell_1, spell_2, spell_3, coin, count_of_exists FROM promotion_codes");
+    QueryResult result = ZynDatabase.Query("SELECT id, collection, code, honor, arena, money, item_1, item_2, item_3, item_4, item_5, item_6, item_7, item_8, item_9, item_10, item_count_1, item_count_2, item_count_3, item_count_4, item_count_5, item_count_6, item_count_7, item_count_8, item_count_9, item_count_10, aura, spell_1, spell_2, spell_3, coin, count_of_exists FROM promotion_codes");
 
     if (!result)
     {
@@ -79,15 +79,30 @@ void PromotionCodeMgr::LoadPromoCodes()
         pc.item_1 = fields[6].GetUInt32();
         pc.item_2 = fields[7].GetUInt32();
         pc.item_3 = fields[8].GetUInt32();
-        pc.item_count_1 = fields[9].GetUInt32();
-        pc.item_count_2 = fields[10].GetUInt32();
-        pc.item_count_3 = fields[11].GetUInt32();
-        pc.aura = fields[12].GetUInt32();
-        pc.spell_1 = fields[13].GetUInt32();
-        pc.spell_2 = fields[14].GetUInt32();
-        pc.spell_3 = fields[15].GetUInt32();
-        pc.coin = fields[16].GetUInt32();
-        pc.exist_count = fields[17].GetUInt32();
+        pc.item_4 = fields[9].GetUInt32();
+        pc.item_5 = fields[10].GetUInt32();
+        pc.item_6 = fields[11].GetUInt32();
+        pc.item_7 = fields[12].GetUInt32();
+        pc.item_8 = fields[13].GetUInt32();
+        pc.item_9 = fields[14].GetUInt32();
+        pc.item_10 = fields[15].GetUInt32();
+        pc.item_count_1 = fields[16].GetUInt32();
+        pc.item_count_2 = fields[17].GetUInt32();
+        pc.item_count_3 = fields[18].GetUInt32();
+        pc.item_count_4 = fields[19].GetUInt32();
+        pc.item_count_5 = fields[20].GetUInt32();
+        pc.item_count_6 = fields[21].GetUInt32();
+        pc.item_count_7 = fields[22].GetUInt32();
+        pc.item_count_8 = fields[23].GetUInt32();
+        pc.item_count_9 = fields[24].GetUInt32();
+        pc.item_count_10 = fields[25].GetUInt32();
+
+        pc.aura = fields[26].GetUInt32();
+        pc.spell_1 = fields[27].GetUInt32();
+        pc.spell_2 = fields[28].GetUInt32();
+        pc.spell_3 = fields[29].GetUInt32();
+        pc.coin = fields[30].GetUInt32();
+        pc.exist_count = fields[31].GetUInt32();
 
         promoCodesStore[id] = pc;
 
@@ -104,7 +119,7 @@ void PromotionCodeMgr::LoadPromoCodesHistory()
     promoHistoryStore.clear();                                  // for reload case
 
     //                                                0     1      2        3       4        5
-    QueryResult result = WorldDatabase.Query("SELECT id, codeID, code, accountID, playerID, use_unix_time FROM promotion_codes_history");
+    QueryResult result = ZynDatabase.Query("SELECT id, codeID, code, accountID, playerID, use_unix_time FROM promotion_codes_history");
 
     if (!result)
     {
@@ -168,7 +183,7 @@ bool PromotionCodeMgr::AddPromoCode(PromotionCodes& promo)
 
     promoCodesStore[new_id] = promo;
 
-    WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_INS_PROMO_CODE);
+    ZynDatabasePreparedStatement* stmt = ZynDatabase.GetPreparedStatement(ZYN_INS_PROMO_CODE);
 
     stmt->setUInt32(0, new_id);
     stmt->setUInt32(1, promo.collection);
@@ -179,17 +194,35 @@ bool PromotionCodeMgr::AddPromoCode(PromotionCodes& promo)
     stmt->setUInt32(6, promo.item_1);
     stmt->setUInt32(7, promo.item_2);
     stmt->setUInt32(8, promo.item_3);
-    stmt->setUInt32(9, promo.item_count_1);
-    stmt->setUInt32(10, promo.item_count_2);
-    stmt->setUInt32(11, promo.item_count_3);
-    stmt->setUInt32(12, promo.aura);
-    stmt->setUInt32(13, promo.spell_1);
-    stmt->setUInt32(14, promo.spell_2);
-    stmt->setUInt32(15, promo.spell_3);
-    stmt->setUInt32(16, promo.coin);
-    stmt->setUInt32(17, promo.exist_count);
 
-    WorldDatabase.Execute(stmt);
+    stmt->setUInt32(9, promo.item_4);
+    stmt->setUInt32(10, promo.item_5);
+    stmt->setUInt32(11, promo.item_6);
+    stmt->setUInt32(12, promo.item_7);
+    stmt->setUInt32(13, promo.item_8);
+    stmt->setUInt32(14, promo.item_9);
+    stmt->setUInt32(15, promo.item_10);
+
+    stmt->setUInt32(16, promo.item_count_1);
+    stmt->setUInt32(17, promo.item_count_2);
+    stmt->setUInt32(18, promo.item_count_3);
+
+    stmt->setUInt32(19, promo.item_count_4);
+    stmt->setUInt32(20, promo.item_count_5);
+    stmt->setUInt32(21, promo.item_count_6);
+    stmt->setUInt32(22, promo.item_count_7);
+    stmt->setUInt32(23, promo.item_count_8);
+    stmt->setUInt32(24, promo.item_count_9);
+    stmt->setUInt32(25, promo.item_count_10);
+
+    stmt->setUInt32(26, promo.aura);
+    stmt->setUInt32(27, promo.spell_1);
+    stmt->setUInt32(28, promo.spell_2);
+    stmt->setUInt32(29, promo.spell_3);
+    stmt->setUInt32(30, promo.coin);
+    stmt->setUInt32(31, promo.exist_count);
+
+    ZynDatabase.Execute(stmt);
 
     return true;
 }
@@ -205,11 +238,11 @@ bool PromotionCodeMgr::DeletePromoCode(const std::string& name)
     {
         if (itr->second.code == name)
         {
-            WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_DEL_PROMO_CODE);
+            ZynDatabasePreparedStatement* stmt = ZynDatabase.GetPreparedStatement(ZYN_DEL_PROMO_CODE);
 
             stmt->setString(0, itr->second.code);
 
-            WorldDatabase.Execute(stmt);
+            ZynDatabase.Execute(stmt);
 
             promoCodesStore.erase(itr);
             return true;
@@ -232,10 +265,10 @@ bool PromotionCodeMgr::UpdateCountOfExistPromoCode(uint32 id, Player* player)
                 itr->second.exist_count -= 1;
                 code = itr->second.code;
 
-                WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_PROMO_CODE_USED);
+                ZynDatabasePreparedStatement* stmt = ZynDatabase.GetPreparedStatement(ZYN_UPD_PROMO_CODE_USED);
                 stmt->setUInt32(0, itr->second.exist_count);
                 stmt->setUInt32(1, id);
-                WorldDatabase.Execute(stmt);
+                ZynDatabase.Execute(stmt);
 
                 result = true;
             }
@@ -312,6 +345,64 @@ uint32 PromotionCodeMgr::TryToRewardForCode(std::string const& code, Player* pla
                     count = itr->second.item_count_3;
                 player->AddItem(itr->second.item_3, count);
             }
+
+            if (itr->second.item_4)
+            {
+                uint32 count = 1;
+                if (itr->second.item_count_4 && itr->second.item_count_4 > 1)
+                    count = itr->second.item_count_4;
+                player->AddItem(itr->second.item_4, count);
+            }
+
+            if (itr->second.item_5)
+            {
+                uint32 count = 1;
+                if (itr->second.item_count_5 && itr->second.item_count_5 > 1)
+                    count = itr->second.item_count_5;
+                player->AddItem(itr->second.item_5, count);
+            }
+
+            if (itr->second.item_6)
+            {
+                uint32 count = 1;
+                if (itr->second.item_count_6 && itr->second.item_count_6 > 1)
+                    count = itr->second.item_count_6;
+                player->AddItem(itr->second.item_6, count);
+            }
+
+            if (itr->second.item_7)
+            {
+                uint32 count = 1;
+                if (itr->second.item_count_7 && itr->second.item_count_7 > 1)
+                    count = itr->second.item_count_7;
+                player->AddItem(itr->second.item_7, count);
+            }
+
+            if (itr->second.item_8)
+            {
+                uint32 count = 1;
+                if (itr->second.item_count_8 && itr->second.item_count_8 > 1)
+                    count = itr->second.item_count_8;
+                player->AddItem(itr->second.item_8, count);
+            }
+
+            if (itr->second.item_9)
+            {
+                uint32 count = 1;
+                if (itr->second.item_count_9 && itr->second.item_count_9 > 1)
+                    count = itr->second.item_count_9;
+                player->AddItem(itr->second.item_9, count);
+            }
+
+
+            if (itr->second.item_10)
+            {
+                uint32 count = 1;
+                if (itr->second.item_count_10 && itr->second.item_count_10 > 1)
+                    count = itr->second.item_count_10;
+                player->AddItem(itr->second.item_10, count);
+            }
+
             if (itr->second.money)
                 player->ModifyMoney(itr->second.money);
             if (itr->second.coin)
@@ -354,7 +445,7 @@ bool PromotionCodeMgr::AddCodeInHistory(uint32 id, std::string const& code, Play
     ph.time = GameTime::GetGameTime();
     promoHistoryStore[new_id] = ph;
 
-    WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_INS_PROMO_CODE_HISTORY);
+    ZynDatabasePreparedStatement* stmt = ZynDatabase.GetPreparedStatement(ZYN_INS_PROMO_CODE_HISTORY);
 
     stmt->setUInt32(0, new_id);
     stmt->setUInt32(1, ph.codeId);
@@ -363,7 +454,7 @@ bool PromotionCodeMgr::AddCodeInHistory(uint32 id, std::string const& code, Play
     stmt->setUInt32(4, ph.playerGUID);
     stmt->setUInt64(5, uint64(ph.time));
 
-    WorldDatabase.Execute(stmt);
+    ZynDatabase.Execute(stmt);
 
     return true;
 }

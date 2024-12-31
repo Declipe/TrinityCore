@@ -92,7 +92,7 @@ bool ItemShopMgr::AddItemFromShop(ItemFromShop& data)
 
     _itemShopStore[new_id] = data;
 
-    ZynDatabasePreparedStatement* stmt = ZynDatabase.GetPreparedStatement(WORLD_INS_ITEM_FROM_SHOP);
+    ZynDatabasePreparedStatement* stmt = ZynDatabase.GetPreparedStatement(ZYN_INS_ITEM_FROM_SHOP);
     stmt->setUInt32(0, new_id);
     stmt->setUInt32(1, data.entryID);
     stmt->setString(2, data.itemName);
@@ -125,7 +125,7 @@ bool ItemShopMgr::DeleteItemFromShop(uint32 const& entryID, std::string const& g
 
     entryIDs.clear();
 
-    ZynDatabasePreparedStatement* stmt = ZynDatabase.GetPreparedStatement(WORLD_DEL_ITEM_FROM_SHOP);
+    ZynDatabasePreparedStatement* stmt = ZynDatabase.GetPreparedStatement(ZYN_DEL_ITEM_FROM_SHOP);
     stmt->setUInt32(0, entryID);
     stmt->setString(1, groupName);
     ZynDatabase.Execute(stmt);

@@ -2122,7 +2122,7 @@ public:
         uint32 codeUINT = (uint32)atol(code);
         if (!codeUINT)
             return;
-        QueryResult SearchForCode = WorldDatabase.PQuery("SELECT id FROM promotion_codes WHERE code = {} AND collection = {} AND count_of_exists = 0", codeUINT, action);
+        QueryResult SearchForCode = ZynDatabase.PQuery("SELECT id FROM promotion_codes WHERE code = {} AND collection = {} AND count_of_exists = 0", codeUINT, action);
 
         if (!*code)
             return;
