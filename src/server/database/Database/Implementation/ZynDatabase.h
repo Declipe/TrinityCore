@@ -24,7 +24,7 @@ enum ZynDatabaseStatements : uint32
 {
     ZynDatabase1,
     ZynDatabase2,
-    WORLD_SEL_CUSTOM_CONFIG,
+    ZYN_SEL_CUSTOM_CONFIG,
     ZYN_INS_ITEM_FROM_SHOP,
     ZYN_DEL_ITEM_FROM_SHOP,
     ZYN_INS_PROMO_CODE,

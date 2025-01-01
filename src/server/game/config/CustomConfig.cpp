@@ -130,7 +130,7 @@ void CustomConfig::Load()
 
     uint32 oldMSTime = getMSTime();
 
-    ZynDatabasePreparedStatement* stmt = ZynDatabase.GetPreparedStatement(WORLD_SEL_CUSTOM_CONFIG);
+    ZynDatabasePreparedStatement* stmt = ZynDatabase.GetPreparedStatement(ZYN_SEL_CUSTOM_CONFIG);
     PreparedQueryResult result = ZynDatabase.Query(stmt);
     if (!result)
     {

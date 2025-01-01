@@ -25,7 +25,7 @@ void ZynDatabaseConnection::DoPrepareStatements()
 
     PrepareStatement(ZynDatabase1, "SELECT `enchant_id`, `prev_enchant_id`, `description`, `golds` FROM `world_item_upgrade`", CONNECTION_SYNCH);
     PrepareStatement(ZynDatabase2, "SELECT SpellId, SpellMask, RequiredClassMask, RequiredRaceMask, RequiredLevel, RequiredSpellId, RequiredSkillId, RequiredSkillValue FROM `world_autolearn`", CONNECTION_SYNCH);
-    PrepareStatement(WORLD_SEL_CUSTOM_CONFIG, "SELECT `OptionName`, `Type`, `DefaultValue`, `CustomValue` FROM custom_config", CONNECTION_SYNCH);
+    PrepareStatement(ZYN_SEL_CUSTOM_CONFIG, "SELECT `OptionName`, `Type`, `DefaultValue`, `CustomValue` FROM custom_config", CONNECTION_SYNCH);
     PrepareStatement(ZYN_INS_ITEM_FROM_SHOP, "INSERT INTO item_shop (id, entryID, groupName, coinCost) VALUES (?, ?, ?, ?)", CONNECTION_ASYNC);
     PrepareStatement(ZYN_DEL_ITEM_FROM_SHOP, "DELETE FROM item_shop WHERE entryID = ? AND groupName = ?", CONNECTION_ASYNC);
 
