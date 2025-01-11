@@ -1274,6 +1274,7 @@ public:
     static bool HandleReloadItemTemplateCommand(ChatHandler* handler, const char* /*args*/)
     {
         TC_LOG_INFO("misc", "Reloading Creature and Item_template..");
+        sObjectMgr->LoadEquipmentTemplates();
         sObjectMgr->LoadItemTemplates2();
         sObjectMgr->LoadItemTemplates();
         sObjectMgr->LoadCreatureTemplates();
