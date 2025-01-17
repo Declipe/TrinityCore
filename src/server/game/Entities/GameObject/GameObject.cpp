@@ -707,7 +707,7 @@ void GameObject::Update(uint32 diff)
                     Unit* target = nullptr;
 
                     /// @todo this hack with search required until GO casting not implemented
-                    if (GetOwner() && goInfo->trap.type != 0)
+                    if (GetOwner())
                     {
                         // summoned traps: Search targets fit to trap spell data
                         if (SpellInfo const* trapSpell = sSpellMgr->GetSpellInfo(goInfo->trap.spellId))
