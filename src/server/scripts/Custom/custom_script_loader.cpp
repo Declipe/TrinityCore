@@ -16,6 +16,7 @@
  */
 
 // This is where scripts' loading functions should be declared:
+void AddSC_RebootBuffOnPlayerLogin();
 void AddAccountAchievementsScripts();
 void AddSC_item_upgrade_worldscript();
 void AddSC_npc_item_upgrade();
@@ -141,4 +142,5 @@ void AddCustomScripts()
     AddSC_item_upgrade_playerscript();
     AddSC_item_upgrade_itemscript();
     AddAccountAchievementsScripts();
+    AddSC_RebootBuffOnPlayerLogin();
 }
