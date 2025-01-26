@@ -18,7 +18,7 @@ public:
 
         if (sGameConfig->GetBoolConfig("RebootbuffEnable"))
         {
-            uint32 buffId = 81034;
+            uint32 buffId = 81169;
             uint32 maxBuffDuration = 2160 * 10000;
 
             uint32 startTime = GameTime::GetStartTime();
@@ -172,7 +172,7 @@ public:
     };
 
 
-    const uint32 BUFF_SPELL_ID = 81037;
+    const uint32 BUFF_SPELL_ID = 80998;
 
     void OnUpdateZone(Player* player, uint32 /*newZone*/, uint32 /*newArea*/) override
     {
