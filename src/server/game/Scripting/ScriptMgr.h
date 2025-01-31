@@ -439,6 +439,9 @@ public:
     // Called when a unit deals damage to another unit
     virtual void OnDamage(Unit* attacker, Unit* victim, uint32& damage);
 
+    // Called when a unit deals damage to another unit (more parameters)
+    virtual void OnDamageEx(Unit* /*attacker*/, Unit* /*victim*/, uint32& /*damage*/, bool /*crit*/, bool /*direct*/, uint32 /*schoolMask*/) {}
+
     // Called when DoT's Tick Damage is being Dealt
     virtual void ModifyPeriodicDamageAurasTick(Unit* target, Unit* attacker, uint32& damage);
 
@@ -1246,6 +1249,7 @@ public: /* UnitScript */
 
     void OnHeal(Unit* healer, Unit* reciever, uint32& gain);
     void OnDamage(Unit* attacker, Unit* victim, uint32& damage);
+    void OnDamageEx(Unit* attacker, Unit* victim, uint32& damage, bool crit, bool direct, uint32 schoolMask);
     void ModifyPeriodicDamageAurasTick(Unit* target, Unit* attacker, uint32& damage);
     void ModifyMeleeDamage(Unit* target, Unit* attacker, uint32& damage);
     void ModifySpellDamageTaken(Unit* target, Unit* attacker, int32& damage);
