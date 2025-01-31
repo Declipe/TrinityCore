@@ -2537,11 +2537,6 @@ void ScriptMgr::OnHeal(Unit* healer, Unit* reciever, uint32& gain)
     FOREACH_SCRIPT(UnitScript)->OnHeal(healer, reciever, gain);
 }
 
-void ScriptMgr::OnDamageEx(Unit* attacker, Unit* victim, uint32& damage, bool crit, bool direct, uint32 schoolMask)
-{
-    FOREACH_SCRIPT(UnitScript)->OnDamageEx(attacker, victim, damage, crit, direct, schoolMask);
-}
-
 void ScriptMgr::OnDamage(Unit* attacker, Unit* victim, uint32& damage)
 {
     FOREACH_SCRIPT(UnitScript)->OnDamage(attacker, victim, damage);

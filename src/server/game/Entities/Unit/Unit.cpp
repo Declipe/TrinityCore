@@ -715,11 +715,6 @@ bool Unit::HasBreakableByDamageCrowdControlAura(Unit* excludeCasterChannel) cons
     // Hook for OnDamage Event
     sScriptMgr->OnDamage(attacker, victim, damage);
 
-    // Hook for OnDamageEx Event
-    sScriptMgr->OnDamageEx(attacker, victim, damage,
-        cleanDamage && (cleanDamage->hitOutCome == MELEE_HIT_CRIT || cleanDamage->hitOutCome == MELEE_HIT_CRUSHING),
-        damagetype == DIRECT_DAMAGE || damagetype == SPELL_DIRECT_DAMAGE, spellProto ? spellProto->SchoolMask : 0);
-
     // Signal to pets that their owner was attacked - except when DOT.
     if (attacker != victim && damagetype != DOT)
     {
