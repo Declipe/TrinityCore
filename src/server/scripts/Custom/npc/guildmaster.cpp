@@ -38,7 +38,8 @@ public:
 
         bool isPlayerGuildLeader(Player* player)
         {
-            return (player->GetRank() == 0) && (player->GetGuildId() != 0);
+            //return (player->GetRank() == 0) && (player->GetGuildId() != 0);
+            return (player->GetGuildRank() == 0) && (player->GetGuildId() != 0);
         }
 
         bool getGuildHouseCoords(uint32 guildId, float& x, float& y, float& z, uint32& map)
