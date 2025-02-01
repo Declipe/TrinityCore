@@ -4690,9 +4690,44 @@ private:
     uint32 _aura;
 };
 
+enum cataclysmBreath
+{
+    SPELL_CORROSIVE_POISON = 46293,
+    SPELL_FEVERED_FATIGUE = 46294,
+    SPELL_HEX = 46295,
+    SPELL_NECROTIC_POISON = 46296,
+    SPELL_PIERCING_SHADOW = 46297,
+    SPELL_SHRINK = 46298,
+    SPELL_WAVERING_WILL = 46299,
+    SPELL_WITHERED_TOUCH = 46300
+};
+
+class spell_cataclysm_breath : public SpellScript
+{
+    PrepareSpellScript(spell_cataclysm_breath);
+
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo({ SPELL_CORROSIVE_POISON, SPELL_FEVERED_FATIGUE, SPELL_HEX, SPELL_NECROTIC_POISON, SPELL_PIERCING_SHADOW, SPELL_SHRINK, SPELL_WAVERING_WILL, SPELL_WITHERED_TOUCH });
+    }
+
+    void HandleAfterCast()
+    {
+        if (Unit* target = GetExplTargetUnit())
+            for (uint8 i = 0; i < 4; ++i)
+                GetCaster()->CastSpell(target, RAND(SPELL_CORROSIVE_POISON, SPELL_FEVERED_FATIGUE, SPELL_HEX, SPELL_NECROTIC_POISON, SPELL_PIERCING_SHADOW, SPELL_SHRINK, SPELL_WAVERING_WILL, SPELL_WITHERED_TOUCH), true);
+    }
+
+    void Register() override
+    {
+        AfterCast += SpellCastFn(spell_cataclysm_breath::HandleAfterCast);
+    }
+};
+
 
 void AddSC_generic_spell_scripts()
 {
+    RegisterSpellScript(spell_cataclysm_breath);
     RegisterSpellScript(spell_gen_absorb0_hitlimit1);
     RegisterSpellScript(spell_gen_adaptive_warding);
     RegisterSpellScript(spell_gen_allow_cast_from_item_only);
