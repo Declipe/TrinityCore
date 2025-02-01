@@ -598,7 +598,10 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
             if (!e->OnChat(GetPlayer(), type, lang, msg, receiver))
                 return;
 #endif
-        GetPlayer()->Whisper(msg, Language(lang), receiver);
+        if (lang == LANG_ADDON)
+            GetPlayer()->WhisperAddon(msg, receiver);
+        else
+            GetPlayer()->Whisper(msg, Language(lang), receiver);
         break;
     }
     case CHAT_MSG_PARTY:
