@@ -13714,7 +13714,6 @@ void Player::SendEquipError(InventoryResult msg, Item* pItem, Item* pItem2, uint
             }
             default:
                 break;
->>>>>>> 01132b175733ab006f6de37c7b752e0c319787be
         }
     }
     SendDirectMessage(&data);

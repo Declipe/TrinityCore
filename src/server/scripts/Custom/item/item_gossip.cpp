@@ -16,7 +16,7 @@ public:
         }
         if (player->IsMounted())
         {
-            player->SendEquipError(EQUIP_ERR_CANT_DO_RIGHT_NOW, item, nullptr);
+            player->SendEquipError(EQUIP_ERR_CLIENT_LOCKED_OUT, item, nullptr);
             return true;
         }
         {
