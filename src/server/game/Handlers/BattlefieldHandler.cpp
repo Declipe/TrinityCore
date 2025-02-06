@@ -181,9 +181,12 @@ void WorldSession::HandleBattlefieldExitRequest(WorldPackets::Battlefield::Battl
     uint32 battleId = exitRequest.BattleID;
     TC_LOG_DEBUG("misc", "HandleBattlefieldExitRequest: battleId: {} ", battleId);
 
-    Battlefield* bf = sBattlefieldMgr->GetBattlefieldByBattleId(battleId);
+    if (Battlefield* bf = sBattlefieldMgr->GetBattlefieldByBattleId(battleId))
+        bf->AskToLeaveQueue(_player);
+
+   /* Battlefield* bf = sBattlefieldMgr->GetBattlefieldByBattleId(battleId);
     if (!bf)
         return;
 
-    bf->AskToLeaveQueue(_player);
+    bf->AskToLeaveQueue(_player);*/
 }
