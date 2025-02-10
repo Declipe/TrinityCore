@@ -19,7 +19,10 @@ public:
         if (sGameConfig->GetBoolConfig("RebootbuffEnable"))
         {
             uint32 buffId = 81169;
-            uint32 maxBuffDuration = 2160 * 10000;
+            uint32 pt10 = sGameConfig->GetIntConfig("Duration");
+            uint32 pt20 = sGameConfig->GetIntConfig("Duration*ms");
+            //uint32 maxBuffDuration = 2160 * 10000;
+            uint32 maxBuffDuration = pt10 * pt20;
 
             uint32 startTime = GameTime::GetStartTime();
 
