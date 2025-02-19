@@ -2583,7 +2583,7 @@ void GameObject::SetLootState(LootState state, Unit* unit)
             m_restockTime = GameTime::GetGameTime() + goInfo->chest.chestRestockTime;
 
         if (goInfo->chest.chestRestockTime == 0 && m_restockTime == 0 && GetMap() && GetMap()->IsWorldMap())
-            DespawnOrUnsummon(300s);
+            DespawnOrUnsummon(5min);
     }
 
     if (GetGoType() == GAMEOBJECT_TYPE_DOOR) // only set collision for doors on SetGoState
