@@ -537,8 +537,6 @@ bool Player::Create(ObjectGuid::LowType guidlow, CharacterCreateInfo* createInfo
         SetUnitFlag(UNIT_FLAG_PLAYER_CONTROLLED);
     }
     SetUnitFlag2(UNIT_FLAG2_REGENERATE_POWER);
-    SetModCastingSpeed(1.0f);               // fix cast time showed in spell tooltip on client
-    SetHoverHeight(1.0f);            // default for players in 3.0.3
 
     SetInt32Value(PLAYER_FIELD_WATCHED_FACTION_INDEX, uint32(-1));  // -1 is default value
 
@@ -549,37 +547,10 @@ bool Player::Create(ObjectGuid::LowType guidlow, CharacterCreateInfo* createInfo
     SetFacialStyle(createInfo->FacialHair);
     SetRestState((GetSession()->IsARecruiter() || GetSession()->GetRecruiterId() != 0) ? REST_STATE_RAF_LINKED : REST_STATE_NOT_RAF_LINKED);
     SetNativeGender(Gender(createInfo->Gender));
-    SetArenaFaction(0);
-
-    SetUInt32Value(PLAYER_GUILDID, 0);
-    SetGuildRank(0);
-    SetUInt32Value(PLAYER_GUILD_TIMESTAMP, 0);
-
-    for (int i = 0; i < KNOWN_TITLES_SIZE; ++i)
-        SetUInt64Value(PLAYER__FIELD_KNOWN_TITLES + i, 0);  // 0=disabled
-    SetUInt32Value(PLAYER_CHOSEN_TITLE, 0);
-
-    SetUInt32Value(PLAYER_FIELD_KILLS, 0);
-    SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORABLE_KILLS, 0);
-    SetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION, 0);
-    SetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION, 0);
 
     // set starting level
-    uint32 start_level = GetClass() != CLASS_DEATH_KNIGHT
-        ? sWorld->getIntConfig(CONFIG_START_PLAYER_LEVEL)
-        : sWorld->getIntConfig(CONFIG_START_DEATH_KNIGHT_PLAYER_LEVEL);
 
-    if (m_session->HasPermission(rbac::RBAC_PERM_USE_START_GM_LEVEL))
-    {
-        uint32 gm_level = GetClass() != CLASS_DEATH_KNIGHT
-            ? sWorld->getIntConfig(CONFIG_START_GM_LEVEL)
-            : std::max(sWorld->getIntConfig(CONFIG_START_GM_LEVEL), sWorld->getIntConfig(CONFIG_START_DEATH_KNIGHT_PLAYER_LEVEL));
-
-        if (gm_level > start_level)
-            start_level = gm_level;
-    }
-
-    SetLevel(start_level, false);
+    SetLevel(GetStartLevel(createInfo->Class), false);
 
     InitRunes();
 
@@ -2787,7 +2758,7 @@ void Player::InitStatsForLevel(bool reapplyMods)
     {
         SetInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_NEG + i, 0);
         SetInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS + i, 0);
-        SetFloatValue(PLAYER_FIELD_MOD_DAMAGE_DONE_PCT + i, 1.00f);
+        SetFloatValue(PLAYER_FIELD_MOD_DAMAGE_DONE_PCT + i, 1.0f);
     }
 
     //reset attack power, damage and attack speed fields
@@ -10553,7 +10524,7 @@ InventoryResult Player::CanStoreItem_InSpecificSlot(uint8 bag, uint8 slot, ItemP
         if (bag == INVENTORY_SLOT_BAG_0)
         {
             // keyring case
-            if (slot >= KEYRING_SLOT_START && slot < KEYRING_SLOT_START+GetMaxKeyringSize() && !(pProto->BagFamily & BAG_FAMILY_MASK_KEYS))
+            if (slot >= KEYRING_SLOT_START && slot < KEYRING_SLOT_START + GetMaxKeyringSize() && !(pProto->BagFamily & BAG_FAMILY_MASK_KEYS))
                 return EQUIP_ERR_WRONG_BAG_TYPE;
 
             // currencytoken case
@@ -11531,7 +11502,7 @@ InventoryResult Player::CanEquipItem(uint8 slot, uint16& dest, Item* pItem, bool
                             return EQUIP_ERR_NOT_DURING_ARENA_MATCH;
                 }
 
-                if (IsInCombat()&& (pProto->Class == ITEM_CLASS_WEAPON || pProto->InventoryType == INVTYPE_RELIC) && m_weaponChangeTimer != 0)
+                if (IsInCombat() && (pProto->Class == ITEM_CLASS_WEAPON || pProto->InventoryType == INVTYPE_RELIC) && m_weaponChangeTimer != 0)
                     return EQUIP_ERR_CLIENT_LOCKED_OUT;         // maybe exist better err
 
                 if (IsNonMeleeSpellCast(false))
@@ -11596,8 +11567,8 @@ InventoryResult Player::CanEquipItem(uint8 slot, uint16& dest, Item* pItem, bool
                             if (ItemTemplate const* pBagProto = pBag->GetTemplate())
                                 if (pBagProto->Class == pProto->Class && (!swap || pBag->GetSlot() != eslot))
                                     return (pBagProto->SubClass == ITEM_SUBCLASS_AMMO_POUCH)
-                                        ? EQUIP_ERR_ONLY_ONE_AMMO
-                                        : EQUIP_ERR_ONLY_ONE_QUIVER;
+                                    ? EQUIP_ERR_ONLY_ONE_AMMO
+                                    : EQUIP_ERR_ONLY_ONE_QUIVER;
 
             uint32 type = pProto->InventoryType;
 
@@ -13690,30 +13661,30 @@ void Player::SendEquipError(InventoryResult msg, Item* pItem, Item* pItem2, uint
 
         switch (msg)
         {
-            case EQUIP_ERR_CANT_EQUIP_LEVEL_I:
-            case EQUIP_ERR_PURCHASE_LEVEL_TOO_LOW:
-            {
-                ItemTemplate const* proto = pItem ? pItem->GetTemplate() : sObjectMgr->GetItemTemplate(itemid);
-                data << uint32(proto ? proto->RequiredLevel : 0);
-                break;
-            }
-            case EQUIP_ERR_EVENT_AUTOEQUIP_BIND_CONFIRM:    // no idea about this one...
-            {
-                data << uint64(0); // item guid
-                data << uint32(0); // slot
-                data << uint64(0); // container
-                break;
-            }
-            case EQUIP_ERR_ITEM_MAX_LIMIT_CATEGORY_COUNT_EXCEEDED_IS:
-            case EQUIP_ERR_ITEM_MAX_LIMIT_CATEGORY_SOCKETED_EXCEEDED_IS:
-            case EQUIP_ERR_ITEM_MAX_LIMIT_CATEGORY_EQUIPPED_EXCEEDED_IS:
-            {
-                ItemTemplate const* proto = pItem ? pItem->GetTemplate() : sObjectMgr->GetItemTemplate(itemid);
-                data << uint32(proto ? proto->ItemLimitCategory : 0);
-                break;
-            }
-            default:
-                break;
+        case EQUIP_ERR_CANT_EQUIP_LEVEL_I:
+        case EQUIP_ERR_PURCHASE_LEVEL_TOO_LOW:
+        {
+            ItemTemplate const* proto = pItem ? pItem->GetTemplate() : sObjectMgr->GetItemTemplate(itemid);
+            data << uint32(proto ? proto->RequiredLevel : 0);
+            break;
+        }
+        case EQUIP_ERR_EVENT_AUTOEQUIP_BIND_CONFIRM:    // no idea about this one...
+        {
+            data << uint64(0); // item guid
+            data << uint32(0); // slot
+            data << uint64(0); // container
+            break;
+        }
+        case EQUIP_ERR_ITEM_MAX_LIMIT_CATEGORY_COUNT_EXCEEDED_IS:
+        case EQUIP_ERR_ITEM_MAX_LIMIT_CATEGORY_SOCKETED_EXCEEDED_IS:
+        case EQUIP_ERR_ITEM_MAX_LIMIT_CATEGORY_EQUIPPED_EXCEEDED_IS:
+        {
+            ItemTemplate const* proto = pItem ? pItem->GetTemplate() : sObjectMgr->GetItemTemplate(itemid);
+            data << uint32(proto ? proto->ItemLimitCategory : 0);
+            break;
+        }
+        default:
+            break;
         }
     }
     SendDirectMessage(&data);
@@ -17135,7 +17106,7 @@ void Player::SendQuestReward(Quest const* quest, uint32 XP) const
     else
         xp = 0;
 
-    WorldPacket data(SMSG_QUESTGIVER_QUEST_COMPLETE, (4+4+4+4+4));
+    WorldPacket data(SMSG_QUESTGIVER_QUEST_COMPLETE, (4 + 4 + 4 + 4 + 4));
     data << uint32(questId);
     data << uint32(xp);
     data << uint32(quest->GetRewOrReqMoney(this));
@@ -22680,6 +22651,19 @@ void Player::ReportedAfkBy(Player* reporter)
     }
 }
 
+uint8 Player::GetStartLevel(uint8 playerClass) const
+{
+    uint8 startLevel = sWorld->getIntConfig(CONFIG_START_PLAYER_LEVEL);
+
+    if (playerClass == CLASS_DEATH_KNIGHT)
+        startLevel = std::max<uint8>(sWorld->getIntConfig(CONFIG_START_DEATH_KNIGHT_PLAYER_LEVEL), startLevel);
+
+    if (m_session->HasPermission(rbac::RBAC_PERM_USE_START_GM_LEVEL))
+        startLevel = std::max<uint8>(sWorld->getIntConfig(CONFIG_START_GM_LEVEL), startLevel);
+
+    return startLevel;
+}
+
 WorldLocation Player::GetStartPosition() const
 {
     PlayerInfo const* info = sObjectMgr->GetPlayerInfo(GetRace(), GetClass());
@@ -22784,7 +22768,7 @@ inline void UpdateVisibilityOf_helper(GuidUnorderedSet& s64, Player* target, std
 }
 
 template<class T>
-inline void BeforeVisibilityDestroy(T* /*t*/, Player* /*p*/) { }
+inline void BeforeVisibilityDestroy(T* /*t*/, Player* /*p*/) {}
 
 template<>
 inline void BeforeVisibilityDestroy<Creature>(Creature* t, Player* p)

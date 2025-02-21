@@ -2202,6 +2202,7 @@ public:
     float m_homebindY;
     float m_homebindZ;
 
+    uint8 GetStartLevel(uint8 playerClass) const;
     WorldLocation GetStartPosition() const;
 
     // currently visible objects at player client
