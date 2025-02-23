@@ -963,7 +963,7 @@ struct possess_demonAI : public WorldBossAI
         SetActive(false);
     }
         
-    void OnCharmed(bool isNew) override
+    void OnCharmed(bool /*isNew*/) override
     {
         if (!me->IsAlive() && !me->isPossessedByPlayer())
         {
