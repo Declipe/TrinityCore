@@ -954,9 +954,6 @@ void MovementInfo::OutDebug()
 }
 
 WorldObject::WorldObject(bool isWorldObject) : Object(), WorldLocation(), LastUsedScriptID(0),
-#ifdef ELUNA
-elunaEvents(NULL),
-#endif
 m_movementInfo(), m_name(), m_isActive(false), m_isFarVisible(false), m_isStoredInWorldObjectGridContainer(isWorldObject), m_zoneScript(nullptr),
 m_transport(nullptr), m_zoneId(0), m_areaId(0), m_staticFloorZ(VMAP_INVALID_HEIGHT), m_outdoors(false), m_liquidStatus(LIQUID_MAP_NO_WATER),
 m_currMap(nullptr), m_InstanceId(0), m_phaseMask(PHASEMASK_NORMAL), m_notifyflags(0)
@@ -967,10 +964,6 @@ m_currMap(nullptr), m_InstanceId(0), m_phaseMask(PHASEMASK_NORMAL), m_notifyflag
 
 WorldObject::~WorldObject()
 {
-#ifdef ELUNA
-    delete elunaEvents;
-    elunaEvents = NULL;
-#endif
     // this may happen because there are many !create/delete
     if (IsStoredInWorldObjectGridContainer() && m_currMap)
     {
@@ -1879,19 +1872,9 @@ void WorldObject::SetMap(Map* map)
     m_InstanceId = map->GetInstanceId();
 
 #ifdef ELUNA
-    //@todo: possibly look into cleanly clearing all pending events from previous map's event mgr.
-
-    // if multistate, delete elunaEvents and set to nullptr. events shouldn't move across states.
-    // in single state, the timed events should move across maps
-    if (!sElunaConfig->IsElunaCompatibilityMode())
-    {
-        delete elunaEvents;
-        elunaEvents = nullptr; // set to null in case map doesn't use eluna
-    }
-
     if (Eluna* e = map->GetEluna())
-        if (!elunaEvents)
-            elunaEvents = new ElunaEventProcessor(e, this);
+        if (!elunaEvents || (elunaEvents && !sElunaConfig->IsElunaCompatibilityMode()))
+            elunaEvents = std::make_unique<ElunaEventProcessor>(e, this);
 #endif
     if (IsStoredInWorldObjectGridContainer())
        m_currMap->AddWorldObject(this);
