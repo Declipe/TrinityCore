@@ -1442,8 +1442,6 @@ void World::LoadConfigSettings(bool reload)
     bool enableIndoor = sConfigMgr->GetBoolDefault("vmap.enableIndoorCheck", true);
     bool enableLOS = sConfigMgr->GetBoolDefault("vmap.enableLOS", true);
     bool enableHeight = sConfigMgr->GetBoolDefault("vmap.enableHeight", true);
-    m_bool_configs[CONFIG_VMAP_ENHANCED_LOS_PVP] = sConfigMgr->GetBoolDefault("vmap.EnhancedPvPLOS", false);
-    m_bool_configs[CONFIG_VMAP_ENHANCED_LOS_WORLD] = sConfigMgr->GetBoolDefault("vmap.EnhancedWorldLOS", false);
 
     if (!enableHeight)
         TC_LOG_ERROR("server.loading", "VMap height checking disabled! Creatures movements and other various things WILL be broken! Expect no support.");
