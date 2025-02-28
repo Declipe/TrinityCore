@@ -161,12 +161,6 @@ World::World()
 /// World destructor
 World::~World()
 {
-#ifdef ELUNA
-    // Delete world Eluna state
-    delete eluna;
-    eluna = nullptr;
-#endif
-
     ///- Empty the kicked session set
     while (!m_sessions.empty())
     {
@@ -2215,7 +2209,7 @@ void World::SetInitialWorldSettings()
     if (sElunaConfig->IsElunaEnabled())
     {
         TC_LOG_INFO("server.loading", "Starting Eluna world state...");
-        eluna = new Eluna(nullptr, sElunaConfig->IsElunaCompatibilityMode());
+        eluna = std::make_unique<Eluna>(nullptr, sElunaConfig->IsElunaCompatibilityMode());
     }
 #endif
 

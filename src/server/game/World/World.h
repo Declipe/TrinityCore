@@ -827,8 +827,8 @@ class TC_GAME_API World
         uint8 SelectReqGuildLevelForBonus(uint8 guildBonus);
 
 #ifdef ELUNA
-        Eluna* GetEluna() const { return eluna; }
-        Eluna* eluna;
+        Eluna* GetEluna() const { return eluna.get(); }
+        std::unique_ptr<Eluna> eluna;
 #endif
 
     protected:
