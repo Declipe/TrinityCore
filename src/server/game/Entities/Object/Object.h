@@ -571,7 +571,7 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         uint32  LastUsedScriptID;
 
 #ifdef ELUNA
-        std::unique_ptr <ElunaEventProcessor> elunaEvents;
+        ElunaEventProcessor* elunaEvents;
 
         Eluna* GetEluna() const;
 
