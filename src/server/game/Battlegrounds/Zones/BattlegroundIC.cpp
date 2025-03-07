@@ -16,6 +16,7 @@
  */
 
 #include "BattlegroundIC.h"
+#include "CustomConfig.h"
 #include "GameObject.h"
 #include "Log.h"
 #include "Map.h"

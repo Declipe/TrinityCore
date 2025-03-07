@@ -22,15 +22,20 @@
 #include "BattlegroundScore.h"
 #include "GameObjectData.h"
 #include "Object.h"
+#include "CustomConfig.h"
+
 
 #define BG_AV_CAPTIME                    240000  //4:00
 #define BG_AV_SNOWFALL_FIRSTCAP          300000  //5:00 but i also have seen 4:05
 
-#define BG_AV_SCORE_INITIAL_POINTS       600
+//#define BG_AV_SCORE_INITIAL_POINTS       600
+
+#define BG_AV_SCORE_INITIAL_POINTS       sGameConfig->GetIntConfig("Battleground.Alterac.Reinforcements")
 #define SEND_MSG_NEAR_LOSE               120
 
 #define BG_AV_KILL_BOSS                 4
-#define BG_AV_REP_BOSS                  350
+//#define BG_AV_REP_BOSS                  350
+#define BG_AV_REP_BOSS                  sGameConfig->GetIntConfig("Battleground.Alterac.ReputationOnBossDeath")
 
 #define BG_AV_KILL_CAPTAIN              3
 #define BG_AV_REP_CAPTAIN               125

@@ -26,6 +26,7 @@
 #include "Player.h"
 #include "WorldSession.h"
 #include "WorldStatePackets.h"
+#include "CustomConfig.h"
 
 void BattlegroundAVScore::BuildObjectivesBlock(WorldPacket& data)
 {

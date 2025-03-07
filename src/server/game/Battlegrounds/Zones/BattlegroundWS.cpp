@@ -26,6 +26,7 @@
 #include "Player.h"
 #include "WorldPacket.h"
 #include "WorldStatePackets.h"
+#include "CustomConfig.h"
 
 // these variables aren't used outside of this file, so declare them only here
 enum BG_WSG_Rewards
@@ -318,7 +319,7 @@ void BattlegroundWS::EventPlayerCapturedFlag(Player* player)
         else if (_flagDebuffState == 2)
           player->RemoveAurasDueToSpell(WS_SPELL_BRUTAL_ASSAULT);
 
-        if (GetTeamScore(TEAM_ALLIANCE) < BG_WS_MAX_TEAM_SCORE)
+        if (GetTeamScore(TEAM_ALLIANCE) < sGameConfig->GetIntConfig("Battleground.Warsong.Flags"))
             AddPoint(ALLIANCE, 1);
         PlaySoundToAll(BG_WS_SOUND_FLAG_CAPTURED_ALLIANCE);
     }
@@ -336,7 +337,7 @@ void BattlegroundWS::EventPlayerCapturedFlag(Player* player)
         else if (_flagDebuffState == 2)
           player->RemoveAurasDueToSpell(WS_SPELL_BRUTAL_ASSAULT);
 
-        if (GetTeamScore(TEAM_HORDE) < BG_WS_MAX_TEAM_SCORE)
+        if (GetTeamScore(TEAM_HORDE) < sGameConfig->GetIntConfig("Battleground.Warsong.Flags"))
             AddPoint(HORDE, 1);
         PlaySoundToAll(BG_WS_SOUND_FLAG_CAPTURED_HORDE);
     }
@@ -360,10 +361,10 @@ void BattlegroundWS::EventPlayerCapturedFlag(Player* player)
     // update last flag capture to be used if teamscore is equal
     SetLastFlagCapture(player->GetTeam());
 
-    if (GetTeamScore(TEAM_ALLIANCE) == BG_WS_MAX_TEAM_SCORE)
+    if (GetTeamScore(TEAM_ALLIANCE) == sGameConfig->GetIntConfig("Battleground.Warsong.Flags"))
         winner = ALLIANCE;
 
-    if (GetTeamScore(TEAM_HORDE) == BG_WS_MAX_TEAM_SCORE)
+    if (GetTeamScore(TEAM_HORDE) == sGameConfig->GetIntConfig("Battleground.Warsong.Flags"))
         winner = HORDE;
 
     if (winner)
@@ -865,7 +866,7 @@ void BattlegroundWS::FillInitialWorldStates(WorldPackets::WorldState::InitWorldS
     else
         packet.Worldstates.emplace_back(BG_WS_FLAG_UNK_HORDE, 0);
 
-    packet.Worldstates.emplace_back(BG_WS_FLAG_CAPTURES_MAX, BG_WS_MAX_TEAM_SCORE);
+    packet.Worldstates.emplace_back(BG_WS_FLAG_CAPTURES_MAX, sGameConfig->GetIntConfig("Battleground.Warsong.Flags"));
 
     if (GetStatus() == STATUS_IN_PROGRESS)
     {

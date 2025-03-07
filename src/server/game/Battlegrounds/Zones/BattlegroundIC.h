@@ -20,6 +20,7 @@
 
 #include "Battleground.h"
 #include "BattlegroundScore.h"
+#include "CustomConfig.h"
 #include "Object.h"
 
 const uint32 BG_IC_Factions[2] =
@@ -186,7 +187,7 @@ enum gameobjectsIC
     GO_ALLIANCE_GUNSHIP                         = 195121
 };
 
-#define MAX_REINFORCEMENTS 300
+#define MAX_REINFORCEMENTS sGameConfig->GetIntConfig("Battleground.IC")
 
 enum Times
 {

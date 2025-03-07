@@ -18,6 +18,7 @@
 #include "BattlegroundEY.h"
 #include "BattlegroundMgr.h"
 #include "Creature.h"
+#include "CustomConfig.h"
 #include "DBCStores.h"
 #include "GameObject.h"
 #include "Log.h"
@@ -298,9 +299,9 @@ void BattlegroundEY::UpdateTeamScore(uint32 Team)
 {
     uint32 score = GetTeamScore(Team);
 
-    if (score >= BG_EY_MAX_TEAM_SCORE)
+    if (score >= sGameConfig->GetIntConfig("Battleground.EyeOfTheStorm.CapturePoints"))
     {
-        score = BG_EY_MAX_TEAM_SCORE;
+        score = sGameConfig->GetIntConfig("Battleground.EyeOfTheStorm.CapturePoints");
         if (Team == TEAM_ALLIANCE)
             EndBattleground(ALLIANCE);
         else
