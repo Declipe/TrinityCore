@@ -21,6 +21,7 @@
 #include "Chat.h"
 #include "Containers.h"
 #include "CreatureAIFactory.h"
+#include "CustomConfig.h"
 #include "DatabaseEnv.h"
 #include "DisableMgr.h"
 #include "GameObject.h"
@@ -8645,6 +8646,12 @@ void ObjectMgr::LoadPointsOfInterest()
 
 void ObjectMgr::LoadQuestPOI()
 {
+    if (!sGameConfig->GetIntConfig("QuestPOI.Enabled"))
+    {
+        TC_LOG_INFO("server.loading", ">> Loaded 0 quest POI definitions. Disabled by config.");
+        TC_LOG_INFO("server.loading", " ");
+        return;
+    }
     uint32 oldMSTime = getMSTime();
 
     _questPOIStore.clear();                              // need for reload case

@@ -22,6 +22,7 @@
 #include "Chat.h"
 #include "ChatPackets.h"
 #include "Common.h"
+#include "CustomConfig.h"
 #include "DatabaseEnv.h"
 #include "DBCStores.h"
 #include "GameTime.h"
@@ -210,6 +211,40 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
             SendNotification(LANG_NOT_LEARNED_LANGUAGE);
             recvData.rfinish();
             return;
+        }
+    }
+
+    if (AccountMgr::IsPlayerAccount(GetSecurity()))
+    {
+        switch (type)
+        {
+        case CHAT_MSG_ADDON:
+        case CHAT_MSG_PARTY:
+        case CHAT_MSG_RAID:
+        case CHAT_MSG_GUILD:
+        case CHAT_MSG_OFFICER:
+        case CHAT_MSG_AFK:
+        case CHAT_MSG_DND:
+        case CHAT_MSG_RAID_LEADER:
+        case CHAT_MSG_RAID_WARNING:
+        case CHAT_MSG_BATTLEGROUND:
+        case CHAT_MSG_BATTLEGROUND_LEADER:
+        case CHAT_MSG_PARTY_LEADER:
+            break;
+        default:
+        {
+            if (sGameConfig->GetBoolConfig("config_chat_mute_first_login") && lang != LANG_ADDON)
+            {
+                uint32 minutes = sGameConfig->GetIntConfig("config_chat_time_mute_first_login");
+
+                if (sender->GetTotalPlayedTime() < minutes * MINUTE)
+                {
+                    SendNotification2(NOT_USED_44, minutes);
+                    recvData.rfinish();
+                    return;
+                }
+            }
+        }
         }
     }
 
