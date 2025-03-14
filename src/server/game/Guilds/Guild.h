@@ -750,6 +750,7 @@ class TC_GAME_API Guild
         // Bank tabs
         void SetBankTabText(uint8 tabId, std::string_view text);
 
+        EmblemInfo const& GetEmblemInfo() const { return m_emblemInfo; }
         void ResetTimes();
         //Guild-Level-System
         void LoadLevelInfo();
