@@ -47,7 +47,7 @@ static WMOAreaInfoByTripple sWMOAreaInfoByTripple;
 
 DBCStorage <AchievementEntry> sAchievementStore(Achievementfmt);
 DBCStorage <AchievementCriteriaEntry> sAchievementCriteriaStore(AchievementCriteriafmt);
-//DBCStorage <AreaTriggerEntry> sAreaTriggerStore(AreaTriggerEntryfmt);
+DBCStorage <AreaTriggerEntry> sAreaTriggerStore(AreaTriggerEntryfmt);
 DBCStorage <AuctionHouseEntry> sAuctionHouseStore(AuctionHouseEntryfmt);
 DBCStorage <BankBagSlotPricesEntry> sBankBagSlotPricesStore(BankBagSlotPricesEntryfmt);
 DBCStorage <BannedAddOnsEntry> sBannedAddOnsStore(BannedAddOnsfmt);
@@ -285,7 +285,7 @@ void LoadDBCStores(const std::string& dataPath)
 
     LOAD_DBC(sAreaTableStore,                     "AreaTable.dbc");
     LOAD_DBC(sAchievementCriteriaStore,           "Achievement_Criteria.dbc");
-    //LOAD_DBC(sAreaTriggerStore,                   "AreaTrigger.dbc");
+    LOAD_DBC(sAreaTriggerStore,                   "AreaTrigger.dbc");
     LOAD_DBC(sAreaGroupStore,                     "AreaGroup.dbc");
     LOAD_DBC(sAreaPOIStore,                       "AreaPOI.dbc");
     LOAD_DBC(sAuctionHouseStore,                  "AuctionHouse.dbc");
@@ -404,7 +404,6 @@ void LoadDBCStores(const std::string& dataPath)
     sDBCMgr->LoadWorldSafeLocsStore();
     sDBCMgr->LoadPvPDifficultyStore();
     sDBCMgr->LoadSpellItemEnchantmentStore();
-    sDBCMgr->LoadAreaTriggerEntryStore();
 
 #undef LOAD_DBC
 
@@ -1249,54 +1248,48 @@ void DBCMgr::LoadGemPropertiesStore()
     TC_LOG_INFO("misc", ">> Loaded {} GemProperties entries in {} ms", (unsigned long)GemPropertiesStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
-void DBCMgr::LoadAreaTriggerEntryStore()
+/*
+void DBCMgr::LoadSpellItemEnchantmentStore()
 {
     uint32 oldMSTime = getMSTime();
+    SpellItemEnchantmentStore.clear();
 
-    AreaTriggerEntryStore.clear();
-
-    //QueryResult result = WorldDatabase.Query("SELECT entry, map, x, y, z, radius, length, width, height, orientation FROM areatrigger");
-    QueryResult result = WorldDatabase.Query("SELECT ID, ContinentID, X, Y, Z, Radius, Box_Length, Box_Width, Box_Height, Box_Yaw FROM areatrigger");
+    QueryResult result = WorldDatabase.Query("SELECT Id, Type1, Type2, Type3, Amount1, Amount2, Amount3, AmountB1, AmountB2, AmountB3, SpellId1, SpellId2, SpellId3, Description, Description_loc2, AuraId, Slot, GemId, EnchantmentCondition, RequiredSkill, RequiredSkillValue, RequiredLevel FROM spellitemenchantmentdbc");
     if (!result)
     {
-        TC_LOG_ERROR("server.loading", ">> Loaded 0 area trigger definitions. DB table `areatrigger` is empty.");
+        TC_LOG_ERROR("server.loading", ">> Loaded 0 SpellItemEnchantment entry. DB table `SpellItemEnchantment dbc` is empty.");
         return;
     }
 
-    uint32 count = 0;
-
-    do
-    {
+    do {
         Field* fields = result->Fetch();
 
-        AreaTriggerEntry* newAreaTriggerEntry = new AreaTriggerEntry;
+        SpellItemEnchantmentEntry* newSpellItemEnchantment = new SpellItemEnchantmentEntry;
+        newSpellItemEnchantment->ID = fields[0].GetUInt32();
+        for (uint8 i = 0; i < 3; i++)
+            newSpellItemEnchantment->type[i] = fields[1 + i].GetUInt32();
+        for (uint8 i = 0; i < 3; i++)
+            newSpellItemEnchantment->amount[i] = fields[4 + i].GetUInt32();
+        for (uint8 i = 0; i < 3; i++)
+            newSpellItemEnchantment->spellid[i] = fields[7 + i].GetUInt32();
+        for (uint8 i = 0; i < 16; i++)
+            newSpellItemEnchantment->description[i] = NULL;
+        newSpellItemEnchantment->description[0] = (char*)fields[10].GetCString();
+        newSpellItemEnchantment->description[2] = (char*)fields[11].GetCString();
+        newSpellItemEnchantment->aura_id = fields[12].GetUInt32();
+        newSpellItemEnchantment->slot = fields[13].GetUInt32();
+        newSpellItemEnchantment->GemID = fields[14].GetUInt32();
+        newSpellItemEnchantment->EnchantmentCondition = fields[15].GetUInt32();
+        newSpellItemEnchantment->requiredSkill = fields[16].GetUInt32();
+        newSpellItemEnchantment->requiredSkillValue = fields[17].GetUInt32();
+        newSpellItemEnchantment->requiredLevel = fields[18].GetUInt32();
+        SpellItemEnchantmentStore[newSpellItemEnchantment->ID] = newSpellItemEnchantment;
 
-        newAreaTriggerEntry->ID = fields[0].GetUInt32();
-        newAreaTriggerEntry->ContinentID = fields[1].GetUInt32();
-        newAreaTriggerEntry->Pos.X = fields[2].GetFloat();
-        newAreaTriggerEntry->Pos.Y = fields[3].GetFloat();
-        newAreaTriggerEntry->Pos.Z = fields[4].GetFloat();
-        newAreaTriggerEntry->Radius = fields[5].GetFloat();
-        newAreaTriggerEntry->BoxLength = fields[6].GetFloat();
-        newAreaTriggerEntry->BoxWidth = fields[7].GetFloat();
-        newAreaTriggerEntry->BoxHeight = fields[8].GetFloat();
-        newAreaTriggerEntry->BoxYaw = fields[9].GetFloat();
-
-      /*  MapEntry const* mapEntry = sMapStore.LookupEntry(newAreaTriggerEntry->ContinentID);
-        if (!mapEntry)
-        {
-            TC_LOG_ERROR("server.loading", "Area trigger (ID:{}) map (ID: {}) does not exist in `Map.dbc`.", newAreaTriggerEntry->ID, newAreaTriggerEntry->ContinentID);
-            continue;
-        }*/
-        AreaTriggerEntryStore[newAreaTriggerEntry->ID] = newAreaTriggerEntry;
-
-        ++count;
     } while (result->NextRow());
 
-    // sLog->outString(">> Loaded %u area trigger definitions in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
-    TC_LOG_INFO("misc", ">> Loaded {} Area trigger in {} ms", (unsigned long)AreaTriggerEntryStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_ERROR("misc", ">> Loaded %lu SpellItemEnchantment entries in %u ms", (unsigned long)SpellItemEnchantmentStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
-
+*/
 
 TaxiMask::TaxiMask()
 {

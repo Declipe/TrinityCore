@@ -6845,7 +6845,7 @@ void ObjectMgr::LoadQuestAreaTriggers()
         uint32 trigger_ID = fields[0].GetUInt32();
         uint32 quest_ID = fields[1].GetUInt32();
 
-        AreaTriggerEntry const* atEntry = sDBCMgr->GetAreaTriggerEntry(trigger_ID);
+        AreaTriggerEntry const* atEntry = sAreaTriggerStore.LookupEntry(trigger_ID);
         if (!atEntry)
         {
             TC_LOG_ERROR("sql.sql", "Area trigger (ID:{}) does not exist in `AreaTrigger.dbc`.", trigger_ID);
@@ -7083,7 +7083,7 @@ void ObjectMgr::LoadTavernAreaTriggers()
 
         uint32 Trigger_ID = fields[0].GetUInt32();
 
-        AreaTriggerEntry const* atEntry = sDBCMgr->GetAreaTriggerEntry(Trigger_ID);
+        AreaTriggerEntry const* atEntry = sAreaTriggerStore.LookupEntry(Trigger_ID);
         if (!atEntry)
         {
             TC_LOG_ERROR("sql.sql", "Area trigger (ID:{}) does not exist in `AreaTrigger.dbc`.", Trigger_ID);
@@ -7116,7 +7116,7 @@ void ObjectMgr::LoadAreaTriggerScripts()
         uint32 triggerId = fields[0].GetUInt32();
         std::string const scriptName = fields[1].GetString();
 
-        AreaTriggerEntry const* atEntry = sDBCMgr->GetAreaTriggerEntry(triggerId);
+        AreaTriggerEntry const* atEntry = sAreaTriggerStore.LookupEntry(triggerId);
         if (!atEntry)
         {
             TC_LOG_ERROR("sql.sql", "AreaTrigger (ID: {}) does not exist in `AreaTrigger.dbc`.", triggerId);
@@ -7572,7 +7572,7 @@ void ObjectMgr::LoadAreaTriggerTeleports()
         at.target_Z = fields[4].GetFloat();
         at.target_Orientation = fields[5].GetFloat();
 
-        AreaTriggerEntry const* atEntry = sDBCMgr->GetAreaTriggerEntry(Trigger_ID);
+        AreaTriggerEntry const* atEntry = sAreaTriggerStore.LookupEntry(Trigger_ID);
         if (!atEntry)
         {
             TC_LOG_ERROR("sql.sql", "Area trigger (ID:{}) does not exist in `AreaTrigger.dbc`.", Trigger_ID);
@@ -7716,7 +7716,7 @@ AreaTrigger const* ObjectMgr::GetGoBackTrigger(uint32 Map) const
     for (AreaTriggerContainer::const_iterator itr = _areaTriggerStore.begin(); itr != _areaTriggerStore.end(); ++itr)
         if ((!useParentDbValue && itr->second.target_mapId == entrance_map) || (useParentDbValue && itr->second.target_mapId == parentId))
         {
-            AreaTriggerEntry const* atEntry = sDBCMgr->GetAreaTriggerEntry(itr->first);
+            AreaTriggerEntry const* atEntry = sAreaTriggerStore.LookupEntry(itr->first);
             if (atEntry && atEntry->ContinentID == Map)
                 return &itr->second;
         }
@@ -7732,7 +7732,7 @@ AreaTrigger const* ObjectMgr::GetMapEntranceTrigger(uint32 Map) const
     {
         if (itr->second.target_mapId == Map)
         {
-            AreaTriggerEntry const* atEntry = sDBCMgr->GetAreaTriggerEntry(itr->first);
+            AreaTriggerEntry const* atEntry = sAreaTriggerStore.LookupEntry(itr->first);
             if (atEntry)
                 return &itr->second;
         }
