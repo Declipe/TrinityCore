@@ -503,7 +503,7 @@ bool BattlegroundEY::SetupBattleground()
     //buffs
     for (int i = 0; i < EY_POINTS_MAX; ++i)
     {
-        AreaTriggerEntry const* at = sAreaTriggerStore.LookupEntry(m_Points_Trigger[i]);
+        AreaTriggerEntry const* at = sDBCMgr->GetAreaTriggerEntry(m_Points_Trigger[i]);
         if (!at)
         {
             TC_LOG_ERROR("bg.battleground", "BattlegroundEY: Unknown trigger: {}", m_Points_Trigger[i]);

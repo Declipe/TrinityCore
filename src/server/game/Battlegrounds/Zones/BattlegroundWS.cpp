@@ -387,7 +387,7 @@ void BattlegroundWS::HandleFlagRoomCapturePoint(int32 team)
 {
     Player* flagCarrier = ObjectAccessor::GetPlayer(GetBgMap(), GetFlagPickerGUID(team));
     uint32 areaTrigger = team == TEAM_ALLIANCE ? 3647 : 3646;
-    if (flagCarrier && flagCarrier->IsInAreaTriggerRadius(sAreaTriggerStore.LookupEntry(areaTrigger)))
+    if (flagCarrier && flagCarrier->IsInAreaTriggerRadius(sDBCMgr->GetAreaTriggerEntry(areaTrigger)))
         EventPlayerCapturedFlag(flagCarrier);
 }
 

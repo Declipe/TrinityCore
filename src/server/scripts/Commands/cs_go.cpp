@@ -246,7 +246,7 @@ public:
 
     static bool HandleGoAreaTriggerCommand(ChatHandler* handler, Variant<Hyperlink<areatrigger>, uint32> areaTriggerId)
     {
-        AreaTriggerEntry const* at = sAreaTriggerStore.LookupEntry(areaTriggerId);
+        AreaTriggerEntry const* at = sDBCMgr->GetAreaTriggerEntry(areaTriggerId);
         if (!at)
         {
             handler->PSendSysMessage(LANG_COMMAND_GOAREATRNOTFOUND, areaTriggerId);
