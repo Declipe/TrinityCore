@@ -100,10 +100,10 @@ class TC_GAME_API Object
         TypeID GetTypeId() const { return m_objectTypeId; }
         bool isType(uint16 mask) const { return (mask & m_objectType) != 0; }
 
-        virtual void BuildCreateUpdateBlockForPlayer(UpdateData* data, Player* target) const;
+        virtual void BuildCreateUpdateBlockForPlayer(UpdateData* data, Player* target);
         void SendUpdateToPlayer(Player* player);
 
-        void BuildValuesUpdateBlockForPlayer(UpdateData* data, Player const* target) const;
+        void BuildValuesUpdateBlockForPlayer(UpdateData* data, Player* target);
         void BuildOutOfRangeUpdateBlock(UpdateData* data) const;
         void BuildMovementUpdateBlock(UpdateData* data, uint32 flags = 0) const;
 
@@ -163,7 +163,7 @@ class TC_GAME_API Object
         virtual bool hasInvolvedQuest(uint32 /* quest_id */) const { return false; }
         void SetIsNewObject(bool enable) { m_isNewObject = enable; }
         virtual void BuildUpdate(UpdateDataMapType&) { }
-        void BuildFieldsUpdate(Player*, UpdateDataMapType &) const;
+        void BuildFieldsUpdate(Player*, UpdateDataMapType&);
 
         void SetFieldNotifyFlag(uint16 flag) { _fieldNotifyFlags |= flag; }
         void RemoveFieldNotifyFlag(uint16 flag) { _fieldNotifyFlags &= uint16(~flag); }
@@ -236,7 +236,7 @@ class TC_GAME_API Object
         uint32 GetUpdateFieldData(Player const* target, uint32*& flags) const;
 
         void BuildMovementUpdate(ByteBuffer* data, uint16 flags) const;
-        virtual void BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, Player const* target) const;
+        virtual void BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, Player* target);
 
         uint16 m_objectType;
 

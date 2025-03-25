@@ -24,92 +24,101 @@
 
 class UpdateMask
 {
-public:
-    UpdateMask() : _bits(nullptr), _fieldCount(0) { }
+    public:
+        /// Type representing how client reads update mask
+        typedef uint32 ClientUpdateMaskType;
 
-    void SetBit(uint32 index)
-    {
-        _bits[index] = 1;
-    }
+        enum UpdateMaskCount
+        {
+            CLIENT_UPDATE_MASK_BITS = sizeof(ClientUpdateMaskType) * 8,
+        };
 
-    void UnsetBit(uint32 index)
-    {
-        _bits[index] = 0;
-    }
+        UpdateMask() : _fieldCount(0), _blockCount(0), _bits(nullptr) { }
 
-    bool GetBit(uint32 index) const
-    {
-        return _bits[index] != 0;
-    }
+        UpdateMask(UpdateMask const& right) : _bits(nullptr)
+        {
+            SetCount(right.GetCount());
+            memcpy(_bits, right._bits, sizeof(uint8) * _blockCount * 32);
+        }
 
-    void SetCount(uint32 valuesCount)
-    {
-        _bits = std::make_unique<uint8[]>(valuesCount);
-        std::uninitialized_fill_n(&_bits[0], valuesCount, 0);
-        _fieldCount = valuesCount;
-    }
+        ~UpdateMask() { delete[] _bits; }
 
-    void Clear()
-    {
-        if (_bits)
-            std::fill_n(&_bits[0], _fieldCount, 0);
-    }
+        void SetBit(uint32 index) { _bits[index] = 1; }
+        void UnsetBit(uint32 index) { _bits[index] = 0; }
+        bool GetBit(uint32 index) const { return _bits[index] != 0; }
 
-private:
-    std::unique_ptr<uint8[]> _bits;
-    uint32 _fieldCount;
-};
+        void AppendToPacket(ByteBuffer* data)
+        {
+            for (uint32 i = 0; i < GetBlockCount(); ++i)
+            {
+                ClientUpdateMaskType maskPart = 0;
+                for (uint32 j = 0; j < CLIENT_UPDATE_MASK_BITS; ++j)
+                    if (_bits[CLIENT_UPDATE_MASK_BITS * i + j])
+                        maskPart |= 1 << j;
 
-class UpdateMaskPacketBuilder
-{
-public:
-    /// Type representing how client reads update mask
-    using ClientUpdateMaskType = uint32;
+                *data << maskPart;
+            }
+        }
 
-    enum UpdateMaskCount
-    {
-        CLIENT_UPDATE_MASK_BITS = sizeof(ClientUpdateMaskType) * 8,
-    };
+        uint32 GetBlockCount() const { return _blockCount; }
+        uint32 GetCount() const { return _fieldCount; }
 
-    explicit UpdateMaskPacketBuilder(uint32 valuesCount) : _lastSetBit(0)
-    {
-        std::size_t blockCount = CalculateBlockCount(valuesCount);
-        _mask = std::make_unique<ClientUpdateMaskType[]>(blockCount);
-        std::uninitialized_fill_n(&_mask[0], blockCount, 0);
-    }
+        void SetCount(uint32 valuesCount)
+        {
+            delete[] _bits;
 
-    void SetBit(uint32 bit)
-    {
-        _mask[GetBlockIndex(bit)] |= GetBlockFlag(bit);
-        _lastSetBit = bit;
-    }
+            _fieldCount = valuesCount;
+            _blockCount = (valuesCount + CLIENT_UPDATE_MASK_BITS - 1) / CLIENT_UPDATE_MASK_BITS;
 
-    void AppendToPacket(ByteBuffer* data)
-    {
-        uint8 blockCount = CalculateBlockCount(_lastSetBit + 1);
-        *data << uint8(blockCount);
-        if (blockCount)
-            data->append(&_mask[0], blockCount);
-    }
+            _bits = new uint8[_blockCount * CLIENT_UPDATE_MASK_BITS];
+            memset(_bits, 0, sizeof(uint8) * _blockCount * CLIENT_UPDATE_MASK_BITS);
+        }
 
-private:
-    static constexpr uint8 CalculateBlockCount(uint32 fieldCount)
-    {
-        return (fieldCount + CLIENT_UPDATE_MASK_BITS - 1) / CLIENT_UPDATE_MASK_BITS;
-    }
+        void Clear()
+        {
+            if (_bits)
+                memset(_bits, 0, sizeof(uint8) * _blockCount * CLIENT_UPDATE_MASK_BITS);
+        }
 
-    static constexpr std::size_t GetBlockIndex(uint32 bit)
-    {
-        return bit / 32;
-    }
+        UpdateMask& operator=(UpdateMask const& right)
+        {
+            if (this == &right)
+                return *this;
 
-    static constexpr uint32 GetBlockFlag(uint32 bit)
-    {
-        return 1u << (bit % 32);
-    }
+            SetCount(right.GetCount());
+            memcpy(_bits, right._bits, sizeof(uint8) * _blockCount * CLIENT_UPDATE_MASK_BITS);
+            return *this;
+        }
 
-    std::unique_ptr<ClientUpdateMaskType[]> _mask;
-    uint32 _lastSetBit;
+        UpdateMask& operator&=(UpdateMask const& right)
+        {
+            ASSERT(right.GetCount() <= GetCount());
+            for (uint32 i = 0; i < _fieldCount; ++i)
+                _bits[i] &= right._bits[i];
+
+            return *this;
+        }
+
+        UpdateMask& operator|=(UpdateMask const& right)
+        {
+            ASSERT(right.GetCount() <= GetCount());
+            for (uint32 i = 0; i < _fieldCount; ++i)
+                _bits[i] |= right._bits[i];
+
+            return *this;
+        }
+
+        UpdateMask operator|(UpdateMask const& right)
+        {
+            UpdateMask ret(*this);
+            ret |= right;
+            return ret;
+        }
+
+    private:
+        uint32 _fieldCount;
+        uint32 _blockCount;
+        uint8* _bits;
 };
 
 #endif

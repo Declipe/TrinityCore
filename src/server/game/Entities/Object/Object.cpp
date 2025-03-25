@@ -174,7 +174,7 @@ void Object::BuildMovementUpdateBlock(UpdateData* data, uint32 flags) const
     data->AddUpdateBlock();
 }
 
-void Object::BuildCreateUpdateBlockForPlayer(UpdateData* data, Player* target) const
+void Object::BuildCreateUpdateBlockForPlayer(UpdateData* data, Player* target)
 {
     if (!target)
         return;
@@ -218,7 +218,7 @@ void Object::SendUpdateToPlayer(Player* player)
     player->SendDirectMessage(&packet);
 }
 
-void Object::BuildValuesUpdateBlockForPlayer(UpdateData* data, Player const* target) const
+void Object::BuildValuesUpdateBlockForPlayer(UpdateData* data, Player* target)
 {
     ByteBuffer& buf = data->GetBuffer();
 
@@ -464,13 +464,14 @@ void Object::BuildMovementUpdate(ByteBuffer* data, uint16 flags) const
         *data << int64(ToGameObject()->GetPackedLocalRotation());
 }
 
-void Object::BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player const* target) const
+void Object::BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player* target)
 {
     if (!target)
         return;
 
     ByteBuffer fieldBuffer;
-    UpdateMaskPacketBuilder updateMask(m_valuesCount);
+    UpdateMask updateMask;
+    updateMask.SetCount(m_valuesCount);
 
     uint32* flags = nullptr;
     uint32 visibleFlag = GetUpdateFieldData(target, flags);
@@ -486,6 +487,7 @@ void Object::BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player const*
         }
     }
 
+    *data << uint8(updateMask.GetBlockCount());
     updateMask.AppendToPacket(data);
     data->append(fieldBuffer);
 }
@@ -509,7 +511,7 @@ void Object::ClearUpdateMask(bool remove)
     }
 }
 
-void Object::BuildFieldsUpdate(Player* player, UpdateDataMapType& data_map) const
+void Object::BuildFieldsUpdate(Player* player, UpdateDataMapType& data_map)
 {
     UpdateDataMapType::iterator iter = data_map.try_emplace(player).first;
     BuildValuesUpdateBlockForPlayer(&iter->second, iter->first);
