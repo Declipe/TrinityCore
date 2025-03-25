@@ -2309,7 +2309,13 @@ float Unit::CalculateSpellpowerCoefficientLevelPenalty(SpellInfo const* spellInf
     if (!spellInfo->MaxLevel || GetLevel() < spellInfo->MaxLevel)
         return 1.0f;
 
-    return std::max(0.0f, std::min(1.0f, (22.0f + spellInfo->MaxLevel - GetLevel()) / 20.0f));
+    //return std::max(0.0f, std::min(1.0f, (22.0f + spellInfo->MaxLevel - GetLevel()) / 20.0f));
+    // Normalize penalty based on max level (e.g., 255)
+    float maxLevelPenalty = 1.0f - (float(GetLevel() - spellInfo->MaxLevel) / (255 - spellInfo->MaxLevel));
+
+    // Ensure the penalty doesn't drop below 50% scaling
+    //return std::max(0.5f, std::min(1.0f, maxLevelPenalty));
+    return std::max(0.9f, std::min(1.0f, maxLevelPenalty));
 }
 
 void Unit::SendMeleeAttackStart(Unit* victim)
