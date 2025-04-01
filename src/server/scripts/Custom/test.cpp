@@ -193,7 +193,92 @@ public:
 
 };
 
+enum LazyPeonYells
+{
+    SAY_SPELL_HIT = 0
+};
+
+enum LazyPeon
+{
+    QUEST_LAZY_PEONS = 70109,
+    GO_LUMBERPILE = 175784,
+    SPELL_BUFF_SLEEP = 17743,
+    SPELL_AWAKEN_PEON = 19938
+};
+
+class npcpeon : public CreatureScript
+{
+public:
+    npcpeon() : CreatureScript("npcpeon") {}
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npcpeonAI(creature);
+    }
+
+    struct npcpeonAI : public ScriptedAI
+    {
+        npcpeonAI(Creature* creature) : ScriptedAI(creature)
+        {
+            Initialize();
+        }
+
+        void Initialize()
+        {
+            RebuffTimer = 0;
+            work = false;
+        }
+
+        uint32 RebuffTimer;
+        bool work;
+
+        void Reset() override
+        {
+            Initialize();
+        }
+
+        void MovementInform(uint32 /*type*/, uint32 id) override
+        {
+            if (id == 1)
+                work = true;
+        }
+
+        void SpellHit(WorldObject* caster, SpellInfo const* spellInfo) override
+        {
+            if (spellInfo->Id != SPELL_AWAKEN_PEON)
+                return;
+
+            Player* player = caster->ToPlayer();
+            if (player && player->GetQuestStatus(QUEST_LAZY_PEONS) == QUEST_STATUS_INCOMPLETE)
+            {
+                player->KilledMonsterCredit(me->GetEntry(), me->GetGUID());
+                Talk(SAY_SPELL_HIT, caster);
+                me->RemoveAllAuras();
+                if (GameObject* Lumberpile = me->FindNearestGameObject(GO_LUMBERPILE, 20))
+                    me->GetMotionMaster()->MovePoint(1, Lumberpile->GetPositionX() - 1, Lumberpile->GetPositionY(), Lumberpile->GetPositionZ());
+            }
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (work == true)
+                me->HandleEmoteCommand(EMOTE_ONESHOT_WORK_CHOPWOOD);
+            if (RebuffTimer <= diff)
+            {
+                DoCast(me, SPELL_BUFF_SLEEP);
+                RebuffTimer = 300000;                 //Rebuff agian in 5 minutes
+            }
+            else
+                RebuffTimer -= diff;
+            if (!UpdateVictim())
+                return;
+            DoMeleeAttackIfReady();
+        }
+    };
+};
+
 void AddSC_test()
 {
     new orrig1();
+    new npcpeon();
 }
