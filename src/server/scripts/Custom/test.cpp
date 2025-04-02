@@ -255,7 +255,7 @@ public:
                 Talk(SAY_SPELL_HIT, caster);
                 me->RemoveAllAuras();
                 if (GameObject* Lumberpile = me->FindNearestGameObject(GO_LUMBERPILE, 20))
-                    me->GetMotionMaster()->MovePoint(1, Lumberpile->GetPositionX() - 1, Lumberpile->GetPositionY(), Lumberpile->GetPositionZ());
+                    me->GetMotionMaster()->MovePoint(1, Lumberpile->GetPositionX() - 0.4f, Lumberpile->GetPositionY() + 0.4f, Lumberpile->GetPositionZ());
             }
         }
 
