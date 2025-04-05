@@ -25,6 +25,7 @@ enum class GameConfigType : uint8
 {
     GAME_CONFIG_TYPE_BOOL,
     GAME_CONFIG_TYPE_INT,
+    GAME_CONFIG_TYPE_UINT,
     GAME_CONFIG_TYPE_FLOAT,
     GAME_CONFIG_TYPE_STRING,
     GAME_CONFIG_TYPE_RATE,
@@ -42,6 +43,7 @@ public:
     // Get config options
     bool GetBoolConfig(std::string const& optionName, bool defaultValue = false);
     int32 GetIntConfig(std::string const& optionName, int32 defaultValue = 0);
+    uint32 GetUintConfig(std::string const& optionName, uint32 defaultValue = 0);
     float GetFloatConfig(std::string const& optionName, float defaultValue = 1.0f);
     float GetRateConfig(std::string const& optionName, float defaultValue = 1.0f);
     std::string GetStringConfig(std::string const& optionName, std::string const& defaultValue = "");
@@ -52,6 +54,7 @@ private:
 
     void AddBoolOption(std::string const& optionName, bool value = false);
     void AddIntOption(std::string const& optionName, int32 value = 0);
+    void AddUintOption(std::string const& optionName, uint32 value = 0);
     void AddFloatOption(std::string const& optionName, float value = 1.0f);
     void AddRateOption(std::string const& optionName, float value = 1.0f);
     void AddStringOption(std::string const& optionName, std::string const& value = "");
@@ -60,6 +63,7 @@ private:
 
     std::unordered_map<std::string, bool> _boolOptions;
     std::unordered_map<std::string, int32> _intOptions;
+    std::unordered_map<std::string, uint32> _uintOptions;
     std::unordered_map<std::string, float> _floatOptions;
     std::unordered_map<std::string, float> _RateOptions;
     std::unordered_map<std::string, std::string> _stringOptions;

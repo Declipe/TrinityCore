@@ -34,6 +34,7 @@ void CustomConfig::CleanAll()
 {
     _boolOptions.clear();
     _intOptions.clear();
+    _uintOptions.clear();
     _floatOptions.clear();
     _stringOptions.clear();
     _RateOptions.clear();
@@ -75,6 +76,18 @@ void CustomConfig::AddIntOption(std::string const& optionName, int32 value /*= 0
     _intOptions.insert(std::make_pair(optionName, value));
 }
 
+void CustomConfig::AddUintOption(std::string const& optionName, uint32 value /*= 0*/)
+{
+    auto const& itr = _uintOptions.find(optionName);
+    if (itr != _uintOptions.end())
+    {
+        TC_LOG_FATAL("server.loading", "> Int option ({}) exists already!", optionName);
+        return;
+    }
+
+    _uintOptions.insert(std::make_pair(optionName, value));
+}
+
 void CustomConfig::AddFloatOption(std::string const& optionName, float value /*= 1.0f*/)
 {
     auto const& itr = _floatOptions.find(optionName);
@@ -108,6 +121,9 @@ void CustomConfig::AddOption(std::string const& optionName, GameConfigType type,
         break;
     case GameConfigType::GAME_CONFIG_TYPE_INT:
         AddIntOption(optionName, Trinity::StringTo<int32>(value.empty() ? defaultValue : value).value());
+        break;
+    case GameConfigType::GAME_CONFIG_TYPE_UINT:
+        AddUintOption(optionName, Trinity::StringTo<uint32>(value.empty() ? defaultValue : value).value());
         break;
     case GameConfigType::GAME_CONFIG_TYPE_FLOAT:
         AddFloatOption(optionName, Trinity::StringTo<float>(value.empty() ? defaultValue : value).value());
@@ -146,6 +162,8 @@ void CustomConfig::Load()
             return GameConfigType::GAME_CONFIG_TYPE_BOOL;
         else if (optionType == "int")
             return GameConfigType::GAME_CONFIG_TYPE_INT;
+        else if (optionType == "uint")
+            return GameConfigType::GAME_CONFIG_TYPE_UINT;
         else if (optionType == "float")
             return GameConfigType::GAME_CONFIG_TYPE_FLOAT;
         else if (optionType == "string")
@@ -204,6 +222,18 @@ int32 CustomConfig::GetIntConfig(std::string const& optionName, int32 defaultVal
     }
 
     return _intOptions.at(optionName);
+}
+
+uint32 CustomConfig::GetUintConfig(std::string const& optionName, uint32 defaultValue /*= 0*/)
+{
+    auto const& itr = _uintOptions.find(optionName);
+    if (itr == _uintOptions.end())
+    {
+        TC_LOG_FATAL("server.loading", "> Int option ({}) not found!", optionName);
+        return defaultValue;
+    }
+
+    return _uintOptions.at(optionName);
 }
 
 float CustomConfig::GetFloatConfig(std::string const& optionName, float defaultValue /*= 1.0f*/)
