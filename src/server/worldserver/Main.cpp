@@ -15,10 +15,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
- /// \addtogroup Trinityd Trinity Daemon
- /// @{
- /// \file
-
 #include "Common.h"
 #include "AppenderDB.h"
 #include "AsyncAcceptor.h"
@@ -118,7 +114,7 @@ private:
 };
 
 void SignalHandler(boost::system::error_code const& error, int signalNumber);
-AsyncAcceptor* StartRaSocketAcceptor(Trinity::Asio::IoContext& ioContext);
+std::unique_ptr<Trinity::Net::AsyncAcceptor> StartRaSocketAcceptor(Trinity::Asio::IoContext& ioContext);
 bool StartDB();
 void StopDB();
 void WorldUpdateLoop();
@@ -338,9 +334,9 @@ int main(int argc, char** argv)
         });
 
     // Start the Remote Access port (acceptor) if enabled
-    std::unique_ptr<AsyncAcceptor> raAcceptor;
+    std::unique_ptr<Trinity::Net::AsyncAcceptor> raAcceptor;
     if (sConfigMgr->GetBoolDefault("Ra.Enable", false))
-        raAcceptor.reset(StartRaSocketAcceptor(*ioContext));
+        raAcceptor = StartRaSocketAcceptor(*ioContext);
 
     // Start soap serving thread if enabled
     std::shared_ptr<std::thread> soapThread;
@@ -589,20 +585,23 @@ void FreezeDetector::Handler(std::weak_ptr<FreezeDetector> freezeDetectorRef, bo
     }
 }
 
-AsyncAcceptor* StartRaSocketAcceptor(Trinity::Asio::IoContext& ioContext)
+std::unique_ptr<Trinity::Net::AsyncAcceptor> StartRaSocketAcceptor(Trinity::Asio::IoContext& ioContext)
 {
     uint16 raPort = uint16(sConfigMgr->GetIntDefault("Ra.Port", 3443));
     std::string raListener = sConfigMgr->GetStringDefault("Ra.IP", "0.0.0.0");
 
-    AsyncAcceptor* acceptor = new AsyncAcceptor(ioContext, raListener, raPort);
+    std::unique_ptr<Trinity::Net::AsyncAcceptor> acceptor = std::make_unique<Trinity::Net::AsyncAcceptor>(ioContext, raListener, raPort);
     if (!acceptor->Bind())
     {
         TC_LOG_ERROR("server.worldserver", "Failed to bind RA socket acceptor");
-        delete acceptor;
         return nullptr;
     }
 
-    acceptor->AsyncAccept<RASession>();
+    acceptor->AsyncAccept([](Trinity::Net::IoContextTcpSocket&& sock, uint32 /*threadIndex*/)
+    {
+        std::make_shared<RASession>(std::move(sock))->Start();
+
+    });
     return acceptor;
 }
 
@@ -713,8 +712,6 @@ void ClearOnlineAccounts()
     // Battleground instance ids reset at server restart
     CharacterDatabase.DirectExecute("UPDATE character_battleground_data SET instanceId = 0");
 }
-
-/// @}
 
 variables_map GetConsoleArguments(int argc, char** argv, fs::path& configFile, fs::path& configDir, [[maybe_unused]] std::string& winServiceAction)
 {
