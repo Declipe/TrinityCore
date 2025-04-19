@@ -113,7 +113,7 @@ struct CustomRewardPvPTemplate
     int8 req_type_is_battleground;
     int8 req_type_is_arena;
     uint16 req_zone_id;
-    uint16 req_map_id;
+    int16 req_map_id;
     uint32 req_target_race_mask;
     uint32 req_target_class_mask;
     uint32 req_self_race_mask;
