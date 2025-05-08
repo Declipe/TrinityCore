@@ -769,6 +769,32 @@ class spell_brewfest_botm_empty_bottle_throw_resolve : public SpellScript
     }
 };
 
+enum MoleMachine
+{
+    SPELL_PORT_TO_GRIM_GUZZLER     = 47523
+};
+
+// 49466 - Mole Machine Portal Schedule
+class spell_brewfest_mole_machine_portal_schedule : public SpellScript
+{
+    PrepareSpellScript(spell_brewfest_mole_machine_portal_schedule);
+
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo({ SPELL_PORT_TO_GRIM_GUZZLER });
+    }
+
+    void HandleScript(SpellEffIndex /*effIndex*/)
+    {
+        GetHitUnit()->CastSpell(GetHitUnit(), SPELL_PORT_TO_GRIM_GUZZLER);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_brewfest_mole_machine_portal_schedule::HandleScript, EFFECT_1, SPELL_EFFECT_SCRIPT_EFFECT);
+    }
+};
+
 void AddSC_event_brewfest()
 {
     RegisterSpellScript(spell_brewfest_fill_keg);
@@ -791,4 +817,5 @@ void AddSC_event_brewfest()
     RegisterSpellScript(spell_brewfest_botm_teach_language);
     RegisterSpellScript(spell_brewfest_botm_weak_alcohol);
     RegisterSpellScript(spell_brewfest_botm_empty_bottle_throw_resolve);
+    RegisterSpellScript(spell_brewfest_mole_machine_portal_schedule);
 }
