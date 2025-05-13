@@ -1623,6 +1623,9 @@ public:
     PlayerSpellMap const& GetSpellMap() const { return m_spells; }
     PlayerSpellMap& GetSpellMap() { return m_spells; }
 
+    SkillStatusMap const& GetSkillStatusMap() const { return mSkillStatus; }
+    SkillStatusMap& GetSkillStatusMap() { return mSkillStatus; }
+
     void AddSpellMod(SpellModifier* mod, bool apply);
     static bool IsAffectedBySpellmod(SpellInfo const* spellInfo, SpellModifier* mod, Spell* spell = nullptr);
     template <class T>

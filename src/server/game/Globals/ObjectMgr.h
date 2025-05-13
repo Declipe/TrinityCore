@@ -1624,6 +1624,12 @@ public:
             value.assign(str);
     }
 
+    static inline void GetLocaleString(const std::vector<std::string>& data, int loc_idx, std::string& value)
+    {
+        if (data.size() > std::size_t(loc_idx) && !data[loc_idx].empty())
+            value = data[loc_idx];
+    }
+
     CharacterConversionMap FactionChangeAchievements;
     CharacterConversionMap FactionChangeItems;
     CharacterConversionMap FactionChangeQuests;
