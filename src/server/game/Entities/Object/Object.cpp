@@ -1877,7 +1877,7 @@ void WorldObject::SetMap(Map* map)
     // in multistate mode, always reset in case Eluna is not active on the new map
     if (elunaEvents && !sElunaConfig->IsElunaCompatibilityMode())
         elunaEvents.reset();
-    
+
     if (Eluna* e = map->GetEluna())
         if (!elunaEvents)
             elunaEvents = std::make_unique<ElunaEventProcessor>(e, this);

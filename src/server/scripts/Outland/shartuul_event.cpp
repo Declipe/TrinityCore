@@ -962,7 +962,7 @@ struct possess_demonAI : public WorldBossAI
     {
         SetActive(false);
     }
-        
+
     void OnCharmed(bool /*isNew*/) override
     {
         if (!me->IsAlive() && !me->isPossessedByPlayer())
@@ -1055,7 +1055,7 @@ struct npc_felguard_degrader : public possess_demonAI
     {
         if (Player* player = caster->ToPlayer())
             player->SetUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC); //todo replace
-        
+
         if (spellInfo->Id == SPELL_POSSESS_DEMON)
         {
             if (TempSummon* tempSummon = me->ToTempSummon())

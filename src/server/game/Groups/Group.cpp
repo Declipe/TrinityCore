@@ -1404,7 +1404,7 @@ void Group::MasterLoot(Loot* loot, WorldObject* pLootedObject)
         Player* looter = itr->GetSource();
         if (!looter->IsInWorld())
             continue;
-        
+
         if (looter->IsAtLootRewardDistance(pLootedObject))
             looters.push_back(looter);
 
