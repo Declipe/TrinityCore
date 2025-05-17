@@ -15,11 +15,18 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+Name: Boss_Doctor_Theolen_Krastinov
+%Complete: 100
+Comment:
+Category: Scholomance
+*/
+
 #include "ScriptMgr.h"
 #include "scholomance.h"
 #include "ScriptedCreature.h"
 
-enum Texts
+enum Say
 {
     EMOTE_FRENZY_KILL           = 0,
 };
@@ -33,63 +40,74 @@ enum Spells
 
 enum Events
 {
-    EVENT_REND = 1,
-    EVENT_BACKHAND,
-    EVENT_FRENZY
+    EVENT_REND                  = 1,
+    EVENT_BACKHAND              = 2,
+    EVENT_FRENZY                = 3
 };
 
-struct boss_doctor_theolen_krastinov : public BossAI
+class boss_doctor_theolen_krastinov : public CreatureScript
 {
-    boss_doctor_theolen_krastinov(Creature* creature) : BossAI(creature, DATA_DOCTOR_THEOLEN_KRASTINOV) { }
+    public: boss_doctor_theolen_krastinov() : CreatureScript("boss_doctor_theolen_krastinov") { }
 
-    void JustEngagedWith(Unit* who) override
-    {
-        BossAI::JustEngagedWith(who);
-        events.ScheduleEvent(EVENT_REND, 8s);
-        events.ScheduleEvent(EVENT_BACKHAND, 9s);
-        events.ScheduleEvent(EVENT_FRENZY, 1s);
-    }
-
-    void UpdateAI(uint32 diff) override
-    {
-        if (!UpdateVictim())
-            return;
-
-        events.Update(diff);
-
-        if (me->HasUnitState(UNIT_STATE_CASTING))
-            return;
-
-        while (uint32 eventId = events.ExecuteEvent())
+        struct boss_theolenkrastinovAI : public BossAI
         {
-            switch (eventId)
+            boss_theolenkrastinovAI(Creature* creature) : BossAI(creature, DATA_DOCTOR_THEOLEN_KRASTINOV) { }
+
+            void JustEngagedWith(Unit* who) override
             {
-                case EVENT_REND:
-                    DoCastVictim(SPELL_REND);
-                    events.ScheduleEvent(EVENT_REND, 10s);
-                    break;
-                case EVENT_BACKHAND:
-                    DoCastVictim(SPELL_BACKHAND);
-                    events.ScheduleEvent(EVENT_BACKHAND, 10s);
-                    break;
-                case EVENT_FRENZY:
-                    DoCastSelf(SPELL_FRENZY);
-                    Talk(EMOTE_FRENZY_KILL);
-                    events.ScheduleEvent(EVENT_FRENZY, 120s);
-                    break;
-                default:
-                    break;
+                BossAI::JustEngagedWith(who);
+                events.ScheduleEvent(EVENT_REND, 8s);
+                events.ScheduleEvent(EVENT_BACKHAND, 9s);
+                events.ScheduleEvent(EVENT_FRENZY, 1s);
             }
 
-            if (me->HasUnitState(UNIT_STATE_CASTING))
-                return;
+            void UpdateAI(uint32 diff) override
+            {
+                if (!UpdateVictim())
+                    return;
+
+                events.Update(diff);
+
+                if (me->HasUnitState(UNIT_STATE_CASTING))
+                    return;
+
+                while (uint32 eventId = events.ExecuteEvent())
+                {
+                    switch (eventId)
+                    {
+                        case EVENT_REND:
+                            DoCastVictim(SPELL_REND, true);
+                            events.ScheduleEvent(EVENT_REND, 10s);
+                            break;
+                        case EVENT_BACKHAND:
+                            DoCastVictim(SPELL_BACKHAND, true);
+                            events.ScheduleEvent(EVENT_BACKHAND, 10s);
+                            break;
+                        case EVENT_FRENZY:
+                            DoCast(me, SPELL_FRENZY, true);
+                            Talk(EMOTE_FRENZY_KILL);
+                            events.ScheduleEvent(EVENT_FRENZY, 120s);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    if (me->HasUnitState(UNIT_STATE_CASTING))
+                        return;
+                }
+
+                DoMeleeAttackIfReady();
+            }
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return GetScholomanceAI<boss_theolenkrastinovAI>(creature);
         }
 
-        DoMeleeAttackIfReady();
-    }
 };
 
 void AddSC_boss_theolenkrastinov()
 {
-    RegisterScholomanceCreatureAI(boss_doctor_theolen_krastinov);
+    new boss_doctor_theolen_krastinov();
 }

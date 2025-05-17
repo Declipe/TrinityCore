@@ -15,123 +15,172 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* Timers requires update */
-
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "steam_vault.h"
 
-enum ThespiaTexts
+enum Yells
 {
     SAY_SUMMON                  = 0,
     SAY_AGGRO                   = 1,
     SAY_SLAY                    = 2,
-    SAY_DEATH                   = 3
+    SAY_DEAD                    = 3,
 };
 
-enum ThespiaSpells
+enum Spells
 {
     SPELL_LIGHTNING_CLOUD       = 25033,
     SPELL_LUNG_BURST            = 31481,
-    SPELL_ENVELOPING_WINDS      = 31718,
-
-    SPELL_WATER_BOLT_VOLLEY     = 34449
+    SPELL_ENVELOPING_WINDS      = 31718
 };
 
-enum ThespiaEvents
+enum Events
 {
     EVENT_LIGHTNING_CLOUD       = 1,
     EVENT_LUNG_BURST,
     EVENT_ENVELOPING_WINDS
 };
 
-// 17797 - Hydromancer Thespia
-struct boss_hydromancer_thespia : public BossAI
+class boss_hydromancer_thespia : public CreatureScript
 {
-    boss_hydromancer_thespia(Creature* creature) : BossAI(creature, DATA_HYDROMANCER_THESPIA) { }
+    public:
+        boss_hydromancer_thespia() : CreatureScript("boss_hydromancer_thespia") { }
 
-    void JustEngagedWith(Unit* who) override
-    {
-        Talk(SAY_AGGRO);
-        BossAI::JustEngagedWith(who);
-
-        events.ScheduleEvent(EVENT_LIGHTNING_CLOUD, 10s, 15s);
-        events.ScheduleEvent(EVENT_LUNG_BURST, 7s, 12s);
-        events.ScheduleEvent(EVENT_ENVELOPING_WINDS, 10s, 15s);
-    }
-
-    void KilledUnit(Unit* who) override
-    {
-        if (who->GetTypeId() == TYPEID_PLAYER)
-            Talk(SAY_SLAY);
-    }
-
-    void JustDied(Unit* /*killer*/) override
-    {
-        Talk(SAY_DEATH);
-        _JustDied();
-    }
-
-    void ExecuteEvent(uint32 eventId) override
-    {
-        switch (eventId)
+        struct boss_thespiaAI : public BossAI
         {
-            case EVENT_LIGHTNING_CLOUD:
-                if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 30.0f, true))
-                    DoCast(target, SPELL_LIGHTNING_CLOUD);
-                events.Repeat(15s, 25s);
-                break;
-            case EVENT_LUNG_BURST:
-                if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 40.0f, true))
-                    DoCast(target, SPELL_LUNG_BURST);
-                events.Repeat(7s, 12s);
-                break;
-            case EVENT_ENVELOPING_WINDS:
-                if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 35.0f, true))
-                    DoCast(target, SPELL_ENVELOPING_WINDS);
-                events.Repeat(10s, 15s);
-                break;
-            default:
-                break;
+            boss_thespiaAI(Creature* creature) : BossAI(creature, DATA_HYDROMANCER_THESPIA) { }
+
+            void Reset() override
+            {
+                _Reset();
+            }
+
+            void JustDied(Unit* /*killer*/) override
+            {
+                Talk(SAY_DEAD);
+                _JustDied();
+            }
+
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    Talk(SAY_SLAY);
+            }
+
+            void JustEngagedWith(Unit* who) override
+            {
+                Talk(SAY_AGGRO);
+                BossAI::JustEngagedWith(who);
+
+                events.ScheduleEvent(EVENT_LIGHTNING_CLOUD, 15s);
+                events.ScheduleEvent(EVENT_LUNG_BURST, 7s);
+                events.ScheduleEvent(EVENT_ENVELOPING_WINDS, 9s);
+            }
+
+            void ExecuteEvent(uint32 eventId) override
+            {
+                switch (eventId)
+                {
+                    case EVENT_LIGHTNING_CLOUD:
+                        if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 30.0f, true))
+                            DoCast(target, SPELL_LIGHTNING_CLOUD);
+                        // cast twice in Heroic mode
+                        if (IsHeroic())
+                            if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 30.0f, true))
+                                DoCast(target, SPELL_LIGHTNING_CLOUD);
+
+                        events.ScheduleEvent(EVENT_LIGHTNING_CLOUD, 15s, 25s);
+                        break;
+                    case EVENT_LUNG_BURST:
+                        if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 40.0f, true))
+                            DoCast(target, SPELL_LUNG_BURST);
+                        events.ScheduleEvent(EVENT_LUNG_BURST, 7s, 12s);
+                        break;
+                    case EVENT_ENVELOPING_WINDS:
+                        if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 35.0f, true))
+                            DoCast(target, SPELL_ENVELOPING_WINDS);
+                        // cast twice in Heroic mode
+                        if (IsHeroic())
+                            if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0, 35.0f, true))
+                                DoCast(target, SPELL_ENVELOPING_WINDS);
+
+                        events.ScheduleEvent(EVENT_ENVELOPING_WINDS, 10s, 15s);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return GetSteamVaultAI<boss_thespiaAI>(creature);
         }
-    }
 };
 
-// 17917 - Coilfang Water Elemental
-struct npc_coilfang_waterelemental : public ScriptedAI
+enum CoilfangWaterElemental
 {
-    npc_coilfang_waterelemental(Creature* creature) : ScriptedAI(creature) { }
+    EVENT_WATER_BOLT_VOLLEY     = 1,
+    SPELL_WATER_BOLT_VOLLEY     = 34449
+};
 
-    void Reset() override
-    {
-        _scheduler.CancelAll();
-    }
+class npc_coilfang_waterelemental : public CreatureScript
+{
+    public:
+        npc_coilfang_waterelemental() : CreatureScript("npc_coilfang_waterelemental") { }
 
-    void JustEngagedWith(Unit* /*who*/) override
-    {
-        _scheduler.Schedule(4s, 12s, [this](TaskContext task)
+        struct npc_coilfang_waterelementalAI : public ScriptedAI
         {
-            DoCastSelf(SPELL_WATER_BOLT_VOLLEY);
-            task.Repeat(8s, 15s);
-        });
-    }
+            npc_coilfang_waterelementalAI(Creature* creature) : ScriptedAI(creature) { }
 
-    void UpdateAI(uint32 diff) override
-    {
-        if (!UpdateVictim())
-            return;
+            void Reset() override
+            {
+                _events.Reset();
+            }
 
-        _scheduler.Update(diff);
+            void JustEngagedWith(Unit* /*who*/) override
+            {
+                _events.ScheduleEvent(EVENT_WATER_BOLT_VOLLEY, 3s, 6s);
+            }
 
-        DoMeleeAttackIfReady();
-    }
+            void UpdateAI(uint32 diff) override
+            {
+                if (!UpdateVictim())
+                    return;
 
-private:
-    TaskScheduler _scheduler;
+                _events.Update(diff);
+
+                if (me->HasUnitState(UNIT_STATE_CASTING))
+                    return;
+
+                while (uint32 eventId = _events.ExecuteEvent())
+                {
+                    switch (eventId)
+                    {
+                        case EVENT_WATER_BOLT_VOLLEY:
+                            DoCast(me, SPELL_WATER_BOLT_VOLLEY);
+                            _events.ScheduleEvent(EVENT_WATER_BOLT_VOLLEY, 7s, 12s);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                DoMeleeAttackIfReady();
+            }
+
+        private:
+            EventMap _events;
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return GetSteamVaultAI<npc_coilfang_waterelementalAI>(creature);
+        }
 };
 
 void AddSC_boss_hydromancer_thespia()
 {
-    RegisterSteamVaultCreatureAI(boss_hydromancer_thespia);
-    RegisterSteamVaultCreatureAI(npc_coilfang_waterelemental);
+    new boss_hydromancer_thespia();
+    new npc_coilfang_waterelemental();
 }

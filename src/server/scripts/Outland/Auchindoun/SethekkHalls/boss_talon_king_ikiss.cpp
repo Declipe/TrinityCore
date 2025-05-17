@@ -21,7 +21,7 @@
 #include "SpellScript.h"
 #include "sethekk_halls.h"
 
-enum Texts
+enum Says
 {
     SAY_INTRO                   = 0,
     SAY_AGGRO                   = 1,
@@ -53,20 +53,24 @@ enum Events
 
 struct boss_talon_king_ikiss : public BossAI
 {
-    boss_talon_king_ikiss(Creature* creature) : BossAI(creature, DATA_TALON_KING_IKISS), _intro(false), _manaShield(false) { }
+    boss_talon_king_ikiss(Creature* creature) : BossAI(creature, DATA_TALON_KING_IKISS)
+    {
+        Intro = false;
+        ManaShield = false;
+    }
 
     void Reset() override
     {
         _Reset();
-        _intro = false;
-        _manaShield = false;
+        Intro = false;
+        ManaShield = false;
     }
 
     void MoveInLineOfSight(Unit* who) override
     {
-        if (!_intro && who->GetTypeId() == TYPEID_PLAYER && me->IsWithinDistInMap(who, 100.0f))
+        if (!Intro && who->GetTypeId() == TYPEID_PLAYER && me->IsWithinDistInMap(who, 100.0f))
         {
-            _intro = true;
+            Intro = true;
             Talk(SAY_INTRO);
         }
 
@@ -84,27 +88,6 @@ struct boss_talon_king_ikiss : public BossAI
             events.ScheduleEvent(EVENT_SLOW, 15s, 30s);
     }
 
-    void DamageTaken(Unit* /*who*/, uint32& damage, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
-    {
-        if (!_manaShield && me->HealthBelowPctDamaged(20, damage))
-        {
-            DoCastSelf(SPELL_MANA_SHIELD);
-            _manaShield = true;
-        }
-    }
-
-    void KilledUnit(Unit* who) override
-    {
-        if (who->GetTypeId() == TYPEID_PLAYER)
-            Talk(SAY_SLAY);
-    }
-
-    void JustDied(Unit* /*killer*/) override
-    {
-        _JustDied();
-        Talk(SAY_DEATH);
-    }
-
     void ExecuteEvent(uint32 eventId) override
     {
         switch (eventId)
@@ -115,34 +98,57 @@ struct boss_talon_king_ikiss : public BossAI
                     DoCast(SelectTarget(SelectTargetMethod::Random, 0), SPELL_POLYMORPH);
                 else
                     DoCast(SelectTarget(SelectTargetMethod::MaxThreat, 1), SPELL_POLYMORPH);
-                events.Repeat(15s, 17500ms);
+                events.ScheduleEvent(EVENT_POLYMORPH, 15s, 17500ms);
                 break;
             case EVENT_ARCANE_VOLLEY:
-                DoCastSelf(SPELL_ARCANE_VOLLEY);
-                events.Repeat(7s, 12s);
+                DoCast(me, SPELL_ARCANE_VOLLEY);
+                events.ScheduleEvent(EVENT_ARCANE_VOLLEY, 7s, 12s);
                 break;
             case EVENT_SLOW:
-                DoCastSelf(SPELL_SLOW);
-                events.Repeat(15s, 40s);
+                DoCast(me, SPELL_SLOW);
+                events.ScheduleEvent(EVENT_SLOW, 15s, 40s);
                 break;
             case EVENT_BLINK:
+                if (me->IsNonMeleeSpellCast(false))
+                    me->InterruptNonMeleeSpells(false);
                 Talk(EMOTE_ARCANE_EXPLOSION);
                 DoCastAOE(SPELL_BLINK);
                 events.ScheduleEvent(EVENT_BLINK, 35s, 40s);
                 events.ScheduleEvent(EVENT_ARCANE_EXPLOSION, 1s);
                 break;
             case EVENT_ARCANE_EXPLOSION:
-                DoCastSelf(SPELL_ARCANE_EXPLOSION);
-                DoCastSelf(SPELL_ARCANE_BUBBLE, true);
+                DoCast(me, SPELL_ARCANE_EXPLOSION);
+                DoCast(me, SPELL_ARCANE_BUBBLE, true);
                 break;
             default:
                 break;
         }
     }
 
-private:
-    bool _intro;
-    bool _manaShield;
+    void DamageTaken(Unit* /*who*/, uint32& damage, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
+    {
+        if (!ManaShield && me->HealthBelowPctDamaged(20, damage))
+        {
+            DoCast(me, SPELL_MANA_SHIELD);
+            ManaShield = true;
+        }
+    }
+
+    void JustDied(Unit* /*killer*/) override
+    {
+        _JustDied();
+        Talk(SAY_DEATH);
+    }
+
+    void KilledUnit(Unit* who) override
+    {
+        if (who->GetTypeId() == TYPEID_PLAYER)
+            Talk(SAY_SLAY);
+    }
+
+    private:
+        bool ManaShield;
+        bool Intro;
 };
 
 // 38194 - Blink

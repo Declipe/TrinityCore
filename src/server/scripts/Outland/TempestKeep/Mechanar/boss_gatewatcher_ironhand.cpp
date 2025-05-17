@@ -15,11 +15,18 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* ScriptData
+SDName: Boss_Gatewatcher_Ironhand
+SD%Complete: 75
+SDComment:
+SDCategory: Tempest Keep, The Mechanar
+EndScriptData */
+
 #include "ScriptMgr.h"
 #include "mechanar.h"
 #include "ScriptedCreature.h"
 
-enum Texts
+enum Says
 {
     SAY_AGGRO                      = 0,
     SAY_HAMMER                     = 1,
@@ -31,16 +38,18 @@ enum Texts
 enum Spells
 {
     SPELL_SHADOW_POWER             = 35322,
+    H_SPELL_SHADOW_POWER           = 39193,
     SPELL_HAMMER_PUNCH             = 35326,
     SPELL_JACKHAMMER               = 35327,
+    H_SPELL_JACKHAMMER             = 39194,
     SPELL_STREAM_OF_MACHINE_FLUID  = 35311
 };
 
 enum Events
 {
     EVENT_STREAM_OF_MACHINE_FLUID   = 1,
-    EVENT_JACKHAMMER,
-    EVENT_SHADOW_POWER
+    EVENT_JACKHAMMER                = 2,
+    EVENT_SHADOW_POWER              = 3
 };
 
 struct boss_gatewatcher_iron_hand : public BossAI
@@ -83,20 +92,20 @@ struct boss_gatewatcher_iron_hand : public BossAI
             switch (eventId)
             {
                 case EVENT_STREAM_OF_MACHINE_FLUID:
-                    DoCastVictim(SPELL_STREAM_OF_MACHINE_FLUID);
-                    events.Repeat(35s, 50s);
+                    DoCastVictim(SPELL_STREAM_OF_MACHINE_FLUID, true);
+                    events.ScheduleEvent(EVENT_STREAM_OF_MACHINE_FLUID, 35s, 50s);
                     break;
                 case EVENT_JACKHAMMER:
                     Talk(EMOTE_HAMMER);
                     /// @todo expect cast this about 5 times in a row (?), announce it by emote only once
-                    DoCastVictim(SPELL_JACKHAMMER);
+                    DoCastVictim(SPELL_JACKHAMMER, true);
                     if (roll_chance_i(50))
                         Talk(SAY_HAMMER);
-                    events.Repeat(30s);
+                    events.ScheduleEvent(EVENT_JACKHAMMER, 30s);
                     break;
                 case EVENT_SHADOW_POWER:
-                    DoCastSelf(SPELL_SHADOW_POWER);
-                    events.Repeat(20s, 28s);
+                    DoCast(me, SPELL_SHADOW_POWER);
+                    events.ScheduleEvent(EVENT_SHADOW_POWER, 20s, 28s);
                     break;
                 default:
                     break;

@@ -15,16 +15,22 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* ScriptData
+SDName: boss_gatewatcher_gyrokill
+SD%Complete: 99%
+SDComment:
+SDCategory: Tempest Keep, The Mechanar
+EndScriptData */
+
 #include "ScriptMgr.h"
-#include "SpellInfo.h"
 #include "mechanar.h"
 #include "ScriptedCreature.h"
 
-enum Texts
+enum Say
 {
     SAY_AGGRO                       = 0,
     SAY_SLAY                        = 1,
-    SAY_SAW_BLADES                  = 2,
+    SAY_SAW_BLADEs                  = 2,
     SAY_DEATH                       = 3
 };
 
@@ -32,19 +38,27 @@ enum Spells
 {
     SPELL_STREAM_OF_MACHINE_FLUID   = 35311,
     SPELL_SAW_BLADE                 = 35318,
-    SPELL_SHADOW_POWER              = 35322
+    H_SPELL_SAW_BLADE               = 39192,
+    SPELL_SHADOW_POWER              = 35322,
+    H_SPELL_SHADOW_POWER            = 39193
 };
 
 enum Events
 {
     EVENT_STREAM_OF_MACHINE_FLUID   = 1,
-    EVENT_SAW_BLADE,
-    EVENT_SHADOW_POWER
+    EVENT_SAW_BLADE                 = 2,
+    EVENT_SHADOW_POWER              = 3
 };
 
 struct boss_gatewatcher_gyrokill : public BossAI
 {
     boss_gatewatcher_gyrokill(Creature* creature) : BossAI(creature, DATA_GATEWATCHER_GYROKILL) { }
+
+    void JustDied(Unit* /*killer*/) override
+    {
+        _JustDied();
+        Talk(SAY_DEATH);
+    }
 
     void JustEngagedWith(Unit* who) override
     {
@@ -55,21 +69,9 @@ struct boss_gatewatcher_gyrokill : public BossAI
         Talk(SAY_AGGRO);
     }
 
-    void OnSpellCast(SpellInfo const* spell) override
-    {
-        if (spell->Id == SPELL_SAW_BLADE)
-            Talk(SAY_SAW_BLADES);
-    }
-
     void KilledUnit(Unit* /*victim*/) override
     {
         Talk(SAY_SLAY);
-    }
-
-    void JustDied(Unit* /*killer*/) override
-    {
-        _JustDied();
-        Talk(SAY_DEATH);
     }
 
     void UpdateAI(uint32 diff) override
@@ -87,16 +89,17 @@ struct boss_gatewatcher_gyrokill : public BossAI
             switch (eventId)
             {
                 case EVENT_STREAM_OF_MACHINE_FLUID:
-                    DoCastVictim(SPELL_STREAM_OF_MACHINE_FLUID);
-                    events.Repeat(13s, 17s);
+                    DoCastVictim(SPELL_STREAM_OF_MACHINE_FLUID, true);
+                    events.ScheduleEvent(EVENT_STREAM_OF_MACHINE_FLUID, 13s, 17s);
                     break;
                 case EVENT_SAW_BLADE:
-                    DoCastVictim(SPELL_SAW_BLADE);
-                    events.Repeat(20s, 30s);
+                    DoCast(me, SPELL_SAW_BLADE);
+                    Talk(SAY_SAW_BLADEs);
+                    events.ScheduleEvent(EVENT_SAW_BLADE, 20s, 30s);
                     break;
                 case EVENT_SHADOW_POWER:
-                    DoCastSelf(SPELL_SHADOW_POWER);
-                    events.Repeat(25s, 35s);
+                    DoCast(me, SPELL_SHADOW_POWER);
+                    events.ScheduleEvent(EVENT_SAW_BLADE, 25s, 35s);
                     break;
                 default:
                     break;

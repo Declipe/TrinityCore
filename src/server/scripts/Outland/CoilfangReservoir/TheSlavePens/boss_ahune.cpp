@@ -680,9 +680,9 @@ class spell_ahune_synch_health : public SpellScript
 };
 
 // 45926 - Summoning Rhyme Aura
-class spell_ahune_summoning_rhyme_aura : public AuraScript
+class spell_summoning_rhyme_aura : public AuraScript
 {
-    PrepareAuraScript(spell_ahune_summoning_rhyme_aura);
+    PrepareAuraScript(spell_summoning_rhyme_aura);
 
     bool Validate(SpellInfo const* /*spellInfo*/) override
     {
@@ -719,14 +719,14 @@ class spell_ahune_summoning_rhyme_aura : public AuraScript
 
     void Register() override
     {
-        OnEffectPeriodic += AuraEffectPeriodicFn(spell_ahune_summoning_rhyme_aura::PeriodicTick, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+        OnEffectPeriodic += AuraEffectPeriodicFn(spell_summoning_rhyme_aura::PeriodicTick, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
     }
 };
 
 // 46878 - Summon Ice Spear Delayer
-class spell_ahune_summon_ice_spear_delayer : public AuraScript
+class spell_summon_ice_spear_delayer : public AuraScript
 {
-    PrepareAuraScript(spell_ahune_summon_ice_spear_delayer);
+    PrepareAuraScript(spell_summon_ice_spear_delayer);
 
     bool Validate(SpellInfo const* /*spellInfo*/) override
     {
@@ -742,14 +742,14 @@ class spell_ahune_summon_ice_spear_delayer : public AuraScript
 
     void Register() override
     {
-        OnEffectPeriodic += AuraEffectPeriodicFn(spell_ahune_summon_ice_spear_delayer::PeriodicTick, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+        OnEffectPeriodic += AuraEffectPeriodicFn(spell_summon_ice_spear_delayer::PeriodicTick, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
     }
 };
 
 // 46371 - Ice Spear Control Aura
-class spell_ahune_ice_spear_control_aura : public AuraScript
+class spell_ice_spear_control_aura : public AuraScript
 {
-    PrepareAuraScript(spell_ahune_ice_spear_control_aura);
+    PrepareAuraScript(spell_ice_spear_control_aura);
 
     bool Validate(SpellInfo const* /*spellInfo*/) override
     {
@@ -764,14 +764,14 @@ class spell_ahune_ice_spear_control_aura : public AuraScript
 
     void Register() override
     {
-        OnEffectPeriodic += AuraEffectPeriodicFn(spell_ahune_ice_spear_control_aura::PeriodicTick, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+        OnEffectPeriodic += AuraEffectPeriodicFn(spell_ice_spear_control_aura::PeriodicTick, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
     }
 };
 
 // 46372 - Ice Spear Target Picker
-class spell_ahune_ice_spear_target_picker : public SpellScript
+class spell_ice_spear_target_picker : public SpellScript
 {
-    PrepareSpellScript(spell_ahune_ice_spear_target_picker);
+    PrepareSpellScript(spell_ice_spear_target_picker);
 
     bool Validate(SpellInfo const* /*spellInfo*/) override
     {
@@ -795,15 +795,15 @@ class spell_ahune_ice_spear_target_picker : public SpellScript
 
     void Register() override
     {
-        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_ahune_ice_spear_target_picker::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENTRY);
-        OnEffectHitTarget += SpellEffectFn(spell_ahune_ice_spear_target_picker::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_ice_spear_target_picker::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENTRY);
+        OnEffectHitTarget += SpellEffectFn(spell_ice_spear_target_picker::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
     }
 };
 
 // 46320 - Spell Slippery Floor Periodic
-class spell_ahune_slippery_floor_periodic : public SpellScript
+class spell_slippery_floor_periodic : public SpellScript
 {
-    PrepareSpellScript(spell_ahune_slippery_floor_periodic);
+    PrepareSpellScript(spell_slippery_floor_periodic);
 
     bool Validate(SpellInfo const* /*spellInfo*/) override
     {
@@ -822,7 +822,7 @@ class spell_ahune_slippery_floor_periodic : public SpellScript
 
     void Register() override
     {
-        OnEffectHitTarget += SpellEffectFn(spell_ahune_slippery_floor_periodic::HandleScriptEffect, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+        OnEffectHitTarget += SpellEffectFn(spell_slippery_floor_periodic::HandleScriptEffect, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
     }
 };
 
@@ -866,9 +866,9 @@ class spell_ahune_minion_despawner : public SpellScript
 };
 
 // 46398 - Spell Ice Bombardment Dest Picker
-class spell_ahune_ice_bombardment_dest_picker : public SpellScript
+class spell_ice_bombardment_dest_picker : public SpellScript
 {
-    PrepareSpellScript(spell_ahune_ice_bombardment_dest_picker);
+    PrepareSpellScript(spell_ice_bombardment_dest_picker);
 
     bool Validate(SpellInfo const* /*spellInfo*/) override
     {
@@ -882,7 +882,7 @@ class spell_ahune_ice_bombardment_dest_picker : public SpellScript
 
     void Register() override
     {
-        OnEffectHit += SpellEffectFn(spell_ahune_ice_bombardment_dest_picker::HandleScriptEffect, EFFECT_0, SPELL_EFFECT_DUMMY);
+        OnEffectHit += SpellEffectFn(spell_ice_bombardment_dest_picker::HandleScriptEffect, EFFECT_0, SPELL_EFFECT_DUMMY);
     }
 };
 
@@ -896,12 +896,12 @@ void AddSC_boss_ahune()
     RegisterSlavePensGameObjectAI(go_ahune_ice_spear);
     RegisterSlavePensGameObjectAI(go_ahune_ice_stone);
     RegisterSpellScript(spell_ahune_synch_health);
-    RegisterSpellScript(spell_ahune_summoning_rhyme_aura);
-    RegisterSpellScript(spell_ahune_summon_ice_spear_delayer);
-    RegisterSpellScript(spell_ahune_ice_spear_control_aura);
-    RegisterSpellScript(spell_ahune_ice_spear_target_picker);
-    RegisterSpellScript(spell_ahune_slippery_floor_periodic);
+    RegisterSpellScript(spell_summoning_rhyme_aura);
+    RegisterSpellScript(spell_summon_ice_spear_delayer);
+    RegisterSpellScript(spell_ice_spear_control_aura);
+    RegisterSpellScript(spell_ice_spear_target_picker);
+    RegisterSpellScript(spell_slippery_floor_periodic);
     RegisterSpellScript(spell_ahune_spanky_hands);
     RegisterSpellScript(spell_ahune_minion_despawner);
-    RegisterSpellScript(spell_ahune_ice_bombardment_dest_picker);
+    RegisterSpellScript(spell_ice_bombardment_dest_picker);
 }

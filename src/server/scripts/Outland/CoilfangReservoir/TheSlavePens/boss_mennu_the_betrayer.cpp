@@ -15,11 +15,18 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* ScriptData
+SDName: boss_mennu_the_betrayer
+SD%Complete: 95%
+SDComment:
+SDCategory: Coilfang Reservoir, The Slave Pens
+EndScriptData */
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "the_slave_pens.h"
 
-enum Texts
+enum Say
 {
     SAY_AGGRO                       = 0,
     SAY_SLAY                        = 1,
@@ -28,46 +35,51 @@ enum Texts
 
 enum Spells
 {
-    SPELL_TAINTED_STONESKIN_TOTEM   = 31985,
-    SPELL_TAINTED_EARTHGRAB_TOTEM   = 31981,
-    SPELL_CORRUPTED_NOVA_TOTEM      = 31991,
-    SPELL_MENNUS_HEALING_WARD       = 34980,
-    SPELL_LIGHTNING_BOLT            = 35010
+    SPELL_TAINTED_STONESKIN_TOTEM   = 31985, // every 30 sec if health below 100%
+    SPELL_TAINTED_EARTHGRAB_TOTEM   = 31981, // ?
+    SPELL_CORRUPTED_NOVA_TOTEM      = 31991, // ?
+    SPELL_MENNUS_HEALING_WARD       = 34980, // every 14 - 25 sec
+    SPELL_LIGHTNING_BOLT            = 35010  // every 14 - 19 sec
 };
 
 enum Events
 {
     EVENT_TAINTED_STONESKIN_TOTEM   = 1,
-    EVENT_TAINTED_EARTHGRAB_TOTEM,
-    EVENT_CORRUPTED_NOVA_TOTEM,
-    EVENT_MENNUS_HEALING_WARD,
-    EVENT_LIGHTNING_BOLT
+    EVENT_TAINTED_EARTHGRAB_TOTEM   = 2,
+    EVENT_CORRUPTED_NOVA_TOTEM      = 3,
+    EVENT_MENNUS_HEALING_WARD       = 4,
+    EVENT_LIGHTNING_BOLT            = 5
 };
 
 struct boss_mennu_the_betrayer : public BossAI
 {
     boss_mennu_the_betrayer(Creature* creature) : BossAI(creature, DATA_MENNU_THE_BETRAYER) { }
 
-    void JustEngagedWith(Unit* who) override
+    void Reset() override
     {
-        BossAI::JustEngagedWith(who);
-        events.ScheduleEvent(EVENT_TAINTED_STONESKIN_TOTEM, 30s, 40s);
-        events.ScheduleEvent(EVENT_TAINTED_EARTHGRAB_TOTEM, 20s, 30s);
-        events.ScheduleEvent(EVENT_CORRUPTED_NOVA_TOTEM, 20s, 30s);
-        events.ScheduleEvent(EVENT_MENNUS_HEALING_WARD, 15s, 25s);
-        events.ScheduleEvent(EVENT_LIGHTNING_BOLT, 10s, 20s);
-        Talk(SAY_AGGRO);
-    }
-
-    void KilledUnit(Unit* /*victim*/) override
-    {
-        Talk(SAY_SLAY);
+        _Reset();
     }
 
     void JustDied(Unit* /*killer*/) override
     {
         _JustDied();
         Talk(SAY_DEATH);
+    }
+
+    void JustEngagedWith(Unit* who) override
+    {
+        BossAI::JustEngagedWith(who);
+        events.ScheduleEvent(EVENT_TAINTED_STONESKIN_TOTEM, 30s);
+        events.ScheduleEvent(EVENT_TAINTED_EARTHGRAB_TOTEM, 20s);
+        events.ScheduleEvent(EVENT_CORRUPTED_NOVA_TOTEM, 1min);
+        events.ScheduleEvent(EVENT_MENNUS_HEALING_WARD, 14s, 25s);
+        events.ScheduleEvent(EVENT_LIGHTNING_BOLT, 14s, 19s);
+        Talk(SAY_AGGRO);
+    }
+
+    void KilledUnit(Unit* /*victim*/) override
+    {
+        Talk(SAY_SLAY);
     }
 
     void UpdateAI(uint32 diff) override
@@ -85,24 +97,23 @@ struct boss_mennu_the_betrayer : public BossAI
             switch (eventId)
             {
                 case EVENT_TAINTED_STONESKIN_TOTEM:
-                    DoCastSelf(SPELL_TAINTED_STONESKIN_TOTEM);
-                    events.Repeat(35s, 40s);
+                    if (HealthBelowPct(100))
+                        DoCast(me, SPELL_TAINTED_STONESKIN_TOTEM);
+                    events.ScheduleEvent(EVENT_TAINTED_STONESKIN_TOTEM, 30s);
                     break;
                 case EVENT_TAINTED_EARTHGRAB_TOTEM:
-                    DoCastSelf(SPELL_TAINTED_EARTHGRAB_TOTEM);
-                    events.Repeat(35s, 40s);
+                    DoCast(me, SPELL_TAINTED_EARTHGRAB_TOTEM);
                     break;
                 case EVENT_CORRUPTED_NOVA_TOTEM:
-                    DoCastSelf(SPELL_CORRUPTED_NOVA_TOTEM);
-                    events.Repeat(35s, 40s);
+                    DoCast(me, SPELL_CORRUPTED_NOVA_TOTEM);
                     break;
                 case EVENT_MENNUS_HEALING_WARD:
-                    DoCastSelf(SPELL_MENNUS_HEALING_WARD);
-                    events.Repeat(35s, 40s);
+                    DoCast(me, SPELL_MENNUS_HEALING_WARD);
+                    events.ScheduleEvent(EVENT_MENNUS_HEALING_WARD, 14s, 25s);
                     break;
                 case EVENT_LIGHTNING_BOLT:
-                    DoCastVictim(SPELL_LIGHTNING_BOLT);
-                    events.Repeat(15s, 25s);
+                    DoCastVictim(SPELL_LIGHTNING_BOLT, true);
+                    events.ScheduleEvent(EVENT_LIGHTNING_BOLT, 14s, 25s);
                     break;
                 default:
                     break;

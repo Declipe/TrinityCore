@@ -15,34 +15,49 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* ScriptData
+SDName: Boss_Death_knight_darkreaver
+SD%Complete: 100
+SDComment:
+SDCategory: Scholomance
+EndScriptData */
+
 #include "ScriptMgr.h"
 #include "scholomance.h"
 #include "ScriptedCreature.h"
 
-enum Spells
+class boss_death_knight_darkreaver : public CreatureScript
 {
-    SUMMON_FALLEN_CHARGER       = 23261
-};
+public:
+    boss_death_knight_darkreaver() : CreatureScript("boss_death_knight_darkreaver") { }
 
-struct boss_death_knight_darkreaver : public ScriptedAI
-{
-    boss_death_knight_darkreaver(Creature* creature) : ScriptedAI(creature) { }
-
-    void Reset() override
+    CreatureAI* GetAI(Creature* creature) const override
     {
+        return GetScholomanceAI<boss_death_knight_darkreaverAI>(creature);
     }
 
-    void JustDied(Unit* /*killer*/) override
+    struct boss_death_knight_darkreaverAI : public ScriptedAI
     {
-        DoCastSelf(SUMMON_FALLEN_CHARGER, true);
-    }
+        boss_death_knight_darkreaverAI(Creature* creature) : ScriptedAI(creature) { }
 
-    void JustEngagedWith(Unit* /*who*/) override
-    {
-    }
+        void Reset() override
+        {
+        }
+
+        void DamageTaken(Unit* /*done_by*/, uint32& damage, DamageEffectType /*damageType*/, SpellInfo const* /*spellInfo = nullptr*/) override
+        {
+            if (me->GetHealth() <= damage)
+                DoCast(me, 23261, true);   //Summon Darkreaver's Fallen Charger
+        }
+
+        void JustEngagedWith(Unit* /*who*/) override
+        {
+        }
+    };
+
 };
 
 void AddSC_boss_death_knight_darkreaver()
 {
-    RegisterScholomanceCreatureAI(boss_death_knight_darkreaver);
+    new boss_death_knight_darkreaver();
 }

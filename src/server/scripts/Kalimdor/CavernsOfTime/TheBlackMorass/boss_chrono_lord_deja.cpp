@@ -15,24 +15,30 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+Name: Boss_Chrono_Lord_Deja
+%Complete: 65
+Comment: All abilities not implemented
+Category: Caverns of Time, The Black Morass
+*/
+
 #include "ScriptMgr.h"
 #include "InstanceScript.h"
 #include "ScriptedCreature.h"
 #include "the_black_morass.h"
 
-enum Texts
+enum Enums
 {
     SAY_ENTER                   = 0,
     SAY_AGGRO                   = 1,
     SAY_BANISH                  = 2,
     SAY_SLAY                    = 3,
-    SAY_DEATH                   = 4
-};
+    SAY_DEATH                   = 4,
 
-enum Spells
-{
     SPELL_ARCANE_BLAST          = 31457,
+    H_SPELL_ARCANE_BLAST        = 38538,
     SPELL_ARCANE_DISCHARGE      = 31472,
+    H_SPELL_ARCANE_DISCHARGE    = 38539,
     SPELL_TIME_LAPSE            = 31467,
     SPELL_ATTRACTION            = 38540                       //Not Implemented (Heroic mode)
 };
@@ -40,9 +46,9 @@ enum Spells
 enum Events
 {
     EVENT_ARCANE_BLAST          = 1,
-    EVENT_TIME_LAPSE,
-    EVENT_ARCANE_DISCHARGE,
-    EVENT_ATTRACTION
+    EVENT_TIME_LAPSE            = 2,
+    EVENT_ARCANE_DISCHARGE      = 3,
+    EVENT_ATTRACTION            = 4
 };
 
 struct boss_chrono_lord_deja : public BossAI
@@ -63,6 +69,7 @@ struct boss_chrono_lord_deja : public BossAI
     }
 
     void MoveInLineOfSight(Unit* who) override
+
     {
         //Despawn Time Keeper
         if (who->GetTypeId() == TYPEID_UNIT && who->GetEntry() == NPC_TIME_KEEPER)
@@ -105,20 +112,21 @@ struct boss_chrono_lord_deja : public BossAI
             {
                 case EVENT_ARCANE_BLAST:
                     DoCastVictim(SPELL_ARCANE_BLAST);
-                    events.Repeat(15s, 25s);
+                    events.ScheduleEvent(EVENT_ARCANE_BLAST, 15s, 25s);
                     break;
                 case EVENT_TIME_LAPSE:
                     Talk(SAY_BANISH);
-                    DoCastSelf(SPELL_TIME_LAPSE);
-                    events.Repeat(15s, 25s);
+                    DoCast(me, SPELL_TIME_LAPSE);
+                    events.ScheduleEvent(EVENT_TIME_LAPSE, 15s, 25s);
                     break;
                 case EVENT_ARCANE_DISCHARGE:
-                    DoCastSelf(SPELL_ARCANE_DISCHARGE);
-                    events.Repeat(20s, 30s);
+                    if (Unit* target = SelectTarget(SelectTargetMethod::Random, 0))
+                        DoCast(target, SPELL_ARCANE_DISCHARGE);
+                    events.ScheduleEvent(EVENT_ARCANE_DISCHARGE, 20s, 30s);
                     break;
-                case EVENT_ATTRACTION:
-                    DoCastSelf(SPELL_ATTRACTION);
-                    events.Repeat(25s, 35s);
+                case EVENT_ATTRACTION: // Only in Heroic
+                    DoCast(me, SPELL_ATTRACTION);
+                    events.ScheduleEvent(EVENT_ATTRACTION, 25s, 35s);
                     break;
                 default:
                     break;
