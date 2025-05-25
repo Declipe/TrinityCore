@@ -1524,20 +1524,20 @@ enum TrinityStrings
     NOT_USED_42                                   = 40175,
     NOT_USED_43                                   = 40176,
     NOT_USED_44                                   = 40177,
-    NOT_USED_45                                   = 40178,
-    NOT_USED_46                                   = 40179,
-    NOT_USED_47                                   = 40180,
-    NOT_USED_48                                   = 40181,
-    NOT_USED_49                                   = 40182,
-    NOT_USED_50                                   = 40183,
-    LANG_COMMAND_RESET_ITEMS_EQUIPPED             = 40184,//365,
-    LANG_COMMAND_RESET_ITEMS_BAGS                 = 40185,//366,
-    LANG_COMMAND_RESET_ITEMS_BANK                 = 40186,//367,
-    LANG_COMMAND_RESET_ITEMS_KEYRING              = 40187,//368,
-    LANG_COMMAND_RESET_ITEMS_CURRENCY             = 40188,//369,
-    LANG_COMMAND_RESET_ITEMS_BUYBACK              = 40189,//370,
-    LANG_COMMAND_RESET_ITEMS_ALL                  = 40190,//371,
-    LANG_COMMAND_RESET_ITEMS_ALL_BAGS             = 40191,//372,
-    //40184 40187 not used
+    NOT_USED_45                                   = 40178, //not used
+    NOT_USED_46                                   = 40179, //not used
+    NOT_USED_47                                   = 40180, //not used
+    NOT_USED_48                                   = 40181, //not used
+    NOT_USED_49                                   = 40182, //not used
+    NOT_USED_50                                   = 40183, //not used
+    LANG_COMMAND_RESET_ITEMS_EQUIPPED             = 40184,
+    LANG_COMMAND_RESET_ITEMS_BAGS                 = 40185,
+    LANG_COMMAND_RESET_ITEMS_BANK                 = 40186,
+    LANG_COMMAND_RESET_ITEMS_KEYRING              = 40187,
+    LANG_COMMAND_RESET_ITEMS_CURRENCY             = 40188,
+    LANG_COMMAND_RESET_ITEMS_BUYBACK              = 40189,
+    LANG_COMMAND_RESET_ITEMS_ALL                  = 40190,
+    LANG_COMMAND_RESET_ITEMS_ALL_BAGS             = 40191,
+    //40192 40199 not used
 };
 #endif
