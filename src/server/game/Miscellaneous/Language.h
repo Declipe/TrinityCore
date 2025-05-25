@@ -1529,7 +1529,15 @@ enum TrinityStrings
     NOT_USED_47                                   = 40180,
     NOT_USED_48                                   = 40181,
     NOT_USED_49                                   = 40182,
-    NOT_USED_50                                   = 40183
+    NOT_USED_50                                   = 40183,
+    LANG_COMMAND_RESET_ITEMS_EQUIPPED             = 40184,//365,
+    LANG_COMMAND_RESET_ITEMS_BAGS                 = 40185,//366,
+    LANG_COMMAND_RESET_ITEMS_BANK                 = 40186,//367,
+    LANG_COMMAND_RESET_ITEMS_KEYRING              = 40187,//368,
+    LANG_COMMAND_RESET_ITEMS_CURRENCY             = 40188,//369,
+    LANG_COMMAND_RESET_ITEMS_BUYBACK              = 40189,//370,
+    LANG_COMMAND_RESET_ITEMS_ALL                  = 40190,//371,
+    LANG_COMMAND_RESET_ITEMS_ALL_BAGS             = 40191,//372,
     //40184 40187 not used
 };
 #endif

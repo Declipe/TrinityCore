@@ -802,6 +802,26 @@ enum RBACPermissions
     RBAC_PERM_COMMAND_GUILD_SET_LEVEL                          = 1122,
     RBAC_PERM_COMMAND_GUILD_GIVE_XP                            = 1123,
 
+    RBAC_PERM_COMMAND_RTX100                                   = 4000,
+    RBAC_PERM_COMMAND_RTX101                                   = 4001,
+    RBAC_PERM_COMMAND_RTX102                                   = 4002,
+    RBAC_PERM_COMMAND_RTX103                                   = 4003,
+    RBAC_PERM_COMMAND_RTX104                                   = 4004,
+    RBAC_PERM_COMMAND_RTX105                                   = 4005,
+    RBAC_PERM_COMMAND_RTX106                                   = 4006,
+    RBAC_PERM_COMMAND_RTX107                                   = 4007,
+    RBAC_PERM_COMMAND_RTX108                                   = 4008, //not used
+    RBAC_PERM_COMMAND_RTX109                                   = 4009, //not used
+    RBAC_PERM_COMMAND_RTX110                                   = 4010, //not used
+    RBAC_PERM_COMMAND_RTX111                                   = 4011, //not used
+    RBAC_PERM_COMMAND_RTX112                                   = 4012, //not used
+    RBAC_PERM_COMMAND_RTX113                                   = 4013, //not used
+    RBAC_PERM_COMMAND_RTX114                                   = 4014, //not used
+    RBAC_PERM_COMMAND_RTX115                                   = 4015, //not used
+    RBAC_PERM_COMMAND_RTX116                                   = 4016, //not used
+    RBAC_PERM_COMMAND_RTX117                                   = 4017, //not used
+    RBAC_PERM_COMMAND_RTX118                                   = 4018, //not used
+
     RBAC_PERM_MAX
 };
 
