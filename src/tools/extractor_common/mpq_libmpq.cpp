@@ -141,37 +141,22 @@ struct ArchiveData
     bool Required;
 };
 
-constexpr std::array<ArchiveData, 12> Archives =
+constexpr std::array<ArchiveData, 11> Archives =
 {{
-    //{ .NamePattern = "{installDir}/Data/development.MPQ", .Required = false },
-    { .NamePattern = "{installDir}/Data/{locale}/patch-{locale}-?.MPQ", .Required = true },
-    { .NamePattern = "{installDir}/Data/{locale}/patch-{locale}.MPQ", .Required = true },
-    { .NamePattern = "{installDir}/Data/{locale}/lichking-locale-{locale}.MPQ", .Required = true },
-    { .NamePattern = "{installDir}/Data/{locale}/expansion-locale-{locale}.MPQ", .Required = true },
-    { .NamePattern = "{installDir}/Data/{locale}/locale-{locale}.MPQ", .Required = true },
-    //{ .NamePattern = "{installDir}/Data/{locale}/lichking-speech-{locale}.MPQ", .Required = false },
-    //{ .NamePattern = "{installDir}/Data/{locale}/expansion-speech-{locale}.MPQ", .Required = false },
-    //{ .NamePattern = "{installDir}/Data/{locale}/speech-{locale}.MPQ", .Required = false },
     { .NamePattern = "{installDir}/Data/patch-?.MPQ", .Required = true },
+    { .NamePattern = "{installDir}/Data/{locale}/patch-{locale}-?.MPQ", .Required = true },
     { .NamePattern = "{installDir}/Data/patch.MPQ", .Required = true },
-    { .NamePattern = "{installDir}/Data/lichking.MPQ", .Required = true },
+    { .NamePattern = "{installDir}/Data/{locale}/patch-{locale}.MPQ", .Required = true },
     { .NamePattern = "{installDir}/Data/expansion.MPQ", .Required = true },
-    { .NamePattern = "{installDir}/Data/common-2.MPQ", .Required = true },
+    { .NamePattern = "{installDir}/Data/lichking.MPQ", .Required = true },
     { .NamePattern = "{installDir}/Data/common.MPQ", .Required = true },
-    //{ .NamePattern = "{installDir}/Data/interface.MPQ", .Required = false },
-    //{ .NamePattern = "{installDir}/Data/misc.MPQ", .Required = false },
-    //{ .NamePattern = "{installDir}/Data/model.MPQ", .Required = false },
-    //{ .NamePattern = "{installDir}/Data/texture.MPQ", .Required = false },
-    //{ .NamePattern = "{installDir}/Data/terrain.MPQ", .Required = false },
-    //{ .NamePattern = "{installDir}/Data/wmo.MPQ", .Required = false },
-    //{ .NamePattern = "{installDir}/Data/sound.MPQ", .Required = false },
-    //{ .NamePattern = "{installDir}/Data/fonts.MPQ", .Required = false },
-    //{ .NamePattern = "{installDir}/Data/dbc.MPQ", .Required = false },
-    //{ .NamePattern = "{installDir}/Data/lichkingloc.MPQ", .Required = false },
-    //{ .NamePattern = "{installDir}/Data/expansionloc.MPQ", .Required = false },
-    //{ .NamePattern = "{installDir}/Data/lichkingspeech.MPQ", .Required = false },
-    //{ .NamePattern = "{installDir}/Data/expansionspeech.MPQ", .Required = false },
-    //{ .NamePattern = "{installDir}/Data/speech.MPQ", .Required = false },
+    { .NamePattern = "{installDir}/Data/common-2.MPQ", .Required = true },
+    { .NamePattern = "{installDir}/Data/{locale}/locale-{locale}.MPQ", .Required = true },
+    //{ .NamePattern = "{installDir}/Data/{locale}/speech-{locale}.MPQ", .Required = false },
+    { .NamePattern = "{installDir}/Data/{locale}/expansion-locale-{locale}.MPQ", .Required = true },
+    { .NamePattern = "{installDir}/Data/{locale}/lichking-locale-{locale}.MPQ", .Required = true },
+    //{ .NamePattern = "{installDir}/Data/{locale}/expansion-speech-{locale}.MPQ", .Required = false },
+    //{ .NamePattern = "{installDir}/Data/{locale}/lichking-speech-{locale}.MPQ", .Required = false },
 }};
 
 bool FileNameMatchesArchivePattern(std::string_view const& fileName, std::string_view const& pattern)
