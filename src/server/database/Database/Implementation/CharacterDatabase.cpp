@@ -610,7 +610,8 @@ void CharacterDatabaseConnection::DoPrepareStatements()
     // DeserterTracker
     PrepareStatement(CHAR_INS_DESERTER_TRACK, "INSERT INTO battleground_deserters (guid, type, datetime) VALUES (?, ?, NOW())", CONNECTION_ASYNC);
     PrepareStatement(CHAR_GET_CHARACTERS_ONLINE_ON_ACCOUNT, "SELECT guid FROM characters WHERE online > 0 AND account = ?", CONNECTION_SYNCH);
-
+   // PrepareStatement(CHAR_INS_HARDCORE_DEATH, "INSERT INTO hardcore_deaths(char_guid, char_name, level, playtime, killer_name, death_time) VALUES ('%u', '%s', '%u', '%u', '%s', '%u')", CONNECTION_SYNCH);
+    PrepareStatement(CHAR_INS_HARDCORE_DEATH, "INSERT INTO hardcore_deaths(char_guid, char_name, level, playtime, killer_name, death_time) VALUES (?, ?, ?, ?, ?, ?)", CONNECTION_ASYNC);
 }
 
 CharacterDatabaseConnection::CharacterDatabaseConnection(MySQLConnectionInfo& connInfo) : MySQLConnection(connInfo)
