@@ -5,7 +5,6 @@
 #include "WorldSession.h"
 #include "Config.h"
 #include "DatabaseEnv.h"
-
 #include "Channel.h"
 #include "AccountMgr.h"
 #include "ChannelAppenders.h"
@@ -20,6 +19,9 @@
 #include "SocialMgr.h"
 #include "CharacterDatabase.h"
 #include "StringConvert.h"
+#include "Group.h"
+#include "Guild.h"
+
 
 class HardcoreModePlayerScript : public PlayerScript
 {
@@ -35,6 +37,13 @@ public:
             // Добавляем визуальные эффекты
           //  player->CastSpell(player, HARDCORE_AURA_SPELL, true);
         }
+
+       /* if (Group* group = player->GetGroup())
+        {
+            group->RemoveMember(player->GetGUID());
+            ChatHandler(player->GetSession()).SendSysMessage(
+                "|cffff0000[HARDCORE] Вы автоматически покинули группу.|r");
+        }*/
     }
 
     void OnPlayerKilledByCreature(Creature* killer, Player* killed) override
@@ -50,7 +59,7 @@ public:
         }
     }
 
-    void OnCreatureKill(Player* player, Creature* killed) override
+    void OnCreatureKill(Player* player, Creature* /*killed*/) override
     {
         if (IsHardcorePlayer(player))
         {
@@ -154,6 +163,64 @@ private:
     }
 };
 
+// Система достижений для hardcore игроков
+class HardcoreAchievements
+{
+public:
+    enum HardcoreAchievementIds
+    {
+        ACHIEVEMENT_HARDCORE_LEVEL_10 = 90001,
+        ACHIEVEMENT_HARDCORE_LEVEL_20 = 90002,
+        ACHIEVEMENT_HARDCORE_LEVEL_30 = 90003,
+        ACHIEVEMENT_HARDCORE_LEVEL_40 = 90004,
+        ACHIEVEMENT_HARDCORE_LEVEL_50 = 90005,
+        ACHIEVEMENT_HARDCORE_LEVEL_60 = 90006,
+        ACHIEVEMENT_HARDCORE_LEVEL_70 = 90007,
+        ACHIEVEMENT_HARDCORE_LEVEL_80 = 90008,
+        ACHIEVEMENT_HARDCORE_FIRST_DUNGEON = 90009,
+        ACHIEVEMENT_HARDCORE_FIRST_RAID = 90010,
+    };
+
+    static void CheckLevelAchievements(Player* player)
+    {
+        if (!IsHardcorePlayer(player))
+            return;
+
+        uint32 level = player->GetLevel();
+
+        if (level >= 10 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_10))
+            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_10));
+
+        if (level >= 20 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_20))
+            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_20));
+
+        if (level >= 30 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_30))
+            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_30));
+
+        if (level >= 40 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_40))
+            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_40));
+
+        if (level >= 50 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_50))
+            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_50));
+
+        if (level >= 60 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_60))
+            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_60));
+
+        if (level >= 70 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_70))
+            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_70));
+
+        if (level >= 80 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_80))
+            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_80));
+        // ... и так далее для других уровней
+    }
+
+private:
+    static bool IsHardcorePlayer(Player* player)
+    {
+        return player->HasFlag(PLAYER_FLAGS, 0x10000000);
+    }
+};
+
 // Команда для включения hardcore режима
 class HardcoreModeCommand : public CommandScript
 {
@@ -172,7 +239,6 @@ public:
 
         static std::vector<ChatCommand> commandTable =
         {
-            //{ "hardcore", SEC_PLAYER, false, nullptr, "", hardcoreCommandTable },
             { "hardcore", rbac::RBAC_PERM_COMMAND_RTX112, false, nullptr, "", hardcoreCommandTable },
         };
         return commandTable;
@@ -188,7 +254,6 @@ public:
             return true;
         }
 
-        //if (player->GetPlayerFlags() & HARDCORE_FLAG)
         if (player->HasFlag(PLAYER_FLAGS, HARDCORE_FLAG))
         {
             handler->SendSysMessage("Hardcore режим уже включен!");
@@ -196,7 +261,7 @@ public:
         }
 
         player->SetFlag(PLAYER_FLAGS, HARDCORE_FLAG);
-        player->CastSpell(player, 61573, true); // Визуальная аура
+        //player->CastSpell(player, 61573, true); // Визуальная аура
 
         handler->SendSysMessage("|cffff0000Hardcore режим включен! Смерть = удаление персонажа!|r");
 
@@ -227,7 +292,7 @@ public:
         }
 
         target->RemoveFlag(PLAYER_FLAGS, HARDCORE_FLAG);
-        target->RemoveAurasDueToSpell(61573);
+        //target->RemoveAurasDueToSpell(61573);
 
         handler->PSendSysMessage("Hardcore режим отключен для игрока %s", playerName.c_str());
         ChatHandler(target->GetSession()).SendSysMessage("Hardcore режим был отключен администратором.");
@@ -239,8 +304,6 @@ public:
     {
         Player* player = handler->GetSession()->GetPlayer();
 
-       // player->HasFlag(PLAYER_FLAGS, HARDCORE_FLAG);
-        //if (player->GetPlayerFlags() & HARDCORE_FLAG)
         if (player->HasFlag(PLAYER_FLAGS, HARDCORE_FLAG))
         {
             handler->SendSysMessage("|cffff0000Hardcore режим: ВКЛЮЧЕН|r");
@@ -297,10 +360,60 @@ private:
     static const uint32 HARDCORE_FLAG = 0x10000000;
 };
 
+
+class hardcore_trade_restrictions : public PlayerScript
+{
+public:
+    hardcore_trade_restrictions() : PlayerScript("hardcore_trade_restrictions") {}
+
+    // Проверяем при обновлении игрока
+    void OnUpdate(Player* player, uint32 /*diff*/) override
+    {
+        // Проверяем активную торговлю каждые несколько секунд
+        //static uint32 lastCheck = 0;
+        //if (lastCheck++ % 100 != 0) // Проверяем не каждый тик
+        //    return;
+
+        if (IsHardcorePlayer(player) && player->GetTrader())
+        {
+            CancelTrade(player);
+        }
+    }
+
+private:
+    bool IsHardcorePlayer(Player* player)
+    {
+        return player->HasFlag(PLAYER_FLAGS, 0x10000000);
+    }
+
+    void CancelTrade(Player* player)
+    {
+        TradeStatusInfo info;
+
+        if (Player* trader = player->GetTrader())
+        {
+            info.Status = TRADE_STATUS_TRADE_CANCELED;
+            // Отменяем торговлю для обеих сторон
+            player->GetSession()->SendTradeStatus(info);
+            trader->GetSession()->SendTradeStatus(info);
+
+            // Очищаем торговлю
+            player->TradeCancel(false);
+
+            // Уведомляем игроков
+            ChatHandler(player->GetSession()).SendSysMessage(
+                "|cffff0000[HARDCORE] Торговля отменена! Hardcore игроки не могут торговать.|r");
+            ChatHandler(trader->GetSession()).SendSysMessage(
+                "|cffff0000Торговля отменена! Ваш партнер играет в hardcore режиме.|r");
+        }
+    }
+};
+
 void AddSC_hardcore_mode()
 {
     new HardcoreModePlayerScript();
     new HardcoreModeCommand();
+    new hardcore_trade_restrictions();
 }
 /*
 -- Таблица для логирования смертей hardcore игроков
@@ -347,86 +460,3 @@ Hardcore.BonusLootChance = 10
 
 Hardcore.DeathDelay = 10
 */
-
-/*
-// Система достижений для hardcore игроков
-class HardcoreAchievements
-{
-public:
-    enum HardcoreAchievementIds
-    {
-        ACHIEVEMENT_HARDCORE_LEVEL_10 = 90001,
-        ACHIEVEMENT_HARDCORE_LEVEL_20 = 90002,
-        ACHIEVEMENT_HARDCORE_LEVEL_40 = 90003,
-        ACHIEVEMENT_HARDCORE_LEVEL_60 = 90004,
-        ACHIEVEMENT_HARDCORE_LEVEL_80 = 90005,
-        ACHIEVEMENT_HARDCORE_FIRST_DUNGEON = 90006,
-        ACHIEVEMENT_HARDCORE_FIRST_RAID = 90007,
-    };
-
-    static void CheckLevelAchievements(Player* player)
-    {
-        if (!IsHardcorePlayer(player))
-            return;
-
-        uint32 level = player->getLevel();
-
-        if (level >= 10 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_10))
-            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_10));
-
-        if (level >= 20 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_20))
-            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_20));
-
-        // ... и так далее для других уровней
-    }
-
-private:
-    static bool IsHardcorePlayer(Player* player)
-    {
-        return player->GetPlayerFlags() & 0x10000000;
-    }
-};
-
-// Ограничения для hardcore игроков
-class HardcoreRestrictions
-{
-public:
-    static bool CanUseAuctionHouse(Player* player)
-    {
-        if (IsHardcorePlayer(player))
-        {
-            ChatHandler(player->GetSession()).SendSysMessage(
-                "Hardcore игроки не могут использовать аукцион!");
-            return false;
-        }
-        return true;
-    }
-
-    static bool CanTrade(Player* player)
-    {
-        if (IsHardcorePlayer(player))
-        {
-            ChatHandler(player->GetSession()).SendSysMessage(
-                "Hardcore игроки не могут торговать с другими игроками!");
-            return false;
-        }
-        return true;
-    }
-
-    static bool CanJoinGuild(Player* player)
-    {
-        if (IsHardcorePlayer(player))
-        {
-            ChatHandler(player->GetSession()).SendSysMessage(
-                "Hardcore игроки не могут вступать в гильдии!");
-            return false;
-        }
-        return true;
-    }
-
-private:
-    static bool IsHardcorePlayer(Player* player)
-    {
-        return player->GetPlayerFlags() & 0x10000000;
-    }
-};*/
