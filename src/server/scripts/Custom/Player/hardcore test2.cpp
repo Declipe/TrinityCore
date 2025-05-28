@@ -1,26 +1,26 @@
-#include "ScriptMgr.h"
-#include "Player.h"
+#include "AccountMgr.h"
+#include "Channel.h"
+#include "ChannelAppenders.h"
+#include "CharacterDatabase.h"
 #include "Chat.h"
-#include "World.h"
-#include "WorldSession.h"
 #include "Config.h"
 #include "DatabaseEnv.h"
-#include "Channel.h"
-#include "AccountMgr.h"
-#include "ChannelAppenders.h"
 #include "DBCStores.h"
 #include "GameTime.h"
 #include "GridNotifiers.h"
 #include "GridNotifiersImpl.h"
+#include "Group.h"
+#include "Guild.h"
 #include "Language.h"
 #include "Log.h"
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
+#include "Player.h"
+#include "ScriptMgr.h"
 #include "SocialMgr.h"
-#include "CharacterDatabase.h"
 #include "StringConvert.h"
-#include "Group.h"
-#include "Guild.h"
+#include "World.h"
+#include "WorldSession.h"
 
 
 class HardcoreModePlayerScript : public PlayerScript
@@ -38,12 +38,12 @@ public:
           //  player->CastSpell(player, HARDCORE_AURA_SPELL, true);
         }
 
-       /* if (Group* group = player->GetGroup())
-        {
-            group->RemoveMember(player->GetGUID());
-            ChatHandler(player->GetSession()).SendSysMessage(
-                "|cffff0000[HARDCORE] Вы автоматически покинули группу.|r");
-        }*/
+        /* if (Group* group = player->GetGroup())
+         {
+             group->RemoveMember(player->GetGUID());
+             ChatHandler(player->GetSession()).SendSysMessage(
+                 "|cffff0000[HARDCORE] Вы автоматически покинули группу.|r");
+         }*/
     }
 
     void OnPlayerKilledByCreature(Creature* killer, Player* killed) override
@@ -86,7 +86,7 @@ public:
     }
 
 private:
-   // static const uint32 HARDCORE_AURA_SPELL = 61573; // Визуальная аура
+    // static const uint32 HARDCORE_AURA_SPELL = 61573; // Визуальная аура
     static const uint32 HARDCORE_FLAG = 0x10000000;  // Флаг в customFlags
 
     bool IsHardcoreEnabled()
@@ -116,10 +116,10 @@ private:
         // Задержка перед удалением для скриншота/прощания
        // player->GetScheduler().Schedule(Milliseconds(10000), [player](TaskContext /*context*/)
           //  {
-                DeleteHardcoreCharacter(player);
-          //  });
+        DeleteHardcoreCharacter(player);
+        //  });
 
-        // Отключаем возможность воскрешения
+      // Отключаем возможность воскрешения
         player->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_GHOST);
 
         ChatHandler(player->GetSession()).SendSysMessage(
@@ -163,64 +163,6 @@ private:
     }
 };
 
-// Система достижений для hardcore игроков
-class HardcoreAchievements
-{
-public:
-    enum HardcoreAchievementIds
-    {
-        ACHIEVEMENT_HARDCORE_LEVEL_10 = 90001,
-        ACHIEVEMENT_HARDCORE_LEVEL_20 = 90002,
-        ACHIEVEMENT_HARDCORE_LEVEL_30 = 90003,
-        ACHIEVEMENT_HARDCORE_LEVEL_40 = 90004,
-        ACHIEVEMENT_HARDCORE_LEVEL_50 = 90005,
-        ACHIEVEMENT_HARDCORE_LEVEL_60 = 90006,
-        ACHIEVEMENT_HARDCORE_LEVEL_70 = 90007,
-        ACHIEVEMENT_HARDCORE_LEVEL_80 = 90008,
-        ACHIEVEMENT_HARDCORE_FIRST_DUNGEON = 90009,
-        ACHIEVEMENT_HARDCORE_FIRST_RAID = 90010,
-    };
-
-    static void CheckLevelAchievements(Player* player)
-    {
-        if (!IsHardcorePlayer(player))
-            return;
-
-        uint32 level = player->GetLevel();
-
-        if (level >= 10 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_10))
-            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_10));
-
-        if (level >= 20 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_20))
-            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_20));
-
-        if (level >= 30 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_30))
-            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_30));
-
-        if (level >= 40 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_40))
-            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_40));
-
-        if (level >= 50 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_50))
-            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_50));
-
-        if (level >= 60 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_60))
-            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_60));
-
-        if (level >= 70 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_70))
-            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_70));
-
-        if (level >= 80 && !player->HasAchieved(ACHIEVEMENT_HARDCORE_LEVEL_80))
-            player->CompletedAchievement(sAchievementStore.LookupEntry(ACHIEVEMENT_HARDCORE_LEVEL_80));
-        // ... и так далее для других уровней
-    }
-
-private:
-    static bool IsHardcorePlayer(Player* player)
-    {
-        return player->HasFlag(PLAYER_FLAGS, 0x10000000);
-    }
-};
-
 // Команда для включения hardcore режима
 class HardcoreModeCommand : public CommandScript
 {
@@ -231,8 +173,8 @@ public:
     {
         static std::vector<ChatCommand> hardcoreCommandTable =
         {
-            { "enable",        rbac::RBAC_PERM_COMMAND_RTX108, false, &HandleHardcoreEnableCommand,   "" },
-            { "disable",       rbac::RBAC_PERM_COMMAND_RTX109, false, &HandleHardcoreDisableCommand,   "" },
+            { "on",        rbac::RBAC_PERM_COMMAND_RTX108, false, &HandleHardcoreEnableCommand,   "" },
+            { "off",       rbac::RBAC_PERM_COMMAND_RTX109, false, &HandleHardcoreDisableCommand,   "" },
             { "status",        rbac::RBAC_PERM_COMMAND_RTX110, false, &HandleHardcoreStatusCommand,   "" },
             { "leaderboard",   rbac::RBAC_PERM_COMMAND_RTX111, false, &HandleHardcoreLeaderboardCommand,   "" },
         };
