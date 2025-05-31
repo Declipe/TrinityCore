@@ -994,6 +994,7 @@ public:
     uint32 GetCFSTeam() const { return m_team; }
     uint32 GetTeam() const { return m_bgData.bgTeam && GetBattleground() ? m_bgData.bgTeam : m_team; }
     bool SendRealNameQuery();
+    bool HasExtraLife() const;
     FakePlayers m_FakePlayers;
 
     PlayerAI* AI() const { return reinterpret_cast<PlayerAI*>(GetAI()); }

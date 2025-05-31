@@ -34,7 +34,11 @@ public:
         if (IsHardcoreEnabled() && IsHardcorePlayer(player))
         {
             ChatHandler(player->GetSession()).SendSysMessage("Вы играете в HARDCORE режиме! Смерть = удаление персонажа!");
-
+        if (HasExtraLife(player))
+            {
+                ChatHandler(player->GetSession()).SendSysMessage(
+                    "|cff00ff00У вас есть дополнительная жизнь! При смерти вы воскреснете с 50% здоровья, но потеряете этот бонус.|r");
+            }
             // Добавляем визуальные эффекты
           //  player->CastSpell(player, HARDCORE_AURA_SPELL, true);
         }
@@ -101,26 +105,54 @@ private:
         return player->HasFlag(PLAYER_FLAGS, HARDCORE_FLAG);
     }
 
+    bool HasExtraLife(Player* player)
+    {
+        QueryResult result = CharacterDatabase.PQuery(
+            "SELECT has_extra_life FROM hardcore_extra_lives WHERE player_guid = {}",
+            player->GetGUID().GetCounter()
+        );
+
+        return result && (*result)[0].GetBool();
+    }
+
+    void UseExtraLife(Player* player)
+    {
+        CharacterDatabase.PExecute(
+            "UPDATE hardcore_extra_lives SET has_extra_life = 0 WHERE player_guid = {}",
+            player->GetGUID().GetCounter()
+        );
+    }
+	
     void HandleHardcoreDeath(Player* player, Unit* killer)
     {
         if (!IsHardcorePlayer(player))
             return;
 
-        // Логирование смерти
-        LogHardcoreDeath(player, killer);
+        if (HasExtraLife(player))
+        {
+            // Воскрешаем игрока с 50% здоровья
+            player->ResurrectPlayer(0.5f);
+            player->SetHealth(player->GetMaxHealth() * 0.5f);
 
-        // Уведомление всего сервера
+            // Убираем дополнительную жизнь
+            UseExtraLife(player);
+
+            // Уведомляем игрока
+            ChatHandler(player->GetSession()).SendSysMessage(
+                "|cffff0000Вы использовали дополнительную жизнь! Теперь вы воскрешены, но больше не сможете использовать этот шанс.|r");
+
+            // Логируем использование дополнительной жизни
+            LogHardcoreDeath(player, killer);
+            return;
+        }
+		
+        LogHardcoreDeath(player, killer);
         std::string announcement = "Hardcore игрок " + player->GetName() +
             " погиб! Персонаж будет удален.";
         sWorld->SendServerMessage(SERVER_MSG_STRING, announcement.c_str());
 
-        // Задержка перед удалением для скриншота/прощания
-       // player->GetScheduler().Schedule(Milliseconds(10000), [player](TaskContext /*context*/)
-          //  {
         DeleteHardcoreCharacter(player);
-        //  });
 
-      // Отключаем возможность воскрешения
         player->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_GHOST);
 
         ChatHandler(player->GetSession()).SendSysMessage(

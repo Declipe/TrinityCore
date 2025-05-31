@@ -115,24 +115,6 @@
 #endif
 #include "WorldStatePackets.h"
 
-#include "AccountMgr.h"
-#include "CharacterCache.h"
-#include "DatabaseEnv.h"
-#include "DBCStores.h"
-#include "GameTime.h"
-#include "Item.h"
-#include "Language.h"
-#include "Log.h"
-#include "Mail.h"
-#include "MailPackets.h"
-#include "ObjectAccessor.h"
-#include "ObjectMgr.h"
-#include "Opcodes.h"
-#include "Player.h"
-#include "World.h"
-#include "WorldPacket.h"
-
-
 #define ZONE_UPDATE_INTERVAL (1*IN_MILLISECONDS)
 
 #define PLAYER_SKILL_INDEX(x)       (PLAYER_SKILL_INFO_1_1 + ((x)*3))
@@ -4556,10 +4538,10 @@ void Player::BuildPlayerRepop()
 
 void Player::ResurrectPlayer(float restore_percent, bool applySickness)
 {
-    if (HasFlag(PLAYER_FLAGS, 0x10000000))
+    if (HasFlag(PLAYER_FLAGS, 0x10000000) && !HasExtraLife())
     {
-        GetSession()->SendNotification2(NOT_USED_45);
-        return;
+            GetSession()->SendNotification2(NOT_USED_45);
+            return;
     }
 
     WorldPackets::Misc::DeathReleaseLoc packet;
@@ -23816,6 +23798,16 @@ bool Player::InArena() const
         return false;
 
     return true;
+}
+
+bool Player::HasExtraLife() const
+{
+    QueryResult result = CharacterDatabase.PQuery(
+        "SELECT has_extra_life FROM hardcore_extra_lives WHERE player_guid = {}",
+        GetGUID().GetCounter()
+    );
+
+    return result && (*result)[0].GetBool();
 }
 
 bool Player::GetBGAccessByLevel(BattlegroundTypeId bgTypeId) const
