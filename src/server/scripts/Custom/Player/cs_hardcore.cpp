@@ -48,7 +48,7 @@ static bool HandleHardcoreExtraLifeGiveCommand(ChatHandler* handler, const char*
         // Проверяем, есть ли у игрока уже дополнительная жизнь
         QueryResult result = CharacterDatabase.PQuery(
             "SELECT has_extra_life FROM hardcore_extra_lives WHERE player_guid = {}",
-            target->GetGUID()
+            target->GetGUID().GetCounter()
         );
 
         if (result && (*result)[0].GetBool())
@@ -62,14 +62,14 @@ static bool HandleHardcoreExtraLifeGiveCommand(ChatHandler* handler, const char*
         {
             CharacterDatabase.PExecute(
                 "INSERT INTO hardcore_extra_lives (player_guid, has_extra_life) VALUES ({}, 1)",
-                target->GetGUID()
+                target->GetGUID().GetCounter()
             );
         }
         else
         {
             CharacterDatabase.PExecute(
                 "UPDATE hardcore_extra_lives SET has_extra_life = 1 WHERE player_guid = {}",
-                target->GetGUID()
+                target->GetGUID().GetCounter()
             );
         }
 
@@ -98,7 +98,7 @@ static bool HandleHardcoreExtraLifeGiveCommand(ChatHandler* handler, const char*
         // Проверяем, есть ли у игрока дополнительная жизнь
         QueryResult result = CharacterDatabase.PQuery(
             "SELECT has_extra_life FROM hardcore_extra_lives WHERE player_guid = {}",
-            target->GetGUID()
+            target->GetGUID().GetCounter()
         );
 
         if (result && (*result)[0].GetBool())
