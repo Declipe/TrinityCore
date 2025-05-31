@@ -1538,6 +1538,16 @@ enum TrinityStrings
     LANG_COMMAND_RESET_ITEMS_BUYBACK              = 40189,
     LANG_COMMAND_RESET_ITEMS_ALL                  = 40190,
     LANG_COMMAND_RESET_ITEMS_ALL_BAGS             = 40191,
+    NOT_USED_51                                   = 40192,
+    NOT_USED_52                                   = 40193,
+    NOT_USED_53                                   = 40194,
+    NOT_USED_54                                   = 40195,
+    NOT_USED_55                                   = 40196,
+    NOT_USED_56                                   = 40197,
+    NOT_USED_57                                   = 40198,
+    NOT_USED_58                                   = 40199,
+    NOT_USED_59                                   = 40200,
+    NOT_USED_60                                   = 40201,
     //40192 40199 not used
 };
 #endif

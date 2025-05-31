@@ -17,6 +17,8 @@ public:
             { "off",       rbac::RBAC_PERM_COMMAND_RTX109, false, &HandleHardcoreDisableCommand,   "" },
             { "status",        rbac::RBAC_PERM_COMMAND_RTX110, false, &HandleHardcoreStatusCommand,   "" },
             { "leaderboard",   rbac::RBAC_PERM_COMMAND_RTX111, false, &HandleHardcoreLeaderboardCommand,   "" },
+			{ "addlife",   rbac::RBAC_PERM_COMMAND_RTX113, false, &HandleHardcoreExtraLifeGiveCommand,   "" },
+			{ "checklife",   rbac::RBAC_PERM_COMMAND_RTX114, false, &HandleHardcoreExtraLifeCheckCommand,   "" },
         };
 
         static std::vector<ChatCommand> commandTable =
@@ -26,6 +28,91 @@ public:
         return commandTable;
     }
 
+static bool HandleHardcoreExtraLifeGiveCommand(ChatHandler* handler, const char* args)
+    {
+        if (!*args)
+            return false;
+
+        Player* target = nullptr;
+        std::string name = args;
+        if (!normalizePlayerName(name))
+            return false;
+
+        target = ObjectAccessor::FindPlayerByName(name.c_str());
+        if (!target)
+        {
+            handler->SendSysMessage("Игрок не найден.");
+            return false;
+        }
+
+        // Проверяем, есть ли у игрока уже дополнительная жизнь
+        QueryResult result = CharacterDatabase.PQuery(
+            "SELECT has_extra_life FROM hardcore_extra_lives WHERE player_guid = {}",
+            target->GetGUID()
+        );
+
+        if (result && (*result)[0].GetBool())
+        {
+            handler->PSendSysMessage("У игрока %s уже есть дополнительная жизнь.", target->GetName().c_str());
+            return true;
+        }
+
+        // Выдаем дополнительную жизнь
+        if (!result)
+        {
+            CharacterDatabase.PExecute(
+                "INSERT INTO hardcore_extra_lives (player_guid, has_extra_life) VALUES ({}, 1)",
+                target->GetGUID()
+            );
+        }
+        else
+        {
+            CharacterDatabase.PExecute(
+                "UPDATE hardcore_extra_lives SET has_extra_life = 1 WHERE player_guid = {}",
+                target->GetGUID()
+            );
+        }
+
+        handler->PSendSysMessage("Вы выдали дополнительную жизнь игроку %s.", target->GetName().c_str());
+        target->GetSession()->SendNotification("|cff00ff00Вам выдана дополнительная жизнь! Теперь у вас есть один шанс на воскрешение после смерти.|r");
+        return true;
+    }
+
+    static bool HandleHardcoreExtraLifeCheckCommand(ChatHandler* handler, const char* args)
+    {
+        if (!*args)
+            return false;
+
+        Player* target = nullptr;
+        std::string name = args;
+        if (!normalizePlayerName(name))
+            return false;
+
+        target = ObjectAccessor::FindPlayerByName(name.c_str());
+        if (!target)
+        {
+            handler->SendSysMessage("Игрок не найден.");
+            return false;
+        }
+
+        // Проверяем, есть ли у игрока дополнительная жизнь
+        QueryResult result = CharacterDatabase.PQuery(
+            "SELECT has_extra_life FROM hardcore_extra_lives WHERE player_guid = {}",
+            target->GetGUID()
+        );
+
+        if (result && (*result)[0].GetBool())
+        {
+            handler->PSendSysMessage("У игрока %s есть дополнительная жизнь.", target->GetName().c_str());
+        }
+        else
+        {
+            handler->PSendSysMessage("У игрока %s нет дополнительной жизни.", target->GetName().c_str());
+        }
+
+        return true;
+    }
+	
     static bool HandleHardcoreEnableCommand(ChatHandler* handler, const char* /*args*/)
     {
         Player* player = handler->GetSession()->GetPlayer();
