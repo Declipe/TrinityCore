@@ -22,6 +22,7 @@
 #include "AccountMgr.h"
 #include "Bag.h"
 #include "Common.h"
+#include "Chat.h"
 #include "CharacterCache.h"
 #include "DatabaseEnv.h"
 #include "DBCStores.h"
@@ -203,6 +204,20 @@ void AuctionHouseMgr::SendAuctionSalePendingMail(AuctionEntry* auction, Characte
 //call this method to send mail to auction owner, when auction is successful, it does not clear ram
 void AuctionHouseMgr::SendAuctionSuccessfulMail(AuctionEntry* auction, CharacterDatabaseTransaction trans)
 {
+    uint32 bidderGuid = auction->bidder;
+
+    if (bidderGuid)
+    {
+        CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_HARDCORE_FLAG);
+        stmt->setUInt32(0, bidderGuid);
+        PreparedQueryResult result = CharacterDatabase.Query(stmt);
+
+        if (result && (*result)[0].GetUInt32() & 0x10000000)
+        {
+            return;
+        }
+    }
+
     Item* pItem = GetAItem(auction->itemGUIDLow);
     if (!pItem)
         return;

@@ -64,6 +64,14 @@ bool WorldSession::CanOpenMailBox(ObjectGuid guid)
 
 void WorldSession::HandleSendMail(WorldPackets::Mail::SendMail& sendMail)
 {
+    Player* player2 = GetPlayer();
+
+    if (!player2 || player2->HasFlag(PLAYER_FLAGS, 0x10000000))
+    {
+        SendNotification2(NOT_USED_48);
+        return;
+    }
+
     if (!CanOpenMailBox(sendMail.Info.Mailbox))
         return;
 
@@ -423,6 +431,14 @@ void WorldSession::HandleMailReturnToSender(WorldPackets::Mail::MailReturnToSend
 //called when player takes item attached in mail
 void WorldSession::HandleMailTakeItem(WorldPackets::Mail::MailTakeItem& takeItem)
 {
+    Player* player2 = GetPlayer();
+
+    if (!player2 || player2->HasFlag(PLAYER_FLAGS, 0x10000000))
+    {
+        SendNotification2(NOT_USED_47);
+        return;
+    }
+
     if (!CanOpenMailBox(takeItem.Mailbox))
         return;
 
@@ -519,6 +535,14 @@ void WorldSession::HandleMailTakeItem(WorldPackets::Mail::MailTakeItem& takeItem
 
 void WorldSession::HandleMailTakeMoney(WorldPackets::Mail::MailTakeMoney& takeMoney)
 {
+    Player* player2 = GetPlayer();
+
+    if (!player2 || player2->HasFlag(PLAYER_FLAGS, 0x10000000))
+    {
+        SendNotification2(NOT_USED_47);
+        return;
+    }
+
     if (!CanOpenMailBox(takeMoney.Mailbox))
         return;
 

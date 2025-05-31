@@ -39,6 +39,13 @@
 //void called when player click on auctioneer npc
 void WorldSession::HandleAuctionHelloOpcode(WorldPacket& recvData)
 {
+    Player* player = GetPlayer();
+    if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+    {
+        SendNotification2(NOT_USED_47);
+        return;
+    }
+
     ObjectGuid guid;                                            //NPC guid
     recvData >> guid;
 
@@ -59,6 +66,13 @@ void WorldSession::HandleAuctionHelloOpcode(WorldPacket& recvData)
 //this void causes that auction window is opened
 void WorldSession::SendAuctionHello(ObjectGuid guid, Unit const* unit)
 {
+    Player* player = GetPlayer();
+    if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+    {
+        SendNotification2(NOT_USED_47);
+        return;
+    }
+
     if (GetPlayer()->GetLevel() < sWorld->getIntConfig(CONFIG_AUCTION_LEVEL_REQ))
     {
         SendNotification(GetTrinityString(LANG_AUCTION_REQ), sWorld->getIntConfig(CONFIG_AUCTION_LEVEL_REQ));
@@ -119,6 +133,13 @@ void WorldSession::SendAuctionOwnerNotification(AuctionEntry* auction)
 //this void creates new auction and adds auction to some auctionhouse
 void WorldSession::HandleAuctionSellItem(WorldPacket& recvData)
 {
+    Player* player = GetPlayer();
+    if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+    {
+        SendNotification2(NOT_USED_47);
+        return;
+    }
+
     ObjectGuid auctioneer;
     uint32 itemsCount, etime, bid, buyout;
     recvData >> auctioneer;
@@ -427,6 +448,14 @@ void WorldSession::HandleAuctionSellItem(WorldPacket& recvData)
 //this function is called when client bids or buys out auction
 void WorldSession::HandleAuctionPlaceBid(WorldPacket& recvData)
 {
+    Player* player2 = GetPlayer();
+
+    if (!player2 || player2->HasFlag(PLAYER_FLAGS, 0x10000000))
+    {
+        SendNotification2(NOT_USED_47);
+        return;
+    }
+
     TC_LOG_DEBUG("network", "WORLD: Received CMSG_AUCTION_PLACE_BID");
 
     ObjectGuid auctioneer;
@@ -741,6 +770,13 @@ void WorldSession::HandleAuctionListOwnerItems(WorldPacket& recvData)
 //this void is called when player clicks on search button
 void WorldSession::HandleAuctionListItems(WorldPacket& recvData)
 {
+    Player* player = GetPlayer();
+    if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+    {
+        SendNotification2(NOT_USED_47);
+        return;
+    }
+
     TC_LOG_DEBUG("network", "WORLD: Received CMSG_AUCTION_LIST_ITEMS");
 
     std::string searchedname;
@@ -850,6 +886,13 @@ void WorldSession::HandleAuctionListItems(WorldPacket& recvData)
 
 void WorldSession::HandleAuctionListPendingSales(WorldPacket& recvData)
 {
+    Player* player = GetPlayer();
+    if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+    {
+        SendNotification2(NOT_USED_47);
+        return;
+    }
+
     TC_LOG_DEBUG("network", "WORLD: Received CMSG_AUCTION_LIST_PENDING_SALES");
 
     recvData.read_skip<uint64>();

@@ -4538,6 +4538,12 @@ void Player::BuildPlayerRepop()
 
 void Player::ResurrectPlayer(float restore_percent, bool applySickness)
 {
+    if (HasFlag(PLAYER_FLAGS, 0x10000000))
+    {
+        GetSession()->SendNotification2(NOT_USED_45);
+        return;
+    }
+
     WorldPackets::Misc::DeathReleaseLoc packet;
     packet.MapID = -1;
     GetSession()->SendPacket(packet.Write());

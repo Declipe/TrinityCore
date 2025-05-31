@@ -3,6 +3,7 @@
 #include "ChannelAppenders.h"
 #include "CharacterDatabase.h"
 #include "Chat.h"
+#include "CustomConfig.h"
 #include "Config.h"
 #include "DatabaseEnv.h"
 #include "DBCStores.h"
@@ -151,8 +152,10 @@ private:
             uint32 guid = player->GetGUID().GetCounter();
 
             // Сразу удаляем
+			if (sGameConfig->GetBoolConfig("config.hardcore.delcharacters"))
+{
             Player::DeleteFromDB(ObjectGuid::Create<HighGuid::Player>(guid), 0, true, true);
-
+}
             // Планируем удаление персонажа после отключения
            // uint32 guid = player->GetGUID().GetCounter();
            // sWorld->GetScheduler().Schedule(Milliseconds(5000), [guid](TaskContext /*context*/)
