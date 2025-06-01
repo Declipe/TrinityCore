@@ -22,7 +22,9 @@
 #include "StringConvert.h"
 #include "World.h"
 #include "WorldSession.h"
-
+#include "Item.h"
+#include "ScriptedCreature.h"
+#include "ScriptedGossip.h"
 
 class HardcoreModePlayerScript : public PlayerScript
 {
@@ -246,27 +248,86 @@ private:
     }
 };
 
+class hardcore_activator_ai : public CreatureScript
+{
+public:
+    hardcore_activator_ai() : CreatureScript("hardcore_activator_ai") {}
+
+    struct hardcore_activator_aiAI : public ScriptedAI
+    {
+        hardcore_activator_aiAI(Creature* me) : ScriptedAI(me) {}
+
+
+        bool OnGossipHello(Player* player) override
+        {
+            if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+            {
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Disable Hardcore Mode", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+            }
+            else
+            {
+            if (player->GetLevel() <= 1)
+            {
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Enable Hardcore Mode", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+                SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+                return true;
+            }
+        }
+            return true;
+        }
+
+        bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+        {
+            uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+            uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+            return GossipSelect(player, sender, action);
+        }
+
+        bool GossipSelect(Player* player, uint32 /*sender*/, uint32 action)
+        {
+            player->PlayerTalkClass->ClearMenus();
+
+            switch (action)
+            {
+            case GOSSIP_ACTION_INFO_DEF + 1: // off Hardcore
+                player->RemoveFlag(PLAYER_FLAGS, 0x10000000);
+                player->SaveToDB();
+                SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+                me->Whisper("Hardcore Mode has been disabled.", LANG_UNIVERSAL, player);
+                CloseGossipMenuFor(player);
+                break;
+
+            case GOSSIP_ACTION_INFO_DEF + 2: // on Hardcore
+                player->SetFlag(PLAYER_FLAGS, 0x10000000);
+                std::ostringstream ss;
+                ss << "UPDATE characters SET extra_flags = extra_flags | 1 WHERE guid = " << player->GetGUID();
+                CharacterDatabase.Execute(ss.str().c_str());
+                player->SaveToDB();
+                SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+                me->Whisper("Hardcore Mode has been enabled. Be careful!", LANG_UNIVERSAL, player);
+                CloseGossipMenuFor(player);
+                break;
+            }
+            return true;
+        }
+
+    };
+
+    CreatureAI* GetAI(Creature* me) const override
+    {
+        return new hardcore_activator_aiAI(me);
+    }
+};
+
 void AddSC_hardcore_mode()
 {
     new HardcoreModePlayerScript();
     new hardcore_trade_restrictions();
+	new hardcore_activator_ai();
 }
-/*
--- Таблица для логирования смертей hardcore игроков
-CREATE TABLE IF NOT EXISTS `hardcore_deaths` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
-    `char_guid` int(11) NOT NULL,
-    `char_name` varchar(12) NOT NULL,
-    `level` tinyint(3) unsigned NOT NULL,
-    `playtime` int(11) unsigned NOT NULL,
-    `killer_name` varchar(50) NOT NULL,
-    `death_time` bigint(20) unsigned NOT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-*/
 
 /*
-
 #
 #    Hardcore.Enable
 #        Description: Enable hardcore mode functionality
@@ -274,25 +335,4 @@ CREATE TABLE IF NOT EXISTS `hardcore_deaths` (
 #                     1 (enabled)
 
 Hardcore.Enable = 1
-
-#
-#    Hardcore.BonusXP
-#        Description: Bonus XP multiplier for hardcore players
-#        Default:     1.5 (50% bonus)
-
-Hardcore.BonusXP = 1.5
-
-#
-#    Hardcore.BonusLootChance
-#        Description: Chance for bonus loot (percentage)
-#        Default:     10
-
-Hardcore.BonusLootChance = 10
-
-#
-#    Hardcore.DeathDelay
-#        Description: Delay before character deletion (seconds)
-#        Default:     10
-
-Hardcore.DeathDelay = 10
 */
