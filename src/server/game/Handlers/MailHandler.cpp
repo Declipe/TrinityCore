@@ -18,6 +18,7 @@
 #include "WorldSession.h"
 #include "AccountMgr.h"
 #include "CharacterCache.h"
+#include "CustomConfig.h"
 #include "DatabaseEnv.h"
 #include "DBCStores.h"
 #include "GameTime.h"
