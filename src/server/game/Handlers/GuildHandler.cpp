@@ -17,6 +17,7 @@
 
 #include "WorldSession.h"
 #include "Common.h"
+#include "CustomConfig.h"
 #include "Guild.h"
 #include "Chat.h"
 #include "GuildMgr.h"
@@ -252,11 +253,14 @@ void WorldSession::HandleGuildPermissionsQuery(WorldPackets::Guild::GuildPermiss
 // Called when clicking on Guild bank gameobject
 void WorldSession::HandleGuildBankActivate(WorldPackets::Guild::GuildBankActivate& packet)
 {
-    Player* player = GetPlayer();
-    if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+    if (sGameConfig->GetBoolConfig("config.hardcore.bank"))
     {
-        SendNotification2(NOT_USED_46);
-        return;
+        Player* player = GetPlayer();
+        if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+        {
+            SendNotification2(NOT_USED_46);
+            return;
+        }
     }
 
     TC_LOG_DEBUG("guild", "CMSG_GUILD_BANKER_ACTIVATE [{}]: [{}] AllSlots: {}"
@@ -279,11 +283,14 @@ void WorldSession::HandleGuildBankActivate(WorldPackets::Guild::GuildBankActivat
 // Called when opening guild bank tab only (first one)
 void WorldSession::HandleGuildBankQueryTab(WorldPackets::Guild::GuildBankQueryTab& packet)
 {
-    Player* player = GetPlayer();
-    if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+    if (sGameConfig->GetBoolConfig("config.hardcore.bank"))
     {
-        SendNotification2(NOT_USED_46);
-        return;
+        Player* player = GetPlayer();
+        if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+        {
+            SendNotification2(NOT_USED_46);
+            return;
+        }
     }
 
     TC_LOG_DEBUG("guild", "CMSG_GUILD_BANK_QUERY_TAB [{}]: {}, TabId: {}, ShowTabs: {}"

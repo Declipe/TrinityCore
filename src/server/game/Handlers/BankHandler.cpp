@@ -16,6 +16,7 @@
  */
 
 #include "BankPackets.h"
+#include "CustomConfig.h"
 #include "Item.h"
 #include "DBCStores.h"
 #include "Log.h"
@@ -46,11 +47,14 @@ bool WorldSession::CanUseBank(ObjectGuid bankerGUID) const
 
 void WorldSession::HandleBankerActivateOpcode(WorldPackets::NPC::Hello& packet)
 {
-    Player* player = GetPlayer();
-    if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+    if (sGameConfig->GetBoolConfig("config.hardcore.bank"))
     {
-        SendNotification2(NOT_USED_46);
-        return;
+        Player* player = GetPlayer();
+        if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+        {
+            SendNotification2(NOT_USED_46);
+            return;
+        }
     }
 
     Creature* unit = GetPlayer()->GetNPCIfCanInteractWith(packet.Unit, UNIT_NPC_FLAG_BANKER);
@@ -69,11 +73,14 @@ void WorldSession::HandleBankerActivateOpcode(WorldPackets::NPC::Hello& packet)
 
 void WorldSession::HandleAutoBankItemOpcode(WorldPackets::Bank::AutoBankItem& packet)
 {
-    Player* player = GetPlayer();
-    if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+    if (sGameConfig->GetBoolConfig("config.hardcore.bank"))
     {
-        SendNotification2(NOT_USED_46);
-        return;
+        Player* player = GetPlayer();
+        if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+        {
+            SendNotification2(NOT_USED_46);
+            return;
+        }
     }
 
     TC_LOG_DEBUG("network", "STORAGE: receive bag = {}, slot = {}", packet.Bag, packet.Slot);
@@ -109,11 +116,14 @@ void WorldSession::HandleAutoBankItemOpcode(WorldPackets::Bank::AutoBankItem& pa
 
 void WorldSession::HandleAutoStoreBankItemOpcode(WorldPackets::Bank::AutoStoreBankItem& packet)
 {
-    Player* player = GetPlayer();
-    if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+    if (sGameConfig->GetBoolConfig("config.hardcore.bank"))
     {
-        SendNotification2(NOT_USED_46);
-        return;
+        Player* player = GetPlayer();
+        if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+        {
+            SendNotification2(NOT_USED_46);
+            return;
+        }
     }
 
     TC_LOG_DEBUG("network", "STORAGE: receive bag = {}, slot = {}", packet.Bag, packet.Slot);
@@ -159,11 +169,14 @@ void WorldSession::HandleAutoStoreBankItemOpcode(WorldPackets::Bank::AutoStoreBa
 
 void WorldSession::HandleBuyBankSlotOpcode(WorldPackets::Bank::BuyBankSlot& buyBankSlot)
 {
-    Player* player = GetPlayer();
-    if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+    if (sGameConfig->GetBoolConfig("config.hardcore.bank"))
     {
-        SendNotification2(NOT_USED_46);
-        return;
+        Player* player = GetPlayer();
+        if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+        {
+            SendNotification2(NOT_USED_46);
+            return;
+        }
     }
 
     WorldPackets::Bank::BuyBankSlotResult packet;
@@ -211,11 +224,14 @@ void WorldSession::HandleBuyBankSlotOpcode(WorldPackets::Bank::BuyBankSlot& buyB
 
 void WorldSession::SendShowBank(ObjectGuid guid)
 {
-    Player* player = GetPlayer();
-    if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+    if (sGameConfig->GetBoolConfig("config.hardcore.bank"))
     {
-        SendNotification2(NOT_USED_46);
-        return;
+        Player* player = GetPlayer();
+        if (!player || player->HasFlag(PLAYER_FLAGS, 0x10000000))
+        {
+            SendNotification2(NOT_USED_46);
+            return;
+        }
     }
 
     m_currentBankerGUID = guid;
