@@ -17,12 +17,16 @@
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
 #include "Player.h"
+#include "Mail.h"
 #include "ScriptMgr.h"
 #include "SocialMgr.h"
 #include "StringConvert.h"
+#include "AchievementMgr.h"
+#include "Item.h"
+#include "SpellMgr.h"
+#include "SpellInfo.h"
 #include "World.h"
 #include "WorldSession.h"
-#include "Item.h"
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
 
@@ -41,6 +45,7 @@ public:
                 ChatHandler(player->GetSession()).SendSysMessage(
                     "|cff00ff00У вас есть дополнительная жизнь! При смерти вы воскреснете с 50% здоровья, но потеряете этот бонус.|r");
             }
+			CheckMissingLevelRewards(player);
             // Добавляем визуальные эффекты
           //  player->CastSpell(player, HARDCORE_AURA_SPELL, true);
         }
@@ -52,6 +57,204 @@ public:
                  "|cffff0000[HARDCORE] Вы автоматически покинули группу.|r");
          }*/
     }
+
+void CheckMissingLevelRewards(Player* player)
+{
+    uint8 currentLevel = player->GetLevel();
+
+    // Получаем список всех доступных наград
+    QueryResult rewards = CharacterDatabase.PQuery(
+        "SELECT level FROM hardcore_level_rewards WHERE level <= {} ORDER BY level", currentLevel);
+
+    if (!rewards)
+        return;
+
+    do
+    {
+        Field* fields = rewards->Fetch();
+        uint8 rewardLevel = fields[0].GetUInt8();
+
+        // Проверяем, получил ли игрок эту награду
+        if (!HasReceivedLevelReward(player, rewardLevel))
+        {
+            // Выдаем пропущенную награду
+            GiveHardcoreLevelReward(player, rewardLevel);
+        }
+    }
+    while (rewards->NextRow());
+}
+
+void OnLevelChanged(Player* player, uint8 oldLevel) override
+{
+    if (!IsHardcorePlayer(player))
+        return;
+
+    uint8 newLevel = player->GetLevel();
+
+    // Проверяем, достиг ли игрок нового уровня (не при понижении уровня)
+    if (newLevel > oldLevel)
+    {
+        // Выдаем награду за достижение уровня
+        GiveHardcoreLevelReward(player, newLevel);
+
+        // Дополнительное уведомление
+        ChatHandler(player->GetSession()).PSendSysMessage(
+            "|cff00ff00[HARDCORE] Поздравляем с достижением уровня %u! Вы получили специальную награду.|r",
+            newLevel);
+    }
+}
+
+void GiveHardcoreLevelReward(Player* player, uint8 level)
+{
+    // Проверяем, не получил ли игрок уже эту награду
+    if (HasReceivedLevelReward(player, level))
+        return;
+
+    // Получаем информацию о награде из БД
+    QueryResult result = CharacterDatabase.PQuery(
+        "SELECT item_id, item_count, money, title_id, achievement_id, spell_id "
+        "FROM hardcore_level_rewards WHERE level = {}", level);
+
+    if (!result)
+        return;
+
+    Field* fields = result->Fetch();
+    uint32 itemId = fields[0].GetUInt32();
+    uint32 itemCount = fields[1].GetUInt32();
+    uint32 money = fields[2].GetUInt32();
+    uint32 titleId = fields[3].GetUInt32();
+    uint32 achievementId = fields[4].GetUInt32();
+    uint32 spellId = fields[5].GetUInt32();
+
+    // Выдаем предмет, если указан
+    if (itemId)
+    {
+        // Проверяем шаблон предмета
+        ItemTemplate const* itemTemplate = sObjectMgr->GetItemTemplate(itemId);
+        if (!itemTemplate)
+        {
+            TC_LOG_ERROR("sql.sql","Hardcore reward: Item template %u not found!", itemId);
+            return;
+        }
+
+        // Проверяем место в инвентаре
+        ItemPosCountVec dest;
+        InventoryResult msg = player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, itemId, itemCount);
+        if (msg != EQUIP_ERR_OK)
+        {
+            // Создаем предмет
+            Item* item = player->StoreNewItem(dest, itemId, true, GenerateItemRandomPropertyId(itemId));
+            if (item)
+            {
+                player->SendNewItem(item, itemCount, true, false);
+
+                // Пытаемся экипировать предмет, если это возможно
+                if (itemTemplate->InventoryType != INVTYPE_NON_EQUIP)
+                {
+                    uint16 dest;
+                    InventoryResult msg = player->CanEquipItem(item->GetSlot(), dest, item, false);
+                    if (msg == EQUIP_ERR_OK)
+                    {
+                        player->EquipItem(dest, item, true);
+                    }
+                }
+            }
+        }
+        else
+        {
+            // Если инвентарь заполнен, создаем предмет и отправляем по почте
+            uint32 guid = player->GetGUID();
+            CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
+            Item* mailItem = Item::CreateItem(itemId, itemCount, player);
+            if (mailItem)
+            {
+                mailItem->SaveToDB(trans); // Сохраняем предмет в БД перед отправкой
+
+                MailSender sender(MAIL_NORMAL, player->GetGUID().GetCounter());
+                MailDraft draft("Hardcore Level Reward", "Congratulations on reaching level " + std::to_string(level) + "!");
+                draft.AddItem(mailItem); // Теперь передаем указатель на созданный предмет
+                draft.SendMailTo(trans, MailReceiver(player, guid), MailSender(MAIL_NORMAL, 0, MAIL_STATIONERY_GM));
+
+                ChatHandler(player->GetSession()).PSendSysMessage(
+                    "|cff00ff00[HARDCORE] Ваш инвентарь заполнен. Предмет награды отправлен вам по почте.|r");
+            }
+
+            //// Создаем предмет
+            //Item* item = player->StoreNewItem(dest, itemId, true, GenerateItemRandomPropertyId(itemId));
+            //if (item)
+            //{
+            //    player->SendNewItem(item, itemCount, true, false);
+
+            //    // Пытаемся экипировать предмет, если это возможно
+            //    if (itemTemplate->InventoryType != INVTYPE_NON_EQUIP)
+            //    {
+            //        uint16 dest;
+            //        InventoryResult msg = player->CanEquipItem(item->GetSlot(), dest, item, false);
+            //        if (msg == EQUIP_ERR_OK)
+            //        {
+            //            player->EquipItem(dest, item, true);
+            //        }
+            //    }
+            //}
+        }
+    }
+
+    // Выдаем деньги
+    if (money)
+    {
+        player->ModifyMoney(money);
+    }
+
+    // Выдаем титул
+    if (titleId)
+    {
+        CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(titleId);
+        if (titleInfo)
+        {
+            player->SetTitle(titleInfo);
+        }
+    }
+
+    // Выдаем достижение
+    if (achievementId)
+    {
+        AchievementEntry const* achievement = sAchievementStore.LookupEntry(achievementId);
+        if (achievement)
+        {
+            player->CompletedAchievement(achievement);
+        }
+    }
+
+    // Применяем заклинание (например, телепорт)
+    if (spellId)
+    {
+        SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellId);
+        if (spellInfo)
+        {
+            player->CastSpell(player, spellId, true);
+        }
+    }
+
+    // Сохраняем информацию о полученной награде
+    SaveReceivedLevelReward(player, level);
+}
+
+bool HasReceivedLevelReward(Player* player, uint8 level)
+{
+    QueryResult result = CharacterDatabase.PQuery(
+        "SELECT 1 FROM hardcore_rewards_received WHERE player_guid = {} AND level = {}",
+        player->GetGUID().GetCounter(), level);
+
+    return result != nullptr;
+}
+
+void SaveReceivedLevelReward(Player* player, uint8 level)
+{
+    CharacterDatabase.PExecute(
+        "INSERT INTO hardcore_rewards_received (player_guid, level, received_at) "
+        "VALUES ({}, {}, UNIX_TIMESTAMP())",
+        player->GetGUID().GetCounter(), level);
+}
 
     void OnPlayerKilledByCreature(Creature* killer, Player* killed) override
     {
