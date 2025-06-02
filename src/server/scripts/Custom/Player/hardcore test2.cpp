@@ -8,6 +8,8 @@
 #include "DatabaseEnv.h"
 #include "DBCStores.h"
 #include "GameTime.h"
+#include "GameObject.h"
+#include "GameObjectAI.h"
 #include "GridNotifiers.h"
 #include "GridNotifiersImpl.h"
 #include "Group.h"
@@ -451,14 +453,14 @@ private:
     }
 };
 
-class hardcore_activator_ai : public CreatureScript
+class hardcore_activator_ai : public GameObjectScript
 {
 public:
-    hardcore_activator_ai() : CreatureScript("hardcore_activator_ai") {}
+    hardcore_activator_ai() : GameObjectScript("hardcore_activator_ai") {}
 
-    struct hardcore_activator_aiAI : public ScriptedAI
+    struct hardcore_activator_aiAI : public GameObjectAI
     {
-        hardcore_activator_aiAI(Creature* me) : ScriptedAI(me) {}
+        hardcore_activator_aiAI(GameObject* go) : GameObjectAI(go) {}
 
 
         bool OnGossipHello(Player* player) override
@@ -497,7 +499,8 @@ public:
                 player->RemoveFlag(PLAYER_FLAGS, 0x10000000);
                 player->SaveToDB();
                 SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-                me->Whisper("Hardcore Mode has been disabled.", LANG_UNIVERSAL, player);
+                //me->Whisper("Hardcore Mode has been disabled.", LANG_UNIVERSAL, player);
+                ChatHandler(player->GetSession()).SendSysMessage("Hardcore Mode has been disabled.");
                 CloseGossipMenuFor(player);
                 break;
 
@@ -508,7 +511,8 @@ public:
                 CharacterDatabase.Execute(ss.str().c_str());
                 player->SaveToDB();
                 SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
-                me->Whisper("Hardcore Mode has been enabled. Be careful!", LANG_UNIVERSAL, player);
+                // me->Whisper("Hardcore Mode has been enabled. Be careful!", LANG_UNIVERSAL, player);
+                ChatHandler(player->GetSession()).SendSysMessage("Hardcore Mode has been enabled. Be careful!");
                 CloseGossipMenuFor(player);
                 break;
             }
@@ -517,9 +521,9 @@ public:
 
     };
 
-    CreatureAI* GetAI(Creature* me) const override
+    GameObjectAI* GetAI(GameObject* go) const override
     {
-        return new hardcore_activator_aiAI(me);
+        return new hardcore_activator_aiAI(go);
     }
 };
 
