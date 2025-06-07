@@ -131,11 +131,11 @@ std::string DBUpdater<WorldDatabaseConnection>::GetTableName()
     return "World";
 }
 
-template<>
-std::string DBUpdater<WorldDatabaseConnection>::GetBaseFile()
-{
-    return GitRevision::GetFullDatabase();
-}
+//template<>
+//std::string DBUpdater<WorldDatabaseConnection>::GetBaseFile()
+//{
+//    return GitRevision::GetFullDatabase();
+//}
 
 template<>
 bool DBUpdater<WorldDatabaseConnection>::IsEnabled(uint32 const updateMask)
@@ -144,10 +144,17 @@ bool DBUpdater<WorldDatabaseConnection>::IsEnabled(uint32 const updateMask)
     return (updateMask & DatabaseLoader::DATABASE_WORLD) ? true : false;
 }
 
+//template<>
+//BaseLocation DBUpdater<WorldDatabaseConnection>::GetBaseLocationType()
+//{
+//    return LOCATION_DOWNLOAD;
+//}
+
 template<>
-BaseLocation DBUpdater<WorldDatabaseConnection>::GetBaseLocationType()
+std::string DBUpdater<WorldDatabaseConnection>::GetBaseFile()
 {
-    return LOCATION_DOWNLOAD;
+    return BuiltInConfig::GetSourceDirectory() +
+        "/sql/base/world_database.sql";
 }
 
 // Character Database
