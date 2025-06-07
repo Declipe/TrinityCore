@@ -48,6 +48,7 @@ public:
                     "|cff00ff00У вас есть дополнительная жизнь! При смерти вы воскреснете с 50% здоровья, но потеряете этот бонус.|r");
             }
 			CheckMissingLevelRewards(player);
+        //CheckTimeRewards(player); // Проверяем награды за время
             // Добавляем визуальные эффекты
           //  player->CastSpell(player, HARDCORE_AURA_SPELL, true);
         }
@@ -58,6 +59,189 @@ public:
              ChatHandler(player->GetSession()).SendSysMessage(
                  "|cffff0000[HARDCORE] Вы автоматически покинули группу.|r");
          }*/
+    }
+
+void OnLogout(Player* player) override
+{
+    if (IsHardcorePlayer(player))
+    {
+        UpdatePlaytime(player);
+        SavePlaytimeData(player);
+    }
+}
+
+void OnUpdate(Player* player, uint32 diff) override
+{
+    if (!IsHardcorePlayer(player))
+        return;
+
+    static std::unordered_map<uint32, uint32> playerTimers;
+    uint32 playerGuid = player->GetGUID().GetCounter();
+
+    playerTimers[playerGuid] += diff;
+
+    // Обновляем время каждые 60 секунд
+    if (playerTimers[playerGuid] >= 1000)
+    {
+        UpdatePlaytime(player);
+       // CheckTimeRewards(player); // Раскомментируем эту строку
+        playerTimers[playerGuid] = 0;
+    }
+}
+
+uint32 GetPlayerTotalTime(Player* player)
+{
+    // Если нет записи в hardcore_playtime, возвращаем базовое время
+    return player->GetTotalPlayedTime();
+}
+  void UpdatePlaytime(Player* player)
+{
+    uint32 currentTime = GameTime::GetGameTime();
+}
+
+void SavePlaytimeData(Player* player)
+    {
+        UpdatePlaytime(player);
+    }
+
+    void CheckTimeRewards(Player* player)
+    {
+        uint32 totalTime = GetPlayerTotalTime(player);
+
+        QueryResult rewards = CharacterDatabase.Query(
+            "SELECT id, required_time, item_id, item_count, money, title_id, achievement_id, spell_id, name, experience "
+            "FROM hardcore_time_rewards WHERE enabled = 1 ORDER BY required_time");
+
+        if (!rewards)
+            return;
+
+        do
+        {
+            Field* fields = rewards->Fetch();
+            uint32 rewardId = fields[0].GetUInt32();
+            uint32 requiredTime = fields[1].GetUInt32();
+
+            if (totalTime >= requiredTime && !HasClaimedTimeReward(player, rewardId))
+            {
+                GiveTimeReward(player, rewardId, fields);
+            }
+        }
+        while (rewards->NextRow());
+    }
+
+    bool HasClaimedTimeReward(Player* player, uint32 rewardId)
+    {
+        QueryResult result = CharacterDatabase.PQuery(
+            "SELECT 1 FROM hardcore_rewards_claimed WHERE guid = {} AND reward_id = {}",
+            player->GetGUID().GetCounter(), rewardId);
+
+        return result != nullptr;
+    }
+
+    void GiveTimeReward(Player* player, uint32 rewardId, Field* fields)
+    {
+        uint32 itemId = fields[2].GetUInt32();
+        uint32 itemCount = fields[3].GetUInt32();
+        uint32 money = fields[4].GetUInt32();
+        uint32 titleId = fields[5].GetUInt32();
+        uint32 achievementId = fields[6].GetUInt32();
+        uint32 spellId = fields[7].GetUInt32();
+        std::string name = fields[8].GetString();
+		uint32 experience = fields[9].GetUInt32();
+
+        // Выдаем предмет
+        if (itemId)
+        {
+            ItemPosCountVec dest;
+            InventoryResult msg = player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, itemId, itemCount);
+
+            if (msg == EQUIP_ERR_OK)
+            {
+                Item* item = player->StoreNewItem(dest, itemId, true);
+                if (item)
+                {
+                    player->SendNewItem(item, itemCount, true, false);
+                }
+            }
+            else
+            {
+                // Отправляем по почте если инвентарь заполнен
+                SendRewardByMail(player, itemId, itemCount, name);
+            }
+        }
+
+        // Выдаем деньги
+        if (money)
+        {
+            player->ModifyMoney(money);
+        }
+
+        // Выдаем титул
+        if (titleId)
+        {
+            CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(titleId);
+            if (titleInfo)
+            {
+                player->SetTitle(titleInfo);
+            }
+        }
+
+        // Выдаем достижение
+        if (achievementId)
+        {
+            AchievementEntry const* achievement = sAchievementStore.LookupEntry(achievementId);
+            if (achievement)
+            {
+                player->CompletedAchievement(achievement);
+            }
+        }
+
+        // Применяем заклинание
+        if (spellId)
+        {
+            player->CastSpell(player, spellId, true);
+        }
+
+        if (experience)
+            {
+                player->GiveXP(experience, nullptr, false);
+            }
+			
+        // Сохраняем информацию о полученной награде
+        CharacterDatabase.PExecute(
+            "INSERT INTO hardcore_rewards_claimed (guid, reward_id, claimed_time, playtime_when_claimed) "
+            "VALUES ({}, {}, {}, {})",
+            player->GetGUID().GetCounter(), rewardId, GameTime::GetGameTime(), GetPlayerTotalTime(player));
+
+        // Уведомляем игрока
+        ChatHandler(player->GetSession()).PSendSysMessage(
+            "|cff00ff00[HARDCORE] Вы получили награду за время выживания: %s|r", name.c_str());
+
+        // Объявление всему серверу
+        std::string announcement = "|cff00ff00Игрок " + player->GetName() +
+            " получил hardcore награду: " + name + "!|r";
+        sWorld->SendServerMessage(SERVER_MSG_STRING, announcement.c_str());
+    }
+
+    void SendRewardByMail(Player* player, uint32 itemId, uint32 itemCount, const std::string& rewardName)
+    {
+        CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
+        Item* mailItem = Item::CreateItem(itemId, itemCount, player);
+
+        if (mailItem)
+        {
+            mailItem->SaveToDB(trans);
+
+            MailSender sender(MAIL_NORMAL, 0, MAIL_STATIONERY_GM);
+            MailDraft draft("Hardcore Time Reward", "Поздравляем! Вы получили награду: " + rewardName);
+            draft.AddItem(mailItem);
+            draft.SendMailTo(trans, MailReceiver(player, player->GetGUID().GetCounter()), sender);
+
+            CharacterDatabase.CommitTransaction(trans);
+
+            ChatHandler(player->GetSession()).SendSysMessage(
+                "|cff00ff00[HARDCORE] Ваш инвентарь заполнен. Награда отправлена по почте.|r");
+        }
     }
 
 void CheckMissingLevelRewards(Player* player)
@@ -329,7 +513,7 @@ private:
             player->GetGUID().GetCounter()
         );
     }
-	
+
     void HandleHardcoreDeath(Player* player, Unit* killer)
     {
         if (!IsHardcorePlayer(player))
@@ -352,7 +536,7 @@ private:
             LogHardcoreDeath(player, killer);
             return;
         }
-		
+
         LogHardcoreDeath(player, killer);
         std::string announcement = "Hardcore игрок " + player->GetName() +
             " погиб! Персонаж будет удален.";
@@ -527,11 +711,326 @@ public:
     }
 };
 
+class npc_hardcore_time_rewards : public CreatureScript
+{
+public:
+    npc_hardcore_time_rewards() : CreatureScript("npc_hardcore_time_rewards") { }
+
+    struct npc_hardcore_time_rewardsAI : public ScriptedAI
+    {
+        npc_hardcore_time_rewardsAI(Creature* me) : ScriptedAI(me) { }
+
+    bool OnGossipHello(Player* player) override
+    {
+        if (!IsHardcorePlayer(player))
+        {
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT,
+                "Извините, эти награды только для hardcore игроков!",
+                GOSSIP_SENDER_MAIN, 1);
+            SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+            return true;
+        }
+
+        AddGossipItemFor(player, GOSSIP_ICON_VENDOR, "Показать доступные награды", GOSSIP_SENDER_MAIN, 1);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Моя статистика", GOSSIP_SENDER_MAIN, 2);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Получить награды", GOSSIP_SENDER_MAIN, 3);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "История наград", GOSSIP_SENDER_MAIN, 4);
+
+        SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+        return true;
+    }
+
+    //bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
+    bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+    {
+        uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+        uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+        return GossipSelect(player, sender, action);
+    }
+
+    bool GossipSelect(Player* player, uint32 /*sender*/, uint32 action)
+    {
+        player->PlayerTalkClass->ClearMenus();
+
+        switch (action)
+        {
+            case 1:
+                ShowAvailableRewards(player, me);
+                break;
+            case 2:
+                ShowPlayerStats(player, me);
+                break;
+            case 3:
+                ClaimRewards(player, me);
+                break;
+            case 4:
+                ShowRewardHistory(player, me);
+                break;
+            default:
+                OnGossipHello(player);
+                break;
+        }
+        return true;
+    }
+
+private:
+    bool IsHardcorePlayer(Player* player)
+    {
+        return player->HasFlag(PLAYER_FLAGS, 0x10000000);
+    }
+
+   uint32 GetPlayerTotalTime(Player* player)
+{
+    // Если нет записи в hardcore_playtime, возвращаем базовое время
+    return player->GetTotalPlayedTime();
+}
+
+    void ShowAvailableRewards(Player* player, Creature* me)
+    {
+        uint32 totalTime = GetPlayerTotalTime(player);
+
+        QueryResult rewards = CharacterDatabase.Query(
+            "SELECT id, required_time, name, description FROM hardcore_time_rewards "
+            "WHERE enabled = 1 ORDER BY required_time");
+
+        if (!rewards)
+        {
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Награды не найдены", GOSSIP_SENDER_MAIN, 0);
+        }
+        else
+        {
+            do
+            {
+                Field* fields = rewards->Fetch();
+                uint32 rewardId = fields[0].GetUInt32();
+                uint32 requiredTime = fields[1].GetUInt32();
+                std::string name = fields[2].GetString();
+                std::string description = fields[3].GetString();
+
+                uint32 hours = requiredTime / 3600;
+                uint32 minutes = (requiredTime % 3600) / 60;
+
+                std::string status = totalTime >= requiredTime ? "[Доступно]" : "[Недоступно]";
+                bool claimed = HasClaimedReward(player, rewardId);
+                if (claimed) status = "[Получено]";
+
+                std::string gossipText = status + " " + name + " (" +
+                    std::to_string(hours) + "ч " + std::to_string(minutes) + "м)";
+
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, gossipText, GOSSIP_SENDER_MAIN, 100 + rewardId);
+            }
+            while (rewards->NextRow());
+        }
+
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Назад", GOSSIP_SENDER_MAIN, 0);
+        SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+    }
+
+    void ShowPlayerStats(Player* player, Creature* me)
+    {
+        uint32 totalTime = GetPlayerTotalTime(player);
+        uint32 hours = totalTime / 3600;
+        uint32 minutes = (totalTime % 3600) / 60;
+        uint32 seconds = totalTime % 60;
+
+        std::string timeStr = "Время выживания: " + std::to_string(hours) + "ч " +
+                             std::to_string(minutes) + "м " + std::to_string(seconds) + "с";
+
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, timeStr, GOSSIP_SENDER_MAIN, 1);
+
+        // Показываем количество полученных наград
+        QueryResult claimedCount = CharacterDatabase.PQuery(
+            "SELECT COUNT(*) FROM hardcore_rewards_claimed WHERE guid = {}",
+            player->GetGUID().GetCounter());
+
+        if (claimedCount)
+        {
+            uint32 count = (*claimedCount)[0].GetUInt32();
+            std::string rewardsStr = "Получено наград: " + std::to_string(count);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, rewardsStr, GOSSIP_SENDER_MAIN, 1);
+        }
+
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Назад", GOSSIP_SENDER_MAIN, 0);
+        SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+    }
+
+    void ClaimRewards(Player* player, Creature* me)
+    {
+        uint32 totalTime = GetPlayerTotalTime(player);
+        uint32 rewardsClaimed = 0;
+
+        QueryResult rewards = CharacterDatabase.Query(
+            "SELECT id, required_time, item_id, item_count, money, title_id, achievement_id, spell_id, name, experience "
+            "FROM hardcore_time_rewards WHERE enabled = 1 ORDER BY required_time");
+
+        if (!rewards)
+        {
+            ChatHandler(player->GetSession()).SendSysMessage("Награды не найдены!");
+            OnGossipHello(player);
+            return;
+        }
+
+        do
+        {
+            Field* fields = rewards->Fetch();
+            uint32 rewardId = fields[0].GetUInt32();
+            uint32 requiredTime = fields[1].GetUInt32();
+
+            if (totalTime >= requiredTime && !HasClaimedReward(player, rewardId))
+            {
+                GiveTimeReward(player, rewardId, fields);
+                rewardsClaimed++;
+            }
+        }
+        while (rewards->NextRow());
+
+        if (rewardsClaimed > 0)
+        {
+            ChatHandler(player->GetSession()).PSendSysMessage(
+                "Вы получили %u наград за время выживания!", rewardsClaimed);
+        }
+        else
+        {
+            ChatHandler(player->GetSession()).SendSysMessage(
+                "Нет доступных наград для получения.");
+        }
+
+        OnGossipHello(player);
+    }
+
+    void ShowRewardHistory(Player* player, Creature* me)
+    {
+        QueryResult history = CharacterDatabase.PQuery(
+            "SELECT r.name, c.claimed_time, c.playtime_when_claimed "
+            "FROM hardcore_rewards_claimed c "
+            "JOIN hardcore_time_rewards r ON c.reward_id = r.id "
+            "WHERE c.guid = {} ORDER BY c.claimed_time DESC LIMIT 10",
+            player->GetGUID().GetCounter());
+
+        if (!history)
+        {
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "История наград пуста", GOSSIP_SENDER_MAIN, 1);
+        }
+        else
+        {
+            do
+            {
+                Field* fields = history->Fetch();
+                std::string name = fields[0].GetString();
+                uint32 claimedTime = fields[1].GetUInt32();
+                uint32 playtimeWhen = fields[2].GetUInt32();
+
+                uint32 hours = playtimeWhen / 3600;
+                uint32 minutes = (playtimeWhen % 3600) / 60;
+
+                std::string historyText = name + " (при " + std::to_string(hours) +
+                                        "ч " + std::to_string(minutes) + "м)";
+
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, historyText, GOSSIP_SENDER_MAIN, 1);
+            }
+            while (history->NextRow());
+        }
+
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Назад", GOSSIP_SENDER_MAIN, 0);
+        SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+    }
+
+    bool HasClaimedReward(Player* player, uint32 rewardId)
+    {
+        QueryResult result = CharacterDatabase.PQuery(
+            "SELECT 1 FROM hardcore_rewards_claimed WHERE guid = {} AND reward_id = {}",
+            player->GetGUID().GetCounter(), rewardId);
+
+        return result != nullptr;
+    }
+
+    void GiveTimeReward(Player* player, uint32 rewardId, Field* fields)
+    {
+        uint32 itemId = fields[2].GetUInt32();
+        uint32 itemCount = fields[3].GetUInt32();
+        uint32 money = fields[4].GetUInt32();
+        uint32 titleId = fields[5].GetUInt32();
+        uint32 achievementId = fields[6].GetUInt32();
+        uint32 spellId = fields[7].GetUInt32();
+        std::string name = fields[8].GetString();
+		uint32 experience = fields[9].GetUInt32();
+
+        // Выдача предмета
+        if (itemId)
+        {
+            ItemPosCountVec dest;
+            InventoryResult msg = player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, itemId, itemCount);
+
+            if (msg == EQUIP_ERR_OK)
+            {
+                Item* item = player->StoreNewItem(dest, itemId, true);
+                if (item)
+                {
+                    player->SendNewItem(item, itemCount, true, false);
+                }
+            }
+        }
+
+        // Выдача денег
+        if (money)
+        {
+            player->ModifyMoney(money);
+        }
+
+        // Выдача титула
+        if (titleId)
+        {
+            CharTitlesEntry const* titleInfo = sDBCMgr->GetCharTitlesEntry(titleId);
+            if (titleInfo)
+            {
+                player->SetTitle(titleInfo);
+            }
+        }
+
+        // Выдача достижения
+        if (achievementId)
+        {
+            AchievementEntry const* achievement = sAchievementStore.LookupEntry(achievementId);
+            if (achievement)
+            {
+                player->CompletedAchievement(achievement);
+            }
+        }
+
+        // Применение заклинания
+        if (spellId)
+        {
+            player->CastSpell(player, spellId, true);
+        }
+
+        if (experience)
+            {
+                player->GiveXP(experience, nullptr, false);
+                me->Whisper("|cff00ff00[HARDCORE]|r Вы получили %u очков опыта!", LANG_UNIVERSAL, player, experience);
+            }
+			
+        // Сохранение информации о полученной награде
+        CharacterDatabase.PExecute(
+            "INSERT INTO hardcore_rewards_claimed (guid, reward_id, claimed_time, playtime_when_claimed) "
+            "VALUES ({}, {}, {}, {})",
+            player->GetGUID().GetCounter(), rewardId, GameTime::GetGameTime(), GetPlayerTotalTime(player));
+    }
+    };
+
+    CreatureAI* GetAI(Creature* me) const override
+    {
+        return new npc_hardcore_time_rewardsAI(me);
+    }
+};
+
+
+
 void AddSC_hardcore_mode()
 {
     new HardcoreModePlayerScript();
     new hardcore_trade_restrictions();
 	new hardcore_activator_ai();
+	new npc_hardcore_time_rewards();
 }
 
 /*
