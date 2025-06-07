@@ -146,25 +146,12 @@ static bool HandleHardcoreExtraLifeGiveCommand(ChatHandler* handler, const char*
         return true;
     }
 
-    static bool HandleHardcoreDisableCommand(ChatHandler* handler, const char* args)
+    static bool HandleHardcoreDisableCommand(ChatHandler* handler, const char* /*args*/)
     {
-        if (!*args)
-            return false;
-
-        std::string playerName = args;
-        Player* target = ObjectAccessor::FindPlayerByName(playerName);
-
-        if (!target)
-        {
-            handler->SendSysMessage("Игрок не найден!");
-            return true;
-        }
-
-        target->RemoveFlag(PLAYER_FLAGS, HARDCORE_FLAG);
-        //target->RemoveAurasDueToSpell(61573);
-
-        handler->PSendSysMessage("Hardcore режим отключен для игрока %s", playerName.c_str());
-        ChatHandler(target->GetSession()).SendSysMessage("Hardcore режим был отключен администратором.");
+        Player* player = handler->GetSession()->GetPlayer();
+            player->RemoveFlag(PLAYER_FLAGS, 0x10000000);
+            player->SaveToDB();
+            handler->SendSysMessage("Hardcore режим был отключен.");
 
         return true;
     }

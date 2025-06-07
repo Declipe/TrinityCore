@@ -61,15 +61,6 @@ public:
          }*/
     }
 
-void OnLogout(Player* player) override
-{
-    if (IsHardcorePlayer(player))
-    {
-        UpdatePlaytime(player);
-        SavePlaytimeData(player);
-    }
-}
-
 void OnUpdate(Player* player, uint32 diff) override
 {
     if (!IsHardcorePlayer(player))
@@ -83,7 +74,7 @@ void OnUpdate(Player* player, uint32 diff) override
     // Обновляем время каждые 60 секунд
     if (playerTimers[playerGuid] >= 1000)
     {
-        UpdatePlaytime(player);
+       // UpdatePlaytime(player);
        // CheckTimeRewards(player); // Раскомментируем эту строку
         playerTimers[playerGuid] = 0;
     }
@@ -94,15 +85,6 @@ uint32 GetPlayerTotalTime(Player* player)
     // Если нет записи в hardcore_playtime, возвращаем базовое время
     return player->GetTotalPlayedTime();
 }
-  void UpdatePlaytime(Player* player)
-{
-    uint32 currentTime = GameTime::GetGameTime();
-}
-
-void SavePlaytimeData(Player* player)
-    {
-        UpdatePlaytime(player);
-    }
 
     void CheckTimeRewards(Player* player)
     {
@@ -761,7 +743,7 @@ public:
                 ShowPlayerStats(player, me);
                 break;
             case 3:
-                ClaimRewards(player, me);
+                ClaimRewards(player);
                 break;
             case 4:
                 ShowRewardHistory(player, me);
@@ -854,7 +836,7 @@ private:
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
     }
 
-    void ClaimRewards(Player* player, Creature* me)
+    void ClaimRewards(Player* player)
     {
         uint32 totalTime = GetPlayerTotalTime(player);
         uint32 rewardsClaimed = 0;

@@ -412,7 +412,7 @@ public:
                 case 6: // Teleport
                 {
                     CloseGossipMenuFor(player);
-                    player->TeleportTo(1, 1569.170410f, -4433.635742f, 6.718508f, 0.f);
+                    player->TeleportTo(1, 1377.78f, -4369.87f, 26.0264f, 0.15315f);
                     player->CastSpell(player, 45523, true);
                     break;
                 }
