@@ -112,7 +112,7 @@ static bool HandleHardcoreExtraLifeGiveCommand(ChatHandler* handler, const char*
 
         return true;
     }
-	
+
     static bool HandleHardcoreEnableCommand(ChatHandler* handler, const char* /*args*/)
     {
         Player* player = handler->GetSession()->GetPlayer();
