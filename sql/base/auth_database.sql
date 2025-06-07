@@ -1,2674 +1,4347 @@
--- MySQL dump 10.13  Distrib 8.0.40, for Linux (x86_64)
---
--- Host: localhost    Database: auth
--- ------------------------------------------------------
--- Server version	8.0.40-0ubuntu0.22.04.1
+/*
+ Navicat Premium Data Transfer
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+ Source Server         : localhost_3306
+ Source Server Type    : MySQL
+ Source Server Version : 80041 (8.0.41)
+ Source Host           : localhost:3306
+ Source Schema         : auth
 
---
--- Table structure for table `account`
---
+ Target Server Type    : MySQL
+ Target Server Version : 80041 (8.0.41)
+ File Encoding         : 65001
 
+ Date: 07/06/2025 18:36:58
+*/
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for account
+-- ----------------------------
 DROP TABLE IF EXISTS `account`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `account` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Identifier',
-  `username` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+CREATE TABLE `account`  (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Identifier',
+  `username` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
   `salt` binary(32) NOT NULL,
   `verifier` binary(32) NOT NULL,
-  `session_key_auth` binary(40) DEFAULT NULL,
-  `session_key_bnet` varbinary(64) DEFAULT NULL,
-  `totp_secret` varbinary(128) DEFAULT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `reg_mail` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `session_key_auth` binary(40) NULL DEFAULT NULL,
+  `session_key_bnet` varbinary(64) NULL DEFAULT NULL,
+  `totp_secret` varbinary(128) NULL DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
+  `reg_mail` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
   `joindate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `last_ip` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '127.0.0.1',
-  `last_attempt_ip` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '127.0.0.1',
-  `failed_logins` int unsigned NOT NULL DEFAULT '0',
-  `locked` tinyint unsigned NOT NULL DEFAULT '0',
-  `lock_country` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '00',
+  `last_ip` varchar(15) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '127.0.0.1',
+  `last_attempt_ip` varchar(15) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '127.0.0.1',
+  `failed_logins` int UNSIGNED NOT NULL DEFAULT 0,
+  `locked` tinyint UNSIGNED NOT NULL DEFAULT 0,
+  `lock_country` varchar(2) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '00',
   `last_login` timestamp NULL DEFAULT NULL,
-  `online` tinyint unsigned NOT NULL DEFAULT '0',
-  `expansion` tinyint unsigned NOT NULL DEFAULT '2',
-  `mutetime` bigint NOT NULL DEFAULT '0',
-  `mutereason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `muteby` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `locale` tinyint unsigned NOT NULL DEFAULT '0',
-  `os` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `timezone_offset` smallint NOT NULL DEFAULT '0',
-  `recruiter` int unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Account System';
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `online` tinyint UNSIGNED NOT NULL DEFAULT 0,
+  `expansion` tinyint UNSIGNED NOT NULL DEFAULT 2,
+  `mutetime` bigint NOT NULL DEFAULT 0,
+  `mutereason` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
+  `muteby` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
+  `locale` tinyint UNSIGNED NOT NULL DEFAULT 0,
+  `os` varchar(3) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
+  `timezone_offset` smallint NOT NULL DEFAULT 0,
+  `recruiter` int UNSIGNED NOT NULL DEFAULT 0,
+  `coins` bigint NOT NULL DEFAULT 10000,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `idx_username`(`username` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = 'Account System' ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `account`
---
+-- ----------------------------
+-- Records of account
+-- ----------------------------
+INSERT INTO `account` VALUES (1, 'WOW', 0x5709379F62880C4ED182DB09A23DA0600091AD8E5CD209A6C9F5EAE225E1A3A6, 0x448955210E82768BF6E9CCD6A56FF26967E23267716D8E2FC7B9620035EC3646, 0x843B23B005DC497C9E18AB8F3AEFE6637A941730753CDFDC77FCF8644800F2356745F4318D92D1DE, NULL, NULL, '', '', '2020-09-05 16:27:16', '127.0.0.1', '127.0.0.1', 0, 0, '00', '2025-06-07 17:19:14', 0, 2, 0, '', '', 8, 'Win', 180, 0, 57620);
+INSERT INTO `account` VALUES (2, 'WIN', 0xB8BB758F6E759952478DBF5378331DB6C906982E0DC28256E13A4A95E5DBA8BE, 0x6407909375EB2DFA109C529415605BD01725DC94269DE1E5BD5A7A893CA8301B, 0xD5005E9CC8CF24935D9F4F596F40AB5F0BA1715A7FD21ADFD5E34F196FB1811A0D4A6285CDF1CFBE, NULL, NULL, '', '', '2021-01-09 10:25:23', '37.212.50.225', '37.212.50.225', 0, 0, '00', '2025-03-29 07:40:22', 0, 2, 0, '', '', 8, 'Win', 180, 0, 10000);
+INSERT INTO `account` VALUES (3, 'WOW99', 0xD690978AA03BAFB77B69725EF813FEAB60C6EBFE6F237E51CB5E9446744A1AA7, 0x732F812E9C75465A270FB9E1A5D2B32794D261C49BA1733420A1247E5ECDD52D, 0x5781B9E3D501899D8849B1DAF846742C2AE8A186D7B2573C7333D65CFA2FF04A72FC734B751937A4, NULL, NULL, '', '', '2021-06-08 19:38:09', '37.212.50.225', '37.212.50.225', 0, 0, '00', '2025-03-27 13:16:14', 0, 2, 0, '', '', 8, 'Win', 180, 0, 40000);
+INSERT INTO `account` VALUES (4, 'WOW999', 0x434D263CD30B0038448E31AD5E8A26197E92E0DE14B9A8AD67865030363B58E5, 0x0BEDA21A6EAF80D43E815EE420F5E1647A3D0DF0BFD5A78B1F06A9CD8A3E7F24, 0xAC91C36F810A18713C1E273D983566ECA82073542DBD952967969948DA04850AE09DC07F952463A3, NULL, NULL, '', '', '2021-07-06 18:56:08', '127.0.0.1', '127.0.0.1', 0, 0, '00', '2025-05-24 21:01:03', 0, 2, 0, '', '', 8, 'Win', 180, 0, 9135);
+INSERT INTO `account` VALUES (5, 'VIP', 0x12D1A9A70FD774EE553C380E3630B8B8533FF8F25F31714F4AD7490672890E5B, 0x872A3582DAB63A3758D0F909EE36400A41AA373337CB381B05C27922DB42EE5B, 0x6A556BE49901825240CCDB6DBCEBFE916302DD0D6C675F7A766DF1EDC6EB3EA5D6DC694531CAC347, NULL, NULL, '', '', '2022-11-15 16:10:20', '25.41.55.164', '25.41.55.164', 0, 0, '00', '2022-11-21 18:07:54', 0, 2, 0, '', '', 8, 'Win', 0, 0, 10000);
+INSERT INTO `account` VALUES (6, 'WOW1', 0xD6014C42E549A63A0ECDF8BACD1111E79E3C0817971E678CD1F3D55386CADCC6, 0xC8D84E433329079AFF2BDBCC02272BC04A91868E21A6BC8959D0CC07AAD96576, 0xBB907A019705E9D102E171C51935EB9B5BD8F715DA7B698256E3135291685A2093E40AFD36D2F900, NULL, NULL, '', '', '2023-04-17 20:36:48', '37.212.76.45', '37.212.76.45', 0, 0, '00', '2024-02-23 20:59:08', 0, 2, 0, '', '', 8, 'Win', 180, 0, 10000);
+INSERT INTO `account` VALUES (7, 'BUBA', 0xBDAB65B85F62D809860B6A00AD377DE9F60745459A23C16A3CE5F9B30C1C9CD7, 0x14EF80886B04C4C150741D03C391B088CC512CAC42C5872A64BF9686439DB329, 0x793897C5F0FBC38C7B3F709D49F28EB58937F0902A5B84D5A69DC437520F0EACAB43A7864B5ADAE8, NULL, NULL, '', '', '2023-05-27 13:28:21', '127.0.0.1', '127.0.0.1', 0, 0, '00', '2023-06-07 00:39:06', 0, 2, 0, '', '', 8, 'Win', 0, 0, 10000);
+INSERT INTO `account` VALUES (8, 'WOW88', 0x7BAFCEC08EBE2D52A1033A920D498A45BFDB0E98DB54F493CFCBBB8152F1A727, 0xFF06AB2665EB954BB1C1C959DB0BF491DD28107AA39F2D662EF282FB4D4C9031, 0x3D49284E6534C13F5B2B072D1A7A356ABE956E76F72631F6A7791A3C3008E2A55C671BCC9A58D20D, NULL, NULL, '', '', '2023-11-07 23:36:51', '37.212.87.166', '37.212.87.166', 0, 0, '00', '2025-03-23 00:58:37', 0, 2, 0, '', '', 8, 'Win', 180, 0, 10000);
+INSERT INTO `account` VALUES (9, 'WOW888', 0xB37593B51EEB6847CEF86237E8272A2FDADC3C5FD864BA9143625A2E9EE7E102, 0xB2A7C85B8752340AE96119F4EF769E91EA0600271472AAC6ED7374EE67EEA730, 0x2D8D5E1CF0AA7FE18A11C9C03604B12E727226E6E915462350A23E3161FA73F29FF4540CA297AD2B, NULL, NULL, '', '', '2023-11-07 23:36:59', '127.0.0.1', '127.0.0.1', 0, 0, '00', '2025-06-05 22:06:37', 0, 2, 0, '', '', 8, 'Win', 180, 0, 10000);
+INSERT INTO `account` VALUES (10, 'WOW10', 0x93FB46700921123A7B01C9C908C55CE7D78D2E39F5C13442E4FC2A9D9D064481, 0x1F4D0F720B189668578BC19D5C48EA00876DAFB7F3C5764AE5A19C22B9C13966, NULL, NULL, NULL, '', '', '2023-11-07 23:37:28', '127.0.0.1', '127.0.0.1', 0, 0, '00', NULL, 0, 2, 0, '', '', 0, '', 0, 0, 10000);
+INSERT INTO `account` VALUES (11, 'WOW1010', 0x4396F12ABD36267E2D752587418836EC3C9BBE42E4745D12F8E57917B58BB2B9, 0xB91AB3DBA7DD47AEE8DCDC934A3B46A72C23BDED16FA911677E53D861307526D, NULL, NULL, NULL, '', '', '2023-11-07 23:37:38', '127.0.0.1', '127.0.0.1', 0, 0, '00', NULL, 0, 2, 0, '', '', 0, '', 0, 0, 10000);
+INSERT INTO `account` VALUES (12, 'WOW1000', 0x063D67E249FE19BFEC73E9087691EDF6D5A0FDF8E8C933F8BD69F5B70E24A06C, 0x6C2D6F3740A0F5F7D30AD82ED211E505BB792A3B8FD0EFDF6F55DE0B60740830, NULL, NULL, NULL, '', '', '2023-11-07 23:37:49', '127.0.0.1', '127.0.0.1', 0, 0, '00', NULL, 0, 2, 0, '', '', 0, '', 0, 0, 10000);
+INSERT INTO `account` VALUES (13, '555', 0x2BE3ACEE5DB1EB637380C1D24C0210623C20792F59AC51CF69ECAE3C688263D5, 0x0B9EAC80E380983B725AE86B0F64A0D788681A778A5816773E432E22601FE058, 0xCC8A64A4E49C773C9D23CBB6BAE8F7D7804F3B600BFDCEC988A136260EFEAB9749D7D6030E3AD149, NULL, NULL, '', '', '2023-12-30 11:22:27', '127.0.0.1', '127.0.0.1', 0, 0, '00', '2023-12-30 11:38:12', 0, 2, 0, '', '', 8, 'Win', 180, 0, 10000);
+INSERT INTO `account` VALUES (14, 'INC', 0x851437F331334D503620A529099FDEA7476988750FFD6F4DE1EE152BEEE47EFE, 0x575F5B2C5DFC607B2D34B9A3AD85BD559501862415473668C5A9F6D47216B75E, 0xA50A213FF3A9C07C41CC5CF270216D89528A8D210A7BD3E851DB7675E624D36A8DC2E467D4ADDDEB, NULL, NULL, '', '', '2024-01-30 20:51:16', '37.212.54.241', '37.212.54.241', 0, 0, '00', '2024-01-30 20:51:38', 0, 2, 0, '', '', 8, 'Win', 180, 0, 0);
+INSERT INTO `account` VALUES (15, 'LOX', 0x00C294FE67E21F76CBB4AECF7733638BCB4857FF5F1C38817DEAFEBBB0513496, 0x028B27DD99537ED27A4F93C57E23D283699AAEB7033A326029186317D3DD302C, NULL, NULL, NULL, '', '', '2024-02-02 15:40:59', '127.0.0.1', '127.0.0.1', 0, 0, '00', NULL, 0, 2, 0, '', '', 0, '', 0, 0, 0);
+INSERT INTO `account` VALUES (16, 'SYROS', 0x35E259698285638B251137D71498CCBB7DA0311546B1B4AA7D927AD185F7DD1A, 0x1A205070D278D76E5DD653FC155463D8F770357578489B40B3387490BF32D749, 0x5839BA7B26F925101D46ACFC1F708AF647964F86D97E541D41D04E454DE7F53B0CD86B838B32E836, NULL, NULL, '', '', '2024-02-03 21:09:27', '151.249.227.6', '151.249.227.6', 0, 0, '00', '2024-04-16 17:23:10', 0, 2, 0, '', '', 8, 'Win', 180, 0, 0);
+INSERT INTO `account` VALUES (17, 'WOW4', 0xFB2D86766ACF82A7AEFA8DD62AEAD98A8ED4A1C7F571597ECD3A782A35C2AD90, 0xFC5D01F2C2426E3A6A6A8CDDB7AAB266B67C587071AC3372BB1C256930E73E25, 0x5C01B8434AE477F88D139F9907ABD03814C8CEB0A02BADFD7669451350F9D60A093EF7F03E328F12, NULL, NULL, '', '', '2024-04-09 18:16:33', '127.0.0.1', '127.0.0.1', 0, 0, '00', '2025-06-06 06:08:51', 0, 2, 0, '', '', 8, 'Win', 180, 0, 10000);
+INSERT INTO `account` VALUES (18, 'WOW5', 0xC68A92A01CC45C0918729376CFF386C740A7D7BE1C07805E935BFCD5056451AF, 0x45CEE4FF165B5FE7662EFD10FFE40A2459BADB9C0CAA0A50F5E3A8359F9C972E, 0xAB564837F1201ECE36DA937D1291ABDCF148B5454376FAEFF8B47CE020F0D3A2D50EF9BBCEE40286, NULL, NULL, '', '', '2024-04-09 18:16:58', '178.120.242.229', '178.120.242.229', 0, 0, '00', '2025-01-22 23:56:17', 0, 2, 0, '', '', 8, 'Win', 180, 0, 9750);
+INSERT INTO `account` VALUES (19, 'DECL', 0x3716CE6205E19EC7723729F41CD267DF38BE7324A74FF3467736512024D079DD, 0xC51D8ADE8FB47C0F935942BDA2078D3E3EA6F802B364A264469E4B44CB3B550B, 0xF101BB9196E38723B707487BBAA17BCD3304182D9AA7653DD1D1E12610FDE5DD523DD0CDEE5D935F, NULL, NULL, 'DARK-LORD93@YANDEX.RU', '', '2024-07-04 20:35:37', '37.212.231.246', '37.212.231.246', 0, 0, '00', '2024-07-04 20:36:31', 0, 2, 0, '', '', 8, 'Win', 180, 0, 10000);
+INSERT INTO `account` VALUES (20, 'DECS', 0xAB16716D7A137E6F36E42C916CD87F05CB2D2636A8F46F96D92EFB19BDCC0970, 0x5CFB19BBF62B582A51FB7D75F01791634E61C19826C58AE8E74C70F01CC0617F, 0x927ECE5D4DB0225B2E29546C0A1C1EEE70218E1438FFC6B1BE5E585CB5D1124168C6BB6E206C8C4F, NULL, NULL, 'CCV@M.BY', '', '2024-12-14 00:40:11', '37.214.225.143', '37.214.225.143', 0, 0, '00', '2024-12-14 00:40:18', 0, 2, 0, '', '', 8, 'Win', 180, 0, 10000);
 
-LOCK TABLES `account` WRITE;
-/*!40000 ALTER TABLE `account` DISABLE KEYS */;
-/*!40000 ALTER TABLE `account` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `account_access`
---
-
+-- ----------------------------
+-- Table structure for account_access
+-- ----------------------------
 DROP TABLE IF EXISTS `account_access`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `account_access` (
-  `AccountID` int unsigned NOT NULL,
-  `SecurityLevel` tinyint unsigned NOT NULL,
-  `RealmID` int NOT NULL DEFAULT '-1',
-  `Comment` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`AccountID`,`RealmID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `account_access`  (
+  `AccountID` int UNSIGNED NOT NULL,
+  `SecurityLevel` tinyint UNSIGNED NOT NULL,
+  `RealmID` int NOT NULL DEFAULT -1,
+  `Comment` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`AccountID`, `RealmID`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `account_access`
---
+-- ----------------------------
+-- Records of account_access
+-- ----------------------------
+INSERT INTO `account_access` VALUES (1, 4, -1, NULL);
+INSERT INTO `account_access` VALUES (5, 4, -1, NULL);
+INSERT INTO `account_access` VALUES (9, 4, -1, NULL);
+INSERT INTO `account_access` VALUES (14, 4, -1, NULL);
+INSERT INTO `account_access` VALUES (16, 4, -1, NULL);
+INSERT INTO `account_access` VALUES (17, 4, -1, NULL);
 
-LOCK TABLES `account_access` WRITE;
-/*!40000 ALTER TABLE `account_access` DISABLE KEYS */;
-/*!40000 ALTER TABLE `account_access` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `account_banned`
---
-
+-- ----------------------------
+-- Table structure for account_banned
+-- ----------------------------
 DROP TABLE IF EXISTS `account_banned`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `account_banned` (
-  `id` int unsigned NOT NULL DEFAULT '0' COMMENT 'Account id',
-  `bandate` int unsigned NOT NULL DEFAULT '0',
-  `unbandate` int unsigned NOT NULL DEFAULT '0',
-  `bannedby` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `banreason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `active` tinyint unsigned NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`,`bandate`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Ban List';
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `account_banned`  (
+  `id` int UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Account id',
+  `bandate` int UNSIGNED NOT NULL DEFAULT 0,
+  `unbandate` int UNSIGNED NOT NULL DEFAULT 0,
+  `bannedby` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `banreason` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `active` tinyint UNSIGNED NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`, `bandate`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = 'Ban List' ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `account_banned`
---
+-- ----------------------------
+-- Records of account_banned
+-- ----------------------------
+INSERT INTO `account_banned` VALUES (7, 1715854123, 2579854123, 'Ограс', '1', 1);
+INSERT INTO `account_banned` VALUES (17, 1713020540, 1713024140, 'Апвап', 'чо', 0);
 
-LOCK TABLES `account_banned` WRITE;
-/*!40000 ALTER TABLE `account_banned` DISABLE KEYS */;
-/*!40000 ALTER TABLE `account_banned` ENABLE KEYS */;
-UNLOCK TABLES;
+-- ----------------------------
+-- Table structure for account_ip_history
+-- ----------------------------
+DROP TABLE IF EXISTS `account_ip_history`;
+CREATE TABLE `account_ip_history`  (
+  `Account` int UNSIGNED NOT NULL DEFAULT 0,
+  `RealmID` int UNSIGNED NULL DEFAULT NULL,
+  `IP` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
+  `date_recent` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `date_first` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `comment` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  PRIMARY KEY (`Account`, `IP`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
---
--- Table structure for table `account_muted`
---
+-- ----------------------------
+-- Records of account_ip_history
+-- ----------------------------
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.120.212.199', '2024-10-19 08:39:03', '2024-10-19 08:39:03', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.120.215.87', '2024-11-04 23:19:43', '2024-11-04 23:19:43', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.120.218.140', '2024-07-20 07:43:28', '2024-07-20 07:43:28', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.120.226.94', '2024-10-13 23:37:03', '2024-10-13 23:37:03', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.120.230.188', '2024-08-12 08:23:03', '2024-08-12 08:23:03', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.120.238.149', '2024-11-02 15:52:04', '2024-11-02 15:52:04', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.120.244.149', '2024-07-30 08:34:36', '2024-07-30 08:34:36', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.120.246.56', '2024-07-30 21:04:19', '2024-07-30 21:04:19', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.120.255.53', '2024-12-01 23:28:09', '2024-12-01 23:28:09', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.122.102.94', '2024-07-24 16:58:34', '2024-07-24 16:58:34', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.122.105.159', '2024-12-19 16:56:48', '2024-12-19 16:56:48', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.122.111.57', '2024-11-19 22:37:33', '2024-11-19 22:37:33', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.122.119.35', '2024-09-11 18:28:02', '2024-09-11 18:28:02', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.122.121.97', '2024-12-20 23:43:08', '2024-12-20 23:43:08', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.122.75.34', '2024-08-05 18:32:28', '2024-08-05 18:32:28', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.122.82.235', '2024-08-15 23:49:53', '2024-08-15 23:49:53', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.122.85.126', '2024-10-03 19:18:45', '2024-10-03 19:18:45', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.122.86.148', '2024-10-07 21:36:53', '2024-10-07 21:36:53', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.122.92.131', '2024-11-10 00:15:49', '2024-11-10 00:15:49', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '178.122.92.225', '2024-12-08 01:26:17', '2024-12-08 01:26:17', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.231.246', '2024-07-03 13:10:32', '2024-07-03 13:10:32', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.238.251', '2024-07-09 23:22:51', '2024-07-09 23:22:51', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.253.184', '2024-08-31 12:52:09', '2024-08-31 12:52:09', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.255.105', '2024-12-22 21:45:38', '2024-12-22 21:45:38', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.48.77', '2024-04-29 22:42:39', '2024-04-29 22:42:39', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.50.38', '2024-05-26 20:05:26', '2024-05-26 20:05:26', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.51.166', '2024-05-24 21:34:23', '2024-05-24 21:34:23', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.52.205', '2024-04-26 19:42:22', '2024-04-26 19:42:22', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.53.13', '2024-04-30 18:21:42', '2024-04-30 18:21:42', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.55.77', '2024-04-28 19:46:14', '2024-04-28 19:46:14', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.58.157', '2024-05-21 22:30:19', '2024-05-21 22:30:19', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.64.10', '2024-05-20 20:03:56', '2024-05-20 20:03:56', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.65.135', '2024-05-31 23:44:30', '2024-05-31 23:44:30', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.65.199', '2024-05-29 22:36:13', '2024-05-29 22:36:13', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.65.71', '2024-05-29 00:08:21', '2024-05-29 00:08:21', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.67.80', '2024-04-21 14:31:40', '2024-04-21 14:31:40', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.76.50', '2024-06-23 22:32:28', '2024-06-23 22:32:28', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.78.13', '2024-06-15 14:22:47', '2024-06-15 14:22:47', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.79.151', '2024-06-06 00:18:43', '2024-06-06 00:18:43', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.80.99', '2024-06-10 22:29:15', '2024-06-10 22:29:15', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.83.74', '2024-05-23 18:27:28', '2024-05-23 18:27:28', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.84.91', '2024-04-23 20:43:24', '2024-04-23 20:43:24', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.85.219', '2024-04-24 21:05:28', '2024-04-24 21:05:28', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.86.27', '2024-04-26 03:54:25', '2024-04-26 03:54:25', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.86.99', '2024-06-08 09:20:39', '2024-06-08 09:20:39', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.87.91', '2024-04-22 00:09:01', '2024-04-22 00:09:01', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.88.115', '2024-05-07 23:19:43', '2024-05-07 23:19:43', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.88.179', '2024-05-09 09:05:59', '2024-05-09 09:05:59', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.89.38', '2024-05-16 13:37:15', '2024-05-16 13:37:15', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.90.73', '2024-05-04 07:30:05', '2024-05-04 07:30:05', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.92.243', '2024-05-11 12:55:39', '2024-05-11 12:55:39', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.212.95.9', '2024-05-06 11:27:53', '2024-05-06 11:27:53', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.214.197.91', '2024-09-07 11:33:22', '2024-09-07 11:33:22', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.214.198.68', '2024-08-26 21:09:50', '2024-08-26 21:09:50', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.214.204.85', '2024-08-23 00:20:24', '2024-08-23 00:20:24', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.214.211.135', '2024-10-19 10:03:22', '2024-10-19 10:03:22', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.214.225.143', '2024-12-14 00:41:53', '2024-12-14 00:41:53', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.214.225.252', '2024-09-28 08:52:18', '2024-09-28 08:52:18', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.214.232.53', '2024-07-15 08:05:47', '2024-07-15 08:05:47', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.214.238.128', '2024-11-23 23:27:35', '2024-11-23 23:27:35', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.214.239.166', '2024-09-22 09:15:34', '2024-09-22 09:15:34', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.214.242.134', '2024-09-19 08:40:52', '2024-09-19 08:40:52', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '37.214.254.153', '2024-11-13 21:25:31', '2024-11-13 21:25:31', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '46.56.166.229', '2024-06-16 00:22:38', '2024-06-16 00:22:38', '');
+INSERT INTO `account_ip_history` VALUES (1, 1, '46.56.202.210', '2024-04-27 18:53:47', '2024-04-27 18:53:47', '');
+INSERT INTO `account_ip_history` VALUES (3, 1, '178.122.102.94', '2024-07-21 11:51:23', '2024-07-21 11:51:23', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '178.120.218.140', '2024-07-20 07:46:51', '2024-07-20 07:46:51', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '178.120.226.94', '2024-10-12 00:28:40', '2024-10-12 00:28:40', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '178.122.102.94', '2024-07-24 12:13:12', '2024-07-24 12:13:12', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '178.122.105.159', '2024-12-18 19:36:58', '2024-12-18 19:36:58', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '178.122.75.34', '2024-08-05 18:33:27', '2024-08-05 18:33:27', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '37.212.238.251', '2024-07-07 21:34:20', '2024-07-07 21:34:20', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '37.212.253.184', '2024-08-30 18:29:33', '2024-08-30 18:29:33', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '37.212.48.77', '2024-04-29 22:43:37', '2024-04-29 22:43:37', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '37.212.50.38', '2024-05-26 10:21:00', '2024-05-26 10:21:00', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '37.212.55.77', '2024-04-27 21:07:19', '2024-04-27 21:07:19', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '37.212.58.157', '2024-05-21 22:30:27', '2024-05-21 22:30:27', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '37.212.65.135', '2024-05-31 23:45:29', '2024-05-31 23:45:29', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '37.212.67.80', '2024-04-20 21:01:18', '2024-04-20 21:01:18', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '37.212.79.151', '2024-06-05 21:31:47', '2024-06-05 21:31:47', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '37.212.83.74', '2024-05-23 18:27:42', '2024-05-23 18:27:42', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '37.212.88.179', '2024-05-08 22:33:48', '2024-05-08 22:33:48', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '37.212.89.38', '2024-05-13 22:09:18', '2024-05-13 22:09:18', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '37.212.95.9', '2024-05-06 11:35:07', '2024-05-06 11:35:07', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '37.214.225.143', '2024-12-13 22:06:02', '2024-12-13 22:06:02', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '37.214.239.166', '2024-09-22 08:33:05', '2024-09-22 08:33:05', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '37.214.242.134', '2024-09-13 21:14:41', '2024-09-13 21:14:41', '');
+INSERT INTO `account_ip_history` VALUES (4, 1, '46.56.166.229', '2024-06-15 21:25:34', '2024-06-15 21:25:34', '');
+INSERT INTO `account_ip_history` VALUES (8, 1, '178.120.226.94', '2024-10-13 23:37:29', '2024-10-13 23:37:29', '');
+INSERT INTO `account_ip_history` VALUES (8, 1, '178.122.105.159', '2024-12-15 17:00:20', '2024-12-15 17:00:20', '');
+INSERT INTO `account_ip_history` VALUES (8, 1, '178.122.75.34', '2024-08-05 18:33:43', '2024-08-05 18:33:43', '');
+INSERT INTO `account_ip_history` VALUES (9, 1, '178.120.226.94', '2024-10-09 21:53:45', '2024-10-09 21:53:45', '');
+INSERT INTO `account_ip_history` VALUES (9, 1, '178.122.102.94', '2024-07-24 12:17:57', '2024-07-24 12:17:57', '');
+INSERT INTO `account_ip_history` VALUES (9, 1, '178.122.105.159', '2024-12-18 19:36:42', '2024-12-18 19:36:42', '');
+INSERT INTO `account_ip_history` VALUES (9, 1, '37.212.231.246', '2024-07-03 13:10:59', '2024-07-03 13:10:59', '');
+INSERT INTO `account_ip_history` VALUES (9, 1, '37.212.64.10', '2024-05-17 18:43:56', '2024-05-17 18:43:56', '');
+INSERT INTO `account_ip_history` VALUES (9, 1, '37.212.89.38', '2024-05-13 22:01:50', '2024-05-13 22:01:50', '');
+INSERT INTO `account_ip_history` VALUES (9, 1, '37.214.225.143', '2024-12-13 22:58:30', '2024-12-13 22:58:30', '');
+INSERT INTO `account_ip_history` VALUES (17, 1, '178.122.102.94', '2024-07-21 11:50:39', '2024-07-21 11:50:39', '');
+INSERT INTO `account_ip_history` VALUES (17, 1, '178.122.105.159', '2024-12-19 16:39:48', '2024-12-19 16:39:48', '');
+INSERT INTO `account_ip_history` VALUES (17, 1, '178.122.119.35', '2024-09-11 18:28:12', '2024-09-11 18:28:12', '');
+INSERT INTO `account_ip_history` VALUES (17, 1, '37.212.253.184', '2024-08-31 12:50:19', '2024-08-31 12:50:19', '');
+INSERT INTO `account_ip_history` VALUES (17, 1, '37.212.52.205', '2024-04-26 19:31:29', '2024-04-26 19:31:29', '');
+INSERT INTO `account_ip_history` VALUES (17, 1, '37.214.197.91', '2024-09-07 10:07:50', '2024-09-07 10:07:50', '');
+INSERT INTO `account_ip_history` VALUES (17, 1, '37.214.225.143', '2024-12-14 00:42:16', '2024-12-14 00:42:16', '');
+INSERT INTO `account_ip_history` VALUES (18, 1, '178.122.102.94', '2024-07-21 11:51:03', '2024-07-21 11:51:03', '');
+INSERT INTO `account_ip_history` VALUES (19, 1, '37.212.231.246', '2024-07-04 20:36:32', '2024-07-04 20:36:32', '');
+INSERT INTO `account_ip_history` VALUES (20, 1, '37.214.225.143', '2024-12-14 00:40:18', '2024-12-14 00:40:18', '');
 
+-- ----------------------------
+-- Table structure for account_muted
+-- ----------------------------
 DROP TABLE IF EXISTS `account_muted`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `account_muted` (
-  `guid` int unsigned NOT NULL DEFAULT '0' COMMENT 'Global Unique Identifier',
-  `mutedate` int unsigned NOT NULL DEFAULT '0',
-  `mutetime` int unsigned NOT NULL DEFAULT '0',
-  `mutedby` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `mutereason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`guid`,`mutedate`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='mute List';
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `account_muted`  (
+  `guid` int UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Global Unique Identifier',
+  `mutedate` int UNSIGNED NOT NULL DEFAULT 0,
+  `mutetime` int UNSIGNED NOT NULL DEFAULT 0,
+  `mutedby` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `mutereason` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  PRIMARY KEY (`guid`, `mutedate`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = 'mute List' ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `account_muted`
---
+-- ----------------------------
+-- Records of account_muted
+-- ----------------------------
 
-LOCK TABLES `account_muted` WRITE;
-/*!40000 ALTER TABLE `account_muted` DISABLE KEYS */;
-/*!40000 ALTER TABLE `account_muted` ENABLE KEYS */;
-UNLOCK TABLES;
+-- ----------------------------
+-- Table structure for account_premium
+-- ----------------------------
+DROP TABLE IF EXISTS `account_premium`;
+CREATE TABLE `account_premium`  (
+  `id` int NOT NULL DEFAULT 0 COMMENT 'Account id',
+  `setdate` int NOT NULL DEFAULT 0,
+  `unsetdate` int NOT NULL DEFAULT 0,
+  `premium_type` tinyint UNSIGNED NOT NULL DEFAULT 1,
+  `active` tinyint NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `active`(`active` ASC) USING BTREE,
+  INDEX `setdate`(`setdate` ASC) USING BTREE,
+  INDEX `unsetdate`(`unsetdate` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
 
---
--- Table structure for table `autobroadcast`
---
+-- ----------------------------
+-- Records of account_premium
+-- ----------------------------
+INSERT INTO `account_premium` VALUES (1, 1743356865, 1755631468, 1, 1);
 
+-- ----------------------------
+-- Table structure for autobroadcast
+-- ----------------------------
 DROP TABLE IF EXISTS `autobroadcast`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `autobroadcast` (
-  `realmid` int NOT NULL DEFAULT '-1',
-  `id` tinyint unsigned NOT NULL AUTO_INCREMENT,
-  `weight` tinyint unsigned DEFAULT '1',
-  `text` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`,`realmid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `autobroadcast`  (
+  `realmid` int NOT NULL DEFAULT -1,
+  `id` tinyint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `weight` tinyint UNSIGNED NULL DEFAULT 1,
+  `text` longtext CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  PRIMARY KEY (`id`, `realmid`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `autobroadcast`
---
+-- ----------------------------
+-- Records of autobroadcast
+-- ----------------------------
+INSERT INTO `autobroadcast` VALUES (-1, 1, 1, 'Локальный сервер Ctulhunet.ru');
 
-LOCK TABLES `autobroadcast` WRITE;
-/*!40000 ALTER TABLE `autobroadcast` DISABLE KEYS */;
-/*!40000 ALTER TABLE `autobroadcast` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `build_auth_key`
---
-
+-- ----------------------------
+-- Table structure for build_auth_key
+-- ----------------------------
 DROP TABLE IF EXISTS `build_auth_key`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `build_auth_key` (
+CREATE TABLE `build_auth_key`  (
   `build` int NOT NULL,
   `platform` char(4) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   `arch` char(4) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   `type` char(4) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   `key` binary(16) NOT NULL,
-  PRIMARY KEY (`build`,`platform`,`arch`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  PRIMARY KEY (`build`, `platform`, `arch`, `type`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
---
--- Dumping data for table `build_auth_key`
---
+-- ----------------------------
+-- Records of build_auth_key
+-- ----------------------------
+INSERT INTO `build_auth_key` VALUES (25549, 'Mac', 'x64', 'WoW', 0x66FC5E09B8706126795F140308C8C1D8);
+INSERT INTO `build_auth_key` VALUES (25549, 'Win', 'x64', 'WoW', 0x1252624ED8CBD6FAC7D33F5D67A535F3);
+INSERT INTO `build_auth_key` VALUES (25549, 'Win', 'x86', 'WoW', 0xFE594FC35E7F9AFF86D99D8A364AB297);
+INSERT INTO `build_auth_key` VALUES (25996, 'Mac', 'x64', 'WoW', 0x210B970149D6F56CAC9BADF2AAC91E8E);
+INSERT INTO `build_auth_key` VALUES (25996, 'Win', 'x64', 'WoW', 0xC7FF932D6A2174A3D538CA7212136D2B);
+INSERT INTO `build_auth_key` VALUES (25996, 'Win', 'x86', 'WoW', 0x23C59C5963CBEF5B728D13A50878DFCB);
+INSERT INTO `build_auth_key` VALUES (26124, 'Mac', 'x64', 'WoW', 0xC9CA997AB8EDE1C65465CB2920869C4E);
+INSERT INTO `build_auth_key` VALUES (26124, 'Win', 'x64', 'WoW', 0x46DF06D0147BA67BA49AF553435E093F);
+INSERT INTO `build_auth_key` VALUES (26124, 'Win', 'x86', 'WoW', 0xF8C05AE372DECA1D6C81DA7A8D1C5C39);
+INSERT INTO `build_auth_key` VALUES (26365, 'Mac', 'x64', 'WoW', 0xDBE7F860276D6B400AAA86B35D51A417);
+INSERT INTO `build_auth_key` VALUES (26365, 'Win', 'x64', 'WoW', 0x59A53F307288454B419B13E694DF503C);
+INSERT INTO `build_auth_key` VALUES (26365, 'Win', 'x86', 'WoW', 0x2AAC82C80E829E2CA902D70CFA1A833A);
+INSERT INTO `build_auth_key` VALUES (26654, 'Mac', 'x64', 'WoW', 0x9234C1BD5E9687ADBD19F764F2E0E811);
+INSERT INTO `build_auth_key` VALUES (26654, 'Win', 'x64', 'WoW', 0xA752640E8B99FE5B57C1320BC492895A);
+INSERT INTO `build_auth_key` VALUES (26654, 'Win', 'x86', 'WoW', 0xFAC2D693E702B9EC9F750F17245696D8);
+INSERT INTO `build_auth_key` VALUES (26822, 'Mac', 'x64', 'WoW', 0x91003668C245D14ECD8DF094E065E06B);
+INSERT INTO `build_auth_key` VALUES (26822, 'Win', 'x64', 'WoW', 0x2B05F6D746C0C6CC7EF79450B309E595);
+INSERT INTO `build_auth_key` VALUES (26822, 'Win', 'x86', 'WoW', 0x283E8D77ECF7060BE6347BE4EB99C7C7);
+INSERT INTO `build_auth_key` VALUES (26899, 'Mac', 'x64', 'WoW', 0x8368EFC2021329110A16339D298200D4);
+INSERT INTO `build_auth_key` VALUES (26899, 'Win', 'x64', 'WoW', 0x3551EF0028B51E92170559BD25644B03);
+INSERT INTO `build_auth_key` VALUES (26899, 'Win', 'x86', 'WoW', 0xF462CD2FE4EA3EADF875308FDBB18C99);
+INSERT INTO `build_auth_key` VALUES (26972, 'Mac', 'x64', 'WoW', 0x341CFEFE3D72ACA9A4407DC535DED66A);
+INSERT INTO `build_auth_key` VALUES (26972, 'Win', 'x64', 'WoW', 0x6E212DEF6A0124A3D9AD07F5E322F7AE);
+INSERT INTO `build_auth_key` VALUES (26972, 'Win', 'x86', 'WoW', 0x797ECC19662DCBD5090A4481173F1D26);
+INSERT INTO `build_auth_key` VALUES (28153, 'Win', 'x64', 'WoW', 0xDD626517CC6D31932B479934CCDC0ABF);
+INSERT INTO `build_auth_key` VALUES (30706, 'Win', 'x64', 'WoW', 0xBB6D9866FE4A19A568015198783003FC);
+INSERT INTO `build_auth_key` VALUES (30993, 'Win', 'x64', 'WoW', 0x2BAD61655ABC2FC3D04893B536403A91);
+INSERT INTO `build_auth_key` VALUES (31229, 'Win', 'x64', 'WoW', 0x8A46F23670309F2AAE85C9A47276382B);
+INSERT INTO `build_auth_key` VALUES (31429, 'Win', 'x64', 'WoW', 0x7795A507AF9DC3525EFF724FEE17E70C);
+INSERT INTO `build_auth_key` VALUES (31478, 'Win', 'x64', 'WoW', 0x7973A8D54BDB8B798D9297B096E771EF);
+INSERT INTO `build_auth_key` VALUES (32305, 'Win', 'x64', 'WoW', 0x21F5A6FC7AD89FBF411FDA8B8738186A);
+INSERT INTO `build_auth_key` VALUES (32494, 'Win', 'x64', 'WoW', 0x58984ACE04919401835C61309A848F8A);
+INSERT INTO `build_auth_key` VALUES (32580, 'Win', 'x64', 'WoW', 0x87C2FAA0D7931BF016299025C0DDCA14);
+INSERT INTO `build_auth_key` VALUES (32638, 'Win', 'x64', 'WoW', 0x5D07ECE7D4A867DDDE615DAD22B76D4E);
+INSERT INTO `build_auth_key` VALUES (32722, 'Win', 'x64', 'WoW', 0x1A09BE1D38A122586B4931BECCEAD4AA);
 
-LOCK TABLES `build_auth_key` WRITE;
-/*!40000 ALTER TABLE `build_auth_key` DISABLE KEYS */;
-INSERT INTO `build_auth_key` VALUES
-(25549,'Mac','x64','WoW',0x66FC5E09B8706126795F140308C8C1D8),
-(25549,'Win','x64','WoW',0x1252624ED8CBD6FAC7D33F5D67A535F3),
-(25549,'Win','x86','WoW',0xFE594FC35E7F9AFF86D99D8A364AB297),
-(25996,'Mac','x64','WoW',0x210B970149D6F56CAC9BADF2AAC91E8E),
-(25996,'Win','x64','WoW',0xC7FF932D6A2174A3D538CA7212136D2B),
-(25996,'Win','x86','WoW',0x23C59C5963CBEF5B728D13A50878DFCB),
-(26124,'Mac','x64','WoW',0xC9CA997AB8EDE1C65465CB2920869C4E),
-(26124,'Win','x64','WoW',0x46DF06D0147BA67BA49AF553435E093F),
-(26124,'Win','x86','WoW',0xF8C05AE372DECA1D6C81DA7A8D1C5C39),
-(26365,'Mac','x64','WoW',0xDBE7F860276D6B400AAA86B35D51A417),
-(26365,'Win','x64','WoW',0x59A53F307288454B419B13E694DF503C),
-(26365,'Win','x86','WoW',0x2AAC82C80E829E2CA902D70CFA1A833A),
-(26654,'Mac','x64','WoW',0x9234C1BD5E9687ADBD19F764F2E0E811),
-(26654,'Win','x64','WoW',0xA752640E8B99FE5B57C1320BC492895A),
-(26654,'Win','x86','WoW',0xFAC2D693E702B9EC9F750F17245696D8),
-(26822,'Mac','x64','WoW',0x91003668C245D14ECD8DF094E065E06B),
-(26822,'Win','x64','WoW',0x2B05F6D746C0C6CC7EF79450B309E595),
-(26822,'Win','x86','WoW',0x283E8D77ECF7060BE6347BE4EB99C7C7),
-(26899,'Mac','x64','WoW',0x8368EFC2021329110A16339D298200D4),
-(26899,'Win','x64','WoW',0x3551EF0028B51E92170559BD25644B03),
-(26899,'Win','x86','WoW',0xF462CD2FE4EA3EADF875308FDBB18C99),
-(26972,'Mac','x64','WoW',0x341CFEFE3D72ACA9A4407DC535DED66A),
-(26972,'Win','x64','WoW',0x6E212DEF6A0124A3D9AD07F5E322F7AE),
-(26972,'Win','x86','WoW',0x797ECC19662DCBD5090A4481173F1D26),
-(28153,'Win','x64','WoW',0xDD626517CC6D31932B479934CCDC0ABF),
-(30706,'Win','x64','WoW',0xBB6D9866FE4A19A568015198783003FC),
-(30993,'Win','x64','WoW',0x2BAD61655ABC2FC3D04893B536403A91),
-(31229,'Win','x64','WoW',0x8A46F23670309F2AAE85C9A47276382B),
-(31429,'Win','x64','WoW',0x7795A507AF9DC3525EFF724FEE17E70C),
-(31478,'Win','x64','WoW',0x7973A8D54BDB8B798D9297B096E771EF),
-(32305,'Win','x64','WoW',0x21F5A6FC7AD89FBF411FDA8B8738186A),
-(32494,'Win','x64','WoW',0x58984ACE04919401835C61309A848F8A),
-(32580,'Win','x64','WoW',0x87C2FAA0D7931BF016299025C0DDCA14),
-(32638,'Win','x64','WoW',0x5D07ECE7D4A867DDDE615DAD22B76D4E),
-(32722,'Win','x64','WoW',0x1A09BE1D38A122586B4931BECCEAD4AA),
-(32750,'Mac','x64','WoW',0xEF1F4E4D099EA2A81FD4C0DEBC1E7086),
-(32750,'Win','x64','WoW',0xC5CB669F5A5B237D1355430877173207),
-(32978,'Mac','x64','WoW',0x1852C1F847E795D6EB45278CD433F339),
-(32978,'Win','x64','WoW',0x76AE2EA03E525D97F5688843F5489000),
-(33369,'Mac','x64','WoW',0xF5A849C70A1054F07EA3AB833EBF6671),
-(33369,'Win','x64','WoW',0x5986AC18B04D3C403F56A0CF8C4F0A14),
-(33528,'Win','x64','WoW',0x0ECE033CA9B11D92F7D2792C785B47DF),
-(33724,'Win','x64','WoW',0x38F7BBCF284939DD20E8C64CDBF9FE77),
-(33775,'Mac','x64','WoW',0x354D2DE619D124EE1398F76B0436FCFC),
-(33775,'Win','x64','WoW',0xB826300A8449ED0F6EF16EA747FA2D2E),
-(33941,'Win','x64','WoW',0x88AF1A36D2770D0A6CA086497096A889),
-(34220,'Win','x64','WoW',0xB5E35B976C6BAF82505700E7D9666A2C),
-(34601,'Win','x64','WoW',0x0D7DF38F725FABA4F009257799A10563),
-(34769,'Win','x64','WoW',0x93F9B9AF6397E3E4EED94D36D16907D2),
-(34963,'Mac','x64','WoW',0xC5658A17E702163447BAAAE46D130A1B),
-(34963,'Win','x64','WoW',0x7BA50C879C5D04221423B02AC3603A11),
-(35249,'Win','x64','WoW',0xC7B11F9AE9FF1409F5582902B3D10D1C),
-(35284,'Mac','x64','WoW',0xA6201B0AC5A73D13AB2FDCC79BB252AF),
-(35284,'Win','x64','WoW',0xEA3818E7DCFD2009DBFC83EE3C1E4F1B),
-(35435,'Mac','x64','WoW',0x8FE657C14A46BCDB2CE6DA37E430450E),
-(35435,'Win','x64','WoW',0xBB397A92FE23740EA52FC2B5BA2EC8E0),
-(35662,'Mac','x64','WoW',0x5966016C368ED9F7AAB603EE6703081C),
-(35662,'Win','x64','WoW',0x578BC94870C278CB6962F30E6DC203BB),
-(36753,'Win','x64','WoW',0x386FDE8559B5EAD67B791B490B200B88),
-(36839,'Win','x64','WoW',0x356EB4412B8EFCF72E3AF50D5181D529),
-(36949,'Win','x64','WoW',0x51C074CD8A09A75384B9B44188C56981),
-(37142,'Win','x64','WoW',0x5D9CFB3139F0D1B6C2B304261F9EABC9),
-(37176,'Win','x64','WoW',0x3C725EA504EC3DAED143EB6FF3B48CDA),
-(37474,'Mac','x64','WoW',0x024C9BE7E44237B7E81C6D42E678D433),
-(37474,'Win','x64','WoW',0x0DE685BBB0551086E7FBDC0B4BB06A5B),
-(38134,'Win','x64','WoW',0x32275ED0F13B357C28BDB0E611EF9E31),
-(38556,'Win','x64','WoW',0xEC7D5AF64364AC3E7181F3FBA1B3A882),
-(39653,'Win','x64','WoW',0x10D015AB1EEB91310428D9C57EE24632),
-(39804,'Win','x64','WoW',0xE42D2BBA12ED260A76F9B1E477E19EA5),
-(40000,'Win','x64','WoW',0x4CB1433AB637F09F03FBBD1B221B04B0),
-(40120,'Mac','x64','WoW',0x853F0F2985CEAED46DF422583CD07A7C),
-(40120,'Win','x64','WoW',0x04F47EAEFD8BDEFE14AA0350EA336678),
-(40443,'Win','x64','WoW',0x8597BB43E8AB38C85504E8BFB72ABBF5),
-(40593,'Win','x64','WoW',0xBA14570F2D62D5F61953394164A8DAE2),
-(40725,'Win','x64','WoW',0xC1EBDBEB9BB2956EBCCEF7C9D27A1B3B),
-(40906,'Win','x64','WoW',0xF5FC259C8635488AFE0D0CD023F361D4),
-(40944,'Win','x64','WoW',0x368FC7FABAF487A8A049C11970657074),
-(40966,'Win','x64','WoW',0xD90F47AF21F381D2D8F3763B994BAC88),
-(41031,'Win','x64','WoW',0x019A0FACD6B0D6374B7BA69A5B677449),
-(41079,'Win','x64','WoW',0xF8853CF823BC0BBE8A9677A762DFAEE1),
-(41288,'Win','x64','WoW',0x871C0C9691DBC536EB24B68EC73FAD5B),
-(41323,'Win','x64','WoW',0xE53D0DF1FAC1A59A1C8071B295A04A1D),
-(41359,'Win','x64','WoW',0x5F8D7F2A690A4375A1B52A28D6D681FA),
-(41488,'Win','x64','WoW',0x1BC91EC368705815F3F532B553DAD981),
-(41793,'Win','x64','WoW',0xB3B47DA3B7615570742A55B96614EE1C),
-(42010,'Win','x64','WoW',0x302970161D16417B5BE553CC530E011A),
-(42423,'Win','x64','WoW',0x0B03614A7E94DD57548596BE420E9DC2),
-(42488,'Win','x64','WoW',0xA78755E6928D83A271C5D1EE3CDB6F15),
-(42521,'Win','x64','WoW',0x5FE6C12FC407C6B15B4A5D3B5B4A5D3B),
-(42538,'Win','x64','WoW',0x71A7504BD53F8DE518F24265D37310AE),
-(42560,'Win','x64','WoW',0x115FE8C38A8D67CA4664BB192E0F0DFE),
-(42614,'Win','x64','WoW',0x772BE726FEEF42124255D2EA7973CA18),
-(42698,'Win','x64','WoW',0xB4497B1CD11FC974C5FB09548AC27269),
-(42825,'Win','x64','WoW',0xA14DA228C6A6AFF1DDBA51218939E557),
-(42852,'Win','x64','WoW',0xDE9F9F0C3CC8FD54D3AFF99CEFFCE129),
-(42937,'Win','x64','WoW',0xF5FC75E70874752C92846B3333920E63),
-(42979,'Win','x64','WoW',0xE1DD38AE6450FC4D2AE4609233C59E54),
-(43114,'Win','x64','WoW',0xF75C9380CCB24A48A24EEE52C1594A7E),
-(43206,'Win','x64','WoW',0xDDE806532C7704FFB75F256DC5F1F3D9),
-(43340,'Win','x64','WoW',0x70E46D2D888E84DF9316EA849B068CF4),
-(43345,'Win','x64','WoW',0xD911ABFCDA030DEE8CAF4EE3F60DEE13),
-(43971,'Win','x64','WoW',0x681CF99E61FB0005A5C7D31D0AAD1ED9),
-(44015,'Win','x64','WoW',0xFCF0BDA7C98BFEF92AE6D8C39A217ABD),
-(44061,'Win','x64','WoW',0xFD2B5C0B3293FE0E9CAA6EB0B7788119),
-(44127,'Win','x64','WoW',0x787887CEC9FCC9B516481F60E4FC34A8),
-(44232,'Win','x64','WoW',0x81F0A71DF7E9873BB3750022D64D33CF),
-(44325,'Win','x64','WoW',0x138A7D524D268A7F9934C3D148E8F01B),
-(44730,'Win','x64','WoW',0xFC0B18C47BB4C79F4300CA0FF3E5CAC7),
-(44908,'Win','x64','WoW',0xBFFAEC40C9BCD591C7C959A9D5A8BA8C),
-(45114,'Win','x64','WoW',0xD7AFE240BD00F06C30D0C2D16E54A8BE),
-(45161,'Win','x64','WoW',0x74BD2E787A98B145B063BDA9A98F6CBD),
-(45338,'Win','x64','WoW',0x5CE2094A41B61EDA9DF56378BC3B1DE0),
-(45745,'Win','x64','WoW',0x0F6DC90161694D765A595A3AF603166B),
-(46479,'Win','x64','WoW',0xCB9AF4D89B60A3ABA288D395D315D932),
-(46658,'Win','x64','WoW',0x3F8EFB085428D75360E9EFE25CD8639A),
-(46689,'Win','x64','WoW',0xD9A11D188D6AD60906F5467510EFD3AA),
-(46702,'Win','x64','WoW',0x01B4D1688FF97DC9AAFCCD0A0B842C0B),
-(46741,'Win','x64','WoW',0x4C0F4A7EC2098AF1FBA745848EC79A78),
-(46801,'Win','x64','WoW',0xE6AC18D1EA5D36ABFFAE5EDED80630DF),
-(46879,'Win','x64','WoW',0xEFEC43936051DD1A210633AF1F6B63DB),
-(46924,'Win','x64','WoW',0xE6CE0B1A8119F069ECF1E7DBAA7BB2F8),
-(47067,'Win','x64','WoW',0x63862CFCDEA6BD2BD7F740EB36B65657),
-(47187,'Win','x64','WoW',0x711F8455C5000C237292E1E6E90631E1),
-(47213,'Win','x64','WoW',0x23C50D88CEAC0A8696ADDE8DD244D4A2),
-(47631,'Win','x64','WoW',0xF986AB91D0AEB20822EFB72F4256713C),
-(47777,'Win','x64','WoW',0xA88C04915AB9E035A104E55C4DCF5F9F),
-(47799,'Win','x64','WoW',0x7364EB093C23DB2CDC9513D5A7B4933E),
-(47825,'Win','x64','WoW',0x82A3B94E5E727AF3A208B471FF2054C0),
-(47849,'Win','x64','WoW',0xDD8BBE2087A28C0AF4984CBE23A1C707),
-(47871,'Win','x64','WoW',0x8E4F7D30EE4982B02B3B3F8837C2C4F2),
-(47884,'Win','x64','WoW',0x2B7A002BC359F2C31104BC2DE04302BF),
-(47936,'Win','x64','WoW',0x833D30D8FBC43B3FAE99CD3898D70849),
-(47967,'Win','x64','WoW',0xCFE225D0089E224D9E7541D3B5C26478),
-(48001,'Win','x64','WoW',0x4B0260A37BD95B615E71048469E6D5BB),
-(48069,'Win','x64','WoW',0x558CDF958FA082E95849779C7C6945E5),
-(48317,'Win','x64','WoW',0xC096E37B45B43244E9C79916604DD4AF),
-(48397,'Win','x64','WoW',0x64BA8779EAA97E6C57982B6B1A5B32E7),
-(48526,'Win','x64','WoW',0xD5B7D3303A2A741E6913EE1AEB0BCB65),
-(48676,'Win','x64','WoW',0xE059FB74DFF6438CC20C7F28900F64CA),
-(48749,'Win','x64','WoW',0x92DBCCA0E33DFB8A17A2B6A39246B288),
-(48838,'Win','x64','WoW',0x9E6F4E1E46EF228D2DE90F7BC48AAA96),
-(48865,'Win','x64','WoW',0x4B774ABE7B34D6702571B4279A4B6A13),
-(48892,'Win','x64','WoW',0xAA31BF27458321B03A1A346964DD7B9D),
-(48966,'Win','x64','WoW',0x823142CA131FBB715FF55D4343E55C6D),
-(48999,'Win','x64','WoW',0x79BA6FF0F9672EEF875F64155C8B62D4),
-(49267,'Win','x64','WoW',0xEEE77EA5A216E0731ADBB41AEFB1DF31),
-(49318,'Win','x64','WoW',0xAF439AEE62EE48B36C1725111E3D9BBF),
-(49343,'Win','x64','WoW',0x301A0B4C0942B9B6F605B903AD6C1F60),
-(49407,'Win','x64','WoW',0x6413820DC9885BB0693B37090CBB2F30),
-(49426,'Win','x64','WoW',0xD85EDFBFE9A94A55E2B4510BE41C19B2),
-(49444,'Win','x64','WoW',0x363B2B05285BDD8857419D2866316D3C),
-(49474,'Win','x64','WoW',0x44A7D2B352EE3D098A3CB4C2F1065E37),
-(49570,'Win','x64','WoW',0xB024DE67ACAEB9E8EE6DB38DC53E8281),
-(49679,'Win','x64','WoW',0x9CE59B68D8797EBF00581F41138F4316),
-(49741,'Win','x64','WoW',0x0EF181E2BB0E946CF3B7422ADEB6CD1A),
-(49801,'Win','x64','WoW',0x0832179567B66CA85DBD5678B604C683),
-(49890,'Win','x64','WoW',0x22A5B8A1EB797A64995F705B3DBCB14C),
-(50000,'Win','x64','WoW',0x02F06FFA2296FD66384295DBFD5A4C91),
-(50401,'Win','x64','WoW',0x3EEF52D902CCE81D16D0E255F0AA4938),
-(50438,'Win','x64','WoW',0x0B5F68F06B129CB4C57702F6D30F260B),
-(50467,'Win','x64','WoW',0x5E996B1CDCEE68432D6340138E68D1EB),
-(50469,'Win','x64','WoW',0x1768CCB6589E16AB3BEFA9D608A393A2),
-(50504,'Win','x64','WoW',0x7D5FD20C0B32C9AF5DD65433B391D49C),
-(50585,'Win','x64','WoW',0xC4F7CC38A3B84935A485F7EDAD3E764B),
-(50622,'Win','x64','WoW',0xD23A26FD75FD9A6073EB7060AA28E6A7),
-(50747,'Win','x64','WoW',0x2D3C386A9C45C27304ED3A3C6EB3F7C8),
-(50791,'Win','x64','WoW',0x0BE7D0BB07EF37C25CBC682409091EA0),
-(51130,'Win','x64','WoW',0x44CD2C91E4F0655DA387483726CE4035),
-(51187,'Win','x64','WoW',0x74E2055D3965269447B5CB1B31FC71C6),
-(51237,'Win','x64','WoW',0xC8660A21B766646FBD67F481CFCF55C3),
-(51261,'Win','x64','WoW',0x1BEBB57AE450331E9F8C301AA7876FAB),
-(51313,'Win','x64','WoW',0x35419ED0AB16735CF720858F45DC300C),
-(51421,'Win','x64','WoW',0x45E24D6F3335269787DF2B2063939002),
-(51485,'Win','x64','WoW',0xEC549E1D0A5DD85C03E7A9D93B7DC6D1),
-(51536,'Win','x64','WoW',0x570EEA10A8EC169C3FF9621D1B635BB4),
-(51754,'Win','x64','WoW',0xBED5A861C071AB41FEF6087E0C37BB1A),
-(51886,'Win','x64','WoW',0x09CF8919FD2EABDEAEBC0C810F53B511),
-(51972,'Win','x64','WoW',0x444DC7EF3544B6670C18884DADA00428),
-(52038,'Win','x64','WoW',0xA8EF004ADED8A3AFF5A67D2BB8D95795),
-(52068,'Win','x64','WoW',0xA44F842BACCC7EE8E2975FAF01F12474),
-(52095,'Win','x64','WoW',0xBA36382887D16D274EA9149695F0C9C8),
-(52106,'Win','x64','WoW',0x95F43869B7D881212CBC1690B8F393ED),
-(52129,'Win','x64','WoW',0x02DD842F2A7162EEB8FD5B9D325606F8),
-(52148,'Win','x64','WoW',0x8A969717C8CDC6E7FF4C54D5CB00C224),
-(52188,'Win','x64','WoW',0x977DF9993E94855DED5E328BA7A2F21F),
-(52301,'Win','x64','WoW',0x821AA3BB237B400B82F44970250539AA),
-(52393,'Win','x64','WoW',0xB013ED23B7EF51B29A45594D9BBB0D03),
-(52485,'Win','x64','WoW',0x5805CEB4650730AE489258DD30E34441),
-(52545,'Win','x64','WoW',0xFB52179A8355A46EDBFBDC8E8E5CDAFD),
-(52607,'Win','x64','WoW',0x8F002E4AADCAEABB08ABC2880B31AD60),
-(52649,'Win','x64','WoW',0xD0B779FBECEBC1ED5A85D83F03C8A75B),
-(52808,'Win','x64','WoW',0x6276712B6C8AEA21CD5D94D52FEE70EE),
-(52902,'Win','x64','WoW',0xD4F0A24CDF165628538C1C387A326AF3),
-(52968,'Win','x64','WoW',0x2D247FD440C44D4F1BF80B075B8720F2),
-(52983,'Win','x64','WoW',0xB1E5ADA5FDD06C9AB5E5D8A6983324AC),
-(53007,'Win','x64','WoW',0xA21AFB4D381C56AF471D994258C0EEF5),
-(53040,'Win','x64','WoW',0x2F1283BF7B7F307B70DBBD75CC42D7C3),
-(53104,'Win','x64','WoW',0xDBD79EC8DF044B53C78931B985CAB406),
-(53162,'Win','x64','WoW',0x8A67511FBF8984EEE2B630F7CB23376A),
-(53212,'Win','x64','WoW',0x08761EFF2F9B639364B9A9FBFFFFB949),
-(53262,'Win','x64','WoW',0x614A72D53126348A4927EC0F53FD2B7A),
-(53441,'Win','x64','WoW',0xBFDD7D0FE87D5F75E6DEB4F5C99D7C99),
-(53584,'Win','x64','WoW',0xCDD7A93659A03460B5A6CE1C4ACE5554),
-(53840,'Win','x64','WoW',0xAC97D745C60DD3DC5F973E55C0E3649E),
-(53877,'Win','x64','WoW',0x16320F95B63846A2276E1D2612C34AD4),
-(53913,'Win','x64','WoW',0x475680680B2192EBCF6744D14F755199),
-(53989,'Win','x64','WoW',0x3AEB90ACB9E18B88BA1021F52D51B857),
-(54070,'Win','x64','WoW',0xFDA08264B7587250CF78F9B960218169),
-(54205,'Win','x64','WoW',0x589D59EB3F0D6D77C2175D9302F78FDD),
-(54358,'Win','x64','WoW',0x89C733D366E845FB9264404CD48CCA89),
-(54499,'Win','x64','WoW',0x6AC1F6180FC4C390F782DB933BD83326),
-(54577,'Win','x64','WoW',0xCBBBBBFFB2C652F0F4A7848D86E1B063),
-(54601,'Win','x64','WoW',0xF8B866CF7DB9A12273F35B3929627375),
-(54604,'Win','x64','WoW',0xA5FF4CE535F69D4D7F638CB2C11F2243),
-(54630,'Win','x64','WoW',0xF37935510BA6B559363C160E1DF18230),
-(54673,'Win','x64','WoW',0xAF8B9C8A9C6128498E85228B965A004D),
-(54717,'Win','x64','WoW',0x862BBA15158DFF6B56BCF71C1B34D41A),
-(54736,'Win','x64','WoW',0xFE58F039D91E1C248886A2828127CA2F),
-(54762,'Win','x64','WoW',0x5F7FDA560030255445B713456A286CFA),
-(54847,'Win','x64','WoW',0x32FDA0353160EC51EB36195CFACEF2B7),
-(54904,'Win','x64','WoW',0x09CBEC3C0DEA28BCA79F1FD9B879B0E3),
-(54988,'Win','x64','WoW',0x8F2791553226871977B4F9D7F1137311),
-(55142,'Win','x64','WoW',0x298B99B5AD67EA3D2AB4B3E07A415305),
-(55165,'Win','x64','WoW',0x26D4D1C01434A8A6723DCABC944B6FD0),
-(55261,'Win','x64','WoW',0x84E153A3DD1F8249274B91047AAC7AED),
-(55461,'Win','x64','WoW',0xC4522674F854EFECC76C898EC9545099),
-(55664,'Win','x64','WoW',0xDBCA58486FAAA0FE54EA287A3047E923),
-(55666,'Win','x64','WoW',0xF7E5A88E4D3615B652C8B9D76E7F617C),
-(55792,'Win','x64','WoW',0xC4DECDAA44BC548FF09EF3BB837D2147),
-(55793,'Win','x64','WoW',0xF9CF3232AD1C38C2028668D5BB64198F),
-(55818,'Win','x64','WoW',0x903A9B546248F71B16D9D9B06A072C24),
-(55824,'Win','x64','WoW',0x8A6F13269A2896067A1E88789FB41BA7),
-(55846,'Win','x64','WoW',0xBB5E1BED705872C226834B95A9E9F8A9),
-(55933,'Win','x64','WoW',0xC34D42CB351C400D1319D221197CF18D),
-(55939,'Win','x64','WoW',0x91529F4CE41DE4E54E132660ACDCADC5),
-(55959,'Win','x64','WoW',0xED57E0538FD1CE99B171BE34823148A9),
-(55960,'Win','x64','WoW',0x078C056CFC7B371BDE1BAF308E6C19AF),
-(56008,'Win','x64','WoW',0x00FCD6BFFCCCBA7A8E71E307EA6EBD0C),
-(56110,'Win','x64','WoW',0x800BCA228E2FAE37ED160F3C09E21F3A),
-(56162,'Win','x64','WoW',0x6F5C93BA436665A94DB67CE5361D4EA8),
-(56196,'Mac','A64','WoW',0x778F6A5DF79A4EF1B86F651F3B303CE7),
-(56196,'Win','x64','WoW',0x81FC14274BFF0347FFF9C8B1AA6BED9B),
-(56263,'Win','x64','WoW',0xEA8472C99236CC617BF518A924014D56),
-(56288,'Mac','A64','WoW',0x41710C793EF021721F14B06EC1896D3F),
-(56288,'Win','x64','WoW',0x03544E35D0480938E5C1238B3A26BDDD),
-(56311,'Mac','A64','WoW',0x412D3200715AAFDC0522DF031A941F0E),
-(56311,'Win','x64','WoW',0xAC6415575AEE4D32735FFAD0C57226B2),
-(56313,'Mac','A64','WoW',0xA83ED19EE659BC95CC322D1E49BDEDBB),
-(56313,'Win','x64','WoW',0xEAF769009A9AD3B1AA0414E1C344074B);
-/*!40000 ALTER TABLE `build_auth_key` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `build_executable_hash`
---
-
+-- ----------------------------
+-- Table structure for build_executable_hash
+-- ----------------------------
 DROP TABLE IF EXISTS `build_executable_hash`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `build_executable_hash` (
+CREATE TABLE `build_executable_hash`  (
   `build` int NOT NULL,
   `platform` char(4) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   `executableHash` binary(20) NOT NULL,
-  PRIMARY KEY (`build`,`platform`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  PRIMARY KEY (`build`, `platform`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
---
--- Dumping data for table `build_executable_hash`
---
+-- ----------------------------
+-- Records of build_executable_hash
+-- ----------------------------
+INSERT INTO `build_executable_hash` VALUES (5875, 'OSX', 0x8D173CC381961EEBABF336F5E6675B101BB513E5);
+INSERT INTO `build_executable_hash` VALUES (5875, 'Win', 0x95EDB27C7823B363CBDDAB56A392E7CB73FCCA20);
+INSERT INTO `build_executable_hash` VALUES (8606, 'OSX', 0xD8B0ECFE534BC1131E19BAD1D4C0E813EEE4994F);
+INSERT INTO `build_executable_hash` VALUES (8606, 'Win', 0x319AFAA3F2559682F9FF658BE01456255F456FB1);
+INSERT INTO `build_executable_hash` VALUES (12340, 'OSX', 0xB706D13FF2F4018839729461E3F8A0E2B5FDC034);
+INSERT INTO `build_executable_hash` VALUES (12340, 'Win', 0xCDCBBD5188315E6B4D19449D492DBCFAF156A347);
 
-LOCK TABLES `build_executable_hash` WRITE;
-/*!40000 ALTER TABLE `build_executable_hash` DISABLE KEYS */;
-INSERT INTO `build_executable_hash` VALUES
-(5875,'OSX',0x8D173CC381961EEBABF336F5E6675B101BB513E5),
-(5875,'Win',0x95EDB27C7823B363CBDDAB56A392E7CB73FCCA20),
-(8606,'OSX',0xD8B0ECFE534BC1131E19BAD1D4C0E813EEE4994F),
-(8606,'Win',0x319AFAA3F2559682F9FF658BE01456255F456FB1),
-(12340,'OSX',0xB706D13FF2F4018839729461E3F8A0E2B5FDC034),
-(12340,'Win',0xCDCBBD5188315E6B4D19449D492DBCFAF156A347);
-/*!40000 ALTER TABLE `build_executable_hash` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `build_info`
---
-
+-- ----------------------------
+-- Table structure for build_info
+-- ----------------------------
 DROP TABLE IF EXISTS `build_info`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `build_info` (
+CREATE TABLE `build_info`  (
   `build` int NOT NULL,
-  `majorVersion` int DEFAULT NULL,
-  `minorVersion` int DEFAULT NULL,
-  `bugfixVersion` int DEFAULT NULL,
-  `hotfixVersion` char(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`build`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `majorVersion` int NULL DEFAULT NULL,
+  `minorVersion` int NULL DEFAULT NULL,
+  `bugfixVersion` int NULL DEFAULT NULL,
+  `hotfixVersion` char(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`build`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `build_info`
---
+-- ----------------------------
+-- Records of build_info
+-- ----------------------------
+INSERT INTO `build_info` VALUES (5875, 1, 12, 1, NULL);
+INSERT INTO `build_info` VALUES (6005, 1, 12, 2, NULL);
+INSERT INTO `build_info` VALUES (6141, 1, 12, 3, NULL);
+INSERT INTO `build_info` VALUES (8606, 2, 4, 3, NULL);
+INSERT INTO `build_info` VALUES (9947, 3, 1, 3, NULL);
+INSERT INTO `build_info` VALUES (10505, 3, 2, 2, 'a');
+INSERT INTO `build_info` VALUES (11159, 3, 3, 0, 'a');
+INSERT INTO `build_info` VALUES (11403, 3, 3, 2, NULL);
+INSERT INTO `build_info` VALUES (11723, 3, 3, 3, 'a');
+INSERT INTO `build_info` VALUES (12340, 3, 3, 5, 'a');
+INSERT INTO `build_info` VALUES (13623, 4, 0, 6, 'a');
+INSERT INTO `build_info` VALUES (13930, 3, 3, 5, 'a');
+INSERT INTO `build_info` VALUES (14545, 4, 2, 2, NULL);
+INSERT INTO `build_info` VALUES (15595, 4, 3, 4, NULL);
+INSERT INTO `build_info` VALUES (19116, 6, 0, 3, NULL);
+INSERT INTO `build_info` VALUES (19243, 6, 0, 3, NULL);
+INSERT INTO `build_info` VALUES (19342, 6, 0, 3, NULL);
+INSERT INTO `build_info` VALUES (19702, 6, 1, 0, NULL);
+INSERT INTO `build_info` VALUES (19802, 6, 1, 2, NULL);
+INSERT INTO `build_info` VALUES (19831, 6, 1, 2, NULL);
+INSERT INTO `build_info` VALUES (19865, 6, 1, 2, NULL);
+INSERT INTO `build_info` VALUES (20182, 6, 2, 0, 'a');
+INSERT INTO `build_info` VALUES (20201, 6, 2, 0, NULL);
+INSERT INTO `build_info` VALUES (20216, 6, 2, 0, NULL);
+INSERT INTO `build_info` VALUES (20253, 6, 2, 0, NULL);
+INSERT INTO `build_info` VALUES (20338, 6, 2, 0, NULL);
+INSERT INTO `build_info` VALUES (20444, 6, 2, 2, NULL);
+INSERT INTO `build_info` VALUES (20490, 6, 2, 2, 'a');
+INSERT INTO `build_info` VALUES (20574, 6, 2, 2, 'a');
+INSERT INTO `build_info` VALUES (20726, 6, 2, 3, NULL);
+INSERT INTO `build_info` VALUES (20779, 6, 2, 3, NULL);
+INSERT INTO `build_info` VALUES (20886, 6, 2, 3, NULL);
+INSERT INTO `build_info` VALUES (21355, 6, 2, 4, NULL);
+INSERT INTO `build_info` VALUES (21463, 6, 2, 4, NULL);
+INSERT INTO `build_info` VALUES (21742, 6, 2, 4, NULL);
+INSERT INTO `build_info` VALUES (22248, 7, 0, 3, NULL);
+INSERT INTO `build_info` VALUES (22293, 7, 0, 3, NULL);
+INSERT INTO `build_info` VALUES (22345, 7, 0, 3, NULL);
+INSERT INTO `build_info` VALUES (22410, 7, 0, 3, NULL);
+INSERT INTO `build_info` VALUES (22423, 7, 0, 3, NULL);
+INSERT INTO `build_info` VALUES (22498, 7, 0, 3, NULL);
+INSERT INTO `build_info` VALUES (22522, 7, 0, 3, NULL);
+INSERT INTO `build_info` VALUES (22566, 7, 0, 3, NULL);
+INSERT INTO `build_info` VALUES (22594, 7, 0, 3, NULL);
+INSERT INTO `build_info` VALUES (22624, 7, 0, 3, NULL);
+INSERT INTO `build_info` VALUES (22747, 7, 0, 3, NULL);
+INSERT INTO `build_info` VALUES (22810, 7, 0, 3, NULL);
+INSERT INTO `build_info` VALUES (22900, 7, 1, 0, NULL);
+INSERT INTO `build_info` VALUES (22908, 7, 1, 0, NULL);
+INSERT INTO `build_info` VALUES (22950, 7, 1, 0, NULL);
+INSERT INTO `build_info` VALUES (22995, 7, 1, 0, NULL);
+INSERT INTO `build_info` VALUES (22996, 7, 1, 0, NULL);
+INSERT INTO `build_info` VALUES (23171, 7, 1, 0, NULL);
+INSERT INTO `build_info` VALUES (23222, 7, 1, 0, NULL);
+INSERT INTO `build_info` VALUES (23360, 7, 1, 5, NULL);
+INSERT INTO `build_info` VALUES (23420, 7, 1, 5, NULL);
+INSERT INTO `build_info` VALUES (23911, 7, 2, 0, NULL);
+INSERT INTO `build_info` VALUES (23937, 7, 2, 0, NULL);
+INSERT INTO `build_info` VALUES (24015, 7, 2, 0, NULL);
+INSERT INTO `build_info` VALUES (24330, 7, 2, 5, NULL);
+INSERT INTO `build_info` VALUES (24367, 7, 2, 5, NULL);
+INSERT INTO `build_info` VALUES (24415, 7, 2, 5, NULL);
+INSERT INTO `build_info` VALUES (24430, 7, 2, 5, NULL);
+INSERT INTO `build_info` VALUES (24461, 7, 2, 5, NULL);
+INSERT INTO `build_info` VALUES (24742, 7, 2, 5, NULL);
+INSERT INTO `build_info` VALUES (25549, 7, 3, 2, NULL);
+INSERT INTO `build_info` VALUES (25996, 7, 3, 5, NULL);
+INSERT INTO `build_info` VALUES (26124, 7, 3, 5, NULL);
+INSERT INTO `build_info` VALUES (26365, 7, 3, 5, NULL);
+INSERT INTO `build_info` VALUES (26654, 7, 3, 5, NULL);
+INSERT INTO `build_info` VALUES (26822, 7, 3, 5, NULL);
+INSERT INTO `build_info` VALUES (26899, 7, 3, 5, NULL);
+INSERT INTO `build_info` VALUES (26972, 7, 3, 5, NULL);
+INSERT INTO `build_info` VALUES (28153, 8, 0, 1, NULL);
+INSERT INTO `build_info` VALUES (30706, 8, 1, 5, NULL);
+INSERT INTO `build_info` VALUES (30993, 8, 2, 0, NULL);
+INSERT INTO `build_info` VALUES (31229, 8, 2, 0, NULL);
+INSERT INTO `build_info` VALUES (31429, 8, 2, 0, NULL);
+INSERT INTO `build_info` VALUES (31478, 8, 2, 0, NULL);
+INSERT INTO `build_info` VALUES (32305, 8, 2, 5, NULL);
+INSERT INTO `build_info` VALUES (32494, 8, 2, 5, NULL);
+INSERT INTO `build_info` VALUES (32580, 8, 2, 5, NULL);
+INSERT INTO `build_info` VALUES (32638, 8, 2, 5, NULL);
+INSERT INTO `build_info` VALUES (32722, 8, 2, 5, NULL);
 
-LOCK TABLES `build_info` WRITE;
-/*!40000 ALTER TABLE `build_info` DISABLE KEYS */;
-INSERT INTO `build_info` VALUES
-(5875,1,12,1,NULL),
-(6005,1,12,2,NULL),
-(6141,1,12,3,NULL),
-(8606,2,4,3,NULL),
-(9947,3,1,3,NULL),
-(10505,3,2,2,'a'),
-(11159,3,3,0,'a'),
-(11403,3,3,2,NULL),
-(11723,3,3,3,'a'),
-(12340,3,3,5,'a'),
-(13623,4,0,6,'a'),
-(13930,3,3,5,'a'),
-(14545,4,2,2,NULL),
-(15595,4,3,4,NULL),
-(19116,6,0,3,NULL),
-(19243,6,0,3,NULL),
-(19342,6,0,3,NULL),
-(19702,6,1,0,NULL),
-(19802,6,1,2,NULL),
-(19831,6,1,2,NULL),
-(19865,6,1,2,NULL),
-(20182,6,2,0,'a'),
-(20201,6,2,0,NULL),
-(20216,6,2,0,NULL),
-(20253,6,2,0,NULL),
-(20338,6,2,0,NULL),
-(20444,6,2,2,NULL),
-(20490,6,2,2,'a'),
-(20574,6,2,2,'a'),
-(20726,6,2,3,NULL),
-(20779,6,2,3,NULL),
-(20886,6,2,3,NULL),
-(21355,6,2,4,NULL),
-(21463,6,2,4,NULL),
-(21742,6,2,4,NULL),
-(22248,7,0,3,NULL),
-(22293,7,0,3,NULL),
-(22345,7,0,3,NULL),
-(22410,7,0,3,NULL),
-(22423,7,0,3,NULL),
-(22498,7,0,3,NULL),
-(22522,7,0,3,NULL),
-(22566,7,0,3,NULL),
-(22594,7,0,3,NULL),
-(22624,7,0,3,NULL),
-(22747,7,0,3,NULL),
-(22810,7,0,3,NULL),
-(22900,7,1,0,NULL),
-(22908,7,1,0,NULL),
-(22950,7,1,0,NULL),
-(22995,7,1,0,NULL),
-(22996,7,1,0,NULL),
-(23171,7,1,0,NULL),
-(23222,7,1,0,NULL),
-(23360,7,1,5,NULL),
-(23420,7,1,5,NULL),
-(23911,7,2,0,NULL),
-(23937,7,2,0,NULL),
-(24015,7,2,0,NULL),
-(24330,7,2,5,NULL),
-(24367,7,2,5,NULL),
-(24415,7,2,5,NULL),
-(24430,7,2,5,NULL),
-(24461,7,2,5,NULL),
-(24742,7,2,5,NULL),
-(25549,7,3,2,NULL),
-(25996,7,3,5,NULL),
-(26124,7,3,5,NULL),
-(26365,7,3,5,NULL),
-(26654,7,3,5,NULL),
-(26822,7,3,5,NULL),
-(26899,7,3,5,NULL),
-(26972,7,3,5,NULL),
-(28153,8,0,1,NULL),
-(30706,8,1,5,NULL),
-(30993,8,2,0,NULL),
-(31229,8,2,0,NULL),
-(31429,8,2,0,NULL),
-(31478,8,2,0,NULL),
-(32305,8,2,5,NULL),
-(32494,8,2,5,NULL),
-(32580,8,2,5,NULL),
-(32638,8,2,5,NULL),
-(32722,8,2,5,NULL),
-(32750,8,2,5,NULL),
-(32978,8,2,5,NULL),
-(33369,8,3,0,NULL),
-(33528,8,3,0,NULL),
-(33724,8,3,0,NULL),
-(33775,8,3,0,NULL),
-(33941,8,3,0,NULL),
-(34220,8,3,0,NULL),
-(34601,8,3,0,NULL),
-(34769,8,3,0,NULL),
-(34963,8,3,0,NULL),
-(35249,8,3,7,NULL),
-(35284,8,3,7,NULL),
-(35435,8,3,7,NULL),
-(35662,8,3,7,NULL),
-(36753,9,0,2,NULL),
-(36839,9,0,2,NULL),
-(36949,9,0,2,NULL),
-(37142,9,0,2,NULL),
-(37176,9,0,2,NULL),
-(37474,9,0,2,NULL),
-(38134,9,0,5,NULL),
-(38556,9,0,5,NULL),
-(39653,9,1,0,NULL),
-(39804,9,1,0,NULL),
-(40000,9,1,0,NULL),
-(40120,9,1,0,NULL),
-(40443,9,1,0,NULL),
-(40593,9,1,0,NULL),
-(40725,9,1,0,NULL),
-(40906,9,1,5,NULL),
-(40944,9,1,5,NULL),
-(40966,9,1,5,NULL),
-(41031,9,1,5,NULL),
-(41079,9,1,5,NULL),
-(41288,9,1,5,NULL),
-(41323,9,1,5,NULL),
-(41359,9,1,5,NULL),
-(41488,9,1,5,NULL),
-(41793,9,1,5,NULL),
-(42010,9,1,5,NULL),
-(42423,9,2,0,NULL),
-(42488,9,2,0,NULL),
-(42521,9,2,0,NULL),
-(42538,9,2,0,NULL),
-(42560,9,2,0,NULL),
-(42614,9,2,0,NULL),
-(42698,9,2,0,NULL),
-(42825,9,2,0,NULL),
-(42852,9,2,0,NULL),
-(42937,9,2,0,NULL),
-(42979,9,2,0,NULL),
-(43114,9,2,0,NULL),
-(43206,9,2,0,NULL),
-(43340,9,2,0,NULL),
-(43345,9,2,0,NULL),
-(43971,9,2,5,NULL),
-(44015,9,2,5,NULL),
-(44061,9,2,5,NULL),
-(44127,9,2,5,NULL),
-(44232,9,2,5,NULL),
-(44325,9,2,5,NULL),
-(44730,9,2,5,NULL),
-(44908,9,2,5,NULL),
-(45114,9,2,7,NULL),
-(45161,9,2,7,NULL),
-(45338,9,2,7,NULL),
-(45745,9,2,7,NULL),
-(46479,10,0,2,NULL),
-(46658,10,0,2,NULL),
-(46689,10,0,2,NULL),
-(46702,10,0,2,NULL),
-(46741,10,0,2,NULL),
-(46801,10,0,2,NULL),
-(46879,10,0,2,NULL),
-(46924,10,0,2,NULL),
-(47067,10,0,2,NULL),
-(47187,10,0,2,NULL),
-(47213,10,0,2,NULL),
-(47631,10,0,2,NULL),
-(47777,10,0,5,NULL),
-(47799,10,0,5,NULL),
-(47825,10,0,5,NULL),
-(47849,10,0,5,NULL),
-(47871,10,0,5,NULL),
-(47884,10,0,5,NULL),
-(47936,10,0,5,NULL),
-(47967,10,0,5,NULL),
-(48001,10,0,5,NULL),
-(48069,10,0,5,NULL),
-(48317,10,0,5,NULL),
-(48397,10,0,5,NULL),
-(48526,10,0,5,NULL),
-(48676,10,0,7,NULL),
-(48749,10,0,7,NULL),
-(48838,10,0,7,NULL),
-(48865,10,0,7,NULL),
-(48892,10,0,7,NULL),
-(48966,10,0,7,NULL),
-(48999,10,0,7,NULL),
-(49267,10,0,7,NULL),
-(49318,10,1,0,NULL),
-(49343,10,0,7,NULL),
-(49407,10,1,0,NULL),
-(49426,10,1,0,NULL),
-(49444,10,1,0,NULL),
-(49474,10,1,0,NULL),
-(49570,10,1,0,NULL),
-(49679,10,1,0,NULL),
-(49741,10,1,0,NULL),
-(49801,10,1,0,NULL),
-(49890,10,1,0,NULL),
-(50000,10,1,0,NULL),
-(50401,10,1,5,NULL),
-(50438,10,1,5,NULL),
-(50467,10,1,5,NULL),
-(50469,10,1,5,NULL),
-(50504,10,1,5,NULL),
-(50585,10,1,5,NULL),
-(50622,10,1,5,NULL),
-(50747,10,1,5,NULL),
-(50791,10,1,5,NULL),
-(51130,10,1,5,NULL),
-(51187,10,1,7,NULL),
-(51237,10,1,7,NULL),
-(51261,10,1,7,NULL),
-(51313,10,1,7,NULL),
-(51421,10,1,7,NULL),
-(51485,10,1,7,NULL),
-(51536,10,1,7,NULL),
-(51754,10,1,7,NULL),
-(51886,10,1,7,NULL),
-(51972,10,1,7,NULL),
-(52038,10,2,0,NULL),
-(52068,10,2,0,NULL),
-(52095,10,2,0,NULL),
-(52106,10,2,0,NULL),
-(52129,10,2,0,NULL),
-(52148,10,2,0,NULL),
-(52188,10,2,0,NULL),
-(52301,10,2,0,NULL),
-(52393,10,2,0,NULL),
-(52485,10,2,0,NULL),
-(52545,10,2,0,NULL),
-(52607,10,2,0,NULL),
-(52649,10,2,0,NULL),
-(52808,10,2,0,NULL),
-(52902,10,2,5,NULL),
-(52968,10,2,5,NULL),
-(52983,10,2,5,NULL),
-(53007,10,2,5,NULL),
-(53040,10,2,5,NULL),
-(53104,10,2,5,NULL),
-(53162,10,2,5,NULL),
-(53212,10,2,5,NULL),
-(53262,10,2,5,NULL),
-(53441,10,2,5,NULL),
-(53584,10,2,5,NULL),
-(53840,10,2,6,NULL),
-(53877,10,2,6,NULL),
-(53913,10,2,6,NULL),
-(53989,10,2,6,NULL),
-(54070,10,2,6,NULL),
-(54205,10,2,6,NULL),
-(54358,10,2,6,NULL),
-(54499,10,2,6,NULL),
-(54577,10,2,7,NULL),
-(54601,10,2,7,NULL),
-(54604,10,2,7,NULL),
-(54630,10,2,7,NULL),
-(54673,10,2,7,NULL),
-(54717,10,2,7,NULL),
-(54736,10,2,7,NULL),
-(54762,10,2,7,NULL),
-(54847,10,2,7,NULL),
-(54904,10,2,7,NULL),
-(54988,10,2,7,NULL),
-(55142,10,2,7,NULL),
-(55165,10,2,7,NULL),
-(55261,10,2,7,NULL),
-(55461,10,2,7,NULL),
-(55664,10,2,7,NULL),
-(55666,11,0,0,NULL),
-(55792,11,0,0,NULL),
-(55793,11,0,0,NULL),
-(55818,11,0,0,NULL),
-(55824,11,0,0,NULL),
-(55846,11,0,0,NULL),
-(55933,11,0,0,NULL),
-(55939,11,0,0,NULL),
-(55959,11,0,2,NULL),
-(55960,11,0,0,NULL),
-(56008,11,0,0,NULL),
-(56110,11,0,2,NULL),
-(56162,11,0,2,NULL),
-(56196,11,0,2,NULL),
-(56263,11,0,2,NULL),
-(56288,11,0,2,NULL),
-(56311,11,0,2,NULL),
-(56313,11,0,2,NULL);
-/*!40000 ALTER TABLE `build_info` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `ip_banned`
---
-
+-- ----------------------------
+-- Table structure for ip_banned
+-- ----------------------------
 DROP TABLE IF EXISTS `ip_banned`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `ip_banned` (
-  `ip` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '127.0.0.1',
-  `bandate` int unsigned NOT NULL,
-  `unbandate` int unsigned NOT NULL,
-  `bannedby` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '[Console]',
-  `banreason` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'no reason',
-  PRIMARY KEY (`ip`,`bandate`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Banned IPs';
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `ip_banned`  (
+  `ip` varchar(15) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '127.0.0.1',
+  `bandate` int UNSIGNED NOT NULL,
+  `unbandate` int UNSIGNED NOT NULL,
+  `bannedby` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '[Console]',
+  `banreason` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'no reason',
+  PRIMARY KEY (`ip`, `bandate`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = 'Banned IPs' ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `ip_banned`
---
+-- ----------------------------
+-- Records of ip_banned
+-- ----------------------------
 
-LOCK TABLES `ip_banned` WRITE;
-/*!40000 ALTER TABLE `ip_banned` DISABLE KEYS */;
-/*!40000 ALTER TABLE `ip_banned` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `logs`
---
-
+-- ----------------------------
+-- Table structure for logs
+-- ----------------------------
 DROP TABLE IF EXISTS `logs`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `logs` (
-  `time` int unsigned NOT NULL,
-  `realm` int unsigned NOT NULL,
-  `type` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `level` tinyint unsigned NOT NULL DEFAULT '0',
-  `string` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `logs`  (
+  `time` int UNSIGNED NOT NULL,
+  `realm` int UNSIGNED NOT NULL,
+  `type` varchar(250) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `level` tinyint UNSIGNED NOT NULL DEFAULT 0,
+  `string` text CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `logs`
---
+-- ----------------------------
+-- Records of logs
+-- ----------------------------
 
-LOCK TABLES `logs` WRITE;
-/*!40000 ALTER TABLE `logs` DISABLE KEYS */;
-/*!40000 ALTER TABLE `logs` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `logs_ip_actions`
---
-
+-- ----------------------------
+-- Table structure for logs_ip_actions
+-- ----------------------------
 DROP TABLE IF EXISTS `logs_ip_actions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `logs_ip_actions` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Unique Identifier',
-  `account_id` int unsigned NOT NULL COMMENT 'Account ID',
-  `character_guid` bigint unsigned NOT NULL COMMENT 'Character Guid',
-  `realm_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'Realm ID',
-  `type` tinyint unsigned NOT NULL,
-  `ip` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '127.0.0.1',
-  `systemnote` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'Notes inserted by system',
-  `unixtime` int unsigned NOT NULL COMMENT 'Unixtime',
+CREATE TABLE `logs_ip_actions`  (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Unique Identifier',
+  `account_id` int UNSIGNED NOT NULL COMMENT 'Account ID',
+  `character_guid` bigint UNSIGNED NOT NULL COMMENT 'Character Guid',
+  `realm_id` int UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Realm ID',
+  `type` tinyint UNSIGNED NOT NULL,
+  `ip` varchar(15) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '127.0.0.1',
+  `systemnote` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL COMMENT 'Notes inserted by system',
+  `unixtime` int UNSIGNED NOT NULL COMMENT 'Unixtime',
   `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Timestamp',
-  `comment` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'Allows users to add a comment',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Used to log ips of individual actions';
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `comment` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL COMMENT 'Allows users to add a comment',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = 'Used to log ips of individual actions' ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `logs_ip_actions`
---
+-- ----------------------------
+-- Records of logs_ip_actions
+-- ----------------------------
 
-LOCK TABLES `logs_ip_actions` WRITE;
-/*!40000 ALTER TABLE `logs_ip_actions` DISABLE KEYS */;
-/*!40000 ALTER TABLE `logs_ip_actions` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `rbac_account_permissions`
---
-
+-- ----------------------------
+-- Table structure for rbac_account_permissions
+-- ----------------------------
 DROP TABLE IF EXISTS `rbac_account_permissions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `rbac_account_permissions` (
-  `accountId` int unsigned NOT NULL COMMENT 'Account id',
-  `permissionId` int unsigned NOT NULL COMMENT 'Permission id',
-  `granted` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'Granted = 1, Denied = 0',
-  `realmId` int NOT NULL DEFAULT '-1' COMMENT 'Realm Id, -1 means all',
-  PRIMARY KEY (`accountId`,`permissionId`,`realmId`),
-  KEY `fk__rbac_account_roles__rbac_permissions` (`permissionId`),
-  CONSTRAINT `fk__rbac_account_permissions__account` FOREIGN KEY (`accountId`) REFERENCES `account` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk__rbac_account_roles__rbac_permissions` FOREIGN KEY (`permissionId`) REFERENCES `rbac_permissions` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Account-Permission relation';
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `rbac_account_permissions`  (
+  `accountId` int UNSIGNED NOT NULL COMMENT 'Account id',
+  `permissionId` int UNSIGNED NOT NULL COMMENT 'Permission id',
+  `granted` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'Granted = 1, Denied = 0',
+  `realmId` int NOT NULL DEFAULT -1 COMMENT 'Realm Id, -1 means all',
+  PRIMARY KEY (`accountId`, `permissionId`, `realmId`) USING BTREE,
+  INDEX `fk__rbac_account_roles__rbac_permissions`(`permissionId` ASC) USING BTREE,
+  CONSTRAINT `fk__rbac_account_permissions__account` FOREIGN KEY (`accountId`) REFERENCES `account` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `fk__rbac_account_roles__rbac_permissions` FOREIGN KEY (`permissionId`) REFERENCES `rbac_permissions` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = 'Account-Permission relation' ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `rbac_account_permissions`
---
+-- ----------------------------
+-- Records of rbac_account_permissions
+-- ----------------------------
+INSERT INTO `rbac_account_permissions` VALUES (1, 192, 1, -1);
+INSERT INTO `rbac_account_permissions` VALUES (5, 192, 1, -1);
+INSERT INTO `rbac_account_permissions` VALUES (9, 192, 1, -1);
+INSERT INTO `rbac_account_permissions` VALUES (14, 192, 1, -1);
+INSERT INTO `rbac_account_permissions` VALUES (16, 192, 1, -1);
+INSERT INTO `rbac_account_permissions` VALUES (17, 192, 1, -1);
 
-LOCK TABLES `rbac_account_permissions` WRITE;
-/*!40000 ALTER TABLE `rbac_account_permissions` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rbac_account_permissions` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `rbac_default_permissions`
---
-
+-- ----------------------------
+-- Table structure for rbac_default_permissions
+-- ----------------------------
 DROP TABLE IF EXISTS `rbac_default_permissions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `rbac_default_permissions` (
-  `secId` int unsigned NOT NULL COMMENT 'Security Level id',
-  `permissionId` int unsigned NOT NULL COMMENT 'permission id',
-  `realmId` int NOT NULL DEFAULT '-1' COMMENT 'Realm Id, -1 means all',
-  PRIMARY KEY (`secId`,`permissionId`,`realmId`),
-  KEY `fk__rbac_default_permissions__rbac_permissions` (`permissionId`),
-  CONSTRAINT `fk__rbac_default_permissions__rbac_permissions` FOREIGN KEY (`permissionId`) REFERENCES `rbac_permissions` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Default permission to assign to different account security levels';
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `rbac_default_permissions`  (
+  `secId` int UNSIGNED NOT NULL COMMENT 'Security Level id',
+  `permissionId` int UNSIGNED NOT NULL COMMENT 'permission id',
+  `realmId` int NOT NULL DEFAULT -1 COMMENT 'Realm Id, -1 means all',
+  PRIMARY KEY (`secId`, `permissionId`, `realmId`) USING BTREE,
+  INDEX `fk__rbac_default_permissions__rbac_permissions`(`permissionId` ASC) USING BTREE,
+  CONSTRAINT `fk__rbac_default_permissions__rbac_permissions` FOREIGN KEY (`permissionId`) REFERENCES `rbac_permissions` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = 'Default permission to assign to different account security levels' ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `rbac_default_permissions`
---
+-- ----------------------------
+-- Records of rbac_default_permissions
+-- ----------------------------
+INSERT INTO `rbac_default_permissions` VALUES (3, 192, -1);
+INSERT INTO `rbac_default_permissions` VALUES (2, 193, -1);
+INSERT INTO `rbac_default_permissions` VALUES (1, 194, -1);
+INSERT INTO `rbac_default_permissions` VALUES (0, 195, -1);
 
-LOCK TABLES `rbac_default_permissions` WRITE;
-/*!40000 ALTER TABLE `rbac_default_permissions` DISABLE KEYS */;
-INSERT INTO `rbac_default_permissions` VALUES
-(3,192,-1),
-(2,193,-1),
-(1,194,-1),
-(0,195,-1);
-/*!40000 ALTER TABLE `rbac_default_permissions` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `rbac_linked_permissions`
---
-
+-- ----------------------------
+-- Table structure for rbac_linked_permissions
+-- ----------------------------
 DROP TABLE IF EXISTS `rbac_linked_permissions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `rbac_linked_permissions` (
-  `id` int unsigned NOT NULL COMMENT 'Permission id',
-  `linkedId` int unsigned NOT NULL COMMENT 'Linked Permission id',
-  PRIMARY KEY (`id`,`linkedId`),
-  KEY `fk__rbac_linked_permissions__rbac_permissions1` (`id`),
-  KEY `fk__rbac_linked_permissions__rbac_permissions2` (`linkedId`),
-  CONSTRAINT `fk__rbac_linked_permissions__rbac_permissions1` FOREIGN KEY (`id`) REFERENCES `rbac_permissions` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk__rbac_linked_permissions__rbac_permissions2` FOREIGN KEY (`linkedId`) REFERENCES `rbac_permissions` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Permission - Linked Permission relation';
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `rbac_linked_permissions`  (
+  `id` int UNSIGNED NOT NULL COMMENT 'Permission id',
+  `linkedId` int UNSIGNED NOT NULL COMMENT 'Linked Permission id',
+  PRIMARY KEY (`id`, `linkedId`) USING BTREE,
+  INDEX `fk__rbac_linked_permissions__rbac_permissions1`(`id` ASC) USING BTREE,
+  INDEX `fk__rbac_linked_permissions__rbac_permissions2`(`linkedId` ASC) USING BTREE,
+  CONSTRAINT `fk__rbac_linked_permissions__rbac_permissions1` FOREIGN KEY (`id`) REFERENCES `rbac_permissions` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  CONSTRAINT `fk__rbac_linked_permissions__rbac_permissions2` FOREIGN KEY (`linkedId`) REFERENCES `rbac_permissions` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = 'Permission - Linked Permission relation' ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `rbac_linked_permissions`
---
+-- ----------------------------
+-- Records of rbac_linked_permissions
+-- ----------------------------
+INSERT INTO `rbac_linked_permissions` VALUES (192, 7);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 21);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 42);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 43);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 193);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 196);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 217);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 218);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 219);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 220);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 221);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 222);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 223);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 224);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 225);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 228);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 229);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 778);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 779);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 780);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 781);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 782);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 783);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 784);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 785);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 786);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 787);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 788);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 789);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 790);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 791);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 792);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 793);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 794);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 795);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 796);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 835);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 1025);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 1026);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 1114);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 4000);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 4001);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 4002);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 4003);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 4004);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 4005);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 4006);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 4007);
+INSERT INTO `rbac_linked_permissions` VALUES (192, 639557);
+INSERT INTO `rbac_linked_permissions` VALUES (193, 48);
+INSERT INTO `rbac_linked_permissions` VALUES (193, 52);
+INSERT INTO `rbac_linked_permissions` VALUES (193, 53);
+INSERT INTO `rbac_linked_permissions` VALUES (193, 194);
+INSERT INTO `rbac_linked_permissions` VALUES (193, 197);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 1);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 2);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 9);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 11);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 13);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 14);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 15);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 16);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 17);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 18);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 19);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 20);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 22);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 23);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 25);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 26);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 27);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 28);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 29);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 30);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 31);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 32);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 33);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 34);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 35);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 36);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 37);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 38);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 39);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 40);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 41);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 44);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 46);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 47);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 51);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 195);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 198);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 632);
+INSERT INTO `rbac_linked_permissions` VALUES (194, 798);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 3);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 4);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 5);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 6);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 24);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 49);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 199);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1000);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1001);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1002);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1003);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1004);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1005);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1006);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1007);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1008);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1009);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1010);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1011);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1012);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1013);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1014);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1015);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1016);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1017);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1018);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1019);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1020);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 1024);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 4008);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 4009);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 4010);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 4011);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 4012);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 4013);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 4014);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 4015);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 4017);
+INSERT INTO `rbac_linked_permissions` VALUES (195, 639556);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 200);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 201);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 226);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 227);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 230);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 231);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 233);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 234);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 235);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 238);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 239);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 240);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 241);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 242);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 243);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 244);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 245);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 246);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 247);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 248);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 249);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 250);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 251);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 252);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 253);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 254);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 255);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 256);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 257);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 258);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 259);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 260);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 261);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 262);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 264);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 265);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 266);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 267);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 268);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 269);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 270);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 271);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 272);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 279);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 280);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 283);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 287);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 288);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 289);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 290);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 291);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 292);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 293);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 294);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 295);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 296);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 297);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 298);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 299);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 302);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 303);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 304);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 305);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 306);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 307);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 308);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 309);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 310);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 313);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 314);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 319);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 320);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 321);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 322);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 323);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 324);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 325);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 326);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 327);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 328);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 329);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 330);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 331);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 332);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 333);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 334);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 335);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 336);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 337);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 338);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 339);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 340);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 341);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 342);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 343);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 344);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 345);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 346);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 347);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 348);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 349);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 350);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 351);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 352);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 353);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 354);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 355);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 356);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 357);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 358);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 359);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 360);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 361);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 362);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 363);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 364);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 365);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 366);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 373);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 375);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 400);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 401);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 402);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 403);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 404);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 405);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 406);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 407);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 417);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 418);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 419);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 420);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 421);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 422);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 423);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 424);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 425);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 426);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 427);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 428);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 429);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 434);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 435);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 436);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 437);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 438);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 439);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 440);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 441);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 442);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 443);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 444);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 445);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 446);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 447);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 448);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 449);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 450);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 451);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 452);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 453);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 454);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 455);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 456);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 457);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 458);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 459);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 461);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 463);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 464);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 465);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 472);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 474);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 475);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 476);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 477);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 478);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 488);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 489);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 491);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 492);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 493);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 495);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 497);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 498);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 499);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 500);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 502);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 503);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 505);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 508);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 511);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 513);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 514);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 516);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 519);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 522);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 523);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 526);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 527);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 529);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 530);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 533);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 535);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 536);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 537);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 538);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 539);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 540);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 541);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 556);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 581);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 582);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 592);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 593);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 596);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 602);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 603);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 604);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 605);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 606);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 607);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 608);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 609);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 610);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 611);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 612);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 613);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 614);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 615);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 616);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 617);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 618);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 619);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 620);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 621);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 622);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 623);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 624);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 625);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 626);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 627);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 628);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 629);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 630);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 631);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 633);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 634);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 635);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 636);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 637);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 638);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 639);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 640);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 641);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 642);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 643);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 644);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 645);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 646);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 647);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 648);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 649);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 650);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 651);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 652);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 653);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 654);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 655);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 656);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 657);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 658);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 659);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 660);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 661);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 662);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 663);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 664);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 665);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 666);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 667);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 668);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 669);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 670);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 671);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 672);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 673);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 674);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 675);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 676);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 677);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 678);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 679);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 680);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 681);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 682);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 683);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 684);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 685);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 686);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 687);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 688);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 689);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 690);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 691);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 692);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 693);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 694);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 695);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 696);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 697);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 698);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 699);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 700);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 701);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 702);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 703);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 704);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 706);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 707);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 708);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 709);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 710);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 711);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 712);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 713);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 714);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 715);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 716);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 717);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 718);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 719);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 721);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 722);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 723);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 724);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 725);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 726);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 727);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 728);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 729);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 730);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 733);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 734);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 735);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 736);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 738);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 739);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 748);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 753);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 757);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 773);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 777);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 836);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 837);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 838);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 839);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 840);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 841);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 843);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 852);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 866);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 867);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 870);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 871);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 872);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 873);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 875);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 876);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 877);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 878);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 879);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 881);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 1021);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 70032);
+INSERT INTO `rbac_linked_permissions` VALUES (196, 70033);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 232);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 236);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 237);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 273);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 274);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 275);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 276);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 277);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 284);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 285);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 286);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 301);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 311);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 387);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 388);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 389);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 390);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 391);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 392);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 393);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 394);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 395);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 396);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 397);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 398);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 399);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 473);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 479);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 480);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 481);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 482);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 485);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 486);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 487);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 494);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 501);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 506);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 509);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 510);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 517);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 518);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 521);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 542);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 543);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 550);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 558);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 568);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 571);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 572);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 573);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 574);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 575);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 576);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 577);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 578);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 579);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 580);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 583);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 584);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 585);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 586);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 587);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 588);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 589);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 590);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 591);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 594);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 595);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 601);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 743);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 750);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 758);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 761);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 762);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 763);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 764);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 765);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 766);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 767);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 768);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 769);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 770);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 771);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 772);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 774);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 856);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 857);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 858);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 859);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 860);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 861);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 862);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 863);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 864);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 865);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 884);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 885);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 70002);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 70003);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 70004);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 70005);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 70006);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 70007);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 70008);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 70009);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 70015);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 70016);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 70017);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 70018);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 70019);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 70020);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 70021);
+INSERT INTO `rbac_linked_permissions` VALUES (197, 70022);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 218);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 300);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 312);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 315);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 316);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 317);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 318);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 367);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 368);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 369);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 370);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 371);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 372);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 374);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 376);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 377);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 408);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 409);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 410);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 411);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 412);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 413);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 414);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 415);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 416);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 430);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 431);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 432);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 433);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 462);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 466);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 467);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 468);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 469);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 470);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 471);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 483);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 484);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 490);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 504);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 512);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 515);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 520);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 524);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 528);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 531);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 532);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 544);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 545);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 546);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 547);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 548);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 549);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 551);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 552);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 553);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 554);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 555);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 557);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 559);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 560);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 561);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 562);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 563);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 564);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 565);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 566);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 567);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 569);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 570);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 597);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 598);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 599);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 600);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 737);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 740);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 741);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 742);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 744);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 745);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 746);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 747);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 749);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 751);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 752);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 754);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 755);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 756);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 759);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 760);
+INSERT INTO `rbac_linked_permissions` VALUES (198, 855);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 217);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 221);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 222);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 223);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 225);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 263);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 378);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 379);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 380);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 496);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 507);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 525);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 534);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 797);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 70001);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 70010);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 70011);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 70012);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 70013);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 70014);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 70023);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 70024);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 70025);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 70026);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 70027);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 70028);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 70029);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 70030);
+INSERT INTO `rbac_linked_permissions` VALUES (199, 70031);
 
-LOCK TABLES `rbac_linked_permissions` WRITE;
-/*!40000 ALTER TABLE `rbac_linked_permissions` DISABLE KEYS */;
-INSERT INTO `rbac_linked_permissions` VALUES
-(192,7),
-(192,21),
-(192,42),
-(192,43),
-(192,193),
-(192,196),
-(192,778),
-(192,779),
-(192,780),
-(192,781),
-(192,782),
-(192,783),
-(192,784),
-(192,785),
-(192,786),
-(192,787),
-(192,788),
-(192,789),
-(192,790),
-(192,791),
-(192,792),
-(192,793),
-(192,794),
-(192,795),
-(192,796),
-(192,835),
-(193,48),
-(193,52),
-(193,53),
-(193,194),
-(193,197),
-(194,1),
-(194,2),
-(194,9),
-(194,11),
-(194,13),
-(194,14),
-(194,15),
-(194,16),
-(194,17),
-(194,18),
-(194,19),
-(194,20),
-(194,22),
-(194,23),
-(194,25),
-(194,26),
-(194,27),
-(194,28),
-(194,29),
-(194,30),
-(194,31),
-(194,32),
-(194,33),
-(194,34),
-(194,35),
-(194,36),
-(194,37),
-(194,38),
-(194,39),
-(194,40),
-(194,41),
-(194,44),
-(194,46),
-(194,47),
-(194,51),
-(194,195),
-(194,198),
-(194,632),
-(194,798),
-(195,3),
-(195,4),
-(195,5),
-(195,6),
-(195,24),
-(195,49),
-(195,199),
-(196,202),
-(196,203),
-(196,204),
-(196,205),
-(196,206),
-(196,226),
-(196,227),
-(196,230),
-(196,231),
-(196,233),
-(196,234),
-(196,235),
-(196,238),
-(196,239),
-(196,240),
-(196,241),
-(196,242),
-(196,243),
-(196,244),
-(196,245),
-(196,246),
-(196,247),
-(196,248),
-(196,249),
-(196,250),
-(196,251),
-(196,252),
-(196,253),
-(196,254),
-(196,255),
-(196,256),
-(196,257),
-(196,258),
-(196,259),
-(196,260),
-(196,261),
-(196,262),
-(196,264),
-(196,265),
-(196,266),
-(196,267),
-(196,268),
-(196,269),
-(196,270),
-(196,271),
-(196,272),
-(196,279),
-(196,280),
-(196,283),
-(196,287),
-(196,288),
-(196,289),
-(196,290),
-(196,291),
-(196,292),
-(196,293),
-(196,294),
-(196,295),
-(196,296),
-(196,297),
-(196,298),
-(196,299),
-(196,302),
-(196,303),
-(196,304),
-(196,305),
-(196,306),
-(196,307),
-(196,308),
-(196,309),
-(196,310),
-(196,313),
-(196,314),
-(196,319),
-(196,320),
-(196,321),
-(196,322),
-(196,323),
-(196,324),
-(196,325),
-(196,326),
-(196,327),
-(196,328),
-(196,329),
-(196,330),
-(196,331),
-(196,332),
-(196,333),
-(196,334),
-(196,335),
-(196,336),
-(196,337),
-(196,338),
-(196,339),
-(196,340),
-(196,341),
-(196,342),
-(196,343),
-(196,344),
-(196,345),
-(196,346),
-(196,347),
-(196,348),
-(196,349),
-(196,350),
-(196,351),
-(196,352),
-(196,353),
-(196,354),
-(196,355),
-(196,356),
-(196,357),
-(196,358),
-(196,359),
-(196,360),
-(196,361),
-(196,362),
-(196,363),
-(196,364),
-(196,365),
-(196,366),
-(196,373),
-(196,375),
-(196,400),
-(196,401),
-(196,402),
-(196,403),
-(196,404),
-(196,405),
-(196,406),
-(196,407),
-(196,417),
-(196,418),
-(196,419),
-(196,420),
-(196,421),
-(196,422),
-(196,423),
-(196,424),
-(196,425),
-(196,426),
-(196,427),
-(196,428),
-(196,429),
-(196,434),
-(196,435),
-(196,436),
-(196,437),
-(196,438),
-(196,439),
-(196,440),
-(196,441),
-(196,442),
-(196,443),
-(196,444),
-(196,445),
-(196,446),
-(196,447),
-(196,448),
-(196,449),
-(196,450),
-(196,451),
-(196,452),
-(196,453),
-(196,454),
-(196,455),
-(196,456),
-(196,457),
-(196,458),
-(196,459),
-(196,461),
-(196,463),
-(196,464),
-(196,465),
-(196,472),
-(196,474),
-(196,475),
-(196,476),
-(196,477),
-(196,478),
-(196,488),
-(196,489),
-(196,491),
-(196,492),
-(196,493),
-(196,495),
-(196,497),
-(196,498),
-(196,499),
-(196,500),
-(196,502),
-(196,503),
-(196,505),
-(196,508),
-(196,511),
-(196,513),
-(196,514),
-(196,516),
-(196,519),
-(196,522),
-(196,523),
-(196,526),
-(196,527),
-(196,529),
-(196,530),
-(196,533),
-(196,535),
-(196,536),
-(196,537),
-(196,538),
-(196,539),
-(196,540),
-(196,541),
-(196,556),
-(196,581),
-(196,582),
-(196,592),
-(196,593),
-(196,596),
-(196,602),
-(196,603),
-(196,604),
-(196,605),
-(196,606),
-(196,607),
-(196,608),
-(196,609),
-(196,610),
-(196,611),
-(196,612),
-(196,613),
-(196,614),
-(196,615),
-(196,616),
-(196,617),
-(196,618),
-(196,619),
-(196,620),
-(196,621),
-(196,622),
-(196,623),
-(196,624),
-(196,625),
-(196,626),
-(196,627),
-(196,628),
-(196,629),
-(196,630),
-(196,631),
-(196,633),
-(196,634),
-(196,635),
-(196,636),
-(196,637),
-(196,638),
-(196,639),
-(196,640),
-(196,641),
-(196,642),
-(196,643),
-(196,644),
-(196,645),
-(196,646),
-(196,647),
-(196,648),
-(196,649),
-(196,650),
-(196,651),
-(196,652),
-(196,653),
-(196,654),
-(196,655),
-(196,656),
-(196,657),
-(196,658),
-(196,659),
-(196,660),
-(196,661),
-(196,662),
-(196,663),
-(196,664),
-(196,665),
-(196,666),
-(196,667),
-(196,668),
-(196,669),
-(196,670),
-(196,671),
-(196,672),
-(196,673),
-(196,674),
-(196,675),
-(196,676),
-(196,677),
-(196,678),
-(196,679),
-(196,680),
-(196,681),
-(196,682),
-(196,683),
-(196,684),
-(196,685),
-(196,686),
-(196,687),
-(196,688),
-(196,689),
-(196,690),
-(196,691),
-(196,692),
-(196,693),
-(196,694),
-(196,695),
-(196,696),
-(196,697),
-(196,698),
-(196,699),
-(196,700),
-(196,701),
-(196,702),
-(196,703),
-(196,704),
-(196,706),
-(196,707),
-(196,708),
-(196,709),
-(196,710),
-(196,711),
-(196,712),
-(196,713),
-(196,714),
-(196,715),
-(196,716),
-(196,717),
-(196,718),
-(196,719),
-(196,721),
-(196,722),
-(196,723),
-(196,724),
-(196,725),
-(196,726),
-(196,727),
-(196,728),
-(196,729),
-(196,730),
-(196,733),
-(196,734),
-(196,735),
-(196,736),
-(196,738),
-(196,739),
-(196,748),
-(196,753),
-(196,757),
-(196,773),
-(196,777),
-(196,836),
-(196,837),
-(196,838),
-(196,839),
-(196,840),
-(196,841),
-(196,843),
-(196,852),
-(196,866),
-(196,867),
-(196,870),
-(196,871),
-(196,872),
-(196,873),
-(196,875),
-(196,876),
-(196,877),
-(196,878),
-(196,879),
-(196,881),
-(197,232),
-(197,236),
-(197,237),
-(197,273),
-(197,274),
-(197,275),
-(197,276),
-(197,277),
-(197,284),
-(197,285),
-(197,286),
-(197,301),
-(197,311),
-(197,387),
-(197,388),
-(197,389),
-(197,390),
-(197,391),
-(197,392),
-(197,393),
-(197,394),
-(197,395),
-(197,396),
-(197,397),
-(197,398),
-(197,399),
-(197,473),
-(197,479),
-(197,480),
-(197,481),
-(197,482),
-(197,485),
-(197,486),
-(197,487),
-(197,494),
-(197,501),
-(197,506),
-(197,509),
-(197,510),
-(197,517),
-(197,518),
-(197,521),
-(197,542),
-(197,543),
-(197,550),
-(197,558),
-(197,568),
-(197,571),
-(197,572),
-(197,573),
-(197,574),
-(197,575),
-(197,576),
-(197,577),
-(197,578),
-(197,579),
-(197,580),
-(197,583),
-(197,584),
-(197,585),
-(197,586),
-(197,587),
-(197,588),
-(197,589),
-(197,590),
-(197,591),
-(197,594),
-(197,595),
-(197,601),
-(197,743),
-(197,750),
-(197,758),
-(197,761),
-(197,762),
-(197,763),
-(197,764),
-(197,765),
-(197,766),
-(197,767),
-(197,768),
-(197,769),
-(197,770),
-(197,771),
-(197,772),
-(197,774),
-(197,856),
-(197,857),
-(197,858),
-(197,859),
-(197,860),
-(197,861),
-(197,862),
-(197,863),
-(197,864),
-(197,865),
-(197,884),
-(197,885),
-(198,218),
-(198,300),
-(198,312),
-(198,315),
-(198,316),
-(198,317),
-(198,318),
-(198,367),
-(198,368),
-(198,369),
-(198,370),
-(198,371),
-(198,372),
-(198,374),
-(198,376),
-(198,377),
-(198,408),
-(198,409),
-(198,410),
-(198,411),
-(198,412),
-(198,413),
-(198,414),
-(198,415),
-(198,416),
-(198,430),
-(198,431),
-(198,432),
-(198,433),
-(198,462),
-(198,466),
-(198,467),
-(198,468),
-(198,469),
-(198,470),
-(198,471),
-(198,483),
-(198,484),
-(198,490),
-(198,504),
-(198,512),
-(198,515),
-(198,520),
-(198,524),
-(198,528),
-(198,531),
-(198,532),
-(198,544),
-(198,545),
-(198,546),
-(198,547),
-(198,548),
-(198,549),
-(198,551),
-(198,552),
-(198,553),
-(198,554),
-(198,555),
-(198,557),
-(198,559),
-(198,560),
-(198,561),
-(198,562),
-(198,563),
-(198,564),
-(198,565),
-(198,566),
-(198,567),
-(198,569),
-(198,570),
-(198,597),
-(198,598),
-(198,599),
-(198,600),
-(198,737),
-(198,740),
-(198,741),
-(198,742),
-(198,744),
-(198,745),
-(198,746),
-(198,747),
-(198,749),
-(198,751),
-(198,752),
-(198,754),
-(198,755),
-(198,756),
-(198,759),
-(198,760),
-(198,855),
-(199,217),
-(199,221),
-(199,222),
-(199,223),
-(199,225),
-(199,263),
-(199,378),
-(199,379),
-(199,380),
-(199,496),
-(199,507),
-(199,525),
-(199,534),
-(199,797);
-/*!40000 ALTER TABLE `rbac_linked_permissions` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `rbac_permissions`
---
-
+-- ----------------------------
+-- Table structure for rbac_permissions
+-- ----------------------------
 DROP TABLE IF EXISTS `rbac_permissions`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `rbac_permissions` (
-  `id` int unsigned NOT NULL DEFAULT '0' COMMENT 'Permission id',
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Permission name',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Permission List';
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `rbac_permissions`  (
+  `id` int UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Permission id',
+  `name` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT 'Permission name',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = 'Permission List' ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `rbac_permissions`
---
+-- ----------------------------
+-- Records of rbac_permissions
+-- ----------------------------
+INSERT INTO `rbac_permissions` VALUES (1, 'Instant logout');
+INSERT INTO `rbac_permissions` VALUES (2, 'Skip Queue');
+INSERT INTO `rbac_permissions` VALUES (3, 'Join Normal Battleground');
+INSERT INTO `rbac_permissions` VALUES (4, 'Join Random Battleground');
+INSERT INTO `rbac_permissions` VALUES (5, 'Join Arenas');
+INSERT INTO `rbac_permissions` VALUES (6, 'Join Dungeon Finder');
+INSERT INTO `rbac_permissions` VALUES (7, 'Skip idle connection check');
+INSERT INTO `rbac_permissions` VALUES (8, 'Cannot earn achievements');
+INSERT INTO `rbac_permissions` VALUES (9, 'Cannot earn realm first achievements');
+INSERT INTO `rbac_permissions` VALUES (11, 'Log GM trades');
+INSERT INTO `rbac_permissions` VALUES (13, 'Skip Instance required bosses check');
+INSERT INTO `rbac_permissions` VALUES (14, 'Skip character creation team mask check');
+INSERT INTO `rbac_permissions` VALUES (15, 'Skip character creation class mask check');
+INSERT INTO `rbac_permissions` VALUES (16, 'Skip character creation race mask check');
+INSERT INTO `rbac_permissions` VALUES (17, 'Skip character creation reserved name check');
+INSERT INTO `rbac_permissions` VALUES (18, 'Skip character creation death knight min level check');
+INSERT INTO `rbac_permissions` VALUES (19, 'Skip needed requirements to use channel check');
+INSERT INTO `rbac_permissions` VALUES (20, 'Skip disable map check');
+INSERT INTO `rbac_permissions` VALUES (21, 'Skip reset talents when used more than allowed check');
+INSERT INTO `rbac_permissions` VALUES (22, 'Skip spam chat check');
+INSERT INTO `rbac_permissions` VALUES (23, 'Skip over-speed ping check');
+INSERT INTO `rbac_permissions` VALUES (24, 'Two side faction characters on the same account');
+INSERT INTO `rbac_permissions` VALUES (25, 'Allow say chat between factions');
+INSERT INTO `rbac_permissions` VALUES (26, 'Allow channel chat between factions');
+INSERT INTO `rbac_permissions` VALUES (27, 'Two side mail interaction');
+INSERT INTO `rbac_permissions` VALUES (28, 'See two side who list');
+INSERT INTO `rbac_permissions` VALUES (29, 'Add friends of other faction');
+INSERT INTO `rbac_permissions` VALUES (30, 'Save character without delay with .save command');
+INSERT INTO `rbac_permissions` VALUES (31, 'Use params with .unstuck command');
+INSERT INTO `rbac_permissions` VALUES (32, 'Can be assigned tickets with .assign ticket command');
+INSERT INTO `rbac_permissions` VALUES (33, 'Notify if a command was not found');
+INSERT INTO `rbac_permissions` VALUES (34, 'Check if should appear in list using .gm ingame command');
+INSERT INTO `rbac_permissions` VALUES (35, 'See all security levels with who command');
+INSERT INTO `rbac_permissions` VALUES (36, 'Filter whispers');
+INSERT INTO `rbac_permissions` VALUES (37, 'Use staff badge in chat');
+INSERT INTO `rbac_permissions` VALUES (38, 'Resurrect with full Health Points');
+INSERT INTO `rbac_permissions` VALUES (39, 'Restore saved gm setting states');
+INSERT INTO `rbac_permissions` VALUES (40, 'Allows to add a gm to friend list');
+INSERT INTO `rbac_permissions` VALUES (41, 'Use Config option START_GM_LEVEL to assign new character level');
+INSERT INTO `rbac_permissions` VALUES (42, 'Allows to use CMSG_WORLD_TELEPORT opcode');
+INSERT INTO `rbac_permissions` VALUES (43, 'Allows to use CMSG_WHOIS opcode');
+INSERT INTO `rbac_permissions` VALUES (44, 'Receive global GM messages/texts');
+INSERT INTO `rbac_permissions` VALUES (45, 'Join channels without announce');
+INSERT INTO `rbac_permissions` VALUES (46, 'Change channel settings without being channel moderator');
+INSERT INTO `rbac_permissions` VALUES (47, 'Enables lower security than target check');
+INSERT INTO `rbac_permissions` VALUES (48, 'Enable IP, Last Login and EMail output in pinfo');
+INSERT INTO `rbac_permissions` VALUES (49, 'Forces to enter the email for confirmation on password change');
+INSERT INTO `rbac_permissions` VALUES (50, 'Allow user to check his own email with .account');
+INSERT INTO `rbac_permissions` VALUES (51, 'Allow trading between factions');
+INSERT INTO `rbac_permissions` VALUES (52, 'No battleground deserter debuff');
+INSERT INTO `rbac_permissions` VALUES (53, 'Can be AFK on the battleground');
+INSERT INTO `rbac_permissions` VALUES (192, 'Role: Sec Level Administrator');
+INSERT INTO `rbac_permissions` VALUES (193, 'Role: Sec Level Gamemaster');
+INSERT INTO `rbac_permissions` VALUES (194, 'Role: Sec Level Moderator');
+INSERT INTO `rbac_permissions` VALUES (195, 'Role: Sec Level Player');
+INSERT INTO `rbac_permissions` VALUES (196, 'Role: Administrator Commands');
+INSERT INTO `rbac_permissions` VALUES (197, 'Role: Gamemaster Commands');
+INSERT INTO `rbac_permissions` VALUES (198, 'Role: Moderator Commands');
+INSERT INTO `rbac_permissions` VALUES (199, 'Role: Player Commands');
+INSERT INTO `rbac_permissions` VALUES (200, 'Command: rbac');
+INSERT INTO `rbac_permissions` VALUES (201, 'Command: rbac account');
+INSERT INTO `rbac_permissions` VALUES (202, 'Command: rbac account list');
+INSERT INTO `rbac_permissions` VALUES (203, 'Command: rbac account grant');
+INSERT INTO `rbac_permissions` VALUES (204, 'Command: rbac account deny');
+INSERT INTO `rbac_permissions` VALUES (205, 'Command: rbac account revoke');
+INSERT INTO `rbac_permissions` VALUES (206, 'Command: rbac list');
+INSERT INTO `rbac_permissions` VALUES (217, 'Command: account');
+INSERT INTO `rbac_permissions` VALUES (218, 'Command: account addon');
+INSERT INTO `rbac_permissions` VALUES (219, 'Command: account create');
+INSERT INTO `rbac_permissions` VALUES (220, 'Command: account delete');
+INSERT INTO `rbac_permissions` VALUES (221, 'Command: account lock');
+INSERT INTO `rbac_permissions` VALUES (222, 'Command: account lock country');
+INSERT INTO `rbac_permissions` VALUES (223, 'Command: account lock ip');
+INSERT INTO `rbac_permissions` VALUES (224, 'Command: account onlinelist');
+INSERT INTO `rbac_permissions` VALUES (225, 'Command: account password');
+INSERT INTO `rbac_permissions` VALUES (226, 'Command: account set');
+INSERT INTO `rbac_permissions` VALUES (227, 'Command: account set addon');
+INSERT INTO `rbac_permissions` VALUES (228, 'Command: account set gmlevel');
+INSERT INTO `rbac_permissions` VALUES (229, 'Command: account set password');
+INSERT INTO `rbac_permissions` VALUES (230, 'Command: achievement');
+INSERT INTO `rbac_permissions` VALUES (231, 'Command: achievement add');
+INSERT INTO `rbac_permissions` VALUES (232, 'Command: arena');
+INSERT INTO `rbac_permissions` VALUES (233, 'Command: arena captain');
+INSERT INTO `rbac_permissions` VALUES (234, 'Command: arena create');
+INSERT INTO `rbac_permissions` VALUES (235, 'Command: arena disband');
+INSERT INTO `rbac_permissions` VALUES (236, 'Command: arena info');
+INSERT INTO `rbac_permissions` VALUES (237, 'Command: arena lookup');
+INSERT INTO `rbac_permissions` VALUES (238, 'Command: arena rename');
+INSERT INTO `rbac_permissions` VALUES (239, 'Command: ban');
+INSERT INTO `rbac_permissions` VALUES (240, 'Command: ban account');
+INSERT INTO `rbac_permissions` VALUES (241, 'Command: ban character');
+INSERT INTO `rbac_permissions` VALUES (242, 'Command: ban ip');
+INSERT INTO `rbac_permissions` VALUES (243, 'Command: ban playeraccount');
+INSERT INTO `rbac_permissions` VALUES (244, 'Command: baninfo');
+INSERT INTO `rbac_permissions` VALUES (245, 'Command: baninfo account');
+INSERT INTO `rbac_permissions` VALUES (246, 'Command: baninfo character');
+INSERT INTO `rbac_permissions` VALUES (247, 'Command: baninfo ip');
+INSERT INTO `rbac_permissions` VALUES (248, 'Command: banlist');
+INSERT INTO `rbac_permissions` VALUES (249, 'Command: banlist account');
+INSERT INTO `rbac_permissions` VALUES (250, 'Command: banlist character');
+INSERT INTO `rbac_permissions` VALUES (251, 'Command: banlist ip');
+INSERT INTO `rbac_permissions` VALUES (252, 'Command: unban');
+INSERT INTO `rbac_permissions` VALUES (253, 'Command: unban account');
+INSERT INTO `rbac_permissions` VALUES (254, 'Command: unban character');
+INSERT INTO `rbac_permissions` VALUES (255, 'Command: unban ip');
+INSERT INTO `rbac_permissions` VALUES (256, 'Command: unban playeraccount');
+INSERT INTO `rbac_permissions` VALUES (257, 'Command: bf');
+INSERT INTO `rbac_permissions` VALUES (258, 'Command: bf start');
+INSERT INTO `rbac_permissions` VALUES (259, 'Command: bf stop');
+INSERT INTO `rbac_permissions` VALUES (260, 'Command: bf switch');
+INSERT INTO `rbac_permissions` VALUES (261, 'Command: bf timer');
+INSERT INTO `rbac_permissions` VALUES (262, 'Command: bf enable');
+INSERT INTO `rbac_permissions` VALUES (263, 'Command: account email');
+INSERT INTO `rbac_permissions` VALUES (264, 'Command: account set sec');
+INSERT INTO `rbac_permissions` VALUES (265, 'Command: account set sec email');
+INSERT INTO `rbac_permissions` VALUES (266, 'Command: account set sec regmail');
+INSERT INTO `rbac_permissions` VALUES (267, 'Command: cast');
+INSERT INTO `rbac_permissions` VALUES (268, 'Command: cast back');
+INSERT INTO `rbac_permissions` VALUES (269, 'Command: cast dist');
+INSERT INTO `rbac_permissions` VALUES (270, 'Command: cast self');
+INSERT INTO `rbac_permissions` VALUES (271, 'Command: cast target');
+INSERT INTO `rbac_permissions` VALUES (272, 'Command: cast dest');
+INSERT INTO `rbac_permissions` VALUES (273, 'Command: character');
+INSERT INTO `rbac_permissions` VALUES (274, 'Command: character customize');
+INSERT INTO `rbac_permissions` VALUES (275, 'Command: character changefaction');
+INSERT INTO `rbac_permissions` VALUES (276, 'Command: character changerace');
+INSERT INTO `rbac_permissions` VALUES (277, 'Command: character deleted');
+INSERT INTO `rbac_permissions` VALUES (279, 'Command: character deleted list');
+INSERT INTO `rbac_permissions` VALUES (280, 'Command: character deleted restore');
+INSERT INTO `rbac_permissions` VALUES (283, 'Command: character level');
+INSERT INTO `rbac_permissions` VALUES (284, 'Command: character rename');
+INSERT INTO `rbac_permissions` VALUES (285, 'Command: character reputation');
+INSERT INTO `rbac_permissions` VALUES (286, 'Command: character titles');
+INSERT INTO `rbac_permissions` VALUES (287, 'Command: levelup');
+INSERT INTO `rbac_permissions` VALUES (288, 'Command: pdump');
+INSERT INTO `rbac_permissions` VALUES (289, 'Command: pdump load');
+INSERT INTO `rbac_permissions` VALUES (290, 'Command: pdump write');
+INSERT INTO `rbac_permissions` VALUES (291, 'Command: cheat');
+INSERT INTO `rbac_permissions` VALUES (292, 'Command: cheat casttime');
+INSERT INTO `rbac_permissions` VALUES (293, 'Command: cheat cooldown');
+INSERT INTO `rbac_permissions` VALUES (294, 'Command: cheat explore');
+INSERT INTO `rbac_permissions` VALUES (295, 'Command: cheat god');
+INSERT INTO `rbac_permissions` VALUES (296, 'Command: cheat power');
+INSERT INTO `rbac_permissions` VALUES (297, 'Command: cheat status');
+INSERT INTO `rbac_permissions` VALUES (298, 'Command: cheat taxi');
+INSERT INTO `rbac_permissions` VALUES (299, 'Command: cheat waterwalk');
+INSERT INTO `rbac_permissions` VALUES (300, 'Command: debug');
+INSERT INTO `rbac_permissions` VALUES (301, 'Command: debug anim');
+INSERT INTO `rbac_permissions` VALUES (302, 'Command: debug areatriggers');
+INSERT INTO `rbac_permissions` VALUES (303, 'Command: debug arena');
+INSERT INTO `rbac_permissions` VALUES (304, 'Command: debug bg');
+INSERT INTO `rbac_permissions` VALUES (305, 'Command: debug entervehicle');
+INSERT INTO `rbac_permissions` VALUES (306, 'Command: debug getitemstate');
+INSERT INTO `rbac_permissions` VALUES (307, 'Command: debug getitemvalue');
+INSERT INTO `rbac_permissions` VALUES (308, 'Command: debug getvalue');
+INSERT INTO `rbac_permissions` VALUES (309, 'Command: debug combat');
+INSERT INTO `rbac_permissions` VALUES (310, 'Command: debug itemexpire');
+INSERT INTO `rbac_permissions` VALUES (311, 'Command: debug lootrecipient');
+INSERT INTO `rbac_permissions` VALUES (312, 'Command: debug los');
+INSERT INTO `rbac_permissions` VALUES (313, 'Command: debug mod32value');
+INSERT INTO `rbac_permissions` VALUES (314, 'Command: debug moveflags');
+INSERT INTO `rbac_permissions` VALUES (315, 'Command: debug play');
+INSERT INTO `rbac_permissions` VALUES (316, 'Command: debug play cinematics');
+INSERT INTO `rbac_permissions` VALUES (317, 'Command: debug play movie');
+INSERT INTO `rbac_permissions` VALUES (318, 'Command: debug play sound');
+INSERT INTO `rbac_permissions` VALUES (319, 'Command: debug send');
+INSERT INTO `rbac_permissions` VALUES (320, 'Command: debug send buyerror');
+INSERT INTO `rbac_permissions` VALUES (321, 'Command: debug send channelnotify');
+INSERT INTO `rbac_permissions` VALUES (322, 'Command: debug send chatmessage');
+INSERT INTO `rbac_permissions` VALUES (323, 'Command: debug send equiperror');
+INSERT INTO `rbac_permissions` VALUES (324, 'Command: debug send largepacket');
+INSERT INTO `rbac_permissions` VALUES (325, 'Command: debug send opcode');
+INSERT INTO `rbac_permissions` VALUES (326, 'Command: debug send qinvalidmsg');
+INSERT INTO `rbac_permissions` VALUES (327, 'Command: debug send qpartymsg');
+INSERT INTO `rbac_permissions` VALUES (328, 'Command: debug send sellerror');
+INSERT INTO `rbac_permissions` VALUES (329, 'Command: debug send setphaseshift');
+INSERT INTO `rbac_permissions` VALUES (330, 'Command: debug send spellfail');
+INSERT INTO `rbac_permissions` VALUES (331, 'Command: debug setaurastate');
+INSERT INTO `rbac_permissions` VALUES (332, 'Command: debug setbit');
+INSERT INTO `rbac_permissions` VALUES (333, 'Command: debug setitemvalue');
+INSERT INTO `rbac_permissions` VALUES (334, 'Command: debug setvalue');
+INSERT INTO `rbac_permissions` VALUES (335, 'Command: debug setvid');
+INSERT INTO `rbac_permissions` VALUES (336, 'Command: debug spawnvehicle');
+INSERT INTO `rbac_permissions` VALUES (337, 'Command: debug threat');
+INSERT INTO `rbac_permissions` VALUES (338, 'Command: debug update');
+INSERT INTO `rbac_permissions` VALUES (339, 'Command: debug worldstate');
+INSERT INTO `rbac_permissions` VALUES (340, 'Command: wpgps');
+INSERT INTO `rbac_permissions` VALUES (341, 'Command: deserter');
+INSERT INTO `rbac_permissions` VALUES (342, 'Command: deserter bg');
+INSERT INTO `rbac_permissions` VALUES (343, 'Command: deserter bg add');
+INSERT INTO `rbac_permissions` VALUES (344, 'Command: deserter bg remove');
+INSERT INTO `rbac_permissions` VALUES (345, 'Command: deserter instance');
+INSERT INTO `rbac_permissions` VALUES (346, 'Command: deserter instance add');
+INSERT INTO `rbac_permissions` VALUES (347, 'Command: deserter instance remove');
+INSERT INTO `rbac_permissions` VALUES (348, 'Command: disable');
+INSERT INTO `rbac_permissions` VALUES (349, 'Command: disable add');
+INSERT INTO `rbac_permissions` VALUES (350, 'Command: disable add achievement_criteria');
+INSERT INTO `rbac_permissions` VALUES (351, 'Command: disable add battleground');
+INSERT INTO `rbac_permissions` VALUES (352, 'Command: disable add map');
+INSERT INTO `rbac_permissions` VALUES (353, 'Command: disable add mmap');
+INSERT INTO `rbac_permissions` VALUES (354, 'Command: disable add outdoorpvp');
+INSERT INTO `rbac_permissions` VALUES (355, 'Command: disable add quest');
+INSERT INTO `rbac_permissions` VALUES (356, 'Command: disable add spell');
+INSERT INTO `rbac_permissions` VALUES (357, 'Command: disable add vmap');
+INSERT INTO `rbac_permissions` VALUES (358, 'Command: disable remove');
+INSERT INTO `rbac_permissions` VALUES (359, 'Command: disable remove achievement_criteria');
+INSERT INTO `rbac_permissions` VALUES (360, 'Command: disable remove battleground');
+INSERT INTO `rbac_permissions` VALUES (361, 'Command: disable remove map');
+INSERT INTO `rbac_permissions` VALUES (362, 'Command: disable remove mmap');
+INSERT INTO `rbac_permissions` VALUES (363, 'Command: disable remove outdoorpvp');
+INSERT INTO `rbac_permissions` VALUES (364, 'Command: disable remove quest');
+INSERT INTO `rbac_permissions` VALUES (365, 'Command: disable remove spell');
+INSERT INTO `rbac_permissions` VALUES (366, 'Command: disable remove vmap');
+INSERT INTO `rbac_permissions` VALUES (367, 'Command: event');
+INSERT INTO `rbac_permissions` VALUES (368, 'Command: event activelist');
+INSERT INTO `rbac_permissions` VALUES (369, 'Command: event start');
+INSERT INTO `rbac_permissions` VALUES (370, 'Command: event stop');
+INSERT INTO `rbac_permissions` VALUES (371, 'Command: gm');
+INSERT INTO `rbac_permissions` VALUES (372, 'Command: gm chat');
+INSERT INTO `rbac_permissions` VALUES (373, 'Command: gm fly');
+INSERT INTO `rbac_permissions` VALUES (374, 'Command: gm ingame');
+INSERT INTO `rbac_permissions` VALUES (375, 'Command: gm list');
+INSERT INTO `rbac_permissions` VALUES (376, 'Command: gm visible');
+INSERT INTO `rbac_permissions` VALUES (377, 'Command: go');
+INSERT INTO `rbac_permissions` VALUES (378, 'Command: account 2fa');
+INSERT INTO `rbac_permissions` VALUES (379, 'Command: account 2fa setup');
+INSERT INTO `rbac_permissions` VALUES (380, 'Command: account 2fa remove');
+INSERT INTO `rbac_permissions` VALUES (381, 'Command: account set 2fa');
+INSERT INTO `rbac_permissions` VALUES (387, 'Command: gobject');
+INSERT INTO `rbac_permissions` VALUES (388, 'Command: gobject activate');
+INSERT INTO `rbac_permissions` VALUES (389, 'Command: gobject add');
+INSERT INTO `rbac_permissions` VALUES (390, 'Command: gobject add temp');
+INSERT INTO `rbac_permissions` VALUES (391, 'Command: gobject delete');
+INSERT INTO `rbac_permissions` VALUES (392, 'Command: gobject info');
+INSERT INTO `rbac_permissions` VALUES (393, 'Command: gobject move');
+INSERT INTO `rbac_permissions` VALUES (394, 'Command: gobject near');
+INSERT INTO `rbac_permissions` VALUES (395, 'Command: gobject set');
+INSERT INTO `rbac_permissions` VALUES (396, 'Command: gobject set phase');
+INSERT INTO `rbac_permissions` VALUES (397, 'Command: gobject set state');
+INSERT INTO `rbac_permissions` VALUES (398, 'Command: gobject target');
+INSERT INTO `rbac_permissions` VALUES (399, 'Command: gobject turn');
+INSERT INTO `rbac_permissions` VALUES (400, 'Command: debug transport');
+INSERT INTO `rbac_permissions` VALUES (401, 'Command: guild');
+INSERT INTO `rbac_permissions` VALUES (402, 'Command: guild create');
+INSERT INTO `rbac_permissions` VALUES (403, 'Command: guild delete');
+INSERT INTO `rbac_permissions` VALUES (404, 'Command: guild invite');
+INSERT INTO `rbac_permissions` VALUES (405, 'Command: guild uninvite');
+INSERT INTO `rbac_permissions` VALUES (406, 'Command: guild rank');
+INSERT INTO `rbac_permissions` VALUES (407, 'Command: guild rename');
+INSERT INTO `rbac_permissions` VALUES (408, 'Command: honor');
+INSERT INTO `rbac_permissions` VALUES (409, 'Command: honor add');
+INSERT INTO `rbac_permissions` VALUES (410, 'Command: honor add kill');
+INSERT INTO `rbac_permissions` VALUES (411, 'Command: honor update');
+INSERT INTO `rbac_permissions` VALUES (412, 'Command: instance');
+INSERT INTO `rbac_permissions` VALUES (413, 'Command: instance listbinds');
+INSERT INTO `rbac_permissions` VALUES (414, 'Command: instance unbind');
+INSERT INTO `rbac_permissions` VALUES (415, 'Command: instance stats');
+INSERT INTO `rbac_permissions` VALUES (416, 'Command: instance savedata');
+INSERT INTO `rbac_permissions` VALUES (417, 'Command: learn');
+INSERT INTO `rbac_permissions` VALUES (418, 'Command: learn all');
+INSERT INTO `rbac_permissions` VALUES (419, 'Command: learn all my');
+INSERT INTO `rbac_permissions` VALUES (420, 'Command: learn all my class');
+INSERT INTO `rbac_permissions` VALUES (421, 'Command: learn all my pettalents');
+INSERT INTO `rbac_permissions` VALUES (422, 'Command: learn all my spells');
+INSERT INTO `rbac_permissions` VALUES (423, 'Command: learn all my talents');
+INSERT INTO `rbac_permissions` VALUES (424, 'Command: learn all gm');
+INSERT INTO `rbac_permissions` VALUES (425, 'Command: learn all crafts');
+INSERT INTO `rbac_permissions` VALUES (426, 'Command: learn all default');
+INSERT INTO `rbac_permissions` VALUES (427, 'Command: learn all lang');
+INSERT INTO `rbac_permissions` VALUES (428, 'Command: learn all recipes');
+INSERT INTO `rbac_permissions` VALUES (429, 'Command: unlearn');
+INSERT INTO `rbac_permissions` VALUES (430, 'Command: lfg');
+INSERT INTO `rbac_permissions` VALUES (431, 'Command: lfg player');
+INSERT INTO `rbac_permissions` VALUES (432, 'Command: lfg group');
+INSERT INTO `rbac_permissions` VALUES (433, 'Command: lfg queue');
+INSERT INTO `rbac_permissions` VALUES (434, 'Command: lfg clean');
+INSERT INTO `rbac_permissions` VALUES (435, 'Command: lfg options');
+INSERT INTO `rbac_permissions` VALUES (436, 'Command: list');
+INSERT INTO `rbac_permissions` VALUES (437, 'Command: list creature');
+INSERT INTO `rbac_permissions` VALUES (438, 'Command: list item');
+INSERT INTO `rbac_permissions` VALUES (439, 'Command: list object');
+INSERT INTO `rbac_permissions` VALUES (440, 'Command: list auras');
+INSERT INTO `rbac_permissions` VALUES (441, 'Command: list mail');
+INSERT INTO `rbac_permissions` VALUES (442, 'Command: lookup');
+INSERT INTO `rbac_permissions` VALUES (443, 'Command: lookup area');
+INSERT INTO `rbac_permissions` VALUES (444, 'Command: lookup creature');
+INSERT INTO `rbac_permissions` VALUES (445, 'Command: lookup event');
+INSERT INTO `rbac_permissions` VALUES (446, 'Command: lookup faction');
+INSERT INTO `rbac_permissions` VALUES (447, 'Command: lookup item');
+INSERT INTO `rbac_permissions` VALUES (448, 'Command: lookup itemset');
+INSERT INTO `rbac_permissions` VALUES (449, 'Command: lookup object');
+INSERT INTO `rbac_permissions` VALUES (450, 'Command: lookup quest');
+INSERT INTO `rbac_permissions` VALUES (451, 'Command: lookup player');
+INSERT INTO `rbac_permissions` VALUES (452, 'Command: lookup player ip');
+INSERT INTO `rbac_permissions` VALUES (453, 'Command: lookup player account');
+INSERT INTO `rbac_permissions` VALUES (454, 'Command: lookup player email');
+INSERT INTO `rbac_permissions` VALUES (455, 'Command: lookup skill');
+INSERT INTO `rbac_permissions` VALUES (456, 'Command: lookup spell');
+INSERT INTO `rbac_permissions` VALUES (457, 'Command: lookup spell id');
+INSERT INTO `rbac_permissions` VALUES (458, 'Command: lookup taxinode');
+INSERT INTO `rbac_permissions` VALUES (459, 'Command: lookup tele');
+INSERT INTO `rbac_permissions` VALUES (460, 'Command: lookup title');
+INSERT INTO `rbac_permissions` VALUES (461, 'Command: lookup map');
+INSERT INTO `rbac_permissions` VALUES (462, 'Command: announce');
+INSERT INTO `rbac_permissions` VALUES (463, 'Command: channel');
+INSERT INTO `rbac_permissions` VALUES (464, 'Command: channel set');
+INSERT INTO `rbac_permissions` VALUES (465, 'Command: channel set ownership');
+INSERT INTO `rbac_permissions` VALUES (466, 'Command: gmannounce');
+INSERT INTO `rbac_permissions` VALUES (467, 'Command: gmnameannounce');
+INSERT INTO `rbac_permissions` VALUES (468, 'Command: gmnotify');
+INSERT INTO `rbac_permissions` VALUES (469, 'Command: nameannounce');
+INSERT INTO `rbac_permissions` VALUES (470, 'Command: notify');
+INSERT INTO `rbac_permissions` VALUES (471, 'Command: whispers');
+INSERT INTO `rbac_permissions` VALUES (472, 'Command: group');
+INSERT INTO `rbac_permissions` VALUES (473, 'Command: group leader');
+INSERT INTO `rbac_permissions` VALUES (474, 'Command: group disband');
+INSERT INTO `rbac_permissions` VALUES (475, 'Command: group remove');
+INSERT INTO `rbac_permissions` VALUES (476, 'Command: group join');
+INSERT INTO `rbac_permissions` VALUES (477, 'Command: group list');
+INSERT INTO `rbac_permissions` VALUES (478, 'Command: group summon');
+INSERT INTO `rbac_permissions` VALUES (479, 'Command: pet');
+INSERT INTO `rbac_permissions` VALUES (480, 'Command: pet create');
+INSERT INTO `rbac_permissions` VALUES (481, 'Command: pet learn');
+INSERT INTO `rbac_permissions` VALUES (482, 'Command: pet unlearn');
+INSERT INTO `rbac_permissions` VALUES (483, 'Command: send');
+INSERT INTO `rbac_permissions` VALUES (484, 'Command: send items');
+INSERT INTO `rbac_permissions` VALUES (485, 'Command: send mail');
+INSERT INTO `rbac_permissions` VALUES (486, 'Command: send message');
+INSERT INTO `rbac_permissions` VALUES (487, 'Command: send money');
+INSERT INTO `rbac_permissions` VALUES (488, 'Command: additem');
+INSERT INTO `rbac_permissions` VALUES (489, 'Command: additemset');
+INSERT INTO `rbac_permissions` VALUES (490, 'Command: appear');
+INSERT INTO `rbac_permissions` VALUES (491, 'Command: aura');
+INSERT INTO `rbac_permissions` VALUES (492, 'Command: bank');
+INSERT INTO `rbac_permissions` VALUES (493, 'Command: bindsight');
+INSERT INTO `rbac_permissions` VALUES (494, 'Command: combatstop');
+INSERT INTO `rbac_permissions` VALUES (495, 'Command: cometome');
+INSERT INTO `rbac_permissions` VALUES (496, 'Command: commands');
+INSERT INTO `rbac_permissions` VALUES (497, 'Command: cooldown');
+INSERT INTO `rbac_permissions` VALUES (498, 'Command: damage');
+INSERT INTO `rbac_permissions` VALUES (499, 'Command: dev');
+INSERT INTO `rbac_permissions` VALUES (500, 'Command: die');
+INSERT INTO `rbac_permissions` VALUES (501, 'Command: dismount');
+INSERT INTO `rbac_permissions` VALUES (502, 'Command: distance');
+INSERT INTO `rbac_permissions` VALUES (503, 'Command: flusharenapoints');
+INSERT INTO `rbac_permissions` VALUES (504, 'Command: freeze');
+INSERT INTO `rbac_permissions` VALUES (505, 'Command: gps');
+INSERT INTO `rbac_permissions` VALUES (506, 'Command: guid');
+INSERT INTO `rbac_permissions` VALUES (507, 'Command: help');
+INSERT INTO `rbac_permissions` VALUES (508, 'Command: hidearea');
+INSERT INTO `rbac_permissions` VALUES (509, 'Command: itemmove');
+INSERT INTO `rbac_permissions` VALUES (510, 'Command: kick');
+INSERT INTO `rbac_permissions` VALUES (511, 'Command: linkgrave');
+INSERT INTO `rbac_permissions` VALUES (512, 'Command: listfreeze');
+INSERT INTO `rbac_permissions` VALUES (513, 'Command: maxskill');
+INSERT INTO `rbac_permissions` VALUES (514, 'Command: movegens');
+INSERT INTO `rbac_permissions` VALUES (515, 'Command: mute');
+INSERT INTO `rbac_permissions` VALUES (516, 'Command: neargrave');
+INSERT INTO `rbac_permissions` VALUES (517, 'Command: pinfo');
+INSERT INTO `rbac_permissions` VALUES (518, 'Command: playall');
+INSERT INTO `rbac_permissions` VALUES (519, 'Command: possess');
+INSERT INTO `rbac_permissions` VALUES (520, 'Command: recall');
+INSERT INTO `rbac_permissions` VALUES (521, 'Command: repairitems');
+INSERT INTO `rbac_permissions` VALUES (522, 'Command: respawn');
+INSERT INTO `rbac_permissions` VALUES (523, 'Command: revive');
+INSERT INTO `rbac_permissions` VALUES (524, 'Command: saveall');
+INSERT INTO `rbac_permissions` VALUES (525, 'Command: save');
+INSERT INTO `rbac_permissions` VALUES (526, 'Command: setskill');
+INSERT INTO `rbac_permissions` VALUES (527, 'Command: showarea');
+INSERT INTO `rbac_permissions` VALUES (528, 'Command: summon');
+INSERT INTO `rbac_permissions` VALUES (529, 'Command: unaura');
+INSERT INTO `rbac_permissions` VALUES (530, 'Command: unbindsight');
+INSERT INTO `rbac_permissions` VALUES (531, 'Command: unfreeze');
+INSERT INTO `rbac_permissions` VALUES (532, 'Command: unmute');
+INSERT INTO `rbac_permissions` VALUES (533, 'Command: unpossess');
+INSERT INTO `rbac_permissions` VALUES (534, 'Command: unstuck');
+INSERT INTO `rbac_permissions` VALUES (535, 'Command: wchange');
+INSERT INTO `rbac_permissions` VALUES (536, 'Command: mmap');
+INSERT INTO `rbac_permissions` VALUES (537, 'Command: mmap loadedtiles');
+INSERT INTO `rbac_permissions` VALUES (538, 'Command: mmap loc');
+INSERT INTO `rbac_permissions` VALUES (539, 'Command: mmap path');
+INSERT INTO `rbac_permissions` VALUES (540, 'Command: mmap stats');
+INSERT INTO `rbac_permissions` VALUES (541, 'Command: mmap testarea');
+INSERT INTO `rbac_permissions` VALUES (542, 'Command: morph');
+INSERT INTO `rbac_permissions` VALUES (543, 'Command: demorph');
+INSERT INTO `rbac_permissions` VALUES (544, 'Command: modify');
+INSERT INTO `rbac_permissions` VALUES (545, 'Command: modify arenapoints');
+INSERT INTO `rbac_permissions` VALUES (546, 'Command: modify bit');
+INSERT INTO `rbac_permissions` VALUES (547, 'Command: modify drunk');
+INSERT INTO `rbac_permissions` VALUES (548, 'Command: modify energy');
+INSERT INTO `rbac_permissions` VALUES (549, 'Command: modify faction');
+INSERT INTO `rbac_permissions` VALUES (550, 'Command: modify gender');
+INSERT INTO `rbac_permissions` VALUES (551, 'Command: modify honor');
+INSERT INTO `rbac_permissions` VALUES (552, 'Command: modify hp');
+INSERT INTO `rbac_permissions` VALUES (553, 'Command: modify mana');
+INSERT INTO `rbac_permissions` VALUES (554, 'Command: modify money');
+INSERT INTO `rbac_permissions` VALUES (555, 'Command: modify mount');
+INSERT INTO `rbac_permissions` VALUES (556, 'Command: modify phase');
+INSERT INTO `rbac_permissions` VALUES (557, 'Command: modify rage');
+INSERT INTO `rbac_permissions` VALUES (558, 'Command: modify reputation');
+INSERT INTO `rbac_permissions` VALUES (559, 'Command: modify runicpower');
+INSERT INTO `rbac_permissions` VALUES (560, 'Command: modify scale');
+INSERT INTO `rbac_permissions` VALUES (561, 'Command: modify speed');
+INSERT INTO `rbac_permissions` VALUES (562, 'Command: modify speed all');
+INSERT INTO `rbac_permissions` VALUES (563, 'Command: modify speed backwalk');
+INSERT INTO `rbac_permissions` VALUES (564, 'Command: modify speed fly');
+INSERT INTO `rbac_permissions` VALUES (565, 'Command: modify speed walk');
+INSERT INTO `rbac_permissions` VALUES (566, 'Command: modify speed swim');
+INSERT INTO `rbac_permissions` VALUES (567, 'Command: modify spell');
+INSERT INTO `rbac_permissions` VALUES (568, 'Command: modify standstate');
+INSERT INTO `rbac_permissions` VALUES (569, 'Command: modify talentpoints');
+INSERT INTO `rbac_permissions` VALUES (570, 'Command: npc');
+INSERT INTO `rbac_permissions` VALUES (571, 'Command: npc add');
+INSERT INTO `rbac_permissions` VALUES (572, 'Command: npc add formation');
+INSERT INTO `rbac_permissions` VALUES (573, 'Command: npc add item');
+INSERT INTO `rbac_permissions` VALUES (574, 'Command: npc add move');
+INSERT INTO `rbac_permissions` VALUES (575, 'Command: npc add temp');
+INSERT INTO `rbac_permissions` VALUES (576, 'Command: npc add delete');
+INSERT INTO `rbac_permissions` VALUES (577, 'Command: npc add delete item');
+INSERT INTO `rbac_permissions` VALUES (578, 'Command: npc add follow');
+INSERT INTO `rbac_permissions` VALUES (579, 'Command: npc add follow stop');
+INSERT INTO `rbac_permissions` VALUES (580, 'Command: npc set');
+INSERT INTO `rbac_permissions` VALUES (581, 'Command: npc set allowmove');
+INSERT INTO `rbac_permissions` VALUES (582, 'Command: npc set entry');
+INSERT INTO `rbac_permissions` VALUES (583, 'Command: npc set factionid');
+INSERT INTO `rbac_permissions` VALUES (584, 'Command: npc set flag');
+INSERT INTO `rbac_permissions` VALUES (585, 'Command: npc set level');
+INSERT INTO `rbac_permissions` VALUES (586, 'Command: npc set link');
+INSERT INTO `rbac_permissions` VALUES (587, 'Command: npc set model');
+INSERT INTO `rbac_permissions` VALUES (588, 'Command: npc set movetype');
+INSERT INTO `rbac_permissions` VALUES (589, 'Command: npc set phase');
+INSERT INTO `rbac_permissions` VALUES (590, 'Command: npc set spawndist');
+INSERT INTO `rbac_permissions` VALUES (591, 'Command: npc set spawntime');
+INSERT INTO `rbac_permissions` VALUES (592, 'Command: npc set data');
+INSERT INTO `rbac_permissions` VALUES (593, 'Command: npc info');
+INSERT INTO `rbac_permissions` VALUES (594, 'Command: npc near');
+INSERT INTO `rbac_permissions` VALUES (595, 'Command: npc move');
+INSERT INTO `rbac_permissions` VALUES (596, 'Command: npc playemote');
+INSERT INTO `rbac_permissions` VALUES (597, 'Command: npc say');
+INSERT INTO `rbac_permissions` VALUES (598, 'Command: npc textemote');
+INSERT INTO `rbac_permissions` VALUES (599, 'Command: npc whisper');
+INSERT INTO `rbac_permissions` VALUES (600, 'Command: npc yell');
+INSERT INTO `rbac_permissions` VALUES (601, 'Command: npc tame');
+INSERT INTO `rbac_permissions` VALUES (602, 'Command: quest');
+INSERT INTO `rbac_permissions` VALUES (603, 'Command: quest add');
+INSERT INTO `rbac_permissions` VALUES (604, 'Command: quest complete');
+INSERT INTO `rbac_permissions` VALUES (605, 'Command: quest remove');
+INSERT INTO `rbac_permissions` VALUES (606, 'Command: quest reward');
+INSERT INTO `rbac_permissions` VALUES (607, 'Command: reload');
+INSERT INTO `rbac_permissions` VALUES (608, 'Command: reload access_requirement');
+INSERT INTO `rbac_permissions` VALUES (609, 'Command: reload achievement_criteria_data');
+INSERT INTO `rbac_permissions` VALUES (610, 'Command: reload achievement_reward');
+INSERT INTO `rbac_permissions` VALUES (611, 'Command: reload all');
+INSERT INTO `rbac_permissions` VALUES (612, 'Command: reload all achievement');
+INSERT INTO `rbac_permissions` VALUES (613, 'Command: reload all area');
+INSERT INTO `rbac_permissions` VALUES (614, 'Command: broadcast_text');
+INSERT INTO `rbac_permissions` VALUES (615, 'Command: reload all gossips');
+INSERT INTO `rbac_permissions` VALUES (616, 'Command: reload all item');
+INSERT INTO `rbac_permissions` VALUES (617, 'Command: reload all locales');
+INSERT INTO `rbac_permissions` VALUES (618, 'Command: reload all loot');
+INSERT INTO `rbac_permissions` VALUES (619, 'Command: reload all npc');
+INSERT INTO `rbac_permissions` VALUES (620, 'Command: reload all quest');
+INSERT INTO `rbac_permissions` VALUES (621, 'Command: reload all scripts');
+INSERT INTO `rbac_permissions` VALUES (622, 'Command: reload all spell');
+INSERT INTO `rbac_permissions` VALUES (623, 'Command: reload areatrigger_involvedrelation');
+INSERT INTO `rbac_permissions` VALUES (624, 'Command: reload areatrigger_tavern');
+INSERT INTO `rbac_permissions` VALUES (625, 'Command: reload areatrigger_teleport');
+INSERT INTO `rbac_permissions` VALUES (626, 'Command: reload auctions');
+INSERT INTO `rbac_permissions` VALUES (627, 'Command: reload autobroadcast');
+INSERT INTO `rbac_permissions` VALUES (628, 'Command: reload command');
+INSERT INTO `rbac_permissions` VALUES (629, 'Command: reload conditions');
+INSERT INTO `rbac_permissions` VALUES (630, 'Command: reload config');
+INSERT INTO `rbac_permissions` VALUES (631, 'Command: reload battleground_template');
+INSERT INTO `rbac_permissions` VALUES (632, 'Command: .mutehistory');
+INSERT INTO `rbac_permissions` VALUES (633, 'Command: reload creature_linked_respawn');
+INSERT INTO `rbac_permissions` VALUES (634, 'Command: reload creature_loot_template');
+INSERT INTO `rbac_permissions` VALUES (635, 'Command: reload creature_onkill_reputation');
+INSERT INTO `rbac_permissions` VALUES (636, 'Command: reload creature_questender');
+INSERT INTO `rbac_permissions` VALUES (637, 'Command: reload creature_queststarter');
+INSERT INTO `rbac_permissions` VALUES (638, 'Command: reload creature_summon_groups');
+INSERT INTO `rbac_permissions` VALUES (639, 'Command: reload creature_template');
+INSERT INTO `rbac_permissions` VALUES (640, 'Command: reload creature_text');
+INSERT INTO `rbac_permissions` VALUES (641, 'Command: reload disables');
+INSERT INTO `rbac_permissions` VALUES (642, 'Command: reload disenchant_loot_template');
+INSERT INTO `rbac_permissions` VALUES (643, 'Command: reload event_scripts');
+INSERT INTO `rbac_permissions` VALUES (644, 'Command: reload fishing_loot_template');
+INSERT INTO `rbac_permissions` VALUES (645, 'Command: reload graveyard_zone');
+INSERT INTO `rbac_permissions` VALUES (646, 'Command: reload game_tele');
+INSERT INTO `rbac_permissions` VALUES (647, 'Command: reload gameobject_questender');
+INSERT INTO `rbac_permissions` VALUES (648, 'Command: reload gameobject_loot_template');
+INSERT INTO `rbac_permissions` VALUES (649, 'Command: reload gameobject_queststarter');
+INSERT INTO `rbac_permissions` VALUES (650, 'Command: reload gm_tickets');
+INSERT INTO `rbac_permissions` VALUES (651, 'Command: reload gossip_menu');
+INSERT INTO `rbac_permissions` VALUES (652, 'Command: reload gossip_menu_option');
+INSERT INTO `rbac_permissions` VALUES (653, 'Command: reload item_enchantment_template');
+INSERT INTO `rbac_permissions` VALUES (654, 'Command: reload item_loot_template');
+INSERT INTO `rbac_permissions` VALUES (655, 'Command: reload item_set_names');
+INSERT INTO `rbac_permissions` VALUES (656, 'Command: reload lfg_dungeon_rewards');
+INSERT INTO `rbac_permissions` VALUES (657, 'Command: reload locales_achievement_reward');
+INSERT INTO `rbac_permissions` VALUES (658, 'Command: reload locales_creature');
+INSERT INTO `rbac_permissions` VALUES (659, 'Command: reload locales_creature_text');
+INSERT INTO `rbac_permissions` VALUES (660, 'Command: reload locales_gameobject');
+INSERT INTO `rbac_permissions` VALUES (661, 'Command: reload locales_gossip_menu_option');
+INSERT INTO `rbac_permissions` VALUES (662, 'Command: reload locales_item');
+INSERT INTO `rbac_permissions` VALUES (663, 'Command: reload locales_item_set_name');
+INSERT INTO `rbac_permissions` VALUES (664, 'Command: reload locales_npc_text');
+INSERT INTO `rbac_permissions` VALUES (665, 'Command: reload locales_page_text');
+INSERT INTO `rbac_permissions` VALUES (666, 'Command: reload locales_points_of_interest');
+INSERT INTO `rbac_permissions` VALUES (667, 'Command: reload locales_quest');
+INSERT INTO `rbac_permissions` VALUES (668, 'Command: reload mail_level_reward');
+INSERT INTO `rbac_permissions` VALUES (669, 'Command: reload mail_loot_template');
+INSERT INTO `rbac_permissions` VALUES (670, 'Command: reload milling_loot_template');
+INSERT INTO `rbac_permissions` VALUES (671, 'Command: reload npc_spellclick_spells');
+INSERT INTO `rbac_permissions` VALUES (672, 'Command: reload trainer');
+INSERT INTO `rbac_permissions` VALUES (673, 'Command: reload npc_vendor');
+INSERT INTO `rbac_permissions` VALUES (674, 'Command: reload page_text');
+INSERT INTO `rbac_permissions` VALUES (675, 'Command: reload pickpocketing_loot_template');
+INSERT INTO `rbac_permissions` VALUES (676, 'Command: reload points_of_interest');
+INSERT INTO `rbac_permissions` VALUES (677, 'Command: reload prospecting_loot_template');
+INSERT INTO `rbac_permissions` VALUES (678, 'Command: reload quest_poi');
+INSERT INTO `rbac_permissions` VALUES (679, 'Command: reload quest_template');
+INSERT INTO `rbac_permissions` VALUES (680, 'Command: reload rbac');
+INSERT INTO `rbac_permissions` VALUES (681, 'Command: reload reference_loot_template');
+INSERT INTO `rbac_permissions` VALUES (682, 'Command: reload reserved_name');
+INSERT INTO `rbac_permissions` VALUES (683, 'Command: reload reputation_reward_rate');
+INSERT INTO `rbac_permissions` VALUES (684, 'Command: reload reputation_spillover_template');
+INSERT INTO `rbac_permissions` VALUES (685, 'Command: reload skill_discovery_template');
+INSERT INTO `rbac_permissions` VALUES (686, 'Command: reload skill_extra_item_template');
+INSERT INTO `rbac_permissions` VALUES (687, 'Command: reload skill_fishing_base_level');
+INSERT INTO `rbac_permissions` VALUES (688, 'Command: reload skinning_loot_template');
+INSERT INTO `rbac_permissions` VALUES (689, 'Command: reload smart_scripts');
+INSERT INTO `rbac_permissions` VALUES (690, 'Command: reload spell_required');
+INSERT INTO `rbac_permissions` VALUES (691, 'Command: reload spell_area');
+INSERT INTO `rbac_permissions` VALUES (692, 'Command: reload spell_bonus_data');
+INSERT INTO `rbac_permissions` VALUES (693, 'Command: reload spell_group');
+INSERT INTO `rbac_permissions` VALUES (694, 'Command: reload spell_learn_spell');
+INSERT INTO `rbac_permissions` VALUES (695, 'Command: reload spell_loot_template');
+INSERT INTO `rbac_permissions` VALUES (696, 'Command: reload spell_linked_spell');
+INSERT INTO `rbac_permissions` VALUES (697, 'Command: reload spell_pet_auras');
+INSERT INTO `rbac_permissions` VALUES (698, 'Command: character changeaccount');
+INSERT INTO `rbac_permissions` VALUES (699, 'Command: reload spell_proc');
+INSERT INTO `rbac_permissions` VALUES (700, 'Command: reload spell_scripts');
+INSERT INTO `rbac_permissions` VALUES (701, 'Command: reload spell_target_position');
+INSERT INTO `rbac_permissions` VALUES (702, 'Command: reload spell_threats');
+INSERT INTO `rbac_permissions` VALUES (703, 'Command: reload spell_group_stack_rules');
+INSERT INTO `rbac_permissions` VALUES (704, 'Command: reload trinity_string');
+INSERT INTO `rbac_permissions` VALUES (706, 'Command: reload waypoint_scripts');
+INSERT INTO `rbac_permissions` VALUES (707, 'Command: reload waypoint_data');
+INSERT INTO `rbac_permissions` VALUES (708, 'Command: reload vehicle_accessory');
+INSERT INTO `rbac_permissions` VALUES (709, 'Command: reload vehicle_template_accessory');
+INSERT INTO `rbac_permissions` VALUES (710, 'Command: reset');
+INSERT INTO `rbac_permissions` VALUES (711, 'Command: reset achievements');
+INSERT INTO `rbac_permissions` VALUES (712, 'Command: reset honor');
+INSERT INTO `rbac_permissions` VALUES (713, 'Command: reset level');
+INSERT INTO `rbac_permissions` VALUES (714, 'Command: reset spells');
+INSERT INTO `rbac_permissions` VALUES (715, 'Command: reset stats');
+INSERT INTO `rbac_permissions` VALUES (716, 'Command: reset talents');
+INSERT INTO `rbac_permissions` VALUES (717, 'Command: reset all');
+INSERT INTO `rbac_permissions` VALUES (718, 'Command: server');
+INSERT INTO `rbac_permissions` VALUES (719, 'Command: server corpses');
+INSERT INTO `rbac_permissions` VALUES (720, 'Command: server exit');
+INSERT INTO `rbac_permissions` VALUES (721, 'Command: server idlerestart');
+INSERT INTO `rbac_permissions` VALUES (722, 'Command: server idlerestart cancel');
+INSERT INTO `rbac_permissions` VALUES (723, 'Command: server idleshutdown');
+INSERT INTO `rbac_permissions` VALUES (724, 'Command: server idleshutdown cancel');
+INSERT INTO `rbac_permissions` VALUES (725, 'Command: server info');
+INSERT INTO `rbac_permissions` VALUES (726, 'Command: server plimit');
+INSERT INTO `rbac_permissions` VALUES (727, 'Command: server restart');
+INSERT INTO `rbac_permissions` VALUES (728, 'Command: server restart cancel');
+INSERT INTO `rbac_permissions` VALUES (729, 'Command: server set');
+INSERT INTO `rbac_permissions` VALUES (730, 'Command: server set closed');
+INSERT INTO `rbac_permissions` VALUES (731, 'Command: server set difftime');
+INSERT INTO `rbac_permissions` VALUES (732, 'Command: server set loglevel');
+INSERT INTO `rbac_permissions` VALUES (733, 'Command: server set motd');
+INSERT INTO `rbac_permissions` VALUES (734, 'Command: server shutdown');
+INSERT INTO `rbac_permissions` VALUES (735, 'Command: server shutdown cancel');
+INSERT INTO `rbac_permissions` VALUES (736, 'Command: server motd');
+INSERT INTO `rbac_permissions` VALUES (737, 'Command: tele');
+INSERT INTO `rbac_permissions` VALUES (738, 'Command: tele add');
+INSERT INTO `rbac_permissions` VALUES (739, 'Command: tele del');
+INSERT INTO `rbac_permissions` VALUES (740, 'Command: tele name');
+INSERT INTO `rbac_permissions` VALUES (741, 'Command: tele group');
+INSERT INTO `rbac_permissions` VALUES (742, 'Command: ticket');
+INSERT INTO `rbac_permissions` VALUES (743, 'Command: ticket assign');
+INSERT INTO `rbac_permissions` VALUES (744, 'Command: ticket close');
+INSERT INTO `rbac_permissions` VALUES (745, 'Command: ticket closedlist');
+INSERT INTO `rbac_permissions` VALUES (746, 'Command: ticket comment');
+INSERT INTO `rbac_permissions` VALUES (747, 'Command: ticket complete');
+INSERT INTO `rbac_permissions` VALUES (748, 'Command: ticket delete');
+INSERT INTO `rbac_permissions` VALUES (749, 'Command: ticket escalate');
+INSERT INTO `rbac_permissions` VALUES (750, 'Command: ticket escalatedlist');
+INSERT INTO `rbac_permissions` VALUES (751, 'Command: ticket list');
+INSERT INTO `rbac_permissions` VALUES (752, 'Command: ticket onlinelist');
+INSERT INTO `rbac_permissions` VALUES (753, 'Command: ticket reset');
+INSERT INTO `rbac_permissions` VALUES (754, 'Command: ticket response');
+INSERT INTO `rbac_permissions` VALUES (755, 'Command: ticket response append');
+INSERT INTO `rbac_permissions` VALUES (756, 'Command: ticket response appendln');
+INSERT INTO `rbac_permissions` VALUES (757, 'Command: ticket togglesystem');
+INSERT INTO `rbac_permissions` VALUES (758, 'Command: ticket unassign');
+INSERT INTO `rbac_permissions` VALUES (759, 'Command: ticket viewid');
+INSERT INTO `rbac_permissions` VALUES (760, 'Command: ticket viewname');
+INSERT INTO `rbac_permissions` VALUES (761, 'Command: titles');
+INSERT INTO `rbac_permissions` VALUES (762, 'Command: titles add');
+INSERT INTO `rbac_permissions` VALUES (763, 'Command: titles current');
+INSERT INTO `rbac_permissions` VALUES (764, 'Command: titles remove');
+INSERT INTO `rbac_permissions` VALUES (765, 'Command: titles set');
+INSERT INTO `rbac_permissions` VALUES (766, 'Command: titles set mask');
+INSERT INTO `rbac_permissions` VALUES (767, 'Command: wp');
+INSERT INTO `rbac_permissions` VALUES (768, 'Command: wp add');
+INSERT INTO `rbac_permissions` VALUES (769, 'Command: wp event');
+INSERT INTO `rbac_permissions` VALUES (770, 'Command: wp load');
+INSERT INTO `rbac_permissions` VALUES (771, 'Command: wp modify');
+INSERT INTO `rbac_permissions` VALUES (772, 'Command: wp unload');
+INSERT INTO `rbac_permissions` VALUES (773, 'Command: wp reload');
+INSERT INTO `rbac_permissions` VALUES (774, 'Command: wp show');
+INSERT INTO `rbac_permissions` VALUES (777, 'Command: mailbox');
+INSERT INTO `rbac_permissions` VALUES (778, 'Command: ahbot');
+INSERT INTO `rbac_permissions` VALUES (779, 'Command: ahbot items');
+INSERT INTO `rbac_permissions` VALUES (780, 'Command: ahbot items gray');
+INSERT INTO `rbac_permissions` VALUES (781, 'Command: ahbot items white');
+INSERT INTO `rbac_permissions` VALUES (782, 'Command: ahbot items green');
+INSERT INTO `rbac_permissions` VALUES (783, 'Command: ahbot items blue');
+INSERT INTO `rbac_permissions` VALUES (784, 'Command: ahbot items purple');
+INSERT INTO `rbac_permissions` VALUES (785, 'Command: ahbot items orange');
+INSERT INTO `rbac_permissions` VALUES (786, 'Command: ahbot items yellow');
+INSERT INTO `rbac_permissions` VALUES (787, 'Command: ahbot ratio');
+INSERT INTO `rbac_permissions` VALUES (788, 'Command: ahbot ratio alliance');
+INSERT INTO `rbac_permissions` VALUES (789, 'Command: ahbot ratio horde');
+INSERT INTO `rbac_permissions` VALUES (790, 'Command: ahbot ratio neutral');
+INSERT INTO `rbac_permissions` VALUES (791, 'Command: ahbot rebuild');
+INSERT INTO `rbac_permissions` VALUES (792, 'Command: ahbot reload');
+INSERT INTO `rbac_permissions` VALUES (793, 'Command: ahbot status');
+INSERT INTO `rbac_permissions` VALUES (794, 'Command: guild info');
+INSERT INTO `rbac_permissions` VALUES (795, 'Command: instance setbossstate');
+INSERT INTO `rbac_permissions` VALUES (796, 'Command: instance getbossstate');
+INSERT INTO `rbac_permissions` VALUES (797, 'Command: pvpstats');
+INSERT INTO `rbac_permissions` VALUES (798, 'Command: mod xp');
+INSERT INTO `rbac_permissions` VALUES (835, 'Command: debug loadcells');
+INSERT INTO `rbac_permissions` VALUES (836, 'Command: debug boundary');
+INSERT INTO `rbac_permissions` VALUES (837, 'Command: npc evade');
+INSERT INTO `rbac_permissions` VALUES (838, 'Command: pet level');
+INSERT INTO `rbac_permissions` VALUES (839, 'Command: server shutdown force');
+INSERT INTO `rbac_permissions` VALUES (840, 'Command: server restart force');
+INSERT INTO `rbac_permissions` VALUES (841, 'Command: debug neargraveyard');
+INSERT INTO `rbac_permissions` VALUES (843, 'Command: reload quest_greeting');
+INSERT INTO `rbac_permissions` VALUES (852, 'Command: debug dummy');
+INSERT INTO `rbac_permissions` VALUES (855, 'Command: debug play music');
+INSERT INTO `rbac_permissions` VALUES (856, 'Command: npc spawngroup');
+INSERT INTO `rbac_permissions` VALUES (857, 'Command: npc despawngroup');
+INSERT INTO `rbac_permissions` VALUES (858, 'Command: gobject spawngroup');
+INSERT INTO `rbac_permissions` VALUES (859, 'Command: gobject despawngroup');
+INSERT INTO `rbac_permissions` VALUES (860, 'Command: list respawns');
+INSERT INTO `rbac_permissions` VALUES (861, 'Command: group set');
+INSERT INTO `rbac_permissions` VALUES (862, 'Command: group set assistant');
+INSERT INTO `rbac_permissions` VALUES (863, 'Command: group set maintank');
+INSERT INTO `rbac_permissions` VALUES (864, 'Command: group set mainassist');
+INSERT INTO `rbac_permissions` VALUES (865, 'Command: npc showloot');
+INSERT INTO `rbac_permissions` VALUES (866, 'Command: list spawnpoints');
+INSERT INTO `rbac_permissions` VALUES (867, 'Command: reload quest_greeting_locale');
+INSERT INTO `rbac_permissions` VALUES (870, 'Command: debug threatinfo');
+INSERT INTO `rbac_permissions` VALUES (871, 'Command: debug instancespawn');
+INSERT INTO `rbac_permissions` VALUES (872, 'Command: server debug');
+INSERT INTO `rbac_permissions` VALUES (873, 'Command: reload creature_movement_override');
+INSERT INTO `rbac_permissions` VALUES (874, 'Command: debug asan');
+INSERT INTO `rbac_permissions` VALUES (875, 'Command: lookup map id');
+INSERT INTO `rbac_permissions` VALUES (876, 'Command: lookup item id');
+INSERT INTO `rbac_permissions` VALUES (877, 'Command: lookup quest id');
+INSERT INTO `rbac_permissions` VALUES (878, 'Command: debug questreset');
+INSERT INTO `rbac_permissions` VALUES (879, 'Command: debug poolstatus');
+INSERT INTO `rbac_permissions` VALUES (880, 'Command: pdump copy');
+INSERT INTO `rbac_permissions` VALUES (881, 'Command: reload vehicle_template');
+INSERT INTO `rbac_permissions` VALUES (884, 'Command: bg start');
+INSERT INTO `rbac_permissions` VALUES (885, 'Command: bg stop');
+INSERT INTO `rbac_permissions` VALUES (1000, 'vip');
+INSERT INTO `rbac_permissions` VALUES (1001, 'vip debuff');
+INSERT INTO `rbac_permissions` VALUES (1002, 'vip bank');
+INSERT INTO `rbac_permissions` VALUES (1003, 'vip repair');
+INSERT INTO `rbac_permissions` VALUES (1004, 'vip resettalents');
+INSERT INTO `rbac_permissions` VALUES (1005, 'vip taxa');
+INSERT INTO `rbac_permissions` VALUES (1006, 'vip home');
+INSERT INTO `rbac_permissions` VALUES (1007, 'vip capital');
+INSERT INTO `rbac_permissions` VALUES (1008, 'vip mail');
+INSERT INTO `rbac_permissions` VALUES (1009, 'vip changerace');
+INSERT INTO `rbac_permissions` VALUES (1010, 'vip customize');
+INSERT INTO `rbac_permissions` VALUES (1011, 'vip appear');
+INSERT INTO `rbac_permissions` VALUES (1012, 'vip map');
+INSERT INTO `rbac_permissions` VALUES (1013, 'vip buffs');
+INSERT INTO `rbac_permissions` VALUES (1014, 'vip arena');
+INSERT INTO `rbac_permissions` VALUES (1015, 'vip warsong');
+INSERT INTO `rbac_permissions` VALUES (1016, 'vip arathi');
+INSERT INTO `rbac_permissions` VALUES (1017, 'vip eye');
+INSERT INTO `rbac_permissions` VALUES (1018, 'vip alterac');
+INSERT INTO `rbac_permissions` VALUES (1019, 'vip teles');
+INSERT INTO `rbac_permissions` VALUES (1020, 'vip qcomplete');
+INSERT INTO `rbac_permissions` VALUES (1021, 'Command: reload full');
+INSERT INTO `rbac_permissions` VALUES (1024, 'Command: guild linfo');
+INSERT INTO `rbac_permissions` VALUES (1025, 'Command: guild setlevel');
+INSERT INTO `rbac_permissions` VALUES (1026, 'Command: guild givexp');
+INSERT INTO `rbac_permissions` VALUES (1114, 'Command: AddCoin');
+INSERT INTO `rbac_permissions` VALUES (4000, 'Command: reset items equipped');
+INSERT INTO `rbac_permissions` VALUES (4001, 'Command: reset items bags');
+INSERT INTO `rbac_permissions` VALUES (4002, 'Command: reset items bank');
+INSERT INTO `rbac_permissions` VALUES (4003, 'Command: reset items keyring');
+INSERT INTO `rbac_permissions` VALUES (4004, 'Command: reset items currency');
+INSERT INTO `rbac_permissions` VALUES (4005, 'Command: reset items vendor_buyback');
+INSERT INTO `rbac_permissions` VALUES (4006, 'Command: reset items all');
+INSERT INTO `rbac_permissions` VALUES (4007, 'Command: reset items allbags');
+INSERT INTO `rbac_permissions` VALUES (4008, '1');
+INSERT INTO `rbac_permissions` VALUES (4009, '1');
+INSERT INTO `rbac_permissions` VALUES (4010, '1');
+INSERT INTO `rbac_permissions` VALUES (4011, '1');
+INSERT INTO `rbac_permissions` VALUES (4012, '1');
+INSERT INTO `rbac_permissions` VALUES (4013, '1');
+INSERT INTO `rbac_permissions` VALUES (4014, '1');
+INSERT INTO `rbac_permissions` VALUES (4015, '1');
+INSERT INTO `rbac_permissions` VALUES (4017, '1');
+INSERT INTO `rbac_permissions` VALUES (70001, 'Command: npcbot');
+INSERT INTO `rbac_permissions` VALUES (70002, 'Command: npcbot add');
+INSERT INTO `rbac_permissions` VALUES (70003, 'Command: npcbot remove');
+INSERT INTO `rbac_permissions` VALUES (70004, 'Command: npcbot spawn');
+INSERT INTO `rbac_permissions` VALUES (70005, 'Command: npcbot move');
+INSERT INTO `rbac_permissions` VALUES (70006, 'Command: npcbot delete');
+INSERT INTO `rbac_permissions` VALUES (70007, 'Command: npcbot lookup');
+INSERT INTO `rbac_permissions` VALUES (70008, 'Command: npcbot revive');
+INSERT INTO `rbac_permissions` VALUES (70009, 'Command: npcbot reloadconfig');
+INSERT INTO `rbac_permissions` VALUES (70010, 'Command: npcbot info');
+INSERT INTO `rbac_permissions` VALUES (70011, 'Command: npcbot hide');
+INSERT INTO `rbac_permissions` VALUES (70012, 'Command: npcbot unhide');
+INSERT INTO `rbac_permissions` VALUES (70013, 'Command: npcbot recall');
+INSERT INTO `rbac_permissions` VALUES (70014, 'Command: npcbot kill');
+INSERT INTO `rbac_permissions` VALUES (70015, 'Command: npcbot debug raid');
+INSERT INTO `rbac_permissions` VALUES (70016, 'Command: npcbot debug mount');
+INSERT INTO `rbac_permissions` VALUES (70017, 'Command: npcbot debug spellvisual');
+INSERT INTO `rbac_permissions` VALUES (70018, 'Command: npcbot debug states');
+INSERT INTO `rbac_permissions` VALUES (70019, 'Command: npcbot toggle flags');
+INSERT INTO `rbac_permissions` VALUES (70020, 'Command: npcbot set faction');
+INSERT INTO `rbac_permissions` VALUES (70021, 'Command: npcbot set owner');
+INSERT INTO `rbac_permissions` VALUES (70022, 'Command: npcbot set spec');
+INSERT INTO `rbac_permissions` VALUES (70023, 'Command: npcbot command standstill');
+INSERT INTO `rbac_permissions` VALUES (70024, 'Command: npcbot command stopfully');
+INSERT INTO `rbac_permissions` VALUES (70025, 'Command: npcbot command follow');
+INSERT INTO `rbac_permissions` VALUES (70026, 'Command: npcbot distance attack short');
+INSERT INTO `rbac_permissions` VALUES (70027, 'Command: npcbot distance attack long');
+INSERT INTO `rbac_permissions` VALUES (70028, 'Command: npcbot distance attack');
+INSERT INTO `rbac_permissions` VALUES (70029, 'Command: npcbot distance');
+INSERT INTO `rbac_permissions` VALUES (70030, 'Command: npcbot order cast');
+INSERT INTO `rbac_permissions` VALUES (70031, 'Command: npcbot vehicle eject');
+INSERT INTO `rbac_permissions` VALUES (70032, 'Command: npcbot dump load');
+INSERT INTO `rbac_permissions` VALUES (70033, 'Command: npcbot dump write');
+INSERT INTO `rbac_permissions` VALUES (639556, 'vip gbuff');
+INSERT INTO `rbac_permissions` VALUES (639557, 'RBAC_PERM_COMMAND_RELOAD_SPELL_TARGET_POSITION2');
 
-LOCK TABLES `rbac_permissions` WRITE;
-/*!40000 ALTER TABLE `rbac_permissions` DISABLE KEYS */;
-INSERT INTO `rbac_permissions` VALUES
-(1,'Instant logout'),
-(2,'Skip Queue'),
-(3,'Join Normal Battleground'),
-(4,'Join Random Battleground'),
-(5,'Join Arenas'),
-(6,'Join Dungeon Finder'),
-(7,'Skip idle connection check'),
-(8,'Cannot earn achievements'),
-(9,'Cannot earn realm first achievements'),
-(11,'Log GM trades'),
-(13,'Skip Instance required bosses check'),
-(14,'Skip character creation team mask check'),
-(15,'Skip character creation class mask check'),
-(16,'Skip character creation race mask check'),
-(17,'Skip character creation reserved name check'),
-(18,'Skip character creation death knight min level check'),
-(19,'Skip needed requirements to use channel check'),
-(20,'Skip disable map check'),
-(21,'Skip reset talents when used more than allowed check'),
-(22,'Skip spam chat check'),
-(23,'Skip over-speed ping check'),
-(24,'Two side faction characters on the same account'),
-(25,'Allow say chat between factions'),
-(26,'Allow channel chat between factions'),
-(27,'Two side mail interaction'),
-(28,'See two side who list'),
-(29,'Add friends of other faction'),
-(30,'Save character without delay with .save command'),
-(31,'Use params with .unstuck command'),
-(32,'Can be assigned tickets with .assign ticket command'),
-(33,'Notify if a command was not found'),
-(34,'Check if should appear in list using .gm ingame command'),
-(35,'See all security levels with who command'),
-(36,'Filter whispers'),
-(37,'Use staff badge in chat'),
-(38,'Resurrect with full Health Points'),
-(39,'Restore saved gm setting states'),
-(40,'Allows to add a gm to friend list'),
-(41,'Use Config option START_GM_LEVEL to assign new character level'),
-(42,'Allows to use CMSG_WORLD_TELEPORT opcode'),
-(43,'Allows to use CMSG_WHOIS opcode'),
-(44,'Receive global GM messages/texts'),
-(45,'Join channels without announce'),
-(46,'Change channel settings without being channel moderator'),
-(47,'Can ignore non-strong lower security checks if it\'s disabled in config'),
-(48,'Enable IP, Last Login and EMail output in pinfo'),
-(49,'Forces to enter the email for confirmation on password change'),
-(50,'Allow user to check his own email with .account'),
-(51,'Allow trading between factions'),
-(52,'No battleground deserter debuff'),
-(53,'Can be AFK on the battleground'),
-(192,'Role: Sec Level Administrator'),
-(193,'Role: Sec Level Gamemaster'),
-(194,'Role: Sec Level Moderator'),
-(195,'Role: Sec Level Player'),
-(196,'Role: Administrator Commands'),
-(197,'Role: Gamemaster Commands'),
-(198,'Role: Moderator Commands'),
-(199,'Role: Player Commands'),
-(200,'Command: rbac'),
-(201,'Command: rbac account'),
-(202,'Command: rbac account list'),
-(203,'Command: rbac account grant'),
-(204,'Command: rbac account deny'),
-(205,'Command: rbac account revoke'),
-(206,'Command: rbac list'),
-(217,'Command: account'),
-(218,'Command: account addon'),
-(219,'Command: account create'),
-(220,'Command: account delete'),
-(221,'Command: account lock'),
-(222,'Command: account lock country'),
-(223,'Command: account lock ip'),
-(224,'Command: account onlinelist'),
-(225,'Command: account password'),
-(226,'Command: account set'),
-(227,'Command: account set addon'),
-(228,'Command: account set gmlevel'),
-(229,'Command: account set password'),
-(230,'Command: achievement'),
-(231,'Command: achievement add'),
-(232,'Command: arena'),
-(233,'Command: arena captain'),
-(234,'Command: arena create'),
-(235,'Command: arena disband'),
-(236,'Command: arena info'),
-(237,'Command: arena lookup'),
-(238,'Command: arena rename'),
-(239,'Command: ban'),
-(240,'Command: ban account'),
-(241,'Command: ban character'),
-(242,'Command: ban ip'),
-(243,'Command: ban playeraccount'),
-(244,'Command: baninfo'),
-(245,'Command: baninfo account'),
-(246,'Command: baninfo character'),
-(247,'Command: baninfo ip'),
-(248,'Command: banlist'),
-(249,'Command: banlist account'),
-(250,'Command: banlist character'),
-(251,'Command: banlist ip'),
-(252,'Command: unban'),
-(253,'Command: unban account'),
-(254,'Command: unban character'),
-(255,'Command: unban ip'),
-(256,'Command: unban playeraccount'),
-(257,'Command: bf'),
-(258,'Command: bf start'),
-(259,'Command: bf stop'),
-(260,'Command: bf switch'),
-(261,'Command: bf timer'),
-(262,'Command: bf enable'),
-(263,'Command: account email'),
-(264,'Command: account set sec'),
-(265,'Command: account set sec email'),
-(266,'Command: account set sec regmail'),
-(267,'Command: cast'),
-(268,'Command: cast back'),
-(269,'Command: cast dist'),
-(270,'Command: cast self'),
-(271,'Command: cast target'),
-(272,'Command: cast dest'),
-(273,'Command: character'),
-(274,'Command: character customize'),
-(275,'Command: character changefaction'),
-(276,'Command: character changerace'),
-(277,'Command: character deleted'),
-(279,'Command: character deleted list'),
-(280,'Command: character deleted restore'),
-(283,'Command: character level'),
-(284,'Command: character rename'),
-(285,'Command: character reputation'),
-(286,'Command: character titles'),
-(287,'Command: levelup'),
-(288,'Command: pdump'),
-(289,'Command: pdump load'),
-(290,'Command: pdump write'),
-(291,'Command: cheat'),
-(292,'Command: cheat casttime'),
-(293,'Command: cheat cooldown'),
-(294,'Command: cheat explore'),
-(295,'Command: cheat god'),
-(296,'Command: cheat power'),
-(297,'Command: cheat status'),
-(298,'Command: cheat taxi'),
-(299,'Command: cheat waterwalk'),
-(300,'Command: debug'),
-(301,'Command: debug anim'),
-(302,'Command: debug areatriggers'),
-(303,'Command: debug arena'),
-(304,'Command: debug bg'),
-(305,'Command: debug entervehicle'),
-(306,'Command: debug getitemstate'),
-(307,'Command: debug getitemvalue'),
-(308,'Command: debug getvalue'),
-(309,'Command: debug combat'),
-(310,'Command: debug itemexpire'),
-(311,'Command: debug lootrecipient'),
-(312,'Command: debug los'),
-(313,'Command: debug mod32value'),
-(314,'Command: debug moveflags'),
-(315,'Command: debug play'),
-(316,'Command: debug play cinematics'),
-(317,'Command: debug play movie'),
-(318,'Command: debug play sound'),
-(319,'Command: debug send'),
-(320,'Command: debug send buyerror'),
-(321,'Command: debug send channelnotify'),
-(322,'Command: debug send chatmessage'),
-(323,'Command: debug send equiperror'),
-(324,'Command: debug send largepacket'),
-(325,'Command: debug send opcode'),
-(326,'Command: debug send qinvalidmsg'),
-(327,'Command: debug send qpartymsg'),
-(328,'Command: debug send sellerror'),
-(329,'Command: debug send setphaseshift'),
-(330,'Command: debug send spellfail'),
-(331,'Command: debug setaurastate'),
-(332,'Command: debug setbit'),
-(333,'Command: debug setitemvalue'),
-(334,'Command: debug setvalue'),
-(335,'Command: debug setvid'),
-(336,'Command: debug spawnvehicle'),
-(337,'Command: debug threat'),
-(338,'Command: debug update'),
-(339,'Command: debug worldstate'),
-(340,'Command: wpgps'),
-(341,'Command: deserter'),
-(342,'Command: deserter bg'),
-(343,'Command: deserter bg add'),
-(344,'Command: deserter bg remove'),
-(345,'Command: deserter instance'),
-(346,'Command: deserter instance add'),
-(347,'Command: deserter instance remove'),
-(348,'Command: disable'),
-(349,'Command: disable add'),
-(350,'Command: disable add achievement_criteria'),
-(351,'Command: disable add battleground'),
-(352,'Command: disable add map'),
-(353,'Command: disable add mmap'),
-(354,'Command: disable add outdoorpvp'),
-(355,'Command: disable add quest'),
-(356,'Command: disable add spell'),
-(357,'Command: disable add vmap'),
-(358,'Command: disable remove'),
-(359,'Command: disable remove achievement_criteria'),
-(360,'Command: disable remove battleground'),
-(361,'Command: disable remove map'),
-(362,'Command: disable remove mmap'),
-(363,'Command: disable remove outdoorpvp'),
-(364,'Command: disable remove quest'),
-(365,'Command: disable remove spell'),
-(366,'Command: disable remove vmap'),
-(367,'Command: event'),
-(368,'Command: event activelist'),
-(369,'Command: event start'),
-(370,'Command: event stop'),
-(371,'Command: gm'),
-(372,'Command: gm chat'),
-(373,'Command: gm fly'),
-(374,'Command: gm ingame'),
-(375,'Command: gm list'),
-(376,'Command: gm visible'),
-(377,'Command: go'),
-(378,'Command: account 2fa'),
-(379,'Command: account 2fa setup'),
-(380,'Command: account 2fa remove'),
-(381,'Command: account set 2fa'),
-(387,'Command: gobject'),
-(388,'Command: gobject activate'),
-(389,'Command: gobject add'),
-(390,'Command: gobject add temp'),
-(391,'Command: gobject delete'),
-(392,'Command: gobject info'),
-(393,'Command: gobject move'),
-(394,'Command: gobject near'),
-(395,'Command: gobject set'),
-(396,'Command: gobject set phase'),
-(397,'Command: gobject set state'),
-(398,'Command: gobject target'),
-(399,'Command: gobject turn'),
-(400,'Command: debug transport'),
-(401,'Command: guild'),
-(402,'Command: guild create'),
-(403,'Command: guild delete'),
-(404,'Command: guild invite'),
-(405,'Command: guild uninvite'),
-(406,'Command: guild rank'),
-(407,'Command: guild rename'),
-(408,'Command: honor'),
-(409,'Command: honor add'),
-(410,'Command: honor add kill'),
-(411,'Command: honor update'),
-(412,'Command: instance'),
-(413,'Command: instance listbinds'),
-(414,'Command: instance unbind'),
-(415,'Command: instance stats'),
-(416,'Command: instance savedata'),
-(417,'Command: learn'),
-(418,'Command: learn all'),
-(419,'Command: learn all my'),
-(420,'Command: learn all my class'),
-(421,'Command: learn all my pettalents'),
-(422,'Command: learn all my spells'),
-(423,'Command: learn all my talents'),
-(424,'Command: learn all gm'),
-(425,'Command: learn all crafts'),
-(426,'Command: learn all default'),
-(427,'Command: learn all lang'),
-(428,'Command: learn all recipes'),
-(429,'Command: unlearn'),
-(430,'Command: lfg'),
-(431,'Command: lfg player'),
-(432,'Command: lfg group'),
-(433,'Command: lfg queue'),
-(434,'Command: lfg clean'),
-(435,'Command: lfg options'),
-(436,'Command: list'),
-(437,'Command: list creature'),
-(438,'Command: list item'),
-(439,'Command: list object'),
-(440,'Command: list auras'),
-(441,'Command: list mail'),
-(442,'Command: lookup'),
-(443,'Command: lookup area'),
-(444,'Command: lookup creature'),
-(445,'Command: lookup event'),
-(446,'Command: lookup faction'),
-(447,'Command: lookup item'),
-(448,'Command: lookup itemset'),
-(449,'Command: lookup object'),
-(450,'Command: lookup quest'),
-(451,'Command: lookup player'),
-(452,'Command: lookup player ip'),
-(453,'Command: lookup player account'),
-(454,'Command: lookup player email'),
-(455,'Command: lookup skill'),
-(456,'Command: lookup spell'),
-(457,'Command: lookup spell id'),
-(458,'Command: lookup taxinode'),
-(459,'Command: lookup tele'),
-(460,'Command: lookup title'),
-(461,'Command: lookup map'),
-(462,'Command: announce'),
-(463,'Command: channel'),
-(464,'Command: channel set'),
-(465,'Command: channel set ownership'),
-(466,'Command: gmannounce'),
-(467,'Command: gmnameannounce'),
-(468,'Command: gmnotify'),
-(469,'Command: nameannounce'),
-(470,'Command: notify'),
-(471,'Command: whispers'),
-(472,'Command: group'),
-(473,'Command: group leader'),
-(474,'Command: group disband'),
-(475,'Command: group remove'),
-(476,'Command: group join'),
-(477,'Command: group list'),
-(478,'Command: group summon'),
-(479,'Command: pet'),
-(480,'Command: pet create'),
-(481,'Command: pet learn'),
-(482,'Command: pet unlearn'),
-(483,'Command: send'),
-(484,'Command: send items'),
-(485,'Command: send mail'),
-(486,'Command: send message'),
-(487,'Command: send money'),
-(488,'Command: additem'),
-(489,'Command: additemset'),
-(490,'Command: appear'),
-(491,'Command: aura'),
-(492,'Command: bank'),
-(493,'Command: bindsight'),
-(494,'Command: combatstop'),
-(495,'Command: cometome'),
-(496,'Command: commands'),
-(497,'Command: cooldown'),
-(498,'Command: damage'),
-(499,'Command: dev'),
-(500,'Command: die'),
-(501,'Command: dismount'),
-(502,'Command: distance'),
-(503,'Command: flusharenapoints'),
-(504,'Command: freeze'),
-(505,'Command: gps'),
-(506,'Command: guid'),
-(507,'Command: help'),
-(508,'Command: hidearea'),
-(509,'Command: itemmove'),
-(510,'Command: kick'),
-(511,'Command: linkgrave'),
-(512,'Command: listfreeze'),
-(513,'Command: maxskill'),
-(514,'Command: movegens'),
-(515,'Command: mute'),
-(516,'Command: neargrave'),
-(517,'Command: pinfo'),
-(518,'Command: playall'),
-(519,'Command: possess'),
-(520,'Command: recall'),
-(521,'Command: repairitems'),
-(522,'Command: respawn'),
-(523,'Command: revive'),
-(524,'Command: saveall'),
-(525,'Command: save'),
-(526,'Command: setskill'),
-(527,'Command: showarea'),
-(528,'Command: summon'),
-(529,'Command: unaura'),
-(530,'Command: unbindsight'),
-(531,'Command: unfreeze'),
-(532,'Command: unmute'),
-(533,'Command: unpossess'),
-(534,'Command: unstuck'),
-(535,'Command: wchange'),
-(536,'Command: mmap'),
-(537,'Command: mmap loadedtiles'),
-(538,'Command: mmap loc'),
-(539,'Command: mmap path'),
-(540,'Command: mmap stats'),
-(541,'Command: mmap testarea'),
-(542,'Command: morph'),
-(543,'Command: demorph'),
-(544,'Command: modify'),
-(545,'Command: modify arenapoints'),
-(546,'Command: modify bit'),
-(547,'Command: modify drunk'),
-(548,'Command: modify energy'),
-(549,'Command: modify faction'),
-(550,'Command: modify gender'),
-(551,'Command: modify honor'),
-(552,'Command: modify hp'),
-(553,'Command: modify mana'),
-(554,'Command: modify money'),
-(555,'Command: modify mount'),
-(556,'Command: modify phase'),
-(557,'Command: modify rage'),
-(558,'Command: modify reputation'),
-(559,'Command: modify runicpower'),
-(560,'Command: modify scale'),
-(561,'Command: modify speed'),
-(562,'Command: modify speed all'),
-(563,'Command: modify speed backwalk'),
-(564,'Command: modify speed fly'),
-(565,'Command: modify speed walk'),
-(566,'Command: modify speed swim'),
-(567,'Command: modify spell'),
-(568,'Command: modify standstate'),
-(569,'Command: modify talentpoints'),
-(570,'Command: npc'),
-(571,'Command: npc add'),
-(572,'Command: npc add formation'),
-(573,'Command: npc add item'),
-(574,'Command: npc add move'),
-(575,'Command: npc add temp'),
-(576,'Command: npc add delete'),
-(577,'Command: npc add delete item'),
-(578,'Command: npc add follow'),
-(579,'Command: npc add follow stop'),
-(580,'Command: npc set'),
-(581,'Command: npc set allowmove'),
-(582,'Command: npc set entry'),
-(583,'Command: npc set factionid'),
-(584,'Command: npc set flag'),
-(585,'Command: npc set level'),
-(586,'Command: npc set link'),
-(587,'Command: npc set model'),
-(588,'Command: npc set movetype'),
-(589,'Command: npc set phase'),
-(590,'Command: npc set spawndist'),
-(591,'Command: npc set spawntime'),
-(592,'Command: npc set data'),
-(593,'Command: npc info'),
-(594,'Command: npc near'),
-(595,'Command: npc move'),
-(596,'Command: npc playemote'),
-(597,'Command: npc say'),
-(598,'Command: npc textemote'),
-(599,'Command: npc whisper'),
-(600,'Command: npc yell'),
-(601,'Command: npc tame'),
-(602,'Command: quest'),
-(603,'Command: quest add'),
-(604,'Command: quest complete'),
-(605,'Command: quest remove'),
-(606,'Command: quest reward'),
-(607,'Command: reload'),
-(608,'Command: reload access_requirement'),
-(609,'Command: reload achievement_criteria_data'),
-(610,'Command: reload achievement_reward'),
-(611,'Command: reload all'),
-(612,'Command: reload all achievement'),
-(613,'Command: reload all area'),
-(614,'Command: broadcast_text'),
-(615,'Command: reload all gossips'),
-(616,'Command: reload all item'),
-(617,'Command: reload all locales'),
-(618,'Command: reload all loot'),
-(619,'Command: reload all npc'),
-(620,'Command: reload all quest'),
-(621,'Command: reload all scripts'),
-(622,'Command: reload all spell'),
-(623,'Command: reload areatrigger_involvedrelation'),
-(624,'Command: reload areatrigger_tavern'),
-(625,'Command: reload areatrigger_teleport'),
-(626,'Command: reload auctions'),
-(627,'Command: reload autobroadcast'),
-(628,'Command: reload command'),
-(629,'Command: reload conditions'),
-(630,'Command: reload config'),
-(631,'Command: reload battleground_template'),
-(632,'Command: .mutehistory'),
-(633,'Command: reload creature_linked_respawn'),
-(634,'Command: reload creature_loot_template'),
-(635,'Command: reload creature_onkill_reputation'),
-(636,'Command: reload creature_questender'),
-(637,'Command: reload creature_queststarter'),
-(638,'Command: reload creature_summon_groups'),
-(639,'Command: reload creature_template'),
-(640,'Command: reload creature_text'),
-(641,'Command: reload disables'),
-(642,'Command: reload disenchant_loot_template'),
-(643,'Command: reload event_scripts'),
-(644,'Command: reload fishing_loot_template'),
-(645,'Command: reload graveyard_zone'),
-(646,'Command: reload game_tele'),
-(647,'Command: reload gameobject_questender'),
-(648,'Command: reload gameobject_loot_template'),
-(649,'Command: reload gameobject_queststarter'),
-(650,'Command: reload gm_tickets'),
-(651,'Command: reload gossip_menu'),
-(652,'Command: reload gossip_menu_option'),
-(653,'Command: reload item_enchantment_template'),
-(654,'Command: reload item_loot_template'),
-(655,'Command: reload item_set_names'),
-(656,'Command: reload lfg_dungeon_rewards'),
-(657,'Command: reload locales_achievement_reward'),
-(658,'Command: reload locales_creature'),
-(659,'Command: reload locales_creature_text'),
-(660,'Command: reload locales_gameobject'),
-(661,'Command: reload locales_gossip_menu_option'),
-(662,'Command: reload locales_item'),
-(663,'Command: reload locales_item_set_name'),
-(664,'Command: reload locales_npc_text'),
-(665,'Command: reload locales_page_text'),
-(666,'Command: reload locales_points_of_interest'),
-(667,'Command: reload locales_quest'),
-(668,'Command: reload mail_level_reward'),
-(669,'Command: reload mail_loot_template'),
-(670,'Command: reload milling_loot_template'),
-(671,'Command: reload npc_spellclick_spells'),
-(672,'Command: reload trainer'),
-(673,'Command: reload npc_vendor'),
-(674,'Command: reload page_text'),
-(675,'Command: reload pickpocketing_loot_template'),
-(676,'Command: reload points_of_interest'),
-(677,'Command: reload prospecting_loot_template'),
-(678,'Command: reload quest_poi'),
-(679,'Command: reload quest_template'),
-(680,'Command: reload rbac'),
-(681,'Command: reload reference_loot_template'),
-(682,'Command: reload reserved_name'),
-(683,'Command: reload reputation_reward_rate'),
-(684,'Command: reload reputation_spillover_template'),
-(685,'Command: reload skill_discovery_template'),
-(686,'Command: reload skill_extra_item_template'),
-(687,'Command: reload skill_fishing_base_level'),
-(688,'Command: reload skinning_loot_template'),
-(689,'Command: reload smart_scripts'),
-(690,'Command: reload spell_required'),
-(691,'Command: reload spell_area'),
-(692,'Command: reload spell_bonus_data'),
-(693,'Command: reload spell_group'),
-(694,'Command: reload spell_learn_spell'),
-(695,'Command: reload spell_loot_template'),
-(696,'Command: reload spell_linked_spell'),
-(697,'Command: reload spell_pet_auras'),
-(698,'Command: character changeaccount'),
-(699,'Command: reload spell_proc'),
-(700,'Command: reload spell_scripts'),
-(701,'Command: reload spell_target_position'),
-(702,'Command: reload spell_threats'),
-(703,'Command: reload spell_group_stack_rules'),
-(704,'Command: reload trinity_string'),
-(706,'Command: reload waypoint_scripts'),
-(707,'Command: reload waypoint_data'),
-(708,'Command: reload vehicle_accessory'),
-(709,'Command: reload vehicle_template_accessory'),
-(710,'Command: reset'),
-(711,'Command: reset achievements'),
-(712,'Command: reset honor'),
-(713,'Command: reset level'),
-(714,'Command: reset spells'),
-(715,'Command: reset stats'),
-(716,'Command: reset talents'),
-(717,'Command: reset all'),
-(718,'Command: server'),
-(719,'Command: server corpses'),
-(720,'Command: server exit'),
-(721,'Command: server idlerestart'),
-(722,'Command: server idlerestart cancel'),
-(723,'Command: server idleshutdown'),
-(724,'Command: server idleshutdown cancel'),
-(725,'Command: server info'),
-(726,'Command: server plimit'),
-(727,'Command: server restart'),
-(728,'Command: server restart cancel'),
-(729,'Command: server set'),
-(730,'Command: server set closed'),
-(731,'Command: server set difftime'),
-(732,'Command: server set loglevel'),
-(733,'Command: server set motd'),
-(734,'Command: server shutdown'),
-(735,'Command: server shutdown cancel'),
-(736,'Command: server motd'),
-(737,'Command: tele'),
-(738,'Command: tele add'),
-(739,'Command: tele del'),
-(740,'Command: tele name'),
-(741,'Command: tele group'),
-(742,'Command: ticket'),
-(743,'Command: ticket assign'),
-(744,'Command: ticket close'),
-(745,'Command: ticket closedlist'),
-(746,'Command: ticket comment'),
-(747,'Command: ticket complete'),
-(748,'Command: ticket delete'),
-(749,'Command: ticket escalate'),
-(750,'Command: ticket escalatedlist'),
-(751,'Command: ticket list'),
-(752,'Command: ticket onlinelist'),
-(753,'Command: ticket reset'),
-(754,'Command: ticket response'),
-(755,'Command: ticket response append'),
-(756,'Command: ticket response appendln'),
-(757,'Command: ticket togglesystem'),
-(758,'Command: ticket unassign'),
-(759,'Command: ticket viewid'),
-(760,'Command: ticket viewname'),
-(761,'Command: titles'),
-(762,'Command: titles add'),
-(763,'Command: titles current'),
-(764,'Command: titles remove'),
-(765,'Command: titles set'),
-(766,'Command: titles set mask'),
-(767,'Command: wp'),
-(768,'Command: wp add'),
-(769,'Command: wp event'),
-(770,'Command: wp load'),
-(771,'Command: wp modify'),
-(772,'Command: wp unload'),
-(773,'Command: wp reload'),
-(774,'Command: wp show'),
-(777,'Command: mailbox'),
-(778,'Command: ahbot'),
-(779,'Command: ahbot items'),
-(780,'Command: ahbot items gray'),
-(781,'Command: ahbot items white'),
-(782,'Command: ahbot items green'),
-(783,'Command: ahbot items blue'),
-(784,'Command: ahbot items purple'),
-(785,'Command: ahbot items orange'),
-(786,'Command: ahbot items yellow'),
-(787,'Command: ahbot ratio'),
-(788,'Command: ahbot ratio alliance'),
-(789,'Command: ahbot ratio horde'),
-(790,'Command: ahbot ratio neutral'),
-(791,'Command: ahbot rebuild'),
-(792,'Command: ahbot reload'),
-(793,'Command: ahbot status'),
-(794,'Command: guild info'),
-(795,'Command: instance setbossstate'),
-(796,'Command: instance getbossstate'),
-(797,'Command: pvpstats'),
-(798,'Command: mod xp'),
-(835,'Command: debug loadcells'),
-(836,'Command: debug boundary'),
-(837,'Command: npc evade'),
-(838,'Command: pet level'),
-(839,'Command: server shutdown force'),
-(840,'Command: server restart force'),
-(841,'Command: debug neargraveyard'),
-(843,'Command: reload quest_greeting'),
-(852,'Command: debug dummy'),
-(855,'Command: debug play music'),
-(856,'Command: npc spawngroup'),
-(857,'Command: npc despawngroup'),
-(858,'Command: gobject spawngroup'),
-(859,'Command: gobject despawngroup'),
-(860,'Command: list respawns'),
-(861,'Command: group set'),
-(862,'Command: group set assistant'),
-(863,'Command: group set maintank'),
-(864,'Command: group set mainassist'),
-(865,'Command: npc showloot'),
-(866,'Command: list spawnpoints'),
-(867,'Command: reload quest_greeting_locale'),
-(870,'Command: debug threatinfo'),
-(871,'Command: debug instancespawn'),
-(872,'Command: server debug'),
-(873,'Command: reload creature_movement_override'),
-(874,'Command: debug asan'),
-(875,'Command: lookup map id'),
-(876,'Command: lookup item id'),
-(877,'Command: lookup quest id'),
-(878,'Command: debug questreset'),
-(879,'Command: debug poolstatus'),
-(880,'Command: pdump copy'),
-(881,'Command: reload vehicle_template'),
-(884,'Command: bg start'),
-(885,'Command: bg stop');
-/*!40000 ALTER TABLE `rbac_permissions` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `realmcharacters`
---
-
+-- ----------------------------
+-- Table structure for realmcharacters
+-- ----------------------------
 DROP TABLE IF EXISTS `realmcharacters`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `realmcharacters` (
-  `realmid` int unsigned NOT NULL DEFAULT '0',
-  `acctid` int unsigned NOT NULL,
-  `numchars` tinyint unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`realmid`,`acctid`),
-  KEY `acctid` (`acctid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Realm Character Tracker';
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `realmcharacters`  (
+  `realmid` int UNSIGNED NOT NULL DEFAULT 0,
+  `acctid` int UNSIGNED NOT NULL,
+  `numchars` tinyint UNSIGNED NOT NULL DEFAULT 0,
+  PRIMARY KEY (`realmid`, `acctid`) USING BTREE,
+  INDEX `acctid`(`acctid` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = 'Realm Character Tracker' ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `realmcharacters`
---
+-- ----------------------------
+-- Records of realmcharacters
+-- ----------------------------
+INSERT INTO `realmcharacters` VALUES (1, 1, 10);
+INSERT INTO `realmcharacters` VALUES (1, 2, 7);
+INSERT INTO `realmcharacters` VALUES (1, 3, 8);
+INSERT INTO `realmcharacters` VALUES (1, 4, 10);
+INSERT INTO `realmcharacters` VALUES (1, 5, 9);
+INSERT INTO `realmcharacters` VALUES (1, 6, 5);
+INSERT INTO `realmcharacters` VALUES (1, 7, 1);
+INSERT INTO `realmcharacters` VALUES (1, 8, 6);
+INSERT INTO `realmcharacters` VALUES (1, 9, 8);
+INSERT INTO `realmcharacters` VALUES (1, 10, 0);
+INSERT INTO `realmcharacters` VALUES (1, 11, 0);
+INSERT INTO `realmcharacters` VALUES (1, 12, 0);
+INSERT INTO `realmcharacters` VALUES (1, 13, 3);
+INSERT INTO `realmcharacters` VALUES (1, 14, 0);
+INSERT INTO `realmcharacters` VALUES (1, 15, 0);
+INSERT INTO `realmcharacters` VALUES (1, 16, 2);
+INSERT INTO `realmcharacters` VALUES (1, 17, 10);
+INSERT INTO `realmcharacters` VALUES (1, 18, 1);
+INSERT INTO `realmcharacters` VALUES (1, 19, 1);
+INSERT INTO `realmcharacters` VALUES (1, 20, 1);
 
-LOCK TABLES `realmcharacters` WRITE;
-/*!40000 ALTER TABLE `realmcharacters` DISABLE KEYS */;
-/*!40000 ALTER TABLE `realmcharacters` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `realmlist`
---
-
+-- ----------------------------
+-- Table structure for realmlist
+-- ----------------------------
 DROP TABLE IF EXISTS `realmlist`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `realmlist` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '127.0.0.1',
-  `localAddress` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '127.0.0.1',
-  `localSubnetMask` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '255.255.255.0',
-  `port` smallint unsigned NOT NULL DEFAULT '8085',
-  `icon` tinyint unsigned NOT NULL DEFAULT '0',
-  `flag` tinyint unsigned NOT NULL DEFAULT '2',
-  `timezone` tinyint unsigned NOT NULL DEFAULT '0',
-  `allowedSecurityLevel` tinyint unsigned NOT NULL DEFAULT '0',
-  `population` float NOT NULL DEFAULT '0',
-  `gamebuild` int unsigned NOT NULL DEFAULT '12340',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `idx_name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Realm System';
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `realmlist`  (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '',
+  `address` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '127.0.0.1',
+  `localAddress` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '127.0.0.1',
+  `localSubnetMask` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT '255.255.255.0',
+  `port` smallint UNSIGNED NOT NULL DEFAULT 8085,
+  `icon` tinyint UNSIGNED NOT NULL DEFAULT 0,
+  `flag` tinyint UNSIGNED NOT NULL DEFAULT 2,
+  `timezone` tinyint UNSIGNED NOT NULL DEFAULT 0,
+  `allowedSecurityLevel` tinyint UNSIGNED NOT NULL DEFAULT 0,
+  `population` float UNSIGNED NOT NULL DEFAULT 0,
+  `gamebuild` int UNSIGNED NOT NULL DEFAULT 12340,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `idx_name`(`name` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 113 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = 'Realm System' ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `realmlist`
---
+-- ----------------------------
+-- Records of realmlist
+-- ----------------------------
+INSERT INTO `realmlist` VALUES (1, 'CtulhuNet здесь Ктулху есть', '127.0.0.1', '127.0.0.1', '255.255.255.0', 8085, 0, 0, 1, 0, 0, 12340);
+INSERT INTO `realmlist` VALUES (2, 'Опасное место(Разработка)', '127.0.0.1', '127.0.0.1', '255.255.255.0', 8086, 0, 0, 1, 0, 0, 12340);
 
-LOCK TABLES `realmlist` WRITE;
-/*!40000 ALTER TABLE `realmlist` DISABLE KEYS */;
-INSERT INTO `realmlist` VALUES
-(1,'Trinity','127.0.0.1','127.0.0.1','255.255.255.0',8085,0,2,1,0,0,12340);
-/*!40000 ALTER TABLE `realmlist` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `secret_digest`
---
-
+-- ----------------------------
+-- Table structure for secret_digest
+-- ----------------------------
 DROP TABLE IF EXISTS `secret_digest`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `secret_digest` (
-  `id` int unsigned NOT NULL,
-  `digest` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `secret_digest`  (
+  `id` int UNSIGNED NOT NULL,
+  `digest` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `secret_digest`
---
+-- ----------------------------
+-- Records of secret_digest
+-- ----------------------------
 
-LOCK TABLES `secret_digest` WRITE;
-/*!40000 ALTER TABLE `secret_digest` DISABLE KEYS */;
-/*!40000 ALTER TABLE `secret_digest` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `updates`
---
-
+-- ----------------------------
+-- Table structure for updates
+-- ----------------------------
 DROP TABLE IF EXISTS `updates`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `updates` (
+CREATE TABLE `updates`  (
   `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'filename with extension of the update.',
-  `hash` char(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT 'sha1 hash of the sql file.',
+  `hash` char(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT 'sha1 hash of the sql file.',
   `state` enum('RELEASED','ARCHIVED') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'RELEASED' COMMENT 'defines if an update is released or archived.',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'timestamp when the query was applied.',
-  `speed` int unsigned NOT NULL DEFAULT '0' COMMENT 'time the query takes to apply in ms.',
-  PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='List of all applied updates in this database.';
-/*!40101 SET character_set_client = @saved_cs_client */;
+  `speed` int UNSIGNED NOT NULL DEFAULT 0 COMMENT 'time the query takes to apply in ms.',
+  PRIMARY KEY (`name`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'List of all applied updates in this database.' ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `updates`
---
+-- ----------------------------
+-- Records of updates
+-- ----------------------------
+INSERT INTO `updates` VALUES ('2014_11_10_00_auth.sql', '0E3CB119442D09DD88E967015319BBC8DAFBBFE0', 'ARCHIVED', '2014-11-10 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2014_11_10_01_auth.sql', '327E77A1DA3546D5275AB249915DD57EDD6FDD3D', 'ARCHIVED', '2014-11-10 03:00:01', 0);
+INSERT INTO `updates` VALUES ('2014_12_10_00_auth.sql', '821703A96D80F9080074852B5A46E2909C9562EA', 'ARCHIVED', '2014-12-10 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2014_12_21_00_auth.sql', 'CE2E5D2CD82E79C25294539ADED27A1429105B43', 'ARCHIVED', '2014-12-21 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2015_03_20_00_auth.sql', 'E8C5B74BB45F0F35DEC182C72BACF435C7066FB0', 'ARCHIVED', '2015-03-20 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2015_03_20_01_auth.sql', '862961815354DA2746F5F71FBC8155F57CBE75AB', 'ARCHIVED', '2015-03-20 03:00:01', 0);
+INSERT INTO `updates` VALUES ('2015_03_20_02_auth.sql', '33E4F94086590768EF5D4855DD43D7DE7C06ADA4', 'ARCHIVED', '2015-03-20 03:00:02', 0);
+INSERT INTO `updates` VALUES ('2015_08_21_00_auth.sql', 'C31A9E1D28E11B60BE8F8198637DD51F6D75123F', 'ARCHIVED', '2015-08-21 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2015_11_07_00_auth.sql', '0ACDD35EC9745231BCFA701B78056DEF94D0CC53', 'ARCHIVED', '2015-11-07 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2016_01_13_00_auth.sql', '24615CC69B3CD7BB4699874647C35BA86E8A93FD', 'ARCHIVED', '2016-01-13 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2016_04_11_00_auth.sql', '0ACDD35EC9745231BCFA701B78056DEF94D0CC53', 'ARCHIVED', '2016-04-11 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2016_05_11_00_auth.sql', '95B66235B8D67BF1CA216EB09F313C1F8F393B47', 'ARCHIVED', '2016-05-11 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2016_06_06_00_auth.sql', 'A0A8D73A952D0618833416513D53F73A70E7EA25', 'ARCHIVED', '2016-06-06 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2016_09_22_00_auth.sql', '70047954E3556BFA430ADD5680EF8797F74A4B9E', 'ARCHIVED', '2016-09-22 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2016_10_16_00_auth.sql', '0ACDD35EC9745231BCFA701B78056DEF94D0CC53', 'ARCHIVED', '2016-10-16 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2017_01_06_00_auth.sql', '6CCFE6A9774EC733C9863D36A0F15F3534189BBD', 'ARCHIVED', '2017-01-06 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2017_01_08_00_auth.sql', 'A68511D0BF94C41F720A11B630CCB36BBEA6B17D', 'ARCHIVED', '2017-01-08 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2017_02_06_00_auth_335.sql', '612068198F744892ECC0ACFE3BDCB6D72995916E', 'ARCHIVED', '2017-02-06 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2017_03_17_00_auth.sql', '4902E9B1B063F399F928C2DD7AFD60427738E227', 'ARCHIVED', '2017-03-17 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2017_04_19_00_auth.sql', 'EAE1C1D3AA752259785C056A8F18515E1EF32BC9', 'ARCHIVED', '2017-04-19 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2017_05_29_00_auth.sql', '74BBB703AABD8A6BCB905EA2F5C14A5E26124CDD', 'ARCHIVED', '2017-05-29 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2017_06_12_00_auth.sql', '176532AED785F1F759382C79A28E0FED92E99779', 'ARCHIVED', '2017-06-12 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2017_06_12_01_auth.sql', '661B4935E101AF188BEBF43203144104E89F8C54', 'ARCHIVED', '2017-06-12 03:00:01', 0);
+INSERT INTO `updates` VALUES ('2017_06_12_02_auth.sql', '166F059E411FAA4901BBBA09A41EF07B1CADC4B6', 'ARCHIVED', '2017-06-12 03:00:02', 0);
+INSERT INTO `updates` VALUES ('2017_06_17_00_auth.sql', '4A172895CB9DA8EFE1270434D6ECB22D4F4DCB17', 'ARCHIVED', '2017-06-17 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2017_06_28_00_auth_rbac.sql', 'D32EF80F57F629C23395D80F06E91D7E40719F83', 'ARCHIVED', '2017-06-28 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2017_08_01_00_auth.sql', '6ECE808AF52345177189E962C0606B769B6806A6', 'ARCHIVED', '2017-08-01 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2017_10_13_00_auth.sql', '87674E0D166AC60E3725B445714427892E42C6FE', 'ARCHIVED', '2017-10-13 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2017_10_29_00_auth.sql', 'F742569F56BB29CE9C8DBBD40A6AB474F846485C', 'ARCHIVED', '2017-10-29 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2017_12_17_00_auth.sql', '2CD99730D4D32DBF0584CD5B1AA6F8F4AE3DA975', 'ARCHIVED', '2017-12-17 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2018_01_03_00_auth_2018_01_02_00_auth.sql', '08AF5DAB45515B681B738DA17FA414C7C7CCA44E', 'ARCHIVED', '2018-01-03 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2018_01_09_00_auth.sql', 'A5D4EC8FCFAB4F2DCE70EDCAD1ACBFB484FD68D5', 'ARCHIVED', '2018-01-09 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2018_01_24_00_auth.sql', '167B17D8A253D62A8112F8A7EB21C6E99CAEF1E4', 'ARCHIVED', '2018-01-24 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2018_02_19_00_auth.sql', '80E50F9C7F1EE7BA62789EA4C4F009170B79E6C9', 'ARCHIVED', '2018-02-19 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2018_03_06_00_auth.sql', '2D71E93DF7419A30D0D21D8A80CF05698302575A', 'ARCHIVED', '2018-03-06 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2018_03_08_00_auth.sql', '624C58A07E0B4DDC4C1347E8BA8EFEEFD5B43DA7', 'ARCHIVED', '2018-03-08 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2018_06_23_00_auth.sql', 'BE35312C386A127D047E5A7CE0D14DB41D905F8E', 'ARCHIVED', '2018-06-23 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2018_08_30_00_auth.sql', '22F69864361D3E72F800379338310172C0576D1C', 'ARCHIVED', '2018-08-30 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2018_09_06_00_auth.sql', '309D21E0DF82ED8921F77EAFDE741F38AC32BB13', 'ARCHIVED', '2018-09-06 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2018_09_17_00_auth.sql', '4DB671F0A4FA1A93AF28FB6426AF13DE72C7DA3D', 'ARCHIVED', '2018-09-17 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2018_12_30_00_auth.sql', '680F4F9194FC37592041C2DB5B2B7006B14E836D', 'ARCHIVED', '2018-12-30 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2019_03_19_00_auth.sql', '03BA8CFC60ACD5B874840A3E50F11CD2643730A0', 'ARCHIVED', '2019-03-19 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2019_04_15_00_auth.sql', 'EC67389946A24BFAA226B9DFCFEDB3BA095B4C42', 'ARCHIVED', '2019-04-15 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2019_04_27_00_auth.sql', '84B1EB9CC9B09BAF55E6295D202EC57D99B1B60E', 'ARCHIVED', '2019-04-27 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2019_05_15_00_auth.sql', '8A7B96E66D689DA63380654142FF60A1EE938697', 'ARCHIVED', '2019-05-15 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2019_06_06_00_auth.sql', '6DE8159E04BEE7BA0A4A81D72D160EB74934B6A5', 'ARCHIVED', '2019-06-06 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2019_06_15_00_auth.sql', '456B92D99FFD2E7B6CBF64F4C68555A42B24B298', 'ARCHIVED', '2019-06-15 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2019_06_16_00_auth.sql', 'B14AED4D3387B56FF8C8161D3671750AEEAE0F2E', 'ARCHIVED', '2019-06-16 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2019_06_21_00_auth.sql', 'C519239830204B68E710F698BC0C9E89B6D5FD24', 'ARCHIVED', '2019-06-21 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2019_07_15_00_auth.sql', '64B491CD197A4466D7F739D67DD30C9502FF393A', 'ARCHIVED', '2019-07-15 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2019_07_16_00_auth.sql', '36CB53A9EBD64BFDCF7030083E36E534F1753773', 'ARCHIVED', '2019-07-16 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2019_07_17_00_auth.sql', '4F983F039904894ACC483BE885676C5F0A18F06B', 'ARCHIVED', '2019-07-17 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2019_08_10_00_auth.sql', 'E936802893474BB9B459D01BB5F181F54EDF0653', 'ARCHIVED', '2019-08-10 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2019_08_10_01_auth.sql', 'C58357260F0C70DA226A71F7E05DE2C49AAEFD74', 'ARCHIVED', '2019-08-10 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2019_08_16_00_auth.sql', '99CF9C250EFBBD703DF0A2D1BDEB1E46D1063EE9', 'ARCHIVED', '2019-08-16 09:25:07', 0);
+INSERT INTO `updates` VALUES ('2019_09_15_00_auth.sql', '2EEE632B5A365D45747B7BB25DE5239FB5B1A1BD', 'ARCHIVED', '2019-09-15 12:21:36', 0);
+INSERT INTO `updates` VALUES ('2019_10_18_00_auth.sql', 'DFEDA33D7B9A108773B6AD8DE3016C6B12BD3832', 'ARCHIVED', '2019-10-18 11:37:37', 0);
+INSERT INTO `updates` VALUES ('2019_11_16_00_auth.sql', 'A7CC55B9329F0DDFE91ADC31BFABD0D934ED0A5E', 'ARCHIVED', '2019-11-16 15:06:06', 0);
+INSERT INTO `updates` VALUES ('2019_12_07_00_auth.sql', 'F354DA31D5B300609C6AE8A25667CA4DE0A7349F', 'ARCHIVED', '2019-12-07 15:57:23', 0);
+INSERT INTO `updates` VALUES ('2019_12_15_00_auth.sql', '62CFB68A53F73E875B1104F0D0BAC81145090524', 'ARCHIVED', '2019-12-15 21:26:21', 0);
+INSERT INTO `updates` VALUES ('2020_01_15_00_auth.sql', 'D486C0CEF68FDE5122E835128A1F663E0E72A21E', 'ARCHIVED', '2020-01-15 10:45:18', 0);
+INSERT INTO `updates` VALUES ('2020_02_15_00_auth.sql', '9CDBEBC722BEBB7C93091CF16EEB9C922C4116BD', 'ARCHIVED', '2020-02-15 20:36:05', 0);
+INSERT INTO `updates` VALUES ('2020_03_16_00_auth.sql', 'B27E4CE14C713C73216930A7F3F770786D902A3F', 'ARCHIVED', '2020-03-16 11:47:49', 0);
+INSERT INTO `updates` VALUES ('2020_04_07_00_auth.sql', '6D73A4E1EC5382F10C39F20E2E6E764510A8A5E6', 'ARCHIVED', '2020-04-08 01:23:35', 0);
+INSERT INTO `updates` VALUES ('2020_04_15_00_auth.sql', '031E61B50B03E40406F07C196826DB9016A7203F', 'ARCHIVED', '2020-04-15 14:03:56', 0);
+INSERT INTO `updates` VALUES ('2020_04_18_00_auth.sql', 'BD962B50760771B60F2785027D6957EEF2009240', 'ARCHIVED', '2020-04-18 17:09:28', 0);
+INSERT INTO `updates` VALUES ('2020_05_15_00_auth.sql', '765389B45F97A02160A58B373D63166F7F7D4427', 'ARCHIVED', '2020-05-15 11:55:56', 0);
+INSERT INTO `updates` VALUES ('2020_06_15_00_auth.sql', '3158036285CC9A4AB7D39063F9687649A21D0A94', 'ARCHIVED', '2020-06-15 10:48:08', 0);
+INSERT INTO `updates` VALUES ('2020_06_20_00_auth.sql', '85345FAF20B91DA7B157AE1E17DF5B6446C2E109', 'ARCHIVED', '2020-06-11 13:48:00', 0);
+INSERT INTO `updates` VALUES ('2020_07_15_00_auth.sql', '56748440894EA78C3BE72C4A3F2E97E256E6EE40', 'ARCHIVED', '2020-07-15 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2020_08_02_00_auth.sql', 'B0290F6558C59262D9DDD8071060A8803DD56930', 'ARCHIVED', '2020-08-02 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2020_08_03_00_auth.sql', '492CA77C0FAEEEF3E0492121B3A92689373ECFA3', 'ARCHIVED', '2020-08-03 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2020_08_03_01_auth.sql', 'EC1063396CA20A2303D83238470D41EF4439EC72', 'ARCHIVED', '2020-08-03 03:00:01', 0);
+INSERT INTO `updates` VALUES ('2020_08_11_00_auth.sql', '14C99177E43003D83A4D6F2227722F15FC15A1D0', 'ARCHIVED', '2020-08-11 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2020_08_15_00_auth.sql', 'A49F4A776E1583B1FF63DFE99BC0E0DD97A74674', 'ARCHIVED', '2020-08-15 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2020_08_22_00_auth.sql', '060A87FCC8F836A96D9D55BEDC32CBAD05008B4C', 'ARCHIVED', '2020-08-22 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2020_09_06_00_auth.sql', 'DC4B5D4C65EB138D5609F137799C3289B9CC2493', 'ARCHIVED', '2020-09-06 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2020_09_15_00_auth.sql', '0AA5BCA384A372DC789647F838657766D51D8CC7', 'ARCHIVED', '2020-09-15 22:35:18', 0);
+INSERT INTO `updates` VALUES ('2020_09_17_00_auth.sql', 'BBC0A8B2BBED38A57A83999909EB066753A893C5', 'ARCHIVED', '2020-09-17 03:00:00', 0);
+INSERT INTO `updates` VALUES ('2020_10_15_00_auth.sql', '8A79DE7DBDF35EBDA5C261BEBF9BC8E5CFF816CE', 'ARCHIVED', '2020-10-15 10:33:13', 0);
+INSERT INTO `updates` VALUES ('2020_11_16_00_auth.sql', 'C0E1AAA8876DB65B2B2FA0AFD5D6CDF233020D37', 'ARCHIVED', '2020-11-16 16:37:22', 0);
+INSERT INTO `updates` VALUES ('2020_12_15_00_auth.sql', 'C416FC93AF6BC33A6CE59185CEB03B4945701233', 'ARCHIVED', '2020-12-16 01:47:26', 0);
+INSERT INTO `updates` VALUES ('2020_12_31_00_auth.sql', '05C9C105D55C6588CDA0D75AE3B135B7E6B54C06', 'ARCHIVED', '2020-12-31 15:58:21', 0);
+INSERT INTO `updates` VALUES ('2021_01_15_00_auth.sql', '604B8B799F031C1074314D4D8081797CC8B22FE2', 'ARCHIVED', '2021-01-15 11:29:32', 0);
+INSERT INTO `updates` VALUES ('2021_02_15_00_auth.sql', '652C38A140C0B2C7E898A2F7A7AC799CA2440315', 'ARCHIVED', '2021-02-15 15:37:46', 0);
+INSERT INTO `updates` VALUES ('2021_03_15_00_auth.sql', '571D2FD6A62F066CC789C73A4ECDD613C6FF5F10', 'ARCHIVED', '2021-03-15 20:31:39', 0);
+INSERT INTO `updates` VALUES ('2021_04_16_00_auth.sql', '737670762C2AE4E04BFC2C2B0B6F3C71DCDF6C44', 'ARCHIVED', '2021-04-17 00:23:03', 0);
+INSERT INTO `updates` VALUES ('2021_05_14_00_auth.sql', 'B89998D90CCFEB2480838D417AC9661372A6B959', 'ARCHIVED', '2021-05-14 15:20:33', 0);
+INSERT INTO `updates` VALUES ('2021_06_15_00_auth.sql', 'DAFFA7699D3BF0A15AE72321AFC9F7D22F33B65C', 'ARCHIVED', '2021-06-15 14:53:33', 0);
+INSERT INTO `updates` VALUES ('2021_06_20_00_auth.sql', '7CA418D570DC1444C19AAD18F4A50FF187642310', 'ARCHIVED', '2021-06-20 20:29:17', 0);
+INSERT INTO `updates` VALUES ('2021_07_15_00_auth.sql', 'C8B29D477A5A6704775517EF8203871BFE3D4906', 'ARCHIVED', '2021-07-15 10:32:48', 0);
+INSERT INTO `updates` VALUES ('2021_08_15_00_auth.sql', '256E06BF052C246B92B61AD7DD6233D98EEA6E9E', 'ARCHIVED', '2021-08-15 19:59:31', 0);
+INSERT INTO `updates` VALUES ('2021_09_28_00_auth.sql', '07B3ECF2EBAF1F1C3692059CB3A05B1088A93E18', 'ARCHIVED', '2021-09-28 23:48:10', 0);
+INSERT INTO `updates` VALUES ('2021_10_15_00_auth.sql', '4FFD29A3ED1DB13874E755A84BFD7ABA2DF5C2DB', 'ARCHIVED', '2021-10-15 11:43:41', 0);
+INSERT INTO `updates` VALUES ('2021_11_15_00_auth.sql', '82D88B06301130C7149E21A991364F62279E219B', 'ARCHIVED', '2021-11-15 19:22:37', 0);
+INSERT INTO `updates` VALUES ('2021_12_16_00_auth.sql', 'A0765C5337833E827B029A5E29F8B7601C81F89E', 'ARCHIVED', '2021-12-17 00:17:10', 0);
+INSERT INTO `updates` VALUES ('2022_01_01_00_auth.sql', 'CDC8349AA1135258D66F351141C0D9AD4EE7EB14', 'ARCHIVED', '2022-01-01 22:35:19', 0);
+INSERT INTO `updates` VALUES ('2022_01_15_00_auth.sql', 'A2123CEC10327ECA4C92A8B2212AEE25B43C457B', 'ARCHIVED', '2022-01-15 21:05:55', 0);
+INSERT INTO `updates` VALUES ('2022_02_16_00_auth.sql', 'CFB54EB37319916B1B80E29F5572D12A7D9A33F5', 'ARCHIVED', '2022-02-17 00:52:01', 0);
+INSERT INTO `updates` VALUES ('2022_04_14_00_auth.sql', 'B1ED102EB7C9A2A0BDA866201960E70CCCA22FB5', 'ARCHIVED', '2022-04-14 19:24:35', 0);
+INSERT INTO `updates` VALUES ('2022_06_01_00_auth.sql', '351FA0BEE4F99B4EF451D0B1B6D822376DE4C26C', 'ARCHIVED', '2022-06-01 13:50:50', 0);
+INSERT INTO `updates` VALUES ('2022_08_15_00_auth.sql', '9EED4B445CAEC5337879206849A5C194872F228D', 'ARCHIVED', '2022-08-15 14:21:17', 0);
+INSERT INTO `updates` VALUES ('2022_10_17_00_auth.sql', 'EB711C5B9B3272A05DDF47CA998F87E5DE6DE238', 'ARCHIVED', '2022-10-17 12:02:28', 0);
+INSERT INTO `updates` VALUES ('2023_01_16_00_auth.sql', '8431F03DE6A036BEED6682C21F4B67F384390905', 'ARCHIVED', '2023-01-16 14:06:30', 0);
+INSERT INTO `updates` VALUES ('2023_02_05_00_auth.sql', 'DC8A2046EB4201D55342C541A0E9C398499E12B1', 'ARCHIVED', '2023-02-05 17:50:30', 0);
+INSERT INTO `updates` VALUES ('2023_02_05_01_auth.sql', '336E62A8850A3E78A1D0BD3E81FFD5769184BDF8', 'ARCHIVED', '2023-02-05 18:58:32', 0);
+INSERT INTO `updates` VALUES ('2023_05_05_00_auth.sql', 'DEEB1D5533658E3479FC3C988EF4B9816C511BC3', 'ARCHIVED', '2023-05-07 14:52:00', 0);
+INSERT INTO `updates` VALUES ('2023_06_14_00_auth.sql', 'BB8A7EB214F4F3632C4F54EA596CB7C8FBA305D5', 'ARCHIVED', '2023-06-14 22:34:24', 0);
+INSERT INTO `updates` VALUES ('2023_11_21_00_auth.sql', '146E5E6EF94C5DB78343372A8FDB32B062B80040', 'RELEASED', '2023-11-21 14:24:11', 0);
 
-LOCK TABLES `updates` WRITE;
-/*!40000 ALTER TABLE `updates` DISABLE KEYS */;
-INSERT INTO `updates` VALUES
-('2014_11_10_00_auth.sql','0E3CB119442D09DD88E967015319BBC8DAFBBFE0','ARCHIVED','2014-11-10 00:00:00',0),
-('2014_11_10_01_auth.sql','327E77A1DA3546D5275AB249915DD57EDD6FDD3D','ARCHIVED','2014-11-10 00:00:01',0),
-('2014_12_10_00_auth.sql','821703A96D80F9080074852B5A46E2909C9562EA','ARCHIVED','2014-12-10 00:00:00',0),
-('2014_12_21_00_auth.sql','CE2E5D2CD82E79C25294539ADED27A1429105B43','ARCHIVED','2014-12-21 00:00:00',0),
-('2015_03_20_00_auth.sql','E8C5B74BB45F0F35DEC182C72BACF435C7066FB0','ARCHIVED','2015-03-20 00:00:00',0),
-('2015_03_20_01_auth.sql','862961815354DA2746F5F71FBC8155F57CBE75AB','ARCHIVED','2015-03-20 00:00:01',0),
-('2015_03_20_02_auth.sql','33E4F94086590768EF5D4855DD43D7DE7C06ADA4','ARCHIVED','2015-03-20 00:00:02',0),
-('2015_08_21_00_auth.sql','C31A9E1D28E11B60BE8F8198637DD51F6D75123F','ARCHIVED','2015-08-21 00:00:00',0),
-('2015_11_07_00_auth.sql','0ACDD35EC9745231BCFA701B78056DEF94D0CC53','ARCHIVED','2015-11-07 00:00:00',0),
-('2016_01_13_00_auth.sql','24615CC69B3CD7BB4699874647C35BA86E8A93FD','ARCHIVED','2016-01-13 00:00:00',0),
-('2016_04_11_00_auth.sql','0ACDD35EC9745231BCFA701B78056DEF94D0CC53','ARCHIVED','2016-04-11 00:00:00',0),
-('2016_05_11_00_auth.sql','95B66235B8D67BF1CA216EB09F313C1F8F393B47','ARCHIVED','2016-05-11 00:00:00',0),
-('2016_06_06_00_auth.sql','A0A8D73A952D0618833416513D53F73A70E7EA25','ARCHIVED','2016-06-06 00:00:00',0),
-('2016_09_22_00_auth.sql','70047954E3556BFA430ADD5680EF8797F74A4B9E','ARCHIVED','2016-09-22 00:00:00',0),
-('2016_10_16_00_auth.sql','0ACDD35EC9745231BCFA701B78056DEF94D0CC53','ARCHIVED','2016-10-16 00:00:00',0),
-('2017_01_06_00_auth.sql','6CCFE6A9774EC733C9863D36A0F15F3534189BBD','ARCHIVED','2017-01-06 00:00:00',0),
-('2017_01_08_00_auth.sql','A68511D0BF94C41F720A11B630CCB36BBEA6B17D','ARCHIVED','2017-01-08 00:00:00',0),
-('2017_02_06_00_auth_335.sql','612068198F744892ECC0ACFE3BDCB6D72995916E','ARCHIVED','2017-02-06 00:00:00',0),
-('2017_03_17_00_auth.sql','4902E9B1B063F399F928C2DD7AFD60427738E227','ARCHIVED','2017-03-17 00:00:00',0),
-('2017_04_19_00_auth.sql','EAE1C1D3AA752259785C056A8F18515E1EF32BC9','ARCHIVED','2017-04-19 00:00:00',0),
-('2017_05_29_00_auth.sql','74BBB703AABD8A6BCB905EA2F5C14A5E26124CDD','ARCHIVED','2017-05-29 00:00:00',0),
-('2017_06_12_00_auth.sql','176532AED785F1F759382C79A28E0FED92E99779','ARCHIVED','2017-06-12 00:00:00',0),
-('2017_06_12_01_auth.sql','661B4935E101AF188BEBF43203144104E89F8C54','ARCHIVED','2017-06-12 00:00:01',0),
-('2017_06_12_02_auth.sql','166F059E411FAA4901BBBA09A41EF07B1CADC4B6','ARCHIVED','2017-06-12 00:00:02',0),
-('2017_06_17_00_auth.sql','4A172895CB9DA8EFE1270434D6ECB22D4F4DCB17','ARCHIVED','2017-06-17 00:00:00',0),
-('2017_06_28_00_auth_rbac.sql','D32EF80F57F629C23395D80F06E91D7E40719F83','ARCHIVED','2017-06-28 00:00:00',0),
-('2017_08_01_00_auth.sql','6ECE808AF52345177189E962C0606B769B6806A6','ARCHIVED','2017-08-01 00:00:00',0),
-('2017_10_13_00_auth.sql','87674E0D166AC60E3725B445714427892E42C6FE','ARCHIVED','2017-10-13 00:00:00',0),
-('2017_10_29_00_auth.sql','F742569F56BB29CE9C8DBBD40A6AB474F846485C','ARCHIVED','2017-10-29 00:00:00',0),
-('2017_12_17_00_auth.sql','2CD99730D4D32DBF0584CD5B1AA6F8F4AE3DA975','ARCHIVED','2017-12-17 00:00:00',0),
-('2018_01_03_00_auth_2018_01_02_00_auth.sql','08AF5DAB45515B681B738DA17FA414C7C7CCA44E','ARCHIVED','2018-01-03 00:00:00',0),
-('2018_01_09_00_auth.sql','A5D4EC8FCFAB4F2DCE70EDCAD1ACBFB484FD68D5','ARCHIVED','2018-01-09 00:00:00',0),
-('2018_01_24_00_auth.sql','167B17D8A253D62A8112F8A7EB21C6E99CAEF1E4','ARCHIVED','2018-01-24 00:00:00',0),
-('2018_02_19_00_auth.sql','80E50F9C7F1EE7BA62789EA4C4F009170B79E6C9','ARCHIVED','2018-02-19 00:00:00',0),
-('2018_03_06_00_auth.sql','2D71E93DF7419A30D0D21D8A80CF05698302575A','ARCHIVED','2018-03-06 00:00:00',0),
-('2018_03_08_00_auth.sql','624C58A07E0B4DDC4C1347E8BA8EFEEFD5B43DA7','ARCHIVED','2018-03-08 00:00:00',0),
-('2018_06_23_00_auth.sql','BE35312C386A127D047E5A7CE0D14DB41D905F8E','ARCHIVED','2018-06-23 00:00:00',0),
-('2018_08_30_00_auth.sql','22F69864361D3E72F800379338310172C0576D1C','ARCHIVED','2018-08-30 00:00:00',0),
-('2018_09_06_00_auth.sql','309D21E0DF82ED8921F77EAFDE741F38AC32BB13','ARCHIVED','2018-09-06 00:00:00',0),
-('2018_09_17_00_auth.sql','4DB671F0A4FA1A93AF28FB6426AF13DE72C7DA3D','ARCHIVED','2018-09-17 00:00:00',0),
-('2018_12_30_00_auth.sql','680F4F9194FC37592041C2DB5B2B7006B14E836D','ARCHIVED','2018-12-30 00:00:00',0),
-('2019_03_19_00_auth.sql','03BA8CFC60ACD5B874840A3E50F11CD2643730A0','ARCHIVED','2019-03-19 00:00:00',0),
-('2019_04_15_00_auth.sql','EC67389946A24BFAA226B9DFCFEDB3BA095B4C42','ARCHIVED','2019-04-15 00:00:00',0),
-('2019_04_27_00_auth.sql','84B1EB9CC9B09BAF55E6295D202EC57D99B1B60E','ARCHIVED','2019-04-27 00:00:00',0),
-('2019_05_15_00_auth.sql','8A7B96E66D689DA63380654142FF60A1EE938697','ARCHIVED','2019-05-15 00:00:00',0),
-('2019_06_06_00_auth.sql','6DE8159E04BEE7BA0A4A81D72D160EB74934B6A5','ARCHIVED','2019-06-06 00:00:00',0),
-('2019_06_15_00_auth.sql','456B92D99FFD2E7B6CBF64F4C68555A42B24B298','ARCHIVED','2019-06-15 00:00:00',0),
-('2019_06_16_00_auth.sql','B14AED4D3387B56FF8C8161D3671750AEEAE0F2E','ARCHIVED','2019-06-16 00:00:00',0),
-('2019_06_21_00_auth.sql','C519239830204B68E710F698BC0C9E89B6D5FD24','ARCHIVED','2019-06-21 00:00:00',0),
-('2019_07_15_00_auth.sql','64B491CD197A4466D7F739D67DD30C9502FF393A','ARCHIVED','2019-07-15 00:00:00',0),
-('2019_07_16_00_auth.sql','36CB53A9EBD64BFDCF7030083E36E534F1753773','ARCHIVED','2019-07-16 00:00:00',0),
-('2019_07_17_00_auth.sql','4F983F039904894ACC483BE885676C5F0A18F06B','ARCHIVED','2019-07-17 00:00:00',0),
-('2019_08_10_00_auth.sql','E936802893474BB9B459D01BB5F181F54EDF0653','ARCHIVED','2019-08-10 00:00:00',0),
-('2019_08_10_01_auth.sql','C58357260F0C70DA226A71F7E05DE2C49AAEFD74','ARCHIVED','2019-08-10 00:00:00',0),
-('2019_08_16_00_auth.sql','99CF9C250EFBBD703DF0A2D1BDEB1E46D1063EE9','ARCHIVED','2019-08-16 06:25:07',0),
-('2019_09_15_00_auth.sql','2EEE632B5A365D45747B7BB25DE5239FB5B1A1BD','ARCHIVED','2019-09-15 09:21:36',0),
-('2019_10_18_00_auth.sql','DFEDA33D7B9A108773B6AD8DE3016C6B12BD3832','ARCHIVED','2019-10-18 08:37:37',0),
-('2019_11_16_00_auth.sql','A7CC55B9329F0DDFE91ADC31BFABD0D934ED0A5E','ARCHIVED','2019-11-16 12:06:06',0),
-('2019_12_07_00_auth.sql','F354DA31D5B300609C6AE8A25667CA4DE0A7349F','ARCHIVED','2019-12-07 12:57:23',0),
-('2019_12_15_00_auth.sql','62CFB68A53F73E875B1104F0D0BAC81145090524','ARCHIVED','2019-12-15 18:26:21',0),
-('2020_01_15_00_auth.sql','D486C0CEF68FDE5122E835128A1F663E0E72A21E','ARCHIVED','2020-01-15 07:45:18',0),
-('2020_02_15_00_auth.sql','9CDBEBC722BEBB7C93091CF16EEB9C922C4116BD','ARCHIVED','2020-02-15 17:36:05',0),
-('2020_03_16_00_auth.sql','B27E4CE14C713C73216930A7F3F770786D902A3F','ARCHIVED','2020-03-16 08:47:49',0),
-('2020_04_07_00_auth.sql','6D73A4E1EC5382F10C39F20E2E6E764510A8A5E6','ARCHIVED','2020-04-07 22:23:35',0),
-('2020_04_15_00_auth.sql','031E61B50B03E40406F07C196826DB9016A7203F','ARCHIVED','2020-04-15 11:03:56',0),
-('2020_04_18_00_auth.sql','BD962B50760771B60F2785027D6957EEF2009240','ARCHIVED','2020-04-18 14:09:28',0),
-('2020_05_15_00_auth.sql','765389B45F97A02160A58B373D63166F7F7D4427','ARCHIVED','2020-05-15 08:55:56',0),
-('2020_06_15_00_auth.sql','3158036285CC9A4AB7D39063F9687649A21D0A94','ARCHIVED','2020-06-15 07:48:08',0),
-('2020_06_20_00_auth.sql','85345FAF20B91DA7B157AE1E17DF5B6446C2E109','ARCHIVED','2020-06-11 10:48:00',0),
-('2020_07_15_00_auth.sql','56748440894EA78C3BE72C4A3F2E97E256E6EE40','ARCHIVED','2020-07-15 00:00:00',0),
-('2020_08_02_00_auth.sql','B0290F6558C59262D9DDD8071060A8803DD56930','ARCHIVED','2020-08-02 00:00:00',0),
-('2020_08_03_00_auth.sql','492CA77C0FAEEEF3E0492121B3A92689373ECFA3','ARCHIVED','2020-08-03 00:00:00',0),
-('2020_08_03_01_auth.sql','EC1063396CA20A2303D83238470D41EF4439EC72','ARCHIVED','2020-08-03 00:00:01',0),
-('2020_08_11_00_auth.sql','14C99177E43003D83A4D6F2227722F15FC15A1D0','ARCHIVED','2020-08-11 00:00:00',0),
-('2020_08_15_00_auth.sql','A49F4A776E1583B1FF63DFE99BC0E0DD97A74674','ARCHIVED','2020-08-15 00:00:00',0),
-('2020_08_22_00_auth.sql','060A87FCC8F836A96D9D55BEDC32CBAD05008B4C','ARCHIVED','2020-08-22 00:00:00',0),
-('2020_09_06_00_auth.sql','DC4B5D4C65EB138D5609F137799C3289B9CC2493','ARCHIVED','2020-09-06 00:00:00',0),
-('2020_09_15_00_auth.sql','0AA5BCA384A372DC789647F838657766D51D8CC7','ARCHIVED','2020-09-15 19:35:18',0),
-('2020_09_17_00_auth.sql','BBC0A8B2BBED38A57A83999909EB066753A893C5','ARCHIVED','2020-09-17 00:00:00',0),
-('2020_10_15_00_auth.sql','8A79DE7DBDF35EBDA5C261BEBF9BC8E5CFF816CE','ARCHIVED','2020-10-15 07:33:13',0),
-('2020_11_16_00_auth.sql','C0E1AAA8876DB65B2B2FA0AFD5D6CDF233020D37','ARCHIVED','2020-11-16 13:37:22',0),
-('2020_12_15_00_auth.sql','C416FC93AF6BC33A6CE59185CEB03B4945701233','ARCHIVED','2020-12-15 22:47:26',0),
-('2020_12_31_00_auth.sql','05C9C105D55C6588CDA0D75AE3B135B7E6B54C06','ARCHIVED','2020-12-31 12:58:21',0),
-('2021_01_15_00_auth.sql','604B8B799F031C1074314D4D8081797CC8B22FE2','ARCHIVED','2021-01-15 08:29:32',0),
-('2021_02_15_00_auth.sql','652C38A140C0B2C7E898A2F7A7AC799CA2440315','ARCHIVED','2021-02-15 12:37:46',0),
-('2021_03_15_00_auth.sql','571D2FD6A62F066CC789C73A4ECDD613C6FF5F10','ARCHIVED','2021-03-15 17:31:39',0),
-('2021_04_16_00_auth.sql','737670762C2AE4E04BFC2C2B0B6F3C71DCDF6C44','ARCHIVED','2021-04-16 21:23:03',0),
-('2021_05_14_00_auth.sql','B89998D90CCFEB2480838D417AC9661372A6B959','ARCHIVED','2021-05-14 12:20:33',0),
-('2021_06_15_00_auth.sql','DAFFA7699D3BF0A15AE72321AFC9F7D22F33B65C','ARCHIVED','2021-06-15 11:53:33',0),
-('2021_06_20_00_auth.sql','7CA418D570DC1444C19AAD18F4A50FF187642310','ARCHIVED','2021-06-20 17:29:17',0),
-('2021_07_15_00_auth.sql','C8B29D477A5A6704775517EF8203871BFE3D4906','ARCHIVED','2021-07-15 07:32:48',0),
-('2021_08_15_00_auth.sql','256E06BF052C246B92B61AD7DD6233D98EEA6E9E','ARCHIVED','2021-08-15 16:59:31',0),
-('2021_09_28_00_auth.sql','07B3ECF2EBAF1F1C3692059CB3A05B1088A93E18','ARCHIVED','2021-09-28 20:48:10',0),
-('2021_10_15_00_auth.sql','4FFD29A3ED1DB13874E755A84BFD7ABA2DF5C2DB','ARCHIVED','2021-10-15 08:43:41',0),
-('2021_11_15_00_auth.sql','82D88B06301130C7149E21A991364F62279E219B','ARCHIVED','2021-11-15 16:22:37',0),
-('2021_12_16_00_auth.sql','A0765C5337833E827B029A5E29F8B7601C81F89E','ARCHIVED','2021-12-16 21:17:10',0),
-('2022_01_01_00_auth.sql','CDC8349AA1135258D66F351141C0D9AD4EE7EB14','ARCHIVED','2022-01-01 19:35:19',0),
-('2022_01_15_00_auth.sql','A2123CEC10327ECA4C92A8B2212AEE25B43C457B','ARCHIVED','2022-01-15 18:05:55',0),
-('2022_02_16_00_auth.sql','CFB54EB37319916B1B80E29F5572D12A7D9A33F5','ARCHIVED','2022-02-16 21:52:01',0),
-('2022_04_14_00_auth.sql','B1ED102EB7C9A2A0BDA866201960E70CCCA22FB5','ARCHIVED','2022-04-14 16:24:35',0),
-('2022_06_01_00_auth.sql','351FA0BEE4F99B4EF451D0B1B6D822376DE4C26C','ARCHIVED','2022-06-01 10:50:50',0),
-('2022_08_15_00_auth.sql','9EED4B445CAEC5337879206849A5C194872F228D','ARCHIVED','2022-08-15 11:21:17',0),
-('2022_10_17_00_auth.sql','EB711C5B9B3272A05DDF47CA998F87E5DE6DE238','ARCHIVED','2022-10-17 09:02:28',0),
-('2023_01_16_00_auth.sql','8431F03DE6A036BEED6682C21F4B67F384390905','ARCHIVED','2023-01-16 11:06:30',0),
-('2023_02_05_00_auth.sql','DC8A2046EB4201D55342C541A0E9C398499E12B1','ARCHIVED','2023-02-05 14:50:30',0),
-('2023_02_05_01_auth.sql','336E62A8850A3E78A1D0BD3E81FFD5769184BDF8','ARCHIVED','2023-02-05 15:58:32',0),
-('2023_05_05_00_auth.sql','DEEB1D5533658E3479FC3C988EF4B9816C511BC3','ARCHIVED','2023-05-07 11:52:00',0),
-('2023_06_14_00_auth.sql','BB8A7EB214F4F3632C4F54EA596CB7C8FBA305D5','ARCHIVED','2023-06-14 19:34:24',0),
-('2023_11_21_00_auth.sql','146E5E6EF94C5DB78343372A8FDB32B062B80040','ARCHIVED','2023-11-21 11:24:11',0),
-('2024_01_06_00_auth.sql','767D697594D5471B67CC0FDF0D7BB15374116A71','ARCHIVED','2024-01-06 09:53:51',0),
-('2024_01_06_01_auth.sql','3D9E0A906A357877DB8E7B72E0797AB38EF884BC','ARCHIVED','2024-01-06 11:33:07',0),
-('2024_01_06_02_auth.sql','B14F889C198A4F640A968BAB8A4C262AC61634C7','ARCHIVED','2024-01-06 12:43:47',0),
-('2024_01_06_03_auth.sql','693BFD4326314659BAD9A2C70D9526FF4625B393','ARCHIVED','2024-01-06 12:55:07',0),
-('2024_01_21_00_auth.sql','B45B95D7B608D6ACF1BCBA656718C7DEED8CFF00','ARCHIVED','2024-01-21 11:38:22',0),
-('2024_04_10_00_auth.sql','CE8BD4D6DF6DE85DBF892507B1B18B746FE4A71D','ARCHIVED','2024-04-10 16:07:02',0),
-('2024_08_17_00_auth.sql','B6D7D00D5573958EE84321B029D869C52793F924','ARCHIVED','2024-08-17 22:26:12',0),
-('2024_08_28_01_auth.sql','BC5D74553AF2D92606F55C1C462D2700FE73BD34','ARCHIVED','2024-08-28 14:55:05',0),
-('2024_08_30_00_auth.sql','BD76942F1C29AAA2450E051E7CA552672B5E331B','ARCHIVED','2024-08-30 19:24:30',0),
-('2024_09_26_00_auth.sql','E37C3997FD7851EA360774AC568912846C448272','ARCHIVED','2024-09-26 18:27:26',0),
-('2024_11_22_00_auth.sql','F2C1D1572A3968E9E9D778EF7DC82778DF3EF887','ARCHIVED','2024-11-22 23:18:14',0),
-('2025_02_14_00_auth.sql','4A30E92FF519BB41C520CDBF90019291217C26A2','RELEASED','2025-02-14 17:20:00',0);
-/*!40000 ALTER TABLE `updates` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `updates_include`
---
-
+-- ----------------------------
+-- Table structure for updates_include
+-- ----------------------------
 DROP TABLE IF EXISTS `updates_include`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `updates_include` (
-  `path` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'directory to include. $ means relative to the source directory.',
-  `state` enum('RELEASED','ARCHIVED') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'RELEASED' COMMENT 'defines if the directory contains released or archived updates.',
-  PRIMARY KEY (`path`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='List of directories where we want to include sql updates.';
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `updates_include`  (
+  `path` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL COMMENT 'directory to include. $ means relative to the source directory.',
+  `state` enum('RELEASED','ARCHIVED') CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'RELEASED' COMMENT 'defines if the directory contains released or archived updates.',
+  PRIMARY KEY (`path`) USING BTREE
+) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = 'List of directories where we want to include sql updates.' ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `updates_include`
---
+-- ----------------------------
+-- Records of updates_include
+-- ----------------------------
+INSERT INTO `updates_include` VALUES ('$/sql/updates/auth', 'RELEASED');
+INSERT INTO `updates_include` VALUES ('$/sql/custom/auth', 'RELEASED');
+INSERT INTO `updates_include` VALUES ('$/sql/old/3.3.5a/auth', 'ARCHIVED');
 
-LOCK TABLES `updates_include` WRITE;
-/*!40000 ALTER TABLE `updates_include` DISABLE KEYS */;
-INSERT INTO `updates_include` VALUES
-('$/sql/custom/auth','RELEASED'),
-('$/sql/old/3.3.5a/auth','ARCHIVED'),
-('$/sql/updates/auth','RELEASED');
-/*!40000 ALTER TABLE `updates_include` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `uptime`
---
-
+-- ----------------------------
+-- Table structure for uptime
+-- ----------------------------
 DROP TABLE IF EXISTS `uptime`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `uptime` (
-  `realmid` int unsigned NOT NULL,
-  `starttime` int unsigned NOT NULL DEFAULT '0',
-  `uptime` int unsigned NOT NULL DEFAULT '0',
-  `maxplayers` smallint unsigned NOT NULL DEFAULT '0',
-  `revision` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Trinitycore',
-  PRIMARY KEY (`realmid`,`starttime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Uptime system';
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `uptime`  (
+  `realmid` int UNSIGNED NOT NULL,
+  `starttime` int UNSIGNED NOT NULL DEFAULT 0,
+  `uptime` int UNSIGNED NOT NULL DEFAULT 0,
+  `maxplayers` smallint UNSIGNED NOT NULL DEFAULT 0,
+  `revision` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL DEFAULT 'Trinitycore',
+  PRIMARY KEY (`realmid`, `starttime`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = 'Uptime system' ROW_FORMAT = DYNAMIC;
 
---
--- Dumping data for table `uptime`
---
+-- ----------------------------
+-- Records of uptime
+-- ----------------------------
+INSERT INTO `uptime` VALUES (1, 1599312378, 0, 0, 'TrinityCore rev. fade12cb6238+ 2020-09-05 15:41:01 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1599312533, 1210, 1, 'TrinityCore rev. fade12cb6238+ 2020-09-05 15:41:01 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1599315443, 0, 0, 'TrinityCore rev. fade12cb6238+ 2020-09-05 15:41:01 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1599315851, 613, 0, 'TrinityCore rev. fade12cb6238+ 2020-09-05 15:41:01 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1599316717, 4813, 0, 'TrinityCore rev. fade12cb6238+ 2020-09-05 15:41:01 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1602008847, 0, 0, 'TrinityCore rev. b8d3f27fc0fc 2020-10-06 19:56:22 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1602008929, 0, 0, 'TrinityCore rev. b8d3f27fc0fc 2020-10-06 19:56:22 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1602009116, 0, 0, 'TrinityCore rev. b8d3f27fc0fc 2020-10-06 19:56:22 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1602009221, 0, 0, 'TrinityCore rev. b8d3f27fc0fc 2020-10-06 19:56:22 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1602010277, 0, 0, 'TrinityCore rev. b8d3f27fc0fc 2020-10-06 19:56:22 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1602010632, 0, 0, 'TrinityCore rev. b8d3f27fc0fc 2020-10-06 19:56:22 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1602011205, 0, 0, 'TrinityCore rev. b8d3f27fc0fc 2020-10-06 19:56:22 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1602011814, 0, 0, 'TrinityCore rev. b8d3f27fc0fc 2020-10-06 19:56:22 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1602014075, 0, 0, 'TrinityCore rev. b8d3f27fc0fc 2020-10-06 19:56:22 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1602014684, 0, 0, 'TrinityCore rev. 466c264907a7+ 2020-10-06 22:53:10 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1603565627, 0, 0, 'TrinityCore rev. be968342ec1e+ 2020-10-24 21:11:18 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1603574656, 1814, 1, 'TrinityCore rev. be968342ec1e+ 2020-10-24 21:11:18 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1603620670, 0, 0, 'TrinityCore rev. be968342ec1e+ 2020-10-24 21:11:18 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1603624234, 0, 0, 'TrinityCore rev. 7f09bcb4ca49+ 2020-10-25 13:44:52 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1603624550, 0, 0, 'TrinityCore rev. 7f09bcb4ca49+ 2020-10-25 13:44:52 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1603624784, 613, 1, 'TrinityCore rev. 7f09bcb4ca49+ 2020-10-25 13:44:52 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1603625767, 0, 0, 'TrinityCore rev. 7f09bcb4ca49+ 2020-10-25 13:44:52 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1603626787, 0, 0, 'TrinityCore rev. 7f09bcb4ca49+ 2020-10-25 13:44:52 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1603627211, 0, 0, 'TrinityCore rev. 7f09bcb4ca49+ 2020-10-25 13:44:52 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1603629631, 0, 0, 'TrinityCore rev. 7d4d8e7ebf9c+ 2020-10-25 15:07:44 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1603812304, 1231, 1, 'TrinityCore rev. 68d7c7c34d80+ 2020-10-27 18:19:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1609538764, 0, 0, 'TrinityCore rev. 68d7c7c34d80+ 2020-10-27 18:19:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1609540168, 0, 0, 'TrinityCore rev. 68d7c7c34d80+ 2020-10-27 18:19:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1609540725, 0, 0, 'TrinityCore rev. 68d7c7c34d80+ 2020-10-27 18:19:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1609541578, 0, 0, 'TrinityCore rev. 68d7c7c34d80+ 2020-10-27 18:19:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1609541994, 0, 0, 'TrinityCore rev. 68d7c7c34d80+ 2020-10-27 18:19:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1609543134, 0, 0, 'TrinityCore rev. 68d7c7c34d80+ 2020-10-27 18:19:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1609763134, 0, 0, 'TrinityCore rev. 033728f0d178+ 2021-01-02 02:31:36 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1609763264, 1813, 0, 'TrinityCore rev. 033728f0d178+ 2021-01-02 02:31:36 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1609767354, 0, 0, 'TrinityCore rev. 033728f0d178+ 2021-01-02 02:31:36 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1609768477, 0, 0, 'TrinityCore rev. 033728f0d178+ 2021-01-02 02:31:36 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1609858625, 1234, 0, 'TrinityCore rev. 1f0c62d3206f+ 2021-01-05 02:33:18 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1609861364, 1210, 1, 'TrinityCore rev. 1f0c62d3206f+ 2021-01-05 02:33:18 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1609863162, 1813, 1, 'TrinityCore rev. 1f0c62d3206f+ 2021-01-05 02:33:18 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610053573, 0, 0, 'TrinityCore rev. 1f0c62d3206f+ 2021-01-05 02:33:18 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610053980, 0, 0, 'TrinityCore rev. 1f0c62d3206f+ 2021-01-05 02:33:18 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610054427, 1238, 1, 'TrinityCore rev. 09b3839b67c4 2021-01-07 21:31:24 +0300 (HEAD branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1610055889, 0, 0, 'TrinityCore rev. 1f0c62d3206f+ 2021-01-05 02:33:18 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610058572, 0, 0, 'TrinityCore rev. ec29d3ce3821+ 2021-01-08 01:16:39 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610059082, 613, 0, 'TrinityCore rev. ec29d3ce3821+ 2021-01-08 01:16:39 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610070240, 618, 1, 'TrinityCore rev. c9d2f93d04c7+ 2021-01-08 02:40:13 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610071552, 21018, 0, 'TrinityCore rev. ad58893ec5a1+ 2021-01-08 04:59:48 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610093029, 0, 0, 'TrinityCore rev. ad58893ec5a1+ 2021-01-08 04:59:48 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610176965, 631, 2, 'TrinityCore rev. ad58893ec5a1+ 2021-01-08 04:59:48 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610180560, 2421, 0, 'TrinityCore rev. ad58893ec5a1+ 2021-01-08 04:59:48 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610186254, 1218, 2, 'TrinityCore rev. 9e6e4926ce86 2021-01-09 12:50:19 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610365165, 633, 0, 'TrinityCore rev. 58a06e6c6255 2021-01-11 14:31:13 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610661011, 0, 0, 'TrinityCore rev. ec9b0cca7d5c+ 2021-01-12 23:40:07 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610995387, 0, 0, 'TrinityCore rev. ec9b0cca7d5c+ 2021-01-12 23:40:07 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610995804, 0, 0, 'TrinityCore rev. ec9b0cca7d5c+ 2021-01-12 23:40:07 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610997388, 0, 0, 'TrinityCore rev. ec9b0cca7d5c+ 2021-01-12 23:40:07 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610997483, 0, 0, 'TrinityCore rev. ec9b0cca7d5c+ 2021-01-12 23:40:07 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1610999201, 0, 0, 'TrinityCore rev. ec9b0cca7d5c+ 2021-01-12 23:40:07 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1611001862, 0, 0, 'TrinityCore rev. ec9b0cca7d5c+ 2021-01-12 23:40:07 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1611002050, 0, 0, 'TrinityCore rev. ec9b0cca7d5c+ 2021-01-12 23:40:07 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1611400690, 0, 0, 'TrinityCore rev. ec9b0cca7d5c+ 2021-01-12 23:40:07 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1611400836, 0, 0, 'TrinityCore rev. ec9b0cca7d5c+ 2021-01-12 23:40:07 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1611405220, 0, 0, 'TrinityCore rev. ec9b0cca7d5c+ 2021-01-12 23:40:07 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1611405264, 0, 0, 'TrinityCore rev. ec9b0cca7d5c+ 2021-01-12 23:40:07 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1611405496, 0, 0, 'TrinityCore rev. ec9b0cca7d5c+ 2021-01-12 23:40:07 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1611405940, 0, 0, 'TrinityCore rev. ec9b0cca7d5c+ 2021-01-12 23:40:07 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1611406096, 0, 0, 'TrinityCore rev. ec9b0cca7d5c+ 2021-01-12 23:40:07 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1611406216, 4213, 1, 'TrinityCore rev. ec9b0cca7d5c+ 2021-01-12 23:40:07 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1611410497, 1813, 2, 'TrinityCore rev. ec9b0cca7d5c+ 2021-01-12 23:40:07 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1611413423, 9629, 1, 'TrinityCore rev. 32ed1b86698c 2021-01-23 17:40:20 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Static)');
+INSERT INTO `uptime` VALUES (1, 1612618244, 0, 0, 'TrinityCore rev. 1988892c9f4d 2021-02-06 16:43:59 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1612618620, 624, 0, 'TrinityCore rev. 1988892c9f4d 2021-02-06 16:43:59 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1612619810, 4813, 1, 'TrinityCore rev. 1988892c9f4d 2021-02-06 16:43:59 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1612624958, 0, 0, 'TrinityCore rev. 1988892c9f4d 2021-02-06 16:43:59 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1612625378, 248005, 1, 'TrinityCore rev. 1988892c9f4d 2021-02-06 16:43:59 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1612874251, 0, 0, 'TrinityCore rev. 33c318df53fb 2021-02-09 15:27:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1612874359, 15014, 0, 'TrinityCore rev. 33c318df53fb 2021-02-09 15:27:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1612896251, 4220, 1, 'TrinityCore rev. f652c38cfc13 2021-02-09 19:14:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1612900648, 613, 1, 'TrinityCore rev. f652c38cfc13 2021-02-09 19:14:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1612901520, 1213, 1, 'TrinityCore rev. f652c38cfc13 2021-02-09 19:14:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1612902971, 1813, 1, 'TrinityCore rev. f652c38cfc13 2021-02-09 19:14:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1612905254, 0, 0, 'TrinityCore rev. f652c38cfc13 2021-02-09 19:14:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1612949388, 631, 0, 'TrinityCore rev. f652c38cfc13 2021-02-09 19:14:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1612951277, 85237, 2, 'TrinityCore rev. f652c38cfc13 2021-02-09 19:14:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613037021, 0, 0, 'TrinityCore rev. f652c38cfc13 2021-02-09 19:14:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613037695, 15015, 2, 'TrinityCore rev. f652c38cfc13 2021-02-09 19:14:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613052969, 0, 0, 'TrinityCore rev. f652c38cfc13 2021-02-09 19:14:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613066182, 152420, 1, 'TrinityCore rev. f652c38cfc13 2021-02-09 19:14:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613218870, 189652, 1, 'TrinityCore rev. f652c38cfc13 2021-02-09 19:14:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613409023, 0, 0, 'TrinityCore rev. f652c38cfc13 2021-02-09 19:14:46 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613409639, 4814, 1, 'TrinityCore rev. 7a5e9dc34aed 2021-02-15 20:07:51 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613414719, 345014, 1, 'TrinityCore rev. 3fe69d4a8d33 2021-02-15 21:39:52 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613764994, 28822, 1, 'TrinityCore rev. 3fe69d4a8d33 2021-02-15 21:39:52 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613836960, 1831, 0, 'TrinityCore rev. 3fe69d4a8d33 2021-02-15 21:39:52 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613839455, 0, 0, 'TrinityCore rev. 7ca1729a7f73 2021-02-20 19:34:17 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613839479, 6614, 0, 'TrinityCore rev. 7ca1729a7f73 2021-02-20 19:34:17 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613846668, 0, 0, 'TrinityCore rev. 7ca1729a7f73 2021-02-20 19:34:17 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613846876, 0, 0, 'TrinityCore rev. 7ca1729a7f73 2021-02-20 19:34:17 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613847560, 0, 0, 'TrinityCore rev. 7ca1729a7f73 2021-02-20 19:34:17 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613848095, 1213, 1, 'TrinityCore rev. 7ca1729a7f73 2021-02-20 19:34:17 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613849685, 0, 0, 'TrinityCore rev. 7ca1729a7f73 2021-02-20 19:34:17 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613884646, 0, 0, 'TrinityCore rev. 7ca1729a7f73 2021-02-20 19:34:17 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613885910, 0, 0, 'TrinityCore rev. 7ca1729a7f73 2021-02-20 19:34:17 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1613886282, 295216, 1, 'TrinityCore rev. 7ca1729a7f73 2021-02-20 19:34:17 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614183525, 59067, 0, 'TrinityCore rev. c4e36baba299 2021-02-24 18:55:57 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614242971, 619, 2, 'TrinityCore rev. c4e36baba299 2021-02-24 18:55:57 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614243847, 614, 2, 'TrinityCore rev. c4e36baba299 2021-02-24 18:55:57 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614244961, 0, 0, 'TrinityCore rev. c4e36baba299 2021-02-24 18:55:57 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614245906, 1235, 2, 'TrinityCore rev. c4e36baba299 2021-02-24 18:55:57 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614250852, 117013, 0, 'TrinityCore rev. c4e36baba299 2021-02-24 18:55:57 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614372236, 0, 0, 'TrinityCore rev. dff34393768b 2021-02-26 22:46:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614372611, 0, 0, 'TrinityCore rev. dff34393768b 2021-02-26 22:46:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614373213, 0, 0, 'TrinityCore rev. dff34393768b 2021-02-26 22:46:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614373602, 0, 0, 'TrinityCore rev. dff34393768b 2021-02-26 22:46:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614374692, 0, 0, 'TrinityCore rev. dff34393768b 2021-02-26 22:46:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614417072, 0, 0, 'TrinityCore rev. dff34393768b 2021-02-26 22:46:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614417541, 0, 0, 'TrinityCore rev. dff34393768b 2021-02-26 22:46:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614417795, 0, 0, 'TrinityCore rev. dff34393768b 2021-02-26 22:46:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614418512, 0, 0, 'TrinityCore rev. dff34393768b 2021-02-26 22:46:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614418614, 0, 0, 'TrinityCore rev. dff34393768b 2021-02-26 22:46:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614418692, 0, 0, 'TrinityCore rev. dff34393768b 2021-02-26 22:46:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614418862, 0, 0, 'TrinityCore rev. dff34393768b 2021-02-26 22:46:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614419130, 0, 0, 'TrinityCore rev. dff34393768b 2021-02-26 22:46:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614419169, 0, 0, 'TrinityCore rev. dff34393768b 2021-02-26 22:46:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614419673, 0, 0, 'TrinityCore rev. dff34393768b 2021-02-26 22:46:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614420036, 0, 0, 'TrinityCore rev. dff34393768b 2021-02-26 22:46:54 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614420765, 614, 1, 'TrinityCore rev. 5eb6305d9fea 2021-02-27 13:01:13 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614421528, 20428, 1, 'TrinityCore rev. 5eb6305d9fea+ 2021-02-27 13:01:13 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1614440896, 953732, 1, 'TrinityCore rev. 5eb6305d9fea+ 2021-02-27 13:01:13 +0300 (3.3.5 branch) (Win64, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1616008275, 0, 0, 'TrinityCore rev. 41d44a97d1a1+ 2021-03-17 21:04:42 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1616008683, 0, 0, 'TrinityCore rev. 41d44a97d1a1+ 2021-03-17 21:04:42 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1616008742, 0, 0, 'TrinityCore rev. 41d44a97d1a1+ 2021-03-17 21:04:42 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1616008829, 0, 0, 'TrinityCore rev. 41d44a97d1a1+ 2021-03-17 21:04:42 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1616008919, 0, 0, 'TrinityCore rev. 41d44a97d1a1+ 2021-03-17 21:04:42 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1616010212, 613, 1, 'TrinityCore rev. 41d44a97d1a1+ 2021-03-17 21:04:42 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1617662011, 42688, 0, 'TrinityCore rev. 13f53da3dabf+ 2021-04-06 00:23:24 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1617996596, 150441, 1, 'TrinityCore rev. 9e6a53c2d326+ 2021-04-09 20:06:42 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1618148776, 105172, 0, 'TrinityCore rev. d48e4c8c7e87+ 2021-04-11 16:21:46 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1619843604, 36018, 0, 'TrinityCore rev. 9c6188a74c82+ 2021-04-29 17:30:07 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1619887983, 15016, 1, 'TrinityCore rev. 9c6188a74c82+ 2021-04-29 17:30:07 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1619972366, 454344, 1, 'TrinityCore rev. b4fed156e24d+ 2021-05-02 01:15:47 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1622916717, 0, 0, 'TrinityCore rev. 5d45ee6bb56c+ 2021-06-05 20:07:35 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1622925652, 80982, 1, 'TrinityCore rev. 5d45ee6bb56c+ 2021-06-05 20:07:35 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1623094708, 119126, 1, 'TrinityCore rev. 9923b467f331+ 2021-06-05 23:05:17 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1623214404, 0, 0, 'TrinityCore rev. 9923b467f331+ 2021-06-05 23:05:17 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1623214724, 0, 0, 'TrinityCore rev. 9923b467f331+ 2021-06-05 23:05:17 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1623215475, 18622, 1, 'TrinityCore rev. 9923b467f331+ 2021-06-05 23:05:17 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1623234602, 1623237, 1, 'TrinityCore rev. 9923b467f331+ 2021-06-05 23:05:17 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1625167261, 1218, 0, 'TrinityCore rev. 9923b467f331+ 2021-06-05 23:05:17 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1625169505, 609, 1, 'TrinityCore rev. 60f9242c074d 2021-07-01 22:47:34 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1625415638, 0, 0, 'TrinityCore rev. 60f9242c074d 2021-07-01 22:47:34 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1625416003, 5407, 1, 'TrinityCore rev. 60f9242c074d 2021-07-01 22:47:34 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1625422378, 0, 0, 'TrinityCore rev. a8c537574fdd 2021-07-04 20:53:47 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1625422527, 0, 0, 'TrinityCore rev. a8c537574fdd 2021-07-04 20:53:47 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1625423266, 12606, 1, 'TrinityCore rev. 9c5495683da1 2021-07-04 21:26:45 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1625501116, 12018, 1, 'TrinityCore rev. 9c5495683da1 2021-07-04 21:26:45 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1625584261, 7819, 1, 'TrinityCore rev. 9c5495683da1 2021-07-04 21:26:45 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1625592341, 607, 1, 'TrinityCore rev. 8f879d49f944 2021-07-06 20:14:32 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1625593208, 0, 0, 'TrinityCore rev. 8f879d49f944 2021-07-06 20:14:32 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1625593343, 1807, 1, 'TrinityCore rev. 8f879d49f944 2021-07-06 20:14:32 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1625671339, 51018, 1, 'TrinityCore rev. 8f879d49f944 2021-07-06 20:14:32 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1625757084, 48016, 1, 'TrinityCore rev. 8f879d49f944 2021-07-06 20:14:32 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1625806506, 53616, 1, 'TrinityCore rev. 8f879d49f944 2021-07-06 20:14:32 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1625944508, 1207, 1, 'TrinityCore rev. 8f879d49f944 2021-07-06 20:14:32 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1626067379, 388647, 1, 'TrinityCore rev. 5c12eff0f534 2021-07-12 08:16:25 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1626805830, 607, 1, 'TrinityCore rev. 5c12eff0f534 2021-07-12 08:16:25 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1626814357, 0, 0, 'TrinityCore rev. 1770b92a45b2 2021-07-20 21:46:54 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1626814543, 0, 0, 'TrinityCore rev. 1770b92a45b2 2021-07-20 21:46:54 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1626815124, 65759, 1, 'TrinityCore rev. 1770b92a45b2 2021-07-20 21:46:54 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1627496522, 33017, 1, 'TrinityCore rev. 6376cd5db743 2021-07-28 21:10:35 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1628954926, 22215, 0, 'TrinityCore rev. 9bb74559f236+ 2021-08-13 20:52:28 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629033149, 1217, 1, 'TrinityCore rev. 9bb74559f236+ 2021-08-13 20:52:28 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629034775, 0, 0, 'TrinityCore rev. 9bb74559f236+ 2021-08-13 20:52:28 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629035134, 0, 0, 'TrinityCore rev. 9bb74559f236+ 2021-08-13 20:52:28 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629035655, 0, 0, 'TrinityCore rev. 9bb74559f236+ 2021-08-13 20:52:28 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629036000, 0, 0, 'TrinityCore rev. 9bb74559f236+ 2021-08-13 20:52:28 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629036272, 0, 0, 'TrinityCore rev. 9bb74559f236+ 2021-08-13 20:52:28 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629036308, 0, 0, 'TrinityCore rev. 9bb74559f236+ 2021-08-13 20:52:28 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629036432, 0, 0, 'TrinityCore rev. 9bb74559f236+ 2021-08-13 20:52:28 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629037359, 0, 0, 'TrinityCore rev. a50a78152e6b+ 2021-08-15 17:13:24 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629037696, 0, 0, 'TrinityCore rev. a50a78152e6b+ 2021-08-15 17:13:24 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629037799, 0, 0, 'TrinityCore rev. a50a78152e6b+ 2021-08-15 17:13:24 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629039487, 0, 0, 'TrinityCore rev. a50a78152e6b+ 2021-08-15 17:13:24 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629039810, 0, 0, 'TrinityCore rev. a50a78152e6b+ 2021-08-15 17:13:24 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629039942, 0, 0, 'TrinityCore rev. a50a78152e6b+ 2021-08-15 17:13:24 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629040010, 0, 0, 'TrinityCore rev. a50a78152e6b+ 2021-08-15 17:13:24 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629040586, 5413, 1, 'TrinityCore rev. a50a78152e6b+ 2021-08-15 17:13:24 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629046483, 5414, 1, 'TrinityCore rev. a50a78152e6b+ 2021-08-15 17:13:24 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629120722, 21623, 0, 'TrinityCore rev. a50a78152e6b+ 2021-08-15 17:13:24 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629143914, 0, 0, 'TrinityCore rev. a50a78152e6b+ 2021-08-15 17:13:24 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629144448, 34213, 1, 'TrinityCore rev. a50a78152e6b+ 2021-08-15 17:13:24 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1629908319, 3021, 0, 'TrinityCore rev. e4a0bd99bec0+ 2021-08-25 18:34:33 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1630233439, 0, 0, 'TrinityCore rev. e4a0bd99bec0+ 2021-08-25 18:34:33 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1630233561, 0, 0, 'TrinityCore rev. e4a0bd99bec0+ 2021-08-25 18:34:33 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1630233605, 0, 0, 'TrinityCore rev. e4a0bd99bec0+ 2021-08-25 18:34:33 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1630233708, 0, 0, 'TrinityCore rev. e4a0bd99bec0+ 2021-08-25 18:34:33 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1630233748, 0, 0, 'TrinityCore rev. e4a0bd99bec0+ 2021-08-25 18:34:33 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1630233813, 0, 0, 'TrinityCore rev. e4a0bd99bec0+ 2021-08-25 18:34:33 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1632240127, 0, 0, 'TrinityCore rev. e27635316eff+ 2021-09-21 13:45:52 +0300 (3.3.5 branch) (Unix, RelWithDebInfo, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1634440940, 0, 0, 'TrinityCore rev. 97bc2a3ffed8+ 2021-10-16 07:54:33 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1634441393, 0, 0, 'TrinityCore rev. 97bc2a3ffed8+ 2021-10-16 07:54:33 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1634441619, 0, 0, 'TrinityCore rev. 97bc2a3ffed8+ 2021-10-16 07:54:33 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1634441942, 3654, 1, 'TrinityCore rev. 97bc2a3ffed8+ 2021-10-16 07:54:33 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1634445739, 0, 0, 'TrinityCore rev. 97bc2a3ffed8+ 2021-10-16 07:54:33 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1634445808, 3059, 1, 'TrinityCore rev. 97bc2a3ffed8+ 2021-10-16 07:54:33 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1634491047, 0, 0, 'TrinityCore rev. 97bc2a3ffed8+ 2021-10-16 07:54:33 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1634492271, 60661, 0, 'TrinityCore rev. 97bc2a3ffed8+ 2021-10-16 07:54:33 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637263119, 688, 0, 'TrinityCore rev. 09db8abbe285+ 2021-11-18 19:47:09 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637264399, 0, 0, 'TrinityCore rev. 09db8abbe285+ 2021-11-18 19:47:09 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637265006, 666, 1, 'TrinityCore rev. 09db8abbe285+ 2021-11-18 19:47:09 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637266334, 0, 0, 'TrinityCore rev. 09db8abbe285+ 2021-11-18 19:47:09 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637269955, 0, 0, 'TrinityCore rev. 520851a503d3+ 2021-11-19 00:09:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637363013, 35469, 0, 'TrinityCore rev. 520851a503d3+ 2021-11-19 00:09:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637487166, 0, 0, 'TrinityCore rev. c4869c096b34+ 2021-11-19 22:43:59 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637487976, 0, 0, 'TrinityCore rev. c4869c096b34+ 2021-11-19 22:43:59 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637488297, 1255, 1, 'TrinityCore rev. c4869c096b34+ 2021-11-19 22:43:59 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637489693, 79255, 1, 'TrinityCore rev. c4869c096b34+ 2021-11-19 22:43:59 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637570227, 7263, 0, 'TrinityCore rev. 1d513c6cfcc9+ 2021-11-22 11:21:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637647697, 22274, 0, 'TrinityCore rev. 1d513c6cfcc9+ 2021-11-22 11:21:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637670020, 4863, 1, 'TrinityCore rev. 1d513c6cfcc9+ 2021-11-22 11:21:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637675228, 18057, 1, 'TrinityCore rev. 1d513c6cfcc9+ 2021-11-22 11:21:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637693339, 7260, 1, 'TrinityCore rev. 1d513c6cfcc9+ 2021-11-22 11:21:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637700878, 12664, 1, 'TrinityCore rev. 1d513c6cfcc9+ 2021-11-22 11:21:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637746538, 4271, 0, 'TrinityCore rev. 1d513c6cfcc9+ 2021-11-22 11:21:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637770796, 112855, 1, 'TrinityCore rev. 1d513c6cfcc9+ 2021-11-22 11:21:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1637903941, 235274, 1, 'TrinityCore rev. 1d513c6cfcc9+ 2021-11-22 11:21:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638209693, 6675, 0, 'TrinityCore rev. 1d513c6cfcc9+ 2021-11-22 11:21:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638218905, 1257, 1, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638261104, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638261257, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638261604, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638261668, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638261805, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638261902, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638261987, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638262070, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638262160, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638262232, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638264161, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638264344, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638264949, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638265186, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638266399, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638266674, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638266822, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638266962, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638267029, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638267103, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638267167, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638267231, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638267293, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638267388, 0, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638267449, 2454, 0, 'TrinityCore rev. c330a6315188+ 2021-11-29 23:18:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638270746, 36661, 1, 'TrinityCore rev. 777c2cc94f58+ 2021-11-30 14:05:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638721238, 0, 0, 'TrinityCore rev. fef65a3fc80d+ 2021-12-05 14:15:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638721323, 6055, 0, 'TrinityCore rev. fef65a3fc80d+ 2021-12-05 14:15:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638729803, 655, 1, 'TrinityCore rev. fef65a3fc80d+ 2021-12-05 14:15:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638730834, 0, 0, 'TrinityCore rev. fef65a3fc80d+ 2021-12-05 14:15:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638732701, 172263, 1, 'TrinityCore rev. 26b0aec1197c+ 2021-12-05 22:11:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638905502, 0, 0, 'TrinityCore rev. 55a72bdf04bc+ 2021-12-07 22:25:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1638905849, 426057, 1, 'TrinityCore rev. 55a72bdf04bc+ 2021-12-07 22:25:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1639332809, 1090268, 1, 'TrinityCore rev. ca5587e9f2cc+ 2021-12-12 21:03:42 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640424504, 8482, 1, 'TrinityCore rev. b68c199bf7d2+ 2021-12-25 12:19:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640433733, 0, 0, 'TrinityCore rev. b68c199bf7d2+ 2021-12-25 12:19:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640434337, 0, 0, 'TrinityCore rev. 68bf62b2bd7e+ 2021-12-12 20:54:33 +0300 (b2 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1640434614, 0, 0, 'TrinityCore rev. b68c199bf7d2+ 2021-12-25 12:19:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640434892, 0, 0, 'TrinityCore rev. 68bf62b2bd7e+ 2021-12-12 20:54:33 +0300 (b2 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1640435005, 657, 0, 'TrinityCore rev. b68c199bf7d2+ 2021-12-25 12:19:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640435988, 0, 0, 'TrinityCore rev. b68c199bf7d2+ 2021-12-25 12:19:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640436191, 4285, 1, 'TrinityCore rev. b68c199bf7d2+ 2021-12-25 12:19:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640440483, 661, 1, 'TrinityCore rev. b68c199bf7d2+ 2021-12-25 12:19:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640441518, 0, 0, 'TrinityCore rev. b68c199bf7d2+ 2021-12-25 12:19:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640441926, 12673, 1, 'TrinityCore rev. b68c199bf7d2+ 2021-12-25 12:19:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640454831, 663, 1, 'TrinityCore rev. b68c199bf7d2+ 2021-12-25 12:19:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640457158, 5461, 1, 'TrinityCore rev. f335cb5bd432+ 2021-12-25 20:57:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640519878, 10881, 0, 'TrinityCore rev. f335cb5bd432+ 2021-12-25 20:57:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640625966, 10875, 0, 'TrinityCore rev. fa2b39f72e3c+ 2021-12-27 20:18:45 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640721498, 4873, 0, 'TrinityCore rev. fa2b39f72e3c+ 2021-12-27 20:18:45 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640727219, 0, 0, 'TrinityCore rev. fa2b39f72e3c+ 2021-12-27 20:18:45 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640727588, 0, 0, 'TrinityCore rev. fa2b39f72e3c+ 2021-12-27 20:18:45 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640728034, 0, 0, 'TrinityCore rev. fa2b39f72e3c+ 2021-12-27 20:18:45 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640728288, 656, 1, 'TrinityCore rev. fa2b39f72e3c+ 2021-12-27 20:18:45 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640730962, 0, 0, 'TrinityCore rev. fa2b39f72e3c+ 2021-12-27 20:18:45 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640776083, 0, 0, 'TrinityCore rev. fa2b39f72e3c+ 2021-12-27 20:18:45 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640777637, 656, 1, 'TrinityCore rev. fa2b39f72e3c+ 2021-12-27 20:18:45 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640788604, 661, 0, 'TrinityCore rev. fa2b39f72e3c+ 2021-12-27 20:18:45 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640957420, 3669, 1, 'TrinityCore rev. fa2b39f72e3c+ 2021-12-27 20:18:45 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640961599, 0, 0, 'TrinityCore rev. 905b2fb82dc1 2021-12-31 17:09:51 +0300 (b2 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1640963057, 1857, 1, 'TrinityCore rev. fa2b39f72e3c+ 2021-12-27 20:18:45 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640965243, 0, 0, 'TrinityCore rev. 1f2c6585d666+ 2021-12-31 18:03:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640965850, 656, 1, 'TrinityCore rev. 1f2c6585d666+ 2021-12-31 18:03:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1640967159, 66655, 0, 'TrinityCore rev. 1f2c6585d666+ 2021-12-31 18:03:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1641550526, 0, 0, 'TrinityCore rev. 92d24e1a2a63+ 2022-01-07 12:56:45 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1641551157, 0, 0, 'TrinityCore rev. 92d24e1a2a63+ 2022-01-07 12:56:45 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1641551456, 0, 0, 'TrinityCore rev. 92d24e1a2a63+ 2022-01-07 12:56:45 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1641551768, 0, 0, 'TrinityCore rev. 889b504b3168+ 2022-01-07 13:34:44 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1641552034, 0, 0, 'TrinityCore rev. 889b504b3168+ 2022-01-07 13:34:44 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1641552641, 0, 0, 'TrinityCore rev. b4f9f07c6f5c+ 2022-01-07 13:49:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1641552842, 0, 0, 'TrinityCore rev. b4f9f07c6f5c+ 2022-01-07 13:49:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1641636388, 0, 0, 'TrinityCore rev. b4f9f07c6f5c+ 2022-01-07 13:49:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1641637259, 0, 0, 'TrinityCore rev. b4f9f07c6f5c+ 2022-01-07 13:49:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1641637568, 0, 0, 'TrinityCore rev. b4f9f07c6f5c+ 2022-01-07 13:49:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1641637700, 0, 0, 'TrinityCore rev. b4f9f07c6f5c+ 2022-01-07 13:49:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1642357337, 2474, 1, 'TrinityCore rev. ffbd2e79223b+ 2022-01-08 13:32:04 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1642875392, 0, 0, 'TrinityCore rev. ffbd2e79223b+ 2022-01-08 13:32:04 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1642876072, 0, 0, 'TrinityCore rev. 07577f12039a+ 2022-01-22 21:18:16 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1642876646, 0, 0, 'TrinityCore rev. 07577f12039a+ 2022-01-22 21:18:16 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1647695689, 0, 0, 'TrinityCore rev. e748c24b5e3d+ 2022-03-19 15:56:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1649577442, 1876, 1, 'TrinityCore rev. 3488d6e6d08e+ 2022-04-10 10:08:27 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1649592569, 30657, 1, 'TrinityCore rev. 3488d6e6d08e+ 2022-04-10 10:08:27 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1649690071, 365469, 1, 'TrinityCore rev. 3488d6e6d08e+ 2022-04-10 10:08:27 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1650056212, 15460, 0, 'TrinityCore rev. 0b814d6935d2+ 2022-04-15 23:49:58 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1650127382, 66068, 1, 'TrinityCore rev. 0b814d6935d2+ 2022-04-15 23:49:58 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1650195064, 0, 0, 'TrinityCore rev. c5a612980855+ 2022-04-17 14:14:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1650195303, 28257, 1, 'TrinityCore rev. c5a612980855+ 2022-04-17 14:14:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1650224555, 61262, 1, 'TrinityCore rev. 19dd4becacf6+ 2022-04-17 22:33:44 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1650290047, 268867, 1, 'TrinityCore rev. 19dd4becacf6+ 2022-04-17 22:33:44 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1650559960, 169864, 1, 'TrinityCore rev. 0a38c3402591+ 2022-04-21 19:42:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1650730259, 0, 0, 'TrinityCore rev. 0a38c3402591+ 2022-04-21 19:42:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1650730715, 656, 0, 'TrinityCore rev. 0a38c3402591+ 2022-04-21 19:42:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1650731857, 656, 0, 'TrinityCore rev. 0a38c3402591+ 2022-04-21 19:42:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1650732980, 0, 0, 'TrinityCore rev. 0a38c3402591+ 2022-04-21 19:42:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1650733258, 349856, 1, 'TrinityCore rev. 0a38c3402591+ 2022-04-21 19:42:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1651433929, 3671, 0, 'TrinityCore rev. 0a38c3402591+ 2022-04-21 19:42:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1651437938, 0, 0, 'TrinityCore rev. 0a38c3402591+ 2022-04-21 19:42:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1651513954, 85871, 0, 'TrinityCore rev. 0a38c3402591+ 2022-04-21 19:42:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1651607191, 165677, 1, 'TrinityCore rev. 0a38c3402591+ 2022-04-21 19:42:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1651776323, 148866, 0, 'TrinityCore rev. 0a38c3402591+ 2022-04-21 19:42:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1651931535, 4272, 0, 'TrinityCore rev. 0a38c3402591+ 2022-04-21 19:42:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1651955705, 117064, 1, 'TrinityCore rev. 0a38c3402591+ 2022-04-21 19:42:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1652125414, 172862, 1, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1652298634, 0, 0, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1652298862, 656, 1, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1652299834, 0, 0, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1652299988, 20784, 1, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1652333637, 36069, 0, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1652369776, 1255, 0, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1652371787, 653, 0, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1652372673, 0, 0, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1652373133, 0, 0, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1652373303, 1852, 0, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1652375245, 0, 0, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1652375912, 81059, 1, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1652458611, 99663, 1, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1652563585, 332467, 1, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1653627602, 0, 0, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1654026810, 20162, 0, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1654101383, 267525, 1, 'TrinityCore rev. 2a68249e5fbc+ 2022-05-09 08:13:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1658353783, 681, 0, 'TrinityCore rev. ea9e2c410f60+ 2022-07-21 00:44:46 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1658417410, 3071, 1, 'TrinityCore rev. ea9e2c410f60+ 2022-07-21 00:44:46 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1658420900, 6658, 1, 'TrinityCore rev. ea9e2c410f60+ 2022-07-21 00:44:46 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1658516597, 86469, 0, 'TrinityCore rev. ea9e2c410f60+ 2022-07-21 00:44:46 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1658603544, 0, 0, 'TrinityCore rev. ea9e2c410f60+ 2022-07-21 00:44:46 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1658603701, 1258, 1, 'TrinityCore rev. ea9e2c410f60+ 2022-07-21 00:44:46 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1658849419, 13272, 0, 'TrinityCore rev. d01c27c1b10d+ 2022-07-25 19:07:44 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1659296642, 327439, 1, 'TrinityCore rev. 289a6268e73c+ 2022-07-30 22:03:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1659625423, 665, 1, 'TrinityCore rev. 038b689101e5+ 2022-08-04 17:55:50 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1659626549, 14456, 1, 'TrinityCore rev. 038b689101e5+ 2022-08-04 17:55:50 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1659641362, 1258, 2, 'TrinityCore rev. 038b689101e5+ 2022-08-04 17:55:50 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1659642657, 84057, 1, 'TrinityCore rev. 038b689101e5+ 2022-08-04 17:55:50 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1659772670, 40270, 0, 'TrinityCore rev. 038b689101e5+ 2022-08-04 17:55:50 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1659864818, 20468, 1, 'TrinityCore rev. 47fb999a550a+ 2022-08-07 12:29:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1659885796, 196860, 1, 'TrinityCore rev. 47fb999a550a+ 2022-08-07 12:29:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1660147585, 36487, 0, 'TrinityCore rev. 47fb999a550a+ 2022-08-07 12:29:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1660237494, 7273, 0, 'TrinityCore rev. 47fb999a550a+ 2022-08-07 12:29:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1660245183, 3059, 0, 'TrinityCore rev. 47fb999a550a+ 2022-08-07 12:29:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1661033166, 70871, 1, 'TrinityCore rev. 47fb999a550a+ 2022-08-07 12:29:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1661197348, 83262, 0, 'TrinityCore rev. 47fb999a550a+ 2022-08-07 12:29:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1661286783, 165670, 0, 'TrinityCore rev. 47fb999a550a+ 2022-08-07 12:29:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1661459407, 757271, 0, 'TrinityCore rev. 47fb999a550a+ 2022-08-07 12:29:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1663004774, 92482, 0, 'TrinityCore rev. 299002e2c9a9+ 2022-09-12 20:24:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1663422415, 1270, 1, 'TrinityCore rev. 299002e2c9a9+ 2022-09-12 20:24:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1663434100, 67860, 1, 'TrinityCore rev. 299002e2c9a9+ 2022-09-12 20:24:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1663502470, 20464, 1, 'TrinityCore rev. 299002e2c9a9+ 2022-09-12 20:24:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1663528195, 0, 0, 'TrinityCore rev. ee7530652a12+ 2022-09-18 21:59:14 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1663529350, 0, 0, 'TrinityCore rev. ee7530652a12+ 2022-09-18 21:59:14 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1663529918, 0, 0, 'TrinityCore rev. ee7530652a12+ 2022-09-18 21:59:14 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1663530518, 0, 0, 'TrinityCore rev. ee7530652a12+ 2022-09-18 21:59:14 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1663530855, 1257, 1, 'TrinityCore rev. ee7530652a12+ 2022-09-18 21:59:14 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1663532832, 0, 0, 'TrinityCore rev. ee7530652a12+ 2022-09-18 21:59:14 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1663533606, 1871, 1, 'TrinityCore rev. ee7530652a12+ 2022-09-18 21:59:14 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1663581994, 668, 1, 'TrinityCore rev. ee7530652a12+ 2022-09-18 21:59:14 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1663583089, 33668, 2, 'TrinityCore rev. ee7530652a12+ 2022-09-18 21:59:14 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1663623894, 12578, 0, 'TrinityCore rev. ee7530652a12+ 2022-09-18 21:59:14 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1663704602, 84509, 1, 'TrinityCore rev. ee7530652a12+ 2022-09-18 21:59:14 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1663870235, 126669, 1, 'TrinityCore rev. ee7530652a12+ 2022-09-18 21:59:14 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1664039272, 36067, 0, 'TrinityCore rev. e24f97cc8633+ 2022-09-24 20:03:06 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1664083862, 39670, 0, 'TrinityCore rev. e24f97cc8633+ 2022-09-24 20:03:06 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1664148551, 0, 0, 'TrinityCore rev. e24f97cc8633+ 2022-09-24 20:03:06 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1664477039, 55871, 0, 'TrinityCore rev. e24f97cc8633+ 2022-09-24 20:03:06 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1664612428, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1664620510, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1664620976, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1664621871, 669, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1664622556, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1664622692, 3283876, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1664633045, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1664658153, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1664659581, 676, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1664662894, 669, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1664663785, 3225083, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1665483866, 0, 0, 'TrinityCore rev. b8329811e1e2+ 2022-10-11 13:12:23 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1665868059, 501097, 1, 'TrinityCore rev. b8329811e1e2+ 2022-10-11 13:12:23 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1666381114, 59493, 1, 'TrinityCore rev. b8329811e1e2+ 2022-10-11 13:12:23 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1666470066, 39691, 1, 'TrinityCore rev. b8329811e1e2+ 2022-10-11 13:12:23 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1666528657, 6692, 0, 'TrinityCore rev. b8329811e1e2+ 2022-10-11 13:12:23 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1666553788, 1222856, 0, 'TrinityCore rev. b8329811e1e2+ 2022-10-11 13:12:23 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667776741, 0, 0, 'TrinityCore rev. b8329811e1e2+ 2022-10-11 13:12:23 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667799359, 1425, 0, 'TrinityCore rev. 623948b557a8+ 2022-11-07 07:35:47 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667801000, 0, 0, 'TrinityCore rev. 623948b557a8+ 2022-11-07 07:35:47 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667828733, 0, 0, 'TrinityCore rev. 972fb60315f8+ 2022-11-07 16:43:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667829818, 0, 0, 'TrinityCore rev. 972fb60315f8+ 2022-11-07 16:43:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667830147, 0, 0, 'TrinityCore rev. 972fb60315f8+ 2022-11-07 16:43:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667831112, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667831575, 18670, 1, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667850568, 673, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667852254, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667890172, 3677, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667902306, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667907078, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667907830, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667908273, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667908746, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667915958, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667916838, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667917020, 1268, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1667919196, 47108, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668435351, 690, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668438478, 668, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668439221, 669, 2, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668440118, 1870, 2, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668442284, 668, 2, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668443152, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668443722, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668444197, 54071, 3, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668498320, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668498448, 18068, 2, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668516851, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668517174, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668517351, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668517556, 669, 2, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668518359, 95469, 2, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668614086, 28876, 2, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668643498, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668643996, 668, 2, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668645198, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668645869, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668646195, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668646564, 2467, 2, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668649047, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668649133, 1267, 2, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668650913, 9067, 2, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668660241, 667, 1, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668661150, 1267, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668662760, 1267, 1, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668664077, 126068, 2, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668790394, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668790954, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668791230, 70867, 1, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668862629, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668863292, 3067, 2, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668866625, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668866960, 667, 1, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668867661, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668867938, 1268, 2, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668869580, 0, 0, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668869973, 667, 1, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668870789, 13867, 1, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668885471, 73880, 2, 'TrinityCore rev. 63d61d2e2856+ 2022-11-07 17:21:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668959653, 0, 0, 'TrinityCore rev. 9b227a0f550c+ 2022-11-20 17:55:55 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668960042, 1268, 2, 'TrinityCore rev. 9b227a0f550c+ 2022-11-20 17:55:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668961632, 3668, 2, 'TrinityCore rev. 9b227a0f550c+ 2022-11-20 17:55:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668965804, 686, 0, 'TrinityCore rev. 9b227a0f550c+ 2022-11-20 17:55:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1668967307, 54688, 0, 'TrinityCore rev. 9b227a0f550c+ 2022-11-20 17:55:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1669022583, 12071, 1, 'TrinityCore rev. 9b227a0f550c+ 2022-11-20 17:55:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1669035174, 7868, 1, 'TrinityCore rev. 9b227a0f550c+ 2022-11-20 17:55:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1669043056, 0, 0, 'TrinityCore rev. 9b227a0f550c+ 2022-11-20 17:55:55 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1669043232, 69630, 2, 'TrinityCore rev. 9b227a0f550c+ 2022-11-20 17:55:55 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1669475300, 1875, 0, 'TrinityCore rev. d620811a95f4+ 2022-11-26 17:37:32 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1669477414, 0, 0, 'TrinityCore rev. d620811a95f4+ 2022-11-26 17:37:32 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1669477564, 0, 0, 'TrinityCore rev. d620811a95f4+ 2022-11-26 17:37:32 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1671166320, 3092, 0, 'TrinityCore rev. df6f7d14224e+ 2022-12-15 16:04:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1672697003, 0, 0, 'TrinityCore rev. 5b848a3ef78f+ 2023-01-02 22:02:02 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1672697146, 616, 1, 'TrinityCore rev. 5b848a3ef78f+ 2023-01-02 22:02:02 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1672706792, 0, 0, 'TrinityCore rev. 5b848a3ef78f+ 2023-01-02 22:02:02 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1672706813, 62418, 2, 'TrinityCore rev. 5b848a3ef78f+ 2023-01-02 22:02:02 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1672769427, 620, 1, 'TrinityCore rev. 5b848a3ef78f+ 2023-01-02 22:02:02 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1672770244, 0, 0, 'TrinityCore rev. 5b848a3ef78f+ 2023-01-02 22:02:02 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1672960319, 39026, 0, 'TrinityCore rev. 5b848a3ef78f+ 2023-01-02 22:02:02 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673106565, 0, 0, 'TrinityCore rev. a185d326e528+ 2023-01-07 13:09:21 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673106869, 1217, 1, 'TrinityCore rev. a185d326e528+ 2023-01-07 13:09:21 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673108551, 0, 0, 'TrinityCore rev. a185d326e528+ 2023-01-07 13:09:21 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673109422, 618, 1, 'TrinityCore rev. 0e46dae16edc+ 2023-01-07 19:27:30 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673110455, 0, 0, 'TrinityCore rev. 0e46dae16edc+ 2023-01-07 19:27:30 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673110600, 616, 1, 'TrinityCore rev. 0e46dae16edc+ 2023-01-07 19:27:30 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673111243, 0, 0, 'TrinityCore rev. 0e46dae16edc+ 2023-01-07 19:27:30 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673112118, 619, 1, 'TrinityCore rev. 0e46dae16edc+ 2023-01-07 19:27:30 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673112978, 2417, 1, 'TrinityCore rev. 0e46dae16edc+ 2023-01-07 19:27:30 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673118626, 0, 0, 'TrinityCore rev. 0e46dae16edc+ 2023-01-07 19:27:30 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673119451, 0, 0, 'TrinityCore rev. 9e32991212fb+ 2023-01-07 22:08:33 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673119885, 0, 0, 'TrinityCore rev. 9e32991212fb+ 2023-01-07 22:08:33 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673120460, 0, 0, 'TrinityCore rev. 9e32991212fb+ 2023-01-07 22:08:33 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673120583, 0, 0, 'TrinityCore rev. 9e32991212fb+ 2023-01-07 22:08:33 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673120895, 0, 0, 'TrinityCore rev. 9e32991212fb+ 2023-01-07 22:08:33 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673121338, 1817, 1, 'TrinityCore rev. 9e32991212fb+ 2023-01-07 22:08:33 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673124474, 620, 0, 'TrinityCore rev. edd839b242b4+ 2023-01-07 23:28:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673126479, 617, 1, 'TrinityCore rev. edd839b242b4+ 2023-01-07 23:28:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673127688, 0, 0, 'TrinityCore rev. edd839b242b4+ 2023-01-07 23:28:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673171951, 15622, 0, 'TrinityCore rev. edd839b242b4+ 2023-01-07 23:28:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673187422, 0, 0, 'TrinityCore rev. edd839b242b4+ 2023-01-07 23:28:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673187444, 0, 0, 'TrinityCore rev. edd839b242b4+ 2023-01-07 23:28:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673187461, 0, 0, 'TrinityCore rev. edd839b242b4+ 2023-01-07 23:28:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673187673, 0, 0, 'TrinityCore rev. edd839b242b4+ 2023-01-07 23:28:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673187794, 1217, 0, 'TrinityCore rev. edd839b242b4+ 2023-01-07 23:28:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673207329, 0, 0, 'TrinityCore rev. edd839b242b4+ 2023-01-07 23:28:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673208099, 2416, 1, 'TrinityCore rev. edd839b242b4+ 2023-01-07 23:28:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673210699, 618, 1, 'TrinityCore rev. edd839b242b4+ 2023-01-07 23:28:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673521111, 0, 0, 'TrinityCore rev. edd839b242b4+ 2023-01-07 23:28:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673521397, 5435, 1, 'TrinityCore rev. edd839b242b4+ 2023-01-07 23:28:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673860091, 0, 0, 'TrinityCore rev. a185d326e528+ 2023-01-07 13:09:21 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673860665, 0, 0, 'TrinityCore rev. a185d326e528+ 2023-01-07 13:09:21 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673862605, 0, 0, 'TrinityCore rev. 66aec4ed6b50+ 2023-01-12 14:12:25 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673863065, 0, 0, 'TrinityCore rev. 66aec4ed6b50+ 2023-01-12 14:12:25 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673863292, 0, 0, 'TrinityCore rev. 66aec4ed6b50+ 2023-01-12 14:12:25 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1673863601, 0, 0, 'TrinityCore rev. 66aec4ed6b50+ 2023-01-12 14:12:25 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674327954, 6639, 0, 'TrinityCore rev. 66aec4ed6b50+ 2023-01-12 14:12:25 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674429872, 0, 0, 'TrinityCore rev. 66aec4ed6b50+ 2023-01-12 14:12:25 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674430305, 0, 0, 'TrinityCore rev. 66aec4ed6b50+ 2023-01-12 14:12:25 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674431019, 1818, 0, 'TrinityCore rev. eee57076c1a9+ 2023-01-23 02:19:52 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674433112, 0, 0, 'TrinityCore rev. eee57076c1a9+ 2023-01-23 02:19:52 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674433511, 45978, 1, 'TrinityCore rev. eee57076c1a9+ 2023-01-23 02:19:52 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674494658, 2422, 1, 'TrinityCore rev. eee57076c1a9+ 2023-01-23 02:19:52 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674499469, 0, 0, 'TrinityCore rev. 63a434f9a027+ 2023-01-23 21:13:22 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674499976, 0, 0, 'TrinityCore rev. 63a434f9a027+ 2023-01-23 21:13:22 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674500220, 0, 0, 'TrinityCore rev. 63a434f9a027+ 2023-01-23 21:13:22 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674500770, 616, 1, 'TrinityCore rev. 63a434f9a027+ 2023-01-23 21:13:22 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674502065, 616, 1, 'TrinityCore rev. 63a434f9a027+ 2023-01-23 21:13:22 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674503458, 1816, 1, 'TrinityCore rev. 63a434f9a027+ 2023-01-23 21:13:22 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674505402, 81616, 1, 'TrinityCore rev. 63a434f9a027+ 2023-01-23 21:13:22 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674587595, 5423, 1, 'TrinityCore rev. baa876c5d178+ 2023-01-23 22:45:09 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674593256, 76215, 2, 'TrinityCore rev. baa876c5d178+ 2023-01-23 22:45:09 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674669723, 4821, 1, 'TrinityCore rev. baa876c5d178+ 2023-01-23 22:45:09 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674674729, 7216, 1, 'TrinityCore rev. b50af10b7880+ 2023-01-25 22:24:35 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674682237, 72011, 1, 'TrinityCore rev. b50af10b7880+ 2023-01-25 22:24:35 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674757077, 9028, 0, 'TrinityCore rev. b50af10b7880+ 2023-01-25 22:24:35 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674766249, 74420, 1, 'TrinityCore rev. b50af10b7880+ 2023-01-25 22:24:35 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674904277, 0, 0, 'TrinityCore rev. b50af10b7880+ 2023-01-25 22:24:35 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674904322, 29416, 0, 'TrinityCore rev. b50af10b7880+ 2023-01-25 22:24:35 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1674938966, 72627, 0, 'TrinityCore rev. b50af10b7880+ 2023-01-25 22:24:35 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1675796200, 321028, 1, 'TrinityCore rev. 4d0089c37ceb+ 2023-02-06 17:39:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1676133951, 58830, 1, 'TrinityCore rev. 4d0089c37ceb+ 2023-02-06 17:39:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1676489813, 66025, 1, 'TrinityCore rev. 4d0089c37ceb+ 2023-02-06 17:39:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1676576892, 1233, 1, 'TrinityCore rev. 288752d70301+ 2023-02-15 08:24:33 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1676585077, 615, 1, 'TrinityCore rev. 288752d70301+ 2023-02-15 08:24:33 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1676609916, 3618, 1, 'TrinityCore rev. 288752d70301+ 2023-02-15 08:24:33 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1676613648, 55219, 1, 'TrinityCore rev. 288752d70301+ 2023-02-15 08:24:33 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1676674920, 1828, 2, 'TrinityCore rev. 288752d70301+ 2023-02-15 08:24:33 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1676716612, 0, 0, 'TrinityCore rev. 622799d667c3+ 2023-02-18 02:42:46 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1676717154, 0, 0, 'TrinityCore rev. 622799d667c3+ 2023-02-18 02:42:46 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1676717439, 0, 0, 'TrinityCore rev. 622799d667c3+ 2023-02-18 02:42:46 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1676717560, 0, 0, 'TrinityCore rev. 622799d667c3+ 2023-02-18 02:42:46 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1676717632, 19215, 1, 'TrinityCore rev. 622799d667c3+ 2023-02-18 02:42:46 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1676737031, 87021, 0, 'TrinityCore rev. 622799d667c3+ 2023-02-18 02:42:46 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1676825507, 0, 0, 'TrinityCore rev. 622799d667c3+ 2023-02-18 02:42:46 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1676825900, 171617, 1, 'TrinityCore rev. 622799d667c3+ 2023-02-18 02:42:46 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1676997632, 0, 0, 'TrinityCore rev. 622799d667c3+ 2023-02-18 02:42:46 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1676998185, 182417, 1, 'TrinityCore rev. 622799d667c3+ 2023-02-18 02:42:46 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1677213052, 3033, 0, 'TrinityCore rev. 622799d667c3+ 2023-02-18 02:42:46 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678016880, 0, 0, 'TrinityCore rev. 7b5508c94bb5+ 2023-03-05 13:12:14 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678017105, 0, 0, 'TrinityCore rev. 7b5508c94bb5+ 2023-03-05 13:12:14 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678278874, 0, 0, 'TrinityCore rev. 062ab190e348+ 2023-03-05 14:55:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678279577, 0, 0, 'TrinityCore rev. 062ab190e348+ 2023-03-05 14:55:01 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678373835, 0, 0, 'TrinityCore rev. 062ab190e348+ 2023-03-05 14:55:01 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1678375205, 7815, 1, 'TrinityCore rev. 062ab190e348+ 2023-03-05 14:55:01 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1678384581, 618, 1, 'TrinityCore rev. 062ab190e348+ 2023-03-05 14:55:01 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1678398839, 0, 0, 'TrinityCore rev. efaea4bdeae4+ 2023-03-09 23:12:16 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1678560915, 0, 0, 'TrinityCore rev. f4217af8686b+ 2023-03-11 21:19:35 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678561136, 0, 0, 'TrinityCore rev. f4217af8686b+ 2023-03-11 21:19:35 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678561241, 0, 0, 'TrinityCore rev. f4217af8686b+ 2023-03-11 21:19:35 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678561897, 1223, 1, 'TrinityCore rev. f4217af8686b+ 2023-03-11 21:19:35 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1678563851, 614, 0, 'TrinityCore rev. f4217af8686b+ 2023-03-11 21:19:35 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1678565243, 0, 0, 'TrinityCore rev. f4217af8686b+ 2023-03-11 21:19:35 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1678575036, 0, 0, 'TrinityCore rev. f4217af8686b+ 2023-03-11 21:19:35 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678575407, 0, 0, 'TrinityCore rev. f4217af8686b+ 2023-03-11 21:19:35 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678600312, 624, 1, 'TrinityCore rev. f4217af8686b+ 2023-03-11 21:19:35 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1678601656, 10815, 1, 'TrinityCore rev. f4217af8686b+ 2023-03-11 21:19:35 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1678613853, 0, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1678615711, 0, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678619590, 0, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678623935, 0, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678624611, 0, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1678625221, 618, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678626105, 0, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678642921, 0, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1678643749, 0, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1678645099, 0, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678647219, 0, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678715471, 0, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678716665, 0, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678717406, 0, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678717654, 0, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678718623, 3664, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678724480, 0, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678724706, 0, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678725472, 0, 0, 'TrinityCore rev. 4f3865cb1166+ 2023-03-12 09:55:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1678977012, 0, 0, 'TrinityCore rev. 32d87f2f4d96+ 2023-03-16 16:36:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679080161, 166277, 1, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679253181, 74737, 0, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679328237, 670, 1, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679329368, 2467, 0, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679336016, 665, 1, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679337151, 0, 0, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679337690, 0, 0, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679342665, 663, 0, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679343768, 0, 0, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679344236, 0, 0, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679344347, 0, 0, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679344797, 0, 0, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679373451, 2468, 0, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679405456, 22268, 0, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679427853, 181867, 1, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679609814, 0, 0, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679610401, 0, 0, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679610721, 0, 0, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679611207, 0, 0, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679611887, 663, 1, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679612692, 0, 0, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679664880, 670, 1, 'TrinityCore rev. 9a8c235bfb18+ 2023-03-16 17:36:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679666904, 1266, 1, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679668318, 665, 1, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679669405, 169389, 0, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679838875, 0, 0, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679839030, 0, 0, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679839379, 0, 0, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679839590, 0, 0, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679840263, 0, 0, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1679843194, 0, 0, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679843689, 663, 1, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679844914, 0, 0, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679845406, 0, 0, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679845531, 0, 0, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679845710, 1263, 1, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679847229, 0, 0, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679847427, 0, 0, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679847827, 0, 0, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679848908, 1262, 1, 'TrinityCore rev. f1a287892915+ 2023-03-22 16:03:56 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679850265, 0, 0, 'TrinityCore rev. 7c4565b3fff6+ 2023-03-26 19:56:31 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679850634, 1863, 0, 'TrinityCore rev. 7c4565b3fff6+ 2023-03-26 19:56:31 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679853254, 0, 0, 'TrinityCore rev. 7c4565b3fff6+ 2023-03-26 19:56:31 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679854248, 0, 0, 'TrinityCore rev. 7c4565b3fff6+ 2023-03-26 19:56:31 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679854876, 0, 0, 'TrinityCore rev. 7c4565b3fff6+ 2023-03-26 19:56:31 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679855176, 0, 0, 'TrinityCore rev. 7c4565b3fff6+ 2023-03-26 19:56:31 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679855445, 0, 0, 'TrinityCore rev. 7c4565b3fff6+ 2023-03-26 19:56:31 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679855885, 0, 0, 'TrinityCore rev. 7c4565b3fff6+ 2023-03-26 19:56:31 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679857534, 0, 0, 'TrinityCore rev. 7c4565b3fff6+ 2023-03-26 19:56:31 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679858305, 0, 0, 'TrinityCore rev. c4d5a2aafb6c+ 2023-03-26 22:15:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679858977, 0, 0, 'TrinityCore rev. bee1845b5e18+ 2023-03-26 22:22:48 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679859726, 0, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679861444, 675, 1, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679862161, 0, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679862795, 661, 1, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679863679, 6662, 1, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679870543, 0, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679870608, 0, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679870682, 0, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679871198, 0, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679871263, 0, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679871328, 0, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679871391, 0, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679871629, 0, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679871693, 0, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679871758, 0, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679871917, 0, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679872509, 0, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1679872891, 133862, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680008486, 0, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680008710, 661, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680009661, 3666, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680013824, 0, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680014394, 1263, 0, 'TrinityCore rev. 2f1f78e7d7cd+ 2023-03-26 22:36:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680015992, 0, 0, 'TrinityCore rev. f7a25b5e4e51+ 2023-03-28 18:00:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680016478, 262864, 0, 'TrinityCore rev. f7a25b5e4e51+ 2023-03-28 18:00:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680281957, 97040, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680379602, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680379849, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680380448, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680381174, 87069, 2, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680468785, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680469421, 666, 1, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680470591, 1862, 1, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680472684, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680472937, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680473161, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680473315, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680473615, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680473803, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680473938, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680474283, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680474520, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680474902, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680475327, 663, 1, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680476238, 73863, 1, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680550518, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680550816, 262263, 1, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680814303, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680814917, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680815205, 1273, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680817038, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680817244, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680818038, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680818635, 71472, 1, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680890633, 28866, 1, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680919822, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680920317, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680920881, 1273, 1, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680922276, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680922511, 673, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680923451, 7264, 1, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1680930959, 105674, 1, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681059997, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681060671, 1275, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681062315, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681063277, 0, 0, 'TrinityCore rev. c613f43c7a03+ 2023-03-31 19:19:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681064111, 0, 0, 'TrinityCore rev. 5e3b05090854+ 2023-04-09 21:08:36 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681064638, 40863, 1, 'TrinityCore rev. b6db9dcc3082+ 2023-04-09 21:22:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681105687, 38466, 0, 'TrinityCore rev. b6db9dcc3082+ 2023-04-09 21:22:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681154515, 76866, 1, 'TrinityCore rev. b6db9dcc3082+ 2023-04-09 21:22:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681231904, 0, 0, 'TrinityCore rev. b6db9dcc3082+ 2023-04-09 21:22:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681232272, 0, 0, 'TrinityCore rev. b6db9dcc3082+ 2023-04-09 21:22:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681232528, 0, 0, 'TrinityCore rev. b6db9dcc3082+ 2023-04-09 21:22:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681232891, 61259, 1, 'TrinityCore rev. b6db9dcc3082+ 2023-04-09 21:22:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681504659, 0, 0, 'TrinityCore rev. fc816ce64bb8+ 2023-04-14 23:24:44 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681579952, 4870, 1, 'TrinityCore rev. fc816ce64bb8+ 2023-04-14 23:24:44 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681731716, 1872, 0, 'TrinityCore rev. 67cbf6fd6102+ 2023-04-15 18:58:23 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681739918, 0, 0, 'TrinityCore rev. 67cbf6fd6102+ 2023-04-15 18:58:23 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681745978, 4266, 0, 'TrinityCore rev. 67cbf6fd6102+ 2023-04-15 18:58:23 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681751560, 663, 1, 'TrinityCore rev. 9d798a2736b5+ 2023-04-16 20:34:42 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1681752649, 432050, 1, 'TrinityCore rev. 9d798a2736b5+ 2023-04-16 20:34:42 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1682185157, 1097464, 0, 'TrinityCore rev. 9d798a2736b5+ 2023-04-16 20:34:42 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1683308789, 1274, 0, 'TrinityCore rev. 6803eaa4200f+ 2023-05-05 20:27:20 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685126804, 0, 0, 'TrinityCore rev. 573f68d9fd3d+ 2023-05-25 20:35:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685129900, 668, 1, 'TrinityCore rev. 573f68d9fd3d+ 2023-05-25 20:35:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685133035, 27055, 1, 'TrinityCore rev. 573f68d9fd3d+ 2023-05-25 20:35:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685161709, 3654, 1, 'TrinityCore rev. 573f68d9fd3d+ 2023-05-25 20:35:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685175738, 79858, 2, 'TrinityCore rev. 573f68d9fd3d+ 2023-05-25 20:35:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685290371, 0, 0, 'TrinityCore rev. 0a4ab4e84a86+ 2023-05-27 18:55:27 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685291835, 0, 0, 'TrinityCore rev. 0a4ab4e84a86+ 2023-05-27 18:55:27 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685292257, 0, 0, 'TrinityCore rev. 0a4ab4e84a86+ 2023-05-27 18:55:27 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685292718, 0, 0, 'TrinityCore rev. 0a4ab4e84a86+ 2023-05-27 18:55:27 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685296160, 2453, 1, 'TrinityCore rev. 0a4ab4e84a86+ 2023-05-27 18:55:27 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685389893, 0, 0, 'TrinityCore rev. 0a4ab4e84a86+ 2023-05-27 18:55:27 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685390438, 651, 2, 'TrinityCore rev. 0a4ab4e84a86+ 2023-05-27 18:55:27 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685391563, 651, 1, 'TrinityCore rev. 0a4ab4e84a86+ 2023-05-27 18:55:27 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685393719, 0, 0, 'TrinityCore rev. 17c7c15b2a33+ 2023-05-29 23:42:04 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685393918, 651, 1, 'TrinityCore rev. 17c7c15b2a33+ 2023-05-29 23:42:04 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685394681, 0, 0, 'TrinityCore rev. 17c7c15b2a33+ 2023-05-29 23:42:04 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685395110, 0, 0, 'TrinityCore rev. 17c7c15b2a33+ 2023-05-29 23:42:04 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685395826, 0, 0, 'TrinityCore rev. 17c7c15b2a33+ 2023-05-29 23:42:04 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685462419, 0, 0, 'TrinityCore rev. 17c7c15b2a33+ 2023-05-29 23:42:04 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685462772, 0, 0, 'TrinityCore rev. 17c7c15b2a33+ 2023-05-29 23:42:04 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685463137, 0, 0, 'TrinityCore rev. 17c7c15b2a33+ 2023-05-29 23:42:04 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685463398, 0, 0, 'TrinityCore rev. 17c7c15b2a33+ 2023-05-29 23:42:04 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685463563, 0, 0, 'TrinityCore rev. 17c7c15b2a33+ 2023-05-29 23:42:04 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685464042, 0, 0, 'TrinityCore rev. 17c7c15b2a33+ 2023-05-29 23:42:04 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685464190, 0, 0, 'TrinityCore rev. 17c7c15b2a33+ 2023-05-29 23:42:04 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685464479, 0, 0, 'TrinityCore rev. 17c7c15b2a33+ 2023-05-29 23:42:04 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685464721, 0, 0, 'TrinityCore rev. 17c7c15b2a33+ 2023-05-29 23:42:04 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685701110, 0, 0, 'TrinityCore rev. 8e0ecaf84999+ 2023-05-30 21:31:05 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685701275, 0, 0, 'TrinityCore rev. 8e0ecaf84999+ 2023-05-30 21:31:05 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685701339, 0, 0, 'TrinityCore rev. 8e0ecaf84999+ 2023-05-30 21:31:05 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685808457, 0, 0, 'TrinityCore rev. 1271e5a5133f+ 2023-06-03 08:15:40 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685809610, 651, 0, 'TrinityCore rev. 1271e5a5133f+ 2023-06-03 08:15:40 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685810857, 651, 0, 'TrinityCore rev. 1271e5a5133f+ 2023-06-03 08:15:40 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685817287, 0, 0, 'TrinityCore rev. 1271e5a5133f+ 2023-06-03 08:15:40 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685817707, 651, 0, 'TrinityCore rev. 1271e5a5133f+ 2023-06-03 08:15:40 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685819019, 0, 0, 'TrinityCore rev. 1271e5a5133f+ 2023-06-03 08:15:40 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1685992303, 0, 0, 'TrinityCore rev. 1271e5a5133f+ 2023-06-03 08:15:40 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1686081727, 1260, 2, 'TrinityCore rev. 71bddee073ec+ 2023-06-06 21:55:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1686083169, 0, 0, 'TrinityCore rev. 71bddee073ec+ 2023-06-06 21:55:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1686083904, 0, 0, 'TrinityCore rev. 71bddee073ec+ 2023-06-06 21:55:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1686084094, 0, 0, 'TrinityCore rev. 71bddee073ec+ 2023-06-06 21:55:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1686084685, 650, 2, 'TrinityCore rev. 71bddee073ec+ 2023-06-06 21:55:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1686086776, 1249, 4, 'TrinityCore rev. 71bddee073ec+ 2023-06-06 21:55:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1687001551, 0, 0, 'TrinityCore rev. f680ca8f9c8a+ 2023-06-17 14:24:08 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1687002457, 0, 0, 'TrinityCore rev. dc94dabeebd0+ 2023-06-17 14:36:31 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1687661251, 0, 0, 'TrinityCore rev. 6737fc014bde+ 2023-06-22 01:05:36 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689350397, 0, 0, 'TrinityCore rev. f77c169097cb+ 2023-07-14 17:18:04 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689350639, 3048, 0, 'TrinityCore rev. f77c169097cb+ 2023-07-14 17:18:04 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689354266, 648, 0, 'TrinityCore rev. f77c169097cb+ 2023-07-14 17:18:04 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689408726, 0, 0, 'TrinityCore rev. f77c169097cb+ 2023-07-14 17:18:04 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689517226, 0, 0, 'TrinityCore rev. 9d63587560fd+ 2023-07-15 17:08:32 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689517328, 2449, 0, 'TrinityCore rev. 9d63587560fd+ 2023-07-15 17:08:32 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689520591, 0, 0, 'TrinityCore rev. 9d63587560fd+ 2023-07-15 17:08:32 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689520873, 0, 0, 'TrinityCore rev. 9d63587560fd+ 2023-07-15 17:08:32 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689522936, 0, 0, 'TrinityCore rev. 9d63587560fd+ 2023-07-15 17:08:32 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689523404, 0, 0, 'TrinityCore rev. 9d63587560fd+ 2023-07-15 17:08:32 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689524306, 649, 1, 'TrinityCore rev. 9d63587560fd+ 2023-07-15 17:08:32 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689524989, 0, 0, 'TrinityCore rev. 9d63587560fd+ 2023-07-15 17:08:32 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689527057, 0, 0, 'TrinityCore rev. 9d63587560fd+ 2023-07-15 17:08:32 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689527893, 0, 0, 'TrinityCore rev. ff15acf1cded+ 2023-07-16 20:12:36 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689528340, 649, 1, 'TrinityCore rev. ff15acf1cded+ 2023-07-16 20:12:36 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689529624, 650, 1, 'TrinityCore rev. ff15acf1cded+ 2023-07-16 20:12:36 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689532172, 1249, 0, 'TrinityCore rev. ff15acf1cded+ 2023-07-16 20:12:36 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689533599, 0, 0, 'TrinityCore rev. ff15acf1cded+ 2023-07-16 20:12:36 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689533951, 1251, 0, 'TrinityCore rev. ff15acf1cded+ 2023-07-16 20:12:36 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689536070, 0, 0, 'TrinityCore rev. ff15acf1cded+ 2023-07-16 20:12:36 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689536303, 0, 0, 'TrinityCore rev. 91134b8471a5+ 2023-07-16 22:23:26 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689536398, 0, 0, 'TrinityCore rev. 91134b8471a5+ 2023-07-16 22:23:26 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689536611, 0, 0, 'TrinityCore rev. 91134b8471a5+ 2023-07-16 22:23:26 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689538003, 0, 0, 'TrinityCore rev. 0a76018dce1d+ 2023-07-16 23:03:55 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689538269, 0, 0, 'TrinityCore rev. 0a76018dce1d+ 2023-07-16 23:03:55 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689538451, 0, 0, 'TrinityCore rev. 0a76018dce1d+ 2023-07-16 23:03:55 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689539959, 0, 0, 'TrinityCore rev. 0a76018dce1d+ 2023-07-16 23:03:55 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689540074, 0, 0, 'TrinityCore rev. 0a76018dce1d+ 2023-07-16 23:03:55 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689540233, 0, 0, 'TrinityCore rev. 0a76018dce1d+ 2023-07-16 23:03:55 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689540473, 651, 1, 'TrinityCore rev. 0a76018dce1d+ 2023-07-16 23:03:55 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689542223, 0, 0, 'TrinityCore rev. 27b855aff516+ 2023-07-16 23:48:22 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689542363, 0, 0, 'TrinityCore rev. 27b855aff516+ 2023-07-16 23:48:22 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689542545, 0, 0, 'TrinityCore rev. 27b855aff516+ 2023-07-16 23:48:22 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689544589, 0, 0, 'TrinityCore rev. 27b855aff516+ 2023-07-16 23:48:22 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689544920, 0, 0, 'TrinityCore rev. 27b855aff516+ 2023-07-16 23:48:22 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689545159, 0, 0, 'TrinityCore rev. 27b855aff516+ 2023-07-16 23:48:22 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689545646, 0, 0, 'TrinityCore rev. 27b855aff516+ 2023-07-16 23:48:22 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689545802, 0, 0, 'TrinityCore rev. 27b855aff516+ 2023-07-16 23:48:22 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689546282, 0, 0, 'TrinityCore rev. 8db6354dcace+ 2023-07-17 01:21:12 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689568348, 0, 0, 'TrinityCore rev. 8db6354dcace+ 2023-07-17 01:21:12 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689568865, 0, 0, 'TrinityCore rev. 8db6354dcace+ 2023-07-17 01:21:12 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689569737, 0, 0, 'TrinityCore rev. f35502a201a1+ 2023-07-17 07:51:04 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689695431, 0, 0, 'TrinityCore rev. f35502a201a1+ 2023-07-17 07:51:04 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689696000, 650, 1, 'TrinityCore rev. f35502a201a1+ 2023-07-17 07:51:04 +0300 (3.3.5 branch) (Win64, Debug, Static)');
+INSERT INTO `uptime` VALUES (1, 1689697285, 0, 0, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689697860, 0, 0, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689699446, 0, 0, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689700022, 0, 0, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689700701, 0, 0, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689700895, 0, 0, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689701003, 0, 0, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689701342, 650, 0, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689702230, 0, 0, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689703247, 0, 0, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689703814, 0, 0, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689703997, 0, 0, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689704065, 0, 0, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689704305, 0, 0, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689704473, 0, 0, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689704765, 651, 1, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689705595, 0, 0, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1689706016, 0, 0, 'TrinityCore rev. 7798b0cb8eb3+ 2023-07-17 08:05:03 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690045748, 0, 0, 'TrinityCore rev. 8a2cdaba8b9a+ 2023-07-22 19:39:13 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690046443, 0, 0, 'TrinityCore rev. 8a2cdaba8b9a+ 2023-07-22 19:39:13 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690046641, 0, 0, 'TrinityCore rev. 8a2cdaba8b9a+ 2023-07-22 19:39:13 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690046849, 649, 0, 'TrinityCore rev. 8a2cdaba8b9a+ 2023-07-22 19:39:13 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690047715, 0, 0, 'TrinityCore rev. 8a2cdaba8b9a+ 2023-07-22 19:39:13 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690051212, 0, 0, 'TrinityCore rev. 8a2cdaba8b9a+ 2023-07-22 19:39:13 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690051580, 651, 1, 'TrinityCore rev. 8a2cdaba8b9a+ 2023-07-22 19:39:13 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690052373, 0, 0, 'TrinityCore rev. 8a2cdaba8b9a+ 2023-07-22 19:39:13 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690052655, 650, 0, 'TrinityCore rev. 8a2cdaba8b9a+ 2023-07-22 19:39:13 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690053685, 0, 0, 'TrinityCore rev. 8a2cdaba8b9a+ 2023-07-22 19:39:13 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690053882, 0, 0, 'TrinityCore rev. 8a2cdaba8b9a+ 2023-07-22 19:39:13 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690053941, 0, 0, 'TrinityCore rev. 8a2cdaba8b9a+ 2023-07-22 19:39:13 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690054138, 1250, 1, 'TrinityCore rev. 8a2cdaba8b9a+ 2023-07-22 19:39:13 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690056378, 0, 0, 'TrinityCore rev. 8a2cdaba8b9a+ 2023-07-22 19:39:13 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690056758, 1250, 0, 'TrinityCore rev. 8a2cdaba8b9a+ 2023-07-22 19:39:13 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690059082, 0, 0, 'TrinityCore rev. 2d48abcfdec2+ 2023-07-22 23:23:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690059772, 650, 0, 'TrinityCore rev. 2d48abcfdec2+ 2023-07-22 23:23:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690087306, 657, 1, 'TrinityCore rev. 2d48abcfdec2+ 2023-07-22 23:23:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690088531, 649, 1, 'TrinityCore rev. 2d48abcfdec2+ 2023-07-22 23:23:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690089681, 0, 0, 'TrinityCore rev. 2d48abcfdec2+ 2023-07-22 23:23:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690120917, 0, 0, 'TrinityCore rev. c28e81c2d417+ 2023-07-23 14:37:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690121754, 649, 1, 'TrinityCore rev. c28e81c2d417+ 2023-07-23 14:37:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690124288, 0, 0, 'TrinityCore rev. c28e81c2d417+ 2023-07-23 14:37:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690127309, 0, 0, 'TrinityCore rev. c28e81c2d417+ 2023-07-23 14:37:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690127370, 0, 0, 'TrinityCore rev. c28e81c2d417+ 2023-07-23 14:37:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690127722, 1249, 0, 'TrinityCore rev. c28e81c2d417+ 2023-07-23 14:37:55 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690134765, 659, 2, 'TrinityCore rev. 961c495b06b6+ 2023-07-23 19:51:02 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690135574, 0, 0, 'TrinityCore rev. 961c495b06b6+ 2023-07-23 19:51:02 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690136078, 0, 0, 'TrinityCore rev. 63adfc5e336c+ 2023-07-23 21:09:34 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690230460, 0, 0, 'TrinityCore rev. 63adfc5e336c+ 2023-07-23 21:09:34 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690231001, 155431, 1, 'TrinityCore rev. 63adfc5e336c+ 2023-07-23 21:09:34 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690387605, 0, 0, 'TrinityCore rev. 63adfc5e336c+ 2023-07-23 21:09:34 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690429679, 0, 0, 'TrinityCore rev. 63adfc5e336c+ 2023-07-23 21:09:34 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690430007, 5450, 1, 'TrinityCore rev. 63adfc5e336c+ 2023-07-23 21:09:34 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690435940, 1851, 2, 'TrinityCore rev. 63adfc5e336c+ 2023-07-23 21:09:34 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1690445495, 0, 0, 'TrinityCore rev. 4ba197a1a32a+ 2023-07-27 10:36:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1699389182, 1291, 1, 'TrinityCore rev. 12e81766d9de 2023-11-07 20:06:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1699408988, 54086, 1, 'TrinityCore rev. 12e81766d9de 2023-11-07 20:06:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1699626567, 0, 0, 'TrinityCore rev. c56846a5c256 2023-11-10 13:19:31 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1699626711, 0, 0, 'TrinityCore rev. c56846a5c256 2023-11-10 13:19:31 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1699626790, 0, 0, 'TrinityCore rev. c56846a5c256 2023-11-10 13:19:31 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1699627066, 0, 0, 'TrinityCore rev. c56846a5c256 2023-11-10 13:19:31 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1699627593, 0, 0, 'TrinityCore rev. c56846a5c256 2023-11-10 13:19:31 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1699628021, 0, 0, 'TrinityCore rev. c56846a5c256 2023-11-10 13:19:31 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1699628277, 0, 0, 'TrinityCore rev. c56846a5c256 2023-11-10 13:19:31 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1699628722, 0, 0, 'TrinityCore rev. c56846a5c256 2023-11-10 13:19:31 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1699913092, 58226, 1, 'TrinityCore rev. 0e80bbfce53f+ 2023-11-14 00:37:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1699973774, 690, 0, 'TrinityCore rev. 0e80bbfce53f+ 2023-11-14 00:37:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1699974700, 660, 1, 'TrinityCore rev. 0e80bbfce53f+ 2023-11-14 00:37:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1699975751, 0, 0, 'TrinityCore rev. 0e80bbfce53f+ 2023-11-14 00:37:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1699976059, 0, 0, 'TrinityCore rev. 0e80bbfce53f+ 2023-11-14 00:37:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1699977292, 0, 0, 'TrinityCore rev. 0e80bbfce53f+ 2023-11-14 00:37:57 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700329307, 0, 0, 'TrinityCore rev. b7290dc49381+ 2023-11-18 20:02:02 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700384092, 0, 0, 'TrinityCore rev. b22e10220376+ 2023-11-19 01:36:18 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700423664, 0, 0, 'TrinityCore rev. b6056993b421+ 2023-11-19 12:06:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700424020, 0, 0, 'TrinityCore rev. b6056993b421+ 2023-11-19 12:06:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700424382, 0, 0, 'TrinityCore rev. b6056993b421+ 2023-11-19 12:06:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700498768, 0, 0, 'TrinityCore rev. b6056993b421+ 2023-11-19 12:06:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700499625, 0, 0, 'TrinityCore rev. b6056993b421+ 2023-11-19 12:06:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700500617, 670, 0, 'TrinityCore rev. b6056993b421+ 2023-11-19 12:06:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700501643, 1258, 0, 'TrinityCore rev. b6056993b421+ 2023-11-19 12:06:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700503399, 0, 0, 'TrinityCore rev. b6056993b421+ 2023-11-19 12:06:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700503731, 1858, 0, 'TrinityCore rev. b6056993b421+ 2023-11-19 12:06:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700508928, 0, 0, 'TrinityCore rev. 672ca6a229b8 2023-11-20 22:32:53 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700726183, 0, 0, 'TrinityCore rev. 07964fb3ff10+ 2023-11-23 01:33:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700726335, 28868, 0, 'TrinityCore rev. 07964fb3ff10+ 2023-11-23 01:33:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700755442, 0, 0, 'TrinityCore rev. 07964fb3ff10+ 2023-11-23 01:33:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700755750, 0, 0, 'TrinityCore rev. 07964fb3ff10+ 2023-11-23 01:33:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700756303, 656, 0, 'TrinityCore rev. 07964fb3ff10+ 2023-11-23 01:33:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700757138, 0, 0, 'TrinityCore rev. 07964fb3ff10+ 2023-11-23 01:33:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700757762, 0, 0, 'TrinityCore rev. 07964fb3ff10+ 2023-11-23 01:33:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700758099, 0, 0, 'TrinityCore rev. 07964fb3ff10+ 2023-11-23 01:33:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700758673, 0, 0, 'TrinityCore rev. 07964fb3ff10+ 2023-11-23 01:33:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700759229, 0, 0, 'TrinityCore rev. 07964fb3ff10+ 2023-11-23 01:33:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700760104, 0, 0, 'TrinityCore rev. 07964fb3ff10+ 2023-11-23 01:33:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700760614, 0, 0, 'TrinityCore rev. 07964fb3ff10+ 2023-11-23 01:33:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700761086, 0, 0, 'TrinityCore rev. d632c63bfa0d 2023-11-23 20:34:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700761643, 0, 0, 'TrinityCore rev. d632c63bfa0d 2023-11-23 20:34:30 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700762306, 2464, 1, 'TrinityCore rev. a59dc4c0ca6e 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700764884, 0, 0, 'TrinityCore rev. a59dc4c0ca6e+ 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700765248, 3658, 1, 'TrinityCore rev. a59dc4c0ca6e+ 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700773731, 0, 0, 'TrinityCore rev. a59dc4c0ca6e 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700774393, 43251, 1, 'TrinityCore rev. a59dc4c0ca6e 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700819391, 0, 0, 'TrinityCore rev. a59dc4c0ca6e+ 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700819700, 0, 0, 'TrinityCore rev. a59dc4c0ca6e+ 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700820318, 0, 0, 'TrinityCore rev. a59dc4c0ca6e+ 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700820630, 0, 0, 'TrinityCore rev. a59dc4c0ca6e+ 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700820921, 0, 0, 'TrinityCore rev. a59dc4c0ca6e+ 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700821404, 0, 0, 'TrinityCore rev. a59dc4c0ca6e+ 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700821737, 0, 0, 'TrinityCore rev. a59dc4c0ca6e+ 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700822064, 0, 0, 'TrinityCore rev. a59dc4c0ca6e+ 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700822390, 0, 0, 'TrinityCore rev. a59dc4c0ca6e+ 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700823333, 0, 0, 'TrinityCore rev. a59dc4c0ca6e+ 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700823453, 0, 0, 'TrinityCore rev. a59dc4c0ca6e+ 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700823613, 0, 0, 'TrinityCore rev. a59dc4c0ca6e+ 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700823851, 0, 0, 'TrinityCore rev. a59dc4c0ca6e+ 2023-11-23 20:34:10 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700852835, 0, 0, 'TrinityCore rev. 1adbba7ed7fb 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700853103, 0, 0, 'TrinityCore rev. 1adbba7ed7fb 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700853599, 10864, 2, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700865411, 674, 1, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700866354, 655, 1, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700867377, 30053, 1, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700900381, 2474, 1, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700910211, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700910843, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700911012, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700911189, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700911585, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700911587, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700911666, 657, 1, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700912555, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700913162, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700913324, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700913510, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700913924, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700914066, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700914302, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700914945, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700915201, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700915358, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700915676, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700915940, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700916136, 657, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700918102, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700918332, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700918513, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700918765, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700918991, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700919093, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700919316, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700919490, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700919624, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700919739, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700920000, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700920336, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700920492, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700920662, 660, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700921650, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700921790, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700922019, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700922179, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700922681, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700922879, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700923084, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700923263, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700923419, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700923609, 659, 1, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700924284, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700924407, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700924582, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700924947, 0, 0, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700926626, 659, 1, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700927722, 4270, 1, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700932182, 13261, 1, 'TrinityCore rev. 1adbba7ed7fb+ 2023-11-24 15:37:21 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700945697, 0, 0, 'TrinityCore rev. eca5f7308b3b+ 2023-11-25 23:40:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700945903, 0, 0, 'TrinityCore rev. eca5f7308b3b+ 2023-11-25 23:40:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700946341, 0, 0, 'TrinityCore rev. eca5f7308b3b+ 2023-11-25 23:40:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700946486, 655, 1, 'TrinityCore rev. eca5f7308b3b+ 2023-11-25 23:40:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700947343, 0, 0, 'TrinityCore rev. eca5f7308b3b+ 2023-11-25 23:40:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700947653, 0, 0, 'TrinityCore rev. eca5f7308b3b+ 2023-11-25 23:40:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700947920, 0, 0, 'TrinityCore rev. eca5f7308b3b+ 2023-11-25 23:40:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700948198, 0, 0, 'TrinityCore rev. eca5f7308b3b+ 2023-11-25 23:40:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700948405, 0, 0, 'TrinityCore rev. eca5f7308b3b+ 2023-11-25 23:40:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700948565, 0, 0, 'TrinityCore rev. eca5f7308b3b+ 2023-11-25 23:40:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700948753, 0, 0, 'TrinityCore rev. eca5f7308b3b+ 2023-11-25 23:40:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700949894, 1274, 2, 'TrinityCore rev. eca5f7308b3b+ 2023-11-25 23:40:07 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700961960, 0, 0, 'TrinityCore rev. 216dce52a48c+ 2023-11-26 03:11:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700962194, 0, 0, 'TrinityCore rev. 216dce52a48c+ 2023-11-26 03:11:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700962516, 0, 0, 'TrinityCore rev. 216dce52a48c+ 2023-11-26 03:11:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700962794, 0, 0, 'TrinityCore rev. 216dce52a48c+ 2023-11-26 03:11:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700963147, 0, 0, 'TrinityCore rev. 216dce52a48c+ 2023-11-26 03:11:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700964354, 0, 0, 'TrinityCore rev. 216dce52a48c+ 2023-11-26 03:11:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700964942, 0, 0, 'TrinityCore rev. 216dce52a48c+ 2023-11-26 03:11:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700966668, 0, 0, 'TrinityCore rev. 216dce52a48c+ 2023-11-26 03:11:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700968048, 15667, 0, 'TrinityCore rev. 06e136a2c499+ 2023-11-26 05:54:05 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700984754, 0, 0, 'TrinityCore rev. 06e136a2c499+ 2023-11-26 05:54:05 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700984985, 0, 0, 'TrinityCore rev. 06e136a2c499+ 2023-11-26 05:54:05 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700990294, 0, 0, 'TrinityCore rev. b82f0d026657+ 2023-11-26 12:17:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700990489, 0, 0, 'TrinityCore rev. b82f0d026657+ 2023-11-26 12:17:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700990819, 0, 0, 'TrinityCore rev. b82f0d026657+ 2023-11-26 12:17:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700994490, 0, 0, 'TrinityCore rev. b82f0d026657+ 2023-11-26 12:17:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700994970, 0, 0, 'TrinityCore rev. b82f0d026657+ 2023-11-26 12:17:37 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700996533, 672, 1, 'TrinityCore rev. fd9f987e5978+ 2023-11-26 13:40:09 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1700997486, 663, 1, 'TrinityCore rev. 6d9c5106072b+ 2023-11-26 13:58:44 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701001270, 0, 0, 'TrinityCore rev. 6d9c5106072b+ 2023-11-26 13:58:44 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701008211, 0, 0, 'TrinityCore rev. 6d9c5106072b+ 2023-11-26 13:58:44 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701015117, 658, 2, 'TrinityCore rev. 6d9c5106072b+ 2023-11-26 13:58:44 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701016276, 0, 0, 'TrinityCore rev. 562b6b9a25f4+ 2023-11-26 19:27:27 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701058975, 0, 0, 'TrinityCore rev. b65280d6410a+ 2023-11-27 06:47:05 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701059803, 0, 0, 'TrinityCore rev. 542be231fbd4+ 2023-11-27 07:29:28 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701060375, 1274, 1, 'TrinityCore rev. 542be231fbd4+ 2023-11-27 07:29:28 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701115428, 0, 0, 'TrinityCore rev. f8d9ac387c19+ 2023-11-27 08:09:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701116331, 0, 0, 'TrinityCore rev. f8d9ac387c19+ 2023-11-27 08:09:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701116853, 0, 0, 'TrinityCore rev. f8d9ac387c19+ 2023-11-27 08:09:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701117153, 0, 0, 'TrinityCore rev. f8d9ac387c19+ 2023-11-27 08:09:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701117512, 0, 0, 'TrinityCore rev. f8d9ac387c19+ 2023-11-27 08:09:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701119657, 0, 0, 'TrinityCore rev. f8d9ac387c19+ 2023-11-27 08:09:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701120080, 0, 0, 'TrinityCore rev. f8d9ac387c19+ 2023-11-27 08:09:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701120354, 0, 0, 'TrinityCore rev. f8d9ac387c19+ 2023-11-27 08:09:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701120939, 0, 0, 'TrinityCore rev. f8d9ac387c19+ 2023-11-27 08:09:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701122609, 0, 0, 'TrinityCore rev. f8d9ac387c19+ 2023-11-27 08:09:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701122861, 0, 0, 'TrinityCore rev. f8d9ac387c19+ 2023-11-27 08:09:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701123088, 0, 0, 'TrinityCore rev. f8d9ac387c19+ 2023-11-27 08:09:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701123485, 660, 0, 'TrinityCore rev. f8d9ac387c19+ 2023-11-27 08:09:41 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701124563, 0, 0, 'TrinityCore rev. 8f405b909763+ 2023-11-28 01:17:52 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701124937, 0, 0, 'TrinityCore rev. 8f405b909763+ 2023-11-28 01:17:52 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701125461, 0, 0, 'TrinityCore rev. 8f405b909763+ 2023-11-28 01:17:52 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701125808, 0, 0, 'TrinityCore rev. 8f405b909763+ 2023-11-28 01:17:52 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701126107, 0, 0, 'TrinityCore rev. 8f405b909763+ 2023-11-28 01:17:52 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701127429, 0, 0, 'TrinityCore rev. 8f405b909763+ 2023-11-28 01:17:52 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701128293, 0, 0, 'TrinityCore rev. 8f405b909763+ 2023-11-28 01:17:52 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701128569, 0, 0, 'TrinityCore rev. 8f405b909763+ 2023-11-28 01:17:52 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701128929, 0, 0, 'TrinityCore rev. 8f405b909763+ 2023-11-28 01:17:52 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701129941, 0, 0, 'TrinityCore rev. 8f405b909763+ 2023-11-28 01:17:52 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701130700, 0, 0, 'TrinityCore rev. 8f405b909763+ 2023-11-28 01:17:52 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701131196, 18876, 1, 'TrinityCore rev. c26c35d9453f 2023-11-28 03:23:19 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701152629, 1265, 1, 'TrinityCore rev. c26c35d9453f+ 2023-11-28 03:23:19 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701161731, 0, 0, 'TrinityCore rev. c26c35d9453f+ 2023-11-28 03:23:19 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701162062, 0, 0, 'TrinityCore rev. c26c35d9453f+ 2023-11-28 03:23:19 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701162508, 1860, 0, 'TrinityCore rev. c26c35d9453f+ 2023-11-28 03:23:19 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701164777, 0, 0, 'TrinityCore rev. c26c35d9453f+ 2023-11-28 03:23:19 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701181376, 1875, 0, 'TrinityCore rev. a2bf712b5b40+ 2023-11-28 13:02:28 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701183829, 0, 0, 'TrinityCore rev. a2bf712b5b40+ 2023-11-28 13:02:28 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701184044, 6659, 1, 'TrinityCore rev. a2bf712b5b40+ 2023-11-28 13:02:28 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701192284, 673, 1, 'TrinityCore rev. a2bf712b5b40+ 2023-11-28 13:02:28 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701193398, 6659, 1, 'TrinityCore rev. a2bf712b5b40+ 2023-11-28 13:02:28 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701200215, 676, 1, 'TrinityCore rev. a2bf712b5b40+ 2023-11-28 13:02:28 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701200967, 659, 0, 'TrinityCore rev. a2bf712b5b40+ 2023-11-28 13:02:28 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701201719, 0, 0, 'TrinityCore rev. a2bf712b5b40+ 2023-11-28 13:02:28 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701202452, 0, 0, 'TrinityCore rev. a2bf712b5b40+ 2023-11-28 13:02:28 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701203621, 1283, 1, 'TrinityCore rev. a2bf712b5b40+ 2023-11-28 13:02:28 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701205165, 0, 0, 'TrinityCore rev. a2bf712b5b40+ 2023-11-28 13:02:28 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701288156, 0, 0, 'TrinityCore rev. a2bf712b5b40+ 2023-11-28 13:02:28 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701293276, 46864, 1, 'TrinityCore rev. cfdf9b9f9e1e+ 2023-11-30 00:14:50 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701343899, 3071, 1, 'TrinityCore rev. a2bf712b5b40+ 2023-11-28 13:02:28 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701353425, 0, 0, 'TrinityCore rev. cfdf9b9f9e1e+ 2023-11-30 00:14:50 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701353607, 0, 0, 'TrinityCore rev. 2eb00fee9349+ 2023-11-30 16:09:46 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701354105, 657, 2, 'TrinityCore rev. 2eb00fee9349+ 2023-11-30 16:09:46 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701354971, 16261, 1, 'TrinityCore rev. 2eb00fee9349+ 2023-11-30 16:09:46 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701372989, 671, 2, 'TrinityCore rev. 2eb00fee9349+ 2023-11-30 16:09:46 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701374170, 67975, 1, 'TrinityCore rev. 2eb00fee9349+ 2023-11-30 16:09:46 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701442249, 21684, 1, 'TrinityCore rev. 2eb00fee9349+ 2023-11-30 16:09:46 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701467723, 0, 0, 'TrinityCore rev. 2eb00fee9349+ 2023-11-30 16:09:46 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701468029, 1858, 1, 'TrinityCore rev. 2eb00fee9349+ 2023-11-30 16:09:46 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701624894, 0, 0, 'TrinityCore rev. 210afec0f82d+ 2023-12-03 20:22:43 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701630506, 0, 0, 'TrinityCore rev. 210afec0f82d+ 2023-12-03 20:22:43 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701630962, 0, 0, 'TrinityCore rev. 210afec0f82d+ 2023-12-03 20:22:43 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701704287, 0, 0, 'TrinityCore rev. 210afec0f82d+ 2023-12-03 20:22:43 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701705198, 0, 0, 'TrinityCore rev. e1759897cbfe+ 2023-12-04 18:45:29 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701786800, 0, 0, 'TrinityCore rev. e1759897cbfe+ 2023-12-04 18:45:29 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701790059, 0, 0, 'TrinityCore rev. f04f93c2af56+ 2023-12-05 18:09:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701795034, 0, 0, 'TrinityCore rev. e1759897cbfe+ 2023-12-04 18:45:29 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701971248, 0, 0, 'TrinityCore rev. e1759897cbfe+ 2023-12-04 18:45:29 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1701982078, 666, 0, 'TrinityCore rev. 5e0b436f1fbe+ 2023-12-07 23:45:52 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1702045771, 0, 0, 'TrinityCore rev. 5e0b436f1fbe+ 2023-12-07 23:45:52 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1702046754, 0, 0, 'TrinityCore rev. 5e0b436f1fbe+ 2023-12-07 23:45:52 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1702124834, 10867, 1, 'TrinityCore rev. 2e7521bafaff 2023-12-09 13:55:52 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703177589, 0, 0, 'TrinityCore rev. 6bc0dd3bae2b+ 2023-12-16 11:09:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703189071, 0, 0, 'TrinityCore rev. 6bc0dd3bae2b+ 2023-12-16 11:09:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703189142, 0, 0, 'TrinityCore rev. 6bc0dd3bae2b+ 2023-12-16 11:09:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703360357, 665, 1, 'TrinityCore rev. 6bc0dd3bae2b+ 2023-12-16 11:09:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703361206, 0, 0, 'TrinityCore rev. 6bc0dd3bae2b+ 2023-12-16 11:09:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703361466, 0, 0, 'TrinityCore rev. 6bc0dd3bae2b+ 2023-12-16 11:09:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703499429, 0, 0, 'TrinityCore rev. 6bc0dd3bae2b+ 2023-12-16 11:09:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703500065, 656, 1, 'TrinityCore rev. 6bc0dd3bae2b+ 2023-12-16 11:09:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703500816, 3656, 1, 'TrinityCore rev. 6bc0dd3bae2b+ 2023-12-16 11:09:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703504629, 3658, 1, 'TrinityCore rev. 6bc0dd3bae2b+ 2023-12-16 11:09:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703612910, 0, 0, 'TrinityCore rev. 530b10612c77+ 2023-12-26 19:03:47 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703613175, 0, 0, 'TrinityCore rev. 530b10612c77+ 2023-12-26 19:03:47 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703614095, 0, 0, 'TrinityCore rev. 530b10612c77+ 2023-12-26 19:03:47 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703614392, 0, 0, 'TrinityCore rev. 530b10612c77+ 2023-12-26 19:03:47 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703715444, 0, 0, 'TrinityCore rev. b434b6c8e03c+ 2023-12-26 23:58:02 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703715536, 0, 0, 'TrinityCore rev. b434b6c8e03c+ 2023-12-26 23:58:02 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703715627, 0, 0, 'TrinityCore rev. b434b6c8e03c+ 2023-12-26 23:58:02 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703788691, 0, 0, 'TrinityCore rev. 47687e138b55+ 2023-12-28 16:17:09 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703789072, 0, 0, 'TrinityCore rev. 47687e138b55+ 2023-12-28 16:17:09 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703789477, 0, 0, 'TrinityCore rev. 47687e138b55+ 2023-12-28 16:17:09 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703790106, 0, 0, 'TrinityCore rev. 47687e138b55+ 2023-12-28 16:17:09 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703790258, 0, 0, 'TrinityCore rev. 47687e138b55+ 2023-12-28 16:17:09 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703801639, 0, 0, 'TrinityCore rev. 47687e138b55+ 2023-12-28 16:17:09 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703802207, 24345, 1, 'TrinityCore rev. 47687e138b55+ 2023-12-28 16:17:09 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703880269, 0, 0, 'TrinityCore rev. 47687e138b55+ 2023-12-28 16:17:09 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703880804, 0, 0, 'TrinityCore rev. 47687e138b55+ 2023-12-28 16:17:09 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703882049, 0, 0, 'TrinityCore rev. 62f21eac3f8f+ 2023-12-29 22:26:33 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703882332, 0, 0, 'TrinityCore rev. 62f21eac3f8f+ 2023-12-29 22:26:33 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703882682, 0, 0, 'TrinityCore rev. 62f21eac3f8f+ 2023-12-29 22:26:33 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703883912, 0, 0, 'TrinityCore rev. 62f21eac3f8f+ 2023-12-29 22:26:33 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703886344, 661, 1, 'TrinityCore rev. 3bc5ed5aff57+ 2023-12-30 00:40:20 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703887271, 35447, 1, 'TrinityCore rev. 62f21eac3f8f 2023-12-29 22:26:33 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703922949, 0, 0, 'TrinityCore rev. 62f21eac3f8f+ 2023-12-29 22:26:33 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703923547, 656, 1, 'TrinityCore rev. 62f21eac3f8f+ 2023-12-29 22:26:33 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703924472, 655, 1, 'TrinityCore rev. 62f21eac3f8f+ 2023-12-29 22:26:33 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703925244, 0, 0, 'TrinityCore rev. 62f21eac3f8f+ 2023-12-29 22:26:33 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703926470, 656, 0, 'TrinityCore rev. 5e180b353d55+ 2023-12-30 11:30:44 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703928613, 10857, 0, 'TrinityCore rev. 5e180b353d55 2023-12-30 11:30:44 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703940220, 659, 1, 'TrinityCore rev. 5e180b353d55 2023-12-30 11:30:44 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1703947372, 3657, 0, 'TrinityCore rev. 5e180b353d55 2023-12-30 11:30:44 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704028578, 0, 0, 'TrinityCore rev. 66dd260c9e7e+ 2023-12-30 18:46:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704029098, 2454, 0, 'TrinityCore rev. 66dd260c9e7e+ 2023-12-30 18:46:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704032096, 0, 0, 'TrinityCore rev. 66dd260c9e7e+ 2023-12-30 18:46:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704033182, 0, 0, 'TrinityCore rev. 66dd260c9e7e+ 2023-12-30 18:46:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704040611, 0, 0, 'TrinityCore rev. 66dd260c9e7e+ 2023-12-30 18:46:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704040979, 0, 0, 'TrinityCore rev. 66dd260c9e7e+ 2023-12-30 18:46:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704041863, 0, 0, 'TrinityCore rev. 66dd260c9e7e+ 2023-12-30 18:46:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704043709, 0, 0, 'TrinityCore rev. 66dd260c9e7e+ 2023-12-30 18:46:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704044828, 1283, 0, 'TrinityCore rev. 66dd260c9e7e+ 2023-12-30 18:46:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704050171, 0, 0, 'TrinityCore rev. 66dd260c9e7e+ 2023-12-30 18:46:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704056885, 0, 0, 'TrinityCore rev. 66dd260c9e7e+ 2023-12-30 18:46:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704057506, 0, 0, 'TrinityCore rev. 66dd260c9e7e+ 2023-12-30 18:46:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704058212, 0, 0, 'TrinityCore rev. 66dd260c9e7e+ 2023-12-30 18:46:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704058475, 0, 0, 'TrinityCore rev. 66dd260c9e7e+ 2023-12-30 18:46:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704058753, 0, 0, 'TrinityCore rev. 66dd260c9e7e+ 2023-12-30 18:46:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704059390, 0, 0, 'TrinityCore rev. 66dd260c9e7e+ 2023-12-30 18:46:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704059602, 0, 0, 'TrinityCore rev. 66dd260c9e7e+ 2023-12-30 18:46:22 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704062470, 5457, 1, 'TrinityCore rev. 0c40fae9f5f3+ 2024-01-01 01:38:39 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704068446, 0, 0, 'TrinityCore rev. 0c40fae9f5f3+ 2024-01-01 01:38:39 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704068692, 0, 0, 'TrinityCore rev. 0c40fae9f5f3+ 2024-01-01 01:38:39 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704069080, 0, 0, 'TrinityCore rev. 0c40fae9f5f3+ 2024-01-01 01:38:39 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704069734, 0, 0, 'TrinityCore rev. 0c40fae9f5f3+ 2024-01-01 01:38:39 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704070106, 0, 0, 'TrinityCore rev. 0c40fae9f5f3+ 2024-01-01 01:38:39 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704109470, 662, 0, 'TrinityCore rev. d51f81741d73+ 2024-01-01 03:53:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704111107, 0, 0, 'TrinityCore rev. d51f81741d73+ 2024-01-01 03:53:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704111453, 0, 0, 'TrinityCore rev. d51f81741d73+ 2024-01-01 03:53:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704111711, 0, 0, 'TrinityCore rev. d51f81741d73+ 2024-01-01 03:53:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704111844, 1259, 0, 'TrinityCore rev. d51f81741d73+ 2024-01-01 03:53:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704113237, 0, 0, 'TrinityCore rev. d51f81741d73+ 2024-01-01 03:53:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704118430, 0, 0, 'TrinityCore rev. d51f81741d73+ 2024-01-01 03:53:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704118875, 0, 0, 'TrinityCore rev. d51f81741d73+ 2024-01-01 03:53:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704134810, 4258, 0, 'TrinityCore rev. d51f81741d73+ 2024-01-01 03:53:00 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704192790, 0, 0, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704193275, 0, 0, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704194846, 0, 0, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704195014, 0, 0, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704195094, 0, 0, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704195317, 0, 0, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704195362, 0, 0, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704195736, 0, 0, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704206906, 659, 3, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704218026, 0, 0, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704241107, 0, 0, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704241649, 0, 0, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704241916, 0, 0, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704242604, 661, 1, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704243288, 0, 0, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704286368, 0, 0, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704286697, 656, 1, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704287927, 0, 0, 'TrinityCore rev. 30dfdcde3ba9+ 2024-01-01 17:12:54 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704288578, 0, 0, 'TrinityCore rev. 07adba4957f4+ 2024-01-03 16:18:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704289717, 0, 0, 'TrinityCore rev. 07adba4957f4+ 2024-01-03 16:18:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704290504, 655, 0, 'TrinityCore rev. 07adba4957f4+ 2024-01-03 16:18:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704291380, 657, 1, 'TrinityCore rev. 07adba4957f4+ 2024-01-03 16:18:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704292088, 10254, 1, 'TrinityCore rev. 07adba4957f4+ 2024-01-03 16:18:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704304589, 0, 0, 'TrinityCore rev. 07adba4957f4+ 2024-01-03 16:18:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704305103, 0, 0, 'TrinityCore rev. 07adba4957f4+ 2024-01-03 16:18:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704305685, 657, 1, 'TrinityCore rev. 07adba4957f4+ 2024-01-03 16:18:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704311346, 0, 0, 'TrinityCore rev. 07adba4957f4+ 2024-01-03 16:18:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704312725, 657, 1, 'TrinityCore rev. 07adba4957f4+ 2024-01-03 16:18:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704314659, 2462, 1, 'TrinityCore rev. 07adba4957f4+ 2024-01-03 16:18:11 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704317576, 0, 0, 'TrinityCore rev. 5ecf61967101+ 2024-01-03 23:52:05 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704318327, 0, 0, 'TrinityCore rev. 5ecf61967101+ 2024-01-03 23:52:05 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704370084, 0, 0, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704370615, 0, 0, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704381222, 2461, 0, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704388793, 0, 0, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704389651, 655, 1, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704390716, 0, 0, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704390820, 0, 0, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704391250, 656, 0, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704392402, 0, 0, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704392952, 654, 0, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704394148, 1258, 1, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704395430, 654, 1, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704396217, 0, 0, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704396497, 657, 1, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704397798, 0, 0, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704397932, 654, 1, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704401940, 661, 1, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704402752, 1257, 1, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704404507, 1856, 0, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704406776, 656, 1, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704409004, 657, 1, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704410399, 0, 0, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704411059, 0, 0, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704456356, 0, 0, 'TrinityCore rev. fc389a864861+ 2024-01-04 01:00:17 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704464961, 0, 0, 'TrinityCore rev. d2c691ab3759+ 2024-01-05 17:28:20 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704465173, 0, 0, 'TrinityCore rev. d2c691ab3759+ 2024-01-05 17:28:20 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704466659, 0, 0, 'TrinityCore rev. 610c52e2be9c+ 2024-01-05 17:43:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704467686, 0, 0, 'TrinityCore rev. 610c52e2be9c+ 2024-01-05 17:43:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704468573, 0, 0, 'TrinityCore rev. 610c52e2be9c+ 2024-01-05 17:43:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704468717, 0, 0, 'TrinityCore rev. 610c52e2be9c+ 2024-01-05 17:43:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704468966, 0, 0, 'TrinityCore rev. 610c52e2be9c+ 2024-01-05 17:43:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704469502, 0, 0, 'TrinityCore rev. 610c52e2be9c+ 2024-01-05 17:43:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704483266, 1834, 1, 'TrinityCore rev. 610c52e2be9c+ 2024-01-05 17:43:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704485689, 7232, 1, 'TrinityCore rev. 610c52e2be9c+ 2024-01-05 17:43:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704493462, 33622, 1, 'TrinityCore rev. 610c52e2be9c+ 2024-01-05 17:43:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704527619, 5429, 1, 'TrinityCore rev. 610c52e2be9c+ 2024-01-05 17:43:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704549922, 2429, 1, 'TrinityCore rev. 610c52e2be9c+ 2024-01-05 17:43:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704575874, 31232, 1, 'TrinityCore rev. 610c52e2be9c+ 2024-01-05 17:43:51 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704607706, 1230, 1, 'TrinityCore rev. a71a9cd3bba5+ 2024-01-07 00:15:54 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704609212, 11429, 1, 'TrinityCore rev. a71a9cd3bba5+ 2024-01-07 00:15:54 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704621007, 0, 0, 'TrinityCore rev. 2a01a4cfe198+ 2024-01-07 11:57:05 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704621289, 0, 0, 'TrinityCore rev. 2a01a4cfe198+ 2024-01-07 11:57:05 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704621496, 0, 0, 'TrinityCore rev. 2a01a4cfe198+ 2024-01-07 11:57:05 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704621756, 627, 1, 'TrinityCore rev. 2a01a4cfe198+ 2024-01-07 11:57:05 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704622973, 1229, 1, 'TrinityCore rev. 2a01a4cfe198+ 2024-01-07 11:57:05 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704624291, 0, 0, 'TrinityCore rev. 2a01a4cfe198+ 2024-01-07 11:57:05 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704625146, 0, 0, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704625602, 0, 0, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704626815, 0, 0, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704627001, 627, 2, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704627976, 3628, 1, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704632455, 0, 0, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704632567, 0, 0, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704634244, 0, 0, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704634386, 0, 0, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704634709, 0, 0, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704635011, 0, 0, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704635131, 0, 0, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704654643, 3033, 1, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Win64, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704658784, 0, 0, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704659303, 0, 0, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704659429, 0, 0, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704659628, 0, 0, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704659683, 0, 0, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704659753, 0, 0, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704659998, 6048, 1, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704666558, 0, 0, 'TrinityCore rev. 4d0b0c3e6454+ 2024-01-07 13:51:49 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704666621, 72046, 1, 'TrinityCore rev. 5a46ae3998cd+ 2024-01-08 01:24:22 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704739184, 648, 0, 'TrinityCore rev. 5a46ae3998cd+ 2024-01-08 01:24:22 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704739885, 175247, 1, 'TrinityCore rev. 5a46ae3998cd+ 2024-01-08 01:24:22 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1704915233, 1360844, 1, 'TrinityCore rev. 5a46ae3998cd+ 2024-01-08 01:24:22 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706276621, 651, 1, 'TrinityCore rev. 94368a7d1d7d+ 2024-01-23 23:29:34 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706277670, 67250, 1, 'TrinityCore rev. 94368a7d1d7d+ 2024-01-23 23:29:34 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706344995, 82847, 1, 'TrinityCore rev. 94368a7d1d7d+ 2024-01-23 23:29:34 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706428401, 5440, 0, 'TrinityCore rev. 94368a7d1d7d+ 2024-01-23 23:29:34 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706434060, 4820, 1, 'TrinityCore rev. 94368a7d1d7d+ 2024-01-23 23:29:34 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706438941, 619, 0, 'TrinityCore rev. 94368a7d1d7d+ 2024-01-23 23:29:34 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706439686, 7819, 0, 'TrinityCore rev. ff22f173c2fc+ 2024-01-28 13:40:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706447754, 11418, 1, 'TrinityCore rev. ff22f173c2fc+ 2024-01-28 13:40:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706459469, 5418, 1, 'TrinityCore rev. ff22f173c2fc+ 2024-01-28 13:40:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706465280, 1818, 1, 'TrinityCore rev. ff22f173c2fc+ 2024-01-28 13:40:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706467244, 4218, 1, 'TrinityCore rev. ff22f173c2fc+ 2024-01-28 13:40:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706471892, 2418, 1, 'TrinityCore rev. ff22f173c2fc+ 2024-01-28 13:40:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706474632, 0, 0, 'TrinityCore rev. e4bf625e5cce+ 2024-01-28 23:23:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706474663, 0, 0, 'TrinityCore rev. e4bf625e5cce+ 2024-01-28 23:23:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706474994, 56420, 1, 'TrinityCore rev. e4bf625e5cce+ 2024-01-28 23:23:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706531984, 200420, 2, 'TrinityCore rev. e4bf625e5cce+ 2024-01-28 23:23:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706733004, 24020, 1, 'TrinityCore rev. e4bf625e5cce+ 2024-01-28 23:23:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706795417, 0, 0, 'TrinityCore rev. e4bf625e5cce+ 2024-01-28 23:23:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706795992, 81021, 1, 'TrinityCore rev. e4bf625e5cce+ 2024-01-28 23:23:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706877601, 25821, 1, 'TrinityCore rev. e4bf625e5cce+ 2024-01-28 23:23:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706903953, 51618, 1, 'TrinityCore rev. e4bf625e5cce+ 2024-01-28 23:23:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706955772, 27620, 1, 'TrinityCore rev. e4bf625e5cce+ 2024-01-28 23:23:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706983645, 0, 0, 'TrinityCore rev. 0a22d2b6c4c9+ 2024-02-03 20:45:04 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706983907, 2419, 1, 'TrinityCore rev. 0a22d2b6c4c9+ 2024-02-03 20:45:04 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1706986427, 40220, 1, 'TrinityCore rev. 0a22d2b6c4c9+ 2024-02-03 20:45:04 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707026961, 13220, 1, 'TrinityCore rev. 0a22d2b6c4c9+ 2024-02-03 20:45:04 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707040369, 5419, 1, 'TrinityCore rev. 0a22d2b6c4c9+ 2024-02-03 20:45:04 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707045962, 620, 1, 'TrinityCore rev. 0a22d2b6c4c9+ 2024-02-03 20:45:04 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707047022, 7219, 0, 'TrinityCore rev. 0a22d2b6c4c9+ 2024-02-03 20:45:04 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707054553, 9019, 0, 'TrinityCore rev. 32739423910b+ 2024-02-04 16:46:32 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707063645, 0, 0, 'TrinityCore rev. 32739423910b+ 2024-02-04 16:46:32 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707063853, 0, 0, 'TrinityCore rev. 32739423910b+ 2024-02-04 16:46:32 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707063900, 1220, 0, 'TrinityCore rev. 8347cd266b2b+ 2024-02-04 19:21:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707065127, 0, 0, 'TrinityCore rev. 8347cd266b2b+ 2024-02-04 19:21:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707065336, 0, 0, 'TrinityCore rev. 8347cd266b2b+ 2024-02-04 19:21:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707065744, 0, 0, 'TrinityCore rev. 8347cd266b2b+ 2024-02-04 19:21:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707065800, 0, 0, 'TrinityCore rev. 8347cd266b2b+ 2024-02-04 19:21:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707065857, 0, 0, 'TrinityCore rev. 8347cd266b2b+ 2024-02-04 19:21:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707065881, 0, 0, 'TrinityCore rev. 8347cd266b2b+ 2024-02-04 19:21:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707065933, 0, 0, 'TrinityCore rev. 8347cd266b2b+ 2024-02-04 19:21:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707065969, 5418, 0, 'TrinityCore rev. 8347cd266b2b+ 2024-02-04 19:21:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707071774, 695419, 2, 'TrinityCore rev. 8347cd266b2b+ 2024-02-04 19:21:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707767658, 622, 0, 'TrinityCore rev. 8347cd266b2b+ 2024-02-04 19:21:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707768620, 0, 0, 'TrinityCore rev. 2f5f48796d63+ 2024-02-12 22:32:18 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707768673, 619, 0, 'TrinityCore rev. 2f5f48796d63+ 2024-02-12 22:32:18 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707769778, 618, 1, 'TrinityCore rev. 2f5f48796d63+ 2024-02-12 22:32:18 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707770519, 0, 0, 'TrinityCore rev. 2f5f48796d63+ 2024-02-12 22:32:18 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707770843, 85219, 1, 'TrinityCore rev. 2f5f48796d63+ 2024-02-12 22:32:18 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707856237, 620, 0, 'TrinityCore rev. 2f5f48796d63+ 2024-02-12 22:32:18 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1707857371, 145820, 0, 'TrinityCore rev. 48b584e263c3+ 2024-02-13 23:10:22 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708003497, 620, 0, 'TrinityCore rev. 48b584e263c3+ 2024-02-13 23:10:22 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708004542, 0, 0, 'TrinityCore rev. a2c0b9e518b5+ 2024-02-15 16:12:26 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708004629, 16818, 0, 'TrinityCore rev. a2c0b9e518b5+ 2024-02-15 16:12:26 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708022043, 0, 0, 'TrinityCore rev. bd6888b7e638+ 2024-02-15 20:56:50 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708022071, 6619, 0, 'TrinityCore rev. bd6888b7e638+ 2024-02-15 20:56:50 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708028800, 0, 0, 'TrinityCore rev. 4d34a583e3ba+ 2024-02-15 23:02:44 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708028827, 127819, 1, 'TrinityCore rev. 4d34a583e3ba+ 2024-02-15 23:02:44 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708157037, 102619, 1, 'TrinityCore rev. 4d34a583e3ba+ 2024-02-15 23:02:44 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708259855, 618, 0, 'TrinityCore rev. 4d34a583e3ba+ 2024-02-15 23:02:44 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708260902, 0, 0, 'TrinityCore rev. 7e5aa1e211a3+ 2024-02-18 15:31:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708260992, 163218, 2, 'TrinityCore rev. 7e5aa1e211a3+ 2024-02-18 15:31:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708424738, 13819, 1, 'TrinityCore rev. 7e5aa1e211a3+ 2024-02-18 15:31:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708438940, 70819, 1, 'TrinityCore rev. 7e5aa1e211a3+ 2024-02-18 15:31:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708509832, 2419, 0, 'TrinityCore rev. 7e5aa1e211a3+ 2024-02-18 15:31:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708512371, 0, 0, 'TrinityCore rev. d9e517834221+ 2024-02-21 12:47:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708512394, 28217, 0, 'TrinityCore rev. d9e517834221+ 2024-02-21 12:47:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708541077, 3019, 0, 'TrinityCore rev. d9e517834221+ 2024-02-21 12:47:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708544360, 4819, 1, 'TrinityCore rev. d9e517834221+ 2024-02-21 12:47:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708549286, 1220, 1, 'TrinityCore rev. d9e517834221+ 2024-02-21 12:47:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708550920, 620, 0, 'TrinityCore rev. d9e517834221+ 2024-02-21 12:47:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708551971, 0, 0, 'TrinityCore rev. 59151cb22e83+ 2024-02-22 00:20:55 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708551995, 0, 0, 'TrinityCore rev. 59151cb22e83+ 2024-02-22 00:20:55 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708552024, 157218, 1, 'TrinityCore rev. 59151cb22e83+ 2024-02-22 00:20:55 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708709484, 619, 0, 'TrinityCore rev. 59151cb22e83+ 2024-02-22 00:20:55 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708710608, 94219, 2, 'TrinityCore rev. 77e6f2a0f46a+ 2024-02-23 20:16:50 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708804962, 81021, 1, 'TrinityCore rev. 77e6f2a0f46a+ 2024-02-23 20:16:50 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708886186, 622, 0, 'TrinityCore rev. 77e6f2a0f46a+ 2024-02-23 20:16:50 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708887337, 55820, 1, 'TrinityCore rev. 6ae41d9f0607+ 2024-02-25 21:25:33 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708943423, 1221, 0, 'TrinityCore rev. 6ae41d9f0607+ 2024-02-25 21:25:33 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708944805, 19219, 0, 'TrinityCore rev. bf232b2cc9e7+ 2024-02-26 13:25:00 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1708964334, 178221, 1, 'TrinityCore rev. 25272588497f+ 2024-02-26 18:47:46 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1709143078, 620, 1, 'TrinityCore rev. 25272588497f+ 2024-02-26 18:47:46 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1709143731, 696618, 1, 'TrinityCore rev. 25272588497f+ 2024-02-26 18:47:46 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1709840924, 35420, 1, 'TrinityCore rev. 25272588497f+ 2024-02-26 18:47:46 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1709876665, 179420, 2, 'TrinityCore rev. 25272588497f+ 2024-02-26 18:47:46 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1710057736, 24621, 2, 'Ctulhunet.ru rev. 6c865076b0eb+ 2024-03-10 10:37:55 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1710082735, 339620, 1, 'Ctulhunet.ru rev. 311e59246a91+ 2024-03-10 17:57:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1710422399, 0, 0, 'Ctulhunet.ru rev. 311e59246a91+ 2024-03-10 17:57:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1710422456, 619, 0, 'Ctulhunet.ru rev. 1926a8527849+ 2024-03-14 16:18:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1710423600, 0, 0, 'Ctulhunet.ru rev. 1926a8527849+ 2024-03-14 16:18:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1710423743, 0, 0, 'Ctulhunet.ru rev. 1926a8527849+ 2024-03-14 16:18:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1710423957, 0, 0, 'Ctulhunet.ru rev. 1926a8527849+ 2024-03-14 16:18:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1710424170, 19820, 1, 'Ctulhunet.ru rev. 1926a8527849+ 2024-03-14 16:18:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1710444027, 11419, 1, 'Ctulhunet.ru rev. 71566c19ca7d+ 2024-03-14 21:57:00 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1710455758, 76820, 1, 'Ctulhunet.ru rev. 185f3fa564f3+ 2024-03-15 00:53:30 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1710532784, 274222, 2, 'Ctulhunet.ru rev. 4b57a8768b9b 2024-03-15 22:23:09 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1710807459, 22221, 1, 'Ctulhunet.ru rev. 8d73b58848b0 2024-03-19 02:52:58 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1710830222, 0, 0, 'Ctulhunet.ru rev. 8d73b58848b0 2024-03-19 02:52:58 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1710830679, 25220, 0, 'Ctulhunet.ru rev. 96ef9c835261 2024-03-19 09:26:21 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1710856121, 623421, 1, 'Ctulhunet.ru rev. 96ef9c835261 2024-03-19 09:26:21 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1711479997, 135021, 2, 'Ctulhunet.ru rev. 96ef9c835261 2024-03-19 09:26:21 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1711615102, 279619, 0, 'Ctulhunet.ru rev. 265de8bf604c 2024-03-27 20:02:10 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1711894741, 0, 0, 'Ctulhunet.ru rev. 265de8bf604c 2024-03-27 20:02:10 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1711894854, 437418, 1, 'Ctulhunet.ru rev. 0567b45270b8 2024-03-31 17:01:53 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712332676, 147620, 1, 'Ctulhunet.ru rev. 9bca0d5db6ff 2024-04-05 18:47:30 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712480666, 3018, 1, 'Ctulhunet.ru rev. 648ff3a901f3 2024-04-07 11:42:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712483932, 0, 0, 'Ctulhunet.ru rev. 648ff3a901f3 2024-04-07 11:42:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712484407, 619, 1, 'Ctulhunet.ru rev. 648ff3a901f3 2024-04-07 11:42:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712485084, 0, 0, 'Ctulhunet.ru rev. 648ff3a901f3 2024-04-07 11:42:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712485265, 0, 0, 'Ctulhunet.ru rev. 648ff3a901f3 2024-04-07 11:42:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712485711, 618, 1, 'Ctulhunet.ru rev. 648ff3a901f3 2024-04-07 11:42:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712486388, 620, 1, 'Ctulhunet.ru rev. 648ff3a901f3 2024-04-07 11:42:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712487268, 0, 0, 'Ctulhunet.ru rev. 648ff3a901f3 2024-04-07 11:42:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712487641, 0, 0, 'Ctulhunet.ru rev. 648ff3a901f3 2024-04-07 11:42:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712487836, 21019, 1, 'Ctulhunet.ru rev. 648ff3a901f3 2024-04-07 11:42:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712509073, 188418, 2, 'Ctulhunet.ru rev. f8abf8358e23 2024-04-07 18:55:34 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712697770, 133219, 2, 'Ctulhunet.ru rev. f8abf8358e23 2024-04-07 18:55:34 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712831356, 0, 0, 'Ctulhunet.ru rev. f8abf8358e23 2024-04-07 18:55:34 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712831497, 17418, 1, 'Ctulhunet.ru rev. f8abf8358e23 2024-04-07 18:55:34 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712849143, 2418, 1, 'Ctulhunet.ru rev. f8abf8358e23 2024-04-07 18:55:34 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712851827, 0, 0, 'Ctulhunet.ru rev. f8abf8358e23 2024-04-07 18:55:34 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712852090, 6618, 2, 'Ctulhunet.ru rev. f8abf8358e23 2024-04-07 18:55:34 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712859230, 619, 1, 'Ctulhunet.ru rev. f8abf8358e23 2024-04-07 18:55:34 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712860042, 618, 1, 'Ctulhunet.ru rev. f8abf8358e23 2024-04-07 18:55:34 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712862283, 1819, 1, 'Ctulhunet.ru rev. 6c42f5a25914 2024-04-11 21:43:23 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712864774, 12021, 1, 'Ctulhunet.ru rev. 6c42f5a25914 2024-04-11 21:43:23 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712877198, 2418, 0, 'Ctulhunet.ru rev. 6c42f5a25914 2024-04-11 21:43:23 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712879919, 617, 0, 'Ctulhunet.ru rev. 6c42f5a25914 2024-04-11 21:43:23 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712881096, 0, 0, 'Ctulhunet.ru rev. 978d0b219312 2024-04-12 02:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712881457, 618, 1, 'Ctulhunet.ru rev. 978d0b219312 2024-04-12 02:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712882505, 59418, 1, 'Ctulhunet.ru rev. 978d0b219312 2024-04-12 02:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712942328, 7219, 2, 'Ctulhunet.ru rev. 978d0b219312 2024-04-12 02:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1712949809, 81618, 2, 'Ctulhunet.ru rev. 978d0b219312 2024-04-12 02:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1713031868, 38418, 2, 'Ctulhunet.ru rev. 7952e28a7e4b 2024-04-13 21:05:22 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1713070642, 25818, 1, 'Ctulhunet.ru rev. 7952e28a7e4b 2024-04-13 21:05:22 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1713096616, 489619, 3, 'Ctulhunet.ru rev. b7de8e99792e 2024-04-14 12:27:01 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1713586644, 304820, 1, 'Ctulhunet.ru rev. adc85004630b 2024-04-19 19:10:39 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1713891725, 100239, 1, 'Ctulhunet.ru rev. 36252acb20c8 2024-04-23 19:35:33 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1713992228, 2439, 0, 'Ctulhunet.ru rev. 36252acb20c8 2024-04-23 19:35:33 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1713994897, 98441, 1, 'Ctulhunet.ru rev. 9daf9d874112+ 2024-04-24 21:55:28 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1714093621, 54640, 1, 'Ctulhunet.ru rev. e4b97511498a+ 2024-04-25 19:14:38 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1714148717, 640, 1, 'Ctulhunet.ru rev. e4b97511498a+ 2024-04-25 19:14:38 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1714149766, 94838, 1, 'Ctulhunet.ru rev. e4b97511498a+ 2024-04-25 19:14:38 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1714245116, 0, 0, 'Ctulhunet.ru rev. e4b97511498a+ 2024-04-25 19:14:38 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1714245179, 3642, 1, 'Ctulhunet.ru rev. 097c0a48214b+ 2024-04-27 22:07:15 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1714249291, 0, 0, 'Ctulhunet.ru rev. 097c0a48214b+ 2024-04-27 22:07:15 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1714249606, 341438, 1, 'Ctulhunet.ru rev. f7db55e13ce3+ 2024-04-27 23:12:22 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1714595856, 417041, 1, 'Ctulhunet.ru rev. f7db55e13ce3+ 2024-04-27 23:12:22 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715013084, 97843, 1, 'Ctulhunet.ru rev. f7db55e13ce3+ 2024-04-27 23:12:22 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715111494, 0, 0, 'Ctulhunet.ru rev. f7db55e13ce3+ 2024-04-27 23:12:22 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715111692, 1241, 0, 'Ctulhunet.ru rev. 6010787e06ef+ 2024-05-07 22:47:02 +0300 (3.3.5 branch) (Unix, Debug, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715112973, 0, 0, 'Ctulhunet.ru rev. 6010787e06ef+ 2024-05-07 22:47:02 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715113161, 65419, 1, 'Ctulhunet.ru rev. 6010787e06ef+ 2024-05-07 22:47:02 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715179127, 261018, 1, 'Ctulhunet.ru rev. 6010787e06ef+ 2024-05-07 22:47:02 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715440393, 0, 0, 'Ctulhunet.ru rev. 6010787e06ef+ 2024-05-07 22:47:02 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715441205, 3018, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715444610, 0, 0, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715444923, 0, 0, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715445099, 0, 0, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715445567, 0, 0, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715445997, 0, 0, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715446357, 9018, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715455671, 42018, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715497990, 0, 0, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715498408, 0, 0, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715498584, 618, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715499268, 0, 0, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715499457, 8418, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715508165, 0, 0, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715508234, 0, 0, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715508367, 0, 0, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715508435, 0, 0, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715508529, 9618, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715518525, 618, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715519550, 0, 0, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715519658, 0, 0, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715519988, 90618, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715610751, 1818, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1715612671, 417018, 2, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716030203, 619, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716031418, 618, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716032318, 0, 0, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716032783, 14418, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716047585, 127819, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716175983, 3618, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716180045, 617, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716181146, 18617, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716200118, 618, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716201041, 22218, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716223504, 618, 0, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716224330, 81018, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716305670, 0, 0, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716305882, 96618, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716403040, 55817, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716459027, 107418, 1, 'Ctulhunet.ru rev. 7630b5c45df8+ 2024-05-11 14:18:31 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716566594, 70219, 1, 'Ctulhunet.ru rev. de302a43e744+ 2024-05-24 18:43:42 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716637342, 72618, 1, 'Ctulhunet.ru rev. 2ecdb5b8f77a+ 2024-05-25 13:09:06 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716710271, 16818, 1, 'Ctulhunet.ru rev. 2ecdb5b8f77a+ 2024-05-25 13:09:06 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716727599, 618, 1, 'Ctulhunet.ru rev. 2ecdb5b8f77a+ 2024-05-25 13:09:06 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716728536, 9018, 1, 'Ctulhunet.ru rev. 2ecdb5b8f77a+ 2024-05-25 13:09:06 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716737773, 619, 1, 'Ctulhunet.ru rev. 2ecdb5b8f77a+ 2024-05-25 13:09:06 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716738869, 619, 1, 'Ctulhunet.ru rev. 2ecdb5b8f77a+ 2024-05-25 13:09:06 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1716739504, 357617, 1, 'Ctulhunet.ru rev. 2ecdb5b8f77a+ 2024-05-25 13:09:06 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1717097676, 252619, 1, 'Ctulhunet.ru rev. 2ecdb5b8f77a+ 2024-05-25 13:09:06 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1717350717, 1821, 1, 'Ctulhunet.ru rev. e035156ff0f1 2024-06-02 20:16:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1717352704, 258018, 1, 'Ctulhunet.ru rev. e035156ff0f1 2024-06-02 20:16:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1717611264, 837620, 1, 'Ctulhunet.ru rev. c38eb33d446f 2024-06-05 20:41:06 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1718450338, 20421, 1, 'Ctulhunet.ru rev. 405672b926f0 2024-06-15 14:00:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1718470779, 678619, 2, 'Ctulhunet.ru rev. 405672b926f0 2024-06-15 14:00:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1719149572, 1220, 0, 'Ctulhunet.ru rev. 43364c764967 2024-06-23 16:10:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1719151255, 13819, 1, 'Ctulhunet.ru rev. 43364c764967 2024-06-23 16:10:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1719165540, 620, 0, 'Ctulhunet.ru rev. 43364c764967 2024-06-23 16:10:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1719166585, 346218, 1, 'Ctulhunet.ru rev. 9087be0f48c3 2024-06-23 21:13:12 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1719512895, 233420, 1, 'Ctulhunet.ru rev. 35e472cd9ce9 2024-06-27 20:50:23 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1719746437, 0, 0, 'Ctulhunet.ru rev. 8a9567a75e06+ 2024-06-30 13:46:59 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1719746778, 1220, 0, 'Ctulhunet.ru rev. 8a9567a75e06+ 2024-06-30 13:46:59 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1719748313, 491420, 1, 'Ctulhunet.ru rev. 8a9567a75e06 2024-06-30 13:46:59 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1720240275, 0, 0, 'Ctulhunet.ru rev. 8a9567a75e06 2024-06-30 13:46:59 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1720240316, 1219, 1, 'Ctulhunet.ru rev. 8a9567a75e06 2024-06-30 13:46:59 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1720241838, 51620, 1, 'Ctulhunet.ru rev. 8a9567a75e06 2024-06-30 13:46:59 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1720294425, 620, 0, 'Ctulhunet.ru rev. 8a9567a75e06 2024-06-30 13:46:59 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1720295724, 175820, 2, 'Ctulhunet.ru rev. 8a9567a75e06 2024-06-30 13:46:59 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1720471677, 0, 0, 'Ctulhunet.ru rev. cb1b6a599289 2024-07-08 23:17:02 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1720471703, 514218, 1, 'Ctulhunet.ru rev. cb1b6a599289 2024-07-08 23:17:02 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1720986417, 0, 0, 'Ctulhunet.ru rev. 3ee0bfdb9c05 2024-07-14 22:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1720986611, 0, 0, 'Ctulhunet.ru rev. 3ee0bfdb9c05 2024-07-14 22:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1720987110, 0, 0, 'Ctulhunet.ru rev. 3ee0bfdb9c05 2024-07-14 22:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1720987211, 620, 0, 'Ctulhunet.ru rev. 3ee0bfdb9c05 2024-07-14 22:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1720988250, 619, 1, 'Ctulhunet.ru rev. 3ee0bfdb9c05 2024-07-14 22:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1720988958, 0, 0, 'Ctulhunet.ru rev. 3ee0bfdb9c05 2024-07-14 22:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1720989491, 456620, 2, 'Ctulhunet.ru rev. 3ee0bfdb9c05 2024-07-14 22:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1721446630, 198618, 5, 'Ctulhunet.ru rev. 07c6be5e35ba 2024-07-19 23:09:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1721645833, 27019, 1, 'Ctulhunet.ru rev. 2e40f272bcea 2024-07-22 13:21:27 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1721673041, 0, 0, 'Ctulhunet.ru rev. 6d82581441df 2024-07-22 21:11:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1721673188, 79818, 1, 'Ctulhunet.ru rev. 6d82581441df 2024-07-22 21:11:38 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1721753300, 57619, 1, 'Ctulhunet.ru rev. 57d94c368acc 2024-07-23 18:31:26 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1721811459, 0, 0, 'Ctulhunet.ru rev. 57d94c368acc 2024-07-23 18:31:26 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1721811803, 12020, 1, 'Ctulhunet.ru rev. 57d94c368acc 2024-07-23 18:31:26 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1721824328, 4819, 0, 'Ctulhunet.ru rev. 57d94c368acc 2024-07-23 18:31:26 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1721829371, 738621, 1, 'Ctulhunet.ru rev. 57d94c368acc 2024-07-23 18:31:26 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1722706063, 45022, 1, 'Ctulhunet.ru rev. d8406cc2e3f8 2024-08-03 08:22:53 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1722751417, 18019, 1, 'Ctulhunet.ru rev. d8406cc2e3f8 2024-08-03 08:22:53 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1722769484, 0, 0, 'Ctulhunet.ru rev. d8406cc2e3f8 2024-08-03 08:22:53 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1722769957, 620, 1, 'Ctulhunet.ru rev. d8406cc2e3f8 2024-08-03 08:22:53 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1722770814, 0, 0, 'Ctulhunet.ru rev. d8406cc2e3f8 2024-08-03 08:22:53 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1722771162, 1821, 1, 'Ctulhunet.ru rev. d8406cc2e3f8 2024-08-03 08:22:53 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1722773437, 619, 1, 'Ctulhunet.ru rev. d8406cc2e3f8 2024-08-03 08:22:53 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1722774604, 0, 0, 'Ctulhunet.ru rev. d8406cc2e3f8 2024-08-03 08:22:53 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1722774989, 2238018, 1, 'Ctulhunet.ru rev. d8406cc2e3f8 2024-08-03 08:22:53 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725013068, 0, 0, 'Ctulhunet.ru rev. d8406cc2e3f8 2024-08-03 08:22:53 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725013235, 0, 0, 'Ctulhunet.ru rev. d8406cc2e3f8 2024-08-03 08:22:53 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725013413, 617, 0, 'Ctulhunet.ru rev. d8406cc2e3f8 2024-08-03 08:22:53 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725014260, 0, 0, 'Ctulhunet.ru rev. d8406cc2e3f8 2024-08-03 08:22:53 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725014428, 0, 0, 'Ctulhunet.ru rev. d8406cc2e3f8 2024-08-03 08:22:53 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725014703, 0, 0, 'Ctulhunet.ru rev. 1606f5d5c26a 2024-08-22 19:17:13 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725014852, 0, 0, 'Ctulhunet.ru rev. 1606f5d5c26a 2024-08-22 19:17:13 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725015014, 0, 0, 'Ctulhunet.ru rev. 1606f5d5c26a 2024-08-22 19:17:13 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725015152, 15619, 1, 'Ctulhunet.ru rev. 1606f5d5c26a 2024-08-22 19:17:13 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725030853, 0, 0, 'Ctulhunet.ru rev. 1606f5d5c26a 2024-08-22 19:17:13 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725031286, 0, 0, 'Ctulhunet.ru rev. 1606f5d5c26a 2024-08-22 19:17:13 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725031425, 0, 0, 'Ctulhunet.ru rev. 1606f5d5c26a 2024-08-22 19:17:13 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725031662, 10819, 1, 'Ctulhunet.ru rev. 1606f5d5c26a 2024-08-22 19:17:13 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725042925, 647420, 2, 'Ctulhunet.ru rev. 1606f5d5c26a 2024-08-22 19:17:13 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725690689, 620, 0, 'Ctulhunet.ru rev. f30fb7f4660a 2024-09-07 08:47:49 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725691534, 0, 0, 'Ctulhunet.ru rev. f30fb7f4660a 2024-09-07 08:47:49 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725691559, 0, 0, 'Ctulhunet.ru rev. f30fb7f4660a 2024-09-07 08:47:49 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725691597, 0, 0, 'Ctulhunet.ru rev. f30fb7f4660a 2024-09-07 08:47:49 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725691749, 618, 1, 'Ctulhunet.ru rev. f30fb7f4660a 2024-09-07 08:47:49 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725692387, 5421, 1, 'Ctulhunet.ru rev. f30fb7f4660a 2024-09-07 08:47:49 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1725697975, 369620, 1, 'Ctulhunet.ru rev. f30fb7f4660a 2024-09-07 08:47:49 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1726068198, 0, 0, 'Ctulhunet.ru rev. 7f8b12ffa6c0 2024-09-11 13:37:24 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1726068226, 180620, 1, 'Ctulhunet.ru rev. 7f8b12ffa6c0 2024-09-11 13:37:24 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1726249384, 437420, 1, 'Ctulhunet.ru rev. 7f8b12ffa6c0 2024-09-11 13:37:24 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1726687319, 250221, 1, 'Ctulhunet.ru rev. 19945785e153 2024-09-18 21:01:08 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1726937868, 0, 0, 'Ctulhunet.ru rev. 19945785e153 2024-09-18 21:01:08 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1726938401, 0, 0, 'Ctulhunet.ru rev. 19945785e153 2024-09-18 21:01:08 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1726938538, 46219, 1, 'Ctulhunet.ru rev. 19945785e153 2024-09-18 21:01:08 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1726985242, 0, 0, 'Ctulhunet.ru rev. 19945785e153 2024-09-18 21:01:08 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1726985712, 1182021, 1, 'Ctulhunet.ru rev. 19945785e153 2024-09-18 21:01:08 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1728167749, 0, 0, 'Ctulhunet.ru rev. 4d391fdc1ad1 2024-10-06 01:06:33 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1728167794, 306618, 1, 'Ctulhunet.ru rev. 4d391fdc1ad1 2024-10-06 01:06:33 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1728474507, 3047419, 1, 'Ctulhunet.ru rev. 4d391fdc1ad1 2024-10-06 01:06:33 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1731521946, 0, 0, 'Ctulhunet.ru rev. a473f9389b62 2024-11-13 17:09:01 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1731522294, 280220, 1, 'Ctulhunet.ru rev. a473f9389b62 2024-11-13 17:09:01 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1731802618, 1823, 1, 'Ctulhunet.ru rev. a473f9389b62 2024-11-13 17:09:01 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1731804522, 133220, 1, 'Ctulhunet.ru rev. a473f9389b62 2024-11-13 17:09:01 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1731938024, 0, 0, 'Ctulhunet.ru rev. dcfb5119c34b 2024-11-18 16:29:21 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1731938053, 23419, 1, 'Ctulhunet.ru rev. dcfb5119c34b 2024-11-18 16:29:21 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1731961960, 7819, 1, 'Ctulhunet.ru rev. dcfb5119c34b 2024-11-18 16:29:21 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1731969893, 415221, 1, 'Ctulhunet.ru rev. 3687b0b7c07d 2024-11-19 01:42:09 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732385355, 0, 0, 'Ctulhunet.ru rev. 12f06c0e95d2 2024-11-23 20:37:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732385382, 6620, 1, 'Ctulhunet.ru rev. 12f06c0e95d2 2024-11-23 20:37:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732392147, 0, 0, 'Ctulhunet.ru rev. 12f06c0e95d2 2024-11-23 20:37:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732392347, 0, 0, 'Ctulhunet.ru rev. 12f06c0e95d2 2024-11-23 20:37:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732392491, 0, 0, 'Ctulhunet.ru rev. 12f06c0e95d2 2024-11-23 20:37:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732392634, 0, 0, 'Ctulhunet.ru rev. 12f06c0e95d2 2024-11-23 20:37:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732392703, 0, 0, 'Ctulhunet.ru rev. 12f06c0e95d2 2024-11-23 20:37:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732392794, 0, 0, 'Ctulhunet.ru rev. 12f06c0e95d2 2024-11-23 20:37:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732392863, 0, 0, 'Ctulhunet.ru rev. 12f06c0e95d2 2024-11-23 20:37:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732393110, 0, 0, 'Ctulhunet.ru rev. 12f06c0e95d2 2024-11-23 20:37:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732393239, 0, 0, 'Ctulhunet.ru rev. 12f06c0e95d2 2024-11-23 20:37:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732393501, 0, 0, 'Ctulhunet.ru rev. 12f06c0e95d2 2024-11-23 20:37:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732393583, 570019, 1, 'Ctulhunet.ru rev. 12f06c0e95d2 2024-11-23 20:37:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732964072, 0, 0, 'Ctulhunet.ru rev. b1d3f7d1eaec 2024-11-30 13:08:16 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732964136, 3619, 1, 'Ctulhunet.ru rev. b1d3f7d1eaec 2024-11-30 13:08:16 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732967797, 1220, 1, 'Ctulhunet.ru rev. b1d3f7d1eaec 2024-11-30 13:08:16 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732969092, 1819, 1, 'Ctulhunet.ru rev. b1d3f7d1eaec 2024-11-30 13:08:16 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732971113, 6019, 1, 'Ctulhunet.ru rev. 2bf34f772c84 2024-11-30 15:50:25 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732977609, 0, 0, 'Ctulhunet.ru rev. 2bf34f772c84 2024-11-30 15:50:25 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732977638, 0, 0, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1732977919, 1137019, 1, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734115759, 0, 0, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734116283, 620, 1, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734117033, 0, 0, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734117194, 0, 0, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734117307, 0, 0, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734117470, 0, 0, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734117820, 0, 0, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734118252, 0, 0, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734118498, 0, 0, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734118826, 0, 0, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734118852, 0, 0, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734119281, 0, 0, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734119511, 0, 0, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734119818, 0, 0, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734120296, 0, 0, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734120626, 1220, 1, 'Ctulhunet.ru rev. 77066f39b2eb 2024-11-30 17:39:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734122381, 2421, 1, 'Ctulhunet.ru rev. 391b237406ea 2024-12-12 22:24:11 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734125384, 0, 0, 'Ctulhunet.ru rev. 391b237406ea 2024-12-12 22:24:11 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734125786, 83418, 2, 'Ctulhunet.ru rev. 391b237406ea 2024-12-12 22:24:11 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734209539, 50420, 2, 'Ctulhunet.ru rev. 391b237406ea 2024-12-12 22:24:11 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734260169, 28219, 1, 'Ctulhunet.ru rev. 6a7cd2f423a2 2024-12-15 13:32:35 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734288450, 82219, 1, 'Ctulhunet.ru rev. 6a7cd2f423a2 2024-12-15 13:32:35 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734371132, 8418, 1, 'Ctulhunet.ru rev. 6a7cd2f423a2 2024-12-15 13:32:35 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734379700, 0, 0, 'Ctulhunet.ru rev. 6a7cd2f423a2 2024-12-15 13:32:35 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734380168, 618, 1, 'Ctulhunet.ru rev. 6a7cd2f423a2 2024-12-15 13:32:35 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734380854, 0, 0, 'Ctulhunet.ru rev. 6a7cd2f423a2 2024-12-15 13:32:35 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734380987, 0, 0, 'Ctulhunet.ru rev. 6a7cd2f423a2 2024-12-15 13:32:35 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734381460, 88818, 1, 'Ctulhunet.ru rev. 6a7cd2f423a2 2024-12-15 13:32:35 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734470629, 0, 0, 'Ctulhunet.ru rev. e007c4cd16d2 2024-12-18 00:18:39 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734470660, 55219, 1, 'Ctulhunet.ru rev. e007c4cd16d2 2024-12-18 00:18:39 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734526278, 0, 0, 'Ctulhunet.ru rev. e007c4cd16d2 2024-12-18 00:18:39 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734526504, 9620, 1, 'Ctulhunet.ru rev. e007c4cd16d2 2024-12-18 00:18:39 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734536390, 14421, 1, 'Ctulhunet.ru rev. e007c4cd16d2 2024-12-18 00:18:39 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734550826, 63621, 1, 'Ctulhunet.ru rev. e007c4cd16d2 2024-12-18 00:18:39 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734614483, 0, 0, 'Ctulhunet.ru rev. e007c4cd16d2 2024-12-18 00:18:39 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734614615, 281420, 2, 'Ctulhunet.ru rev. e007c4cd16d2 2024-12-18 00:18:39 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734896622, 623, 0, 'Ctulhunet.ru rev. 7a481362837f 2024-12-22 22:18:22 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734897632, 0, 0, 'Ctulhunet.ru rev. 7a481362837f 2024-12-22 22:18:22 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1734897916, 167422, 0, 'Ctulhunet.ru rev. 7a481362837f 2024-12-22 22:18:22 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735065911, 0, 0, 'Ctulhunet.ru rev. 7a481362837f 2024-12-22 22:18:22 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735065940, 96620, 1, 'Ctulhunet.ru rev. 7a481362837f 2024-12-22 22:18:22 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735162687, 0, 0, 'Ctulhunet.ru rev. d3cac8b98bc1 2024-12-25 23:06:23 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735162752, 335419, 2, 'Ctulhunet.ru rev. d3cac8b98bc1 2024-12-25 23:06:23 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735498218, 0, 0, 'Ctulhunet.ru rev. 3b09dc0bfa6c 2024-12-29 21:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735498250, 0, 0, 'Ctulhunet.ru rev. 3b09dc0bfa6c 2024-12-29 21:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735498746, 0, 0, 'Ctulhunet.ru rev. 3b09dc0bfa6c 2024-12-29 21:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735498981, 130220, 1, 'Ctulhunet.ru rev. 3b09dc0bfa6c 2024-12-29 21:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735629235, 1221, 1, 'Ctulhunet.ru rev. 3b09dc0bfa6c 2024-12-29 21:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735630909, 620, 1, 'Ctulhunet.ru rev. 3b09dc0bfa6c 2024-12-29 21:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735632069, 0, 0, 'Ctulhunet.ru rev. 3b09dc0bfa6c 2024-12-29 21:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735632462, 0, 0, 'Ctulhunet.ru rev. 3b09dc0bfa6c 2024-12-29 21:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735632987, 6019, 1, 'Ctulhunet.ru rev. 3b09dc0bfa6c 2024-12-29 21:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735639274, 619, 2, 'Ctulhunet.ru rev. 3b09dc0bfa6c 2024-12-29 21:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735640351, 7219, 2, 'Ctulhunet.ru rev. 3b09dc0bfa6c 2024-12-29 21:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735647601, 622, 1, 'Ctulhunet.ru rev. 3b09dc0bfa6c 2024-12-29 21:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735648252, 18619, 2, 'Ctulhunet.ru rev. 3b09dc0bfa6c 2024-12-29 21:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735667164, 0, 0, 'Ctulhunet.ru rev. 3b09dc0bfa6c 2024-12-29 21:19:03 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735668089, 168020, 2, 'Ctulhunet.ru rev. 3a57b7ff5a43 2024-12-31 20:31:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735836139, 12619, 1, 'Ctulhunet.ru rev. 3a57b7ff5a43 2024-12-31 20:31:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735848939, 71419, 1, 'Ctulhunet.ru rev. 3a57b7ff5a43 2024-12-31 20:31:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1735920762, 192019, 2, 'Ctulhunet.ru rev. 3a57b7ff5a43 2024-12-31 20:31:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1736113118, 39620, 1, 'Ctulhunet.ru rev. 3a57b7ff5a43 2024-12-31 20:31:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1736153216, 220220, 1, 'Ctulhunet.ru rev. 3a57b7ff5a43 2024-12-31 20:31:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1736373782, 214221, 1, 'Ctulhunet.ru rev. 3a57b7ff5a43 2024-12-31 20:31:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1736588186, 129621, 2, 'Ctulhunet.ru rev. 3a57b7ff5a43 2024-12-31 20:31:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1736717944, 1221, 1, 'Ctulhunet.ru rev. 3a57b7ff5a43 2024-12-31 20:31:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1736719439, 0, 0, 'Ctulhunet.ru rev. 3a57b7ff5a43 2024-12-31 20:31:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1736719998, 691819, 2, 'Ctulhunet.ru rev. 3a57b7ff5a43 2024-12-31 20:31:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1737411823, 155421, 2, 'Ctulhunet.ru rev. 3a57b7ff5a43 2024-12-31 20:31:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1737567347, 623, 0, 'Ctulhunet.ru rev. 3a57b7ff5a43 2024-12-31 20:31:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1737568542, 0, 0, 'Ctulhunet.ru rev. 0166534d1942 2025-01-19 12:55:30 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1737568571, 0, 0, 'Ctulhunet.ru rev. 0166534d1942 2025-01-19 12:55:30 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1737568984, 0, 0, 'Ctulhunet.ru rev. 0166534d1942 2025-01-19 12:55:30 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1737569137, 9020, 1, 'Ctulhunet.ru rev. 0166534d1942 2025-01-19 12:55:30 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1737578729, 82222, 1, 'Ctulhunet.ru rev. 0166534d1942 2025-01-19 12:55:30 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1737661457, 345020, 1, 'Ctulhunet.ru rev. 0166534d1942 2025-01-19 12:55:30 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738006765, 333021, 1, 'Ctulhunet.ru rev. 0166534d1942 2025-01-19 12:55:30 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738340139, 7828, 0, 'Ctulhunet.ru rev. 0166534d1942 2025-01-19 12:55:30 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738348510, 0, 0, 'Ctulhunet.ru rev. 0166534d1942 2025-01-19 12:55:30 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738348798, 7824, 1, 'Ctulhunet.ru rev. 0166534d1942 2025-01-19 12:55:30 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738357172, 0, 0, 'Ctulhunet.ru rev. a419a1d4bf88 2025-01-31 22:25:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738357201, 0, 0, 'Ctulhunet.ru rev. a419a1d4bf88 2025-01-31 22:25:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738357307, 0, 0, 'Ctulhunet.ru rev. a419a1d4bf88 2025-01-31 22:25:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738357358, 0, 0, 'Ctulhunet.ru rev. a419a1d4bf88 2025-01-31 22:25:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738357498, 0, 0, 'Ctulhunet.ru rev. a419a1d4bf88 2025-01-31 22:25:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738357538, 0, 0, 'Ctulhunet.ru rev. a419a1d4bf88 2025-01-31 22:25:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738357606, 0, 0, 'Ctulhunet.ru rev. a419a1d4bf88 2025-01-31 22:25:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738357931, 46823, 2, 'Ctulhunet.ru rev. a419a1d4bf88 2025-01-31 22:25:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738404765, 4221, 1, 'Ctulhunet.ru rev. a419a1d4bf88 2025-01-31 22:25:48 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738409098, 0, 0, 'Ctulhunet.ru rev. 2d7f8dc57324 2025-02-01 14:19:47 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738409180, 6622, 1, 'Ctulhunet.ru rev. 2d7f8dc57324 2025-02-01 14:19:47 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738416106, 0, 0, 'Ctulhunet.ru rev. 51a454091b8f 2025-02-01 15:52:46 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738416138, 16824, 1, 'Ctulhunet.ru rev. 51a454091b8f 2025-02-01 15:52:46 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738433546, 9027, 2, 'Ctulhunet.ru rev. 51a454091b8f 2025-02-01 15:52:46 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738442965, 0, 0, 'Ctulhunet.ru rev. 474c1aead87f 2025-02-01 23:19:23 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738443009, 22826, 1, 'Ctulhunet.ru rev. 474c1aead87f 2025-02-01 23:19:23 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738502185, 0, 0, 'Ctulhunet.ru rev. 474c1aead87f 2025-02-01 23:19:23 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738502344, 0, 0, 'Ctulhunet.ru rev. 474c1aead87f 2025-02-01 23:19:23 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738502511, 0, 0, 'Ctulhunet.ru rev. 474c1aead87f 2025-02-01 23:19:23 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738503039, 0, 0, 'Ctulhunet.ru rev. 474c1aead87f 2025-02-01 23:19:23 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738503186, 2425, 1, 'Ctulhunet.ru rev. 474c1aead87f 2025-02-01 23:19:23 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738505682, 109225, 1, 'Ctulhunet.ru rev. 474c1aead87f 2025-02-01 23:19:23 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738615306, 0, 0, 'Ctulhunet.ru rev. 474c1aead87f 2025-02-01 23:19:23 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738615557, 0, 0, 'Ctulhunet.ru rev. 90866fc0cf4f 2025-02-03 23:15:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738615662, 56421, 1, 'Ctulhunet.ru rev. 90866fc0cf4f 2025-02-03 23:15:40 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738672268, 0, 0, 'Ctulhunet.ru rev. 788fdce24310 2025-02-04 15:22:21 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738672303, 9021, 1, 'Ctulhunet.ru rev. 788fdce24310 2025-02-04 15:22:21 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738681553, 0, 0, 'Ctulhunet.ru rev. 788fdce24310 2025-02-04 15:22:21 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738681606, 101421, 1, 'Ctulhunet.ru rev. ce709d8cf323 2025-02-04 18:00:28 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738783057, 65419, 1, 'Ctulhunet.ru rev. ce709d8cf323 2025-02-04 18:00:28 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738848766, 0, 0, 'Ctulhunet.ru rev. 102381955c74 2025-02-06 16:05:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738849152, 11420, 1, 'Ctulhunet.ru rev. 102381955c74 2025-02-06 16:05:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1738861143, 340220, 1, 'Ctulhunet.ru rev. 102381955c74 2025-02-06 16:05:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739201947, 10221, 1, 'Ctulhunet.ru rev. 102381955c74 2025-02-06 16:05:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739212734, 0, 0, 'Ctulhunet.ru rev. 4cbc7095f6f1 2025-02-10 21:16:28 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739213298, 0, 0, 'Ctulhunet.ru rev. abe9834d7a30 2025-02-10 21:45:45 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739213801, 19820, 1, 'Ctulhunet.ru rev. abe9834d7a30 2025-02-10 21:45:45 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739234148, 0, 0, 'Ctulhunet.ru rev. abe9834d7a30 2025-02-10 21:45:45 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739234413, 0, 0, 'Ctulhunet.ru rev. abe9834d7a30 2025-02-10 21:45:45 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739234987, 0, 0, 'Ctulhunet.ru rev. abe9834d7a30 2025-02-10 21:45:45 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739235576, 0, 0, 'Ctulhunet.ru rev. abe9834d7a30 2025-02-10 21:45:45 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739235710, 48020, 1, 'Ctulhunet.ru rev. abe9834d7a30 2025-02-10 21:45:45 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739283914, 25220, 1, 'Ctulhunet.ru rev. 3bf4901198f0 2025-02-11 16:40:00 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739309610, 53420, 1, 'Ctulhunet.ru rev. edb938fd3e59 2025-02-11 23:02:14 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739363436, 454220, 2, 'Ctulhunet.ru rev. edb938fd3e59 2025-02-11 23:02:14 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739817788, 0, 0, 'Ctulhunet.ru rev. edb938fd3e59 2025-02-11 23:02:14 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739817832, 0, 0, 'Ctulhunet.ru rev. edb938fd3e59 2025-02-11 23:02:14 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739817967, 0, 0, 'Ctulhunet.ru rev. edb938fd3e59 2025-02-11 23:02:14 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739818107, 0, 0, 'Ctulhunet.ru rev. edb938fd3e59 2025-02-11 23:02:14 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739818209, 0, 0, 'Ctulhunet.ru rev. edb938fd3e59 2025-02-11 23:02:14 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739818239, 0, 0, 'Ctulhunet.ru rev. edb938fd3e59 2025-02-11 23:02:14 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739818301, 180020, 1, 'Ctulhunet.ru rev. edb938fd3e59 2025-02-11 23:02:14 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1739998502, 1820, 0, 'Ctulhunet.ru rev. 061045e117cc 2025-02-19 23:21:01 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1740000497, 159019, 1, 'Ctulhunet.ru rev. 1f791ec832a0 2025-02-20 00:23:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1740159856, 335421, 1, 'Ctulhunet.ru rev. 1f791ec832a0 2025-02-20 00:23:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1740496927, 0, 0, 'Ctulhunet.ru rev. 3fc01b24bfa2 2025-02-25 17:25:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1740496961, 259219, 2, 'Ctulhunet.ru rev. 3fc01b24bfa2 2025-02-25 17:25:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1740756218, 5422, 0, 'Ctulhunet.ru rev. a8b7261c7ddb 2025-02-28 17:48:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1740762217, 53420, 1, 'Ctulhunet.ru rev. a8b7261c7ddb 2025-02-28 17:48:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1740815698, 3021, 1, 'Ctulhunet.ru rev. a8b7261c7ddb 2025-02-28 17:48:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1740818872, 0, 0, 'Ctulhunet.ru rev. a8b7261c7ddb 2025-02-28 17:48:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1740819173, 619, 1, 'Ctulhunet.ru rev. a8b7261c7ddb 2025-02-28 17:48:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1740820208, 85219, 1, 'Ctulhunet.ru rev. a8b7261c7ddb 2025-02-28 17:48:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1740905666, 19820, 1, 'Ctulhunet.ru rev. a8b7261c7ddb 2025-02-28 17:48:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1740925924, 696021, 1, 'Ctulhunet.ru rev. a8b7261c7ddb 2025-02-28 17:48:07 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1741622016, 272423, 1, 'Ctulhunet.ru rev. d60888764e17 2025-03-10 18:16:17 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1741894894, 6021, 1, 'Ctulhunet.ru rev. 93545a26c396 2025-03-13 22:36:12 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1741901056, 147020, 1, 'Ctulhunet.ru rev. 93545a26c396 2025-03-13 22:36:12 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742048318, 0, 0, 'Ctulhunet.ru rev. 93545a26c396 2025-03-13 22:36:12 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742048787, 271220, 1, 'Ctulhunet.ru rev. 93545a26c396 2025-03-13 22:36:12 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742320567, 4219, 1, 'Ctulhunet.ru rev. 93545a26c396 2025-03-13 22:36:12 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742325380, 0, 0, 'Ctulhunet.ru rev. 93545a26c396 2025-03-13 22:36:12 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742325563, 620, 1, 'Ctulhunet.ru rev. 9e03374e1177 2025-03-18 21:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742326554, 1220, 1, 'Ctulhunet.ru rev. 9e03374e1177 2025-03-18 21:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742327987, 70220, 1, 'Ctulhunet.ru rev. 9e03374e1177 2025-03-18 21:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742398703, 0, 0, 'Ctulhunet.ru rev. 9e03374e1177 2025-03-18 21:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742399156, 10819, 1, 'Ctulhunet.ru rev. 9e03374e1177 2025-03-18 21:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742410328, 241219, 1, 'Ctulhunet.ru rev. 9e03374e1177 2025-03-18 21:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742651677, 0, 0, 'Ctulhunet.ru rev. 9e03374e1177 2025-03-18 21:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742651817, 0, 0, 'Ctulhunet.ru rev. 9e03374e1177 2025-03-18 21:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742651920, 3019, 1, 'Ctulhunet.ru rev. 9e03374e1177 2025-03-18 21:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742655300, 0, 0, 'Ctulhunet.ru rev. 9e03374e1177 2025-03-18 21:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742655468, 1221, 1, 'Ctulhunet.ru rev. 9e03374e1177 2025-03-18 21:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742656976, 620, 0, 'Ctulhunet.ru rev. 9e03374e1177 2025-03-18 21:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742658049, 22221, 1, 'Ctulhunet.ru rev. 9e03374e1177 2025-03-18 21:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742680485, 1822, 2, 'Ctulhunet.ru rev. 9e03374e1177 2025-03-18 21:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742682905, 0, 0, 'Ctulhunet.ru rev. 9e03374e1177 2025-03-18 21:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742683455, 0, 0, 'Ctulhunet.ru rev. 9e03374e1177 2025-03-18 21:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742683718, 0, 0, 'Ctulhunet.ru rev. 9e03374e1177 2025-03-18 21:57:05 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742683962, 32419, 1, 'Ctulhunet.ru rev. 2184205cf9d1 2025-03-22 08:03:02 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742716980, 10820, 1, 'Ctulhunet.ru rev. ee60bf65fb13 2025-03-23 09:25:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742728231, 5422, 1, 'Ctulhunet.ru rev. ee60bf65fb13 2025-03-23 09:25:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742739105, 0, 0, 'Ctulhunet.ru rev. ee60bf65fb13 2025-03-23 09:25:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742739202, 9620, 1, 'Ctulhunet.ru rev. ee60bf65fb13 2025-03-23 09:25:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742749176, 0, 0, 'Ctulhunet.ru rev. ee60bf65fb13 2025-03-23 09:25:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742749703, 184819, 2, 'Ctulhunet.ru rev. ee60bf65fb13 2025-03-23 09:25:20 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1742934621, 591019, 1, 'Ctulhunet.ru rev. e8249f18495e 2025-03-25 23:01:59 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1743525834, 87024, 1, 'Ctulhunet.ru rev. 2a4a524ddcc2 2025-04-01 19:22:56 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1743613189, 0, 0, 'Ctulhunet.ru rev. 2a4a524ddcc2 2025-04-01 19:22:56 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1743613637, 5419, 1, 'Ctulhunet.ru rev. b216c71d538f 2025-04-02 19:43:32 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1743619452, 240020, 1, 'Ctulhunet.ru rev. b216c71d538f 2025-04-02 19:43:32 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1743859887, 182421, 1, 'Ctulhunet.ru rev. a98c739b6c00 2025-04-05 13:48:02 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1744042400, 621, 0, 'Ctulhunet.ru rev. 144a7e2290e0 2025-04-05 20:41:36 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1744043492, 97220, 1, 'Ctulhunet.ru rev. 144a7e2290e0 2025-04-05 20:41:36 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1744140769, 620, 1, 'Ctulhunet.ru rev. 144a7e2290e0 2025-04-05 20:41:36 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1744141525, 0, 0, 'Ctulhunet.ru rev. 144a7e2290e0 2025-04-05 20:41:36 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1744141917, 165621, 1, 'Ctulhunet.ru rev. 144a7e2290e0 2025-04-05 20:41:36 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1744308018, 231622, 1, 'Ctulhunet.ru rev. 144a7e2290e0 2025-04-05 20:41:36 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1744540009, 109221, 1, 'Ctulhunet.ru rev. b0f6a0e14c43 2025-04-13 12:35:57 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1744649628, 173421, 1, 'Ctulhunet.ru rev. d188c841350e 2025-04-14 13:46:49 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1744823261, 619, 1, 'Ctulhunet.ru rev. d188c841350e 2025-04-14 13:46:49 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1744823992, 9021, 1, 'Ctulhunet.ru rev. d188c841350e 2025-04-14 13:46:49 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1744833423, 336619, 1, 'Ctulhunet.ru rev. d188c841350e 2025-04-14 13:46:49 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1745170264, 0, 0, 'Ctulhunet.ru rev. d188c841350e 2025-04-14 13:46:49 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1745170432, 493218, 1, 'Ctulhunet.ru rev. d188c841350e 2025-04-14 13:46:49 +0300 (3.3.5 branch) (Unix, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1746485198, 0, 0, 'Ctulhunet.ru rev. b67602683996 2025-05-05 23:24:11 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1746485318, 0, 0, 'Ctulhunet.ru rev. 90b985f4eba2 2025-05-06 01:33:50 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1746485413, 617, 1, 'Ctulhunet.ru rev. 90b985f4eba2 2025-05-06 01:33:50 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1746486229, 22468, 1, 'Ctulhunet.ru rev. 90b985f4eba2 2025-05-06 01:33:50 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1746549541, 0, 0, 'Ctulhunet.ru rev. 6c98ff29a899 2025-05-06 19:31:44 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1746895818, 0, 0, 'Ctulhunet.ru rev. 585987c3c2a7 2025-05-10 19:46:59 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1746896011, 0, 0, 'Ctulhunet.ru rev. 585987c3c2a7 2025-05-10 19:46:59 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747150095, 0, 0, 'Ctulhunet.ru rev. 8c884ea2fec0+ 2025-05-13 08:44:30 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747337631, 0, 0, 'Ctulhunet.ru rev. 3de33feedc76 2025-05-15 22:16:56 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747341812, 0, 0, 'Ctulhunet.ru rev. a6023fd37494+ 2025-05-15 22:39:09 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747343166, 0, 0, 'Ctulhunet.ru rev. a6023fd37494 2025-05-15 22:39:09 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747343581, 0, 0, 'Ctulhunet.ru rev. a6023fd37494 2025-05-15 22:39:09 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747343673, 0, 0, 'Ctulhunet.ru rev. a6023fd37494 2025-05-15 22:39:09 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747417262, 0, 0, 'Ctulhunet.ru rev. cea1758c5afe 2025-05-16 19:37:31 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747460249, 0, 0, 'Ctulhunet.ru rev. cea1758c5afe+ 2025-05-16 19:37:31 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747460364, 0, 0, 'Ctulhunet.ru rev. cea1758c5afe+ 2025-05-16 19:37:31 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747460467, 0, 0, 'Ctulhunet.ru rev. cea1758c5afe+ 2025-05-16 19:37:31 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747488286, 0, 0, 'Ctulhunet.ru rev. cea1758c5afe 2025-05-16 19:37:31 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747493945, 0, 0, 'Ctulhunet.ru rev. cea1758c5afe+ 2025-05-16 19:37:31 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747496172, 0, 0, 'Ctulhunet.ru rev. cea1758c5afe+ 2025-05-16 19:37:31 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747496320, 0, 0, 'Ctulhunet.ru rev. cea1758c5afe+ 2025-05-16 19:37:31 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747496341, 0, 0, 'Ctulhunet.ru rev. cea1758c5afe+ 2025-05-16 19:37:31 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747496391, 0, 0, 'Ctulhunet.ru rev. 3d63a296347c+ 2025-05-17 18:35:52 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747497442, 0, 0, 'Ctulhunet.ru rev. a02556207415+ 2025-05-17 18:44:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747497467, 0, 0, 'Ctulhunet.ru rev. a02556207415+ 2025-05-17 18:44:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747497932, 0, 0, 'Ctulhunet.ru rev. a02556207415+ 2025-05-17 18:44:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747497961, 0, 0, 'Ctulhunet.ru rev. a02556207415+ 2025-05-17 18:44:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747498546, 0, 0, 'Ctulhunet.ru rev. a02556207415+ 2025-05-17 18:44:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747498582, 2243, 0, 'Ctulhunet.ru rev. a02556207415+ 2025-05-17 18:44:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747500842, 0, 0, 'Ctulhunet.ru rev. a02556207415+ 2025-05-17 18:44:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747500888, 0, 0, 'Ctulhunet.ru rev. a02556207415+ 2025-05-17 18:44:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747502425, 0, 0, 'Ctulhunet.ru rev. a02556207415+ 2025-05-17 18:44:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747502447, 0, 0, 'Ctulhunet.ru rev. a02556207415+ 2025-05-17 18:44:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747502469, 0, 0, 'Ctulhunet.ru rev. a02556207415+ 2025-05-17 18:44:01 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747502984, 0, 0, 'Ctulhunet.ru rev. c6e44c42c94d 2025-05-17 18:58:18 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747503004, 0, 0, 'Ctulhunet.ru rev. c6e44c42c94d 2025-05-17 18:58:18 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747507339, 0, 0, 'Ctulhunet.ru rev. c6e44c42c94d 2025-05-17 18:58:18 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747507368, 0, 0, 'Ctulhunet.ru rev. c6e44c42c94d 2025-05-17 18:58:18 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747507383, 0, 0, 'Ctulhunet.ru rev. c6e44c42c94d 2025-05-17 18:58:18 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747507456, 0, 0, 'Ctulhunet.ru rev. c6e44c42c94d 2025-05-17 18:58:18 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747510112, 0, 0, 'Ctulhunet.ru rev. c6e44c42c94d 2025-05-17 18:58:18 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747510141, 0, 0, 'Ctulhunet.ru rev. c6e44c42c94d 2025-05-17 18:58:18 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747510505, 0, 0, 'Ctulhunet.ru rev. c6e44c42c94d 2025-05-17 18:58:18 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747510519, 0, 0, 'Ctulhunet.ru rev. c6e44c42c94d 2025-05-17 18:58:18 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747510541, 0, 0, 'Ctulhunet.ru rev. c6e44c42c94d 2025-05-17 18:58:18 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747510681, 0, 0, 'Ctulhunet.ru rev. c6e44c42c94d 2025-05-17 18:58:18 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747511528, 0, 0, 'Ctulhunet.ru rev. 1c912c9480d7 2025-05-17 22:35:57 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747511563, 0, 0, 'Ctulhunet.ru rev. 1c912c9480d7 2025-05-17 22:35:57 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747512838, 0, 0, 'Ctulhunet.ru rev. 1c912c9480d7 2025-05-17 22:35:57 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747512885, 0, 0, 'Ctulhunet.ru rev. 1c912c9480d7 2025-05-17 22:35:57 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747514768, 30957, 0, 'Ctulhunet.ru rev. 1c912c9480d7+ 2025-05-17 22:35:57 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747545740, 0, 0, 'Ctulhunet.ru rev. 1c912c9480d7+ 2025-05-17 22:35:57 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747545772, 0, 0, 'Ctulhunet.ru rev. 1c912c9480d7+ 2025-05-17 22:35:57 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747546162, 0, 0, 'Ctulhunet.ru rev. 1c912c9480d7+ 2025-05-17 22:35:57 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747546184, 0, 0, 'Ctulhunet.ru rev. 1c912c9480d7+ 2025-05-17 22:35:57 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747704932, 0, 0, 'Ctulhunet.ru rev. 96e553209582 2025-05-20 04:21:07 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747705191, 0, 0, 'Ctulhunet.ru rev. 96e553209582 2025-05-20 04:21:07 +0300 (3.3.5 branch) (Win64, Release, Dynamic)');
+INSERT INTO `uptime` VALUES (1, 1747705832, 0, 0, 'Ctulhunet.ru rev. 96e553209582 2025-05-20 04:21:07 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1747705845, 0, 0, 'Ctulhunet.ru rev. 96e553209582 2025-05-20 04:21:07 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1747706161, 0, 0, 'Ctulhunet.ru rev. 96e553209582 2025-05-20 04:21:07 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1747706184, 0, 0, 'Ctulhunet.ru rev. 96e553209582 2025-05-20 04:21:07 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1747822856, 0, 0, 'Ctulhunet.ru rev. 96e553209582 2025-05-20 04:21:07 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1747822971, 0, 0, 'Ctulhunet.ru rev. 54c77d9423e3 2025-05-21 08:43:29 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1747823002, 607, 0, 'Ctulhunet.ru rev. 54c77d9423e3 2025-05-21 08:43:29 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1747823771, 0, 0, 'Ctulhunet.ru rev. 54c77d9423e3 2025-05-21 08:43:29 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1747824006, 0, 0, 'Ctulhunet.ru rev. 54c77d9423e3 2025-05-21 08:43:29 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1747847407, 0, 0, 'Ctulhunet.ru rev. 54c77d9423e3 2025-05-21 08:43:29 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1747847456, 0, 0, 'Ctulhunet.ru rev. 54c77d9423e3 2025-05-21 08:43:29 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1747871420, 0, 0, 'Ctulhunet.ru rev. 54c77d9423e3 2025-05-21 08:43:29 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1747871934, 0, 0, 'Ctulhunet.ru rev. 54c77d9423e3 2025-05-21 08:43:29 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1747872139, 0, 0, 'Ctulhunet.ru rev. 54c77d9423e3 2025-05-21 08:43:29 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1747872283, 0, 0, 'Ctulhunet.ru rev. 54c77d9423e3 2025-05-21 08:43:29 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748109606, 1215, 1, 'Ctulhunet.ru rev. fe7b0fe403b9+ 2025-05-24 20:21:29 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748157326, 1214, 1, 'Ctulhunet.ru rev. 48bee65e9655+ 2025-05-25 09:02:51 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748164469, 7208, 1, 'Ctulhunet.ru rev. 48bee65e9655+ 2025-05-25 09:02:51 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748187186, 0, 0, 'Ctulhunet.ru rev. 48bee65e9655+ 2025-05-25 09:02:51 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748187218, 0, 0, 'Ctulhunet.ru rev. 48bee65e9655+ 2025-05-25 09:02:51 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748353885, 0, 0, 'Ctulhunet.ru rev. fb0729e0c13b+ 2025-05-26 17:17:34 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748353930, 0, 0, 'Ctulhunet.ru rev. fb0729e0c13b+ 2025-05-26 17:17:34 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748354236, 0, 0, 'Ctulhunet.ru rev. fb0729e0c13b+ 2025-05-26 17:17:34 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748354775, 1208, 1, 'Ctulhunet.ru rev. fb0729e0c13b+ 2025-05-26 17:17:34 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748387713, 1213, 1, 'Ctulhunet.ru rev. 55a69c5c225d+ 2025-05-28 01:48:28 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748389578, 1812, 2, 'Ctulhunet.ru rev. 55a69c5c225d+ 2025-05-28 01:48:28 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748392005, 0, 0, 'Ctulhunet.ru rev. 55a69c5c225d+ 2025-05-28 01:48:28 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748392553, 609, 2, 'Ctulhunet.ru rev. 55a69c5c225d+ 2025-05-28 01:48:28 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748394106, 0, 0, 'Ctulhunet.ru rev. 55a69c5c225d+ 2025-05-28 01:48:28 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748394452, 0, 0, 'Ctulhunet.ru rev. 55a69c5c225d+ 2025-05-28 01:48:28 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748398791, 0, 0, 'Ctulhunet.ru rev. 35f94efdf501+ 2025-05-28 05:06:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748428185, 615, 1, 'Ctulhunet.ru rev. 35f94efdf501+ 2025-05-28 05:06:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748429149, 0, 0, 'Ctulhunet.ru rev. 35f94efdf501+ 2025-05-28 05:06:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748439767, 0, 0, 'Ctulhunet.ru rev. 35f94efdf501+ 2025-05-28 05:06:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748440393, 0, 0, 'Ctulhunet.ru rev. 35f94efdf501+ 2025-05-28 05:06:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748440882, 0, 0, 'Ctulhunet.ru rev. 35f94efdf501 2025-05-28 05:06:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748441252, 0, 0, 'Ctulhunet.ru rev. 35f94efdf501+ 2025-05-28 05:06:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748441899, 0, 0, 'Ctulhunet.ru rev. 35f94efdf501+ 2025-05-28 05:06:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748514038, 0, 0, 'Ctulhunet.ru rev. 80f40df9b41f+ 2025-05-28 18:01:04 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748514058, 0, 0, 'Ctulhunet.ru rev. 80f40df9b41f+ 2025-05-28 18:01:04 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748514417, 0, 0, 'Ctulhunet.ru rev. 80f40df9b41f+ 2025-05-28 18:01:04 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748514500, 0, 0, 'Ctulhunet.ru rev. 80f40df9b41f+ 2025-05-28 18:01:04 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748515087, 0, 0, 'Ctulhunet.ru rev. 80f40df9b41f+ 2025-05-28 18:01:04 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748515293, 0, 0, 'Ctulhunet.ru rev. 80f40df9b41f+ 2025-05-28 18:01:04 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748550525, 0, 0, 'Ctulhunet.ru rev. 9a495be08428+ 2025-05-29 21:53:25 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748550833, 0, 0, 'Ctulhunet.ru rev. 9a495be08428+ 2025-05-29 21:53:25 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748551095, 0, 0, 'Ctulhunet.ru rev. 9a495be08428+ 2025-05-29 21:53:25 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748551408, 0, 0, 'Ctulhunet.ru rev. 9a495be08428+ 2025-05-29 21:53:25 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748551618, 0, 0, 'Ctulhunet.ru rev. 9a495be08428+ 2025-05-29 21:53:25 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748568980, 0, 0, 'Ctulhunet.ru rev. 9a495be08428+ 2025-05-29 21:53:25 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748569536, 0, 0, 'Ctulhunet.ru rev. 9a495be08428+ 2025-05-29 21:53:25 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748569623, 0, 0, 'Ctulhunet.ru rev. 9a495be08428+ 2025-05-29 21:53:25 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748570177, 0, 0, 'Ctulhunet.ru rev. 9a495be08428+ 2025-05-29 21:53:25 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748570571, 0, 0, 'Ctulhunet.ru rev. 9a495be08428+ 2025-05-29 21:53:25 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748599927, 0, 0, 'Ctulhunet.ru rev. 9a495be08428+ 2025-05-29 21:53:25 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748600228, 0, 0, 'Ctulhunet.ru rev. 9a495be08428+ 2025-05-29 21:53:25 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748600498, 609, 1, 'Ctulhunet.ru rev. 9a495be08428+ 2025-05-29 21:53:25 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748601489, 0, 0, 'Ctulhunet.ru rev. 9a495be08428+ 2025-05-29 21:53:25 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748612436, 0, 0, 'Ctulhunet.ru rev. 9a495be08428+ 2025-05-29 21:53:25 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748612896, 0, 0, 'Ctulhunet.ru rev. 9a495be08428+ 2025-05-29 21:53:25 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748613050, 0, 0, 'Ctulhunet.ru rev. 9a495be08428+ 2025-05-29 21:53:25 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748632772, 0, 0, 'Ctulhunet.ru rev. 3dbbe09a008d+ 2025-05-30 17:02:01 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748633017, 0, 0, 'Ctulhunet.ru rev. 3dbbe09a008d+ 2025-05-30 17:02:01 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748635565, 608, 1, 'Ctulhunet.ru rev. 3dbbe09a008d+ 2025-05-30 17:02:01 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748636669, 26615, 1, 'Ctulhunet.ru rev. 3dbbe09a008d+ 2025-05-30 17:02:01 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748663619, 614, 1, 'Ctulhunet.ru rev. 3dbbe09a008d+ 2025-05-30 17:02:01 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748664597, 0, 0, 'Ctulhunet.ru rev. 3dbbe09a008d+ 2025-05-30 17:02:01 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748665231, 608, 1, 'Ctulhunet.ru rev. 3dbbe09a008d+ 2025-05-30 17:02:01 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748688733, 0, 0, 'Ctulhunet.ru rev. 94ebb3a16f3c+ 2025-05-31 08:03:24 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748689155, 616, 1, 'Ctulhunet.ru rev. 94ebb3a16f3c+ 2025-05-31 08:03:24 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748690237, 0, 0, 'Ctulhunet.ru rev. 94ebb3a16f3c+ 2025-05-31 08:03:24 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748690494, 0, 0, 'Ctulhunet.ru rev. 94ebb3a16f3c+ 2025-05-31 08:03:24 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748690779, 0, 0, 'Ctulhunet.ru rev. 6c057bd0278e+ 2025-05-31 14:24:26 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748691788, 0, 0, 'Ctulhunet.ru rev. 6c057bd0278e+ 2025-05-31 14:24:26 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748692367, 608, 2, 'Ctulhunet.ru rev. 0455a0e5c19f+ 2025-05-31 14:50:26 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748693977, 0, 0, 'Ctulhunet.ru rev. 0455a0e5c19f+ 2025-05-31 14:50:26 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748694307, 609, 1, 'Ctulhunet.ru rev. 0455a0e5c19f+ 2025-05-31 14:50:26 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748696667, 608, 1, 'Ctulhunet.ru rev. 0455a0e5c19f+ 2025-05-31 14:50:26 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748712226, 1208, 1, 'Ctulhunet.ru rev. ec539cbcdceb+ 2025-05-31 16:14:37 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748716166, 0, 0, 'Ctulhunet.ru rev. ec539cbcdceb+ 2025-05-31 16:14:37 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748721010, 0, 0, 'Ctulhunet.ru rev. c690f3d12f3b+ 2025-05-31 21:40:57 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748756467, 0, 0, 'Ctulhunet.ru rev. c690f3d12f3b+ 2025-05-31 21:40:57 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748756943, 0, 0, 'Ctulhunet.ru rev. c690f3d12f3b+ 2025-05-31 21:40:57 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748757614, 0, 0, 'Ctulhunet.ru rev. c690f3d12f3b+ 2025-05-31 21:40:57 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748758095, 608, 1, 'Ctulhunet.ru rev. c690f3d12f3b+ 2025-05-31 21:40:57 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748759254, 0, 0, 'Ctulhunet.ru rev. c690f3d12f3b+ 2025-05-31 21:40:57 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748760465, 0, 0, 'Ctulhunet.ru rev. c690f3d12f3b+ 2025-05-31 21:40:57 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748764911, 0, 0, 'Ctulhunet.ru rev. 5237e9f2a8c4+ 2025-06-01 09:51:50 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748765084, 608, 1, 'Ctulhunet.ru rev. 5237e9f2a8c4+ 2025-06-01 09:51:50 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748766266, 0, 0, 'Ctulhunet.ru rev. 5237e9f2a8c4+ 2025-06-01 09:51:50 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748766507, 608, 1, 'Ctulhunet.ru rev. 5237e9f2a8c4+ 2025-06-01 09:51:50 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748768138, 0, 0, 'Ctulhunet.ru rev. 50bb26361872+ 2025-06-01 11:40:04 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748769075, 4209, 1, 'Ctulhunet.ru rev. 50bb26361872+ 2025-06-01 11:40:04 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748773827, 608, 1, 'Ctulhunet.ru rev. 50bb26361872+ 2025-06-01 11:40:04 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748774730, 0, 0, 'Ctulhunet.ru rev. 50bb26361872+ 2025-06-01 11:40:04 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748775145, 0, 0, 'Ctulhunet.ru rev. 50bb26361872+ 2025-06-01 11:40:04 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748775239, 0, 0, 'Ctulhunet.ru rev. 50bb26361872+ 2025-06-01 11:40:04 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748775670, 0, 0, 'Ctulhunet.ru rev. 50bb26361872+ 2025-06-01 11:40:04 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748775995, 0, 0, 'Ctulhunet.ru rev. 50bb26361872+ 2025-06-01 11:40:04 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748776412, 0, 0, 'Ctulhunet.ru rev. 50bb26361872 2025-06-01 11:40:04 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748777597, 0, 0, 'Ctulhunet.ru rev. 50bb26361872 2025-06-01 11:40:04 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748803389, 0, 0, 'Ctulhunet.ru rev. f345b36e1e37 2025-06-01 16:16:47 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748803410, 0, 0, 'Ctulhunet.ru rev. f345b36e1e37 2025-06-01 16:16:47 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748834330, 0, 0, 'Ctulhunet.ru rev. f345b36e1e37 2025-06-01 16:16:47 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748836539, 0, 0, 'Ctulhunet.ru rev. f345b36e1e37 2025-06-01 16:16:47 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748836670, 0, 0, 'Ctulhunet.ru rev. f345b36e1e37 2025-06-01 16:16:47 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748836763, 0, 0, 'Ctulhunet.ru rev. f345b36e1e37 2025-06-01 16:16:47 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748838884, 0, 0, 'Ctulhunet.ru rev. f345b36e1e37 2025-06-01 16:16:47 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748921366, 0, 0, 'Ctulhunet.ru rev. f612da541190+ 2025-06-02 13:36:10 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748921589, 0, 0, 'Ctulhunet.ru rev. f612da541190+ 2025-06-02 13:36:10 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748922115, 0, 0, 'Ctulhunet.ru rev. f612da541190+ 2025-06-02 13:36:10 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748922450, 608, 1, 'Ctulhunet.ru rev. f612da541190+ 2025-06-02 13:36:10 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748923580, 608, 1, 'Ctulhunet.ru rev. f612da541190+ 2025-06-02 13:36:10 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748924348, 1208, 1, 'Ctulhunet.ru rev. f612da541190+ 2025-06-02 13:36:10 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748926009, 0, 0, 'Ctulhunet.ru rev. f612da541190+ 2025-06-02 13:36:10 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748926662, 0, 0, 'Ctulhunet.ru rev. f612da541190+ 2025-06-02 13:36:10 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748927017, 0, 0, 'Ctulhunet.ru rev. f612da541190+ 2025-06-02 13:36:10 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748947092, 0, 0, 'Ctulhunet.ru rev. f612da541190+ 2025-06-02 13:36:10 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748947674, 17405, 1, 'Ctulhunet.ru rev. f612da541190+ 2025-06-02 13:36:10 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748966579, 0, 0, 'Ctulhunet.ru rev. f612da541190+ 2025-06-02 13:36:10 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748966818, 0, 0, 'Ctulhunet.ru rev. f612da541190+ 2025-06-02 13:36:10 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1748967060, 41406, 1, 'Ctulhunet.ru rev. f612da541190+ 2025-06-02 13:36:10 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749008777, 0, 0, 'Ctulhunet.ru rev. f612da541190+ 2025-06-02 13:36:10 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749009338, 0, 0, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749009526, 0, 0, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749010001, 0, 0, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749010636, 0, 0, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749011125, 608, 1, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749012090, 0, 0, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749012312, 19946, 1, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749032303, 0, 0, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749033597, 0, 0, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749049980, 95404, 1, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749145675, 613, 2, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749146440, 2408, 1, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749149290, 0, 0, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749149332, 608, 1, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749150165, 1207, 1, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749176477, 614, 1, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749177117, 1216, 1, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749178495, 608, 0, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749179149, 0, 0, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749204402, 608, 0, 'Ctulhunet.ru rev. 87e31352675c+ 2025-06-04 06:48:06 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749276769, 4215, 0, 'Ctulhunet.ru rev. 576af2a7041f+ 2025-06-07 09:09:15 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749283094, 0, 0, 'Ctulhunet.ru rev. 576af2a7041f+ 2025-06-07 09:09:15 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749283281, 0, 0, 'Ctulhunet.ru rev. 576af2a7041f+ 2025-06-07 09:09:15 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749283796, 609, 1, 'Ctulhunet.ru rev. 576af2a7041f+ 2025-06-07 09:09:15 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749288399, 0, 0, 'Ctulhunet.ru rev. 87ed63ca0517+ 2025-06-07 11:49:40 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749288748, 0, 0, 'Ctulhunet.ru rev. 87ed63ca0517+ 2025-06-07 11:49:40 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749289114, 0, 0, 'Ctulhunet.ru rev. 87ed63ca0517+ 2025-06-07 11:49:40 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749289487, 608, 1, 'Ctulhunet.ru rev. 87ed63ca0517+ 2025-06-07 11:49:40 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749290991, 0, 0, 'Ctulhunet.ru rev. 87ed63ca0517+ 2025-06-07 11:49:40 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749301904, 0, 0, 'Ctulhunet.ru rev. de2f7445dec3+ 2025-06-07 14:39:57 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749303252, 1852, 0, 'Ctulhunet.ru rev. de2f7445dec3+ 2025-06-07 14:39:57 +0300 (3.3.5 branch) (Win64, Release, Static)');
+INSERT INTO `uptime` VALUES (1, 1749305928, 0, 0, 'Ctulhunet.ru rev. de2f7445dec3+ 2025-06-07 14:39:57 +0300 (3.3.5 branch) (Win64, Release, Static)');
 
-LOCK TABLES `uptime` WRITE;
-/*!40000 ALTER TABLE `uptime` DISABLE KEYS */;
-/*!40000 ALTER TABLE `uptime` ENABLE KEYS */;
-UNLOCK TABLES;
+-- ----------------------------
+-- View structure for vw_log_history
+-- ----------------------------
+DROP VIEW IF EXISTS `vw_log_history`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_log_history` AS select from_unixtime(min(`logs`.`time`)) AS `First Logged`,from_unixtime(max(`logs`.`time`)) AS `Last Logged`,count(0) AS `Occurrences`,`realmlist`.`name` AS `Realm`,`logs`.`type` AS `type`,`logs`.`level` AS `level`,`logs`.`string` AS `string` from (`logs` left join `realmlist` on((`logs`.`realm` = `realmlist`.`id`))) group by `logs`.`string`,`logs`.`type`,`logs`.`realm`;
 
---
--- Temporary view structure for view `vw_log_history`
---
+-- ----------------------------
+-- View structure for vw_rbac
+-- ----------------------------
+DROP VIEW IF EXISTS `vw_rbac`;
+CREATE ALGORITHM = UNDEFINED SQL SECURITY INVOKER VIEW `vw_rbac` AS select `t1`.`linkedId` AS `Permission ID`,`t1`.`id` AS `Permission Group`,ifnull(`t2`.`secId`,'linked') AS `Security Level`,`t3`.`name` AS `Permission` from ((`rbac_linked_permissions` `t1` left join `rbac_default_permissions` `t2` on((`t1`.`id` = `t2`.`permissionId`))) left join `rbac_permissions` `t3` on((`t1`.`linkedId` = `t3`.`id`)));
 
-DROP TABLE IF EXISTS `vw_log_history`;
-/*!50001 DROP VIEW IF EXISTS `vw_log_history`*/;
-SET @saved_cs_client     = @@character_set_client;
-/*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `vw_log_history` AS SELECT 
- 1 AS `First Logged`,
- 1 AS `Last Logged`,
- 1 AS `Occurrences`,
- 1 AS `Realm`,
- 1 AS `type`,
- 1 AS `level`,
- 1 AS `string`*/;
-SET character_set_client = @saved_cs_client;
-
---
--- Temporary view structure for view `vw_rbac`
---
-
-DROP TABLE IF EXISTS `vw_rbac`;
-/*!50001 DROP VIEW IF EXISTS `vw_rbac`*/;
-SET @saved_cs_client     = @@character_set_client;
-/*!50503 SET character_set_client = utf8mb4 */;
-/*!50001 CREATE VIEW `vw_rbac` AS SELECT 
- 1 AS `Permission ID`,
- 1 AS `Permission Group`,
- 1 AS `Security Level`,
- 1 AS `Permission`*/;
-SET character_set_client = @saved_cs_client;
-
---
--- Dumping routines for database 'auth'
---
-
---
--- Final view structure for view `vw_log_history`
---
-
-/*!50001 DROP VIEW IF EXISTS `vw_log_history`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 SQL SECURITY INVOKER */
-/*!50001 VIEW `vw_log_history` AS select from_unixtime(min(`logs`.`time`)) AS `First Logged`,from_unixtime(max(`logs`.`time`)) AS `Last Logged`,count(0) AS `Occurrences`,`realmlist`.`name` AS `Realm`,`logs`.`type` AS `type`,`logs`.`level` AS `level`,`logs`.`string` AS `string` from (`logs` left join `realmlist` on((`logs`.`realm` = `realmlist`.`id`))) group by `logs`.`string`,`logs`.`type`,`logs`.`realm` */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-
---
--- Final view structure for view `vw_rbac`
---
-
-/*!50001 DROP VIEW IF EXISTS `vw_rbac`*/;
-/*!50001 SET @saved_cs_client          = @@character_set_client */;
-/*!50001 SET @saved_cs_results         = @@character_set_results */;
-/*!50001 SET @saved_col_connection     = @@collation_connection */;
-/*!50001 SET character_set_client      = utf8mb4 */;
-/*!50001 SET character_set_results     = utf8mb4 */;
-/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
-/*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 SQL SECURITY INVOKER */
-/*!50001 VIEW `vw_rbac` AS select `t1`.`linkedId` AS `Permission ID`,`t1`.`id` AS `Permission Group`,ifnull(`t2`.`secId`,'linked') AS `Security Level`,`t3`.`name` AS `Permission` from ((`rbac_linked_permissions` `t1` left join `rbac_default_permissions` `t2` on((`t1`.`id` = `t2`.`permissionId`))) left join `rbac_permissions` `t3` on((`t1`.`linkedId` = `t3`.`id`))) */;
-/*!50001 SET character_set_client      = @saved_cs_client */;
-/*!50001 SET character_set_results     = @saved_cs_results */;
-/*!50001 SET collation_connection      = @saved_col_connection */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2024-11-22 23:18:17
+SET FOREIGN_KEY_CHECKS = 1;
