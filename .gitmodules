@@ -1,3 +1,7 @@
 [submodule "src/LuaEngine"]
 	path = src/server/game/LuaEngine
 	url = https://github.com/Declipe/Eluna.git
+[submodule "sql/base/worlddb"]
+	path = sql/base/worlddb
+	url = https://github.com/Declipe/worlddb.git
+	branch = main
