@@ -727,7 +727,7 @@ AuctionHouseEntry const* AuctionHouseMgr::GetAuctionHouseEntry(uint8 houseId)
 uint8 AuctionHouseMgr::GetAuctionHouseId(uint32 factionTemplateId)
 {
     if (sWorld->getBoolConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_AUCTION))
-        return AUCTIONHOUSE_ALLIANCE; // goblin auction house
+        return AUCTIONHOUSE_NEUTRAL; // goblin auction house
 
     // FIXME: found way for proper auctionhouse selection by another way
     // AuctionHouse.dbc have faction field with _player_ factions associated with auction house races.
