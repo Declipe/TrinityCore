@@ -150,11 +150,17 @@ bool DBUpdater<WorldDatabaseConnection>::IsEnabled(uint32 const updateMask)
 //    return LOCATION_DOWNLOAD;
 //}
 
+//template<>
+//std::string DBUpdater<WorldDatabaseConnection>::GetBaseFile()
+//{
+//    return BuiltInConfig::GetSourceDirectory() +
+//        "/sql/base/world_database.sql";
+//}
+
 template<>
 std::string DBUpdater<WorldDatabaseConnection>::GetBaseFile()
 {
-    return BuiltInConfig::GetSourceDirectory() +
-        "/sql/base/world_database.sql";
+    return "ALL_BASE_FILES";
 }
 
 // Character Database
@@ -299,6 +305,38 @@ bool DBUpdater<T>::Populate(DatabaseWorkerPool<T>& pool)
     if (p.empty())
     {
         TC_LOG_INFO("sql.updates", ">> No base file provided, skipped!");
+        return true;
+    }
+
+    if (p == "ALL_BASE_FILES" && std::is_same<T, WorldDatabaseConnection>::value)
+    {
+        Path baseDir(BuiltInConfig::GetSourceDirectory() + "/sql/base/worlddb");
+
+        if (!is_directory(baseDir))
+        {
+            TC_LOG_ERROR("sql.updates", ">> Base directory \"{}\" does not exist.", baseDir.generic_string());
+            return false;
+        }
+
+        for (boost::filesystem::directory_iterator it(baseDir); it != boost::filesystem::directory_iterator(); ++it)
+        {
+            if (is_regular_file(it->path()) && it->path().extension() == ".sql")
+            {
+                Path const filePath = it->path();
+                TC_LOG_INFO("sql.updates", ">> Applying \'{}\'...", filePath.generic_string());
+
+                try
+                {
+                    ApplyFile(pool, filePath);
+                }
+                catch (UpdateException&)
+                {
+                    return false;
+                }
+            }
+        }
+
+        TC_LOG_INFO("sql.updates", ">> Done applying all base files!");
         return true;
     }
 
