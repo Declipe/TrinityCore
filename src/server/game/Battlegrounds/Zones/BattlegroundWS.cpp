@@ -319,7 +319,7 @@ void BattlegroundWS::EventPlayerCapturedFlag(Player* player)
         else if (_flagDebuffState == 2)
           player->RemoveAurasDueToSpell(WS_SPELL_BRUTAL_ASSAULT);
 
-        if (GetTeamScore(TEAM_ALLIANCE) < sGameConfig->GetUintConfig("Battleground.Warsong.Flags"))
+        if (GetTeamScore(TEAM_ALLIANCE) < sGameConfig->GetIntConfig("Battleground.Warsong.Flags"))
             AddPoint(ALLIANCE, 1);
         PlaySoundToAll(BG_WS_SOUND_FLAG_CAPTURED_ALLIANCE);
     }
@@ -337,7 +337,7 @@ void BattlegroundWS::EventPlayerCapturedFlag(Player* player)
         else if (_flagDebuffState == 2)
           player->RemoveAurasDueToSpell(WS_SPELL_BRUTAL_ASSAULT);
 
-        if (GetTeamScore(TEAM_HORDE) < sGameConfig->GetUintConfig("Battleground.Warsong.Flags"))
+        if (GetTeamScore(TEAM_HORDE) < sGameConfig->GetIntConfig("Battleground.Warsong.Flags"))
             AddPoint(HORDE, 1);
         PlaySoundToAll(BG_WS_SOUND_FLAG_CAPTURED_HORDE);
     }
@@ -361,10 +361,10 @@ void BattlegroundWS::EventPlayerCapturedFlag(Player* player)
     // update last flag capture to be used if teamscore is equal
     SetLastFlagCapture(player->GetTeam());
 
-    if (GetTeamScore(TEAM_ALLIANCE) == sGameConfig->GetUintConfig("Battleground.Warsong.Flags"))
+    if (GetTeamScore(TEAM_ALLIANCE) == sGameConfig->GetIntConfig("Battleground.Warsong.Flags"))
         winner = ALLIANCE;
 
-    if (GetTeamScore(TEAM_HORDE) == sGameConfig->GetUintConfig("Battleground.Warsong.Flags"))
+    if (GetTeamScore(TEAM_HORDE) == sGameConfig->GetIntConfig("Battleground.Warsong.Flags"))
         winner = HORDE;
 
     if (winner)
