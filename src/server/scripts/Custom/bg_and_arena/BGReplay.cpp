@@ -410,10 +410,10 @@ public:
 
         if (!bg->IsReplay()) return;
         int32 startDelayTime = bg->GetStartDelayTime();
-        if (startDelayTime > 5000)
+        if (startDelayTime > 50000)
         {
-            bg->SetStartDelayTime(5000);
-            bg->SetStartTime(bg->GetStartTime() + (startDelayTime - 5000));
+            bg->SetStartDelayTime(50000);
+            bg->SetStartTime(bg->GetStartTime() + (startDelayTime - 50000));
         }
         if (bg->GetStatus() < BattlegroundStatus::STATUS_WAIT_JOIN) return;
 
