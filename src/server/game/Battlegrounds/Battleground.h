@@ -520,7 +520,7 @@ class TC_GAME_API Battleground
         [[nodiscard]] const SpectatorList& GetSpectators() const { return m_Spectators; }
         void AddToBeTeleported(ObjectGuid spectator, ObjectGuid participant) { m_ToBeTeleported[spectator] = participant; }
         void RemoveToBeTeleported(ObjectGuid spectator) { ToBeTeleportedMap::iterator itr = m_ToBeTeleported.find(spectator); if (itr != m_ToBeTeleported.end()) m_ToBeTeleported.erase(itr); }
-        TC_GAME_API void SpectatorsSendPacket(WorldPacket& data);
+        [[nodiscard]] void SpectatorsSendPacket(WorldPacket& data);
 
         Trinity::unique_weak_ptr<Battleground> GetWeakPtr() const { return m_weakRef; }
         void SetWeakPtr(Trinity::unique_weak_ptr<Battleground> weakRef) { m_weakRef = std::move(weakRef); }
