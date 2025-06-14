@@ -2518,7 +2518,7 @@ void ObjectMgr::LoadCreatures()
         data.movementType   = fields[14].GetUInt8();
         data.spawnMask      = fields[15].GetUInt8();
         data.phaseMask      = fields[16].GetUInt32();
-        int16 gameEvent     = fields[17].GetInt8();
+        int16 gameEvent     = fields[17].GetInt16();
         uint32 PoolId       = fields[18].GetUInt32();
         data.npcflag        = fields[19].GetUInt32();
         data.unit_flags     = fields[20].GetUInt32();
@@ -2889,7 +2889,7 @@ void ObjectMgr::LoadGameObjects()
             data.spawnGroupData = GetLegacySpawnGroup(); // force compatibility group for transport spawns
 
         data.phaseMask = fields[15].GetUInt32();
-        int16 gameEvent = fields[16].GetInt8();
+        int16 gameEvent = fields[16].GetInt16();
         uint32 PoolId = fields[17].GetUInt32();
 
         data.scriptId = GetScriptId(fields[18].GetString());
