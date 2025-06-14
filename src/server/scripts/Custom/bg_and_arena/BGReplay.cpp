@@ -381,7 +381,7 @@ class BGReplayBGScript : public BGScript {
 public:
     BGReplayBGScript() : BGScript("BGReplayBGScript") {}
 
-    void OnBattlegroundEnd(Battleground* bg, uint32 winner) override
+    void OnBattlegroundEnd(Battleground* bg, uint32 /*winner*/) override
     {
         //save replay when a bg ends
         if (!bg->IsReplay()) {
@@ -391,7 +391,7 @@ public:
         return;
     }
 
-    void OnBattlegroundUpdate(Battleground* bg, uint32 diff) override {
+    void OnBattlegroundUpdate(Battleground* bg, uint32 /*diff*/) override {
 
         if (!bg->IsReplay()) return;
         int32 startDelayTime = bg->GetStartDelayTime();
