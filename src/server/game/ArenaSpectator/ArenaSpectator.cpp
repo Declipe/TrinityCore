@@ -304,7 +304,7 @@ bool ArenaSpectator::ShouldSendAura(Aura* aura, uint8 effMask, ObjectGuid target
 }
 
 template<>
-void ArenaSpectator::SendPacketTo(Player const* player, std::string&& message)
+TC_GAME_API void ArenaSpectator::SendPacketTo(Player const* player, std::string&& message)
 {
     WorldPacket data;
     CreatePacket(data, message);
@@ -312,7 +312,7 @@ void ArenaSpectator::SendPacketTo(Player const* player, std::string&& message)
 }
 
 template<>
- void ArenaSpectator::SendPacketTo(const Map* map, std::string&& message)
+TC_GAME_API void ArenaSpectator::SendPacketTo(const Map* map, std::string&& message)
 {
     if (!map->IsBattleArena())
         return;
