@@ -1258,6 +1258,12 @@ bool Battleground::HasFreeSlots() const
     return GetPlayersSize() < GetMaxPlayers();
 }
 
+void Battleground::SpectatorsSendPacket(WorldPacket& data)
+{
+    for (SpectatorList::const_iterator itr = m_Spectators.begin(); itr != m_Spectators.end(); ++itr)
+        (*itr)->GetSession()->SendPacket(&data);
+}
+
 void Battleground::BuildPvPLogDataPacket(WorldPacket& data)
 {
     uint8 type = (isArena() ? 1 : 0);
