@@ -18,7 +18,6 @@
 #ifndef __BATTLEGROUND_H
 #define __BATTLEGROUND_H
 
-#include "ArenaSpectator.h"
 #include "ArenaScore.h"
 #include "DBCEnums.h"
 #include "ObjectGuid.h"
