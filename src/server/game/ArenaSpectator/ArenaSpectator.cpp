@@ -323,5 +323,5 @@ TC_GAME_API void ArenaSpectator::SendPacketTo(const Map* map, std::string&& mess
 
     WorldPacket data;
     CreatePacket(data, message);
-    bg->SpectatorsSendPacket(data);
+    //bg->SpectatorsSendPacket(data);
 }
