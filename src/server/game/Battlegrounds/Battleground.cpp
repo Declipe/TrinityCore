@@ -91,8 +91,6 @@ Battleground::Battleground()
     m_IsRated           = false;
     m_BuffChange        = false;
     m_IsRandom          = false;
-    m_IsReplay          = false;
-    m_ReplayId          = 0;
     m_LevelMin          = 0;
     m_LevelMax          = 0;
     m_InBGFreeSlotQueue = false;
@@ -177,7 +175,7 @@ void Battleground::Update(uint32 diff)
     if (!PreUpdateImpl(diff))
         return;
 
-    if (!GetPlayersSize() && !IsReplay())
+    if (!GetPlayersSize())
     {
         //BG is empty
         // if there are no players invited, delete BG
