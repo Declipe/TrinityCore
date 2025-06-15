@@ -394,11 +394,6 @@ class TC_SHARED_API ByteBuffer
 
         std::string ReadCString(bool requireValidUtf8 = true);
 
-        std::vector<uint8> contentsAsVector()
-        {
-            return _storage;
-        }
-
         uint8* contents()
         {
             if (_storage.empty())
