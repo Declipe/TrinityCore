@@ -91,6 +91,8 @@ Battleground::Battleground()
     m_IsRated           = false;
     m_BuffChange        = false;
     m_IsRandom          = false;
+    m_IsReplay          = false;
+    m_ReplayId          = 0;
     m_LevelMin          = 0;
     m_LevelMax          = 0;
     m_InBGFreeSlotQueue = false;
@@ -175,7 +177,7 @@ void Battleground::Update(uint32 diff)
     if (!PreUpdateImpl(diff))
         return;
 
-    if (!GetPlayersSize())
+    if (!GetPlayersSize() && !IsReplay())
     {
         //BG is empty
         // if there are no players invited, delete BG
@@ -1254,6 +1256,12 @@ uint32 Battleground::GetFreeSlotsForTeam(uint32 Team) const
 bool Battleground::HasFreeSlots() const
 {
     return GetPlayersSize() < GetMaxPlayers();
+}
+
+void Battleground::SpectatorsSendPacket(WorldPacket& data)
+{
+    for (SpectatorList::const_iterator itr = m_Spectators.begin(); itr != m_Spectators.end(); ++itr)
+        (*itr)->GetSession()->SendPacket(&data);
 }
 
 void Battleground::BuildPvPLogDataPacket(WorldPacket& data)

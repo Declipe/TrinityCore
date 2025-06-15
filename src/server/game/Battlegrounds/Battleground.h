@@ -290,6 +290,12 @@ class TC_GAME_API Battleground
         uint8 GetArenaType() const          { return m_ArenaType; }
         PvPTeamId GetWinner() const { return _winnerTeamId; }
         uint32 GetScriptId() const          { return ScriptId; }
+        uint32 GetFightId() const { return m_FightId; }
+        uint32 GetReplayId() const { return m_ReplayId; }
+        bool IsReplay() const { return m_IsReplay; }
+        void SetReplay(bool isReplay) { m_IsReplay = isReplay; }
+        void SetFightId(uint32 FightId) { m_FightId = FightId; }
+        void SetReplayId(uint32 ReplayId) { m_ReplayId = ReplayId; }
         uint32 GetBonusHonorFromKill(uint32 kills) const;
         bool IsRandom() const { return m_IsRandom; }
 
@@ -337,6 +343,9 @@ class TC_GAME_API Battleground
 
         typedef std::map<ObjectGuid, BattlegroundPlayer> BattlegroundPlayerMap;
         BattlegroundPlayerMap const& GetPlayers() const { return m_Players; }
+        Player* _GetPlayer(ObjectGuid guid, bool offlineRemove, char const* context) const;
+        Player* _GetPlayer(BattlegroundPlayerMap::iterator itr, char const* context) { return _GetPlayer(itr->first, itr->second.OfflineRemoveTime != 0, context); }
+        Player* _GetPlayer(BattlegroundPlayerMap::const_iterator itr, char const* context) const { return _GetPlayer(itr->first, itr->second.OfflineRemoveTime != 0, context); }
         uint32 GetPlayersSize() const { return m_Players.size(); }
 
         typedef std::map<uint32, BattlegroundScore*> BattlegroundScoreMap;
@@ -351,6 +360,8 @@ class TC_GAME_API Battleground
         void RelocateDeadPlayers(ObjectGuid guideGuid);
 
         void StartBattleground();
+
+        void toggleReplay(uint32 replayId) { m_IsReplay = replayId != 0; m_ReplayId = replayId; }
 
         GameObject* GetBGObject(uint32 type, bool logError = true);
         Creature* GetBGCreature(uint32 type, bool logError = true);
@@ -382,6 +393,7 @@ class TC_GAME_API Battleground
         template<class Do>
         void BroadcastWorker(Do& _do);
 
+        void SaveReplay();
         void PlaySoundToTeam(uint32 soundID, uint32 teamID);
         void PlaySoundToAll(uint32 soundID);
         void CastSpellOnTeam(uint32 SpellID, uint32 TeamID);
@@ -499,17 +511,23 @@ class TC_GAME_API Battleground
         // because BattleGrounds with different types and same level range has different m_BracketId
         uint8 GetUniqueBracketId() const;
 
+        typedef std::set<Player*> SpectatorList;
+        typedef std::map<ObjectGuid, ObjectGuid> ToBeTeleportedMap;
+        void AddSpectator(Player* p) { m_Spectators.insert(p); }
+        void RemoveSpectator(Player* p) { m_Spectators.erase(p); }
+        bool HaveSpectators() { return !m_Spectators.empty(); }
+        [[nodiscard]] const SpectatorList& GetSpectators() const { return m_Spectators; }
+        void AddToBeTeleported(ObjectGuid spectator, ObjectGuid participant) { m_ToBeTeleported[spectator] = participant; }
+        void RemoveToBeTeleported(ObjectGuid spectator) { ToBeTeleportedMap::iterator itr = m_ToBeTeleported.find(spectator); if (itr != m_ToBeTeleported.end()) m_ToBeTeleported.erase(itr); }
+        void SpectatorsSendPacket(WorldPacket& data);
+
         Trinity::unique_weak_ptr<Battleground> GetWeakPtr() const { return m_weakRef; }
         void SetWeakPtr(Trinity::unique_weak_ptr<Battleground> weakRef) { m_weakRef = std::move(weakRef); }
 
-    protected:
         // this method is called, when BG cannot spawn its own spirit guide, or something is wrong, It correctly ends Battleground
         void EndNow();
+    protected:
         void PlayerAddedToBGCheckIfBGIsRunning(Player* player);
-
-        Player* _GetPlayer(ObjectGuid guid, bool offlineRemove, char const* context) const;
-        Player* _GetPlayer(BattlegroundPlayerMap::iterator itr, char const* context) { return _GetPlayer(itr->first, itr->second.OfflineRemoveTime != 0, context); }
-        Player* _GetPlayer(BattlegroundPlayerMap::const_iterator itr, char const* context) const { return _GetPlayer(itr->first, itr->second.OfflineRemoveTime != 0, context); }
         Player* _GetPlayerForTeam(uint32 teamId, BattlegroundPlayerMap::const_iterator itr, char const* context) const;
 
         void _ProcessOfflineQueue();
@@ -526,6 +544,8 @@ class TC_GAME_API Battleground
 
         // Player lists, those need to be accessible by inherited classes
         BattlegroundPlayerMap m_Players;
+        SpectatorList m_Spectators;
+        ToBeTeleportedMap m_ToBeTeleported;
         // Spirit Guide guid + Player list GUIDS
         std::map<ObjectGuid, GuidVector> m_ReviveQueue;
 
@@ -564,6 +584,9 @@ class TC_GAME_API Battleground
         int32  m_StartDelayTime;
         bool   m_IsRated;                                   // is this battle rated?
         bool   m_PrematureCountDown;
+        bool   m_IsReplay;
+        uint32 m_ReplayId;
+        uint32 m_FightId;
         uint32 m_PrematureCountDownTimer;
         std::string m_Name;
 
