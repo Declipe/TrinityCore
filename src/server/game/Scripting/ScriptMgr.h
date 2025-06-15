@@ -549,7 +549,7 @@ protected:
 public:
 
     // Should return a fully valid Battleground object for the type ID.
-    //virtual Battleground* GetBattleground() const = 0;
+    virtual Battleground* GetBattleground() const = 0;
 };
 
 class TC_GAME_API OutdoorPvPScript : public ScriptObject
