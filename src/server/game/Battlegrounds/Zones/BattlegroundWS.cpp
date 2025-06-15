@@ -107,7 +107,7 @@ void BattlegroundWS::PostUpdateImpl(uint32 diff)
         else if (GetStartTime() > uint32(_minutesElapsed * MINUTE * IN_MILLISECONDS) +  3 * MINUTE * IN_MILLISECONDS)
         {
             ++_minutesElapsed;
-            UpdateWorldState(BG_WS_STATE_TIMER, 25 - _minutesElapsed);
+            UpdateWorldState(BG_WS_STATE_TIMER, sGameConfig->GetIntConfig("Battleground.Warsong.Time") - _minutesElapsed);
         }
 
         if (_flagState[TEAM_ALLIANCE] == BG_WS_FLAG_STATE_WAIT_RESPAWN)
@@ -218,7 +218,7 @@ void BattlegroundWS::StartingEventCloseDoors()
         SpawnBGObject(i, RESPAWN_ONE_DAY);
 
     UpdateWorldState(BG_WS_STATE_TIMER_ACTIVE, 1);
-    UpdateWorldState(BG_WS_STATE_TIMER, 25);
+    UpdateWorldState(BG_WS_STATE_TIMER, sGameConfig->GetIntConfig("Battleground.Warsong.Time"));
 }
 
 void BattlegroundWS::StartingEventOpenDoors()
@@ -871,7 +871,7 @@ void BattlegroundWS::FillInitialWorldStates(WorldPackets::WorldState::InitWorldS
     if (GetStatus() == STATUS_IN_PROGRESS)
     {
         packet.Worldstates.emplace_back(BG_WS_STATE_TIMER_ACTIVE, 1);
-        packet.Worldstates.emplace_back(BG_WS_STATE_TIMER, 25 - _minutesElapsed);
+        packet.Worldstates.emplace_back(BG_WS_STATE_TIMER, sGameConfig->GetIntConfig("Battleground.Warsong.Time") - _minutesElapsed);
     }
     else
         packet.Worldstates.emplace_back(BG_WS_STATE_TIMER_ACTIVE, 0);
