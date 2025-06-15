@@ -20,12 +20,9 @@
 #include <unordered_set>
 #include "DatabaseEnv.h"
 #include <ObjectAccessor.h>
-#include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
 #include "GameEventMgr.h"
-#include "Player.h"
-#include "WorldSession.h"
 #include <DBCStores.h>
 #include <zlib.h>
 
@@ -128,6 +125,9 @@ namespace
                 return;
 
             uint32 size = packet.read<uint32>(0);
+            if (!size)
+                 return;
+
             buffer.resize(size);
             uLongf realSize = size;
             if (uncompress(buffer.contents(), &realSize, packet.contents() + sizeof(uint32), packet.size() - sizeof(uint32)) != Z_OK)
@@ -139,7 +139,8 @@ namespace
         else
         {
             buffer.resize(packet.size());
-            memcpy(buffer.contents(), packet.contents(), packet.size());
+            if (packet.size() > 0)
+               memcpy(buffer.contents(), packet.contents(), packet.size());
         }
 
         uint64 oldRaw = oldGuid.GetRawValue();
@@ -251,6 +252,9 @@ namespace
 
     Player* CreateReplayBot(Battleground* bg)
     {
+        if (!bg->FindBgMap())
+             return nullptr;
+
         WorldSession* botSession = new WorldSession(0, "ReplayBot", std::make_shared<ReplaySocket>(), SEC_ADMINISTRATOR, false, 2, 0, Minutes(0), LOCALE_enUS, 0, false);
         Player* bot = new Player(botSession);
 
@@ -312,8 +316,10 @@ public:
 
         //ignore packet when no bg or casual games
         if (bg == nullptr || bg->IsReplay()) return;
-        //ignore packets until arena started
-        if (bg->GetStatus() <= BattlegroundStatus::STATUS_IN_PROGRESS) return;
+        ////ignore packets until arena started
+        //if (bg->GetStatus() <= BattlegroundStatus::STATUS_IN_PROGRESS) return;
+        // ignore packets before players have entered the battleground
+        if (bg->GetStatus() <= BattlegroundStatus::STATUS_WAIT_QUEUE) return;
 
 
         // ensure the record container exists for this battleground instance
@@ -322,6 +328,14 @@ public:
 
 
         MatchRecord& record = records[bg->GetInstanceID()];
+
+        BattlegroundMap* map = bg->FindBgMap();
+       if (!map)
+             return; // map hasn't been created yet
+        
+                    // player hasn't teleported into the battleground instance
+            if (session->GetPlayer()->GetMap() != map)
+             return;
 
         uint32 instanceId = bg->GetInstanceID();
         if (!replayBots[instanceId])
@@ -407,32 +421,32 @@ public:
         if (it == loadedReplays.end()) return;
         MatchRecord& match = it->second;
 
-        //if replay ends or spectator left > free replay data and/or kick player
-        if (match.packets.empty() || bg->GetPlayers().empty()) {
-            loadedReplays.erase(it);
+        // ensure spectator has finished loading into the battleground
+        Player * spectator = ObjectAccessor::FindPlayerByLowGUID(bg->GetReplayId());
+        if (!spectator || spectator->GetMapId() != bg->GetMapId())
+             return;
 
-            if (!bg->GetPlayers().empty())
+        // free data once all spectators have left or the replay is finished
+        if (match.packets.empty() || !bg->HaveSpectators()) {
+            loadedReplays.erase(it);
+            if (bg->HaveSpectators())
             {
                 uint32 playerGUID = bg->GetReplayId();
                 bg->EndNow();
                 bg->toggleReplay(0);
-                Player* player = ObjectAccessor::FindPlayerByLowGUID(playerGUID);
-                player->LeaveBattleground(bg);
+                if (Player* player = ObjectAccessor::FindPlayerByLowGUID(playerGUID))
+                    player->LeaveBattleground(bg);
             }
             return;
         }
 
         //send replay data to spectator
         while (!match.packets.empty() && match.packets.front().timestamp <= bg->GetStartTime()) {
-            if (bg->GetPlayers().empty())
-                break;
-            uint32 playerGUID = bg->GetReplayId();
-            Player* player = ObjectAccessor::FindPlayerByLowGUID(playerGUID);
-            if (!player)
+            if (!bg->HaveSpectators())
                 break;
 
             TC_LOG_TRACE("bg.replay", "Sending opcode {} size {}", GetOpcodeNameForLogging(static_cast<Opcodes>(match.packets.front().packet.GetOpcode())), match.packets.front().packet.size());
-            player->GetSession()->SendPacket(&match.packets.front().packet);
+            spectator->GetSession()->SendPacket(&match.packets.front().packet);
             match.packets.pop_front();
         }
     }
