@@ -1941,7 +1941,6 @@ public:
     void UpdateSkillsForLevel();
     void UpdateWeaponsSkillsToMaxSkillsForLevel();             // for .levelup
     void ModifySkillBonus(uint32 skillid, int32 val, bool talent);
-    void RewardExtraBonusTalentPoints(uint32 bonusTalentPoints);
 
     /*********************************************************/
     /***                  PVP SYSTEM                       ***/
@@ -2604,8 +2603,6 @@ protected:
     float m_rest_bonus;
     uint32 _restFlagMask;
     ////////////////////Rest System/////////////////////
-
-    uint32 m_extraBonusTalentCount;
 
     // Social
     PlayerSocial* m_social;

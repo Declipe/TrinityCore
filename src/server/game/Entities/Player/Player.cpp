@@ -208,7 +208,6 @@ Player::Player(WorldSession* session) : Unit(true)
     if (!GetSession()->HasPermission(rbac::RBAC_PERM_CAN_FILTER_WHISPERS))
         SetAcceptWhispers(true);
 
-    m_extraBonusTalentCount = 0;
     m_regenTimer = 0;
     m_regenTimerCount = 0;
     m_foodEmoteTimerCount = 0;
@@ -6769,14 +6768,6 @@ void Player::RewardReputation(Quest const* quest)
 
         if (FactionEntry const* factionEntry = sFactionStore.LookupEntry(rewardFactionId))
             GetReputationMgr().ModifyReputation(factionEntry, rep);
-    }
-}
-
-void Player::RewardExtraBonusTalentPoints(uint32 bonusTalentPoints)
-{
-    if (bonusTalentPoints)
-    {
-        m_extraBonusTalentCount += bonusTalentPoints;
     }
 }
 
@@ -25328,24 +25319,15 @@ uint32 Player::CalculateTalentsPoints() const
 {
     uint32 baseForLevel = GetLevel() < 10 ? 0 : GetLevel() - 9;
 
-    uint32 talentPointsForLevel = 0;
-
     if (GetClass() != CLASS_DEATH_KNIGHT || GetMapId() != 609)
-    {
+        return uint32(baseForLevel * sWorld->getRate(RATE_TALENT));
+
+    uint32 talentPointsForLevel = GetLevel() < 56 ? 0 : GetLevel() - 55;
+    talentPointsForLevel += GetQuestRewardedTalentCount();
+
+    if (talentPointsForLevel > baseForLevel)
         talentPointsForLevel = baseForLevel;
-    }
-    else
-    {
-        talentPointsForLevel = GetLevel() < 56 ? 0 : GetLevel() - 55;
-        talentPointsForLevel += GetQuestRewardedTalentCount();
 
-        if (talentPointsForLevel > baseForLevel)
-        {
-            talentPointsForLevel = baseForLevel;
-        }
-    }
-
-    talentPointsForLevel += m_extraBonusTalentCount;
     return uint32(talentPointsForLevel * sWorld->getRate(RATE_TALENT));
 }
 
