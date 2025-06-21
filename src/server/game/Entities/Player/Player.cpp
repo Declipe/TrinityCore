@@ -208,6 +208,7 @@ Player::Player(WorldSession* session) : Unit(true)
     if (!GetSession()->HasPermission(rbac::RBAC_PERM_CAN_FILTER_WHISPERS))
         SetAcceptWhispers(true);
 
+    m_extraBonusTalentCount = 0;
     m_regenTimer = 0;
     m_regenTimerCount = 0;
     m_foodEmoteTimerCount = 0;
@@ -6768,6 +6769,14 @@ void Player::RewardReputation(Quest const* quest)
 
         if (FactionEntry const* factionEntry = sFactionStore.LookupEntry(rewardFactionId))
             GetReputationMgr().ModifyReputation(factionEntry, rep);
+    }
+}
+
+void Player::RewardExtraBonusTalentPoints(uint32 bonusTalentPoints)
+{
+    if (bonusTalentPoints)
+    {
+        m_extraBonusTalentCount += bonusTalentPoints;
     }
 }
 
@@ -18099,6 +18108,7 @@ bool Player::LoadFromDB(ObjectGuid guid, CharacterDatabaseQueryHolder const& hol
     _LoadRandomBGStatus(holder.GetPreparedResult(PLAYER_LOGIN_QUERY_LOAD_RANDOM_BG));
 
     // after spell and quest load
+    m_extraBonusTalentCount = fields[73].GetUInt8();
     InitTalentForLevel();
     LearnDefaultSkills();
     LearnCustomSpells();
@@ -19751,6 +19761,7 @@ void Player::SaveToDB(CharacterDatabaseTransaction trans, bool create /* = false
         stmt->setString(index++, ss.str());
         stmt->setUInt8(index++, GetByteValue(PLAYER_FIELD_BYTES, PLAYER_FIELD_BYTES_OFFSET_ACTION_BAR_TOGGLES));
         stmt->setUInt32(index++, m_grantableLevels);
+        stmt->setUInt32(index++, m_extraBonusTalentCount);
     }
     else
     {
@@ -19876,6 +19887,7 @@ void Player::SaveToDB(CharacterDatabaseTransaction trans, bool create /* = false
         stmt->setString(index++, ss.str());
         stmt->setUInt8(index++, GetByteValue(PLAYER_FIELD_BYTES, PLAYER_FIELD_BYTES_OFFSET_ACTION_BAR_TOGGLES));
         stmt->setUInt32(index++, m_grantableLevels);
+        stmt->setUInt32(index++, m_extraBonusTalentCount);
 
         stmt->setUInt8(index++, IsInWorld() && !GetSession()->PlayerLogout() ? 1 : 0);
         // Index
@@ -25320,6 +25332,7 @@ uint32 Player::CalculateTalentsPoints() const
     uint32 baseForLevel = GetLevel() < 10 ? 0 : GetLevel() - 9;
 
     if (GetClass() != CLASS_DEATH_KNIGHT || GetMapId() != 609)
+        baseForLevel += m_extraBonusTalentCount;
         return uint32(baseForLevel * sWorld->getRate(RATE_TALENT));
 
     uint32 talentPointsForLevel = GetLevel() < 56 ? 0 : GetLevel() - 55;
@@ -25328,6 +25341,7 @@ uint32 Player::CalculateTalentsPoints() const
     if (talentPointsForLevel > baseForLevel)
         talentPointsForLevel = baseForLevel;
 
+    talentPointsForLevel += m_extraBonusTalentCount;
     return uint32(talentPointsForLevel * sWorld->getRate(RATE_TALENT));
 }
 
