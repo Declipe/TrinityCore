@@ -5,6 +5,24 @@
 #include "ScriptedGossip.h"
 #include "ScriptMgr.h"
 #include "Spell.h"
+#include "AccountMgr.h"
+#include "AditionalData.h"
+#include "Chat.h"
+#include "CustomConfig.h"
+#include "DatabaseEnv.h"
+#include "DBCStores.h"
+#include "GameTime.h"
+#include "Guild.h"
+#include "GuildMgr.h"
+#include "InstanceSaveMgr.h"
+#include "Language.h"
+#include "Map.h"
+#include "ObjectMgr.h"
+#include "RBAC.h"
+#include "SpellInfo.h"
+#include "SpellMgr.h"
+#include "World.h"
+#include "WorldSession.h"
 
 class example_ItemGossip : public ItemScript
 {
@@ -82,8 +100,24 @@ public: item_lv() : ItemScript("item_lv") {}
 
 };
 
+class ArmyRank_Up_Script : public ItemScript
+{
+public: ArmyRank_Up_Script() : ItemScript("ArmyRank_Up_Script") {};
+
+      bool OnUse(Player* player, Item* item, SpellCastTargets const& /*targets*/)
+      {
+          player->RewardExtraBonusTalentPoints(2);
+          player->InitTalentForLevel();
+          player->DestroyItemCount(item->GetEntry(), 1, true);
+          player->CastSpell(player, 31726);
+          ChatHandler(player->GetSession()).PSendSysMessage("bonk");
+          return true;
+      }
+};
+
 void AddSC_example_ItemGossip() // Add to scriptloader normally
 {
     new example_ItemGossip();
     new item_lv();
+    new ArmyRank_Up_Script();
 }
