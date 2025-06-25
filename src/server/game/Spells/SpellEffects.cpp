@@ -2077,7 +2077,7 @@ void Spell::EffectSummonType()
         caster = m_originalCaster;
 
     ObjectGuid privateObjectOwner;
-    if (properties->Flags & SUMMON_PROP_FLAG_PERSONAL_SPAWN)
+    if (properties->Flags & SUMMON_PROP_FLAG_ONLY_VISIBLE_TO_SUMMONER)
         privateObjectOwner = m_originalCaster->IsPrivateObject() ? m_originalCaster->GetPrivateObjectOwner() : m_originalCaster->GetGUID();
     int32 duration = m_spellInfo->GetDuration();
     if (Player* modOwner = caster->GetSpellModOwner())
@@ -2124,7 +2124,7 @@ void Spell::EffectSummonType()
     case SUMMON_CATEGORY_ALLY:
     case SUMMON_CATEGORY_UNK:
     {
-        if (properties->Flags & 512)
+        if (properties->Flags & SUMMON_PROP_FLAG_JOIN_SUMMONER_SPAWN_GROUP)
         {
             SummonGuardian(*effectInfo, entry, properties, numSummons);
             break;
@@ -5278,15 +5278,15 @@ void Spell::SummonGuardian(SpellEffectInfo const& spellEffectInfo, uint32 entry,
     if (unitCaster->IsTotem())
         unitCaster = unitCaster->ToTotem()->GetOwner();
 
-    // in another case summon new
-    uint8 level = unitCaster->GetLevel();
+    // for item with required skill, override guardian level to level based on skill
+    uint8 levelOverride = 0;
 
     // level of pet summoned using engineering item based at engineering skill level
     if (m_CastItem && unitCaster->GetTypeId() == TYPEID_PLAYER)
         if (ItemTemplate const* proto = m_CastItem->GetTemplate())
-            if (proto->RequiredSkill == SKILL_ENGINEERING)
-                if (uint16 skill202 = unitCaster->ToPlayer()->GetSkillValue(SKILL_ENGINEERING))
-                    level = skill202 / 5;
+            if (proto->RequiredSkill)
+                if (uint16 skillValue = unitCaster->ToPlayer()->GetSkillValue(proto->RequiredSkill))
+                    levelOverride = skillValue / 5;
 
     float radius = 5.0f;
     int32 duration = m_spellInfo->GetDuration();
@@ -5305,15 +5305,15 @@ void Spell::SummonGuardian(SpellEffectInfo const& spellEffectInfo, uint32 entry,
             // randomize position for multiple summons
             pos = unitCaster->GetRandomPoint(*destTarget, radius);
 
-        TempSummon* summon = map->SummonCreature(entry, pos, properties, duration, unitCaster, m_spellInfo->Id);
+        TempSummon* summon = map->SummonCreature(entry, pos, properties, duration, unitCaster, m_spellInfo->Id, levelOverride);
         if (!summon)
             return;
 
-        if (summon->HasUnitTypeMask(UNIT_MASK_GUARDIAN))
+        /*if (summon->HasUnitTypeMask(UNIT_MASK_GUARDIAN))
             ((Guardian*)summon)->InitStatsForLevel(level);
 
         if (properties && properties->Control == SUMMON_CATEGORY_ALLY)
-            summon->SetFaction(unitCaster->GetFaction());
+            summon->SetFaction(unitCaster->GetFaction());*/
 
         if (summon->HasUnitTypeMask(UNIT_MASK_MINION) && m_targets.HasDst())
             ((Minion*)summon)->SetFollowAngle(unitCaster->GetAbsoluteAngle(summon));

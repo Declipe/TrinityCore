@@ -1913,7 +1913,7 @@ void WorldObject::AddObjectToRemoveList()
     map->AddObjectToRemoveList(this);
 }
 
-TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropertiesEntry const* properties /*= nullptr*/, uint32 duration /*= 0*/, WorldObject* summoner /*= nullptr*/, uint32 spellId /*= 0*/, uint32 vehId /*= 0*/, ObjectGuid privateObjectOwner /*= ObjectGuid::Empty*/)
+TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropertiesEntry const* properties /*= nullptr*/, uint32 duration /*= 0*/, WorldObject* summoner /*= nullptr*/, uint32 spellId /*= 0*/, uint32 vehId /*= 0*/, ObjectGuid privateObjectOwner /*= ObjectGuid::Empty*/, uint8 levelOverride /*= 0*/)
 {
     uint32 mask = UNIT_MASK_SUMMON;
     if (properties)
@@ -1952,7 +1952,7 @@ TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropert
                     mask = UNIT_MASK_MINION;
                     break;
                 default:
-                    if (properties->Flags & 512) // Mirror Image, Summon Gargoyle
+                    if (properties->Flags & SUMMON_PROP_FLAG_JOIN_SUMMONER_SPAWN_GROUP) // Mirror Image, Summon Gargoyle
                         mask = UNIT_MASK_GUARDIAN;
                     break;
                 }
@@ -1999,7 +1999,7 @@ TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropert
 
     summon->SetHomePosition(pos);
 
-    summon->InitStats(duration);
+    summon->InitStats(duration, levelOverride);
 
     summon->SetPrivateObjectOwner(privateObjectOwner);
 
