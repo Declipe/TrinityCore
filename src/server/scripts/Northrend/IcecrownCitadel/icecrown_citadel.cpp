@@ -224,6 +224,301 @@ enum ICCMisc
     POINT_LAND          = 1,
 };
 
+class npc_flesh_eating_insect : public CreatureScript
+{
+public:
+    npc_flesh_eating_insect() : CreatureScript("npc_flesh_eating_insect") {}
+
+    struct npc_flesh_eating_insectAI : public ScriptedAI
+    {
+        npc_flesh_eating_insectAI(Creature* creature) : ScriptedAI(creature), _instance(creature->GetInstanceScript())
+        {
+            Initialize();
+        }
+
+        void Initialize()
+        {
+            me->SetReactState(REACT_AGGRESSIVE);
+            me->GetMotionMaster()->MoveRandom(10.0f);
+        }
+
+        void Reset() override
+        {
+            _events.Reset();
+            _events.ScheduleEvent(EVENT_FLESH_EATING_BITE, 3s);
+        }
+
+        void JustDied(Unit* /*killer*/) override
+        {
+            me->DespawnOrUnsummon();
+        }
+
+        void DoAction(int32 action) override
+        {
+            switch (action)
+            {
+            case ACTION_PUTRICIDE_BUG_LEAP:
+                DoCast(SPELL_RANDOM_LEAP);
+                _events.ScheduleEvent(EVENT_END_LEAP, 2500ms);
+                break;
+            default:
+                break;
+            }
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (!me || !me->IsAlive())
+                return;
+
+            if (me->HasUnitState(UNIT_STATE_CASTING))
+                return;
+
+            _events.Update(diff);
+
+            while (uint32 eventId = _events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                case EVENT_END_LEAP:
+                    me->GetMotionMaster()->MoveRandom(10.0f);
+                    break;
+                case EVENT_FLESH_EATING_BITE:
+                    DoCast(SPELL_FLESH_EATING_BITE);
+                    _events.ScheduleEvent(EVENT_FLESH_EATING_BITE, 2500ms);
+                    break;
+                default:
+                    break;
+                }
+            }
+
+            DoMeleeAttackIfReady();
+        }
+
+    private:
+        EventMap _events;
+        InstanceScript* const _instance;
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return GetIcecrownCitadelAI<npc_flesh_eating_insectAI>(creature);
+    }
+};
+
+class npc_putricide_trap : public CreatureScript
+{
+public:
+    npc_putricide_trap() : CreatureScript("npc_putricide_trap") {}
+
+    struct npc_putricide_trapAI : public ScriptedAI
+    {
+        npc_putricide_trapAI(Creature* creature) : ScriptedAI(creature), _instance(creature->GetInstanceScript())
+        {
+        }
+
+        void DoAction(int32 action) override
+        {
+            switch (action)
+            {
+            case ACTION_PUTRICIDE_STALKERS:
+                GetCreatureListWithEntryInGrid(stalkers, me, NPC_INVISIBLE_STALKER, 35.0f);
+                _events.ScheduleEvent(EVENT_SUMMON_FLESH_EATING_BUG, 2s);
+                break;
+            case ACTION_PUTRICIDE_TRAP:
+                _events.ScheduleEvent(EVENT_PUTRICIDE_TRAP, 3s);
+                break;
+            }
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            _events.Update(diff);
+
+            while (uint32 eventId = _events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                case EVENT_PUTRICIDE_TRAP:
+                    DoCast(SPELL_GIANT_SWARM);
+                    _instance->SetData(DATA_PUTRICIDE_TRAP, IN_PROGRESS);
+                    _events.ScheduleEvent(EVENT_END_TRAP, 50s);
+                    break;
+                case EVENT_SUMMON_FLESH_EATING_BUG:
+                    if (!stalkers.empty())
+                    {
+                        for (std::list<Creature*>::iterator itr = stalkers.begin(); itr != stalkers.end(); ++itr)
+                            if (*itr)
+                                (*itr)->AI()->DoCast(SPELL_SUMMON_PLAGUE_INSECT);
+
+                        if (_instance->GetData(DATA_PUTRICIDE_TRAP) == IN_PROGRESS)
+                            _events.ScheduleEvent(EVENT_SUMMON_FLESH_EATING_BUG, 2500ms);
+                    }
+                    break;
+                case EVENT_END_TRAP:
+                    me->RemoveAura(SPELL_GIANT_SWARM);
+                    me->CastStop();
+                    _instance->SetData(DATA_PUTRICIDE_TRAP, DONE);
+
+                    Map::PlayerList const& players = me->GetMap()->ToInstanceMap()->GetPlayers();
+                    if (!players.isEmpty())
+                    {
+                        for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+                        {
+                            Player* player = itr->GetSource();
+                            if (!player)
+                                continue;
+                            if (player->HasAura(SPELL_GIANT_SWARM))
+                                player->RemoveAura(SPELL_GIANT_SWARM);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+    private:
+        EventMap _events;
+        std::list<Creature*> stalkers;
+        InstanceScript* const _instance;
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return GetIcecrownCitadelAI<npc_putricide_trapAI>(creature);
+    }
+
+};
+
+class spell_icc_summon_plagued_insect : public SpellScriptLoader
+{
+public:
+    spell_icc_summon_plagued_insect() : SpellScriptLoader("spell_icc_summon_plagued_insect") {}
+
+    class spell_icc_summon_plagued_insect_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_icc_summon_plagued_insect_SpellScript);
+
+        void HandleSummon(SpellEffIndex effIndex)
+        {
+            PreventHitDefaultEffect(effIndex);
+
+            Unit* caster = GetOriginalCaster();
+            if (!caster)
+                return;
+
+            InstanceScript* instance = caster->GetInstanceScript();
+            if (!instance)
+                return;
+
+            //uint32 entry = uint32(GetSpellInfo()->Effects[effIndex].MiscValue);
+            //SummonPropertiesEntry const* properties = sSummonPropertiesStore.LookupEntry(uint32(GetSpellInfo()->Effects[effIndex].MiscValueB));
+
+            uint32 entry = uint32(GetEffectInfo(effIndex).MiscValue);
+            SummonPropertiesEntry const* properties = sSummonPropertiesStore.LookupEntry(uint32(GetEffectInfo(effIndex).MiscValueB));
+
+            Position pos = caster->GetPosition();
+            if (caster->GetOrientation() < 1.8f)
+                pos.Relocate(caster->GetPositionX() + 3.5f, caster->GetPositionY(), caster->GetPositionZ(), caster->GetOrientation());
+            else
+                pos.Relocate(caster->GetPositionX() - 3.5f, caster->GetPositionY(), caster->GetPositionZ(), caster->GetOrientation());
+
+            TempSummon* summon = caster->GetMap()->SummonCreature(entry, pos, properties, 30000, caster, GetSpellInfo()->Id);
+            if (!summon)
+                return;
+            summon->AI()->DoAction(ACTION_PUTRICIDE_BUG_LEAP);
+        }
+
+        void Register() override
+        {
+            OnEffectHit += SpellEffectFn(spell_icc_summon_plagued_insect_SpellScript::HandleSummon, EFFECT_0, SPELL_EFFECT_SUMMON);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_icc_summon_plagued_insect_SpellScript();
+    }
+};
+
+class spell_icc_giant_swarm : public SpellScriptLoader
+{
+public:
+    spell_icc_giant_swarm() : SpellScriptLoader("spell_icc_giant_swarm") {}
+
+    class spell_icc_giant_swarm_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_icc_giant_swarm_SpellScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/) override
+        {
+            if (!sSpellMgr->GetSpellInfo(SPELL_GIANT_SWARM))
+                return false;
+            return true;
+        }
+
+        void ExtraEffect(SpellEffIndex effIndex)
+        {
+            Unit* caster = GetOriginalCaster();
+            if (caster)
+                caster->GetAI()->DoAction(ACTION_PUTRICIDE_STALKERS);
+
+            std::list<Creature*> traps;
+            GetCreatureListWithEntryInGrid(traps, caster, NPC_PUTRICIDE_TRAP, 100.0f);
+            if (!traps.empty())
+            {
+                for (std::list<Creature*>::iterator itr = traps.begin(); itr != traps.end(); ++itr)
+                    if (*itr)
+                    {
+                        if ((*itr)->GetGUID() != caster->GetGUID())
+                            if ((*itr)->HasAura(SPELL_GIANT_SWARM))
+                                PreventHitDefaultEffect(effIndex);
+                    }
+            }
+        }
+
+        void Register() override
+        {
+            OnEffectHit += SpellEffectFn(spell_icc_giant_swarm_SpellScript::ExtraEffect, EFFECT_0, SPELL_EFFECT_PERSISTENT_AREA_AURA);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_icc_giant_swarm_SpellScript();
+    }
+};
+
+class at_icc_start_putricide_pre_event : public AreaTriggerScript
+{
+public:
+    at_icc_start_putricide_pre_event() : AreaTriggerScript("at_icc_start_putricide_pre_event") {}
+
+    bool OnTrigger(Player* player, AreaTriggerEntry const* /*areaTrigger*/) override
+    {
+        if (InstanceScript* instance = player->GetInstanceScript())
+        {
+            if (instance->GetData(DATA_PUTRICIDE_TRAP) == NOT_STARTED)
+            {
+                instance->SetData(DATA_PUTRICIDE_TRAP, SPECIAL);
+
+                std::list<Creature*> traps;
+                GetCreatureListWithEntryInGrid(traps, player, NPC_PUTRICIDE_TRAP, 100.0f);
+                if (!traps.empty())
+                {
+                    for (std::list<Creature*>::iterator itr = traps.begin(); itr != traps.end(); ++itr)
+                        if (*itr)
+                        {
+                            if (!(*itr)->HasAura(SPELL_GIANT_SWARM))
+                                (*itr)->AI()->DoAction(ACTION_PUTRICIDE_TRAP);
+                        }
+                }
+            }
+        }
+        return true;
+    }
+};
+
 // 37119 - Highlord Tirion Fordring (At Light's Hammer)
 struct npc_highlord_tirion_fordring_lh : public ScriptedAI
 {
@@ -1656,6 +1951,11 @@ void AddSC_icecrown_citadel()
     RegisterSpellScript(spell_icc_harvest_blight_specimen);
     RegisterSpellScript(spell_icc_soul_missile);
 
+    new npc_flesh_eating_insect();
+    new npc_putricide_trap();
+    new spell_icc_summon_plagued_insect();
+    new spell_icc_giant_swarm();
+    new at_icc_start_putricide_pre_event();
     // AreaTriggers
     new at_icc_saurfang_portal();
     new at_icc_shutdown_traps();
