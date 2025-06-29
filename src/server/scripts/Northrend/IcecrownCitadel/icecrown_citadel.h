@@ -25,7 +25,7 @@
 #define ICCScriptName "instance_icecrown_citadel"
 #define DataHeader "IC"
 
-uint32 const EncounterCount = 13;
+uint32 const EncounterCount = 14;
 
 // Shared spells used by more than one script
 enum ICSharedSpells
@@ -86,43 +86,43 @@ enum ICDataTypes
 
     // miniboss, for door handling
     DATA_SISTER_SVALNA                 = 12,
-
+    DATA_SINDRAGOSA_GAUNTLET           = 13,
     // Additional data
-    DATA_SAURFANG_EVENT_NPC            = 13,
-    DATA_BONED_ACHIEVEMENT             = 14,
-    DATA_OOZE_DANCE_ACHIEVEMENT        = 15,
-    DATA_PUTRICIDE_TABLE               = 16,
-    DATA_NAUSEA_ACHIEVEMENT            = 17,
-    DATA_ORB_WHISPERER_ACHIEVEMENT     = 18,
-    DATA_PRINCE_KELESETH               = 19,
-    DATA_PRINCE_TALDARAM               = 20,
-    DATA_PRINCE_VALANAR                = 21,
-    DATA_BLOOD_PRINCES_CONTROL         = 22,
-    DATA_SINDRAGOSA_FROSTWYRMS         = 23,
-    DATA_SPINESTALKER                  = 24,
-    DATA_RIMEFANG                      = 25,
-    DATA_COLDFLAME_JETS                = 26,
-    DATA_TEAM_IN_INSTANCE              = 27,
-    DATA_BLOOD_QUICKENING_STATE        = 28,
-    DATA_HEROIC_ATTEMPTS               = 29,
-    DATA_CROK_SCOURGEBANE              = 30,
-    DATA_CAPTAIN_ARNATH                = 31,
-    DATA_CAPTAIN_BRANDON               = 32,
-    DATA_CAPTAIN_GRONDEL               = 33,
-    DATA_CAPTAIN_RUPERT                = 34,
-    DATA_VALITHRIA_TRIGGER             = 35,
-    DATA_VALITHRIA_LICH_KING           = 36,
-    DATA_HIGHLORD_TIRION_FORDRING      = 37,
-    DATA_ARTHAS_PLATFORM               = 38,
-    DATA_TERENAS_MENETHIL              = 39,
-    DATA_ENEMY_GUNSHIP                 = 40,
-    DATA_UPPERSPIRE_TELE_ACT           = 41, /// also used by conditions
-    DATA_BLOOD_QUEEN_LANA_THEL_COUNCIL = 42,
-    DATA_BLOOD_PRINCE_COUNCIL_INTRO    = 43,
-    DATA_SINDRAGOSA_INTRO              = 44,
-    DATA_FACTION_BUFF                  = 45, // used by conditions
-    DATA_NERUBAR_BROODKEEPER_EVENT     = 46,
-    DATA_PUTRICIDE_TRAP                = 47
+    DATA_SAURFANG_EVENT_NPC            = 14,
+    DATA_BONED_ACHIEVEMENT             = 15,
+    DATA_OOZE_DANCE_ACHIEVEMENT        = 16,
+    DATA_PUTRICIDE_TABLE               = 17,
+    DATA_NAUSEA_ACHIEVEMENT            = 18,
+    DATA_ORB_WHISPERER_ACHIEVEMENT     = 19,
+    DATA_PRINCE_KELESETH               = 20,
+    DATA_PRINCE_TALDARAM               = 21,
+    DATA_PRINCE_VALANAR                = 22,
+    DATA_BLOOD_PRINCES_CONTROL         = 23,
+    DATA_SINDRAGOSA_FROSTWYRMS         = 24,
+    DATA_SPINESTALKER                  = 25,
+    DATA_RIMEFANG                      = 26,
+    DATA_COLDFLAME_JETS                = 27,
+    DATA_TEAM_IN_INSTANCE              = 28,
+    DATA_BLOOD_QUICKENING_STATE        = 29,
+    DATA_HEROIC_ATTEMPTS               = 30,
+    DATA_CROK_SCOURGEBANE              = 31,
+    DATA_CAPTAIN_ARNATH                = 32,
+    DATA_CAPTAIN_BRANDON               = 33,
+    DATA_CAPTAIN_GRONDEL               = 34,
+    DATA_CAPTAIN_RUPERT                = 35,
+    DATA_VALITHRIA_TRIGGER             = 36,
+    DATA_VALITHRIA_LICH_KING           = 37,
+    DATA_HIGHLORD_TIRION_FORDRING      = 38,
+    DATA_ARTHAS_PLATFORM               = 39,
+    DATA_TERENAS_MENETHIL              = 40,
+    DATA_ENEMY_GUNSHIP                 = 41,
+    DATA_UPPERSPIRE_TELE_ACT           = 42, /// also used by conditions
+    DATA_BLOOD_QUEEN_LANA_THEL_COUNCIL = 43,
+    DATA_BLOOD_PRINCE_COUNCIL_INTRO    = 44,
+    DATA_SINDRAGOSA_INTRO              = 45,
+    DATA_FACTION_BUFF                  = 46, // used by conditions
+    DATA_NERUBAR_BROODKEEPER_EVENT     = 47,
+    DATA_PUTRICIDE_TRAP                = 48
 };
 
 enum ICCreaturesIds
@@ -303,6 +303,14 @@ enum ICCreaturesIds
     NPC_NIGHTMARE_PORTAL_PRE_EFFECT             = 38429,
     NPC_DREAM_PORTAL                            = 37945,
     NPC_NIGHTMARE_PORTAL                        = 38430,
+
+    // Sindragosa Gauntlet
+    NPC_SINDRAGOSA_GAUNTLET                     = 37503,
+    NPC_NERUBAR_CHAMPION                        = 37501,
+    NPC_NERUBAR_WEBWEAVER                       = 37502,
+    NPC_NERUBAR_BROODLING                       = 37232,
+    NPC_FROSTWARDEN_SORCERESS                   = 37229,
+    NPC_FROSTWARDEN_WARRIOR                     = 37228,
 
     // Sindragosa
     NPC_SINDRAGOSA                              = 36853,

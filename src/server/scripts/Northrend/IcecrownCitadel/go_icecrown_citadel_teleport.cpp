@@ -41,7 +41,7 @@ static std::vector<uint32> const TeleportSpells =
 
 class icecrown_citadel_teleport : public GameObjectScript
 {
-    static_assert(DATA_UPPERSPIRE_TELE_ACT == 41, "icecrown_citadel.h DATA_UPPERSPIRE_TELE_ACT set to value != 41, gossip condition of the teleporters won't work as intended.");
+    static_assert(DATA_UPPERSPIRE_TELE_ACT == 42, "icecrown_citadel.h DATA_UPPERSPIRE_TELE_ACT set to value != 42, gossip condition of the teleporters won't work as intended.");
 
     public:
         icecrown_citadel_teleport() : GameObjectScript("icecrown_citadel_teleport") { }
