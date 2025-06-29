@@ -88,6 +88,12 @@ enum ICCSpells
     // Invisible Stalker (Float, Uninteractible, LargeAOI)
     SPELL_SOUL_MISSILE              = 72585,
 
+    // Putricide Trap
+    SPELL_GIANT_SWARM          = 70475,
+    SPELL_SUMMON_PLAGUE_INSECT = 70484,
+    SPELL_RANDOM_LEAP          = 70485,
+    SPELL_FLESH_EATING_BITE    = 72967,
+
     // Empowering Blood Orb
     SPELL_EMPOWERED_BLOOD_2         = 70232,
     SPELL_EMPOWERED_BLOOD_3         = 70304,
@@ -178,6 +184,12 @@ enum ICCEvents
 
     // Invisible Stalker (Float, Uninteractible, LargeAOI)
     EVENT_SOUL_MISSILE,
+    // Putricide pre event
+    EVENT_PUTRICIDE_TRAP          = 56,
+    EVENT_END_LEAP                = 57,
+    EVENT_SUMMON_FLESH_EATING_BUG = 58,
+    EVENT_FLESH_EATING_BITE       = 59,
+    EVENT_END_TRAP                = 60
 };
 
 enum ICCDataTypes
@@ -190,7 +202,11 @@ enum ICCActions
 {
     ACTION_SIPHON_INTERRUPTED = 1,
     ACTION_EVADE,
-    ACTION_COMBAT
+    ACTION_COMBAT,
+    // Putricide pre-event
+    ACTION_PUTRICIDE_STALKERS = 6,
+    ACTION_PUTRICIDE_TRAP     = 7,
+    ACTION_PUTRICIDE_BUG_LEAP = 8
 };
 
 enum ICCEventIds

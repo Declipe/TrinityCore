@@ -152,6 +152,7 @@ class instance_icecrown_citadel : public InstanceMapScript
                 UpperSpireTeleporterActiveState = NOT_STARTED;
                 BloodQuickeningState = NOT_STARTED;
                 BloodQuickeningMinutes = 0;
+                PutricideTrapEventState = NOT_STARTED;
                 BloodPrinceIntro = 1;
                 SindragosaIntro = 1;
                 IsBonedEligible = true;
@@ -510,7 +511,7 @@ class instance_icecrown_citadel : public InstanceMapScript
                     case GO_ORATORY_OF_THE_DAMNED_ENTRANCE:
                     case GO_ORANGE_PLAGUE_MONSTER_ENTRANCE:
                     case GO_GREEN_PLAGUE_MONSTER_ENTRANCE:
-                    case GO_SCIENTIST_ENTRANCE:
+                   // case GO_SCIENTIST_ENTRANCE:
                     case GO_CRIMSON_HALL_DOOR:
                     case GO_BLOOD_ELF_COUNCIL_DOOR:
                     case GO_BLOOD_ELF_COUNCIL_DOOR_RIGHT:
@@ -630,6 +631,11 @@ class instance_icecrown_citadel : public InstanceMapScript
                         else if (GetBossState(DATA_ROTFACE) == DONE)
                             HandleGameObject(PutricideGateGUIDs[1], false, go);
                         break;
+                    case GO_SCIENTIST_ENTRANCE:
+                        PutricideDoorGUID = go->GetGUID();
+                        if (GetData(DATA_PUTRICIDE_TRAP) == DONE)
+                            HandleGameObject(PutricideDoorGUID, false, go);
+                        break;
                     case GO_DOODAD_ICECROWN_ORANGETUBES02:
                         PutricidePipeGUIDs[0] = go->GetGUID();
                         if (GetBossState(DATA_FESTERGUT) == DONE)
@@ -732,6 +738,8 @@ class instance_icecrown_citadel : public InstanceMapScript
             {
                 switch (type)
                 {
+                case DATA_PUTRICIDE_TRAP:
+                    return PutricideTrapEventState;
                     case DATA_SINDRAGOSA_FROSTWYRMS:
                         return FrostwyrmGUIDs.size();
                     case DATA_SPINESTALKER:
@@ -1122,6 +1130,25 @@ class instance_icecrown_citadel : public InstanceMapScript
                         break;
                     case DATA_SINDRAGOSA_INTRO:
                         SindragosaIntro = data;
+                        break;
+                    case DATA_PUTRICIDE_TRAP:
+                        PutricideTrapEventState = data;
+                        if (data == DONE)
+                        {
+                            if (GameObject* go = instance->GetGameObject(PutricideDoorGUID))
+                                go->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
+                            HandleGameObject(PutricideCollisionGUID, true);
+                            if (GameObject* go = instance->GetGameObject(PutricideGateGUIDs[0]))
+                                go->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
+                            if (GameObject* go = instance->GetGameObject(PutricideGateGUIDs[1]))
+                                go->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
+                        }
+                        else if (data == IN_PROGRESS)
+                        {
+                            HandleGameObject(PutricideCollisionGUID, false);
+                            HandleGameObject(PutricideGateGUIDs[0], false);
+                            HandleGameObject(PutricideGateGUIDs[1], false);
+                        }
                         break;
                     case DATA_FACTION_BUFF:
                         IsFactionBuffActive = data ? true : false;
@@ -1540,6 +1567,7 @@ class instance_icecrown_citadel : public InstanceMapScript
             ObjectGuid FrozenBolvarGUID;
             ObjectGuid PillarsChainedGUID;
             ObjectGuid PillarsUnchainedGUID;
+            ObjectGuid PutricideDoorGUID;
             Team TeamInInstance;
             uint32 ColdflameJetsState;
             uint32 UpperSpireTeleporterActiveState;
@@ -1549,6 +1577,7 @@ class instance_icecrown_citadel : public InstanceMapScript
             uint32 BloodQuickeningState;
             uint32 HeroicAttempts;
             uint16 BloodQuickeningMinutes;
+            uint32 PutricideTrapEventState;
             uint8 BloodPrinceIntro;
             uint8 SindragosaIntro;
             bool IsBonedEligible;

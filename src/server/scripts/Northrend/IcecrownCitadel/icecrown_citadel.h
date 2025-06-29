@@ -121,7 +121,8 @@ enum ICDataTypes
     DATA_BLOOD_PRINCE_COUNCIL_INTRO    = 43,
     DATA_SINDRAGOSA_INTRO              = 44,
     DATA_FACTION_BUFF                  = 45, // used by conditions
-    DATA_NERUBAR_BROODKEEPER_EVENT     = 46
+    DATA_NERUBAR_BROODKEEPER_EVENT     = 46,
+    DATA_PUTRICIDE_TRAP                = 47
 };
 
 enum ICCreaturesIds
@@ -242,6 +243,7 @@ enum ICCreaturesIds
     NPC_TEAR_GAS_TARGET_STALKER                 = 38317,
     NPC_MUTATED_ABOMINATION_10                  = 37672,
     NPC_MUTATED_ABOMINATION_25                  = 38285,
+    NPC_PUTRICIDE_TRAP                          = 38879,
 
     // Blood Prince Council
     NPC_PRINCE_KELESETH                         = 37972,
