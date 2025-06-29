@@ -4850,6 +4850,22 @@ class spell_cataclysm_breath : public SpellScript
     }
 };
 
+class spell_gen_cooldown_all : public SpellScript
+{
+    PrepareSpellScript(spell_gen_cooldown_all);
+
+    void HandleScript(SpellEffIndex /*effIndex*/)
+    {
+        if (Player* player = GetHitPlayer())
+            player->GetSpellHistory()->ResetAllCooldowns();
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_gen_cooldown_all::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+    }
+};
+
 
 void AddSC_generic_spell_scripts()
 {
@@ -5008,4 +5024,5 @@ void AddSC_generic_spell_scripts()
     RegisterSpellScript(spell_gen_charmed_unit_spell_cooldown);
     RegisterSpellScript(spell_gen_cannon_blast);
     RegisterSpellScript(spell_gen_submerged);
+    RegisterSpellScript(spell_gen_cooldown_all);
 }
