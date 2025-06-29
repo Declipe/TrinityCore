@@ -429,12 +429,12 @@ void Guardian::InitStats(uint32 duration, uint8 levelOverride /*= 0*/)
 {
     Minion::InitStats(duration, levelOverride);
 
-    uint8 level = GetLevel();
+    uint8 level = GetOwner()->GetLevel();
 
     if (levelOverride)
         level = levelOverride;
-    else if (m_Properties->Flags & SUMMON_PROP_FLAG_USE_CREATURE_LEVEL)
-        level = GetOwner()->GetLevel();
+    else if (m_Properties->Flags && SUMMON_PROP_FLAG_USE_CREATURE_LEVEL)
+        level = GetLevel();
 
     InitStatsForLevel(level);
 
