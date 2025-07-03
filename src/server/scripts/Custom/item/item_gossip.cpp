@@ -118,20 +118,16 @@ public:
             if (checkTimer <= diff)
             {
                 std::list<Player*> players;
-                me->GetPlayerListInGrid(players, 10.0f); // ?????? 10 ?????
+                me->GetPlayerListInGrid(players, 10.0f);
 
                 for (Player* player : players)
                 {
-                    if (player->IsAlive()/* && !player->IsGameMaster()*/)
+                    if (player->IsAlive() && !player->IsGameMaster())
                     {
-                       // player->CastSpell(me, 37811, true);
-                        player->AddAura(/*45905*/21547, player);
-                       // player->CastSpell(player, 45905); // ID ??????????
-                        checkTimer = 1000; // ???????? 5 ???
-                        break;
+                        player->AddAura(SPELL_TPS, player); //spell id
                     }
                 }
-                checkTimer = 5000; // ???????? ?????? ???????
+                checkTimer = 5000; //time
             }
             else
                 checkTimer -= diff;
@@ -144,9 +140,52 @@ public:
     }
 };
 
+class go_proximity_caster2 : public GameObjectScript
+{
+public:
+    go_proximity_caster2() : GameObjectScript("go_proximity_caster2") {}
+
+    struct go_proximity_caster2AI : public GameObjectAI
+    {
+        go_proximity_caster2AI(GameObject* go) : GameObjectAI(go)
+        {
+            checkTimer = 1000;
+        }
+
+        uint32 checkTimer;
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (checkTimer <= diff)
+            {
+                std::list<Creature*> creatures;
+                me->GetCreatureListWithEntryInGrid(creatures, 0, 10.0f); // 0 all creature
+
+                for (Creature* creature : creatures)
+                {
+                    if (creature->IsAlive())
+                    {
+                        creature->AddAura(SPELL_TPS, creature); // spell id
+                    }
+                }
+
+                checkTimer = 5000; //time
+            }
+            else
+                checkTimer -= diff;
+        }
+    };
+
+    GameObjectAI* GetAI(GameObject* go) const override
+    {
+        return new go_proximity_caster2AI(go);
+    }
+};
+
 void AddSC_ItemUse_item_custom()
 {
     new go_proximity_caster();
+    new go_proximity_caster2();
     new go_tps();
     new ItemUse_item_custom();
     new rip();
