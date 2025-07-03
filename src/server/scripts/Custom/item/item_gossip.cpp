@@ -99,8 +99,54 @@ public:
     }
 };
 
+class go_proximity_caster : public GameObjectScript
+{
+public:
+    go_proximity_caster() : GameObjectScript("go_proximity_caster") {}
+
+    struct go_proximity_casterAI : public GameObjectAI
+    {
+        go_proximity_casterAI(GameObject* go) : GameObjectAI(go)
+        {
+            checkTimer = 1000;
+        }
+
+        uint32 checkTimer;
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (checkTimer <= diff)
+            {
+                std::list<Player*> players;
+                me->GetPlayerListInGrid(players, 10.0f); // ?????? 10 ?????
+
+                for (Player* player : players)
+                {
+                    if (player->IsAlive()/* && !player->IsGameMaster()*/)
+                    {
+                       // player->CastSpell(me, 37811, true);
+                        player->AddAura(/*45905*/21547, player);
+                       // player->CastSpell(player, 45905); // ID ??????????
+                        checkTimer = 1000; // ???????? 5 ???
+                        break;
+                    }
+                }
+                checkTimer = 5000; // ???????? ?????? ???????
+            }
+            else
+                checkTimer -= diff;
+        }
+    };
+
+    GameObjectAI* GetAI(GameObject* go) const override
+    {
+        return new go_proximity_casterAI(go);
+    }
+};
+
 void AddSC_ItemUse_item_custom()
 {
+    new go_proximity_caster();
     new go_tps();
     new ItemUse_item_custom();
     new rip();
