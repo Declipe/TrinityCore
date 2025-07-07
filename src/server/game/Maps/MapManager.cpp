@@ -36,7 +36,6 @@
 #include "Opcodes.h"
 #ifdef ELUNA
 #include "LuaEngine.h"
-#include "ElunaConfig.h"
 #endif
 #include "ScriptMgr.h"
 #include <numeric>
@@ -55,14 +54,6 @@ void MapManager::Initialize()
     Map::InitStateMachine();
 
     int num_threads(sWorld->getIntConfig(CONFIG_NUMTHREADS));
-#if ELUNA
-    if (sElunaConfig->IsElunaEnabled() && sElunaConfig->IsElunaCompatibilityMode() && num_threads > 1)
-    {
-        // Force 1 thread for Eluna if compatibility mode is enabled. Compatibility mode is single state and does not allow more update threads.
-        TC_LOG_ERROR("maps", "Map update threads set to {}, when Eluna in compatibility mode only allows 1, changing to 1", num_threads);
-        num_threads = 1;
-    }
-#endif
 
     // Start mtmaps if needed.
     if (num_threads > 0)
