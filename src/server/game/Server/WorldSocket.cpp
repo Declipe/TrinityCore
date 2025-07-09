@@ -32,7 +32,6 @@
 #ifdef ELUNA
 #include "LuaEngine.h"
 #endif
-#include "CustomConfig.h"
 #include "World.h"
 #include "WorldSession.h"
 #include <memory>
