@@ -72,6 +72,55 @@ std::string getString(std::string string, uint32 number)
 //}
 //uint32 proff1 = 12;
 
+bool IsVipActive(Player* player)
+{
+    if (!player)
+        return false;
+
+    return player->GetAditionalData()->isPremium();
+}
+
+std::string GetVipEndDate(Player* player)
+{
+    if (!player || !IsVipActive(player))
+        return "Inactive";
+
+    time_t endTime = player->GetAditionalData()->getPremiumUnsetdate();
+    time_t currentTime = GameTime::GetGameTime();
+
+    if (endTime <= currentTime)
+        return "Expired";
+
+    time_t timeLeft = endTime - currentTime;
+
+    uint32 days = timeLeft / 86400;
+    uint32 hours = (timeLeft % 86400) / 3600;
+    uint32 minutes = (timeLeft % 3600) / 60;
+
+    if (days > 0)
+        return fmt::format("{}d {}h {}m", days, hours, minutes);
+    else if (hours > 0)
+        return fmt::format("{}h {}m", hours, minutes);
+    else
+        return fmt::format("{}m", minutes);
+}
+
+std::string GetVipStatusString(Player* player, WorldSession* session)
+{
+    if (!player)
+        return session->GetTrinityString2(NOT_USED_51);//"|cffff0000VIP: Inactive|r";
+
+    if (IsVipActive(player))
+    {
+        std::string timeLeft = GetVipEndDate(player);
+        return /*fmt::format(*/session->GetTrinityString2(NOT_USED_52)/*"|cff00ff00VIP: Active ({})|r", timeLeft)*/;
+    }
+    else
+    {
+        return session->GetTrinityString2(NOT_USED_51);//"|cffff0000VIP: Inactive|r";
+    }
+}
+
 class custom_item : public ItemScript
 {
 public:
@@ -125,6 +174,7 @@ public:
 
         // bonus system
         AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString(GTS(LANG_ITEM_CURRENT_COINS), player->GetCoins()).c_str(), GOSSIP_SENDER_MAIN, 1);
+        AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, GetVipStatusString(player, session).c_str(), GOSSIP_SENDER_MAIN, 3);
         //  if (sWorld->customGetBoolConfig(CONFIG_PLAYER_PVPCAP_REWARD_ENABLED))
         //  {
          //     std::string flag = GTS(LANG_ITEM_PVP_CAP_ALIANCE);
@@ -1655,6 +1705,7 @@ public:
                         AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
                         ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_VIP_TIME, coast7);
                         CloseGossipMenuFor(player);
+                       // player->GetSession()->KickPlayer("Bonk");
                     }
                     else
                     {
