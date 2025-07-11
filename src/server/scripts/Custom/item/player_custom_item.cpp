@@ -80,16 +80,16 @@ bool IsVipActive(Player* player)
     return player->GetAditionalData()->isPremium();
 }
 
-std::string GetVipEndDate(Player* player)
+std::string GetVipTimeLeft(Player* player, WorldSession* session)
 {
     if (!player || !IsVipActive(player))
-        return "Inactive";
+        return "";
 
     time_t endTime = player->GetAditionalData()->getPremiumUnsetdate();
     time_t currentTime = GameTime::GetGameTime();
 
     if (endTime <= currentTime)
-        return "Expired";
+        return "";
 
     time_t timeLeft = endTime - currentTime;
 
@@ -97,27 +97,49 @@ std::string GetVipEndDate(Player* player)
     uint32 hours = (timeLeft % 86400) / 3600;
     uint32 minutes = (timeLeft % 3600) / 60;
 
+    char buffer[256];
+
     if (days > 0)
-        return fmt::format("{}d {}h {}m", days, hours, minutes);
+    {
+        snprintf(buffer, sizeof(buffer), session->GetTrinityString2(NOT_USED_53), days, hours, minutes);
+        return std::string(buffer);
+    }
     else if (hours > 0)
-        return fmt::format("{}h {}m", hours, minutes);
+    {
+        snprintf(buffer, sizeof(buffer), session->GetTrinityString2(NOT_USED_53), hours, minutes);
+        return std::string(buffer);
+    }
     else
-        return fmt::format("{}m", minutes);
+    {
+        snprintf(buffer, sizeof(buffer), session->GetTrinityString2(NOT_USED_53), minutes);
+        return std::string(buffer);
+    }
 }
 
 std::string GetVipStatusString(Player* player, WorldSession* session)
 {
-    if (!player)
-        return session->GetTrinityString2(NOT_USED_51);//"|cffff0000VIP: Inactive|r";
+    if (!player || !session)
+        return "VIP: Error";
 
     if (IsVipActive(player))
     {
-        std::string timeLeft = GetVipEndDate(player);
-        return /*fmt::format(*/session->GetTrinityString2(NOT_USED_52)/*"|cff00ff00VIP: Active ({})|r", timeLeft)*/;
+        time_t endTime = player->GetAditionalData()->getPremiumUnsetdate();
+        time_t currentTime = GameTime::GetGameTime();
+
+        if (endTime <= currentTime)
+            return session->GetTrinityString2(NOT_USED_56);
+
+        std::string timeLeft = GetVipTimeLeft(player, session);
+        std::string statusActive = session->GetTrinityString2(NOT_USED_52);
+
+        char buffer[512];
+        snprintf(buffer, sizeof(buffer), session->GetTrinityString2(NOT_USED_57), timeLeft.c_str());
+
+        return fmt::format("{} ({})", statusActive, std::string(buffer));
     }
     else
     {
-        return session->GetTrinityString2(NOT_USED_51);//"|cffff0000VIP: Inactive|r";
+        return session->GetTrinityString2(NOT_USED_51);
     }
 }
 
