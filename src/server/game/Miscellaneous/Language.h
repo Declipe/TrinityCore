@@ -1524,12 +1524,12 @@ enum TrinityStrings
     NOT_USED_42                                   = 40175,
     NOT_USED_43                                   = 40176,
     NOT_USED_44                                   = 40177,
-    NOT_USED_45                                   = 40178, //not used
-    NOT_USED_46                                   = 40179, //not used
-    NOT_USED_47                                   = 40180, //not used
-    NOT_USED_48                                   = 40181, //not used
-    NOT_USED_49                                   = 40182, //not used
-    NOT_USED_50                                   = 40183, //not used
+    NOT_USED_45                                   = 40178,
+    NOT_USED_46                                   = 40179,
+    NOT_USED_47                                   = 40180,
+    NOT_USED_48                                   = 40181,
+    NOT_USED_49                                   = 40182,
+    NOT_USED_50                                   = 40183,
     LANG_COMMAND_RESET_ITEMS_EQUIPPED             = 40184,
     LANG_COMMAND_RESET_ITEMS_BAGS                 = 40185,
     LANG_COMMAND_RESET_ITEMS_BANK                 = 40186,
@@ -1548,6 +1548,27 @@ enum TrinityStrings
     NOT_USED_58                                   = 40199,
     NOT_USED_59                                   = 40200,
     NOT_USED_60                                   = 40201,
-    //40192 40199 not used
+    NOT_USED_61                                   = 40202,
+    NOT_USED_62                                   = 40203,
+    NOT_USED_63                                   = 40204,
+    NOT_USED_64                                   = 40205,
+    NOT_USED_65                                   = 40206,
+    NOT_USED_66                                   = 40207,
+    NOT_USED_67                                   = 40208,
+    NOT_USED_68                                   = 40209,
+    NOT_USED_69                                   = 40210,
+    NOT_USED_70                                   = 40211,
+    NOT_USED_71                                   = 40212,
+    NOT_USED_72                                   = 40213,
+    NOT_USED_73                                   = 40214,
+    NOT_USED_74                                   = 40215,
+    NOT_USED_75                                   = 40216,
+    NOT_USED_76                                   = 40217,
+    NOT_USED_77                                   = 40218,
+    NOT_USED_78                                   = 40219,
+    NOT_USED_79                                   = 40220,
+    NOT_USED_80                                   = 40221,
+
+    //40200 40221 not used
 };
 #endif

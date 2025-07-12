@@ -2146,7 +2146,7 @@ public:
                 case 200:
                 {
                     uint32 coins = player->GetVerifiedCoins();
-                    uint32 ostatok = 10000 + coins;
+                    uint32 ostatok = 1000 + coins;
 
                     uint32 pt = sGameConfig->GetIntConfig("COST_id"); //49426
                     uint32 pt2 = sGameConfig->GetIntConfig("COST_colvo"); //5
@@ -2154,7 +2154,7 @@ public:
                     {
                         player->DestroyItemCount(pt, pt2, true);
                         {
-                            ostatok = coins + 10000;
+                            ostatok = coins + 1000;
                             player->SetCoins(ostatok);
                             AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
                             ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_SUCCESS_BOUGHT, ostatok);
@@ -2179,10 +2179,244 @@ public:
 
                 case 202: //money obmen menu
                 {
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_25/*, loc_idx*/), GOSSIP_SENDER_MAIN, 200);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_25), GOSSIP_SENDER_MAIN, 200);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_59), GOSSIP_SENDER_MAIN, 203);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_60), GOSSIP_SENDER_MAIN, 204);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_61), GOSSIP_SENDER_MAIN, 205);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_62), GOSSIP_SENDER_MAIN, 206);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_63), GOSSIP_SENDER_MAIN, 207);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_64), GOSSIP_SENDER_MAIN, 208);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_65), GOSSIP_SENDER_MAIN, 209);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_66), GOSSIP_SENDER_MAIN, 210);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
+                    break;
                 }
+
+                case 203:
+                {
+                    uint32 pt = sGameConfig->GetIntConfig("obmen_id1");
+                    uint32 coins = player->GetVerifiedCoins();
+                    uint32 ostatok = 1000 - coins;
+
+                    if (coins >= 1000)
+                    {
+                        ostatok = coins - 1000;
+
+                        player->AddItem(pt, 10);
+                        {
+                            // ostatok = coins + 1000;
+                            player->SetCoins(ostatok);
+                            AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
+                            ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_SUCCESS_BOUGHT, ostatok);
+                            CloseGossipMenuFor(player);
+                        }
+                    }
+                    else
+                    {
+                        player->GetSession()->SendAreaTriggerMessage("%s", GTS2(NOT_USED_43));
+                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_43));
+                        CloseGossipMenuFor(player);
+                    }
+                    break;
+                }
+
+                case 204:
+                {
+                    uint32 pt = sGameConfig->GetIntConfig("obmen_id2");
+                    uint32 coins = player->GetVerifiedCoins();
+                    uint32 ostatok = 1000 - coins;
+
+                    if (coins >= 1000)
+                    {
+                        ostatok = coins - 1000;
+
+                        player->AddItem(pt, 10);
+                        {
+                            // ostatok = coins + 1000;
+                            player->SetCoins(ostatok);
+                            AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
+                            ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_SUCCESS_BOUGHT, ostatok);
+                            CloseGossipMenuFor(player);
+                        }
+                    }
+                    else
+                    {
+                        player->GetSession()->SendAreaTriggerMessage("%s", GTS2(NOT_USED_43));
+                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_43));
+                        CloseGossipMenuFor(player);
+                    }
+                    break;
+                }
+
+                case 205:
+                {
+                    uint32 pt = sGameConfig->GetIntConfig("obmen_id3");
+                    uint32 coins = player->GetVerifiedCoins();
+                    uint32 ostatok = 1000 - coins;
+
+                    if (coins >= 1000)
+                    {
+                        ostatok = coins - 1000;
+
+                        player->AddItem(pt, 10);
+                        {
+                            // ostatok = coins + 1000;
+                            player->SetCoins(ostatok);
+                            AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
+                            ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_SUCCESS_BOUGHT, ostatok);
+                            CloseGossipMenuFor(player);
+                        }
+                    }
+                    else
+                    {
+                        player->GetSession()->SendAreaTriggerMessage("%s", GTS2(NOT_USED_43));
+                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_43));
+                        CloseGossipMenuFor(player);
+                    }
+                    break;
+                }
+
+                case 206:
+                {
+                    uint32 pt = sGameConfig->GetIntConfig("obmen_id4");
+                    uint32 coins = player->GetVerifiedCoins();
+                    uint32 ostatok = 1000 - coins;
+
+                    if (coins >= 1000)
+                    {
+                        ostatok = coins - 1000;
+
+                        player->AddItem(pt, 10);
+                        {
+                            // ostatok = coins + 1000;
+                            player->SetCoins(ostatok);
+                            AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
+                            ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_SUCCESS_BOUGHT, ostatok);
+                            CloseGossipMenuFor(player);
+                        }
+                    }
+                    else
+                    {
+                        player->GetSession()->SendAreaTriggerMessage("%s", GTS2(NOT_USED_43));
+                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_43));
+                        CloseGossipMenuFor(player);
+                    }
+                    break;
+                }
+
+                case 207:
+                {
+                    uint32 pt = sGameConfig->GetIntConfig("obmen_id5");
+                    uint32 coins = player->GetVerifiedCoins();
+                    uint32 ostatok = 1000 - coins;
+
+                    if (coins >= 1000)
+                    {
+                        ostatok = coins - 1000;
+
+                        player->AddItem(pt, 10);
+                        {
+                            // ostatok = coins + 1000;
+                            player->SetCoins(ostatok);
+                            AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
+                            ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_SUCCESS_BOUGHT, ostatok);
+                            CloseGossipMenuFor(player);
+                        }
+                    }
+                    else
+                    {
+                        player->GetSession()->SendAreaTriggerMessage("%s", GTS2(NOT_USED_43));
+                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_43));
+                        CloseGossipMenuFor(player);
+                    }
+                    break;
+                }
+
+                case 208:
+                {
+                    uint32 pt = sGameConfig->GetIntConfig("obmen_id6");
+                    uint32 coins = player->GetVerifiedCoins();
+                    uint32 ostatok = 1000 - coins;
+
+                    if (coins >= 1000)
+                    {
+                        ostatok = coins - 1000;
+
+                        player->AddItem(pt, 10);
+                        {
+                            // ostatok = coins + 1000;
+                            player->SetCoins(ostatok);
+                            AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
+                            ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_SUCCESS_BOUGHT, ostatok);
+                            CloseGossipMenuFor(player);
+                        }
+                    }
+                    else
+                    {
+                        player->GetSession()->SendAreaTriggerMessage("%s", GTS2(NOT_USED_43));
+                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_43));
+                        CloseGossipMenuFor(player);
+                    }
+                    break;
+                }
+
+                case 209:
+                {
+                    uint32 pt = sGameConfig->GetIntConfig("obmen_id7");
+                    uint32 coins = player->GetVerifiedCoins();
+                    uint32 ostatok = 1000 - coins;
+
+                    if (coins >= 1000)
+                    {
+                        ostatok = coins - 1000;
+
+                        player->AddItem(pt, 10);
+                        {
+                            // ostatok = coins + 1000;
+                            player->SetCoins(ostatok);
+                            AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
+                            ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_SUCCESS_BOUGHT, ostatok);
+                            CloseGossipMenuFor(player);
+                        }
+                    }
+                    else
+                    {
+                        player->GetSession()->SendAreaTriggerMessage("%s", GTS2(NOT_USED_43));
+                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_43));
+                        CloseGossipMenuFor(player);
+                    }
+                    break;
+                }
+
+                case 210:
+                {
+                    uint32 pt = sGameConfig->GetIntConfig("obmen_id8");
+                    uint32 coins = player->GetVerifiedCoins();
+                    uint32 ostatok = 1000 - coins;
+
+                    if (coins >= 1000)
+                    {
+                        ostatok = coins - 1000;
+
+                        player->AddItem(pt, 10);
+                        {
+                            // ostatok = coins + 1000;
+                            player->SetCoins(ostatok);
+                            AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
+                            ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_SUCCESS_BOUGHT, ostatok);
+                            CloseGossipMenuFor(player);
+                        }
+                    }
+                    else
+                    {
+                        player->GetSession()->SendAreaTriggerMessage("%s", GTS2(NOT_USED_43));
+                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_43));
+                        CloseGossipMenuFor(player);
+                    }
+                    break;
+                }
+
                 }
             }
         }
