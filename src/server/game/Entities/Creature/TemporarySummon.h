@@ -38,8 +38,7 @@ class TC_GAME_API TempSummon : public Creature
         explicit TempSummon(SummonPropertiesEntry const* properties, WorldObject* owner, bool isWorldObject);
         virtual ~TempSummon() { }
         void Update(uint32 time) override;
-        virtual void InitStats(uint32 lifetime) { InitStats(lifetime, 0); }
-        virtual void InitStats(uint32 lifetime, uint8 levelOverride);
+        virtual void InitStats(uint32 lifetime);
         virtual void InitSummon();
         void UpdateObjectVisibilityOnCreate() override;
         virtual void UnSummon(uint32 msTime = 0);
@@ -62,6 +61,7 @@ class TC_GAME_API TempSummon : public Creature
         void CheckSummonPropertiesFlags(Unit* caster);
     private:
         TempSummonType m_type;
+        uint8 m_creatureLevel;
         uint32 m_timer;
         uint32 m_lifetime;
         ObjectGuid m_summonerGUID;
@@ -72,8 +72,7 @@ class TC_GAME_API Minion : public TempSummon
 {
     public:
         Minion(SummonPropertiesEntry const* properties, Unit* owner, bool isWorldObject);
-        void InitStats(uint32 duration) override { InitStats(duration, 0); }
-        void InitStats(uint32 duration, uint8 levelOverride) override;
+        void InitStats(uint32 duration) override;
         void RemoveFromWorld() override;
         void setDeathState(DeathState s) override;
         Unit* GetOwner() const { return m_owner; }
@@ -99,8 +98,7 @@ class TC_GAME_API Guardian : public Minion
 {
     public:
         Guardian(SummonPropertiesEntry const* properties, Unit* owner, bool isWorldObject);
-        void InitStats(uint32 duration) override { InitStats(duration, 0); }
-        void InitStats(uint32 duration, uint8 levelOverride) override;
+        void InitStats(uint32 duration) override;
         bool InitStatsForLevel(uint8 level);
         void InitSummon() override;
 
@@ -126,8 +124,7 @@ class TC_GAME_API Puppet : public Minion
 {
     public:
         Puppet(SummonPropertiesEntry const* properties, Unit* owner);
-        void InitStats(uint32 duration) override { InitStats(duration, 0); }
-        void InitStats(uint32 duration, uint8 levelOverride) override;
+        void InitStats(uint32 duration) override;
         void InitSummon() override;
         void Update(uint32 time) override;
 };
