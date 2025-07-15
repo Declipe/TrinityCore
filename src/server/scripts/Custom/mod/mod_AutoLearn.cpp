@@ -183,12 +183,12 @@ public:
     }
 
     // Called when a player skill update
-    void OnPlayerSkillUpdate(Player* Player, uint16 SkillId, uint16 /*SkillValue*/, uint16 SkillNewValue)
+    void OnPlayerSkillUpdate(Player* player, uint16 skillId, uint16 /*value*/, uint16 new_value)
     {
         if (!AutoLearnEnable)
             return;
 
-        AutoLearnSpell(OnSkillSpellMask, Player, SkillId, SkillNewValue);
+        AutoLearnSpell(OnSkillSpellMask, player, skillId, new_value);
     }
 
     void AutoLearnSpell(uint8 SpellMask, Player* Player, uint16 SkillId = 0, uint16 SkillValue = 0)
