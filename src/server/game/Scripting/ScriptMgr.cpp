@@ -2380,9 +2380,9 @@ void ScriptMgr::OnFailedPasswordChange(uint32 accountId)
     FOREACH_SCRIPT(AccountScript)->OnFailedPasswordChange(accountId);
 }
 
-void ScriptMgr::OnPlayerSkillUpdate(Player* player, uint16 SkillId, uint16 SkillValue, uint16 SkillNewValue)
+void ScriptMgr::OnPlayerSkillUpdate(Player* player, uint16 skillId, uint16 value, uint16 new_value)
 {
-    FOREACH_SCRIPT(PlayerScript)->OnPlayerSkillUpdate(player, SkillId, SkillValue, SkillNewValue);
+    FOREACH_SCRIPT(PlayerScript)->OnPlayerSkillUpdate(player, skillId, value, new_value);
 }
 
 // Guild

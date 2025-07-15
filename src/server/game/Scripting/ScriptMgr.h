@@ -792,7 +792,7 @@ public:
     // Called when a player is bound to an instance
     virtual void OnBindToInstance(Player* player, Difficulty difficulty, uint32 mapId, bool permanent, uint8 extendState);
 
-    virtual void OnPlayerSkillUpdate(Player* /*player*/, uint16 /*SkillId*/, uint16 /*SkillValue*/, uint16 /*SkillNewValue*/) { }
+        virtual void OnPlayerSkillUpdate(Player* /*player*/, uint16 /*skillId*/, uint16 /*value*/, uint16 /*new_value*/) { }
 
     // Called when a player switches to a new zone
     virtual void OnUpdateZone(Player* player, uint32 newZone, uint32 newArea);
@@ -1198,7 +1198,7 @@ public: /* PlayerScript */
     void OnPlayerDelete(ObjectGuid guid, uint32 accountId);
     void OnPlayerFailedDelete(ObjectGuid guid, uint32 accountId);
     void OnPlayerSave(Player* player);
-    void OnPlayerSkillUpdate(Player* player, uint16 SkillId, uint16 SkillValue, uint16 SkillNewValue);
+        void OnPlayerSkillUpdate(Player* player, uint16 skillId, uint16 value, uint16 new_value);
     void OnPlayerBindToInstance(Player* player, Difficulty difficulty, uint32 mapid, bool permanent, uint8 extendState);
     void OnPlayerUpdateZone(Player* player, uint32 newZone, uint32 newArea);
     void OnGossipSelect(Player* player, uint32 menu_id, uint32 sender, uint32 action);
