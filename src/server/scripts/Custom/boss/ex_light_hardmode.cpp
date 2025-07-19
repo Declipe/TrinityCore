@@ -70,12 +70,11 @@ enum Texts
 class lighthardmode : public CreatureScript
 {
 public:
-    lighthardmode() : CreatureScript("lighthardmode") { }
+    lighthardmode() : CreatureScript("lighthardmode") {}
 
     struct lighthardmodeAI : public ScriptedAI
     {
         lighthardmodeAI(Creature* creature) : ScriptedAI(creature), Summons(me)
-
         {
 
         }
@@ -89,19 +88,19 @@ public:
             playerdie = 0;
         }
 
-        void Lootchange(uint32 playerdie){
-            me->ResetLootMode();
-            if (playerdie == 0){
-                me->AddLootMode(LOOT_MODE_HARD_MODE_2);
-            }
-            else{
-                me->AddLootMode(LOOT_MODE_DEFAULT);
-            }
-        }
+        /* void Lootchange(uint32 playerdie) {
+             me->ResetLootMode();
+             if (playerdie == 0) {
+                 me->AddLootMode(LOOT_MODE_HARD_MODE_2);
+             }
+             else {
+                 me->AddLootMode(LOOT_MODE_DEFAULT);
+             }
+         }*/
 
         void AggroAllPlayers(Creature* temp)
         {
-            Map::PlayerList const &PlList = temp->GetMap()->GetPlayers();
+            Map::PlayerList const& PlList = temp->GetMap()->GetPlayers();
 
             if (PlList.isEmpty())
                 return;
@@ -184,22 +183,25 @@ public:
             }
         }
 
-        void Questcomplete(){
-            Player* pPlayer = nullptr;
-            pPlayer->GetGUID();
-            pPlayer->SendQuestComplete(899000);
-        }
+        /* void Questcomplete() {
+             Player* pPlayer = nullptr;
+             pPlayer->GetGUID();
+             pPlayer->SendQuestComplete(899000);
+         }*/
 
-        void JustDied(Unit* pPlayer) override
+        void JustDied(Unit* /*pPlayer*/) override
         {
             Talk(SAY_DEAD);
             //char msg[250];
             //snprintf(msg, 250, "|cffff0000[Boss System]|r Boss|cffff6060 Lightshadow|r wurde getoetet! Respawn in 4h 33min. Darkshadow ist nun der rechtmaessige Prinz! %u", playerdie);
             //sWorld->SendGlobalText(msg, nullptr);
-            Map::PlayerList const &PlList = pPlayer->GetMap()->GetPlayers();
+
+            /*Map::PlayerList const& PlList = pPlayer->GetMap()->GetPlayers();
             if (PlList.isEmpty())
                 return;
+
             Lootchange(playerdie);
+
             for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
             {
                 if (Player* player = i->GetSource())
@@ -210,18 +212,18 @@ public:
                     if (player->IsAlive())
                     {
                         player->RemoveAllAuras();
-                        if (player->hasQuest(899000) && playerdie == 0){
+                        if (player->hasQuest(899000) && playerdie == 0) {
                             Questcomplete();
 
                         }
                         else {
-                            player->SendQuestFailed(899000,EQUIP_ERR_OK);
+                            player->SendQuestFailed(899000, EQUIP_ERR_OK);
 
                         }
 
                     }
                 }
-            }
+            }*/
 
         }
 
@@ -342,9 +344,6 @@ public:
     {
         return new lighthardmodeAI(creature);
     }
-
-
-
 };
 
 void AddSC_lighthardmode()

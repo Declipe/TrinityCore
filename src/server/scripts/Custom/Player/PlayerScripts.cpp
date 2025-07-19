@@ -124,6 +124,27 @@ private:
     std::map<uint32, uint32> zoneBuffs;
 };
 
+//class ItemInfectionSystem : public PlayerScript
+//{
+//public:
+//    ItemInfectionSystem() : PlayerScript("ItemInfectionSystem") {}
+//
+//    void OnLootItem(Player* player, Item* item, uint32 /*count*/, ObjectGuid /*lootGuid*/) override
+//    {
+//        std::vector<uint32> infectionSpells = { 60842, 30843, 16867, 31977, 3269, 69391, 51442 };
+//
+//        if (urand(1, 100) <= 1)
+//        {
+//            uint32 selectedSpell = infectionSpells[urand(0, infectionSpells.size() - 1)];
+//
+//
+//            player->AddAura(selectedSpell, player);
+//            ChatHandler(player->GetSession()).SendSysMessage("While collecting loot, you were infected with an unknown plague, next time be extremely careful!");
+//
+//        }
+//    }
+//};
+
 void AddSC_ZynPlayerScripts()
 {
     new buff_zones();
