@@ -783,6 +783,7 @@ CREATE TABLE `character_queststatus_seasonal`  (
   `guid` int UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Global Unique Identifier',
   `quest` int UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Quest Identifier',
   `event` int UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Event Identifier',
+  `completedTime` bigint NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`, `quest`) USING BTREE,
   INDEX `idx_guid`(`guid` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci COMMENT = 'Player System' ROW_FORMAT = DYNAMIC;
