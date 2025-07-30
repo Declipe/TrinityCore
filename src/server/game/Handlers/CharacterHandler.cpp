@@ -23,6 +23,7 @@
 #include "CharacterCache.h"
 #include "CharacterPackets.h"
 #include "Chat.h"
+#include "CustomConfig.h"
 #include "DatabaseEnv.h"
 #include "DBCStores.h"
 #include "GameObject.h"
@@ -55,10 +56,6 @@
 #include "SystemPackets.h"
 #include "QueryHolder.h"
 #include "World.h"
-#include "CustomConfig.h"
-#ifdef ELUNA
-#include "LuaEngine.h"
-#endif
 
 class LoginQueryHolder : public CharacterDatabaseQueryHolder
 {

@@ -43,8 +43,6 @@
 #include "WorldPacket.h"
 #ifdef ELUNA
 #include "LuaEngine.h"
-#include "ElunaConfig.h"
-#include "ElunaUtility.h"
 #include "Battleground.h"
 #endif
 #include "WorldSession.h"
