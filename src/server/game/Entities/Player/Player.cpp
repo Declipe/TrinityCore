@@ -4541,8 +4541,8 @@ void Player::ResurrectPlayer(float restore_percent, bool applySickness)
 {
     if (HasFlag(PLAYER_FLAGS, 0x10000000) && !HasExtraLife())
     {
-            GetSession()->SendNotification2(NOT_USED_45);
-            return;
+        GetSession()->SendNotification2(NOT_USED_45);
+        return;
     }
 
     WorldPackets::Misc::DeathReleaseLoc packet;
@@ -5805,7 +5805,7 @@ bool Player::UpdateSkillPro(uint16 skillId, int32 chance, uint32 step)
     // Used only to avoid scan DBC at each skill grow
     uint32 const bonusSkillLevels[] = { 75, 150, 225, 300, 375, 450 };
 
-    TC_LOG_DEBUG("entities.player.skills",  "Player::UpdateSkillPro: Player '{}' ({}), SkillID: {}, Chance: {:3.1f}%)",
+    TC_LOG_DEBUG("entities.player.skills", "Player::UpdateSkillPro: Player '{}' ({}), SkillID: {}, Chance: {:3.1f}%)",
         GetName(), GetGUID().ToString(), skillId, chance / 10.0f);
     if (!skillId)
         return false;
@@ -10428,8 +10428,12 @@ InventoryResult Player::CanTakeMoreSimilarItems(uint32 entry, uint32 count, Item
     }
 
     if (pItem && pItem->m_lootGenerated)
-        return EQUIP_ERR_LOOT_GONE;
+    {
+        if (pProto->InventoryType == INVTYPE_NON_EQUIP)
+            return EQUIP_ERR_NOT_EQUIPPABLE;
 
+        return EQUIP_ERR_LOOT_GONE;
+    }
     // no maximum
     if ((pProto->MaxCount <= 0 && pProto->ItemLimitCategory == 0) || pProto->MaxCount == 2147483647)
         return EQUIP_ERR_OK;
@@ -10729,7 +10733,7 @@ InventoryResult Player::CanStoreItem(uint8 bag, uint8 slot, ItemPosCountVec& des
     if (pItem)
     {
         // item used
-        if (pItem->m_lootGenerated)
+        if (pItem->IsLootCompletelyUsed())
         {
             if (no_space_count)
                 *no_space_count = count;
@@ -11482,10 +11486,6 @@ InventoryResult Player::CanEquipItem(uint8 slot, uint16& dest, Item* pItem, bool
         ItemTemplate const* pProto = pItem->GetTemplate();
         if (pProto)
         {
-            // item used
-            if (pItem->m_lootGenerated)
-                return EQUIP_ERR_LOOT_GONE;
-
             if (pItem->IsBindedNotWith(this))
                 return EQUIP_ERR_NOT_OWNER;
 
@@ -11533,6 +11533,10 @@ InventoryResult Player::CanEquipItem(uint8 slot, uint16& dest, Item* pItem, bool
             uint8 eslot = FindEquipSlot(pItem, slot, swap);
             if (eslot == NULL_SLOT)
                 return EQUIP_ERR_NOT_EQUIPPABLE;
+
+            // item used
+            if (pItem->m_lootGenerated)
+                return EQUIP_ERR_LOOT_GONE;
 
             res = CanUseItem(pItem, not_loading);
             if (res != EQUIP_ERR_OK)
@@ -25350,7 +25354,7 @@ uint32 Player::CalculateTalentsPoints() const
 
     if (GetClass() != CLASS_DEATH_KNIGHT || GetMapId() != 609)
         baseForLevel += m_extraBonusTalentCount;
-        return uint32(baseForLevel * sWorld->getRate(RATE_TALENT));
+    return uint32(baseForLevel * sWorld->getRate(RATE_TALENT));
 
     uint32 talentPointsForLevel = GetLevel() < 56 ? 0 : GetLevel() - 55;
     talentPointsForLevel += GetQuestRewardedTalentCount();
