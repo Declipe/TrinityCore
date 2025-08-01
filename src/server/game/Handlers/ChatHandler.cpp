@@ -39,14 +39,14 @@
 #include "ScriptMgr.h"
 #include "SpellAuraEffects.h"
 #include "Util.h"
-#include "WorldSession.h"
-#ifdef ELUNA
-#include "LuaEngine.h"
-#endif
 #include "Warden.h"
 #include "World.h"
 #include "WorldPacket.h"
+#include "WorldSession.h"
 #include <algorithm>
+#ifdef ELUNA
+#include "LuaEngine.h"
+#endif
 
 enum ChatFilterPunishments
 {
@@ -80,7 +80,7 @@ std::vector<std::pair<uint64 /*guid*/, std::string /*message*/> > messagesInChan
 class kick_player_delay_event : public BasicEvent
 {
 public:
-    kick_player_delay_event(Player* player) : _player(player) { }
+    kick_player_delay_event(Player* player) : _player(player) {}
 
     bool Execute(uint64 /*time*/, uint32 /*diff*/)
     {
@@ -943,7 +943,8 @@ namespace Trinity
     {
     public:
         EmoteChatBuilder(Player const& player, uint32 text_emote, uint32 emote_num, Unit const* target)
-            : i_player(player), i_text_emote(text_emote), i_emote_num(emote_num), i_target(target) { }
+            : i_player(player), i_text_emote(text_emote), i_emote_num(emote_num), i_target(target) {
+        }
 
         void operator()(WorldPacket& data, LocaleConstant loc_idx)
         {
@@ -998,20 +999,20 @@ void WorldSession::HandleTextEmoteOpcode(WorldPacket& recvData)
 
     switch (emote)
     {
-        case EMOTE_STATE_SLEEP:
-        case EMOTE_STATE_SIT:
-        case EMOTE_STATE_KNEEL:
-        case EMOTE_ONESHOT_NONE:
+    case EMOTE_STATE_SLEEP:
+    case EMOTE_STATE_SIT:
+    case EMOTE_STATE_KNEEL:
+    case EMOTE_ONESHOT_NONE:
+        break;
+    case EMOTE_STATE_DANCE:
+        GetPlayer()->SetEmoteState(emote);
+        break;
+    default:
+        // Only allow text-emotes for "dead" entities (feign death included)
+        if (GetPlayer()->HasUnitState(UNIT_STATE_DIED))
             break;
-        case EMOTE_STATE_DANCE:
-            GetPlayer()->SetEmoteState(emote);
-            break;
-        default:
-            // Only allow text-emotes for "dead" entities (feign death included)
-            if (GetPlayer()->HasUnitState(UNIT_STATE_DIED))
-                break;
-            GetPlayer()->HandleEmoteCommand(emote);
-            break;
+        GetPlayer()->HandleEmoteCommand(emote);
+        break;
     }
 
     Unit* unit = ObjectAccessor::GetUnit(*_player, guid);

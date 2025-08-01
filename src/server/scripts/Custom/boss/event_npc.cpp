@@ -520,7 +520,7 @@ public:
 
     struct event_npc_earthlordAI : public ScriptedAI
     {
-        event_npc_earthlordAI(Creature* c) : ScriptedAI(c) {}
+        event_npc_earthlordAI(Creature* creature) : ScriptedAI(creature) {}
 
         uint32 m_uiNatureTimer;
         uint32 m_uiGroundTimer;
