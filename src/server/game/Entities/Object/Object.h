@@ -38,6 +38,7 @@
 #include <set>
 #include <unordered_map>
 #ifdef ELUNA
+#include "ElunaEventMgr.h"
 #include "LuaValue.h"
 #endif
 
