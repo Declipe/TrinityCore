@@ -23,13 +23,9 @@
 #include "MoveSplineInit.h"
 #include "PathGenerator.h"
 #include "Random.h"
-#include <random>
-#include <algorithm>
-#include <G3D/Vector3.h>
-#include "CustomConfig.h"
 
 template<class T>
-RandomMovementGenerator<T>::RandomMovementGenerator(float distance) : _timer(0), _reference(), _wanderDistance(distance), _wanderSteps(0), _angleIndex(0), _pathIndex(0)
+RandomMovementGenerator<T>::RandomMovementGenerator(float distance) : _timer(0), _reference(), _wanderDistance(distance), _wanderSteps(0)
 {
     this->Mode = MOTION_MODE_DEFAULT;
     this->Priority = MOTION_PRIORITY_NORMAL;
@@ -84,12 +80,8 @@ void RandomMovementGenerator<Creature>::DoInitialize(Creature* owner)
     if (!owner || !owner->IsAlive())
         return;
 
+    _reference = owner->GetPosition();
     owner->StopMoving();
-    _pathIndex = 0;
-    _paths.clear();
-    _pathGenerator = nullptr;
-
-    _timer.Reset(0);
 
     if (_wanderDistance == 0.f)
         _wanderDistance = owner->GetWanderDistance();
@@ -97,22 +89,8 @@ void RandomMovementGenerator<Creature>::DoInitialize(Creature* owner)
     // Retail seems to let a creature walk 2 up to 10 splines before triggering a pause
     _wanderSteps = urand(2, 10);
 
-    // Only set these on first initialize
-    if (_angles.empty())
-    {
-        _reference = owner->GetPosition();
-        // Precalculate a spread of angles to use for our wander points, this gives us a more even distribution of 'random' points
-        float initAngle = frand(0.f, M_PI * 2.0f);
-        std::vector<float> tempAngles;
-        for (uint8 i = 0; i < NUM_WANDER_POINTS; ++i)
-        {
-            tempAngles.push_back(initAngle + (M_PI * 2.0f / (float)NUM_WANDER_POINTS) * i);
-        }
-        std::random_device rd;
-        std::mt19937 g(rd());
-        std::shuffle(tempAngles.begin(), tempAngles.end(), g);
-        _angles.insert(_angles.end(), tempAngles.begin(), tempAngles.end());
-    }
+    _timer.Reset(0);
+    _path = nullptr;
 }
 
 template<class T>
@@ -139,64 +117,37 @@ void RandomMovementGenerator<Creature>::SetRandomLocation(Creature* owner)
     {
         AddFlag(MOVEMENTGENERATOR_FLAG_INTERRUPTED);
         owner->StopMoving();
-        _pathIndex = 0;
-        _paths.clear();
-        _pathGenerator = nullptr;
+        _path = nullptr;
         return;
     }
 
-    // No cached paths so create a new one
-    if (_paths.size() <= NUM_WANDER_POINTS)
+    Position position(_reference);
+    float distance = frand(0.f, _wanderDistance);
+    float angle = frand(0.f, float(M_PI * 2));
+    owner->MovePositionToFirstCollision(position, distance, angle);
+
+    // Check if the destination is in LOS
+    if (!owner->IsWithinLOS(position.GetPositionX(), position.GetPositionY(), position.GetPositionZ()))
     {
-        Position position;
-        if (_paths.size() == NUM_WANDER_POINTS)
-        {
-            // Last path needs to connect to the first point
-            G3D::Vector3& v = _paths[0][0];
-            position.Relocate(v.x, v.y, v.z);
-        }
-        else
-        {
-            position = _reference;
-            float distance = frand(MIN_WANDER_DISTANCE, _wanderDistance);
-            float angle = _angles[_angleIndex];
-            _angleIndex = (_angleIndex + 1) % NUM_WANDER_POINTS;
-            // Project destination position to the first collision
-            owner->MovePositionToFirstCollision(position, distance, angle);
-        }
+        // Retry later on
+        _timer.Reset(200);
+        return;
+    }
 
-        // Check if the destination is in LOS
-        if (!owner->IsWithinLOS(position.GetPositionX(), position.GetPositionY(), position.GetPositionZ()))
-        {
-            // Retry later on
-            _timer.Reset(200);
-            // Always clear the cache if we fail to complete the loop at any step
-            _pathIndex = 0;
-            _paths.clear();
-            return;
-        }
+    if (!_path)
+    {
+        _path = std::make_unique<PathGenerator>(owner);
+        _path->SetPathLengthLimit(30.0f);
+    }
 
-        // Lazy load path generator
-        if (!_pathGenerator)
-        {
-            _pathGenerator = std::make_unique<PathGenerator>(owner);
-            _pathGenerator->SetPathLengthLimit(30.0f);
-        }
-
-        bool result = _pathGenerator->CalculatePath(position.GetPositionX(), position.GetPositionY(), position.GetPositionZ());
-        // PATHFIND_FARFROMPOLY shouldn't be checked as creatures in water are most likely far from poly
-        if (!result || (_pathGenerator->GetPathType() & PATHFIND_NOPATH)
-                    || (_pathGenerator->GetPathType() & PATHFIND_SHORTCUT)
-                    /*|| (_pathGenerator->GetPathType() & PATHFIND_FARFROMPOLY)*/)
-        {
-            _timer.Reset(100);
-            // Always clear the cache if we fail to complete the loop at any step
-            _pathIndex = 0;
-            _paths.clear();
-            return;
-        }
-
-        _paths.push_back(_pathGenerator->GetPath());
+    bool result = _path->CalculatePath(position.GetPositionX(), position.GetPositionY(), position.GetPositionZ());
+    // PATHFIND_FARFROMPOLY shouldn't be checked as creatures in water are most likely far from poly
+    if (!result || (_path->GetPathType() & PATHFIND_NOPATH)
+                || (_path->GetPathType() & PATHFIND_SHORTCUT)
+                /*|| (_path->GetPathType() & PATHFIND_FARFROMPOLY)*/)
+    {
+        _timer.Reset(100);
+        return;
     }
 
     RemoveFlag(MOVEMENTGENERATOR_FLAG_TRANSITORY | MOVEMENTGENERATOR_FLAG_TIMED_PAUSED);
@@ -217,14 +168,9 @@ void RandomMovementGenerator<Creature>::SetRandomLocation(Creature* owner)
     }
 
     Movement::MoveSplineInit init(owner);
-    init.MovebyPath(_paths[_pathIndex]);
+    init.MovebyPath(_path->GetPath());
     init.SetWalk(walk);
     int32 splineDuration = init.Launch();
-
-    if (sGameConfig->GetBoolConfig("DontCacheRandomMovementPaths"))
-        _paths.clear();
-    else
-        _pathIndex = (_pathIndex + 1) % (NUM_WANDER_POINTS + 1);
 
     --_wanderSteps;
     if (_wanderSteps) // Creature has yet to do steps before pausing
@@ -259,23 +205,14 @@ bool RandomMovementGenerator<Creature>::DoUpdate(Creature* owner, uint32 diff)
     {
         AddFlag(MOVEMENTGENERATOR_FLAG_INTERRUPTED);
         owner->StopMoving();
-        _pathIndex = 0;
-        _paths.clear();
-        _pathGenerator = nullptr;
+        _path = nullptr;
         return true;
     }
     else
         RemoveFlag(MOVEMENTGENERATOR_FLAG_INTERRUPTED);
 
     _timer.Update(diff);
-
-    // Not sure why we are breaking the current movement here, but since we are we need to clear the cache
-    if (HasFlag(MOVEMENTGENERATOR_FLAG_SPEED_UPDATE_PENDING) && !owner->movespline->Finalized()) {
-        _pathIndex = 0;
-        _paths.clear();
-        SetRandomLocation(owner);
-    }
-    else if (_timer.Passed() && owner->movespline->Finalized())
+    if ((HasFlag(MOVEMENTGENERATOR_FLAG_SPEED_UPDATE_PENDING) && !owner->movespline->Finalized()) || (_timer.Passed() && owner->movespline->Finalized()))
         SetRandomLocation(owner);
 
     return true;
