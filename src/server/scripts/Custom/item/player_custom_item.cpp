@@ -41,7 +41,7 @@
 #include "ScriptMgr.h"
 #include "World.h"
 #include "WorldSession.h"
-
+//test
 #define CONST_ARENA_RENAME 100
 #define CONST_ARENA_CUSTOMIZE 100
 #define CONST_ARENA_CHANGE_FACTION 500
