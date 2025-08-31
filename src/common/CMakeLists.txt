@@ -77,7 +77,8 @@ if (ELUNA)
       lualib)
 endif()
 
-PROPERTIES
+set_target_properties(common
+  PROPERTIES
     COMPILE_WARNING_AS_ERROR ${WITH_WARNINGS_AS_ERRORS}
     DEFINE_SYMBOL TRINITY_API_EXPORT_COMMON
     FOLDER "server")
