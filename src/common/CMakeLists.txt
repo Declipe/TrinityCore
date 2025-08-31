@@ -53,10 +53,6 @@ target_include_directories(common
   PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR})
 
-set_target_properties(common
-  PROPERTIES
-    DEFINE_SYMBOL TRINITY_API_EXPORT_COMMON)
-
 target_link_libraries(common
   PRIVATE
     trinity-core-interface
@@ -81,12 +77,13 @@ if (ELUNA)
       lualib)
 endif()
 
+PROPERTIES
+    COMPILE_WARNING_AS_ERROR ${WITH_WARNINGS_AS_ERRORS}
+    DEFINE_SYMBOL TRINITY_API_EXPORT_COMMON
+    FOLDER "server")
+
 add_dependencies(common revision_data.h)
 
-set_target_properties(common
-    PROPERTIES
-      FOLDER
-        "server")
 
 if(BUILD_SHARED_LIBS)
   if(UNIX)
