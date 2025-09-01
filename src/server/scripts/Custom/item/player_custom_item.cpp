@@ -41,6 +41,8 @@
 #include "ScriptMgr.h"
 #include "World.h"
 #include "WorldSession.h"
+#include "Custom/ServerMenu/ServerMenuMgr.h"
+
 //test
 #define CONST_ARENA_RENAME 100
 #define CONST_ARENA_CUSTOMIZE 100
@@ -2508,7 +2510,36 @@ public:
     }
 };
 
+class SpServerMenuPlayerGossip : public SpellScriptLoader {
+public:
+    SpServerMenuPlayerGossip() : SpellScriptLoader("SpServerMenuPlayerGossip") {}
+
+    class SpServerMenuPlayerGossip_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(SpServerMenuPlayerGossip_SpellScript);
+
+        void HandleScript(SpellEffIndex /*effIndex*/)
+        {
+            if (Player* player = GetCaster()->ToPlayer()) {
+                if (!sServerMenuMgr->CanOpenMenu(player))
+                    sServerMenuMgr->GossipHelloMenu(player);
+            }
+        }
+
+        void Register() override
+        {
+            OnEffectHitTarget += SpellEffectFn(SpServerMenuPlayerGossip_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new SpServerMenuPlayerGossip_SpellScript();
+    }
+};
+
 void AddSC_custom_item()
 {
+    new SpServerMenuPlayerGossip();
     new custom_item();
 }
