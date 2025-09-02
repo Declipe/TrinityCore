@@ -391,7 +391,7 @@ uint32 AuctionBotBuyer::GetChanceMultiplier(uint32 quality)
 }
 
 // Buys the auction and does necessary actions to complete the buyout
-void AuctionBotBuyer::BuyEntry(AuctionEntry* auction, AuctionHouseObject* auctionHouse)
+void AuctionBotBuyer::BuyEntry(AuctionEntry* auction, AuctionHouseObject* /*auctionHouse*/)
 {
     TC_LOG_DEBUG("ahbot", "AHBot: Entry {} bought at {:.2f}g", auction->Id, float(auction->buyout) / float(GOLD));
 
