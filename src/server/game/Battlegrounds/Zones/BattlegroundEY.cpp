@@ -299,7 +299,7 @@ void BattlegroundEY::UpdateTeamScore(uint32 Team)
 {
     uint32 score = GetTeamScore(Team);
 
-    if (score >= sGameConfig->GetIntConfig("Battleground.EyeOfTheStorm.CapturePoints"))
+    if (score >= unsigned(sGameConfig->GetIntConfig("Battleground.EyeOfTheStorm.CapturePoints")))
     {
         score = sGameConfig->GetIntConfig("Battleground.EyeOfTheStorm.CapturePoints");
         if (Team == TEAM_ALLIANCE)

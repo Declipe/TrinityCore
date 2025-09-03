@@ -2198,6 +2198,7 @@ public:
                 case 203:
                 {
                     uint32 pt = sGameConfig->GetIntConfig("obmen_id1");
+                    uint32 pt2 = sGameConfig->GetIntConfig("obmen_id1_col");
                     uint32 coins = player->GetVerifiedCoins();
                     uint32 ostatok = 1000 - coins;
 
@@ -2205,7 +2206,7 @@ public:
                     {
                         ostatok = coins - 1000;
 
-                        player->AddItem(pt, 10);
+                        player->AddItem(pt, pt2);
                         {
                             // ostatok = coins + 1000;
                             player->SetCoins(ostatok);
@@ -2226,6 +2227,7 @@ public:
                 case 204:
                 {
                     uint32 pt = sGameConfig->GetIntConfig("obmen_id2");
+                    uint32 pt2 = sGameConfig->GetIntConfig("obmen_id2_col");
                     uint32 coins = player->GetVerifiedCoins();
                     uint32 ostatok = 1000 - coins;
 
@@ -2233,7 +2235,7 @@ public:
                     {
                         ostatok = coins - 1000;
 
-                        player->AddItem(pt, 10);
+                        player->AddItem(pt, pt2);
                         {
                             // ostatok = coins + 1000;
                             player->SetCoins(ostatok);
@@ -2254,6 +2256,7 @@ public:
                 case 205:
                 {
                     uint32 pt = sGameConfig->GetIntConfig("obmen_id3");
+                    uint32 pt2 = sGameConfig->GetIntConfig("obmen_id3_col");
                     uint32 coins = player->GetVerifiedCoins();
                     uint32 ostatok = 1000 - coins;
 
@@ -2261,7 +2264,7 @@ public:
                     {
                         ostatok = coins - 1000;
 
-                        player->AddItem(pt, 10);
+                        player->AddItem(pt, pt2);
                         {
                             // ostatok = coins + 1000;
                             player->SetCoins(ostatok);
@@ -2282,6 +2285,7 @@ public:
                 case 206:
                 {
                     uint32 pt = sGameConfig->GetIntConfig("obmen_id4");
+                    uint32 pt2 = sGameConfig->GetIntConfig("obmen_id4_col");
                     uint32 coins = player->GetVerifiedCoins();
                     uint32 ostatok = 1000 - coins;
 
@@ -2289,7 +2293,7 @@ public:
                     {
                         ostatok = coins - 1000;
 
-                        player->AddItem(pt, 10);
+                        player->AddItem(pt, pt2);
                         {
                             // ostatok = coins + 1000;
                             player->SetCoins(ostatok);
@@ -2310,6 +2314,7 @@ public:
                 case 207:
                 {
                     uint32 pt = sGameConfig->GetIntConfig("obmen_id5");
+                    uint32 pt2 = sGameConfig->GetIntConfig("obmen_id5_col");
                     uint32 coins = player->GetVerifiedCoins();
                     uint32 ostatok = 1000 - coins;
 
@@ -2317,7 +2322,7 @@ public:
                     {
                         ostatok = coins - 1000;
 
-                        player->AddItem(pt, 10);
+                        player->AddItem(pt, pt2);
                         {
                             // ostatok = coins + 1000;
                             player->SetCoins(ostatok);
@@ -2338,6 +2343,7 @@ public:
                 case 208:
                 {
                     uint32 pt = sGameConfig->GetIntConfig("obmen_id6");
+                    uint32 pt2 = sGameConfig->GetIntConfig("obmen_id6_col");
                     uint32 coins = player->GetVerifiedCoins();
                     uint32 ostatok = 1000 - coins;
 
@@ -2345,7 +2351,7 @@ public:
                     {
                         ostatok = coins - 1000;
 
-                        player->AddItem(pt, 10);
+                        player->AddItem(pt, pt2);
                         {
                             // ostatok = coins + 1000;
                             player->SetCoins(ostatok);
@@ -2366,6 +2372,7 @@ public:
                 case 209:
                 {
                     uint32 pt = sGameConfig->GetIntConfig("obmen_id7");
+                    uint32 pt2 = sGameConfig->GetIntConfig("obmen_id7_col");
                     uint32 coins = player->GetVerifiedCoins();
                     uint32 ostatok = 1000 - coins;
 
@@ -2373,7 +2380,7 @@ public:
                     {
                         ostatok = coins - 1000;
 
-                        player->AddItem(pt, 10);
+                        player->AddItem(pt, pt2);
                         {
                             // ostatok = coins + 1000;
                             player->SetCoins(ostatok);
@@ -2394,6 +2401,7 @@ public:
                 case 210:
                 {
                     uint32 pt = sGameConfig->GetIntConfig("obmen_id8");
+                    uint32 pt2 = sGameConfig->GetIntConfig("obmen_id8_col");
                     uint32 coins = player->GetVerifiedCoins();
                     uint32 ostatok = 1000 - coins;
 
@@ -2401,7 +2409,7 @@ public:
                     {
                         ostatok = coins - 1000;
 
-                        player->AddItem(pt, 10);
+                        player->AddItem(pt, pt2);
                         {
                             // ostatok = coins + 1000;
                             player->SetCoins(ostatok);
