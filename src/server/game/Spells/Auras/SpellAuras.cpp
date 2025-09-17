@@ -1793,12 +1793,12 @@ void Aura::HandleAuraSpecificMods(AuraApplication const* aurApp, Unit* caster, b
     if (apply)
     {
         if (Creature* creature = target->ToCreature())
-            creature->AI()->OnAuraApplied(GetSpellInfo());
+            creature->AI()->OnAuraApplied(aurApp);
     }
     else
     {
         if (Creature* creature = target->ToCreature())
-            creature->AI()->OnAuraRemoved(GetSpellInfo());
+            creature->AI()->OnAuraRemoved(aurApp);
     }
 }
 
