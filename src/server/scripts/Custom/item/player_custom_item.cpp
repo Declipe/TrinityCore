@@ -58,7 +58,81 @@
 
 #define GTS session->GetTrinityString
 #define GTS2 session->GetTrinityString2
-//#define GTS3 sObjectMgr->GetTrinityString2
+
+enum SpellsAndItemIDsAndCost
+{
+    FirstAidSkill = 129,
+    FirstAidSPell = 65292,
+
+    CookingSkill = 185,
+    CookingSpell = 65291,
+
+    FishingSkill = 356,
+    FishingSpell = 65293,
+
+    BlackSmithSkill = 164,
+    BlackSmithSPell = 51298,
+
+    LeatherWorkingSKill = 165,
+    LeatherWorkingSpell = 51301,
+
+    AlchemySkill = 171,
+    AlchemySPell = 65281,
+
+    HerbalismSkill = 182,
+    HerbalismSpell = 65288,
+
+    MiningSKill = 186,
+    MiningSpell = 65289,
+
+    TailoringSKill = 197,
+    TailoringSpell = 65283,
+
+    EngSkill = 202,
+    EngSPell = 61464,
+
+    EnchanterSkill = 333,
+    EnchanterSpell = 51312,
+
+    SKinningSkill = 393,
+    SkinningSPell = 50307,
+
+    JewelSKill = 755,
+    JewelSpell = 65289,
+
+    InscriptSKill = 773,
+    InscriptSpell = 65287,
+};
+
+static void HandleLearnSkillRecipesHelper(Player* player, uint32 skillId)
+{
+    uint32 classmask = player->GetClassMask();
+
+    std::vector<SkillLineAbilityEntry const*> const* skillLineAbilities = GetSkillLineAbilitiesBySkill(skillId);
+    if (!skillLineAbilities)
+        return;
+
+    for (SkillLineAbilityEntry const* skillLine : *skillLineAbilities)
+    {
+        // not high rank
+        if (skillLine->SupercededBySpell)
+            continue;
+
+        // skip racial skills
+        if (skillLine->RaceMask != 0)
+            continue;
+
+        // skip wrong class skills
+        if (skillLine->ClassMask && (skillLine->ClassMask & classmask) == 0)
+            continue;
+
+        SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(skillLine->Spell);
+        if (!spellInfo || !SpellMgr::IsSpellValid(spellInfo, player, false))
+            continue;
+
+        player->LearnSpell(skillLine->Spell, false);
+    }
+}
 
 uint32 constexpr aurassSize = 13;
 uint32 aurass[aurassSize] = { 15366, 16609, 48162, 48074, 48170, 43223, 36880, 69994, 33081, 26035, 48469, 57623, 47440 };
@@ -289,6 +363,7 @@ public:
             //      AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_DALARAN_MENU_AVALIABLE) + NextTimeDalaranEvent(DalaranEvent->GetTimeOfNextEvent()), GOSSIP_SENDER_MAIN, 3);
          // }
 
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_67), GOSSIP_SENDER_MAIN, 211);
         AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_SERVER_MENU), GOSSIP_SENDER_MAIN, 11);
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
         return false;
@@ -1656,7 +1731,9 @@ public:
                         ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_MSG_CUSTOMIZE_COMPLETE);
                     }
                     break;
+                }
                 case 76: // Change Faction
+                {
                     if (player->GetArenaPoints() < CONST_ARENA_CHANGE_FACTION)
                     {
                         ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_MSG_NO_ARENA_POINTS);
@@ -2424,6 +2501,162 @@ public:
                         ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_43));
                         CloseGossipMenuFor(player);
                     }
+                    break;
+                }
+
+                case 211:
+                {
+                    player->PlayerTalkClass->ClearMenus();
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_58), GOSSIP_SENDER_MAIN, 213);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_64), GOSSIP_SENDER_MAIN, 214);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_57), GOSSIP_SENDER_MAIN, 215);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_61), GOSSIP_SENDER_MAIN, 216);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_65), GOSSIP_SENDER_MAIN, 217);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_67), GOSSIP_SENDER_MAIN, 218);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_60), GOSSIP_SENDER_MAIN, 219);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_59), GOSSIP_SENDER_MAIN, 220);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_66), GOSSIP_SENDER_MAIN, 221);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_63), GOSSIP_SENDER_MAIN, 222);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_62), GOSSIP_SENDER_MAIN, 223);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_31), GOSSIP_SENDER_MAIN, 212);
+                    SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
+                    break;
+                }
+
+                case 212:
+                {
+                        player->PlayerTalkClass->ClearMenus();
+                        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_70), GOSSIP_SENDER_MAIN, 224);
+                        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_69), GOSSIP_SENDER_MAIN, 225);
+                        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_71), GOSSIP_SENDER_MAIN, 226);
+                        SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
+                    break;
+                }
+
+                case 213:
+                {
+                    player->CastSpell(player, BlackSmithSPell);
+                    player->SetSkill(BlackSmithSkill, 1, 450, 450);
+                    HandleLearnSkillRecipesHelper(player, BlackSmithSkill);
+                    CloseGossipMenuFor(player);
+                    break;
+                }
+
+                case 214:
+                {
+                    player->CastSpell(player, LeatherWorkingSpell);
+                    player->SetSkill(LeatherWorkingSKill, 1, 450, 450);
+                    HandleLearnSkillRecipesHelper(player, LeatherWorkingSKill);
+                    CloseGossipMenuFor(player);
+                    break;
+                }
+
+                case 215:
+                {
+                    player->CastSpell(player, AlchemySPell);
+                    player->SetSkill(AlchemySkill, 1, 450, 450);
+                    HandleLearnSkillRecipesHelper(player, AlchemySkill);
+                    CloseGossipMenuFor(player);
+                    break;
+                }
+
+                case 216:
+                {
+                    player->CastSpell(player, HerbalismSpell);
+                    player->SetSkill(HerbalismSkill, 1, 450, 450);
+                    HandleLearnSkillRecipesHelper(player, HerbalismSkill);
+                    CloseGossipMenuFor(player);
+                    break;
+                }
+
+                case 217:
+                {
+                    player->CastSpell(player, MiningSpell);
+                    player->SetSkill(MiningSKill, 1, 450, 450);
+                    HandleLearnSkillRecipesHelper(player, MiningSKill);
+                    CloseGossipMenuFor(player);
+                    break;
+                }
+
+                case 218:
+                {
+                    player->CastSpell(player, TailoringSpell);
+                    player->SetSkill(TailoringSKill, 1, 450, 450);
+                    HandleLearnSkillRecipesHelper(player, TailoringSKill);
+                    CloseGossipMenuFor(player);
+                    break;
+                }
+
+                case 219:
+                {
+                    player->CastSpell(player, EngSPell);
+                    player->SetSkill(EngSkill, 1, 450, 450);
+                    HandleLearnSkillRecipesHelper(player, EngSkill);
+                    CloseGossipMenuFor(player);
+                    break;
+                }
+
+                case 220:
+                {
+                    player->CastSpell(player, EnchanterSpell);
+                    player->SetSkill(EnchanterSkill, 1, 450, 450);
+                    HandleLearnSkillRecipesHelper(player, EnchanterSkill);
+                    CloseGossipMenuFor(player);
+                    break;
+                }
+
+                case 221:
+                {
+                    player->CastSpell(player, SkinningSPell);
+                    player->SetSkill(SKinningSkill, 1, 450, 450);
+                    HandleLearnSkillRecipesHelper(player, SKinningSkill);
+                    CloseGossipMenuFor(player);
+                    break;
+                }
+
+                case 222:
+                {
+                    player->CastSpell(player, JewelSpell);
+                    player->SetSkill(JewelSKill, 1, 450, 450);
+                    HandleLearnSkillRecipesHelper(player, JewelSKill);
+                    player->SetSkill(MiningSKill, 0, 0, 0);
+                    CloseGossipMenuFor(player);
+                    break;
+                }
+
+                case 223:
+                {
+                    player->CastSpell(player, InscriptSpell);
+                    player->SetSkill(InscriptSKill, 1, 450, 450);
+                    HandleLearnSkillRecipesHelper(player, InscriptSKill);
+                    CloseGossipMenuFor(player);
+                    break;
+                }
+
+                case 224:
+                {
+                    player->SetSkill(FirstAidSkill, 1, 450, 450);
+                    player->CastSpell(player, FirstAidSPell);
+                    HandleLearnSkillRecipesHelper(player, FirstAidSkill);
+                    CloseGossipMenuFor(player);
+                    break;
+                }
+
+                case 225:
+                {
+                    player->SetSkill(CookingSkill, 1, 450, 450);
+                    player->CastSpell(player, CookingSpell);
+                    HandleLearnSkillRecipesHelper(player, CookingSkill);
+                    CloseGossipMenuFor(player);
+                    break;
+                }
+
+                case 226:
+                {
+                    player->SetSkill(FishingSkill, 1, 450, 450);
+                    player->CastSpell(player, FishingSpell);
+                    HandleLearnSkillRecipesHelper(player, FishingSkill);
+                    CloseGossipMenuFor(player);
                     break;
                 }
 
