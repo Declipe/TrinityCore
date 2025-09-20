@@ -1178,6 +1178,13 @@ public:
 
                 if (!result)
                 {
+                    stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_ITEM_TEMPLATE_LOCALE_BY_NAME);
+                    stmt->setString(0, itemName);
+                    result = WorldDatabase.Query(stmt);
+                }
+
+                if (!result)
+                {
                     handler->PSendSysMessage(LANG_COMMAND_COULDNOTFIND, itemNameStr+1);
                     handler->SetSentErrorMessage(true);
                     return false;
@@ -1315,6 +1322,13 @@ public:
                 WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_ITEM_TEMPLATE_BY_NAME);
                 stmt->setString(0, itemName);
                 PreparedQueryResult result = WorldDatabase.Query(stmt);
+
+                if (!result)
+                {
+                    stmt = WorldDatabase.GetPreparedStatement(WORLD_SEL_ITEM_TEMPLATE_LOCALE_BY_NAME);
+                    stmt->setString(0, itemName);
+                    result = WorldDatabase.Query(stmt);
+                }
 
                 if (!result)
                 {
