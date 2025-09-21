@@ -34,6 +34,9 @@
 #include <list>
 #include <map>
 #include <unordered_map>
+#ifdef ELUNA
+#include "ElunaMgr.h"
+#endif
 
 #ifdef ELUNA
 class Eluna;
@@ -829,8 +832,7 @@ class TC_GAME_API World
         uint8 SelectReqGuildLevelForBonus(uint8 guildBonus);
 
 #ifdef ELUNA
-        Eluna* GetEluna() const { return eluna.get(); }
-        std::unique_ptr<Eluna> eluna;
+        Eluna* GetEluna() const { return sElunaMgr->Get(_elunaInfo); }
 #endif
 
     protected:
@@ -963,6 +965,9 @@ class TC_GAME_API World
         uint32 _warnDiff;
         time_t _warnShutdownTime;
 
+#ifdef ELUNA
+        ElunaInfo _elunaInfo;
+#endif
     friend class debug_commandscript;
 };
 
