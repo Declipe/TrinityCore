@@ -2223,7 +2223,7 @@ void World::SetInitialWorldSettings()
     {
         TC_LOG_INFO("server.loading", "Starting Eluna world state...");
         _elunaInfo = { ElunaInfoKey::MakeGlobalKey(0) };
-        sElunaMgr->Create(nullptr, _elunaInfo)
+        sElunaMgr->Create(nullptr, _elunaInfo);
     }
 #endif
 
