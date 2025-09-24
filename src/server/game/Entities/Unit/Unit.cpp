@@ -326,8 +326,6 @@ Unit::Unit(bool isWorldObject) :
 
     m_movementCounter = 0;
 
-    m_rootTimes = 0;
-
     m_state = 0;
     m_deathState = ALIVE;
 
@@ -8186,8 +8184,7 @@ void Unit::Mount(uint32 mount, uint32 VehicleId, uint32 creatureEntry)
                 data << uint32(VehicleId);
                 SendMessageToSet(&data, true);
 
-                data.Initialize(SMSG_ON_CANCEL_EXPECTED_RIDE_VEHICLE_AURA, 0);
-                player->SendDirectMessage(&data);
+                player->SendOnCancelExpectedVehicleRideAura();
 
                 // mounts can also have accessories
                 GetVehicleKit()->InstallAllAccessories(false);
@@ -11318,35 +11315,36 @@ void Unit::SetControlled(bool apply, UnitState state)
     {
         switch (state)
         {
-        case UNIT_STATE_STUNNED:
-            if (HasAuraType(SPELL_AURA_MOD_STUN))
-                return;
+            case UNIT_STATE_STUNNED:
+                if (HasAuraType(SPELL_AURA_MOD_STUN))
+                    return;
 
-            ClearUnitState(state);
-            SetStunned(false);
-            break;
-        case UNIT_STATE_ROOT:
-            if (HasAuraType(SPELL_AURA_MOD_ROOT) || GetVehicle() || (ToCreature() && ToCreature()->GetMovementTemplate().IsRooted()))
-                return;
+                ClearUnitState(state);
+                SetStunned(false);
+                break;
+            case UNIT_STATE_ROOT:
+                if (HasAuraType(SPELL_AURA_MOD_ROOT) || GetVehicle() || (ToCreature() && ToCreature()->GetMovementTemplate().IsRooted()))
+                    return;
 
-            ClearUnitState(state);
-            SetRooted(false);
-            break;
-        case UNIT_STATE_CONFUSED:
-            if (HasAuraType(SPELL_AURA_MOD_CONFUSE))
-                return;
+                ClearUnitState(state);
+                if (!HasUnitState(UNIT_STATE_STUNNED))
+                    SetRooted(false);
+                break;
+            case UNIT_STATE_CONFUSED:
+                if (HasAuraType(SPELL_AURA_MOD_CONFUSE))
+                    return;
 
-            ClearUnitState(state);
-            SetConfused(false);
-            break;
-        case UNIT_STATE_FLEEING:
-            if (HasAuraType(SPELL_AURA_MOD_FEAR))
-                return;
+                ClearUnitState(state);
+                SetConfused(false);
+                break;
+            case UNIT_STATE_FLEEING:
+                if (HasAuraType(SPELL_AURA_MOD_FEAR))
+                    return;
 
-            ClearUnitState(state);
-            SetFeared(false);
-            break;
-        default:
+                ClearUnitState(state);
+                SetFeared(false);
+                break;
+            default:
             return;
         }
 
@@ -11374,9 +11372,6 @@ void Unit::SetStunned(bool apply)
 {
     if (apply)
     {
-        if (m_rootTimes > 0) // blizzard internal check?
-            m_rootTimes++;
-
         SetTarget(ObjectGuid::Empty);
         SetUnitFlag(UNIT_FLAG_STUNNED);
 
@@ -11394,7 +11389,7 @@ void Unit::SetStunned(bool apply)
         {
             WorldPacket data(SMSG_FORCE_MOVE_ROOT, 10);
             data << GetPackGUID();
-            data << m_rootTimes;
+            data << GetMovementCounterAndInc();
             SendMessageToSet(&data, true);
         }
         else
@@ -11422,7 +11417,7 @@ void Unit::SetStunned(bool apply)
             {
                 WorldPacket data(SMSG_FORCE_MOVE_UNROOT, 10);
                 data << GetPackGUID();
-                data << ++m_rootTimes;
+                data << GetMovementCounterAndInc();
                 SendMessageToSet(&data, true);
             }
             else
@@ -11441,50 +11436,34 @@ void Unit::SetRooted(bool apply)
 {
     if (apply)
     {
-        if (m_rootTimes > 0) // blizzard internal check?
-            m_rootTimes++;
-
         // MOVEMENTFLAG_ROOT cannot be used in conjunction with MOVEMENTFLAG_MASK_MOVING (tested 3.3.5a)
         // this will freeze clients. That's why we remove MOVEMENTFLAG_MASK_MOVING before
         // setting MOVEMENTFLAG_ROOT
         RemoveUnitMovementFlag(MOVEMENTFLAG_MASK_MOVING);
         AddUnitMovementFlag(MOVEMENTFLAG_ROOT);
         StopMoving();
+    }
+    else
+        RemoveUnitMovementFlag(MOVEMENTFLAG_ROOT);
 
-        if (GetTypeId() == TYPEID_PLAYER)
-        {
-            WorldPacket data(SMSG_FORCE_MOVE_ROOT, 10);
-            data << GetPackGUID();
-            data << m_rootTimes;
-            SendMessageToSet(&data, true);
-        }
-        else
-        {
-            WorldPacket data(SMSG_SPLINE_MOVE_ROOT, 8);
-            data << GetPackGUID();
-            SendMessageToSet(&data, true);
-        }
+    static OpcodeServer const rootOpcodeTable[2][2] =
+    {
+        { SMSG_SPLINE_MOVE_UNROOT, SMSG_FORCE_MOVE_UNROOT },
+        { SMSG_SPLINE_MOVE_ROOT, SMSG_FORCE_MOVE_ROOT }
+    };
+
+    if (GetTypeId() == TYPEID_PLAYER)
+    {
+        WorldPacket data(rootOpcodeTable[apply][1], 10);
+        data << GetPackGUID();
+        data << GetMovementCounterAndInc();
+        SendMessageToSet(&data, true);
     }
     else
     {
-        if (!HasUnitState(UNIT_STATE_STUNNED))      // prevent moving if it also has stun effect
-        {
-            if (GetTypeId() == TYPEID_PLAYER)
-            {
-                WorldPacket data(SMSG_FORCE_MOVE_UNROOT, 10);
-                data << GetPackGUID();
-                data << ++m_rootTimes;
-                SendMessageToSet(&data, true);
-            }
-            else
-            {
-                WorldPacket data(SMSG_SPLINE_MOVE_UNROOT, 8);
-                data << GetPackGUID();
-                SendMessageToSet(&data, true);
-            }
-
-            RemoveUnitMovementFlag(MOVEMENTFLAG_ROOT);
-        }
+        WorldPacket data(rootOpcodeTable[apply][0], 8);
+        data << GetPackGUID();
+        SendMessageToSet(&data, true);
     }
 }
 
@@ -12901,6 +12880,13 @@ void Unit::NearTeleportTo(Position const& pos, bool casting /*= false*/)
         UpdatePosition(pos, true);
         UpdateObjectVisibility();
     }
+}
+
+void Unit::BuildHeartBeatMsg(WorldPacket* data) const
+{
+    data->Initialize(MSG_MOVE_HEARTBEAT, 32);
+    *data << GetPackGUID();
+    BuildMovementPacket(data);
 }
 
 void Unit::SendTeleportPacket(Position const& pos, bool teleportingTransport /*= false*/)
