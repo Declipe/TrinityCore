@@ -26,6 +26,7 @@
 #include "StartProcess.h"
 #include "UpdateFetcher.h"
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/directory.hpp>
 #include <fstream>
 #include <iostream>
 
