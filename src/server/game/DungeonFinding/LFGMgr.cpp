@@ -2040,7 +2040,7 @@ time_t LFGMgr::GetQueueJoinTime(ObjectGuid guid)
     LfgQueueContainer::const_iterator itr = QueuesStore.find(queueId);
     if (itr != QueuesStore.end())
          return itr->second.GetJoinTime(guid);
-    
+
         return 0;
     }
 
