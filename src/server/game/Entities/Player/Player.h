@@ -1022,7 +1022,6 @@ public:
 
     bool IsImmunedToSpellEffect(SpellInfo const* spellInfo, SpellEffectInfo const& spellEffectInfo, WorldObject const* caster, bool requireImmunityPurgesEffectAttribute = false) const override;
 
-    bool IsFalling() { return GetPositionZ() < m_lastFallZ; }
     bool IsInAreaTriggerRadius(AreaTriggerEntry const* trigger) const;
 
     void SendInitialPacketsBeforeAddToMap();

@@ -39,6 +39,7 @@
 #include "GameTime.h"
 #include "GridNotifiersImpl.h"
 #include "Group.h"
+#include "Guild.h"
 #include "InstanceSaveMgr.h"
 #include "InstanceScript.h"
 #include "Item.h"
@@ -83,7 +84,6 @@
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include <cmath>
-#include "Guild.h"
 
 float baseMoveSpeed[MAX_MOVE_TYPE] =
 {
@@ -11315,36 +11315,36 @@ void Unit::SetControlled(bool apply, UnitState state)
     {
         switch (state)
         {
-            case UNIT_STATE_STUNNED:
-                if (HasAuraType(SPELL_AURA_MOD_STUN))
-                    return;
+        case UNIT_STATE_STUNNED:
+            if (HasAuraType(SPELL_AURA_MOD_STUN))
+                return;
 
-                ClearUnitState(state);
-                SetStunned(false);
-                break;
-            case UNIT_STATE_ROOT:
-                if (HasAuraType(SPELL_AURA_MOD_ROOT) || GetVehicle() || (ToCreature() && ToCreature()->GetMovementTemplate().IsRooted()))
-                    return;
+            ClearUnitState(state);
+            SetStunned(false);
+            break;
+        case UNIT_STATE_ROOT:
+            if (HasAuraType(SPELL_AURA_MOD_ROOT) || GetVehicle() || (ToCreature() && ToCreature()->GetMovementTemplate().IsRooted()))
+                return;
 
-                ClearUnitState(state);
-                if (!HasUnitState(UNIT_STATE_STUNNED))
-                    SetRooted(false);
-                break;
-            case UNIT_STATE_CONFUSED:
-                if (HasAuraType(SPELL_AURA_MOD_CONFUSE))
-                    return;
+            ClearUnitState(state);
+            if (!HasUnitState(UNIT_STATE_STUNNED))
+                SetRooted(false);
+            break;
+        case UNIT_STATE_CONFUSED:
+            if (HasAuraType(SPELL_AURA_MOD_CONFUSE))
+                return;
 
-                ClearUnitState(state);
-                SetConfused(false);
-                break;
-            case UNIT_STATE_FLEEING:
-                if (HasAuraType(SPELL_AURA_MOD_FEAR))
-                    return;
+            ClearUnitState(state);
+            SetConfused(false);
+            break;
+        case UNIT_STATE_FLEEING:
+            if (HasAuraType(SPELL_AURA_MOD_FEAR))
+                return;
 
-                ClearUnitState(state);
-                SetFeared(false);
-                break;
-            default:
+            ClearUnitState(state);
+            SetFeared(false);
+            break;
+        default:
             return;
         }
 
@@ -13314,6 +13314,22 @@ bool Unit::SetDisableGravity(bool disable, bool /*packetOnly = false*/, bool /*u
     }
     else
         RemoveUnitMovementFlag(MOVEMENTFLAG_DISABLE_GRAVITY);
+
+    return true;
+}
+
+bool Unit::SetFall(bool enable)
+{
+    if (enable == HasUnitMovementFlag(MOVEMENTFLAG_FALLING))
+        return false;
+
+    if (enable)
+    {
+        AddUnitMovementFlag(MOVEMENTFLAG_FALLING);
+        m_movementInfo.SetFallTime(0);
+    }
+    else
+        RemoveUnitMovementFlag(MOVEMENTFLAG_FALLING | MOVEMENTFLAG_FALLING_FAR);
 
     return true;
 }

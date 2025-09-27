@@ -4774,7 +4774,7 @@ void Spell::EffectTransmitted()
 
     Map* cMap = unitCaster->GetMap();
     // if gameobject is summoning object, it should be spawned right on caster's position
-    if (goinfo->type == GAMEOBJECT_TYPE_SUMMONING_RITUAL)
+    if (goinfo->type == GAMEOBJECT_TYPE_RITUAL)
         unitCaster->GetPosition(fx, fy, fz);
 
     GameObject* pGameObj = new GameObject;
@@ -4809,7 +4809,7 @@ void Spell::EffectTransmitted()
         duration = std::min(duration, duration - lastSec * IN_MILLISECONDS + FISHING_BOBBER_READY_TIME * IN_MILLISECONDS);
         break;
     }
-    case GAMEOBJECT_TYPE_SUMMONING_RITUAL:
+    case GAMEOBJECT_TYPE_RITUAL:
     {
         if (unitCaster->GetTypeId() == TYPEID_PLAYER)
         {
