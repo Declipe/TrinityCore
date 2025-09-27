@@ -17,6 +17,7 @@
 
 #include "BuiltInConfig.h"
 #include "Config.h"
+#include "../../game/config/CustomConfig.h"
 #include "DatabaseEnv.h"
 #include "DatabaseLoader.h"
 #include "DBUpdater.h"
@@ -312,6 +313,7 @@ bool DBUpdater<T>::Populate(DatabaseWorkerPool<T>& pool)
     if (p == "ALL_BASE_FILES" && std::is_same<T, WorldDatabaseConnection>::value)
     {
         Path baseDir(BuiltInConfig::GetSourceDirectory() + "/sql/base/worlddb");
+        //Path baseDir(BuiltInConfig::GetSourceDirectory() + sConfigMgr->GetStringDefault("Database.updaterUP", ""));//"/sql/base/worlddb");
 
         if (!is_directory(baseDir))
         {
