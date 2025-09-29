@@ -274,14 +274,16 @@ void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket& /*recvDa
     Player* allianceFlagCarrier = nullptr;
     Player* hordeFlagCarrier = nullptr;
 
-    if (ObjectGuid guid = bg->GetFlagPickerGUID(TEAM_ALLIANCE))
+    ObjectGuid guid = bg->GetFlagPickerGUID(TEAM_ALLIANCE);
+    if (!guid.IsEmpty())
     {
         allianceFlagCarrier = ObjectAccessor::FindPlayer(guid);
         if (allianceFlagCarrier)
             ++flagCarrierCount;
     }
 
-    if (ObjectGuid guid = bg->GetFlagPickerGUID(TEAM_HORDE))
+    guid = bg->GetFlagPickerGUID(TEAM_HORDE);
+    if (!guid.IsEmpty())
     {
         hordeFlagCarrier = ObjectAccessor::FindPlayer(guid);
         if (hordeFlagCarrier)
