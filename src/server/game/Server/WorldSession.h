@@ -497,7 +497,7 @@ class TC_GAME_API WorldSession
 
         uint32 GetCurrentVendor() const { return m_currentVendorEntry; }
         void SetCurrentVendor(uint32 vendorEntry) { m_currentVendorEntry = vendorEntry; }
-        ObjectGuid::LowType GetGUIDLow() const;
+
         void SetSecurity(AccountTypes security) { _security = security; }
         std::string const& GetRemoteAddress() const { return m_Address; }
         void SetPlayer(Player* player);

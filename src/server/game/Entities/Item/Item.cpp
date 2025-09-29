@@ -260,7 +260,6 @@ Item::Item()
     mb_in_trade = false;
     m_lastPlayedTimeUpdate = GameTime::GetGameTime();
 
-    m_refundRecipient = 0;
     m_paidMoney = 0;
     m_paidExtendedCost = 0;
 }
@@ -327,7 +326,6 @@ void Item::SaveToDB(CharacterDatabaseTransaction trans)
     if (!isInTransaction)
         trans = CharacterDatabase.BeginTransaction();
 
-    ObjectGuid::LowType guid = GetGUID().GetCounter();
     switch (uState)
     {
         case ITEM_NEW:
@@ -363,7 +361,7 @@ void Item::SaveToDB(CharacterDatabaseTransaction trans)
             stmt->setUInt32(++index, GetUInt32Value(ITEM_FIELD_CREATE_PLAYED_TIME));
             stmt->setString(++index, m_text);
             stmt->setUInt32(++index, transmog);
-            stmt->setUInt32(++index, guid);
+            stmt->setUInt32(++index, GetGUID().GetCounter());
 
             trans->Append(stmt);
 
@@ -371,7 +369,7 @@ void Item::SaveToDB(CharacterDatabaseTransaction trans)
             {
                 stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_GIFT_OWNER);
                 stmt->setUInt32(0, GetOwnerGUID().GetCounter());
-                stmt->setUInt32(1, guid);
+                stmt->setUInt32(1, GetGUID().GetCounter());
                 trans->Append(stmt);
             }
             break;
@@ -379,13 +377,13 @@ void Item::SaveToDB(CharacterDatabaseTransaction trans)
         case ITEM_REMOVED:
         {
             CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_ITEM_INSTANCE);
-            stmt->setUInt32(0, guid);
+            stmt->setUInt32(0, GetGUID().GetCounter());
             trans->Append(stmt);
 
             if (IsWrapped())
             {
                 stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_GIFT);
-                stmt->setUInt32(0, guid);
+                stmt->setUInt32(0, GetGUID().GetCounter());
                 trans->Append(stmt);
             }
 
@@ -1142,7 +1140,7 @@ void Item::SaveRefundDataToDB()
 
     stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_ITEM_REFUND_INSTANCE);
     stmt->setUInt32(0, GetGUID().GetCounter());
-    stmt->setUInt32(1, GetRefundRecipient());
+    stmt->setUInt32(1, GetRefundRecipient().GetCounter());
     stmt->setUInt32(2, GetPaidMoney());
     stmt->setUInt16(3, uint16(GetPaidExtendedCost()));
     trans->Append(stmt);
@@ -1171,7 +1169,7 @@ void Item::SetNotRefundable(Player* owner, bool changestate /*=true*/, Character
     if (changestate)
         SetState(ITEM_CHANGED, owner);
 
-    SetRefundRecipient(0);
+    SetRefundRecipient(ObjectGuid::Empty);
     SetPaidMoney(0);
     SetPaidExtendedCost(0);
     DeleteRefundDataFromDB(trans);

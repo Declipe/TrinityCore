@@ -18321,6 +18321,7 @@ void Player::_LoadAuras(PreparedQueryResult result, uint32 timediff)
                                                     maxDuration, remainTime, remainCharges, critChance, applyResilience FROM character_aura WHERE guid = '{}'", GetGUID().GetCounter());
     */
 
+    ObjectGuid casterGuid, itemGuid;
     if (result)
     {
         do
@@ -18328,8 +18329,8 @@ void Player::_LoadAuras(PreparedQueryResult result, uint32 timediff)
             Field* fields = result->Fetch();
             int32 damage[3];
             int32 baseDamage[3];
-            ObjectGuid caster_guid(fields[0].GetUInt64());
-            ObjectGuid itemGuid(fields[1].GetUInt64());
+            casterGuid.SetRawValue(fields[0].GetUInt64());
+            itemGuid.SetRawValue(fields[1].GetUInt64());
             uint32 spellid = fields[2].GetUInt32();
             uint8 effmask = fields[3].GetUInt8();
             uint8 recalculatemask = fields[4].GetUInt8();
@@ -18378,7 +18379,7 @@ void Player::_LoadAuras(PreparedQueryResult result, uint32 timediff)
 
             AuraCreateInfo createInfo(spellInfo, effmask, this);
             createInfo
-                .SetCasterGUID(caster_guid)
+                .SetCasterGUID(casterGuid)
                 .SetCastItemGUID(itemGuid)
                 .SetBaseAmount(baseDamage);
 
@@ -18627,8 +18628,8 @@ Item* Player::_LoadItem(CharacterDatabaseTransaction trans, uint32 zoneId, uint3
                     stmt->setUInt32(1, GetGUID().GetCounter());
                     if (PreparedQueryResult result = CharacterDatabase.Query(stmt))
                     {
-                        item->SetRefundRecipient((*result)[0].GetUInt32());
-                        item->SetPaidMoney((*result)[1].GetUInt32());
+                        item->SetRefundRecipient(GetGUID());
+                        item->SetPaidMoney((*result)[0].GetUInt32());
                         item->SetPaidExtendedCost((*result)[2].GetUInt16());
                         AddRefundReference(item->GetGUID());
                     }
@@ -20128,7 +20129,6 @@ void Player::_SaveInventory(CharacterDatabaseTransaction trans)
     if (m_itemUpdateQueue.empty())
         return;
 
-    ObjectGuid::LowType lowGuid = GetGUID().GetCounter();
     for (size_t i = 0; i < m_itemUpdateQueue.size(); ++i)
     {
         Item* item = m_itemUpdateQueue[i];
@@ -20136,7 +20136,6 @@ void Player::_SaveInventory(CharacterDatabaseTransaction trans)
             continue;
 
         Bag* container = item->GetContainer();
-        ObjectGuid::LowType bag_guid = container ? container->GetGUID().GetCounter() : 0;
 
         if (item->GetState() != ITEM_REMOVED)
         {
@@ -20153,7 +20152,7 @@ void Player::_SaveInventory(CharacterDatabaseTransaction trans)
                 stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_INVENTORY_BY_BAG_SLOT);
                 stmt->setUInt32(0, bagTestGUID);
                 stmt->setUInt8(1, item->GetSlot());
-                stmt->setUInt32(2, lowGuid);
+                stmt->setUInt32(2, GetGUID().GetCounter());
                 trans->Append(stmt);
 
                 RemoveTradeableItem(item);
@@ -20183,8 +20182,8 @@ void Player::_SaveInventory(CharacterDatabaseTransaction trans)
         case ITEM_NEW:
         case ITEM_CHANGED:
             stmt = CharacterDatabase.GetPreparedStatement(CHAR_REP_INVENTORY_ITEM);
-            stmt->setUInt32(0, lowGuid);
-            stmt->setUInt32(1, bag_guid);
+            stmt->setUInt32(0, GetGUID().GetCounter());
+            stmt->setUInt32(1, container ? container->GetGUID().GetCounter() : 0);
             stmt->setUInt8(2, item->GetSlot());
             stmt->setUInt32(3, item->GetGUID().GetCounter());
             trans->Append(stmt);
@@ -22046,7 +22045,7 @@ inline bool Player::_StoreOrEquipNewItem(uint32 vendorslot, uint32 item, uint8 c
         if (pProto->HasFlag(ITEM_FLAG_ITEM_PURCHASE_RECORD) && crItem->ExtendedCost && pProto->GetMaxStackSize() == 1)
         {
             it->SetFlag(ITEM_FIELD_FLAGS, ITEM_FIELD_FLAG_REFUNDABLE);
-            it->SetRefundRecipient(GetGUID().GetCounter());
+            it->SetRefundRecipient(GetGUID());
             it->SetPaidMoney(price);
             it->SetPaidExtendedCost(crItem->ExtendedCost);
             it->SaveRefundDataToDB();
@@ -25290,8 +25289,7 @@ void Player::StoreLootItem(uint8 lootSlot, Loot* loot)
     InventoryResult msg = CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, item->itemid, item->count);
     if (msg == EQUIP_ERR_OK)
     {
-        GuidSet looters = item->GetAllowedLooters();
-        Item* newitem = StoreNewItem(dest, item->itemid, true, item->randomPropertyId, looters);
+        Item* newitem = StoreNewItem(dest, item->itemid, true, item->randomPropertyId, item->GetAllowedLooters());
 
         if (qitem)
         {
@@ -26711,7 +26709,7 @@ void Player::SendRefundInfo(Item* item)
         return;
     }
 
-    if (GetGUID().GetCounter() != item->GetRefundRecipient()) // Formerly refundable item got traded
+    if (GetGUID() != item->GetRefundRecipient()) // Formerly refundable item got traded
     {
         TC_LOG_DEBUG("entities.player.items", "Item refund: item was traded!");
         item->SetNotRefundable(this);
@@ -26806,7 +26804,7 @@ void Player::RefundItem(Item* item)
         return;
     }
 
-    if (GetGUID().GetCounter() != item->GetRefundRecipient()) // Formerly refundable item got traded
+    if (GetGUID() != item->GetRefundRecipient()) // Formerly refundable item got traded
     {
         TC_LOG_DEBUG("entities.player.items", "Item refund: item was traded!");
         item->SetNotRefundable(this);

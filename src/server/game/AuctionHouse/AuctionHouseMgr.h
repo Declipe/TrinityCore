@@ -62,7 +62,7 @@ public:
     //load first auction items, because of check if item exists, when loading
     void LoadAuctionItems();
     void LoadAuctions();
-    void AddAItem(Item* it);
+    void AddAItem(Item* item);
     bool RemoveAItem(ObjectGuid::LowType id, bool deleteItem = false, CharacterDatabaseTransaction* trans = nullptr);
     void AddAuction(AuctionEntry* auctionEntry);
     bool RemoveAuction(AuctionEntry* auctionEntry);

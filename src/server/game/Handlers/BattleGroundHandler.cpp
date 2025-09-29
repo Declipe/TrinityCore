@@ -90,7 +90,7 @@ void WorldSession::HandleBattlemasterJoinOpcode(WorldPacket& recvData)
 
     if (!sDBCMgr->GetBattlemasterListEntry(bgTypeId_))
     {
-        TC_LOG_ERROR("network", "Battleground: invalid bgtype ({}) received. possible cheater? player {}", bgTypeId_, _player->GetGUID().ToString());
+        TC_LOG_ERROR("network", "Battleground: invalid bgtype ({}) received. possible cheater? {}", bgTypeId_, _player->GetGUID().ToString());
         return;
     }
 

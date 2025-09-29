@@ -440,11 +440,10 @@ void AuctionHouseMgr::LoadAuctions()
     TC_LOG_INFO("server.loading", ">> Loaded {} auctions with {} bidders in {} ms", countAuctions, countBidders, GetMSTimeDiffToNow(oldMSTime));
 }
 
-void AuctionHouseMgr::AddAItem(Item* it)
+void AuctionHouseMgr::AddAItem(Item* item)
 {
-    ASSERT(it);
-    ASSERT(mAitems.find(it->GetGUID().GetCounter()) == mAitems.end());
-    mAitems[it->GetGUID().GetCounter()] = it;
+    ASSERT(item);
+    ASSERT_WITH_SIDE_EFFECTS(mAitems.emplace(item->GetGUID().GetCounter(), item).second);
 }
 
 bool AuctionHouseMgr::RemoveAItem(ObjectGuid::LowType id, bool deleteItem /*= false*/, CharacterDatabaseTransaction* trans /*= nullptr*/)
@@ -566,7 +565,7 @@ void AuctionHouseMgr::UpdateExpiredAuctions()
                 continue;
 
             ///- Either cancel the auction if there was no bidder
-            if (auction->bidder == 0 && auction->bid == 0)
+            if (!auction->bidder && auction->bid == 0)
             {
                 SendAuctionExpiredMail(auction, trans);
                 sScriptMgr->OnAuctionExpire(auctionHouse, auction);
