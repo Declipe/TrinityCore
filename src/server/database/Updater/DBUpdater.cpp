@@ -15,9 +15,9 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "../../game/config/CustomConfig.h"
 #include "BuiltInConfig.h"
 #include "Config.h"
-#include "../../game/config/CustomConfig.h"
 #include "DatabaseEnv.h"
 #include "DatabaseLoader.h"
 #include "DBUpdater.h"
@@ -26,8 +26,8 @@
 #include "QueryResult.h"
 #include "StartProcess.h"
 #include "UpdateFetcher.h"
-#include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/directory.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <fstream>
 #include <iostream>
 
