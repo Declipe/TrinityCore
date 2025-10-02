@@ -4,6 +4,10 @@
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
 
+#if TRINITY_COMPILER == TRINITY_COMPILER_GNU
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 class hardcore_commandscript : public CommandScript
 {
 public:
