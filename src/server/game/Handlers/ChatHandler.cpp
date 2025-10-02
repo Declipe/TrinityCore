@@ -822,7 +822,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
             //CHAT_FILTER
             for (std::vector<std::pair<uint64, std::string> >::const_iterator itr = messagesInChannel.begin(); itr != messagesInChannel.end(); ++itr)
             {
-                if (itr->first == sender->GetGUID().IsEmpty() && itr->second == msg)
+                if (itr->first == sender->GetGUID().GetRawValue() && itr->second == msg)
                 {
                     sender->GetSession()->SendNotification("Your message won't be displayed because it's not allowed to flood the channels like that.");
                     duplicatedMessage = true;

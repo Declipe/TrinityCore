@@ -164,7 +164,7 @@ bool TELE::IsAllowedToTeleport(Player * const player) const
         return player->GetReputationRank(m_catvalue.data0) >= (int64)m_catvalue.data1;
 
       case FLAG_PLAYER:
-        return player->GetGUID().IsEmpty() == m_catvalue.data0;
+        return player->GetGUID().GetRawValue() == m_catvalue.data0;
 
       default: TC_LOG_ERROR("misc", "Invalid flag (category: {}). Important problem...", GetCatID()); return false;
     }
