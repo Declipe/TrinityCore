@@ -334,7 +334,7 @@ public:
             for (uint32 i = GO_ETERNAL_FLAME_1; i <= GO_ETERNAL_FLAME_4; ++i)
                 if (GameObject* eternalFlame = GetGameObject(i))
                     eternalFlame->RemoveFlag(GO_FLAG_NOT_SELECTABLE);
-            if (ShadeOfHakkarGUID)
+            if (!ShadeOfHakkarGUID.IsEmpty())
             {
                 Creature* shade = instance->GetCreature(ShadeOfHakkarGUID);
                 for (uint8 i = 0; i < 8; ++i)

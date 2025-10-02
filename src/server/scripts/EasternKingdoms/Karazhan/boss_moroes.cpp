@@ -232,7 +232,7 @@ struct boss_moroes : public BossAI
     {
         for (uint8 i = 0; i < 4; ++i)
         {
-            if (AddGUID[i])
+            if (!AddGUID[i].IsEmpty())
             {
                 if (Creature* temp = ObjectAccessor::GetCreature(*me, AddGUID[i]))
                     temp->DespawnOrUnsummon();
@@ -244,7 +244,7 @@ struct boss_moroes : public BossAI
     {
         for (uint8 i = 0; i < 4; ++i)
         {
-            if (AddGUID[i])
+            if (!AddGUID[i].IsEmpty())
             {
                 Creature* temp = ObjectAccessor::GetCreature((*me), AddGUID[i]);
                 if (temp && temp->IsAlive())

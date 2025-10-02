@@ -6055,7 +6055,7 @@ SpellCastResult Spell::CheckCast(bool strict, uint32* param1 /*= nullptr*/, uint
                 if (!unitCaster)
                     return SPELL_FAILED_BAD_TARGETS;
 
-                if (unitCaster->GetCharmerGUID())
+                if (!unitCaster->GetCharmerGUID().IsEmpty())
                     return SPELL_FAILED_CHARMED;
 
                 if (spellEffectInfo.ApplyAuraName == SPELL_AURA_MOD_CHARM

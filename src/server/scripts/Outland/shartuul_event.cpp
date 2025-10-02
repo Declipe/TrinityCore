@@ -391,7 +391,7 @@ struct npc_overseer_shartuul : public ScriptedAI
             SummonShieldZappers(false);
             SetGreenMatter();
             SetBoundary(FieldBoundary);
-            if (_shieldGateGUID)
+            if (!_shieldGateGUID.IsEmpty())
             {
                 Creature* shield = ObjectAccessor::GetCreature(*me, _shieldGateGUID);
                 shield->AI()->DoAction(ACTION_START_DEMON_I_PHASE_I);
@@ -399,7 +399,7 @@ struct npc_overseer_shartuul : public ScriptedAI
             events.ScheduleEvent(EVENT_SPAWN_MOB_WAVE, 8s);
             break;
         case ACTION_START_DEMON_I_PHASE_II: //Activate Doom Punisher, remove trash mobs
-            if (_doomPunisherGUID)
+            if (!_doomPunisherGUID.IsEmpty())
             {
                 Creature* doomPunisher = ObjectAccessor::GetCreature(*me, _doomPunisherGUID);
                 summons.DespawnEntry(NPC_FELHOUND_DEFENDER);
@@ -415,7 +415,7 @@ struct npc_overseer_shartuul : public ScriptedAI
             events.ScheduleEvent(EVENT_SPAWN_SHIVAN_ASSASSIN, 60s);
             break;
         case ACTION_START_DEMON_II_PHASE_II: //Activate Shivan Assassin
-            if (_shivanAssassinGUID)
+            if (!_shivanAssassinGUID.IsEmpty())
             {
                 Creature* shivanAssassin = ObjectAccessor::GetCreature(*me, _shivanAssassinGUID);
                 shivanAssassin->RemoveAurasDueToSpell(SPELL_COSMETIC_SHIVAN_STASIS);
@@ -432,7 +432,7 @@ struct npc_overseer_shartuul : public ScriptedAI
             events.ScheduleEvent(EVENT_CLOSE_SHARTUULS_PORTAL, 23s);
             break;
         case ACTION_START_DEMON_III_PHASE_II: //Summon DreadMaw
-            if (_shartuulGUID)
+            if (!_shartuulGUID.IsEmpty())
             {
                 Creature* shartuul = ObjectAccessor::GetCreature(*me, _shartuulGUID);
                 shartuul->HandleEmoteCommand(EMOTE_ONESHOT_LAUGH);
@@ -440,7 +440,7 @@ struct npc_overseer_shartuul : public ScriptedAI
             events.ScheduleEvent(EVENT_SPAWN_DREADMAW, 10s);
             break;
         case ACTION_START_DEMON_III_PHASE_III:
-            if (_shartuulGUID)
+            if (!_shartuulGUID.IsEmpty())
             {
                 Creature* shartuul = ObjectAccessor::GetCreature(*me, _shartuulGUID);
                 shartuul->CastSpell(me, SPELL_TOUCH_OF_MADNESS);
@@ -496,7 +496,7 @@ struct npc_overseer_shartuul : public ScriptedAI
             case EVENT_SPAWN_EYE_OF_SHARTUUL:
                 if (Creature* eyeOfShartuul = DoSummon(NPC_EYE_OF_SHARTUUL, EyeOfShartuulSpawnPos, 0s, TEMPSUMMON_MANUAL_DESPAWN))
                 {
-                    if (_shartuulGUID)
+                    if (!_shartuulGUID.IsEmpty())
                     {
                         Creature* shartuul = ObjectAccessor::GetCreature(*me, _shartuulGUID);
                         shartuul->SetFacingTo(shartuul->GetAbsoluteAngle(eyeOfShartuul));
@@ -507,7 +507,7 @@ struct npc_overseer_shartuul : public ScriptedAI
             case EVENT_SPAWN_DREADMAW:
                 if (Creature* dreadMaw = DoSummon(NPC_DREADMAW, DreadmawSpawnPos, 0s, TEMPSUMMON_MANUAL_DESPAWN))
                 {
-                    if (_shartuulGUID)
+                    if (!_shartuulGUID.IsEmpty())
                     {
                         Creature* shartuul = ObjectAccessor::GetCreature(*me, _shartuulGUID);
                         shartuul->SetFacingTo(shartuul->GetAbsoluteAngle(dreadMaw));
@@ -546,7 +546,7 @@ struct npc_overseer_shartuul : public ScriptedAI
                 events.ScheduleEvent(EVENT_SPAWN_EYE_OF_SHARTUUL, 7s);  //Summon Eye of Shartuul
                 break;
             case EVENT_SHARTUUL_MOVE_TO_BATTLE:
-                if (_shartuulGUID)
+                if (!_shartuulGUID.IsEmpty())
                 {
                     Creature* shartuul = ObjectAccessor::GetCreature(*me, _shartuulGUID);
                     shartuul->GetMotionMaster()->MovePoint(POINT_SHARTUUL_COMBAT, ShartuulCombatPos);
@@ -589,7 +589,7 @@ struct npc_overseer_shartuul : public ScriptedAI
     Creature* FindFreeSpawnLightningNPC()
     {
         for (const auto& el : _spawnLightningNPCGUIDs)
-            if (el)
+            if (!el.IsEmpty())
             {
                 Creature* creature = ObjectAccessor::GetCreature(*me, el);
                 if (creature->GetSpellHistory()->IsReady(sSpellMgr->GetSpellInfo(SPELL_SPAWN_LIGHTNING)) &&
@@ -601,7 +601,7 @@ struct npc_overseer_shartuul : public ScriptedAI
 
     void CheckBoundary()
     {
-        if (currPossessDemonGUID)
+        if (!currPossessDemonGUID.IsEmpty())
         {
             Creature* creature = ObjectAccessor::GetCreature(*me, currPossessDemonGUID);
             if (!IsInBoundary(creature))
@@ -650,7 +650,7 @@ struct npc_overseer_shartuul : public ScriptedAI
                 for (uint8 i = 2; i < 8; ++i)
                 {
                     // Despawn shield wreckage.
-                    if (_wreckageGUIDs[i])
+                    if (!_wreckageGUIDs[i].IsEmpty())
                     {
                         GameObject* go = ObjectAccessor::GetGameObject(*me, _wreckageGUIDs[i]);
                         go->DespawnOrUnsummon();
@@ -809,7 +809,7 @@ struct npc_warp_gate_shield : public ScriptedAI
             ++_shiledHit;
             _events.CancelEvent(EVENT_DEFENSE_BEAM);
             if (_shiledHit == 1)
-                if (_overseerShartuulGUID)
+                if (!_overseerShartuulGUID.IsEmpty())
                 {
                     Creature* overseerShartuul = ObjectAccessor::GetCreature(*me, _overseerShartuulGUID);
                     overseerShartuul->AI()->Talk(SAY_FIRST_HAMMER_THROWN);
@@ -866,7 +866,7 @@ struct npc_warp_gate_shield : public ScriptedAI
         DoCastSelf(SPELL_COSMETIC_SHIELD_EXPLODE);
 
         //Inform Overseer that the shield has exploded.
-        if (_overseerShartuulGUID)
+        if (!_overseerShartuulGUID.IsEmpty())
         {
             Creature* overseerShartuul = ObjectAccessor::GetCreature(*me, _overseerShartuulGUID);
             overseerShartuul->AI()->DoAction(ACTION_START_DEMON_I_PHASE_II);

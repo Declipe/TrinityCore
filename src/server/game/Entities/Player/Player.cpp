@@ -27454,9 +27454,9 @@ void Player::BuildPlayerChat(WorldPacket* data, uint8 msgtype, const std::string
 {
     *data << uint8(msgtype);
     *data << uint32(language);
-    *data << uint64(GetGUID());
+    *data << GetGUID();
     *data << uint32(0);                                      // constant unknown time
-    *data << uint64(GetGUID());
+    *data << GetGUID();
     *data << uint32(text.length() + 1);
     *data << text;
     *data << uint8(GetChatTag());

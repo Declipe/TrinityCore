@@ -196,7 +196,7 @@ void GCTF::AddCharacter(Player* player)
     [[maybe_unused]] uint32 player_count = (sGCTF->WorldPlayerData.size());
 
     uint32 acct_id = player->GetSession()->GetAccountId();
-    uint32 guid = player->GetGUID();
+    uint32 guid = player->GetGUID().GetCounter();
     std::string name = player->GetName();
     uint32 captures = 0;
 
@@ -237,7 +237,7 @@ void GCTF::UpdatePlayerLeaderBoard()
 
 void GCTF::PlayerAddWin(Player* player, uint32 value)
 {
-    uint32 guid = player->GetGUID();
+    uint32 guid = player->GetGUID().GetCounter();
     uint32 captures = sGCTF->WorldPlayerData[guid].captures + value;
 
     ZynDatabase.PExecute("UPDATE grumboz_ctf SET `captures` = {} WHERE `guid` = {};", captures, guid); // id, guid, name, map_id, area_id, zone_id, x, y, z, o
@@ -331,7 +331,7 @@ public: CTF_Flag() : GameObjectScript("CTF_Flag") { };
                   }
                   else
                   {
-                      uint32 guid = player->GetGUID();
+                      uint32 guid = player->GetGUID().GetCounter();
 
                       me->SetPhaseMask(0, true);
 
@@ -393,7 +393,7 @@ public: CTF_Player_Actions() : PlayerScript("CTF_Player_Actions") { };
 
       virtual void OnLogin(Player* player, bool /*firstLogin*/)
       {
-          uint32 guid = player->GetGUID();
+          uint32 guid = player->GetGUID().GetCounter();
 
           if (!sGCTF->WorldPlayerData[guid].guid) { sGCTF->AddCharacter(player); }
       }
@@ -576,7 +576,7 @@ public: CTF_commands() : CommandScript("CTF_commands") { };
       static bool HandleCTFSetupCommand(ChatHandler* handler, char const* /*args*/)
       {
           Player* player = handler->GetSession()->GetPlayer();
-          uint32 guid = player->GetGUID();
+          uint32 guid = player->GetGUID().GetCounter();
 
           ChatHandler(player->GetSession()).PSendSysMessage("-----------------------------------------------");
           ChatHandler(player->GetSession()).PSendSysMessage("           Capture the Flag settings           ");

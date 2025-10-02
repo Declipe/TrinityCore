@@ -32,7 +32,7 @@ bool Player::SendRealNameQuery()
         return false;
 
     WorldPacket data(SMSG_NAME_QUERY_RESPONSE, (8 + 1 + 1 + 1 + 1 + 1 + 10));
-    data.appendPackGUID(GetGUID());                             // player guid
+    data.appendPackGUID(GetGUID().IsEmpty());                             // player guid
     data << uint8(0);                                       // added in 3.1; if > 1, then end of packet
     data << GetName();                                   // played name
     data << uint8(0);                                       // realm name for cross realm BG usage

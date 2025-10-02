@@ -79,7 +79,7 @@ class Mod_SpecialCode_AllCreatureScript : public AllCreatureScript
             }
         }
 
-        uint32 guid = player->GetGUID();
+        uint32 guid = player->GetGUID().GetCounter();
 
         if (maxCharacters > 0)
         {

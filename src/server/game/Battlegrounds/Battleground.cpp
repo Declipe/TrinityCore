@@ -48,8 +48,7 @@
 
 void BattlegroundScore::AppendToPacket(WorldPacket& data)
 {
-    data << uint64(PlayerGuid);
-
+    data << PlayerGuid;
     data << uint32(KillingBlows);
     data << uint32(HonorableKills);
     data << uint32(Deaths);

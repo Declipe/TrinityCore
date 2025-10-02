@@ -301,9 +301,9 @@ void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket& /*recvDa
     if (allianceFlagCarrier)
     {
         if (allianceFlagCarrier->SendRealNameQuery())
-            data << uint64(allianceFlagCarrier->GetGUID() + LIMIT_UINT32);
+            data << allianceFlagCarrier->GetGUID().IsEmpty() + LIMIT_UINT32;
         else
-            data << uint64(allianceFlagCarrier->GetGUID());
+            data << allianceFlagCarrier->GetGUID().IsEmpty();
 
         data << float(allianceFlagCarrier->GetPositionX());
         data << float(allianceFlagCarrier->GetPositionY());
@@ -312,9 +312,9 @@ void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket& /*recvDa
     if (hordeFlagCarrier)
     {
             if (hordeFlagCarrier->SendRealNameQuery())
-            data << uint64(hordeFlagCarrier->GetGUID() + LIMIT_UINT32);
+            data << hordeFlagCarrier->GetGUID().IsEmpty() + LIMIT_UINT32;
         else
-            data << uint64(hordeFlagCarrier->GetGUID());
+            data << hordeFlagCarrier->GetGUID().IsEmpty();
 
         data << float(hordeFlagCarrier->GetPositionX());
         data << float(hordeFlagCarrier->GetPositionY());

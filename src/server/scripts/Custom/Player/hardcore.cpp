@@ -331,7 +331,7 @@ void GiveHardcoreLevelReward(Player* player, uint8 level)
         else
         {
             // Если инвентарь заполнен, создаем предмет и отправляем по почте
-            uint32 guid = player->GetGUID();
+            uint32 guid = player->GetGUID().GetCounter();
             CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
             Item* mailItem = Item::CreateItem(itemId, itemCount, player);
             if (mailItem)
@@ -673,7 +673,7 @@ public:
             case GOSSIP_ACTION_INFO_DEF + 2: // on Hardcore
                 player->SetFlag(PLAYER_FLAGS, 0x10000000);
                 std::ostringstream ss;
-                ss << "UPDATE characters SET extra_flags = extra_flags | 1 WHERE guid = " << player->GetGUID();
+                ss << "UPDATE characters SET extra_flags = extra_flags | 1 WHERE guid = " << player->GetGUID().GetCounter();
                 CharacterDatabase.Execute(ss.str().c_str());
                 player->SaveToDB();
                 SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
@@ -899,7 +899,7 @@ private:
             {
                 Field* fields = history->Fetch();
                 std::string name = fields[0].GetString();
-                uint32 claimedTime = fields[1].GetUInt32();
+                [[maybe_unused]] uint32 claimed_time = fields[1].GetUInt32();
                 uint32 playtimeWhen = fields[2].GetUInt32();
 
                 uint32 hours = playtimeWhen / 3600;

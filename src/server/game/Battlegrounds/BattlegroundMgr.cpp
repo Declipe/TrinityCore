@@ -237,13 +237,13 @@ void BattlegroundMgr::BuildGroupJoinedBattlegroundPacket(WorldPacket* data, Grou
 void BattlegroundMgr::BuildPlayerLeftBattlegroundPacket(WorldPacket* data, ObjectGuid guid)
 {
     data->Initialize(SMSG_BATTLEGROUND_PLAYER_LEFT, 8);
-    *data << uint64(guid);
+    *data << guid;
 }
 
 void BattlegroundMgr::BuildPlayerJoinedBattlegroundPacket(WorldPacket* data, Player* player)
 {
     data->Initialize(SMSG_BATTLEGROUND_PLAYER_JOINED, 8);
-    *data << uint64(player->GetGUID());
+    *data << player->GetGUID();
 }
 
 Battleground* BattlegroundMgr::GetBattlegroundThroughClientInstance(uint32 instanceId, BattlegroundTypeId bgTypeId)
@@ -636,7 +636,7 @@ void BattlegroundMgr::BuildBattlegroundListPacket(WorldPacket* data, ObjectGuid 
     loser_kills = Trinity::Honor::hk_honor_at_level(player->GetLevel(), float(loser_kills));
 
     data->Initialize(SMSG_BATTLEFIELD_LIST);
-    *data << uint64(guid);                                  // battlemaster guid
+    *data << guid;                                  // battlemaster guid
     *data << uint8(fromWhere);                              // from where you joined
     *data << uint32(bgTypeId);                              // battleground id
     *data << uint8(0);                                      // unk

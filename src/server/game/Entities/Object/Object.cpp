@@ -244,7 +244,7 @@ void Object::DestroyForPlayer(Player* target, bool onDeath) const
             if (bg->isArena())
             {
                 WorldPacket data(SMSG_ARENA_UNIT_DESTROYED, 8);
-                data << uint64(GetGUID());
+                data << GetGUID();
                 target->SendDirectMessage(&data);
             }
         }

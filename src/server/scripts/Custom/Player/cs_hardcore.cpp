@@ -135,7 +135,7 @@ static bool HandleHardcoreExtraLifeGiveCommand(ChatHandler* handler, const char*
         handler->SendSysMessage("|cffff0000Hardcore режим включен! Смерть = удаление персонажа!|r");
 
         std::ostringstream ss;
-        ss << "UPDATE characters SET extra_flags = extra_flags | 1 WHERE guid = " << player->GetGUID();
+        ss << "UPDATE characters SET extra_flags = extra_flags | 1 WHERE guid = " << player->GetGUID().IsEmpty();
         CharacterDatabase.Execute(ss.str().c_str());
         // Сохраняем в БД
         /*PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_HARDCORE_FLAG);

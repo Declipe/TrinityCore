@@ -1184,7 +1184,6 @@ void WorldSession::HandleCharRenameCallBack(std::shared_ptr<CharacterRenameInfo>
 
     std::string oldName = fields[0].GetString();
     uint16 atLoginFlags = fields[1].GetUInt16();
-    uint16 atLoginFlags = fields[2].GetUInt16();
 
     if (!(atLoginFlags & AT_LOGIN_RENAME))
     {

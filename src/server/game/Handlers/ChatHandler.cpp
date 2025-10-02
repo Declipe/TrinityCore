@@ -822,7 +822,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
             //CHAT_FILTER
             for (std::vector<std::pair<uint64, std::string> >::const_iterator itr = messagesInChannel.begin(); itr != messagesInChannel.end(); ++itr)
             {
-                if (itr->first == sender->GetGUID() && itr->second == msg)
+                if (itr->first == sender->GetGUID().IsEmpty() && itr->second == msg)
                 {
                     sender->GetSession()->SendNotification("Your message won't be displayed because it's not allowed to flood the channels like that.");
                     duplicatedMessage = true;
@@ -838,7 +838,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
                         return;
 #endif
                 chn->Say(_player->GetGUID(), msg.c_str(), lang);
-                messagesInChannel.push_back(std::make_pair(sender->GetGUID(), msg));
+                messagesInChannel.push_back(std::make_pair(sender->GetGUID().IsEmpty(), msg));
 
                 //! It's pointless to check for this if the message is never sent to the
                 //! actual channel (so out of the brackets from this if-check), because
