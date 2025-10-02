@@ -1077,15 +1077,6 @@ class instance_icecrown_citadel : public InstanceMapScript
                     case DATA_ORB_WHISPERER_ACHIEVEMENT:
                         IsOrbWhispererEligible = data ? true : false;
                         break;
-                    case DATA_SINDRAGOSA_FROSTWYRMS:
-                        FrostwyrmGUIDs.insert(data);
-                        break;
-                    case DATA_SPINESTALKER:
-                        SpinestalkerTrash.insert(data);
-                        break;
-                    case DATA_RIMEFANG:
-                        RimefangTrash.insert(data);
-                        break;
                     case DATA_COLDFLAME_JETS:
                         ColdflameJetsState = data;
                         if (ColdflameJetsState == DONE)
@@ -1169,6 +1160,24 @@ class instance_icecrown_citadel : public InstanceMapScript
                                 nerubar->AI()->DoAction(ACTION_NERUBAR_FALL);
                         break;
                     }
+                    default:
+                        break;
+                }
+            }
+
+            void SetData64(uint32 type, uint64 data) override
+            {
+                switch (type)
+                {
+                    case DATA_SINDRAGOSA_FROSTWYRMS:
+                        FrostwyrmGUIDs.insert(data);
+                        break;
+                    case DATA_SPINESTALKER:
+                        SpinestalkerTrash.insert(data);
+                        break;
+                    case DATA_RIMEFANG:
+                        RimefangTrash.insert(data);
+                        break;
                     default:
                         break;
                 }
@@ -1578,9 +1587,9 @@ class instance_icecrown_citadel : public InstanceMapScript
             Team TeamInInstance;
             uint32 ColdflameJetsState;
             uint32 UpperSpireTeleporterActiveState;
-            std::unordered_set<uint32> FrostwyrmGUIDs;
-            std::unordered_set<uint32> SpinestalkerTrash;
-            std::unordered_set<uint32> RimefangTrash;
+            std::unordered_set<ObjectGuid::LowType> FrostwyrmGUIDs;
+            std::unordered_set<ObjectGuid::LowType> SpinestalkerTrash;
+            std::unordered_set<ObjectGuid::LowType> RimefangTrash;
             uint32 BloodQuickeningState;
             uint32 HeroicAttempts;
             uint16 BloodQuickeningMinutes;
