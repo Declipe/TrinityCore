@@ -117,7 +117,7 @@ void AuctionHouseMgr::SendAuctionWonMail(AuctionEntry* auction, CharacterDatabas
         return;
 
     uint32 bidderAccId = 0;
-    ObjectGuid bidderGuid(HighGuid::Player, auction->bidder);
+    ObjectGuid bidderGuid = ObjectGuid::Create<HighGuid::Player>(auction->bidder);
     Player* bidder = ObjectAccessor::FindConnectedPlayer(bidderGuid);
     // data for gm.log
     std::string bidderName;
@@ -138,7 +138,7 @@ void AuctionHouseMgr::SendAuctionWonMail(AuctionEntry* auction, CharacterDatabas
 
     if (logGmTrade)
     {
-        ObjectGuid ownerGuid = ObjectGuid(HighGuid::Player, auction->owner);
+        ObjectGuid ownerGuid = ObjectGuid::Create<HighGuid::Player>(auction->owner);
         std::string ownerName;
         if (!sCharacterCache->GetCharacterNameByGuid(ownerGuid, ownerName))
             ownerName = sObjectMgr->GetTrinityStringForDBCLocale(LANG_UNKNOWN);
@@ -183,7 +183,7 @@ void AuctionHouseMgr::SendAuctionSalePendingMail(AuctionEntry* auction, Characte
     if (!pItem)
         return;
 
-    ObjectGuid owner_guid(HighGuid::Player, auction->owner);
+    ObjectGuid owner_guid = ObjectGuid::Create<HighGuid::Player>(auction->owner);
     Player* owner = ObjectAccessor::FindConnectedPlayer(owner_guid);
     uint32 owner_accId = sCharacterCache->GetCharacterAccountIdByGuid(owner_guid);
     // owner exist (online or offline)
@@ -208,7 +208,7 @@ void AuctionHouseMgr::SendAuctionSuccessfulMail(AuctionEntry* auction, Character
     if (!pItem)
         return;
 
-    ObjectGuid owner_guid(HighGuid::Player, auction->owner);
+    ObjectGuid owner_guid = ObjectGuid::Create<HighGuid::Player>(auction->owner);
     Player* owner = ObjectAccessor::FindConnectedPlayer(owner_guid);
     uint32 owner_accId = sCharacterCache->GetCharacterAccountIdByGuid(owner_guid);
     // owner exist
@@ -240,7 +240,7 @@ void AuctionHouseMgr::SendAuctionExpiredMail(AuctionEntry* auction, CharacterDat
     if (!pItem)
         return;
 
-    ObjectGuid owner_guid(HighGuid::Player, auction->owner);
+    ObjectGuid owner_guid = ObjectGuid::Create<HighGuid::Player>(auction->owner);
     Player* owner = ObjectAccessor::FindConnectedPlayer(owner_guid);
     uint32 owner_accId = sCharacterCache->GetCharacterAccountIdByGuid(owner_guid);
     // owner exist
@@ -267,7 +267,7 @@ void AuctionHouseMgr::SendAuctionOutbiddedMail(AuctionEntry* auction, uint32 new
     if (!pItem)
         return;
 
-    ObjectGuid oldBidder_guid(HighGuid::Player, auction->bidder);
+    ObjectGuid oldBidder_guid = ObjectGuid::Create<HighGuid::Player>(auction->bidder);
     Player* oldBidder = ObjectAccessor::FindConnectedPlayer(oldBidder_guid);
 
     uint32 oldBidder_accId = 0;
@@ -293,7 +293,7 @@ void AuctionHouseMgr::SendAuctionCancelledToBidderMail(AuctionEntry* auction, Ch
     if (!pItem)
         return;
 
-    ObjectGuid bidder_guid = ObjectGuid(HighGuid::Player, auction->bidder);
+    ObjectGuid bidder_guid = ObjectGuid::Create<HighGuid::Player>(auction->bidder);
     Player* bidder = ObjectAccessor::FindConnectedPlayer(bidder_guid);
 
     uint32 bidder_accId = 0;
@@ -481,14 +481,14 @@ void AuctionHouseMgr::AddAuction(AuctionEntry* auction)
     searchableAuctionEntry->houseId = auction->houseId;
 
     // Auction info
-    ObjectGuid ownerGuid = ObjectGuid(HighGuid::Player, auction->owner);
+    ObjectGuid ownerGuid = ObjectGuid::Create<HighGuid::Player>(auction->owner);
     searchableAuctionEntry->ownerGuid = ownerGuid;
     sCharacterCache->GetCharacterNameByGuid(ownerGuid, searchableAuctionEntry->ownerName);
     searchableAuctionEntry->startbid = auction->startbid;
     searchableAuctionEntry->buyout = auction->buyout;
     searchableAuctionEntry->expire_time = auction->expire_time;
     searchableAuctionEntry->bid = auction->bid;
-    ObjectGuid bidderGuid = ObjectGuid(HighGuid::Player, auction->bidder);
+    ObjectGuid bidderGuid = ObjectGuid::Create<HighGuid::Player>(auction->bidder);
     searchableAuctionEntry->bidderGuid = bidderGuid;
 
     // Item info
@@ -530,7 +530,7 @@ bool AuctionHouseMgr::RemoveAuction(AuctionEntry* auction)
 void AuctionHouseMgr::UpdateBid(AuctionEntry* auction)
 {
     // Queue the searchable auction entry to be removed asynchronously Note: the synchronous bid update is done in the handler
-    ObjectGuid bidderGuid = ObjectGuid(HighGuid::Player, auction->bidder);
+    ObjectGuid bidderGuid = ObjectGuid::Create<HighGuid::Player>(auction->bidder);
     auto message = std::make_unique<UpdateAuctionBidMessage>(auction->Id, auction->houseId, auction->bid, bidderGuid);
     messageQueue_.send(std::move(message));
 }

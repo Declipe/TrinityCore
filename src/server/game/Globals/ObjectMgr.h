@@ -1322,7 +1322,7 @@ public:
     template<HighGuid type>
     ObjectGuidGenerator& GetGenerator()
     {
-        static_assert(ObjectGuidTraits<type>::Global, "Only global guid can be generated in ObjectMgr context");
+        static_assert(ObjectGuidTraits<type>::SequenceSource.HasFlag(ObjectGuidSequenceSource::Global), "Only global guid can be generated in ObjectMgr context");
         return GetGuidSequenceGenerator(type);
     }
 

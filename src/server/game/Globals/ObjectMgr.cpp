@@ -2193,8 +2193,8 @@ void ObjectMgr::LoadLinkedRespawn()
                 break;
             }
 
-            guid = ObjectGuid(HighGuid::Unit, slave->id, guidLow);
-            linkedGuid = ObjectGuid(HighGuid::Unit, master->id, linkedGuidLow);
+            guid = ObjectGuid::Create<HighGuid::Unit>(slave->id, guidLow);
+            linkedGuid = ObjectGuid::Create<HighGuid::Unit>(master->id, linkedGuidLow);
             break;
         }
         case LINKED_RESPAWN_CREATURE_TO_GO:
@@ -2230,8 +2230,8 @@ void ObjectMgr::LoadLinkedRespawn()
                 break;
             }
 
-            guid = ObjectGuid(HighGuid::Unit, slave->id, guidLow);
-            linkedGuid = ObjectGuid(HighGuid::GameObject, master->id, linkedGuidLow);
+            guid = ObjectGuid::Create<HighGuid::Unit>(slave->id, guidLow);
+            linkedGuid = ObjectGuid::Create<HighGuid::GameObject>(master->id, linkedGuidLow);
             break;
         }
         case LINKED_RESPAWN_GO_TO_GO:
@@ -2267,8 +2267,8 @@ void ObjectMgr::LoadLinkedRespawn()
                 break;
             }
 
-            guid = ObjectGuid(HighGuid::GameObject, slave->id, guidLow);
-            linkedGuid = ObjectGuid(HighGuid::GameObject, master->id, linkedGuidLow);
+            guid = ObjectGuid::Create<HighGuid::GameObject>(slave->id, guidLow);
+            linkedGuid = ObjectGuid::Create<HighGuid::GameObject>(master->id, linkedGuidLow);
             break;
         }
         case LINKED_RESPAWN_GO_TO_CREATURE:
@@ -2304,8 +2304,8 @@ void ObjectMgr::LoadLinkedRespawn()
                 break;
             }
 
-            guid = ObjectGuid(HighGuid::GameObject, slave->id, guidLow);
-            linkedGuid = ObjectGuid(HighGuid::Unit, master->id, linkedGuidLow);
+            guid = ObjectGuid::Create<HighGuid::GameObject>(slave->id, guidLow);
+            linkedGuid = ObjectGuid::Create<HighGuid::Unit>(master->id, linkedGuidLow);
             break;
         }
         }
@@ -2324,7 +2324,7 @@ bool ObjectMgr::SetCreatureLinkedRespawn(ObjectGuid::LowType guidLow, ObjectGuid
 
     CreatureData const* master = GetCreatureData(guidLow);
     ASSERT(master);
-    ObjectGuid guid(HighGuid::Unit, master->id, guidLow);
+    ObjectGuid guid = ObjectGuid::Create<HighGuid::Unit>(master->id, guidLow);
 
     if (!linkedGuidLow) // we're removing the linking
     {
@@ -2356,7 +2356,7 @@ bool ObjectMgr::SetCreatureLinkedRespawn(ObjectGuid::LowType guidLow, ObjectGuid
         return false;
     }
 
-    ObjectGuid linkedGuid(HighGuid::Unit, slave->id, linkedGuidLow);
+    ObjectGuid linkedGuid = ObjectGuid::Create<HighGuid::Unit>(slave->id, linkedGuidLow);
 
     _linkedRespawnStore[guid] = linkedGuid;
     WorldDatabasePreparedStatement* stmt = WorldDatabase.GetPreparedStatement(WORLD_REP_LINKED_RESPAWN);
@@ -6740,7 +6740,7 @@ void ObjectMgr::ReturnOrDeleteOldMails(bool serverUp)
     {
         Field* fields = result->Fetch();
         ObjectGuid::LowType receiver = fields[3].GetUInt32();
-        if (serverUp && ObjectAccessor::FindConnectedPlayer(ObjectGuid(HighGuid::Player, receiver)))
+        if (serverUp && ObjectAccessor::FindConnectedPlayer(ObjectGuid::Create<HighGuid::Player>(receiver)))
             continue;
 
         Mail* m = new Mail;
