@@ -150,7 +150,7 @@ void Player::DoForgetPlayersInList()
         WorldPacket data(SMSG_INVALIDATE_PLAYER, 8);
         data << *itr;
         GetSession()->SendPacket(&data);
-        if (Player* pPlayer = ObjectAccessor::FindPlayer(ObjectGuid(*itr)))
+        if (Player* pPlayer = ObjectAccessor::FindPlayer(ObjectGuid::Create<HighGuid::Player>(*itr)))
             GetSession()->SendNameQueryOpcode(pPlayer->GetGUID());
     }
     m_FakePlayers.clear();
