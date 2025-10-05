@@ -137,19 +137,85 @@ void sServerMenu::OpenBankSlot(Player* player)
 	player->GetSession()->SendShowBank(player->GetGUID());
 }
 
+bool IsVipActive2(Player* player)
+{
+    if (!player)
+        return false;
+
+    return player->GetAditionalData()->isPremium();
+}
+
+std::string GetVipTimeLeft2(Player* player, WorldSession* session)
+{
+    if (!player || !IsVipActive2(player))
+        return "";
+
+    time_t endTime = player->GetAditionalData()->getPremiumUnsetdate();
+    time_t currentTime = GameTime::GetGameTime();
+
+    if (endTime <= currentTime)
+        return "";
+
+    time_t timeLeft = endTime - currentTime;
+
+    uint32 days = timeLeft / 86400;
+    uint32 hours = (timeLeft % 86400) / 3600;
+    uint32 minutes = (timeLeft % 3600) / 60;
+
+    char buffer[256];
+
+    if (days > 0)
+    {
+        snprintf(buffer, sizeof(buffer), session->GetTrinityString2(NOT_USED_53), days, hours, minutes);
+        return std::string(buffer);
+    }
+    else if (hours > 0)
+    {
+        snprintf(buffer, sizeof(buffer), session->GetTrinityString2(NOT_USED_53), hours, minutes);
+        return std::string(buffer);
+    }
+    else
+    {
+        snprintf(buffer, sizeof(buffer), session->GetTrinityString2(NOT_USED_53), minutes);
+        return std::string(buffer);
+    }
+}
+
+std::string GetVipStatusString2(Player* player, WorldSession* session)
+{
+    if (!player || !session)
+        return "VIP: Error";
+
+    if (IsVipActive2(player))
+    {
+        time_t endTime = player->GetAditionalData()->getPremiumUnsetdate();
+        time_t currentTime = GameTime::GetGameTime();
+
+        if (endTime <= currentTime)
+            return session->GetTrinityString2(NOT_USED_56);
+
+        std::string timeLeft = GetVipTimeLeft2(player, session);
+        std::string statusActive = session->GetTrinityString2(NOT_USED_52);
+
+        char buffer[512];
+        snprintf(buffer, sizeof(buffer), session->GetTrinityString2(NOT_USED_57), timeLeft.c_str());
+
+        return fmt::format("{} ({})", statusActive, std::string(buffer));
+    }
+    else
+    {
+        return session->GetTrinityString2(NOT_USED_51);
+    }
+}
+
 void sServerMenu::GossipHelloMenu(Player* player)
 {
     WorldSession* session = player->GetSession();
     player->PlayerTalkClass->ClearMenus();
 
-    //sServerMenuMgr->CanOpenMenu(player);
-
-    // bonus system
     AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString2(GTS1(LANG_ITEM_CURRENT_COINS), player->GetCoins()).c_str(), GOSSIP_SENDER_MAIN, 1);
-   // AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, GetVipStatusString(player, session).c_str(), GOSSIP_SENDER_MAIN, 3);
-      // promo
+    AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, GetVipStatusString2(player, session).c_str(), GOSSIP_SENDER_MAIN, 3);
     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ENTER_PROMO_CODE), GOSSIP_SENDER_MAIN, 0, GTS1(LANG_ENTERED_PROMO_CODE_CORRECT), 0, true);
-    // Shops
     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_MENU_TRADE), GOSSIP_SENDER_MAIN, 2);
     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS22(NOT_USED_7), GOSSIP_SENDER_MAIN, 192);
     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS22(NOT_USED_11), GOSSIP_SENDER_MAIN, 199, GTS22(NOT_USED_12), 0, false);
@@ -263,8 +329,6 @@ public:
 
         WorldSession* session = player->GetSession();
 
-        /*LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();*/
-
         std::string XP = GTS(LANG_ITEM_RATES_XP_KILL);
         std::string XP_quest = GTS(LANG_ITEM_RATES_XP_QUEST);
         std::string rep = GTS(LANG_ITEM_RATES_REP);
@@ -312,29 +376,8 @@ public:
                 case 3:
                 {
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString2(GTS(LANG_ITEM_CURRENT_COINS), player->GetCoins()).c_str(), GOSSIP_SENDER_MAIN, 1);
-                    //  if (sWorld->customGetBoolConfig(CONFIG_PLAYER_PVPCAP_REWARD_ENABLED))
-                    //  {
-                     //     std::string flag = GTS(LANG_ITEM_PVP_CAP_ALIANCE);
-                     //     if (player->GetCFSTeam() == HORDE)
-                      //        flag = GTS(LANG_ITEM_PVP_CAP_HORDE);
-
-                     //     uint32 pvpcap = player->GetPVPCapPoints();
-                     //     uint32 maxcap = sWorld->customGetIntConfig(CONFIG_PVP_REWARD_MAXCAP);
-                       //   flag += getString(" ", pvpcap).c_str();
-                       //   flag += getString(" / ", maxcap).c_str();
-                          // pvp weekly bonus cap
-                      //    AddGossipItemFor(player, GOSSIP_ICON_CHAT, flag + " )", GOSSIP_SENDER_MAIN, 3);
-                   //   }
-                      // promo
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ENTER_PROMO_CODE), GOSSIP_SENDER_MAIN, 0, GTS(LANG_ENTERED_PROMO_CODE_CORRECT), 0, true);
-                    //AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ENTER_PROMO_CODE), GOSSIP_SENDER_MAIN, 0, GTS(LANG_ENTERED_PROMO_CODE_CORRECT), 0, true);//true);
-                    // Shops
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_MENU_TRADE), GOSSIP_SENDER_MAIN, 2);
-                    // AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Test menu", GOSSIP_SENDER_MAIN, 121);
-                     // trainer
-                    // AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_ITEM_CLASS_SKILLS), GOSSIP_SENDER_MAIN, 4);
-
-                    // AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_7, loc_idx), GOSSIP_SENDER_MAIN, 192);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_7), GOSSIP_SENDER_MAIN, 192);
                     if (player->IsGameMaster())
                     {
@@ -350,7 +393,6 @@ public:
                         AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_VIP_MENU), GOSSIP_SENDER_MAIN, 10);
 
                     if (player->GetClass() && player->GetLevel() >= 80)
-                        // if (player->CanReceiveStartPack() && player->GetLevel() == DEFAULT_MAX_LEVEL)
                     {
                         // Start pack
                         switch (player->GetClass())
@@ -387,19 +429,6 @@ public:
                             break;
                         }
                     }
-
-                    //  if (SpecialEvent* DalaranEvent = sSpecialEventMgr->GetEnabledSpecialEventByEventId(SPECIALEVENT_EVENTID_DALARANCRATER))
-                    //  {
-                     //     if (DalaranEvent->IsPossibleToRegister())
-                      //    {
-                       //       if (!DalaranEvent->IsMemberOfEvent(player))
-                        //          AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_DALARAN_MENU_REGISTER) + NextTimeDalaranEvent(DalaranEvent->GetTimeOfNextEvent()), GOSSIP_SENDER_MAIN, 106);
-                        //      else
-                         //         AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_DALARAN_MENU_LEAVE) + NextTimeDalaranEvent(DalaranEvent->GetTimeOfNextEvent()), GOSSIP_SENDER_MAIN, 107);
-                        //  }
-                        //  else
-                        //      AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_DALARAN_MENU_AVALIABLE) + NextTimeDalaranEvent(DalaranEvent->GetTimeOfNextEvent()), GOSSIP_SENDER_MAIN, 3);
-                     // }
 
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_SERVER_MENU), GOSSIP_SENDER_MAIN, 11);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
@@ -1147,10 +1176,6 @@ public:
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString2(XP_quest, uint32(sWorld->getRate(RATE_XP_QUEST))).c_str(), GOSSIP_SENDER_MAIN, 3);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString2(rep, uint32(sWorld->getRate(RATE_REPUTATION_GAIN))).c_str(), GOSSIP_SENDER_MAIN, 3);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString2(honor, uint32(sWorld->getRate(RATE_HONOR))).c_str(), GOSSIP_SENDER_MAIN, 3);
-                    //AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString(XP, uint32(player->GetSession()->IsPremium() ? sWorld->getRate(RATE_XP_KILL_PREMIUM)/*sWorld->customGetRate(RATE_VIP_XP_KILL)*/ : sWorld->getRate(RATE_XP_KILL))).c_str(), GOSSIP_SENDER_MAIN, 3);
-                    //AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString(XP_quest, uint32(player->GetSession()->IsPremium() ? sWorld->getRate(RATE_XP_QUEST_PREMIUM) : sWorld->getRate(RATE_XP_QUEST))).c_str(), GOSSIP_SENDER_MAIN, 3);
-                    //AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString(rep, uint32(player->GetSession()->IsPremium() ? sWorld->getRate(RATE_REPUTATION_PREMIUM) : sWorld->getRate(RATE_REPUTATION_GAIN))).c_str(), GOSSIP_SENDER_MAIN, 3);
-                    //AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString(honor, uint32(player->GetSession()->IsPremium() ? sWorld->getRate(RATE_HONOR_PREMIUM) : sWorld->getRate(RATE_HONOR))).c_str(), GOSSIP_SENDER_MAIN, 3);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString2(gold, uint32(sWorld->getRate(RATE_DROP_MONEY))).c_str(), GOSSIP_SENDER_MAIN, 3);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
@@ -1661,14 +1686,12 @@ public:
                             unsetdate = GameTime::GetGameTime() + 604800; // 7 day
                             AccountMgr::SetVipStatus(player->GetSession()->GetAccountId(), unsetdate);
                         }
-                        //GetAditionalData()->
                         player->GetAditionalData()->setPremiumUnsetdate(unsetdate);
                         player->GetAditionalData()->setPremiumStatus(true);
                         player->SetCoins(ostatok);
                         AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
                         ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_VIP_TIME, coast7);
                         CloseGossipMenuFor(player);
-                        // player->GetSession()->KickPlayer("Bonk");
                     }
                     else
                     {
@@ -1753,7 +1776,6 @@ public:
                 case 83: // CLASS_WARRIOR start-pack
                 {
                     player->InstallItemPresentBySlot(1);
-                    // player->SetCanReceiveStartPack(0);
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
                 }
@@ -1768,14 +1790,12 @@ public:
                 case 85: // CLASS_HUNTER start-pack
                 {
                     player->InstallItemPresentBySlot(3);
-                    //player->SetCanReceiveStartPack(0);
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
                 }
                 case 86: // CLASS_ROGUE start-pack
                 {
                     player->InstallItemPresentBySlot(4);
-                    // player->SetCanReceiveStartPack(0);
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
                 }
@@ -1790,7 +1810,6 @@ public:
                 case 88: // CLASS_DEATH_KNIGHT start-pack
                 {
                     player->InstallItemPresentBySlot(6);
-                    // player->SetCanReceiveStartPack(0);
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
                 }
@@ -1806,14 +1825,12 @@ public:
                 case 90: // CLASS_MAGE start-pack
                 {
                     player->InstallItemPresentBySlot(8);
-                    //  player->SetCanReceiveStartPack(0);
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
                 }
                 case 91: // CLASS_WARLOCK start-pack
                 {
                     player->InstallItemPresentBySlot(9);
-                    // player->SetCanReceiveStartPack(0);
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
                 }
@@ -1830,7 +1847,6 @@ public:
                 {
                     player->InstallItemPresentBySlot(2);
                     player->InstallItemPresentBySlot(21);
-                    // player->SetCanReceiveStartPack(0);
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
                 }
@@ -1838,7 +1854,6 @@ public:
                 {
                     player->InstallItemPresentBySlot(2);
                     player->InstallItemPresentBySlot(22);
-                    // player->SetCanReceiveStartPack(0);
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
                 }
@@ -1846,7 +1861,6 @@ public:
                 {
                     player->InstallItemPresentBySlot(5);
                     player->InstallItemPresentBySlot(51);
-                    //  player->SetCanReceiveStartPack(0);
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
                 }
@@ -1854,7 +1868,6 @@ public:
                 {
                     player->InstallItemPresentBySlot(5);
                     player->InstallItemPresentBySlot(52);
-                    // player->SetCanReceiveStartPack(0);
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
                 }
@@ -1862,7 +1875,6 @@ public:
                 {
                     player->InstallItemPresentBySlot(7);
                     player->InstallItemPresentBySlot(71);
-                    //  player->SetCanReceiveStartPack(0);
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
                 }
@@ -1870,7 +1882,6 @@ public:
                 {
                     player->InstallItemPresentBySlot(7);
                     player->InstallItemPresentBySlot(72);
-                    //  player->SetCanReceiveStartPack(0);
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
                 }
@@ -1878,7 +1889,6 @@ public:
                 {
                     player->InstallItemPresentBySlot(7);
                     player->InstallItemPresentBySlot(73);
-                    // player->SetCanReceiveStartPack(0);
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
                 }
@@ -1886,7 +1896,6 @@ public:
                 {
                     player->InstallItemPresentBySlot(10);
                     player->InstallItemPresentBySlot(101);
-                    //  player->SetCanReceiveStartPack(0);
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
                 }
@@ -1894,7 +1903,6 @@ public:
                 {
                     player->InstallItemPresentBySlot(10);
                     player->InstallItemPresentBySlot(102);
-                    // player->SetCanReceiveStartPack(0);
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
                 }
@@ -1902,60 +1910,32 @@ public:
                 {
                     player->InstallItemPresentBySlot(10);
                     player->InstallItemPresentBySlot(103);
-                    //player->SetCanReceiveStartPack(0);
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
                 }
                 case 103: // Guild Menu
                 {
-                    //  AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_GSYSTEM_GUILD_INFO), GOSSIP_SENDER_MAIN, 104);
-                    //  AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_GSYSTEM_GUILD_WAR_INFO), GOSSIP_SENDER_MAIN, 105);
-
-                    //  if (player->GetGuild()->CanStartGuildWarByGuildRights(player->GetSession()))
-                    //  {
-                    //      AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GTS(LANG_GSYSTEM_GUILD_WAR_DECLARE), GOSSIP_SENDER_MAIN, 106, GTS(LANG_GSYSTEM_GUILD_WAR_DECLARE_SURE), 0, true);
-                    //      AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GTS(LANG_GSYSTEM_GUILD_WAR_ADMIT), GOSSIP_SENDER_MAIN, 107, GTS(LANG_GSYSTEM_GUILD_WAR_ADMIT_SURE), 0, true);
-                    //  }
-
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
                 case 104: // Guild Info
                 {
-                    //    if (Guild* guild = player->GetGuild())
-                       //     ChatHandler(player->GetSession()).PSendSysMessage(LANG_GSYSTEM_ANNOUNCE_INFO, guild->GetGuildLevel(), guild->GetGuildExperience(), guild->GetGuildRating());
-
                     CloseGossipMenuFor(player);
                     break;
                 }
                 case 105: // Guild War info
                 {
-                    //   if (Guild* guild = player->GetGuild())
-                    //   {
-                     //      if (!sGuildMgr->GuildHasWarState(guild->GetId()))
-                       //        ChatHandler(player->GetSession()).PSendSysMessage(LANG_GSYSTEM_GW_NO_ENEMY);
-                       //    else
-                       //        ChatHandler(player->GetSession()).PSendSysMessage(LANG_GSYSTEM_GW_HAS_ENEMY, sGuildMgr->GetGuildEnemy(guild->GetId()));
-                     //  }
                     CloseGossipMenuFor(player);
                     break;
                 }
                 case 106: // Register Dalaran Crater queue
                 {
-                    // if (SpecialEvent* DalaranEvent = sSpecialEventMgr->GetEnabledSpecialEventByEventId(SPECIALEVENT_EVENTID_DALARANCRATER))
-                   //  {
-                    //     DalaranEvent->AddPlayer(player->GetGUID());
-                    //     ChatHandler(player->GetSession()).PSendSysMessage(LANG_DALARAN_CRATER_REGISTRATION_QUEUE, DalaranEvent->GetCountPlayerInEvent());
-                   //  }
                     CloseGossipMenuFor(player);
                     break;
                 }
                 case 107: // Leave Dalaran Crater queue
                 {
-                    //  if (SpecialEvent* DalaranEvent = sSpecialEventMgr->GetEnabledSpecialEventByEventId(SPECIALEVENT_EVENTID_DALARANCRATER))
-                    //      DalaranEvent->RemovePlayer(player->GetGUID());
-                     // ChatHandler(player->GetSession()).PSendSysMessage(LANG_DALARAN_CRATER_REGISTRATION_QUEUE_ABORT);
                     CloseGossipMenuFor(player);
                     break;
                 }
@@ -2205,7 +2185,6 @@ public:
 
                         player->AddItem(pt, pt2);
                         {
-                            // ostatok = coins + 1000;
                             player->SetCoins(ostatok);
                             AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
                             ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_SUCCESS_BOUGHT, ostatok);
@@ -2234,7 +2213,6 @@ public:
 
                         player->AddItem(pt, pt2);
                         {
-                            // ostatok = coins + 1000;
                             player->SetCoins(ostatok);
                             AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
                             ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_SUCCESS_BOUGHT, ostatok);
@@ -2263,7 +2241,6 @@ public:
 
                         player->AddItem(pt, pt2);
                         {
-                            // ostatok = coins + 1000;
                             player->SetCoins(ostatok);
                             AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
                             ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_SUCCESS_BOUGHT, ostatok);
@@ -2292,7 +2269,6 @@ public:
 
                         player->AddItem(pt, pt2);
                         {
-                            // ostatok = coins + 1000;
                             player->SetCoins(ostatok);
                             AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
                             ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_SUCCESS_BOUGHT, ostatok);
@@ -2321,7 +2297,6 @@ public:
 
                         player->AddItem(pt, pt2);
                         {
-                            // ostatok = coins + 1000;
                             player->SetCoins(ostatok);
                             AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
                             ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_SUCCESS_BOUGHT, ostatok);
@@ -2350,7 +2325,6 @@ public:
 
                         player->AddItem(pt, pt2);
                         {
-                            // ostatok = coins + 1000;
                             player->SetCoins(ostatok);
                             AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
                             ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_SUCCESS_BOUGHT, ostatok);
@@ -2538,7 +2512,6 @@ public:
 
         if (!*code)
             return;
-        // only for Promo-codes
 
         if (!action)
         {

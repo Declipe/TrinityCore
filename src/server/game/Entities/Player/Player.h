@@ -103,7 +103,7 @@ enum SkillFieldOffset
     SKILL_PERM_BONUS_SHORT_OFFSET = 1
 };
 
-#define PLAYER_MAX_DAILY_QUESTS     32
+#define PLAYER_MAX_DAILY_QUESTS     70
 #define PLAYER_EXPLORED_ZONES_SIZE  128
 
 // Note: SPELLMOD_* values is aura types in fact
