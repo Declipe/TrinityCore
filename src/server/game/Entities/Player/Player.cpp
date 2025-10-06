@@ -117,7 +117,7 @@
 
 #define ZONE_UPDATE_INTERVAL (1*IN_MILLISECONDS)
 
-// corpse reclaim times
+ // corpse reclaim times
 #define DEATH_EXPIRE_STEP (5*MINUTE)
 #define MAX_DEATH_COUNT 3
 
@@ -1114,16 +1114,18 @@ void Player::Update(uint32 p_time)
                 }
                 else
                 {
-                    m_swingErrorMsg = 0;                    // reset swing error state
-
                     // prevent base and off attack in same time, delay attack at 0.2 sec
                     if (haveOffhandWeapon())
                         if (getAttackTimer(OFF_ATTACK) < ATTACK_DISPLAY_DELAY)
                             setAttackTimer(OFF_ATTACK, ATTACK_DISPLAY_DELAY);
 
-                    // do attack
-                    AttackerStateUpdate(victim, BASE_ATTACK);
-                    resetAttackTimer(BASE_ATTACK);
+                    if (IsValidAttackTarget(victim))
+                    {
+                        m_swingErrorMsg = 0;                    // reset swing error state
+                        // do attack
+                        AttackerStateUpdate(victim, BASE_ATTACK);
+                        resetAttackTimer(BASE_ATTACK);
+                    }
                 }
             }
 
@@ -1139,9 +1141,12 @@ void Player::Update(uint32 p_time)
                     if (getAttackTimer(BASE_ATTACK) < ATTACK_DISPLAY_DELAY)
                         setAttackTimer(BASE_ATTACK, ATTACK_DISPLAY_DELAY);
 
-                    // do attack
-                    AttackerStateUpdate(victim, OFF_ATTACK);
-                    resetAttackTimer(OFF_ATTACK);
+                    if (IsValidAttackTarget(victim))
+                    {
+                        // do attack
+                        AttackerStateUpdate(victim, OFF_ATTACK);
+                        resetAttackTimer(OFF_ATTACK);
+                    }
                 }
             }
 
@@ -4510,7 +4515,7 @@ void Player::ResurrectPlayer(float restore_percent, bool applySickness)
     AddUnitMovementFlag(MOVEMENTFLAG_WATERWALKING);
     SetWaterWalking(false);
     if (!HasUnitState(UNIT_STATE_STUNNED))
-         SetRooted(false);
+        SetRooted(false);
 
     //Guild-Level-System (Bonus: Faster spirit)
      //if (!GetMap()->IsBattlegroundOrArena())
@@ -8504,7 +8509,7 @@ void Player::SendLoot(ObjectGuid guid, LootType loot_type)
 {
     ObjectGuid currentLootGuid = GetLootGUID();
     if (!currentLootGuid.IsEmpty())
-         m_session->DoLootRelease(currentLootGuid);
+        m_session->DoLootRelease(currentLootGuid);
 
     Loot* loot;
     PermissionTypes permission = ALL_PERMISSION;
@@ -26087,11 +26092,11 @@ void Player::SendEquipmentSetList()
     data << uint32(count);                                  // count placeholder
 
     static ObjectGuid const IgnoredSlot = []
-    {
-         ObjectGuid guid;
-         guid.SetRawValue(1);
-         return guid;
-    }();
+        {
+            ObjectGuid guid;
+            guid.SetRawValue(1);
+            return guid;
+        }();
 
     for (EquipmentSetContainer::value_type const& eqSet : _equipmentSets)
     {
