@@ -2567,10 +2567,6 @@ void World::Update(uint32 diff)
         }
     }
 
-    {
-        sAuctionMgr->ProcessListAuctionResponses();
-    }
-
     /// <ul><li> Handle auctions when the timer has passed
     if (m_timers[WUPDATE_AUCTIONS].Passed())
     {
