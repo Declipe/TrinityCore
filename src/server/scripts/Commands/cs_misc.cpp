@@ -126,10 +126,50 @@ public:
             { "wchange",          HandleChangeWeather,           rbac::RBAC_PERM_COMMAND_WCHANGE,          Console::No },
             { "mailbox",          HandleMailBoxCommand,          rbac::RBAC_PERM_COMMAND_MAILBOX,          Console::No },
             { "rtx",              HandleRtxCommand,              rbac::RBAC_PERM_COMMAND_RTX,              Console::No },
+            { "bm",               HandleBMCommand,               rbac::RBAC_ROLE_GAMEMASTER,               Console::No  },
         };
         return commandTable;
     }
 
+    static bool HandleBMCommand(ChatHandler* handler, Optional<bool> enableArg)
+    {
+        WorldSession* session = handler->GetSession();
+
+        if (!session)
+            return false;
+
+        auto SetBMMod = [&](bool enable)
+            {
+                char const* enabled = "ON";
+                char const* disabled = "OFF";
+                session->SendNotification2(NOT_USED_68, enable ? enabled : disabled);
+                session->GetPlayer()->SetBeastMaster(enable);
+            };
+
+        if (!enableArg)
+        {
+            if (!AccountMgr::IsPlayerAccount(session->GetSecurity()) && session->GetPlayer()->IsDeveloper())
+                SetBMMod(true);
+            else
+                SetBMMod(false);
+
+            return true;
+        }
+
+        if (*enableArg)
+        {
+            SetBMMod(true);
+            return true;
+        }
+        else
+        {
+            SetBMMod(false);
+            return true;
+        }
+
+        handler->PSendSysMessage(LANG_USE_BOL);
+        return false;
+    }
     static bool HandlePvPstatsCommand(ChatHandler* handler)
     {
         if (sWorld->getBoolConfig(CONFIG_BATTLEGROUND_STORE_STATISTICS_ENABLE))
