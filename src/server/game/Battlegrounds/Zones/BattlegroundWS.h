@@ -276,5 +276,6 @@ class BattlegroundWS : public Battleground
         uint8 _minutesElapsed;
 
         void PostUpdateImpl(uint32 diff) override;
+        float _wsReputationRate;
 };
 #endif

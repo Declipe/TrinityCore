@@ -184,21 +184,21 @@ void BattlegroundAV::HandleQuestComplete(uint32 questid, Player* player)
         case AV_QUEST_A_COMMANDER1:
         case AV_QUEST_H_COMMANDER1:
             m_Team_QuestStatus[team][1]++;
-            RewardReputationToTeam(team, CFSteam, 1, player->GetTeam());
+            RewardReputationToTeam(team, CFSteam, uint32(1 * _avReputationRate), player->GetTeam());
             if (m_Team_QuestStatus[team][1] == 30)
                 TC_LOG_DEBUG("bg.battleground", "BG_AV Quest {} completed (need to implement some events here", questid);
             break;
         case AV_QUEST_A_COMMANDER2:
         case AV_QUEST_H_COMMANDER2:
             m_Team_QuestStatus[team][2]++;
-            RewardReputationToTeam(team, CFSteam, 1, player->GetTeam());
+            RewardReputationToTeam(team, CFSteam, uint32(1 * _avReputationRate), player->GetTeam());
             if (m_Team_QuestStatus[team][2] == 60)
                 TC_LOG_DEBUG("bg.battleground", "BG_AV Quest {} completed (need to implement some events here", questid);
             break;
         case AV_QUEST_A_COMMANDER3:
         case AV_QUEST_H_COMMANDER3:
             m_Team_QuestStatus[team][3]++;
-            RewardReputationToTeam(team, CFSteam, 1, player->GetTeam());
+            RewardReputationToTeam(team, CFSteam, uint32(1 * _avReputationRate), player->GetTeam());
             if (m_Team_QuestStatus[team][3] == 120)
                 TC_LOG_DEBUG("bg.battleground", "BG_AV Quest {} completed (need to implement some events here", questid);
             break;
@@ -484,7 +484,7 @@ void BattlegroundAV::EndBattleground(uint32 winner)
             rep[i]   += BG_AV_REP_SURVIVING_CAPTAIN;
         }
         if (rep[i] != 0)
-            RewardReputationToTeam(729, 730, 10, i == ALLIANCE ? ALLIANCE : HORDE);
+            RewardReputationToTeam(729, 730, uint32(10 * _avReputationRate), i == ALLIANCE ? ALLIANCE : HORDE);
         if (kills[i] != 0)
             RewardHonorToTeam(GetBonusHonorFromKill(kills[i]), i == 0 ? ALLIANCE : HORDE);
     }
@@ -1138,6 +1138,7 @@ WorldSafeLocsEntry const* BattlegroundAV::GetClosestGraveyard(Player* player)
 
 bool BattlegroundAV::SetupBattleground()
 {
+    _avReputationRate = sGameConfig->GetRateConfig("Rate.Reputation.Gain.AV");
     // Create starting objects
     if (// alliance gates
         !AddObject(BG_AV_OBJECT_DOOR_A, BG_AV_OBJECTID_GATE_A, BG_AV_DoorPositons[0], BG_AV_DoorRotation[0].x, BG_AV_DoorRotation[0].y, BG_AV_DoorRotation[0].z, BG_AV_DoorRotation[0].w, RESPAWN_IMMEDIATELY)

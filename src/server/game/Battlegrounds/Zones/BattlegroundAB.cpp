@@ -144,7 +144,7 @@ void BattlegroundAB::PostUpdateImpl(uint32 diff)
 
                 if (m_ReputationScoreTics[team] >= m_ReputationTics)
                 {
-                    RewardReputationToTeam(509, 510, 10, team == ALLIANCE ? ALLIANCE : HORDE);
+                    RewardReputationToTeam(509, 510, uint32(10 * _abReputationRate), team == ALLIANCE ? ALLIANCE : HORDE);
                     m_ReputationScoreTics[team] -= m_ReputationTics;
                 }
 
@@ -561,6 +561,8 @@ uint32 BattlegroundAB::GetPrematureWinner()
 
 bool BattlegroundAB::SetupBattleground()
 {
+    _abReputationRate = sGameConfig->GetRateConfig("Rate.Reputation.Gain.AB");
+
     for (int i = 0; i < BG_AB_DYNAMIC_NODES_COUNT; ++i)
     {
         if (!AddObject(BG_AB_OBJECT_BANNER_NEUTRAL + 8*i, BG_AB_OBJECTID_NODE_BANNER_0 + i, BG_AB_NodePositions[i], 0, 0, std::sin(BG_AB_NodePositions[i].GetOrientation()/2), std::cos(BG_AB_NodePositions[i].GetOrientation()/2), RESPAWN_ONE_DAY)

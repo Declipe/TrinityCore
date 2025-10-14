@@ -35,23 +35,23 @@
 
 #define BG_AV_KILL_BOSS                 4
 //#define BG_AV_REP_BOSS                  350
-#define BG_AV_REP_BOSS                  sGameConfig->GetIntConfig("Battleground.Alterac.ReputationOnBossDeath")
+#define BG_AV_REP_BOSS                  uint32(sGameConfig->GetIntConfig("Battleground.Alterac.ReputationOnBossDeath") * _avReputationRate)
 
 #define BG_AV_KILL_CAPTAIN              3
-#define BG_AV_REP_CAPTAIN               125
+#define BG_AV_REP_CAPTAIN               uint32(125 * _avReputationRate)
 #define BG_AV_RES_CAPTAIN               100
 
 #define BG_AV_KILL_TOWER                3
-#define BG_AV_REP_TOWER                 12
+#define BG_AV_REP_TOWER                 uint32(12 * _avReputationRate)
 #define BG_AV_RES_TOWER                 75
 
 #define BG_AV_GET_COMMANDER            1 //for a safely returned wingcommander
 //bonushonor at the end
 #define BG_AV_KILL_SURVIVING_TOWER      2
-#define BG_AV_REP_SURVIVING_TOWER       12
+#define BG_AV_REP_SURVIVING_TOWER       uint32(12 * _avReputationRate)
 
 #define BG_AV_KILL_SURVIVING_CAPTAIN    2
-#define BG_AV_REP_SURVIVING_CAPTAIN     125
+#define BG_AV_REP_SURVIVING_CAPTAIN     uint32(125 * _avReputationRate)
 
 #define BG_AV_EVENT_START_BATTLE           9166 // Achievement: The Alterac Blitz
 
@@ -1706,6 +1706,7 @@ class BattlegroundAV : public Battleground
         bool m_CaptainAlive[2];
 
         bool m_IsInformedNearVictory[2];
+        float _avReputationRate;
 };
 
 #endif

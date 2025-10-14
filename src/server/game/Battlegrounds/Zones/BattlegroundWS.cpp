@@ -697,6 +697,8 @@ void BattlegroundWS::HandleAreaTrigger(Player* player, uint32 trigger)
 
 bool BattlegroundWS::SetupBattleground()
 {
+    _wsReputationRate = sGameConfig->GetRateConfig("Rate.Reputation.Gain.WSG");
+
     // flags
     if (!AddObject(BG_WS_OBJECT_A_FLAG, BG_OBJECT_A_FLAG_WS_ENTRY, 1540.423f, 1481.325f, 351.8284f, 3.089233f, 0, 0, 0.9996573f, 0.02617699f, BG_WS_FLAG_RESPAWN_TIME/1000)
         || !AddObject(BG_WS_OBJECT_H_FLAG, BG_OBJECT_H_FLAG_WS_ENTRY, 916.0226f, 1434.405f, 345.413f, 0.01745329f, 0, 0, 0.008726535f, 0.9999619f, BG_WS_FLAG_RESPAWN_TIME/1000)
@@ -760,13 +762,13 @@ void BattlegroundWS::Reset()
 
     if (sBattlegroundMgr->IsBGWeekend(GetTypeID()))
     {
-        m_ReputationCapture = 45;
+        m_ReputationCapture = uint32(45 * _wsReputationRate);
         m_HonorWinKills = 3;
         m_HonorEndKills = 4;
     }
     else
     {
-        m_ReputationCapture = 35;
+        m_ReputationCapture = uint32(35 * _wsReputationRate);
         m_HonorWinKills = 1;
         m_HonorEndKills = 2;
     }

@@ -327,6 +327,7 @@ class BattlegroundAB : public Battleground
 
         uint32 GetPrematureWinner() override;
     private:
+        float _abReputationRate;
         void PostUpdateImpl(uint32 diff) override;
         /* Gameobject spawning/despawning */
         void _CreateBanner(uint8 node, uint8 type, uint8 teamIndex, bool delay);
