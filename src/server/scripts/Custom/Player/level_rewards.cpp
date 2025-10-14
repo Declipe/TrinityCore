@@ -121,7 +121,7 @@ public:
                     }
                     else
                         player->PlayerTalkClass->SendCloseGossip();
-                    player->GetSession()->SendAreaTriggerMessage(GTS2(NOT_USED_16));
+                    session->SendAreaTriggerMessage(GTS2(NOT_USED_16));
                     ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_16));
 
                     player->PlayerTalkClass->SendCloseGossip();
@@ -174,7 +174,7 @@ public:
             {
                 player->AddQuest(quest, player);
                 player->SendQuestUpdate(questId);
-                player->GetSession()->SendNotification(GTS2(NOT_USED_40));
+                session->SendNotification2(NOT_USED_40);
             }
         }
     }

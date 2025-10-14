@@ -6,6 +6,7 @@
 #include "Bag.h"
 #include "Chat.h"
 #include "Common.h"
+#include "Config.h"
 #include "Containers.h"
 #include "CustomConfig.h"
 #include "DatabaseEnv.h"
@@ -15,25 +16,24 @@
 #include "GuildMgr.h"
 #include "InstanceSaveMgr.h"
 #include "Item.h"
+#include "item_upgrade.h"
 #include "Language.h"
+#include "Log.h"
 #include "Map.h"
 #include "ObjectMgr.h"
 #include "Player.h"
 #include "RBAC.h"
 #include "ScriptedGossip.h"
+#include "ScriptMgr.h"
 #include "SpellInfo.h"
 #include "SpellMgr.h"
-#include "ScriptMgr.h"
+#include "StringConvert.h"
 #include "World.h"
 #include "WorldSession.h"
-#include <numeric>
-#include <iomanip>
-#include <random>
-#include "Config.h"
-#include "StringConvert.h"
-#include "Log.h"
 #include "ZynDatabase.h"
-#include "item_upgrade.h"
+#include <iomanip>
+#include <numeric>
+#include <random>
 
 ItemUpgrade::ItemUpgrade()
 {
@@ -224,7 +224,7 @@ void ItemUpgrade::CleanupDB(bool reload)
     trans->Append("DELETE FROM mod_item_upgrade_stats_req_override WHERE stat_id NOT IN (SELECT id FROM mod_item_upgrade_stats)");
     trans2->Append("DELETE FROM character_item_upgrade WHERE stat_id NOT IN (SELECT id FROM mod_item_upgrade_stats)");
     if (!reload)
-    trans2->Append("DELETE FROM character_item_upgrade WHERE NOT EXISTS (SELECT 1 FROM item_instance WHERE item_instance.guid = character_item_upgrade.item_guid)");
+        trans2->Append("DELETE FROM character_item_upgrade WHERE NOT EXISTS (SELECT 1 FROM item_instance WHERE item_instance.guid = character_item_upgrade.item_guid)");
     trans->Append("DELETE FROM mod_item_upgrade_allowed_stats_items WHERE stat_id NOT IN (SELECT id FROM mod_item_upgrade_stats)");
     trans->Append("DELETE FROM mod_item_upgrade_blacklisted_stats_items WHERE stat_id NOT IN (SELECT id FROM mod_item_upgrade_stats)");
     ZynDatabase.DirectCommitTransaction(trans);
@@ -448,37 +448,37 @@ bool ItemUpgrade::ValidateReq(uint32 id, UpgradeStatReqType reqType, float val1,
     int32 val1Int = static_cast<int32>(val1);
     switch (reqType)
     {//unsigned(val1Int)
-        case ItemUpgrade::REQ_TYPE_COPPER:
-            if (val1Int >= 1 && unsigned(val1Int) <= MAX_MONEY_AMOUNT)
-                return true;
-            TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (copper amount) for `id` {}, skip", table, val1, id);
-            return false;
-        case ItemUpgrade::REQ_TYPE_HONOR:
-            if (val1Int >= 1 && unsigned(val1Int) <= sWorld->getIntConfig(CONFIG_MAX_HONOR_POINTS))
-                return true;
-            TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (honor points) for `id` {}, skip", table, val1, id);
-            return false;
-        case ItemUpgrade::REQ_TYPE_ARENA:
-            if (val1Int >= 1 && unsigned(val1Int) <= sWorld->getIntConfig(CONFIG_MAX_ARENA_POINTS))
-                return true;
-            TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (arena points) for `id` {}, skip", table, val1, id);
-            return false;
-        case ItemUpgrade::REQ_TYPE_ITEM:
+    case ItemUpgrade::REQ_TYPE_COPPER:
+        if (val1Int >= 1 && unsigned(val1Int) <= MAX_MONEY_AMOUNT)
+            return true;
+        TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (copper amount) for `id` {}, skip", table, val1, id);
+        return false;
+    case ItemUpgrade::REQ_TYPE_HONOR:
+        if (val1Int >= 1 && unsigned(val1Int) <= sWorld->getIntConfig(CONFIG_MAX_HONOR_POINTS))
+            return true;
+        TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (honor points) for `id` {}, skip", table, val1, id);
+        return false;
+    case ItemUpgrade::REQ_TYPE_ARENA:
+        if (val1Int >= 1 && unsigned(val1Int) <= sWorld->getIntConfig(CONFIG_MAX_ARENA_POINTS))
+            return true;
+        TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (arena points) for `id` {}, skip", table, val1, id);
+        return false;
+    case ItemUpgrade::REQ_TYPE_ITEM:
+    {
+        const ItemTemplate* itemTemplate = sObjectMgr->GetItemTemplate(val1Int);
+        if (!itemTemplate)
         {
-            const ItemTemplate* itemTemplate = sObjectMgr->GetItemTemplate(val1Int);
-            if (!itemTemplate)
-            {
-                TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (item entry not found) for `id` {}, skip", table, val1, id);
-                return false;
-            }
-            int32 val2Int = static_cast<int32>(val2);
-            if (val2Int >= 1)
-                return true;
-            TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val2` {} (item count invalid) for `id` {}, skip", table, val2, id);
+            TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (item entry not found) for `id` {}, skip", table, val1, id);
             return false;
         }
-        case ItemUpgrade::REQ_TYPE_NONE:
+        int32 val2Int = static_cast<int32>(val2);
+        if (val2Int >= 1)
             return true;
+        TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val2` {} (item count invalid) for `id` {}, skip", table, val2, id);
+        return false;
+    }
+    case ItemUpgrade::REQ_TYPE_NONE:
+        return true;
     }
     return false;
 }
@@ -1263,24 +1263,30 @@ void ItemUpgrade::BuildRequirementsPage(const Player* player, PagedData& pagedDa
             std::ostringstream oss;
             switch (req.reqType)
             {
-                case REQ_TYPE_COPPER:
-                    oss << "MONEY: " << CopperToMoneyStr((uint32)req.reqVal1, true);
-                    break;
-                case REQ_TYPE_HONOR:
-                    oss << "HONOR: " << (uint32)req.reqVal1 << " points";
-                    break;
-                case REQ_TYPE_ARENA:
-                    oss << "ARENA: " << (uint32)req.reqVal1 << " points";
-                    break;
-                case REQ_TYPE_ITEM:
-                {
-                    const ItemTemplate* proto = sObjectMgr->GetItemTemplate((uint32)req.reqVal1);
-                    oss << ItemIcon(proto);
-                    oss << ItemLink(player, proto, 0);
-                    if (req.reqVal2 > 1.0f)
-                        oss << " - " << (uint32)req.reqVal2 << "x";
-                    break;
-                }
+            case REQ_TYPE_COPPER:
+            {
+                oss << "MONEY: " << CopperToMoneyStr((uint32)req.reqVal1, true);
+                break;
+            }
+            case REQ_TYPE_HONOR:
+            {
+                oss << "HONOR: " << (uint32)req.reqVal1 << " points";
+                break;
+            }
+            case REQ_TYPE_ARENA:
+            {
+                oss << "ARENA: " << (uint32)req.reqVal1 << " points";
+                break;
+            }
+            case REQ_TYPE_ITEM:
+            {
+                const ItemTemplate* proto = sObjectMgr->GetItemTemplate((uint32)req.reqVal1);
+                oss << ItemIcon(proto);
+                oss << ItemLink(player, proto, 0);
+                if (req.reqVal2 > 1.0f)
+                    oss << " - " << (uint32)req.reqVal2 << "x";
+                break;
+            }
             }
 
             std::string missing;
@@ -1288,18 +1294,26 @@ void ItemUpgrade::BuildRequirementsPage(const Player* player, PagedData& pagedDa
             {
                 switch (req.reqType)
                 {
-                    case REQ_TYPE_COPPER:
-                        missing = "missing " + CopperToMoneyStr((uint32)req.reqVal1 - player->GetMoney(), true);
-                        break;
-                    case REQ_TYPE_HONOR:
-                        missing = "missing " + Trinity::ToString<uint32>((uint32)req.reqVal1 - player->GetHonorPoints()) + " points";
-                        break;
-                    case REQ_TYPE_ARENA:
-                        missing = "missing " + Trinity::ToString<uint32>((uint32)req.reqVal1 - player->GetArenaPoints()) + " points";
-                        break;
-                    case REQ_TYPE_ITEM:
-                        missing = "missing " + Trinity::ToString<uint32>((uint32)req.reqVal2 - player->GetItemCount((uint32)req.reqVal1, true)) + " items";
-                        break;
+                case REQ_TYPE_COPPER:
+                {
+                    missing = "missing " + CopperToMoneyStr((uint32)req.reqVal1 - player->GetMoney(), true);
+                    break;
+                }
+                case REQ_TYPE_HONOR:
+                {
+                    missing = "missing " + Trinity::ToString<uint32>((uint32)req.reqVal1 - player->GetHonorPoints()) + " points";
+                    break;
+                }
+                case REQ_TYPE_ARENA:
+                {
+                    missing = "missing " + Trinity::ToString<uint32>((uint32)req.reqVal1 - player->GetArenaPoints()) + " points";
+                    break;
+                }
+                case REQ_TYPE_ITEM:
+                {
+                    missing = "missing " + Trinity::ToString<uint32>((uint32)req.reqVal2 - player->GetItemCount((uint32)req.reqVal1, true)) + " items";
+                    break;
+                }
                 }
             }
 
@@ -1432,16 +1446,26 @@ bool ItemUpgrade::MeetsRequirement(const Player* player, const UpgradeStatReq& r
 {
     switch (req.reqType)
     {
-        case REQ_TYPE_COPPER:
-            return player->HasEnoughMoney((int32)req.reqVal1);
-        case REQ_TYPE_HONOR:
-            return player->GetHonorPoints() >= (uint32)req.reqVal1;
-        case REQ_TYPE_ARENA:
-            return player->GetArenaPoints() >= (uint32)req.reqVal1;
-        case REQ_TYPE_ITEM:
-            return player->HasItemCount((uint32)req.reqVal1, (uint32)req.reqVal2, true);
-        case REQ_TYPE_NONE:
-            return true;
+    case REQ_TYPE_COPPER:
+    {
+        return player->HasEnoughMoney((int32)req.reqVal1);
+    }
+    case REQ_TYPE_HONOR:
+    {
+        return player->GetHonorPoints() >= (uint32)req.reqVal1;
+    }
+    case REQ_TYPE_ARENA:
+    {
+        return player->GetArenaPoints() >= (uint32)req.reqVal1;
+    }
+    case REQ_TYPE_ITEM:
+    {
+        return player->HasItemCount((uint32)req.reqVal1, (uint32)req.reqVal2, true);
+    }
+    case REQ_TYPE_NONE:
+    {
+        return true;
+    }
     }
 
     return false;
@@ -1478,18 +1502,26 @@ void ItemUpgrade::TakeRequirements(Player* player, const StatRequirementContaine
     {
         switch (req.reqType)
         {
-            case REQ_TYPE_COPPER:
-                player->ModifyMoney(-(int32)req.reqVal1);
-                break;
-            case REQ_TYPE_HONOR:
-                player->ModifyHonorPoints(-(int32)req.reqVal1);
-                break;
-            case REQ_TYPE_ARENA:
-                player->ModifyArenaPoints(-(int32)req.reqVal1);
-                break;
-            case REQ_TYPE_ITEM:
-                player->DestroyItemCount((uint32)req.reqVal1, (uint32)req.reqVal2, true);
-                break;
+        case REQ_TYPE_COPPER:
+        {
+            player->ModifyMoney(-(int32)req.reqVal1);
+            break;
+        }
+        case REQ_TYPE_HONOR:
+        {
+            player->ModifyHonorPoints(-(int32)req.reqVal1);
+            break;
+        }
+        case REQ_TYPE_ARENA:
+        {
+            player->ModifyArenaPoints(-(int32)req.reqVal1);
+            break;
+        }
+        case REQ_TYPE_ITEM:
+        {
+            player->DestroyItemCount((uint32)req.reqVal1, (uint32)req.reqVal2, true);
+            break;
+        }
         }
     }
 }
@@ -1718,18 +1750,26 @@ ItemUpgrade::StatRequirementContainer ItemUpgrade::BuildBulkRequirements(const s
         {
             switch (statReq.reqType)
             {
-                case REQ_TYPE_COPPER:
-                    copper += (uint32)statReq.reqVal1;
-                    break;
-                case REQ_TYPE_HONOR:
-                    honor += (uint32)statReq.reqVal1;
-                    break;
-                case REQ_TYPE_ARENA:
-                    arena += (uint32)statReq.reqVal1;
-                    break;
-                case REQ_TYPE_ITEM:
-                    itemMap[(uint32)statReq.reqVal1] += (uint32)statReq.reqVal2;
-                    break;
+            case REQ_TYPE_COPPER:
+            {
+                copper += (uint32)statReq.reqVal1;
+                break;
+            }
+            case REQ_TYPE_HONOR:
+            {
+                honor += (uint32)statReq.reqVal1;
+                break;
+            }
+            case REQ_TYPE_ARENA:
+            {
+                arena += (uint32)statReq.reqVal1;
+                break;
+            }
+            case REQ_TYPE_ITEM:
+            {
+                itemMap[(uint32)statReq.reqVal1] += (uint32)statReq.reqVal2;
+                break;
+            }
             }
         }
     }
@@ -2353,17 +2393,21 @@ bool ItemUpgrade::RefundEverything(Player* player, Item* item, const std::vector
     {
         switch (r.reqType)
         {
-            case REQ_TYPE_COPPER:
-                if (player->GetMoney() + (uint32)r.reqVal1 > MAX_MONEY_AMOUNT)
-                {
-                    SendMessage(player, "Can't refund copper, would be at gold limit.");
-                    return false;
-                }
-                break;
-            case REQ_TYPE_ITEM:
-                if (!TryAddItem(player, (uint32)r.reqVal1, (uint32)r.reqVal2, false))
-                    return false;
-                break;
+        case REQ_TYPE_COPPER:
+        {
+            if (player->GetMoney() + (uint32)r.reqVal1 > MAX_MONEY_AMOUNT)
+            {
+                SendMessage(player, "Can't refund copper, would be at gold limit.");
+                return false;
+            }
+            break;
+        }
+        case REQ_TYPE_ITEM:
+        {
+            if (!TryAddItem(player, (uint32)r.reqVal1, (uint32)r.reqVal2, false))
+                return false;
+            break;
+        }
         }
     }
 
@@ -2371,18 +2415,26 @@ bool ItemUpgrade::RefundEverything(Player* player, Item* item, const std::vector
     {
         switch (r.reqType)
         {
-            case REQ_TYPE_COPPER:
-                player->ModifyMoney((int32)r.reqVal1);
-                break;
-            case REQ_TYPE_HONOR:
-                player->ModifyHonorPoints((int32)r.reqVal1);
-                break;
-            case REQ_TYPE_ARENA:
-                player->ModifyArenaPoints((int32)r.reqVal1);
-                break;
-            case REQ_TYPE_ITEM:
-                TryAddItem(player, (uint32)r.reqVal1, (uint32)r.reqVal2, true);
-                break;
+        case REQ_TYPE_COPPER:
+        {
+            player->ModifyMoney((int32)r.reqVal1);
+            break;
+        }
+        case REQ_TYPE_HONOR:
+        {
+            player->ModifyHonorPoints((int32)r.reqVal1);
+            break;
+        }
+        case REQ_TYPE_ARENA:
+        {
+            player->ModifyArenaPoints((int32)r.reqVal1);
+            break;
+        }
+        case REQ_TYPE_ITEM:
+        {
+            TryAddItem(player, (uint32)r.reqVal1, (uint32)r.reqVal2, true);
+            break;
+        }
         }
     }
 
