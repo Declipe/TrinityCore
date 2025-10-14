@@ -29,7 +29,7 @@
 #include "CustomConfig.h"
 
 template<class T>
-RandomMovementGenerator<T>::RandomMovementGenerator(float distance) : _timer(0), _reference(), _wanderDistance(distance), _wanderSteps(0), _angleIndex(0), _pathIndex(0)
+RandomMovementGenerator<T>::RandomMovementGenerator(float distance/* = 0.0f*/, bool force2DPositionRelocation/* = false*/) : _timer(0), _reference(), _wanderDistance(distance), _wanderSteps(0), _angleIndex(0), _pathIndex(0), _force2DPositionRelocation(force2DPositionRelocation)
 {
     this->Mode = MOTION_MODE_DEFAULT;
     this->Priority = MOTION_PRIORITY_NORMAL;
@@ -37,7 +37,7 @@ RandomMovementGenerator<T>::RandomMovementGenerator(float distance) : _timer(0),
     this->BaseUnitState = UNIT_STATE_ROAMING;
 }
 
-template RandomMovementGenerator<Creature>::RandomMovementGenerator(float/* distance*/);
+template RandomMovementGenerator<Creature>::RandomMovementGenerator(float/* distance*/, bool/* force2DPositionRelocation*/);
 
 template<class T>
 MovementGeneratorType RandomMovementGenerator<T>::GetMovementGeneratorType() const
@@ -162,7 +162,10 @@ void RandomMovementGenerator<Creature>::SetRandomLocation(Creature* owner)
             float angle = _angles[_angleIndex];
             _angleIndex = (_angleIndex + 1) % NUM_WANDER_POINTS;
             // Project destination position to the first collision
-            owner->MovePositionToFirstCollision(position, distance, angle);
+            if (_force2DPositionRelocation)
+                owner->GetNearPoint2D(nullptr, position.m_positionX, position.m_positionY, distance, frand(0.f, 2.f * float(M_PI)));
+            else
+                owner->MovePositionToFirstCollision(position, distance, angle);
         }
 
         // Check if the destination is in LOS
