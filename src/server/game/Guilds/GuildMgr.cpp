@@ -77,6 +77,23 @@ std::string GuildMgr::GetGuildNameById(ObjectGuid::LowType guildId) const
     return "";
 }
 
+std::string GuildMgr::GetGuildNameWithGLvl(std::string const& guildName, uint32 level) const
+{
+    std::ostringstream str;
+    str << guildName << " (" << level << " level)";
+
+    return str.str();
+}
+
+std::string GuildMgr::GetGuildNameByIdWithLvl(ObjectGuid::LowType guildId) const
+{
+    std::string glvl = "";
+    if (Guild* guild = GetGuildById(guildId))
+        return GetGuildNameWithGLvl(guild->GetName(), guild->GetLevel());
+
+    return "";
+}
+
 GuildMgr* GuildMgr::instance()
 {
     static GuildMgr instance;

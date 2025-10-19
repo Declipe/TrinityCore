@@ -15,6 +15,7 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "CustomConfig.h"
 #include "WhoListStorage.h"
 #include "World.h"
 #include "ObjectAccessor.h"
@@ -47,7 +48,11 @@ void WhoListStorageMgr::Update()
 
         wstrToLower(widePlayerName);
 
-        std::string guildName = sGuildMgr->GetGuildNameById(itr->second->GetGuildId());
+        std::string guildName = "";
+        if (sGameConfig->GetIntConfig("QueryList.Enabled"))
+            guildName = sGuildMgr->GetGuildNameByIdWithLvl(itr->second->GetGuildId());
+        else
+            guildName = sGuildMgr->GetGuildNameById(itr->second->GetGuildId());
         std::wstring wideGuildName;
         if (!Utf8toWStr(guildName, wideGuildName))
             continue;

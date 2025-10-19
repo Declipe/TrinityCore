@@ -41,6 +41,8 @@ public:
     Guild* GetGuildById(ObjectGuid::LowType guildId) const;
     Guild* GetGuildByName(std::string_view guildName) const;
     std::string GetGuildNameById(ObjectGuid::LowType guildId) const;
+    std::string GetGuildNameByIdWithLvl(ObjectGuid::LowType guildId) const;
+    std::string GetGuildNameWithGLvl(std::string const& guildName, uint32 level) const;
 
     void LoadGuilds();
     void AddGuild(Guild* guild);

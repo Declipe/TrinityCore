@@ -23,6 +23,7 @@
 #include "CharacterCache.h"
 #include "Chat.h"
 #include "Config.h"
+#include "CustomConfig.h"
 #include "DatabaseEnv.h"
 #include "GameTime.h"
 #include "GuildMgr.h"
@@ -1298,7 +1299,10 @@ void Guild::HandleQuery(WorldSession* session)
 
     response.Info.RankCount = _GetRanksSize();
 
-    response.Info.GuildName = m_name;
+    if (sGameConfig->GetIntConfig("QueryList.Enabled"))
+        response.Info.GuildName = PrepareGuildNameByIdWithLvl(m_name, m_guild_level);
+    else
+        response.Info.GuildName = m_name;
 
     session->SendPacket(response.Write());
     TC_LOG_DEBUG("guild", "SMSG_GUILD_QUERY_RESPONSE [{}]", session->GetPlayerInfo());
@@ -3105,3 +3109,10 @@ void Guild::SetLevel(uint8 level, bool byCommand)
         m_xp_for_next_level = (*result)[0].GetUInt32();
 }
 //Guild-Level-System [End]
+std::string Guild::PrepareGuildNameByIdWithLvl(std::string const& guildName, uint32 level)
+{
+    std::ostringstream str;
+    str << guildName << " (" << level << " level)";
+
+    return str.str();
+}

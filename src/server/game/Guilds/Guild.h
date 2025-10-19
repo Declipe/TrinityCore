@@ -669,6 +669,7 @@ class TC_GAME_API Guild
 
         bool SetName(std::string_view name);
 
+        std::string PrepareGuildNameByIdWithLvl(std::string const& guildName, uint32 level);
         // Handle client commands
         void HandleRoster(WorldSession* session);
         void HandleQuery(WorldSession* session);

@@ -1,0 +1,1 @@
+INSERT INTO `custom_config` (`OptionName`, `Type`, `DefaultValue`, `CustomValue`, `Description`) VALUES ('QueryList.Enabled', 'int', '0', '1', 'Description: Make a visible guild level in query opcode (visible name/guild above character)');
