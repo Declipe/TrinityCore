@@ -640,9 +640,8 @@ bool Creature::UpdateEntry(uint32 entry, CreatureData const* data /*= nullptr*/,
     SetIsCombatDisallowed((cInfo->flags_extra & CREATURE_FLAG_EXTRA_CANNOT_ENTER_COMBAT) != 0);
 
     LoadTemplateRoot();
-    InitializeMovementFlags();
-
     LoadCreaturesAddon();
+    InitializeMovementFlags();
     LoadTemplateImmunities();
 
     GetThreatManager().EvaluateSuppressed();
@@ -1108,9 +1107,6 @@ bool Creature::Create(ObjectGuid::LowType guidlow, Map* map, uint32 phaseMask, u
             m_corpseDelay = sWorld->getIntConfig(CONFIG_CORPSE_DECAY_NORMAL);
             break;
     }
-
-    //! Need to be called after LoadCreaturesAddon - MOVEMENTFLAG_HOVER is set there
-    m_positionZ += GetHoverOffset();
 
     LastUsedScriptID = GetScriptId();
 
@@ -2570,14 +2566,6 @@ bool Creature::LoadCreaturesAddon()
     SetStandState(UnitStandStateType(creatureAddon->standState));
     SetAnimTier(AnimTier(creatureAddon->animTier));
     ReplaceAllVisFlags(UnitVisFlags(creatureAddon->visFlags));
-
-    //! Suspected correlation between UNIT_FIELD_BYTES_1, offset 3, value 0x2:
-    //! If no inhabittype_fly (if no MovementFlag_DisableGravity or MovementFlag_CanFly flag found in sniffs)
-    //! Check using InhabitType as movement flags are assigned dynamically
-    //! basing on whether the creature is in air or not
-    //! Set MovementFlag_Hover. Otherwise do nothing.
-    if (CanHover())
-        AddUnitMovementFlag(MOVEMENTFLAG_HOVER);
 
     // UNIT_FIELD_BYTES_2 values
     SetSheath(SheathState(creatureAddon->sheathState));
