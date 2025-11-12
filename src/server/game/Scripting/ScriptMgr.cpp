@@ -2057,7 +2057,7 @@ bool ScriptMgr::OnCriteriaCheck(uint32 scriptId, Player* source, Unit* target)
     return tmpscript->OnCheck(source, target);
 }
 
-bool ScriptMgr::OnPlayerCanFlyInZone(Player* player, uint32 mapId, uint32 zoneId, SpellInfo const* bySpell)
+bool ScriptMgr::OnPlayerCanFlyInZone(Player const* player, uint32 mapId, uint32 zoneId, SpellInfo const* bySpell)
 {
     FOR_SCRIPTS(PlayerScript, itr, end)
         if (!itr->second->OnPlayerCanFlyInZone(player, mapId, zoneId, bySpell))

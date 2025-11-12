@@ -2208,7 +2208,7 @@ public:
     void SetFallInformation(uint32 time, float z);
     void HandleFall(MovementInfo const& movementInfo);
 
-    bool CanFlyInZone(uint32 mapid, uint32 zone, SpellInfo const* bySpell);
+    bool CanFlyInZone(uint32 mapid, uint32 zone, SpellInfo const* bySpell) const;
 
     void SetClientControl(Unit* target, bool allowMove);
 

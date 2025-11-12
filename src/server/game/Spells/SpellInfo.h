@@ -437,7 +437,7 @@ class TC_GAME_API SpellInfo
         bool IsAuraExclusiveBySpecificPerCasterWith(SpellInfo const* spellInfo) const;
 
         SpellCastResult CheckShapeshift(uint32 form) const;
-        SpellCastResult CheckLocation(uint32 map_id, uint32 zone_id, uint32 area_id, Player* player = nullptr, bool strict = true) const;
+        SpellCastResult CheckLocation(uint32 map_id, uint32 zone_id, uint32 area_id, Player const* player = nullptr, bool strict = true) const;
         SpellCastResult CheckTarget(WorldObject const* caster, WorldObject const* target, bool implicit = true) const;
         SpellCastResult CheckExplicitTarget(WorldObject const* caster, WorldObject const* target, Item const* itemTarget = nullptr) const;
         SpellCastResult CheckVehicle(Unit const* caster) const;

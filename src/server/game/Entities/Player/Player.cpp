@@ -25287,7 +25287,7 @@ uint32 Player::CalculateTalentsPoints() const
     return uint32(talentPointsForLevel * sWorld->getRate(RATE_TALENT));
 }
 
-bool Player::CanFlyInZone(uint32 mapid, uint32 zone, SpellInfo const* bySpell)
+bool Player::CanFlyInZone(uint32 mapid, uint32 zone, SpellInfo const* bySpell) const
 {
     if (!sScriptMgr->OnPlayerCanFlyInZone(this, mapid, zone, bySpell))
     {
