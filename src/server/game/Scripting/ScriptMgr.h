@@ -703,6 +703,16 @@ protected:
 
 public:
 
+    /**
+     * @brief This hook called before other CanFlyChecks are applied
+     *
+     * @param player Contains information about the Player
+     * @param mapId Contains information about the current map id
+     * @param zoneId Contains information about the current zone
+     * @param bySpell Contains information about the spell that invoked the check
+     */
+
+    [[nodiscard]] virtual bool OnPlayerCanFlyInZone(Player* /*player*/, uint32 /*mapId*/, uint32 /*zoneId*/, SpellInfo const* /*bySpell*/) { return true; }
     virtual void OnAfterStoreOrEquipNewItem(Player* /*player*/, uint32 /*vendorslot*/, Item* /*item*/, uint8 /*count*/, uint8 /*bag*/, uint8 /*slot*/, ItemTemplate const* /*pProto*/, Creature* /*pVendor*/, VendorItem const* /*crItem*/, bool /*bStore*/) { };
     virtual void OnCreateItem(Player* /*player*/, Item* /*item*/, uint32 /*count*/) { }
     virtual void OnQuestRewardItem(Player* /*player*/, Item* /*item*/, uint32 /*count*/) { }
@@ -1162,6 +1172,7 @@ public: /* AchievementCriteriaScript */
 
 public: /* PlayerScript */
 
+    bool OnPlayerCanFlyInZone(Player* player, uint32 mapId, uint32 zoneId, SpellInfo const* bySpell);
     void OnAfterStoreOrEquipNewItem(Player* player, uint32 vendorslot, Item* item, uint8 count, uint8 bag, uint8 slot, ItemTemplate const* pProto, Creature* pVendor, VendorItem const* crItem, bool bStore);
     void OnCreateItem(Player* player, Item* item, uint32 count);
     void OnQuestRewardItem(Player* player, Item* item, uint32 count);
