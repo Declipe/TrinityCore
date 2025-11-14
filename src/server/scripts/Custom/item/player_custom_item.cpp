@@ -43,6 +43,44 @@
 #include "WorldSession.h"
 #include "Custom/ServerMenu/ServerMenuMgr.h"
 
+#include "Spell.h"
+#include "Battleground.h"
+#include "CellImpl.h"
+#include "Common.h"
+#include "ConditionMgr.h"
+#include "Containers.h"
+#include "DisableMgr.h"
+#include "DynamicObject.h"
+#include "G3DPosition.hpp"
+#include "GameObjectAI.h"
+#include "GridNotifiers.h"
+#include "GridNotifiersImpl.h"
+#include "InstanceScript.h"
+#include "Log.h"
+#include "LootMgr.h"
+#include "MotionMaster.h"
+#include "ObjectAccessor.h"
+#include "Opcodes.h"
+#include "PathGenerator.h"
+#include "Pet.h"
+#include "SharedDefines.h"
+#include "SpellAuraEffects.h"
+#include "SpellHistory.h"
+#include "SpellPackets.h"
+#include "SpellScript.h"
+#include "TemporarySummon.h"
+#include "TradeData.h"
+#include "Unit.h"
+#include "UpdateData.h"
+#include "UpdateMask.h"
+#include "UniqueTrackablePtr.h"
+#include "Util.h"
+#include "Vehicle.h"
+#include "VMapFactory.h"
+#include "VMapManager2.h"
+#include "WorldPacket.h"
+#include "AnticheatMgr.h"
+
 //test
 #define CONST_ARENA_RENAME 100
 #define CONST_ARENA_CUSTOMIZE 100
@@ -222,7 +260,7 @@ std::string GetVipStatusString(Player* player, WorldSession* session)
 class custom_item : public ItemScript
 {
 public:
-    custom_item() : ItemScript("custom_item") { }
+    custom_item() : ItemScript("custom_item") {}
 
     uint32 coast5 = 5;
     uint32 coast7 = 20;
@@ -1806,7 +1844,7 @@ public:
                         AccountMgr::SetCoins(player->GetSession()->GetAccountId(), ostatok);
                         ChatHandler(player->GetSession()).PSendSysMessage(LANG_ITEM_VIP_TIME, coast7);
                         CloseGossipMenuFor(player);
-                       // player->GetSession()->KickPlayer("Bonk");
+                        // player->GetSession()->KickPlayer("Bonk");
                     }
                     else
                     {
@@ -2243,7 +2281,7 @@ public:
                     else
                     {
                         player->GetSession()->SendAreaTriggerMessage("%s", GTS2(NOT_USED_43));
-                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_43) );
+                        ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_43));
                         CloseGossipMenuFor(player);
                     }
                     break;
@@ -2525,11 +2563,11 @@ public:
 
                 case 212:
                 {
-                        player->PlayerTalkClass->ClearMenus();
-                        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_70), GOSSIP_SENDER_MAIN, 224);
-                        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_69), GOSSIP_SENDER_MAIN, 225);
-                        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_71), GOSSIP_SENDER_MAIN, 226);
-                        SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
+                    player->PlayerTalkClass->ClearMenus();
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_70), GOSSIP_SENDER_MAIN, 224);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_69), GOSSIP_SENDER_MAIN, 225);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_71), GOSSIP_SENDER_MAIN, 226);
+                    SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
                     break;
                 }
 
@@ -2779,8 +2817,67 @@ public:
     }
 };
 
+enum {
+    OLD_WORLD_FLYING_SPELL = 222222
+};
+
+// Add player scripts
+//class FlyInOldWorld : public PlayerScript
+//{
+//public:
+//    FlyInOldWorld() : PlayerScript("FlyInOldWorld") {}
+//
+//    bool OnPlayerCanFlyInZone(Player const* player, uint32 mapId, uint32 zoneId, SpellInfo const* bySpell) override
+//    {
+//        uint32 v_map = GetVirtualMapForMapAndZone(mapId, zoneId);
+//        if (v_map == 571 || v_map == 530)
+//        {
+//            if (!player->HasSpell(OLD_WORLD_FLYING_SPELL))
+//            {
+//                return false;
+//            }
+//
+//        }
+//        return true;
+//    }
+//};
+
+//class PlayerZoneScaling : public PlayerScript
+//{
+//public:
+//    PlayerZoneScaling() : PlayerScript("PlayerZoneScaling") {}
+//
+//    void OnUpdateZone(Player* player, uint32 newZone, uint32 /*newArea*/) override
+//    {
+//        // ????????? ?????? ??????? ? ????? ????
+//        UpdateCreatureLevelsInZone(player, newZone);
+//    }
+//
+//private:
+//    void UpdateCreatureLevelsInZone(Player* player, uint32 zoneId)
+//    {
+//        Map* map = player->GetMap();
+//        if (!map)
+//            return;
+//
+//        uint32 playerLevel = player->GetLevel();
+//
+//        // ??????? ???? ??????? ? ???? ? ????????? ?? ???????
+//        for (auto const& creature : map->GetCreatureBySpawnIdStore())
+//        {
+//            if (creature.second->GetZoneId() == zoneId)
+//            {
+//                creature.second->SetLevel(playerLevel);
+//                creature.second->UpdateAllStats();
+//            }
+//        }
+//    }
+//};
+
 void AddSC_custom_item()
 {
     new SpServerMenuPlayerGossip();
     new custom_item();
+    //new FlyInOldWorld();
+    /*new PlayerZoneScaling();*/
 }
