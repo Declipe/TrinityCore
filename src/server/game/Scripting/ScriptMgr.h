@@ -713,6 +713,7 @@ public:
      */
 
     [[nodiscard]] virtual bool OnPlayerCanFlyInZone(Player const* /*player*/, uint32 /*mapId*/, uint32 /*zoneId*/, SpellInfo const* /*bySpell*/) { return true; }
+    virtual void OnPlayerBeforeBuyItemFromVendor(Player* /*player*/, ObjectGuid /*vendorguid*/, uint32 /*vendorslot*/, uint32& /*item*/, uint8 /*count*/, uint8 /*bag*/, uint8 /*slot*/) {};
     virtual void OnAfterStoreOrEquipNewItem(Player* /*player*/, uint32 /*vendorslot*/, Item* /*item*/, uint8 /*count*/, uint8 /*bag*/, uint8 /*slot*/, ItemTemplate const* /*pProto*/, Creature* /*pVendor*/, VendorItem const* /*crItem*/, bool /*bStore*/) { };
     virtual void OnCreateItem(Player* /*player*/, Item* /*item*/, uint32 /*count*/) { }
     virtual void OnQuestRewardItem(Player* /*player*/, Item* /*item*/, uint32 /*count*/) { }
@@ -1173,6 +1174,7 @@ public: /* AchievementCriteriaScript */
 public: /* PlayerScript */
 
     bool OnPlayerCanFlyInZone(Player const* player, uint32 mapId, uint32 zoneId, SpellInfo const* bySpell);
+    void OnPlayerBeforeBuyItemFromVendor(Player* player, ObjectGuid vendorguid, uint32 vendorslot, uint32& item, uint8 count, uint8 bag, uint8 slot);
     void OnAfterStoreOrEquipNewItem(Player* player, uint32 vendorslot, Item* item, uint8 count, uint8 bag, uint8 slot, ItemTemplate const* pProto, Creature* pVendor, VendorItem const* crItem, bool bStore);
     void OnCreateItem(Player* player, Item* item, uint32 count);
     void OnQuestRewardItem(Player* player, Item* item, uint32 count);

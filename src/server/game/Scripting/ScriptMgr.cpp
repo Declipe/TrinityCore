@@ -2014,6 +2014,11 @@ void ScriptMgr::OnAfterStoreOrEquipNewItem(Player* player, uint32 vendorslot, It
     FOREACH_SCRIPT(PlayerScript)->OnAfterStoreOrEquipNewItem(player, vendorslot, item, count, bag, slot, pProto, pVendor, crItem, bStore);
 }
 
+void ScriptMgr::OnPlayerBeforeBuyItemFromVendor(Player* player, ObjectGuid vendorguid, uint32 vendorslot, uint32& item, uint8 count, uint8 bag, uint8 slot)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnPlayerBeforeBuyItemFromVendor(player, vendorguid, vendorslot, item, count, bag, slot);
+}
+
 void ScriptMgr::OnCreateItem(Player* player, Item* item, uint32 count)
 {
     FOREACH_SCRIPT(PlayerScript)->OnCreateItem(player, item, count);

@@ -21987,6 +21987,8 @@ inline bool Player::_StoreOrEquipNewItem(uint32 vendorslot, uint32 item, uint8 c
 // Return true is the bought item has a max count to force refresh of window by caller
 bool Player::BuyItemFromVendorSlot(ObjectGuid vendorguid, uint32 vendorslot, uint32 item, uint32 count, uint8 bag, uint8 slot)
 {
+    sScriptMgr->OnPlayerBeforeBuyItemFromVendor(this, vendorguid, vendorslot, item, count, bag, slot);
+
     // cheating attempt
     if (count < 1) count = 1;
 
