@@ -521,7 +521,7 @@ int64 SpellScript::GetUnitTargetCountForEffect(SpellEffIndex effect) const
 {
     if (!IsAfterTargetSelectionPhase())
     {
-        TC_LOG_ERROR("scripts", "Script: `%s` Spell: `%u`: function SpellScript::GetUnitTargetCountForEffect was called, but function has no effect in current hook! (spell has not selected targets yet)",
+        TC_LOG_ERROR("scripts", "Script: `{}` Spell: `{}`: function SpellScript::GetUnitTargetCountForEffect was called, but function has no effect in current hook! (spell has not selected targets yet)",
             m_scriptName->c_str(), m_scriptSpellId);
         return 0;
     }
@@ -532,7 +532,7 @@ int64 SpellScript::GetGameObjectTargetCountForEffect(SpellEffIndex effect) const
 {
     if (!IsAfterTargetSelectionPhase())
     {
-        TC_LOG_ERROR("scripts", "Script: `%s` Spell: `%u`: function SpellScript::GetGameObjectTargetCountForEffect was called, but function has no effect in current hook! (spell has not selected targets yet)",
+        TC_LOG_ERROR("scripts", "Script: `{}` Spell: `{}`: function SpellScript::GetGameObjectTargetCountForEffect was called, but function has no effect in current hook! (spell has not selected targets yet)",
             m_scriptName->c_str(), m_scriptSpellId);
         return 0;
     }
@@ -543,7 +543,7 @@ int64 SpellScript::GetItemTargetCountForEffect(SpellEffIndex effect) const
 {
     if (!IsAfterTargetSelectionPhase())
     {
-        TC_LOG_ERROR("scripts", "Script: `%s` Spell: `%u`: function SpellScript::GetItemTargetCountForEffect was called, but function has no effect in current hook! (spell has not selected targets yet)",
+        TC_LOG_ERROR("scripts", "Script: `{}` Spell: `{}`: function SpellScript::GetItemTargetCountForEffect was called, but function has no effect in current hook! (spell has not selected targets yet)",
             m_scriptName->c_str(), m_scriptSpellId);
         return 0;
     }
