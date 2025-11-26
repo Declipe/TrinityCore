@@ -166,4 +166,3 @@ workflows:
     jobs:
       - codestyle_and_sql
       - pch
-      - nopch
