@@ -1007,7 +1007,7 @@ void DBCMgr::LoadCharTitlesStore()
     CharTitlesStore.clear();
 
     //                                             0            1             2                 3              4               5                6              7             8                   9              10             11                  12               13                 14               15           16              17                 18            19
-    QueryResult result = ZynDatabase.Query("SELECT ID, Name_Lang_enUS, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_zhCN, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, Name1_Lang_enUS, Name1_Lang_koKR, Name1_Lang_frFR, Name1_Lang_deDE, Name1_Lang_zhCN, Name1_Lang_zhTW, Name1_Lang_esES, Name1_Lang_esMX, Name1_Lang_ruRU, Mask_ID FROM chartitles_dbc");
+    QueryResult result = ZynDatabase.Query("SELECT ID, Condition_ID, Name_Lang_enUS, Name_Lang_enGB, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_enCN, Name_Lang_zhCN, Name_Lang_enTW, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, Name_Lang_ptPT, Name_Lang_ptBR, Name_Lang_itIT, Name_Lang_Unk, Name_Lang_Mask, Name1_Lang_enUS, Name1_Lang_enGB, Name1_Lang_koKR, Name1_Lang_frFR, Name1_Lang_deDE, Name1_Lang_enCN, Name1_Lang_zhCN, Name1_Lang_enTW, Name1_Lang_zhTW, Name1_Lang_esES, Name1_Lang_esMX, Name1_Lang_ruRU, Name1_Lang_ptPT, Name1_Lang_ptBR, Name1_Lang_itIT, Name_Lang_Unk, Name_Lang_Mask, Mask_ID FROM chartitles_dbc");
 
     if (!result)
     {
@@ -1020,13 +1020,22 @@ void DBCMgr::LoadCharTitlesStore()
 
         CharTitlesEntry* newCharTitles = new CharTitlesEntry;
         newCharTitles->ID = fields[0].GetUInt32();
+        newCharTitles->Condition_ID = fields[1].GetUInt32();
         for (uint8 i = 0; i < TOTAL_LOCALES; i++)
-            newCharTitles->Name[i] = (char*)fields[1 + i].GetCString();//GetString();
+            newCharTitles->Name[i] = (char*)fields[2 + i].GetCString();
+
+        for (uint8 i = 0; i < 1; i++)
+            newCharTitles->Name_Lang_Unk[i] = fields[17 + i].GetString();
+        newCharTitles->Name_Lang_Mask = fields[18].GetUInt32();
 
         for (uint8 i = 0; i < TOTAL_LOCALES; i++)
-            newCharTitles->Name1[i] = (char*)fields[10 + i].GetCString();//GetString();
+            newCharTitles->Name1[i] = (char*)fields[19 + i].GetCString();
 
-        newCharTitles->MaskID = fields[19].GetUInt32();
+        for (uint8 i = 0; i < 1; i++)
+            newCharTitles->Name1_Lang_Unk[i] = fields[34 + i].GetString();
+        newCharTitles->Name1_Lang_Mask = fields[35].GetUInt32();
+
+        newCharTitles->MaskID = fields[36].GetUInt32();
 
         CharTitlesStore[newCharTitles->ID] = newCharTitles;
 
@@ -1064,7 +1073,7 @@ void DBCMgr::LoadBattlemasterListStore()
         newBattlemasterList->InstanceType = fields[10].GetUInt32();
         newBattlemasterList->GroupsAllowed = fields[11].GetUInt32();
 
-        for (uint8 i = 0; i < 14; i++)
+        for (uint8 i = 0; i < TOTAL_LOCALES; i++)
             newBattlemasterList->Name[i] = fields[12 + i].GetString();
 
         newBattlemasterList->Name_Lang_Unk = fields[27].GetString();

@@ -282,7 +282,7 @@ struct BattlemasterListEntry
     uint32 InstanceType;                                    // 10 map type (3 - BG, 4 - arena)
     //std::string GroupsAllowed;                                 // 11
     uint32 GroupsAllowed;                                 // 11
-    std::string Name[16];                                  // 12-26
+    std::string Name[TOTAL_LOCALES];                                  // 12-26
     //char const* Name[TOTAL_LOCALES];                        // 11-26
     //uint32 Name_lang_mask;                                // 28
     std::string Name_Lang_Unk;
@@ -360,13 +360,13 @@ struct CharTitlesEntry
 struct CharTitlesEntry
 {
     uint32 ID;                                              // 0, title ids, for example in Quest::GetCharTitleId()
-    //uint32 ConditionID;                                   // 1
+    uint32 Condition_ID;                                   // 1
     char const* Name[TOTAL_LOCALES];
-    //std::string Name[TOTAL_LOCALES];                        // 2-17 male
-    //uint32 Name_lang_mask;                                // 18
+    std::string Name_Lang_Unk[1];
+    uint32 Name_Lang_Mask;
     char const* Name1[TOTAL_LOCALES];
-    //std::string Name1[TOTAL_LOCALES];                       // 19-34 female
-    //uint32 Name1_lang_mask;                               // 35
+    std::string Name1_Lang_Unk[1];
+    uint32 Name1_Lang_Mask;                              // 35
     uint32 MaskID;                                          // 36 used in PLAYER_CHOSEN_TITLE and 1<<index in PLAYER__FIELD_KNOWN_TITLES
 };
 
