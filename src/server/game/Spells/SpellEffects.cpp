@@ -2774,6 +2774,13 @@ void Spell::EffectEnchantItemTmp()
     // rogue family enchantments exception by duration
     if (m_spellInfo->Id == 38615)
         duration = 1800;                                    // 30 mins
+
+    else if (m_spellInfo->Id == 81061)
+        duration = 18000;
+
+    else if (m_spellInfo->Id == 81062)
+        duration = 18000;
+
     // other rogue family enchantments always 1 hour (some have spell damage=0, but some have wrong data in EffBasePoints)
     else if (m_spellInfo->SpellFamilyName == SPELLFAMILY_ROGUE)
         duration = 3600;                                    // 1 hour
