@@ -1181,8 +1181,9 @@ void DBCMgr::LoadSpellItemEnchantmentStore()
     uint32 oldMSTime = getMSTime();
     SpellItemEnchantmentStore.clear();
 
-    QueryResult result = ZynDatabase.Query("SELECT Id, Effect_1, Effect_2, Effect_3, EffectPointsMin_1, EffectPointsMin_2, EffectPointsMin_3, EffectArg_1, EffectArg_2, EffectArg_3, Name_Lang_enUS, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_zhCN, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, ItemVisual, Flags, Src_ItemID, Condition_ID, RequiredSkillID, RequiredSkillRank, MinLevel FROM dbc_spellitemenchantment");
-    if (!result)
+    QueryResult result = ZynDatabase.Query("SELECT Id, Charges, Effect_1, Effect_2, Effect_3, EffectPointsMin_1, EffectPointsMin_2, EffectPointsMin_3, EffectPointsMax_1, EffectPointsMax_2, EffectPointsMax_3, EffectArg_1, EffectArg_2, EffectArg_3, Name_Lang_enUS, Name_Lang_enGB, Name_Lang_koKR, Name_Lang_frFR, Name_Lang_deDE, Name_Lang_enCN, Name_Lang_zhCN, Name_Lang_enTW, Name_Lang_zhTW, Name_Lang_esES, Name_Lang_esMX, Name_Lang_ruRU, Name_Lang_ptPT, Name_Lang_ptBR, Name_Lang_itIT, Name_Lang_Unk, Name_Lang_Mask, ItemVisual, Flags, Src_ItemID, Condition_ID, RequiredSkillID, RequiredSkillRank, MinLevel FROM dbc_spellitemenchantment");
+
+if (!result)
     {
         TC_LOG_ERROR("server.loading", ">> Loaded 0 SpellItemEnchantment entry. DB table `dbc_spellitemenchantment` is empty.");
         return;
@@ -1193,28 +1194,27 @@ void DBCMgr::LoadSpellItemEnchantmentStore()
         Field* fields = result->Fetch();
         SpellItemEnchantmentEntry* newSpellItemEnchantment = new SpellItemEnchantmentEntry;
         newSpellItemEnchantment->ID = fields[0].GetUInt64();
-        //newSpellItemEnchantment->Charges = fields[1].GetUInt64();
+        newSpellItemEnchantment->Charges = fields[1].GetUInt64();
         for (uint8 i = 0; i < 3; i++)
-            newSpellItemEnchantment->Effect[i] = fields[1 + i].GetUInt64();
+            newSpellItemEnchantment->Effect[i] = fields[2 + i].GetUInt64();
         for (uint8 i = 0; i < 3; i++)
-            newSpellItemEnchantment->EffectPointsMin[i] = fields[4 + i].GetUInt64();
-        // for (uint8 i = 0; i < 3; i++)
-            // newSpellItemEnchantment->EffectPointsMax[i] = fields[8 + i].GetUInt64();
+            newSpellItemEnchantment->EffectPointsMin[i] = fields[5 + i].GetUInt64();
+         for (uint8 i = 0; i < 3; i++)
+             newSpellItemEnchantment->EffectPointsMax[i] = fields[8 + i].GetUInt64();
         for (uint8 i = 0; i < 3; i++)
-            newSpellItemEnchantment->EffectArg[i] = fields[7 + i].GetUInt64();
+            newSpellItemEnchantment->EffectArg[i] = fields[11 + i].GetUInt64();
         for (uint8 i = 0; i < TOTAL_LOCALES; i++)
-            // newSpellItemEnchantment->Name[i] = NULL;
-        // newSpellItemEnchantment->Name[0] = (char*)fields[10].GetCString();
-            newSpellItemEnchantment->Name[i] = (char*)fields[10].GetCString();
-        // newSpellItemEnchantment->Name_Lang_Unk = fields[23].GetString();
-         //newSpellItemEnchantment->Name_Lang_Mask = fields[24].GetUInt32();
-        newSpellItemEnchantment->ItemVisual = fields[19].GetUInt64();
-        newSpellItemEnchantment->Flags = fields[20].GetUInt64();
-        newSpellItemEnchantment->SrcItemID = fields[21].GetUInt64();
-        newSpellItemEnchantment->ConditionID = fields[22].GetUInt64();
-        newSpellItemEnchantment->RequiredSkillID = fields[23].GetUInt64();
-        newSpellItemEnchantment->RequiredSkillRank = fields[24].GetUInt64();
-        newSpellItemEnchantment->MinLevel = fields[25].GetUInt64();
+            newSpellItemEnchantment->Name[i] = (char*)fields[14].GetCString();
+        for (uint8 i = 0; i < 1; i++)
+        newSpellItemEnchantment->Name_Lang_Unk[i] = fields[29].GetString();
+         newSpellItemEnchantment->Name_Lang_Mask = fields[30].GetUInt32();
+        newSpellItemEnchantment->ItemVisual = fields[31].GetUInt64();
+        newSpellItemEnchantment->Flags = fields[32].GetUInt64();
+        newSpellItemEnchantment->SrcItemID = fields[33].GetUInt64();
+        newSpellItemEnchantment->ConditionID = fields[34].GetUInt64();
+        newSpellItemEnchantment->RequiredSkillID = fields[35].GetUInt64();
+        newSpellItemEnchantment->RequiredSkillRank = fields[36].GetUInt64();
+        newSpellItemEnchantment->MinLevel = fields[37].GetUInt64();
         SpellItemEnchantmentStore[newSpellItemEnchantment->ID] = newSpellItemEnchantment;
 
     } while (result->NextRow());
