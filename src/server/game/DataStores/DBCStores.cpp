@@ -1130,7 +1130,7 @@ void DBCMgr::LoadWorldSafeLocsStore()
     uint32 oldMSTime = getMSTime();
     WorldSafeLocsStore.clear();
 
-    QueryResult result = ZynDatabase.Query("SELECT Id, MapId, X, Y, Z FROM worldsafelocsdbc");
+    QueryResult result = ZynDatabase.Query("SELECT Id, Continent, LocX, LocY, LocZ, AreaName_Lang_enUS, AreaName_Lang_enGB, AreaName_Lang_koKR, AreaName_Lang_frFR, AreaName_Lang_deDE, AreaName_Lang_enCN, AreaName_Lang_zhCN, AreaName_Lang_enTW, AreaName_Lang_zhTW, AreaName_Lang_esES, AreaName_Lang_esMX, AreaName_Lang_ruRU, AreaName_Lang_ptPT, AreaName_Lang_ptBR, AreaName_Lang_itIT, AreaName_Lang_Unk, AreaName_Lang_Mask FROM worldsafelocsdbc");
     if (!result)
     {
         TC_LOG_ERROR("server.loading", ">> Loaded 0 WorldSafeLocs entry. DB table `WorldSafeLocs dbc` is empty.");
@@ -1146,6 +1146,11 @@ void DBCMgr::LoadWorldSafeLocsStore()
         newWorldSafeLocs->Loc.X = fields[2].GetFloat();
         newWorldSafeLocs->Loc.Y = fields[3].GetFloat();
         newWorldSafeLocs->Loc.Z = fields[4].GetFloat();
+        for (uint8 i = 0; i < TOTAL_LOCALES; i++)
+            newWorldSafeLocs->AreaName[i] = fields[5 + i].GetString();
+        for (uint8 i = 0; i < 1; i++)
+        newWorldSafeLocs->AreaName_Lang_Unk[i] = fields[20 + i].GetString();
+        newWorldSafeLocs->AreaName_Lang_Mask = fields[21].GetUInt32();
         WorldSafeLocsStore[newWorldSafeLocs->ID] = newWorldSafeLocs;
     } while (result->NextRow());
 
