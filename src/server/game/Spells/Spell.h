@@ -332,6 +332,7 @@ class TC_GAME_API Spell
         // handler helpers
         void _handle_immediate_phase();
         void _handle_finish_phase();
+        void OnSpellLaunch();
 
         SpellCastResult CheckItems(uint32* param1, uint32* param2) const;
         SpellCastResult CheckRange(bool strict) const;

@@ -3159,6 +3159,8 @@ SpellCastResult Spell::prepare(SpellCastTargets const& targets, AuraEffect const
 
     LoadScripts();
 
+    OnSpellLaunch();
+
     // Fill cost data (do not use power for item casts)
     m_powerCost = m_CastItem ? 0 : m_spellInfo->CalcPowerCost(m_caster, m_spellSchoolMask, this);
 
@@ -8553,6 +8555,30 @@ bool WorldObjectSpellTrajTargetCheck::operator()(WorldObject* target) const
 }
 
 } //namespace Trinity
+
+void Spell::OnSpellLaunch()
+{
+    if (!m_caster || !m_caster->IsInWorld())
+        return;
+
+    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(24390);
+
+    // Make sure the player is sending a valid GO target and lock ID. SPELL_EFFECT_OPEN_LOCK
+    // can succeed with a lockId of 0
+    if (m_spellInfo->Id == 21651)
+    {
+        if (GameObject* go = m_targets.GetGOTarget())
+        {
+            LockEntry const* lockInfo = sLockStore.LookupEntry(go->GetGOInfo()->GetLockId());
+            if (lockInfo && lockInfo->Index[1] == LOCKTYPE_SLOW_OPEN)
+            {
+                Spell* visual = new Spell(m_caster, spellInfo, TRIGGERED_NONE);
+                visual->prepare(m_targets);
+            }
+        }
+    }
+}
+
 
 CastSpellTargetArg::CastSpellTargetArg(WorldObject* target)
 {
