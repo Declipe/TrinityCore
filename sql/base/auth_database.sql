@@ -139,6 +139,26 @@ CREATE TABLE `account_muted`  (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for account_premium
+-- ----------------------------
+DROP TABLE IF EXISTS `account_premium`;
+CREATE TABLE `account_premium`  (
+  `id` int NOT NULL DEFAULT 0 COMMENT 'Account id',
+  `setdate` int NOT NULL DEFAULT 0,
+  `unsetdate` int NOT NULL DEFAULT 0,
+  `premium_type` tinyint UNSIGNED NOT NULL DEFAULT 1,
+  `active` tinyint NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `active`(`active` ASC) USING BTREE,
+  INDEX `setdate`(`setdate` ASC) USING BTREE,
+  INDEX `unsetdate`(`unsetdate` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of account_premium
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for autobroadcast
 -- ----------------------------
 DROP TABLE IF EXISTS `autobroadcast`;
