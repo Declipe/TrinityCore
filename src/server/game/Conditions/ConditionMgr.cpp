@@ -754,6 +754,9 @@ uint32 Condition::GetSearcherTypeMaskForCondition() const
         case CONDITION_GUILD_LEVEL:
             mask |= GRID_MAP_TYPE_MASK_PLAYER;
             break;
+        case CONDITION_PRIVATE_OBJECT:
+            mask |= GRID_MAP_TYPE_MASK_ALL & ~GRID_MAP_TYPE_MASK_PLAYER;
+            break;
         case CONDITION_STRING_ID:
             mask |= GRID_MAP_TYPE_MASK_CREATURE | GRID_MAP_TYPE_MASK_GAMEOBJECT;
             break;
@@ -2412,6 +2415,7 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond) const
         case CONDITION_CHARMED:
         case CONDITION_TAXI:
         case CONDITION_GAMEMASTER:
+        case CONDITION_STRING_ID:
         case CONDITION_GUILD_LEVEL:
         {
             if (cond->ConditionValue2 >= COMP_TYPE_MAX)
@@ -2425,6 +2429,14 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond) const
         }
         default:
             break;
+        case CONDITION_BATTLE_PET_COUNT:
+        case CONDITION_SCENARIO_STEP:
+        case CONDITION_SCENE_IN_PROGRESS:
+        case CONDITION_PLAYER_CONDITION:
+        case CONDITION_PRIVATE_OBJECT:
+        case CONDITION_LABEL:
+            TC_LOG_ERROR("sql.sql", "{} uses condition type not supported in this game version, skipped.", cond->ToString(true));
+            return false;
     }
 
     if (cond->ConditionValue1 && !StaticConditionTypeData[cond->ConditionType].HasConditionValue1)
