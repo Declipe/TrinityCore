@@ -508,7 +508,7 @@ void hyjalAI::SummonCreature(uint32 entry, float Base[4][3])
         ++EnemyCount;
 
         creature->SetWalk(false);
-        if (hyjal_trashAI* ai = CAST_AI(hyjal_trashAI, creature->AI()));
+        if (hyjal_trashAI* ai = CAST_AI(hyjal_trashAI, creature->AI()))
         creature->setActive(true);
         creature->SetFarVisible(true);
         switch (entry)

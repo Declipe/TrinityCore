@@ -823,7 +823,7 @@ public:
             }
 
             if (uiType <= DATA_GENERATE_WAYPOINTS_FOR_BOSS_3)
-                Start(false, true); // Grand Champions run to their positions
+                Start(false); // Grand Champions run to their positions
         }
 
         void EnterEvadeMode(EvadeReason why = EVADE_REASON_OTHER) override
