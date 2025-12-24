@@ -8210,7 +8210,7 @@ void Player::CastItemUseSpell(Item* item, uint32 spellId, SpellCastTargets const
         isValidSpell = [&]
             {
                 for (uint8 slot = 0; slot < MAX_ENCHANTMENT_SLOT; ++slot)
-                    if (SpellItemEnchantmentEntry const* enchant = sSpellItemEnchantmentStore.LookupEntry(item->GetEnchantmentId(EnchantmentSlot(slot))))
+                    if (SpellItemEnchantmentEntry const* enchant = sDBCMgr->GetSpellItemEnchantmentEntry(item->GetEnchantmentId(EnchantmentSlot(slot))))
                         for (uint8 enchantEffect = 0; enchantEffect < MAX_ITEM_ENCHANTMENT_EFFECTS; ++enchantEffect)
                             if (enchant->Effect[enchantEffect] == ITEM_ENCHANTMENT_TYPE_USE_SPELL && enchant->EffectArg[enchantEffect] == spellId)
                                 return true;
@@ -11828,9 +11828,18 @@ InventoryResult Player::CanUseItem(ItemTemplate const* proto) const
         return EQUIP_ERR_CLIENT_LOCKED_OUT;
 
     // learning (recipes, mounts, pets, etc.)
-    if (proto->Spells[0].SpellId == 483 || proto->Spells[0].SpellId == 55884)
-        if (HasSpell(proto->Spells[1].SpellId))
-            return EQUIP_ERR_NONE;
+    uint32 learnableCount = 0;
+    uint32 learnedCount = 0;
+    for (_Spell const& itemEffect : proto->Spells)
+    {
+        if (itemEffect.SpellTrigger != ITEM_SPELLTRIGGER_LEARN_SPELL_ID)
+            continue;
+
+        ++learnableCount;
+        learnedCount += HasSpell(itemEffect.SpellId) ? 1 : 0;
+    }
+    if (learnableCount && learnedCount == learnableCount)
+        return EQUIP_ERR_NONE;
 
 #ifdef ELUNA
     if (Eluna* e = GetEluna())
