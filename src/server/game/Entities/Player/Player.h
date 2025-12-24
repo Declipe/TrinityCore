@@ -2065,7 +2065,7 @@ public:
     void UpdateEquipSpellsAtFormChange();
     void CastItemCombatSpell(DamageInfo const& damageInfo);
     void CastItemCombatSpell(DamageInfo const& damageInfo, Item* item, ItemTemplate const* proto);
-    void CastItemUseSpell(Item* item, SpellCastTargets const& targets, uint8 cast_count, uint32 glyphIndex);
+    void CastItemUseSpell(Item* item, uint32 spellId, SpellCastTargets const& targets, uint8 cast_count, uint32 glyphIndex);
 
     void SendEquipmentSetList();
     void SetEquipmentSet(EquipmentSetInfo::EquipmentSetData const& eqset);
