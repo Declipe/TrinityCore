@@ -54,14 +54,9 @@ enum Texts
     SAY_DEAD = 5
 };
 
-class exitare : public CreatureScript
-{
-public:
-    exitare() : CreatureScript("exitare") { }
-
-    struct exitareAI : public ScriptedAI
+    struct exitare : public ScriptedAI
     {
-        exitareAI(Creature* creature) : ScriptedAI(creature), Summons(me) { }
+        exitare(Creature* creature) : ScriptedAI(creature), Summons(me) { }
 
         void Reset() override
         {
@@ -203,13 +198,7 @@ public:
         SummonList Summons;
     };
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new exitareAI(creature);
-    }
-};
-
 void AddSC_exitare()
 {
-    new exitare();
+    RegisterCreatureAI(exitare);
 }

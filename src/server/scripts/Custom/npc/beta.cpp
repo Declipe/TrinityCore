@@ -8,17 +8,11 @@ int32 CONST_ARENA_POINT_3 = 0;//3000
 int32 CONST_ARENA_POINT_4 = 0;//5000
 int32 CONST_HONOR_23 = 29434;
 int32 CONST_HONOR_233 = 0;
-
 uint32 proff = 12;
 
-class npc_buffer : public CreatureScript
-{
-public:
-    npc_buffer() : CreatureScript("npc_buffer") { }
-
-    struct npc_bufferAI : public ScriptedAI
+    struct npc_buffer : public ScriptedAI
     {
-        npc_bufferAI(Creature* me) : ScriptedAI(me) { }
+        npc_buffer(Creature* me) : ScriptedAI(me) { }
 
         void CompleteLearnProfession(Player* player, Creature* creature, SkillType skill)
         {
@@ -1735,12 +1729,6 @@ public:
         }
     };
 
-    CreatureAI* GetAI(Creature* me) const override
-    {
-        return new npc_bufferAI(me);
-    }
-};
-
 class channel_factions : public PlayerScript
 {
 public:
@@ -1768,6 +1756,6 @@ public:
 
 void AddSC_Resets()
 {
-    new npc_buffer();
+    RegisterCreatureAI(npc_buffer);
     new channel_factions();
 }

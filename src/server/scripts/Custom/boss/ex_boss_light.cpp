@@ -60,14 +60,9 @@ enum Texts
 
 };
 
-class light : public CreatureScript
-{
-public:
-    light() : CreatureScript("light") { }
-
-    struct lightAI : public ScriptedAI
+    struct light : public ScriptedAI
     {
-        lightAI(Creature* creature) : ScriptedAI(creature), Summons(me)
+        light(Creature* creature) : ScriptedAI(creature), Summons(me)
         {
         }
 
@@ -290,13 +285,7 @@ public:
         SummonList Summons;
     };
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new lightAI(creature);
-    }
-};
-
 void AddSC_light()
 {
-    new light();
+    RegisterCreatureAI(light);
 }

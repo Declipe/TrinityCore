@@ -41,14 +41,9 @@ enum Texts
     SAY_DEAD = 5
 };
 
-class orrig : public CreatureScript
-{
-public:
-    orrig() : CreatureScript("orrig") { }
-
-    struct orrigAI : public ScriptedAI
+    struct orrig : public ScriptedAI
     {
-        orrigAI(Creature* creature) : ScriptedAI(creature), Summons(me) { }
+        orrig(Creature* creature) : ScriptedAI(creature), Summons(me) { }
 
         uint32 kills = 0;
         void Reset() override
@@ -170,14 +165,7 @@ public:
         SummonList Summons;
     };
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new orrigAI(creature);
-    }
-
-};
-
 void AddSC_orrig()
 {
-    new orrig();
+    RegisterCreatureAI(orrig);
 }

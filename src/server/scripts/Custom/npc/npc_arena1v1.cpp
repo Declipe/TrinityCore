@@ -62,14 +62,9 @@
 
 #define GTS2 session->GetTrinityString2
 
-class npc_1v1arena : public CreatureScript
-{
-public:
-    npc_1v1arena() : CreatureScript("npc_1v1arena") { }
-
-    struct npc_1v1arenaAI : public ScriptedAI
+    struct npc_1v1arena : public ScriptedAI
     {
-        npc_1v1arenaAI(Creature* me) : ScriptedAI(me) { }
+        npc_1v1arena(Creature* me) : ScriptedAI(me) { }
 
         bool JoinQueueArena(Player* player, Creature* me, bool isRated)
         {
@@ -361,13 +356,7 @@ public:
         }
     };
 
-    CreatureAI* GetAI(Creature* me) const override
-    {
-        return new npc_1v1arenaAI(me);
-    }
-};
-
 void AddSC_npc_1v1arena()
 {
-    new npc_1v1arena();
+    RegisterCreatureAI(npc_1v1arena);
 }

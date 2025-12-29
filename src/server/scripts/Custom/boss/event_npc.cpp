@@ -74,18 +74,9 @@ enum eEnums
     GO_ICE_DOOR_2 = 201911,
 };
 
-class event_npc_firelord : public CreatureScript
-{
-public:
-
-    event_npc_firelord()
-        : CreatureScript("event_npc_firelord")
+    struct event_npc_firelord : public ScriptedAI
     {
-    }
-
-    struct event_npc_firelordAI : public ScriptedAI
-    {
-        event_npc_firelordAI(Creature* c) : ScriptedAI(c), summons(c) {}
+        event_npc_firelord(Creature* c) : ScriptedAI(c), summons(c) {}
 
         SummonList summons;
 
@@ -327,13 +318,6 @@ public:
         }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new event_npc_firelordAI(creature);
-    }
-
-};
-
 enum Texts12
 {
     ICE_SAY_AGGRO = 0,
@@ -342,18 +326,9 @@ enum Texts12
     EMOTE_ICE_SHIELD_ICE = 3,
 };
 
-class event_npc_icelord : public CreatureScript
-{
-public:
-
-    event_npc_icelord()
-        : CreatureScript("event_npc_icelord")
+    struct event_npc_icelord : public ScriptedAI
     {
-    }
-
-    struct event_npc_icelordAI : public ScriptedAI
-    {
-        event_npc_icelordAI(Creature* c) : ScriptedAI(c) {}
+        event_npc_icelord(Creature* c) : ScriptedAI(c) {}
 
 
         uint32 m_uiIceBoltTimer;
@@ -494,13 +469,6 @@ public:
         }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new event_npc_icelordAI(creature);
-    }
-
-};
-
 enum Texts13
 {
     EARTH_SAY_AGGRO = 0,
@@ -509,18 +477,9 @@ enum Texts13
     EARTH_SAY_DIE = 3,
 };
 
-class event_npc_earthlord : public CreatureScript
-{
-public:
-
-    event_npc_earthlord()
-        : CreatureScript("event_npc_earthlord")
+    struct event_npc_earthlord : public ScriptedAI
     {
-    }
-
-    struct event_npc_earthlordAI : public ScriptedAI
-    {
-        event_npc_earthlordAI(Creature* creature) : ScriptedAI(creature) {}
+        event_npc_earthlord(Creature* creature) : ScriptedAI(creature) {}
 
         uint32 m_uiNatureTimer;
         uint32 m_uiGroundTimer;
@@ -672,13 +631,6 @@ public:
         }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new event_npc_earthlordAI(creature);
-    }
-
-};
-
 enum Texts14
 {
     DARK_SAY_AGGRO = 0,
@@ -688,18 +640,9 @@ enum Texts14
     DARK_SAY_DIE = 4,
 };
 
-class event_npc_darklord : public CreatureScript
-{
-public:
-
-    event_npc_darklord()
-        : CreatureScript("event_npc_darklord")
+    struct event_npc_darklord : public ScriptedAI
     {
-    }
-
-    struct event_npc_darklordAI : public ScriptedAI
-    {
-        event_npc_darklordAI(Creature* c) : ScriptedAI(c) {}
+        event_npc_darklord(Creature* c) : ScriptedAI(c) {}
 
         uint32 m_uiRandom1Timer;
         uint32 m_uiRandom2Timer;
@@ -917,25 +860,9 @@ public:
         }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    struct event_mage_ice : public ScriptedAI
     {
-        return new event_npc_darklordAI(creature);
-    }
-
-};
-
-class event_mage_ice : public CreatureScript
-{
-public:
-
-    event_mage_ice()
-        : CreatureScript("event_mage_ice")
-    {
-    }
-
-    struct event_mage_iceAI : public ScriptedAI
-    {
-        event_mage_iceAI(Creature* c) : ScriptedAI(c) {}
+        event_mage_ice(Creature* c) : ScriptedAI(c) {}
 
         uint32 m_uiBlizzardTimer;
         uint32 m_uiConeTimer;
@@ -1013,25 +940,9 @@ public:
         }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    struct event_mage_fire : public ScriptedAI
     {
-        return new event_mage_iceAI(creature);
-    }
-
-};
-
-class event_mage_fire : public CreatureScript
-{
-public:
-
-    event_mage_fire()
-        : CreatureScript("event_mage_fire")
-    {
-    }
-
-    struct event_mage_fireAI : public ScriptedAI
-    {
-        event_mage_fireAI(Creature* c) : ScriptedAI(c) {}
+        event_mage_fire(Creature* c) : ScriptedAI(c) {}
 
         uint32 m_uiHealTimer;
         uint32 m_uiFFireballTimer;
@@ -1109,25 +1020,9 @@ public:
         }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    struct event_dk : public ScriptedAI
     {
-        return new event_mage_fireAI(creature);
-    }
-
-};
-
-class event_dk : public CreatureScript
-{
-public:
-
-    event_dk()
-        : CreatureScript("event_dk")
-    {
-    }
-
-    struct event_dkAI : public ScriptedAI
-    {
-        event_dkAI(Creature* c) : ScriptedAI(c) {}
+        event_dk(Creature* c) : ScriptedAI(c) {}
 
         uint32 m_uiFrostStrikeTimer;
         uint32 m_uiDeathCoilTimer;
@@ -1216,25 +1111,9 @@ public:
         }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
+    struct event_warrior : public ScriptedAI
     {
-        return new event_dkAI(creature);
-    }
-
-};
-
-class event_warrior : public CreatureScript
-{
-public:
-
-    event_warrior()
-        : CreatureScript("event_warrior")
-    {
-    }
-
-    struct event_warriorAI : public ScriptedAI
-    {
-        event_warriorAI(Creature* c) : ScriptedAI(c) {}
+        event_warrior(Creature* c) : ScriptedAI(c) {}
 
         uint32 m_uiShockwaveTimer;
         uint32 m_uiBloodthristTimer;
@@ -1311,12 +1190,6 @@ public:
         }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new event_warriorAI(creature);
-    }
-};
-
 enum eNumers
 {
     SPELL_FROSTSHOCK = 23115,
@@ -1324,14 +1197,9 @@ enum eNumers
     SPELL_ICEBLOCK = 41590,
 };
 
-class event_boss : public CreatureScript
-{
-public:
-    event_boss() : CreatureScript("event_boss") {}
-
-    struct event_bossAI : public ScriptedAI
+    struct event_boss : public ScriptedAI
     {
-        event_bossAI(Creature* creature) : ScriptedAI(creature) {}
+        event_boss(Creature* creature) : ScriptedAI(creature) {}
 
         uint32 Frostshock_Timer;
         uint32 Chill_Timer;
@@ -1401,23 +1269,15 @@ public:
         }
     };
 
-    CreatureAI* GetAI(Creature* creature) const
-    {
-        return new event_bossAI(creature);
-    }
-
-};
-
-
 void AddSC_event_npc()
 {
-    new event_npc_firelord();
-    new event_npc_icelord();
-    new event_npc_earthlord();
-    new event_npc_darklord();
-    new event_mage_ice();
-    new event_mage_fire();
-    new event_dk();
-    new event_warrior();
-    new event_boss();
+    RegisterCreatureAI(event_npc_firelord);
+    RegisterCreatureAI(event_npc_icelord);
+    RegisterCreatureAI(event_npc_earthlord);
+    RegisterCreatureAI(event_npc_darklord);
+    RegisterCreatureAI(event_mage_ice);
+    RegisterCreatureAI(event_mage_fire);
+    RegisterCreatureAI(event_dk);
+    RegisterCreatureAI(event_warrior);
+    RegisterCreatureAI(event_boss);
 }

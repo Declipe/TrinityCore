@@ -59,15 +59,10 @@ enum Texts
 
 uint32 kills = 0;
 
-
-class eonar : public CreatureScript
-{
-public:
-    eonar() : CreatureScript("eonar") { }
-
-    struct eonarAI : public ScriptedAI
+    struct eonar : public ScriptedAI
     {
-        eonarAI(Creature* creature) : ScriptedAI(creature), Summons(me) { }
+        eonar(Creature* creature) : ScriptedAI(creature), Summons(me) { }
+
         uint32 armor = 0;
         void Reset() override
         {
@@ -239,19 +234,10 @@ public:
         SummonList Summons;
     };
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new eonarAI(creature);
-    }
-};
-
-class eonaradd : public CreatureScript
-{
-public: eonaradd() : CreatureScript("eonaradd") { }
-
-        struct eonaraddAI : public ScriptedAI
+        struct eonaradd : public ScriptedAI
         {
-            eonaraddAI(Creature* creature) : ScriptedAI(creature), Summons(me) { }
+            eonaradd(Creature* creature) : ScriptedAI(creature), Summons(me) { }
+
             bool deathstate = false;
             void Reset() override
             {
@@ -333,15 +319,9 @@ public: eonaradd() : CreatureScript("eonaradd") { }
             SummonList Summons;
         };
 
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new eonaraddAI(creature);
-        }
-};
-
 
 void AddSC_eonar()
 {
-    new eonar();
-    new eonaradd();
+    RegisterCreatureAI(eonar);
+    RegisterCreatureAI(eonaradd);
 }

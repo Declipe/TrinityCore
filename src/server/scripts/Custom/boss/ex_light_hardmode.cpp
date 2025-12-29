@@ -67,14 +67,9 @@ enum Texts
 
 };
 
-class lighthardmode : public CreatureScript
-{
-public:
-    lighthardmode() : CreatureScript("lighthardmode") {}
-
-    struct lighthardmodeAI : public ScriptedAI
+    struct lighthardmode : public ScriptedAI
     {
-        lighthardmodeAI(Creature* creature) : ScriptedAI(creature), Summons(me)
+        lighthardmode(Creature* creature) : ScriptedAI(creature), Summons(me)
         {
 
         }
@@ -340,13 +335,7 @@ public:
         SummonList Summons;
     };
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new lighthardmodeAI(creature);
-    }
-};
-
 void AddSC_lighthardmode()
 {
-    new lighthardmode();
+    RegisterCreatureAI(lighthardmode);
 }
