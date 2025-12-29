@@ -31,6 +31,173 @@
 #include <string>
 #include <vector>
 
+enum SummonerSpells
+{
+    SPELL_SUMMON_VISUAL = 61564
+};
+
+enum FastSummonerConfig
+{
+    NPC_MINION = 1234,
+
+    SUMMON_DISTANCE = 20,
+    SUMMON_RADIUS = 5,
+    MAX_SUMMONS = 30,
+};
+
+enum SummonerConfig
+{
+    NPC_MINION_1 = 1234,
+    NPC_MINION_2 = 1235,
+    NPC_MINION_3 = 1236,
+};
+
+enum Eventssaq
+{
+    EVENT_CONTINUOUS_SUMMON = 1,
+    EVENT_CHECK_PLAYERS = 2
+};
+
+    struct npc_continuous_summoner : public ScriptedAI
+    {
+        npc_continuous_summoner(Creature* creature) : ScriptedAI(creature), summons(me)
+        {
+            me->SetReactState(REACT_PASSIVE);
+        }
+
+        EventMap events;
+        SummonList summons;
+        bool isActive;
+        bool hasPlayersNearby;
+
+        void Reset() override
+        {
+            events.Reset();
+            summons.DespawnAll();
+            isActive = false;
+            hasPlayersNearby = false;
+
+            events.ScheduleEvent(EVENT_CHECK_PLAYERS, 1s);
+        }
+
+        void CheckForPlayersNearby()
+        {
+            bool foundPlayer = false;
+
+            std::list<Player*> playerList;
+            me->GetPlayerListInGrid(playerList, SUMMON_DISTANCE);
+
+            if (!playerList.empty())
+            {
+                foundPlayer = true;
+
+                if (!hasPlayersNearby)
+                {
+                    hasPlayersNearby = true;
+                    OnPlayersApproach();
+                }
+            }
+            else
+            {
+                if (hasPlayersNearby)
+                {
+                    hasPlayersNearby = false;
+                    OnPlayersLeave();
+                }
+            }
+        }
+
+        void OnPlayersApproach()
+        {
+            me->Yell("Someone is approaching! Calling for defenders!", LANG_UNIVERSAL);
+
+            // Start a continuous call
+            if (!events.HasEventScheduled(EVENT_CONTINUOUS_SUMMON))
+                events.ScheduleEvent(EVENT_CONTINUOUS_SUMMON, 5ms);
+        }
+
+        void OnPlayersLeave()
+        {
+            me->Yell("The threat has passed...", LANG_UNIVERSAL);
+
+            // cancel call
+            events.CancelEvent(EVENT_CONTINUOUS_SUMMON);
+
+            summons.DespawnAll();
+        }
+
+        void JustSummoned(Creature* summon) override
+        {
+            summons.Summon(summon);
+
+            if (summon->IsInWorld())
+            {
+                summon->CastSpell(summon, SPELL_SUMMON_VISUAL, true);
+
+                summon->GetMotionMaster()->MoveRandom(10.0f);
+            }
+        }
+
+        void SummonedCreatureDies(Creature* summon, Unit* /*killer*/) override
+        {
+            summons.Despawn(summon);
+        }
+
+        void ContinuousSummon()
+        {
+            // limit
+            if (summons.size() >= MAX_SUMMONS)
+                return;
+
+            if (roll_chance_i(40))
+                DoCast(me, SPELL_SUMMON_VISUAL);
+
+            // summon amount
+            uint8 count = urand(1, 2);
+
+            for (uint8 i = 0; i < count; ++i)
+            {
+                if (summons.size() >= MAX_SUMMONS)
+                    break;
+
+                float angle = frand(0, 2 * M_PI);
+                float dist = frand(2.0f, SUMMON_RADIUS);
+
+                float x = me->GetPositionX() + dist * cos(angle);
+                float y = me->GetPositionY() + dist * sin(angle);
+                float z = me->GetPositionZ();
+
+                uint32 npcEntry = NPC_MINION_1 + urand(0, 2);
+
+                me->SummonCreature(npcEntry, x, y, z, 0, TEMPSUMMON_TIMED_DESPAWN, 60s);
+            }
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            events.Update(diff);
+
+            while (uint32 eventId = events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                case EVENT_CHECK_PLAYERS:
+                    CheckForPlayersNearby();
+                    events.ScheduleEvent(EVENT_CHECK_PLAYERS, 1s);
+                    break;
+
+                case EVENT_CONTINUOUS_SUMMON:
+                    if (hasPlayersNearby)
+                    {
+                        ContinuousSummon();
+                        events.ScheduleEvent(EVENT_CONTINUOUS_SUMMON, 2s);
+                    }
+                    break;
+                }
+            }
+        }
+    };
+
 enum LandrosTexts
 {
     SAY_WRONG = 1,
@@ -44,15 +211,9 @@ enum LandroMenus
     PROMOTION = 9197
 };
 
-class landro_longshot : public CreatureScript
-{
-public:
-
-    landro_longshot() : CreatureScript("landro_longshot") { }
-
-    struct landro_longshotAI : public ScriptedAI
+    struct landro_longshot : public ScriptedAI
     {
-        landro_longshotAI(Creature* creature) : ScriptedAI(creature) { }
+        landro_longshot(Creature* creature) : ScriptedAI(creature) { }
 
         bool OnGossipHello(Player* player) override
         {
@@ -113,13 +274,8 @@ public:
         }
     };
 
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new landro_longshotAI(creature);
-    }
-};
-
 void AddSC_landro_longshot()
 {
-    new landro_longshot();
+    RegisterCreatureAI(landro_longshot);
+    RegisterCreatureAI(npc_continuous_summoner);
 }
