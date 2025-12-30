@@ -63,6 +63,7 @@ class WorldObject;
 class WorldPacket;
 class ZoneScript;
 #ifdef ELUNA
+class ElunaEventProcessorInfo;
 class ElunaEventProcessor;
 class Eluna;
 #endif
@@ -571,12 +572,12 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         uint32  LastUsedScriptID;
 
 #ifdef ELUNA
-        std::unique_ptr <ElunaEventProcessor> elunaMapEvents;
-        std::unique_ptr <ElunaEventProcessor> elunaWorldEvents;
+        std::unique_ptr<ElunaProcessorInfo> elunaMapEvents;
+        std::unique_ptr<ElunaProcessorInfo> elunaWorldEvents;
 
         Eluna* GetEluna() const;
 
-        std::unique_ptr<ElunaEventProcessor>& GetElunaEvents(int32 mapId) { return (mapId == -1) ? elunaWorldEvents : elunaMapEvents; }
+        ElunaEventProcessor* GetElunaEvents(int32 mapId);
 
         LuaVal lua_data = LuaVal({});
 #endif
