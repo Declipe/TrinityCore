@@ -200,11 +200,10 @@ public:
 
         uint32 entry = item->GetEntry();
 
-        uint32 count = player->GetItemCount(entry, true);
        // uint32 exp = sGameConfig->GetIntConfig("QueryList.Enabled") * count;
         guild->GiveXp(10000);
 
-        player->DestroyItemCount(entry, count, true);
+        player->DestroyItemCount(entry, 1, true);
         return true;
     }
 };
