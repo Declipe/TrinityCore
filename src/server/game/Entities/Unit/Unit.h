@@ -1972,7 +1972,7 @@ class TC_GAME_API Unit : public WorldObject
         virtual void AtEnterCombat() { }
         virtual void AtExitCombat();
 
-        void AtEngage(Unit* /*target*/);
+        virtual void AtEngage(Unit* target);
         virtual void AtDisengage() {}
 
     private:
