@@ -158,7 +158,12 @@ public:
                     //whisper to player "already have etc..."
                     Field* fields = result->Fetch();
                     char msg[100];
-                    sprintf(msg, {}, MSG_ALREADYHAVEGH, fields[0].GetCString());
+
+                    std::string strtext = sObjectMgr->GetTrinityStringForDBCLocale2(NOT_USED_69);
+                    char const* text = strtext.c_str();
+
+                    //sprintf(msg, {}, MSG_ALREADYHAVEGH, fields[0].GetCString());
+                    snprintf(msg, sizeof(msg), text, fields[0].GetCString());
                     _creature->Whisper(msg, LANG_UNIVERSAL, player);
                 }
 
@@ -174,12 +179,17 @@ public:
             bool token = sGameConfig->GetBoolConfig("GuildHouse.TokenOrGold");
             int32 cost = sGameConfig->GetIntConfig("GuildHouse.Cost");
 
-
             if ((int32)player->GetMoney() <= (int32)cost)
             {
                 //show how much money player need to buy GH (in gold)
                 char msg[100];
-                sprintf(msg, {}, MSG_NOTENOUGHMONEY, cost);
+                //sprintf(msg, {}, MSG_NOTENOUGHMONEY, cost);
+
+                std::string strtext = sObjectMgr->GetTrinityStringForDBCLocale2(NOT_USED_70);
+                char const* text = strtext.c_str();
+
+                snprintf(msg, sizeof(msg), text, cost);
+
                 _creature->Whisper(msg, LANG_UNIVERSAL, player);
                 return;
             }
@@ -224,7 +234,13 @@ public:
                 player->ModifyMoney(myMoneys * 10000);
                 //display message e.g. "here your money etc."
                 char msg[255];
-                sprintf(msg, {}, MSG_SOLD, myMoneys);
+
+                std::string strtext = sObjectMgr->GetTrinityStringForDBCLocale2(NOT_USED_71);
+                char const* text = strtext.c_str();
+
+                snprintf(msg, sizeof(msg), text, myMoneys);
+
+                //sprintf(msg, {}, MSG_SOLD, myMoneys);
                 _creature->Whisper(msg, LANG_UNIVERSAL, player);
             }
         }
