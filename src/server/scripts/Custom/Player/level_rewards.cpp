@@ -121,7 +121,7 @@ public:
                     }
                     else
                         player->PlayerTalkClass->SendCloseGossip();
-                    session->SendAreaTriggerMessage(GTS2(NOT_USED_16));
+                        player->GetSession()->SendAreaTriggerMessage(GTS2(NOT_USED_16));
                     ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_16));
 
                     player->PlayerTalkClass->SendCloseGossip();

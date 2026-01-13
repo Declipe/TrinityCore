@@ -280,7 +280,7 @@ enum eEnums
             //Summon Heal
             if (m_uiSummonCheck <= uiDiff)
             {
-                if (Creature* pElemental = GetClosestCreatureWithEntry(me, NPC_FIRE_ELEMENTAL, INTERACTION_DISTANCE * 100))
+                if (Creature* c = GetClosestCreatureWithEntry(me, NPC_FIRE_ELEMENTAL, INTERACTION_DISTANCE * 100))
                 {
                     for (uint8 i = 0; i < 4; ++i)
                         me->CastSpell(me, 71783, true);

@@ -82,15 +82,11 @@ enum Eventssaq
 
         void CheckForPlayersNearby()
         {
-            bool foundPlayer = false;
-
             std::list<Player*> playerList;
             me->GetPlayerListInGrid(playerList, SUMMON_DISTANCE);
 
             if (!playerList.empty())
             {
-                foundPlayer = true;
-
                 if (!hasPlayersNearby)
                 {
                     hasPlayersNearby = true;
