@@ -123,8 +123,6 @@ class go_item_upgrade : public GameObjectScript
             return true;
         }
 
-        LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
-
         for (uint8 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; i++)
         {
             Item* item = player->GetUseableItemByPos(INVENTORY_SLOT_BAG_0, i);
@@ -134,6 +132,8 @@ class go_item_upgrade : public GameObjectScript
             {
                 ItemTemplate const *itemTemplate = item->GetTemplate();
                 std::string Name = itemTemplate->Name1;
+                LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
+
                 if (loc_idx >= 0)
                     if (ItemLocale const* il = sObjectMgr->GetItemLocale(itemTemplate->ItemId))
                         ObjectMgr::GetLocaleString(il->Name, loc_idx, Name);
