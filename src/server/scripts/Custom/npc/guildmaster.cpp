@@ -162,7 +162,6 @@ public:
                     std::string strtext = sObjectMgr->GetTrinityStringForDBCLocale2(NOT_USED_69);
                     char const* text = strtext.c_str();
 
-                    //sprintf(msg, {}, MSG_ALREADYHAVEGH, fields[0].GetCString());
                     snprintf(msg, sizeof(msg), text, fields[0].GetCString());
                     _creature->Whisper(msg, LANG_UNIVERSAL, player);
                 }
@@ -183,7 +182,6 @@ public:
             {
                 //show how much money player need to buy GH (in gold)
                 char msg[100];
-                //sprintf(msg, {}, MSG_NOTENOUGHMONEY, cost);
 
                 std::string strtext = sObjectMgr->GetTrinityStringForDBCLocale2(NOT_USED_70);
                 char const* text = strtext.c_str();
@@ -239,8 +237,6 @@ public:
                 char const* text = strtext.c_str();
 
                 snprintf(msg, sizeof(msg), text, myMoneys);
-
-                //sprintf(msg, {}, MSG_SOLD, myMoneys);
                 _creature->Whisper(msg, LANG_UNIVERSAL, player);
             }
         }

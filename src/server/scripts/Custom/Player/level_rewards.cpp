@@ -120,10 +120,7 @@ public:
                         break;
                     }
                     else
-                        player->PlayerTalkClass->SendCloseGossip();
-                        player->GetSession()->SendAreaTriggerMessage(GTS2(NOT_USED_16));
                     ChatHandler(player->GetSession()).SendSysMessage(GTS2(NOT_USED_16));
-
                     player->PlayerTalkClass->SendCloseGossip();
                     break;
                 }
