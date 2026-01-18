@@ -461,12 +461,12 @@ bool PromotionCodeMgr::AddCodeInHistory(uint32 id, std::string const& code, Play
 
 bool PromotionCodeMgr::CanUseCode(std::string const& code, ObjectGuid::LowType plrGUID)
 {
-    bool result = true;
+    uint32 useCount = 0;
     for (PromotionHistoryContainer::const_iterator itr = promoHistoryStore.begin(); itr != promoHistoryStore.end(); ++itr)
     {
         if (itr->second.playerGUID == plrGUID && itr->second.code == code)
-            result = false;
+            useCount++;
     }
 
-    return result;
+    return useCount < 2;
 }
