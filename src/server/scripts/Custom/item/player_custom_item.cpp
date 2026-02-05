@@ -297,7 +297,7 @@ public:
 
         // AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_7, loc_idx), GOSSIP_SENDER_MAIN, 192);
         AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_7), GOSSIP_SENDER_MAIN, 192);
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_11) /*"?? ??????"*/, GOSSIP_SENDER_MAIN, 199, GTS2(NOT_USED_12)/*"?? ????????????? ?????? ???????? ???"*/, 0, false);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_11), GOSSIP_SENDER_MAIN, 199, GTS2(NOT_USED_12), 0, false);
         if (player->IsGameMaster())
         {
             if (player->GetSession()->HasPermission(rbac::RBAC_PERM_COMMAND_SERVER_RESTART))
@@ -1336,6 +1336,7 @@ public:
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_RESET_TALENT), GOSSIP_SENDER_MAIN, 71, GTS(LANG_ITEM_RESET_TALENT_SURE), 0, false);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_SKILLS_WEAPON), GOSSIP_SENDER_MAIN, 72);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_MAXSKILL), GOSSIP_SENDER_MAIN, 73);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_72), GOSSIP_SENDER_MAIN, 23);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
                     break;
@@ -1474,7 +1475,7 @@ public:
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, item->GetGUID());
                     break;
                 }
-                case 34: // (FAMILY) cloth armor GTS2(NOT_USED_11)
+                case 34: // (FAMILY) cloth armor
                 {
                     for (ItemShopContainer::const_iterator itr = itemshopMap.begin(); itr != itemshopMap.end(); ++itr)
                     {

@@ -1223,6 +1223,7 @@ public:
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_RESET_TALENT), GOSSIP_SENDER_MAIN, 71, GTS(LANG_ITEM_RESET_TALENT_SURE), 0, false);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_SKILLS_WEAPON), GOSSIP_SENDER_MAIN, 72);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_MAXSKILL), GOSSIP_SENDER_MAIN, 73);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_72), GOSSIP_SENDER_MAIN, 23);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
