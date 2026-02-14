@@ -189,7 +189,6 @@ class instance_ulduar : public InstanceMapScript
                 _maxArmorItemLevel = 0;
                 _maxWeaponItemLevel = 0;
                 TeamInInstance = 0;
-                HodirRareCacheData = 0;
                 ColossusData = 0;
                 elderCount = 0;
                 illusion = 0;
@@ -232,7 +231,6 @@ class instance_ulduar : public InstanceMapScript
 
             // Miscellaneous
             uint32 TeamInInstance;
-            uint32 HodirRareCacheData;
             uint32 ColossusData;
             uint8 elderCount;
             uint8 illusion;
@@ -612,6 +610,22 @@ class instance_ulduar : public InstanceMapScript
                             flameLeviathan->AI()->DoAction(ACTION_TOWER_OF_LIFE_DESTROYED);
                         break;
 
+                    // Hodir Event triggers
+                    case EVENT_INITIAL_AGGRO_HODIR:
+                        if (Creature* hodir = GetCreature(DATA_HODIR))
+                            hodir->AI()->DoAction(ACTION_INITIAL_AGGRO_HODIR);
+                        break;
+                    case EVENT_CACHE_SHATTERED:
+                        if (Creature* hodir = GetCreature(DATA_HODIR))
+                            hodir->AI()->DoAction(ACTION_CACHE_SHATTERED);
+                        if (GameObject* hodirRareCache = instance->GetGameObject(HodirRareCacheGUID))
+                            hodirRareCache->ActivateObject(GameObjectActions(GameObjectActions::Despawn));
+                        break;
+                    case EVENT_FLASH_FREEZE_FINISHED:
+                        if (Creature* hodir = GetCreature(DATA_HODIR))
+                            hodir->AI()->DoAction(ACTION_FLASH_FREEZE_FINISHED);
+                        break;
+
                     // Yogg-Saron Event triggers
                     case EVENT_ACTIVATE_SANITY_WELL:
                         if (Creature* freya = instance->GetCreature(KeeperGUIDs[0]))
@@ -672,11 +686,10 @@ class instance_ulduar : public InstanceMapScript
                     case DATA_HODIR:
                         if (state == DONE)
                         {
-                            if (GameObject* HodirRareCache = instance->GetGameObject(HodirRareCacheGUID))
-                                if (GetData(DATA_HODIR_RARE_CACHE))
-                                    HodirRareCache->RemoveFlag(GO_FLAG_NOT_SELECTABLE);
-                            if (GameObject* HodirChest = instance->GetGameObject(HodirChestGUID))
-                                HodirChest->SetRespawnTime(HodirChest->GetRespawnDelay());
+                            if (GameObject* hodirRareCache = instance->GetGameObject(HodirRareCacheGUID))
+                                hodirRareCache->ActivateObject(GameObjectActions(GameObjectActions::MakeActive));
+                            if (GameObject* hodirChest = instance->GetGameObject(HodirChestGUID))
+                                hodirChest->ActivateObject(GameObjectActions(GameObjectActions::MakeActive));
 
                             instance->SummonCreature(NPC_HODIR_OBSERVATION_RING, ObservationRingKeepersPos[1]);
                         }
@@ -763,15 +776,6 @@ class instance_ulduar : public InstanceMapScript
                         {
                             _events.ScheduleEvent(EVENT_LEVIATHAN_BREAK_DOOR, 5s);
                             SaveToDB();
-                        }
-                        break;
-                    case DATA_HODIR_RARE_CACHE:
-                        HodirRareCacheData = data;
-                        if (!HodirRareCacheData)
-                        {
-                            if (Creature* hodir = GetCreature(DATA_HODIR))
-                                if (GameObject* gameObject = instance->GetGameObject(HodirRareCacheGUID))
-                                    hodir->RemoveGameObject(gameObject, false);
                         }
                         break;
                     case DATA_UNBROKEN:
@@ -863,8 +867,6 @@ class instance_ulduar : public InstanceMapScript
                 {
                     case DATA_COLOSSUS:
                         return ColossusData;
-                    case DATA_HODIR_RARE_CACHE:
-                        return HodirRareCacheData;
                     case DATA_UNBROKEN:
                         return uint32(Unbroken);
                     case DATA_ILLUSION:
