@@ -2235,13 +2235,13 @@ struct npc_icc_nerubar_webweaver : public ScriptedAI
                             {
                                 if (!me->HasReactState(REACT_PASSIVE) && me->GetVictim() && !me->GetMotionMaster()->HasMovementGenerator([](MovementGenerator const* movement) -> bool
                                     {
-                                        return movement->GetMovementGeneratorType() == CHASE_MOTION_TYPE && movement->Mode == MOTION_MODE_DEFAULT && movement->Priority == MOTION_PRIORITY_NORMAL;
+                                        return movement->GetMovementGeneratorType() == CHASE_MOTION_TYPE && movement->Priority == MOTION_PRIORITY_NORMAL;
                                     }))
                                     me->GetMotionMaster()->MoveChase(me->GetVictim());
                             }
                             else if (MovementGenerator* movement = me->GetMotionMaster()->GetMovementGenerator([](MovementGenerator const* a) -> bool
                                 {
-                                    return a->GetMovementGeneratorType() == CHASE_MOTION_TYPE && a->Mode == MOTION_MODE_DEFAULT && a->Priority == MOTION_PRIORITY_NORMAL;
+                                    return a->GetMovementGeneratorType() == CHASE_MOTION_TYPE && a->Priority == MOTION_PRIORITY_NORMAL;
                                 }))
                             {
                                 me->GetMotionMaster()->Remove(movement);
