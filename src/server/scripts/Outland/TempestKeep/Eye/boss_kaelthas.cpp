@@ -35,10 +35,6 @@
  * Visual effect of Pure Nether Beam doesn't stop. Looks like client bug, saw same in WoTLK classic
  * Drowned emote during transition doesn't trigger, not set manually in sniffs (doesn't work if set manually either way). From my observation this boss has
    different bugs in different expansions. Something is fixed in one and is broken in another
- * Critical bug: If Gravity Lapse occurs when player has Arcane Disruption debuff, teleport from Gravity Lapse bugs player's position. As result,
-   player's position will kinda stuck. Distance command will always return same position no matter where you are. You will be not able to loot Kael'thas because
-   you're kinda far away from the corpse. Even leaving instance through portal in impossible. Teleporting to another map fixes this bug. Currently
-   Arcane Disruption is disabled in phase 5 completely
  */
 
 #include "ScriptMgr.h"
@@ -605,6 +601,7 @@ struct boss_kaelthas : public BossAI
                 events.CancelEvent(EVENT_NETHER_BEAM);
                 events.ScheduleEvent(EVENT_FIREBALL, 0s);
                 events.ScheduleEvent(EVENT_FLAME_STRIKE, 20s, 30s);
+                events.ScheduleEvent(EVENT_ARCANE_DISRUPTION, 20s, 30s);
                 events.ScheduleEvent(EVENT_SUMMON_PHOENIX, 45s, 55s);
                 events.ScheduleEvent(EVENT_STAGE_GRAVITY, 55s);
                 break;
@@ -1674,7 +1671,7 @@ public:
         Unit* caster = GetCaster();
         Unit* target = GetHitUnit();
 
-        caster->CastSpell(target, GravityLapseSpells[_targetCount], true);
+        caster->CastSpell(target, GravityLapseSpells[std::min(_targetCount, GravityLapseSpells.size() - 1)], true);
         target->CastSpell(target, SPELL_GRAVITY_LAPSE_FLIGHT_AURA, true);
         target->CastSpell(target, SPELL_GRAVITY_LAPSE_PERIODIC, true);
         _targetCount++;
@@ -1686,7 +1683,7 @@ public:
     }
 
 private:
-    uint8 _targetCount;
+    std::size_t _targetCount;
 };
 
 // 34480 - Gravity Lapse
@@ -1702,12 +1699,7 @@ class spell_kaelthas_gravity_lapse_periodic : public AuraScript
     void OnPeriodic(AuraEffect const* /*aurEff*/)
     {
         Unit* target = GetTarget();
-
-        float z = target->GetPositionZ();
-        float floor = target->GetMap()->GetHeight(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ());
-
-        /// @todo: Player should cast this spell if he's on the ground, not if above the ground. Doesn't work always with 0.5f check for unknown reason
-        if (fabs(z - floor) < 5.0f)
+        if (!target->IsFlying() || std::abs(target->GetPositionZ() - target->GetFloorZ()) < 0.5f)
             target->CastSpell(target, SPELL_GRAVITY_LAPSE_KNOCK_BACK, true);
     }
 
@@ -1981,9 +1973,9 @@ class spell_kaelthas_nether_vapor_lightning : public AuraScript
         return ValidateSpellInfo({ uint32(spellInfo->GetEffect(EFFECT_0).CalcValue()) });
     }
 
-    void OnPeriodic(AuraEffect const* /*aurEff*/)
+    void OnPeriodic(AuraEffect const* aurEff)
     {
-        GetTarget()->CastSpell(GetTarget()->GetNearPosition(10.0f, frand(0.0f, float(M_PI) + (float(M_PI)))), uint32(GetEffectInfo(EFFECT_0).CalcValue()));
+        GetTarget()->CastSpell(GetTarget()->GetNearPosition(10.0f, frand(0.0f, 2.0f * float(M_PI))), aurEff->GetAmount());
     }
 
     void Register() override
@@ -2006,17 +1998,14 @@ class spell_kaelthas_nether_beam : public SpellScript
     {
         if (Creature* caster = GetCaster()->ToCreature())
         {
-            std::list<Unit*> targets;
+            std::vector<Unit*> targets;
             for (ThreatReference const* ref : caster->GetThreatManager().GetUnsortedThreatList())
-            {
-                Unit* target = ref->GetVictim();
-                targets.push_back(target);
-            }
+                targets.push_back(ref->GetVictim());
 
             Trinity::Containers::RandomResize(targets, 5);
 
-            for (std::list<Unit*>::iterator itr = targets.begin(); itr != targets.end(); ++itr)
-                caster->CastSpell(*itr, SPELL_NETHER_BEAM_CHAIN, true);
+            for (Unit* target : targets)
+                caster->CastSpell(target, SPELL_NETHER_BEAM_CHAIN, true);
         }
     }
 
