@@ -2162,13 +2162,15 @@ struct npc_icc_nerubar_champion : public ScriptedAI
 
         DoCastSelf(SPELL_WEB_BEAM);
         float x, y, z;
-        me->GetPosition(x, y);
-        z = me->GetFloorZ();
-        me->SetHomePosition(x, y, z, me->GetOrientation());
+        me->GetPosition(x, y, z);
 
-        me->GetMotionMaster()->MoveLand(POINT_LAND, Position(x, y, z));
+        float groundZ = me->GetMapHeight(x, y, z);
+        if (groundZ <= INVALID_HEIGHT)
+            groundZ = me->GetMap()->GetHeight(me->GetPhaseMask(), x, y, z, true, 500.0f);
+
+        me->SetHomePosition(x, y, groundZ, me->GetOrientation());
+        me->GetMotionMaster()->MoveLand(POINT_LAND, Position(x, y, groundZ));
         me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_NONE);
-
         DoZoneInCombat();
     }
 
@@ -2277,13 +2279,15 @@ struct npc_icc_nerubar_webweaver : public ScriptedAI
 
         DoCastSelf(SPELL_WEB_BEAM);
         float x, y, z;
-        me->GetPosition(x, y);
-        z = me->GetFloorZ();
-        me->SetHomePosition(x, y, z, me->GetOrientation());
+        me->GetPosition(x, y, z);
 
-        me->GetMotionMaster()->MoveLand(POINT_LAND, Position(x, y, z));
+        float groundZ = me->GetMapHeight(x, y, z);
+        if (groundZ <= INVALID_HEIGHT)
+            groundZ = me->GetMap()->GetHeight(me->GetPhaseMask(), x, y, z, true, 500.0f);
+
+        me->SetHomePosition(x, y, groundZ, me->GetOrientation());
+        me->GetMotionMaster()->MoveLand(POINT_LAND, Position(x, y, groundZ));
         me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_NONE);
-
         DoZoneInCombat();
     }
 
@@ -2329,13 +2333,17 @@ struct npc_icc_nerubar_broodling : public ScriptedAI
 
         DoCastSelf(SPELL_WEB_BEAM);
         float x, y, z;
-        me->GetPosition(x, y);
-        z = me->GetFloorZ();
-        me->SetHomePosition(x, y, z, me->GetOrientation());
+        me->GetPosition(x, y, z);
 
-        me->GetMotionMaster()->MoveLand(POINT_LAND, Position(x, y, z));
+        float groundZ = me->GetMap()->GetHeight(
+            me->GetPhaseMask(), x, y, z, true, 500.0f);
+
+        if (groundZ <= INVALID_HEIGHT || groundZ < 200.0f)
+            groundZ = 211.0f;
+
+        me->SetHomePosition(x, y, groundZ, me->GetOrientation());
+        me->GetMotionMaster()->MoveLand(POINT_LAND, Position(x, y, groundZ));
         me->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_ONESHOT_NONE);
-
         DoZoneInCombat();
     }
 
