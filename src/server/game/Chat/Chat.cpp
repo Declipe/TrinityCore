@@ -147,6 +147,18 @@ void ChatHandler::SendSysMessage(uint32 entry)
     SendSysMessage(GetTrinityString(entry));
 }
 
+void ChatHandler::SendErrorMessage(uint32 entry)
+{
+    SendSysMessage(entry);
+    SetSentErrorMessage(true);
+}
+
+void ChatHandler::SendErrorMessage(std::string_view str, bool escapeCharacters)
+{
+    SendSysMessage(str, escapeCharacters);
+    SetSentErrorMessage(true);
+}
+
 bool ChatHandler::_ParseCommands(std::string_view text)
 {
     if (Trinity::ChatCommands::TryExecuteCommand(*this, text))
