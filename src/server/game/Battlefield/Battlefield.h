@@ -152,7 +152,7 @@ class TC_GAME_API Battlefield : public ZoneScript
         void TeamCastSpell(TeamId team, int32 spellId);
         void SendInitWorldStatesTo(Player* player);
         /// Update data of a worldstate to all players present in zone
-        void SendUpdateWorldState(uint32 field, uint32 value);
+        void SendUpdateWorldState(uint32 variable, uint32 value);
         void SendAreaSpiritHealerQueryOpcode(Player* player, ObjectGuid guid);
 
         /// Called when a Unit is kill in battlefield zone

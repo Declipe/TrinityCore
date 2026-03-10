@@ -33,7 +33,7 @@ public:
     virtual void FillInitialWorldStates(WorldPackets::WorldState::InitWorldStates& /*packet*/) { }
 
     // Send world state update to all players present
-    void SendUpdateWorldState(uint32 field, uint32 value);
+    void SendUpdateWorldState(uint32 variable, uint32 value);
 
     // Send kill notify to players in the controlling faction
     void SendObjectiveComplete(uint32 id, ObjectGuid guid);

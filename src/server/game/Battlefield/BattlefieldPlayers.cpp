@@ -445,18 +445,23 @@ void Battlefield::SendInitWorldStatesTo(Player* player)
 {
     WorldPackets::WorldState::InitWorldStates packet;
     packet.MapID = m_MapId;
-    packet.ZoneID = m_ZoneId;
-    packet.AreaID = player->GetAreaId();
+    packet.AreaID = m_ZoneId;
+    packet.SubareaID = player->GetAreaId();
     FillInitialWorldStates(packet);
 
     player->SendDirectMessage(packet.Write());
 }
 
-void Battlefield::SendUpdateWorldState(uint32 field, uint32 value)
+void Battlefield::SendUpdateWorldState(uint32 variable, uint32 value)
 {
-    for (PlayerHolderContainer::const_iterator itr = m_PlayerMap.begin(); itr != m_PlayerMap.end(); ++itr)
+    WorldPackets::WorldState::UpdateWorldState worldstate;
+    worldstate.VariableID = variable;
+    worldstate.Value = value;
+    BroadcastPacketToZone(worldstate.Write());
+
+  /*  for (PlayerHolderContainer::const_iterator itr = m_PlayerMap.begin(); itr != m_PlayerMap.end(); ++itr)
         if (Player* player = ObjectAccessor::FindPlayer(itr->first))
-            player->SendUpdateWorldState(field, value);
+            player->SendUpdateWorldState(variable, value);*/
 }
 
 void Battlefield::SendAreaSpiritHealerQueryOpcode(Player* player, ObjectGuid guid)
