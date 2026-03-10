@@ -18,6 +18,7 @@
 #ifndef AllPackets_h__
 #define AllPackets_h__
 
+#include "AuthenticationPackets.h"
 #include "BankPackets.h"
 #include "BattlefieldPackets.h"
 #include "CalendarPackets.h"
