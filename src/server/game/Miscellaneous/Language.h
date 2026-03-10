@@ -1569,6 +1569,14 @@ enum TrinityStrings
     NOT_USED_79                                   = 40220,
     NOT_USED_80                                   = 40221,
 
+    LANG_BF_NOT_FOUND                             = 45111,
+    LANG_BF_STARTED                               = 45112,
+    LANG_BF_STOPPED                               = 45113,
+    LANG_BF_SWITCHED                              = 45114,
+    LANG_BF_TIMER_SET                             = 45115,
+    LANG_BF_ENABLED                               = 45116,
+    LANG_BF_DISABLED                              = 45117,
+
     //40200 40221 not used
 };
 #endif
