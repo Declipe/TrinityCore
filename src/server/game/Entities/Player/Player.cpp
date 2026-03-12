@@ -3025,7 +3025,7 @@ bool Player::AddTalent(uint32 spellId, uint8 spec, bool learning)
 
     PlayerTalentMap::iterator itr = GetTalentMap(spec)->find(spellId);
     if (itr != GetTalentMap(spec)->end())
-        itr->second->state = PLAYERSPELL_UNCHANGED;
+        itr->second.state = PLAYERSPELL_UNCHANGED;
     else if (TalentSpellPos const* talentPos = GetTalentSpellPos(spellId))
     {
         if (TalentEntry const* talentInfo = sTalentStore.LookupEntry(talentPos->talent_id))
@@ -3039,16 +3039,13 @@ bool Player::AddTalent(uint32 spellId, uint8 spec, bool learning)
 
                 itr = GetTalentMap(spec)->find(rankSpellId);
                 if (itr != GetTalentMap(spec)->end())
-                    itr->second->state = PLAYERSPELL_REMOVED;
+                    itr->second.state = PLAYERSPELL_REMOVED;
             }
         }
 
-        PlayerTalent* newtalent = new PlayerTalent();
-
-        newtalent->state = learning ? PLAYERSPELL_NEW : PLAYERSPELL_UNCHANGED;
-        newtalent->spec = spec;
-
-        (*GetTalentMap(spec))[spellId] = newtalent;
+        PlayerTalent& newtalent = (*GetTalentMap(spec))[spellId];
+        newtalent.state = learning ? PLAYERSPELL_NEW : PLAYERSPELL_UNCHANGED;
+        newtalent.spec = spec;
         return true;
     }
     return false;
@@ -3892,7 +3889,7 @@ bool Player::ResetTalents(bool involuntarily /*= false*/)
             // if this talent rank can be found in the PlayerTalentMap, mark the talent as removed so it gets deleted
             PlayerTalentMap::iterator plrTalent = GetTalentMap(GetActiveSpec())->find(talentInfo->SpellRank[rank]);
             if (plrTalent != GetTalentMap(GetActiveSpec())->end())
-                plrTalent->second->state = PLAYERSPELL_REMOVED;
+                plrTalent->second.state = PLAYERSPELL_REMOVED;
         }
     }
 
@@ -3996,7 +3993,7 @@ bool Player::HasSpell(uint32 spell) const
 bool Player::HasTalent(uint32 spell, uint8 spec) const
 {
     PlayerTalentMap::const_iterator itr = GetTalentMap(spec)->find(spell);
-    return (itr != GetTalentMap(spec)->end() && itr->second->state != PLAYERSPELL_REMOVED);
+    return (itr != GetTalentMap(spec)->end() && itr->second.state != PLAYERSPELL_REMOVED);
 }
 
 bool Player::HasActiveSpell(uint32 spell) const
@@ -26284,32 +26281,31 @@ void Player::_SaveTalents(CharacterDatabaseTransaction trans)
     {
         for (PlayerTalentMap::iterator itr = GetTalentMap(i)->begin(); itr != GetTalentMap(i)->end();)
         {
-            if (itr->second->state == PLAYERSPELL_REMOVED || itr->second->state == PLAYERSPELL_CHANGED)
+            if (itr->second.state == PLAYERSPELL_REMOVED || itr->second.state == PLAYERSPELL_CHANGED)
             {
                 stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_TALENT_BY_SPELL_SPEC);
                 stmt->setUInt32(0, GetGUID().GetCounter());
                 stmt->setUInt32(1, itr->first);
-                stmt->setUInt8(2, itr->second->spec);
+                stmt->setUInt8(2, itr->second.spec);
                 trans->Append(stmt);
             }
 
-            if (itr->second->state == PLAYERSPELL_NEW || itr->second->state == PLAYERSPELL_CHANGED)
+            if (itr->second.state == PLAYERSPELL_NEW || itr->second.state == PLAYERSPELL_CHANGED)
             {
                 stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_CHAR_TALENT);
                 stmt->setUInt32(0, GetGUID().GetCounter());
                 stmt->setUInt32(1, itr->first);
-                stmt->setUInt8(2, itr->second->spec);
+                stmt->setUInt8(2, itr->second.spec);
                 trans->Append(stmt);
             }
 
-            if (itr->second->state == PLAYERSPELL_REMOVED)
+            if (itr->second.state == PLAYERSPELL_REMOVED)
             {
-                delete itr->second;
-                GetTalentMap(i)->erase(itr++);
+                itr = GetTalentMap(i)->erase(itr);
             }
             else
             {
-                itr->second->state = PLAYERSPELL_UNCHANGED;
+                itr->second.state = PLAYERSPELL_UNCHANGED;
                 ++itr;
             }
         }
