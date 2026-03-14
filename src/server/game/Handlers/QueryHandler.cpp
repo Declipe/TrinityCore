@@ -35,6 +35,7 @@
 
 void WorldSession::SendNameQueryOpcode(ObjectGuid guid)
 {
+    Player* player = ObjectAccessor::FindConnectedPlayer(guid);
     WorldPackets::Query::QueryPlayerNameResponse response;
     response.Player = guid;
 
@@ -44,7 +45,8 @@ void WorldSession::SendNameQueryOpcode(ObjectGuid guid)
 
         WorldPackets::Query::PlayerGuidLookupData& data = response.Data.emplace();
         data.Name = characterInfo->Name;
-        data.Race = characterInfo->Race;
+        //data.Race = characterInfo->Race;
+        data.Race = player ? player->GetRace() : characterInfo->Race;
         data.Sex = characterInfo->Sex;
         data.ClassID = characterInfo->Class;
 
