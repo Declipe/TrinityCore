@@ -256,7 +256,7 @@ class Mod_CustomRewardPvP_PlayerScript : public PlayerScript
         bool isBattleground = killer->InBattleground();
         bool isArea = killer->InArena();
         uint32 zoneId = killer->GetZoneId();
-        uint32 mapId = killer->GetMapId();
+        int32 mapId = killer->GetMapId();
         uint32 targetRaceMask = killed->GetRaceMask();
         uint32 targetClassMask = killed->GetClassMask();
         uint32 guildId = killed->GetGuildId();

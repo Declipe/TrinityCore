@@ -60,15 +60,15 @@ enum Eventssaq
 
     struct npc_continuous_summoner : public ScriptedAI
     {
-        npc_continuous_summoner(Creature* creature) : ScriptedAI(creature), summons(me)
+        npc_continuous_summoner(Creature* creature) : ScriptedAI(creature), summons(me), isActive(false), hasPlayersNearby(false)
         {
             me->SetReactState(REACT_PASSIVE);
         }
 
         EventMap events;
         SummonList summons;
-        bool isActive;
-        bool hasPlayersNearby;
+        bool isActive = false;
+        bool hasPlayersNearby = false;
 
         void Reset() override
         {
@@ -156,7 +156,7 @@ enum Eventssaq
                 if (summons.size() >= MAX_SUMMONS)
                     break;
 
-                float angle = frand(0, 2 * M_PI);
+                float angle = frand(0, 2 * float(M_PI));
                 float dist = frand(2.0f, SUMMON_RADIUS);
 
                 float x = me->GetPositionX() + dist * cos(angle);
