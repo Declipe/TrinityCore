@@ -1936,7 +1936,8 @@ public:
     void SetSemaphoreTeleportFar(bool semphsetting) { mSemaphoreTeleport_Far = semphsetting; }
     void ProcessDelayedOperations();
 
-    void CheckAreaExploreAndOutdoor(void);
+    void CheckAreaExplore();
+    void CheckOutdoorsAuraRequirements();
 
     static uint32 TeamForRace(uint8 race);
     static TeamId TeamIdForRace(uint8 race);
