@@ -86,7 +86,6 @@ enum LurkerEvents
 
 enum LurkerSpawnGroups
 {
-    SPAWN_GROUP_THE_LURKER_BELOW            = 347,
     SPAWN_GROUP_COILFANG_AMBUSHER_1         = 348,
     SPAWN_GROUP_COILFANG_AMBUSHER_2         = 349,
     SPAWN_GROUP_COILFANG_AMBUSHER_3         = 350,
@@ -116,6 +115,8 @@ enum LurkerMisc
     NPC_WORLD_TRIGGER_NOT_IMMUNE_PC         = 21252,
     ACTION_SPOUT_STARTED                    = 0
 };
+
+static Position const LurkerSpawnPosition = { 38.4567f, -417.324f, -18.9167f, 2.94961f };
 
 static constexpr std::array<uint32, 9> CoilfangNagaSpawnGroupsData =
 {
@@ -179,9 +180,8 @@ struct boss_the_lurker_below : public BossAI
         for (uint32 group : CoilfangNagaSpawnGroupsData)
             me->GetMap()->SpawnGroupDespawn(group);
 
-        me->GetMap()->SpawnGroupDespawn(SPAWN_GROUP_THE_LURKER_BELOW);
-
-        instance->ProcessEvent(nullptr, EVENT_RESPAWN_STRANGE_POOL);
+        instance->SetBossState(BOSS_THE_LURKER_BELOW, FAIL);
+        me->DespawnOrUnsummon();
     }
 
     void JustDied(Unit* /*killer*/) override
@@ -289,7 +289,7 @@ struct boss_the_lurker_below : public BossAI
 // 21865 - Coilfang Ambusher
 struct npc_coilfang_ambusher : public ScriptedAI
 {
-    npc_coilfang_ambusher(Creature* creature) : ScriptedAI(creature) { }
+    using ScriptedAI::ScriptedAI;
 
     void JustAppeared() override
     {
@@ -361,7 +361,7 @@ private:
 // 21873 - Coilfang Guardian
 struct npc_coilfang_guardian : public ScriptedAI
 {
-    npc_coilfang_guardian(Creature* creature) : ScriptedAI(creature) { }
+    using ScriptedAI::ScriptedAI;
 
     void JustAppeared() override
     {
@@ -425,7 +425,7 @@ private:
 // 184956 - Strange Pool
 struct go_strange_pool : public GameObjectAI
 {
-    go_strange_pool(GameObject* go) : GameObjectAI(go) { }
+    using GameObjectAI::GameObjectAI;
 
     bool OnGossipHello(Player* player) override
     {
@@ -436,7 +436,9 @@ struct go_strange_pool : public GameObjectAI
 
             me->ActivateObject(GameObjectActions(GameObjectActions::Despawn));
 
-            me->GetMap()->SpawnGroupSpawn(SPAWN_GROUP_THE_LURKER_BELOW, true);
+            me->GetMap()->SummonCreature(NPC_THE_LURKER_BELOW, LurkerSpawnPosition);
+            if (InstanceScript* instance = me->GetInstanceScript())
+                instance->SetBossState(BOSS_THE_LURKER_BELOW, SPECIAL);
         }
 
         return false;
@@ -497,8 +499,6 @@ class spell_the_lurker_below_spout_periodic : public AuraScript
                 break;
         }
 
-        orientation = Position::NormalizeOrientation(orientation);
-
         target->SetFacingTo(orientation);
 
         target->CastSpell(target, aurEff->GetAmount(), true);
@@ -519,7 +519,7 @@ class spell_the_lurker_below_spout_damage : public SpellScript
     {
         targets.remove_if([](WorldObject* target)
         {
-            return target->ToUnit() && target->ToUnit()->HasUnitMovementFlag(MOVEMENTFLAG_SWIMMING);
+            return !target->IsUnit() || target->ToUnit()->HasUnitMovementFlag(MOVEMENTFLAG_SWIMMING);
         });
     }
 
