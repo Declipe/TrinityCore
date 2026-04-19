@@ -472,7 +472,6 @@ void GameObject::Update(uint32 diff)
     if (Eluna* e = GetEluna())
         e->UpdateAI(this, diff);
 #endif
-
     WorldObject::Update(diff);
 
     if (AI())
