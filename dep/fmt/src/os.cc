@@ -169,7 +169,7 @@ buffered_file::buffered_file(cstring_view filename, cstring_view mode) {
   FMT_RETRY_VAL(file_, FMT_SYSTEM(fopen(filename.c_str(), mode.c_str())),
                 nullptr);
   if (!file_)
-    FMT_THROW(system_error(errno, fmt::runtime(FMT_STRING("cannot open file {}")),
+    FMT_THROW(system_error(errno, FMT_STRING("cannot open file {}"),
                            filename.c_str()));
 }
 
@@ -212,7 +212,7 @@ file::file(cstring_view path, int oflag) {
   FMT_RETRY(fd_, FMT_POSIX_CALL(open(path.c_str(), oflag, default_open_mode)));
   if (fd_ == -1)
     FMT_THROW(
-        system_error(errno, fmt::runtime(FMT_STRING("cannot open file {}")), path.c_str()));
+        system_error(errno, FMT_STRING("cannot open file {}"), path.c_str()));
 #  endif
 }
 
@@ -281,7 +281,7 @@ file file::dup(int fd) {
   int new_fd = FMT_POSIX_CALL(dup(fd));
   if (new_fd == -1)
     FMT_THROW(system_error(
-        errno, fmt::runtime(FMT_STRING("cannot duplicate file descriptor {}")), fd));
+        errno, FMT_STRING("cannot duplicate file descriptor {}"), fd));
   return file(new_fd);
 }
 
@@ -290,7 +290,7 @@ void file::dup2(int fd) {
   FMT_RETRY(result, FMT_POSIX_CALL(dup2(fd_, fd)));
   if (result == -1) {
     FMT_THROW(system_error(
-        errno, fmt::runtime(FMT_STRING("cannot duplicate file descriptor {} to {}")), fd_,
+        errno, FMT_STRING("cannot duplicate file descriptor {} to {}"), fd_,
         fd));
   }
 }
