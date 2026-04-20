@@ -159,6 +159,11 @@ void ChatHandler::SendErrorMessage(std::string_view str, bool escapeCharacters)
     SetSentErrorMessage(true);
 }
 
+std::string ChatHandler::StringVPrintf(std::string_view messageFormat, fmt::printf_args messageFormatArgs)
+{
+    return fmt::vsprintf<char>(messageFormat, messageFormatArgs);
+}
+
 bool ChatHandler::_ParseCommands(std::string_view text)
 {
     if (Trinity::ChatCommands::TryExecuteCommand(*this, text))
