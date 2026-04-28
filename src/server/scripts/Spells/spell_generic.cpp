@@ -4910,6 +4910,93 @@ class spell_gen_cooldown_all : public SpellScript
     }
 };
 
+// 38048 - Curse of Pain
+enum CurseOfPain
+{
+    SPELL_CURSE_OF_PAIN = 38048,
+};
+
+class spell_gen_curse_of_pain : public AuraScript
+{
+    PrepareAuraScript(spell_gen_curse_of_pain);
+
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo({ SPELL_CURSE_OF_PAIN });
+    }
+
+    void OnPeriodic(AuraEffect const* /*aurEff*/)
+    {
+        Unit* target = GetTarget();
+        if (target && target->ToPlayer())
+        {
+            if (target->GetHealthPct() < 50.f)
+            {
+                target->RemoveAurasDueToSpell(SPELL_CURSE_OF_PAIN);
+            }
+        }
+    }
+
+    void Register() override
+    {
+        OnEffectPeriodic += AuraEffectPeriodicFn(spell_gen_curse_of_pain::OnPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE);
+    }
+};
+
+// INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
+// (42683, 'kitt_spell_fly_mount_aura')
+// spell ID      = 47977
+// aura map 0,1  = 42683 mount 100%  // 42680 mount 60%
+class kitt_spell_fly_mount_aura : public AuraScript
+{
+    PrepareAuraScript(kitt_spell_fly_mount_aura);
+
+    void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (Player* player = GetTarget()->ToPlayer())
+        {
+            bool hasCustomItem = false;
+
+            if (!hasCustomItem && player->HasItemCount(6948, 0))
+                hasCustomItem = true;
+
+            if (hasCustomItem)
+            {
+                player->SetCanFly(true);
+                player->SetSpeedRate(MOVE_RUN, 2.0f);
+                player->SetSpeedRate(MOVE_FLIGHT, 2.0f);
+            }
+        }
+    }
+
+    // Folosim semnatura confirmata de tine cu AuraEffectHandleModes
+    void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (Player* player = GetTarget()->ToPlayer())
+        {
+            player->SetCanFly(false);
+            player->SetSpeedRate(MOVE_FLIGHT, 1.0f);
+            player->SetSpeedRate(MOVE_RUN, 1.0f);
+            player->m_movementInfo.RemoveMovementFlag(MOVEMENTFLAG_CAN_FLY | MOVEMENTFLAG_FLYING);
+
+            // IMPORTANT: Trimitem pachetul de oprire fortata catre client
+            WorldPacket data(SMSG_MOVE_UNSET_CAN_FLY, 12);
+            data << player->GetPackGUID();
+            data << uint32(0);
+            player->GetSession()->SendPacket(&data);
+
+            player->SetFallInformation(0, player->GetPositionZ());
+            // Reset hover vizual
+            player->SetByteValue(UNIT_FIELD_BYTES_1, 3, uint8(AnimTier::Ground));
+        }
+    }
+
+    void Register() override
+    {
+        AfterEffectApply += AuraEffectApplyFn(kitt_spell_fly_mount_aura::OnApply, EFFECT_0, SPELL_AURA_ANY, AURA_EFFECT_HANDLE_REAL);
+        AfterEffectRemove += AuraEffectRemoveFn(kitt_spell_fly_mount_aura::OnRemove, EFFECT_0, SPELL_AURA_ANY, AURA_EFFECT_HANDLE_REAL);
+    }
+};
 
 void AddSC_generic_spell_scripts()
 {
@@ -5070,4 +5157,6 @@ void AddSC_generic_spell_scripts()
     RegisterSpellScript(spell_gen_cannon_blast);
     RegisterSpellScript(spell_gen_submerged);
     RegisterSpellScript(spell_gen_cooldown_all);
+    RegisterSpellScript(spell_gen_curse_of_pain);
+    RegisterSpellScript(kitt_spell_fly_mount_aura);
 }
