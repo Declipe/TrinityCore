@@ -80,7 +80,7 @@ class TC_GAME_API ChatHandler
         template<typename... Args>
         static std::string PGetParseString(std::string_view fmt, Args&&... args)
         {
-           return StringVPrintf(fmt, fmt::make_printf_args(args...));
+            return StringVPrintf(fmt, fmt::make_printf_args(args...));
         }
 
         template<typename... Args>
