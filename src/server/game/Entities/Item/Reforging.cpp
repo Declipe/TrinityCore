@@ -178,20 +178,20 @@ void SendReforgePacket(Player* player, uint32 entry, uint32 lowguid, const Refor
     {
         // send DBC data for cooldowns in same way as it used in Spell::SendSpellCooldown
         // use `item_template` or if not set then only use spell cooldowns
-        SpellInfo const* spell = sSpellMgr->GetSpellInfo(pProto->Spells[s].SpellId);
+        SpellInfo const* spell = sSpellMgr->GetSpellInfo(pProto->Effects[s].SpellID);
         if (spell)
         {
-            bool db_data = pProto->Spells[s].SpellCooldown >= 0 || pProto->Spells[s].SpellCategoryCooldown >= 0;
+            bool db_data = pProto->Effects[s].CoolDownMSec >= 0 || pProto->Effects[s].CategoryCoolDownMSec >= 0;
 
-            data << pProto->Spells[s].SpellId;
-            data << pProto->Spells[s].SpellTrigger;
-            data << uint32(-abs(pProto->Spells[s].SpellCharges));
+            data << pProto->Effects[s].SpellID;
+            data << pProto->Effects[s].TriggerType;
+            data << uint32(-abs(pProto->Effects[s].Charges));
 
             if (db_data)
             {
-                data << uint32(pProto->Spells[s].SpellCooldown);
-                data << uint32(pProto->Spells[s].SpellCategory);
-                data << uint32(pProto->Spells[s].SpellCategoryCooldown);
+                data << uint32(pProto->Effects[s].CoolDownMSec);
+                data << uint32(pProto->Effects[s].SpellCategoryID);
+                data << uint32(pProto->Effects[s].CategoryCoolDownMSec);
             }
             else
             {

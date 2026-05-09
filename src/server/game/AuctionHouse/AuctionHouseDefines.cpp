@@ -134,17 +134,17 @@ bool AuctionHouseUsablePlayerInfo::PlayerCanUseItem(ItemTemplate const* proto) c
     if (level < proto->RequiredLevel)
         return false;
 
-    if (proto->Spells[0].SpellId)
+    if (proto->Effects[0].SpellID)
     {
         // this check is for vanilla recipies. Spells are learned through individual learning spells instead of spell 483 and 55884
-        SpellEntry const* spellEntry = sSpellStore.LookupEntry(proto->Spells[0].SpellId);
+        SpellEntry const* spellEntry = sSpellStore.LookupEntry(proto->Effects[0].SpellID);
         if (spellEntry && spellEntry->Effect[0] == SPELL_EFFECT_LEARN_SPELL && spellEntry->EffectTriggerSpell[0])
             if (HasSpell(spellEntry->EffectTriggerSpell[0]))
                 return false;
 
         // this check is for tbc/wotlk recipies. Spells are learned through 483 and 55884, the second spell in the item will be the actual spell learned.
-        if (proto->Spells[0].SpellId == 483 || proto->Spells[0].SpellId == 55884)
-            if (HasSpell(proto->Spells[1].SpellId))
+        if (proto->Effects[0].SpellID == 483 || proto->Effects[0].SpellID == 55884)
+            if (HasSpell(proto->Effects[1].SpellID))
                 return false;
     }
 

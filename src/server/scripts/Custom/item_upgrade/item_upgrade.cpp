@@ -2209,20 +2209,20 @@ void ItemUpgrade::SendItemPacket(Player* player, Item* item) const
     {
         // send DBC data for cooldowns in same way as it used in Spell::SendSpellCooldown
         // use `item_template` or if not set then only use spell cooldowns
-        SpellInfo const* spell = sSpellMgr->GetSpellInfo(pProto->Spells[s].SpellId);
+        SpellInfo const* spell = sSpellMgr->GetSpellInfo(pProto->Effects[s].SpellID);
         if (spell)
         {
-            bool db_data = pProto->Spells[s].SpellCooldown >= 0 || pProto->Spells[s].SpellCategoryCooldown >= 0;
+            bool db_data = pProto->Effects[s].CoolDownMSec >= 0 || pProto->Effects[s].CategoryCoolDownMSec >= 0;
 
-            queryData << pProto->Spells[s].SpellId;
-            queryData << pProto->Spells[s].SpellTrigger;
-            queryData << int32(pProto->Spells[s].SpellCharges);
+            queryData << pProto->Effects[s].SpellID;
+            queryData << pProto->Effects[s].TriggerType;
+            queryData << int32(pProto->Effects[s].Charges);
 
             if (db_data)
             {
-                queryData << uint32(pProto->Spells[s].SpellCooldown);
-                queryData << uint32(pProto->Spells[s].SpellCategory);
-                queryData << uint32(pProto->Spells[s].SpellCategoryCooldown);
+                queryData << uint32(pProto->Effects[s].CoolDownMSec);
+                queryData << uint32(pProto->Effects[s].SpellCategoryID);
+                queryData << uint32(pProto->Effects[s].CategoryCoolDownMSec);
             }
             else
             {
