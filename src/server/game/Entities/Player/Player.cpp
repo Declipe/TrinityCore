@@ -23138,39 +23138,37 @@ void Player::ApplyEquipCooldown(Item* pItem)
         return;
 
     TimePoint now = GameTime::Now();
-    for (uint8 i = 0; i < MAX_ITEM_PROTO_SPELLS; ++i)
+    for (ItemEffect const& effectData : pItem->GetTemplate()->Effects)
     {
-        _Spell const& spellData = pItem->GetTemplate()->Spells[i];
-
-        // no spell
-        if (spellData.SpellId <= 0)
+        SpellInfo const* effectSpellInfo = sSpellMgr->GetSpellInfo(effectData.SpellID);
+        if (!effectSpellInfo)
             continue;
 
         // apply proc cooldown to equip auras if we have any
-        if (spellData.SpellTrigger == ITEM_SPELLTRIGGER_ON_EQUIP)
+        if (effectData.TriggerType == ITEM_SPELLTRIGGER_ON_EQUIP)
         {
-            SpellProcEntry const* procEntry = sSpellMgr->GetSpellProcEntry(spellData.SpellId);
+            SpellProcEntry const* procEntry = sSpellMgr->GetSpellProcEntry(effectData.SpellID);
             if (!procEntry)
                 continue;
 
-            if (Aura* itemAura = GetAura(spellData.SpellId, GetGUID(), pItem->GetGUID()))
+            if (Aura* itemAura = GetAura(effectData.SpellID, GetGUID(), pItem->GetGUID()))
                 itemAura->AddProcCooldown(now + procEntry->Cooldown);
             continue;
         }
 
         // wrong triggering type (note: ITEM_SPELLTRIGGER_ON_NO_DELAY_USE not have cooldown)
-        if (spellData.SpellTrigger != ITEM_SPELLTRIGGER_ON_USE)
+        if (effectData.TriggerType != ITEM_SPELLTRIGGER_ON_USE)
             continue;
 
         // Don't replace longer cooldowns by equip cooldown if we have any.
-        if (GetSpellHistory()->GetRemainingCooldown(sSpellMgr->AssertSpellInfo(spellData.SpellId)) > 30 * IN_MILLISECONDS)
+        if (GetSpellHistory()->GetRemainingCooldown(effectSpellInfo) > 30 * IN_MILLISECONDS)
             continue;
 
-        GetSpellHistory()->AddCooldown(spellData.SpellId, pItem->GetEntry(), std::chrono::seconds(30));
+        GetSpellHistory()->AddCooldown(effectData.SpellID, pItem->GetEntry(), std::chrono::seconds(30));
 
         WorldPacket data(SMSG_ITEM_COOLDOWN, 8 + 4);
         data << pItem->GetGUID();
-        data << uint32(spellData.SpellId);
+        data << uint32(effectData.SpellID);
         SendDirectMessage(&data);
     }
 }
@@ -26803,10 +26801,9 @@ std::string Player::GetMapAreaAndZoneString() const
     std::string zoneName = "Unknown";
     if (AreaTableEntry const* area = sAreaTableStore.LookupEntry(areaId))
     {
-        int locale = GetSession()->GetSessionDbcLocale();
-        areaName = area->AreaName[locale];
+        areaName = area->AreaName[GetSession()->GetSessionDbcLocale()];
         if (AreaTableEntry const* zone = sAreaTableStore.LookupEntry(area->ParentAreaID))
-            zoneName = zone->AreaName[locale];
+            zoneName = zone->AreaName[GetSession()->GetSessionDbcLocale()];
     }
 
     std::ostringstream str;
