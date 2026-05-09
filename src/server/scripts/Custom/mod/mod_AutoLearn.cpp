@@ -225,7 +225,7 @@ public:
     {
         if (Player->GetLevel() < sWorld->getIntConfig(CONFIG_MIN_DUALSPEC_LEVEL)) return;
 
-        if (Player->GetSpecsCount() != 1) return;
+        if (Player->GetTalentGroupsCount() != 1) return;
 
         Player->CastSpell(Player, 63680, Player->GetGUID());
         Player->CastSpell(Player, 63624, Player->GetGUID());
