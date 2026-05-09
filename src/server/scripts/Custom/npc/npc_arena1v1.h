@@ -98,7 +98,7 @@ static bool Arena1v1CheckTalents(Player* player)
             if (talentInfo->SpellRank[rank] == 0)
                 continue;
 
-            if (player->HasTalent(talentInfo->SpellRank[rank], player->GetActiveSpec()))
+            if (player->HasTalent(talentInfo->SpellRank[rank], player->GetActiveTalentGroup()))
             {
                 for(int8 i = 0; FORBIDDEN_TALENTS_IN_1V1_ARENA[i] != 0; i++)
                     if(FORBIDDEN_TALENTS_IN_1V1_ARENA[i] == talentInfo->TabID)

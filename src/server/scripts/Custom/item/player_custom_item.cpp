@@ -1296,7 +1296,7 @@ public:
                 }
                 case 12: // dual spec
                 {
-                    if (player->GetSpecsCount() == 1 && !(player->GetLevel()))
+                    if (player->GetTalentGroupsCount() == 1 && !(player->GetLevel()))
                         player->CastSpell(player, 63680, true);
                     player->CastSpell(player, 63624, true);
                     CloseGossipMenuFor(player);
