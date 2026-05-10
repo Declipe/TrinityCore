@@ -3091,7 +3091,7 @@ void Guild::SetLevel(uint8 level, bool byCommand)
     }
 
     char worldMsg[250];
-    sprintf(worldMsg, "The Guild %s has reached Guild Level %d.", m_name.c_str(), level);
+    snprintf(worldMsg, sizeof(worldMsg), "The Guild %s has reached Guild Level %d.", m_name.c_str(), level);
     sWorld->SendWorldText(SERVER_MSG_STRING, worldMsg);
 
     //Save to DB
