@@ -2512,8 +2512,14 @@ bool Aura::CallScriptCheckProcHandlers(AuraApplication const* aurApp, ProcEventI
     }
 #ifdef ELUNA
     if (GetCaster())
+    {
+        bool elunaResult = true;
         if (Eluna* e = GetCaster()->GetEluna())
-            result = e->OnAuraCanProc(aurApp->GetBase(), eventInfo);
+            elunaResult = e->OnAuraCanProc(aurApp->GetBase(), eventInfo);
+
+        if (!elunaResult)
+            result = false;
+    }
 #endif
     return result;
 }
