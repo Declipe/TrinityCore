@@ -144,6 +144,7 @@ namespace WorldPackets
     namespace Chat
     {
         class EmoteClient;
+        class ChatMessage;
     }
 
     namespace Combat
@@ -980,7 +981,8 @@ class TC_GAME_API WorldSession
         void HandlePushQuestToParty(WorldPacket& recvPacket);
         void HandleQuestPushResult(WorldPacket& recvPacket);
 
-        void HandleMessagechatOpcode(WorldPacket& recvPacket);
+        void HandleChatMessageOpcode(WorldPackets::Chat::ChatMessage& chatMessage);
+        void HandleChatMessage(ChatMsg type, Language lang, std::string msg, std::string target);
         void SendPlayerNotFoundNotice(std::string const& name);
         void SendPlayerAmbiguousNotice(std::string const& name);
         void SendWrongFactionNotice();
