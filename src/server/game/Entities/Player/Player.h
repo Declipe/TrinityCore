@@ -2061,7 +2061,7 @@ public:
 
     void SendEquipmentSetList();
     void SetEquipmentSet(EquipmentSetInfo::EquipmentSetData const& eqset);
-    void DeleteEquipmentSet(uint64 setGuid);
+    void DeleteEquipmentSet(uint64 id);
 
     void SendInitWorldStates(uint32 zoneId, uint32 areaId);
     void SendUpdateWorldState(uint32 variable, uint32 value) const;
