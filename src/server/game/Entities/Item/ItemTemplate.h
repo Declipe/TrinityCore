@@ -560,8 +560,6 @@ const uint32 MaxItemSubclassValues[MAX_ITEM_CLASS] =
     MAX_ITEM_SUBCLASS_GLYPH
 };
 
-#pragma pack(push, 1)
-
 struct _Damage
 {
     float   DamageMin = 0.0f;
@@ -592,8 +590,7 @@ struct _Socket
     uint32 Content = 0;
 };
 
-#pragma pack(pop)
-
+#define MAX_ITEM_PROTO_FLAGS   2
 #define MAX_ITEM_PROTO_DAMAGES 2                            // changed in 3.1.0
 #define MAX_ITEM_PROTO_SOCKETS 3
 #define MAX_ITEM_PROTO_SPELLS  5
@@ -608,29 +605,28 @@ struct TC_GAME_API ItemTemplate
     uint32 SubClass{};                                        // id from ItemSubClass.dbc
     int32  SoundOverrideSubclass{};                           // < 0: id from ItemSubClass.dbc, used to override weapon sound from actual SubClass
     std::string Name1;
-    uint32 DisplayInfoID{};                                   // id from ItemDisplayInfo.dbc
-    uint32 Quality{};
-    uint32 Flags{};
-    uint32 Flags2{};
-    uint32 BuyCount{};
-    int32  BuyPrice{};
-    uint32 SellPrice{};
-    uint32 InventoryType{};
-    uint32 AllowableClass{};
-    uint32 AllowableRace{};
-    uint32 ItemLevel{};
-    uint32 RequiredLevel{};
-    uint32 RequiredSkill{};                                   // id from SkillLine.dbc
-    uint32 RequiredSkillRank{};
-    uint32 RequiredSpell{};                                   // id from Spell.dbc
-    uint32 RequiredHonorRank{};
-    uint32 RequiredCityRank{};
-    uint32 RequiredReputationFaction{};                       // id from Faction.dbc
-    uint32 RequiredReputationRank{};
-    int32  MaxCount{};                                        // <= 0: no limit
-    int32  Stackable{};                                       // 0: not allowed, -1: put in player coin info tab and don't limit stacking (so 1 slot)
-    uint32 ContainerSlots{};
-    uint32 StatsCount{};
+    uint32 DisplayInfoID;                                   // id from ItemDisplayInfo.dbc
+    uint32 Quality;
+    std::array<uint32, MAX_ITEM_PROTO_FLAGS> Flags;
+    uint32 BuyCount;
+    int32  BuyPrice;
+    uint32 SellPrice;
+    uint32 InventoryType;
+    uint32 AllowableClass;
+    uint32 AllowableRace;
+    uint32 ItemLevel;
+    uint32 RequiredLevel;
+    uint32 RequiredSkill;                                   // id from SkillLine.dbc
+    uint32 RequiredSkillRank;
+    uint32 RequiredSpell;                                   // id from Spell.dbc
+    uint32 RequiredHonorRank;
+    uint32 RequiredCityRank;
+    uint32 RequiredReputationFaction;                       // id from Faction.dbc
+    uint32 RequiredReputationRank;
+    int32  MaxCount;                                        // <= 0: no limit
+    int32  Stackable;                                       // 0: not allowed, -1: put in player coin info tab and don't limit stacking (so 1 slot)
+    uint32 ContainerSlots;
+    uint32 StatsCount;
     std::array<_ItemStat, MAX_ITEM_PROTO_STATS> ItemStat;
     uint32 ScalingStatDistribution{};                         // id from ScalingStatDistribution.dbc
     uint32 ScalingStatValue{};                                // mask for selecting column in ScalingStatValues.dbc
@@ -705,8 +701,8 @@ struct TC_GAME_API ItemTemplate
     bool IsConjuredConsumable() const { return Class == ITEM_CLASS_CONSUMABLE && HasFlag(ITEM_FLAG_CONJURED); }
     bool HasSignature() const;
 
-    inline bool HasFlag(ItemFlags flag) const { return (Flags & flag) != 0; }
-    inline bool HasFlag(ItemFlags2 flag) const { return (Flags2 & flag) != 0; }
+    inline bool HasFlag(ItemFlags flag) const { return (Flags[0] & flag) != 0; }
+    inline bool HasFlag(ItemFlags2 flag) const { return (Flags[1] & flag) != 0; }
     inline bool HasFlag(ItemFlagsCustom customFlag) const { return (FlagsCu & customFlag) != 0; }
 
     void InitializeQueryData();
