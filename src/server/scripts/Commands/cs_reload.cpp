@@ -58,7 +58,7 @@ using namespace Trinity::ChatCommands;
 class reload_commandscript : public CommandScript
 {
 public:
-    reload_commandscript() : CommandScript("reload_commandscript") { }
+    reload_commandscript() : CommandScript("reload_commandscript") {}
 
     ChatCommandTable GetCommands() const override
     {
@@ -79,8 +79,8 @@ public:
 
         static ChatCommandTable  reloadCommandTable =
         {
-            { "access_requirement",            HandleReloadAccessRequirementCommand,          rbac::RBAC_PERM_COMMAND_RELOAD_ACCESS_REQUIREMENT, Console::Yes},
             { "auctions",                      HandleReloadAuctionsCommand,                   rbac::RBAC_PERM_COMMAND_RELOAD_AUCTIONS, Console::Yes },
+            { "access_requirement",            HandleReloadAccessRequirementCommand,          rbac::RBAC_PERM_COMMAND_RELOAD_ACCESS_REQUIREMENT, Console::Yes},
             { "achievement_criteria_data",     HandleReloadAchievementCriteriaDataCommand,    rbac::RBAC_PERM_COMMAND_RELOAD_ACHIEVEMENT_CRITERIA_DATA, Console::Yes },
             { "achievement_reward",            HandleReloadAchievementRewardCommand,          rbac::RBAC_PERM_COMMAND_RELOAD_ACHIEVEMENT_REWARD, Console::Yes },
             { "all", reloadAllCommandTable },
@@ -980,11 +980,9 @@ public:
             return false;
         }
 
-            TC_LOG_INFO("misc", "Re-Loading Scripts from `event_scripts`...");
-
+        TC_LOG_INFO("misc", "Re-Loading Scripts from `event_scripts`...");
         sObjectMgr->LoadEventScripts();
-
-            handler->SendGlobalGMSysMessage("DB table `event_scripts` reloaded.");
+        handler->SendGlobalGMSysMessage("DB table `event_scripts` reloaded.");
 
         return true;
     }
@@ -998,22 +996,18 @@ public:
             return false;
         }
 
-            TC_LOG_INFO("misc", "Re-Loading Scripts from `waypoint_scripts`...");
-
+        TC_LOG_INFO("misc", "Re-Loading Scripts from `waypoint_scripts`...");
         sObjectMgr->LoadWaypointScripts();
-
-            handler->SendGlobalGMSysMessage("DB table `waypoint_scripts` reloaded.");
+        handler->SendGlobalGMSysMessage("DB table `waypoint_scripts` reloaded.");
 
         return true;
     }
 
     static bool HandleReloadWpCommand(ChatHandler* handler)
     {
-            TC_LOG_INFO("misc", "Re-Loading Waypoints data from 'waypoints_data'");
-
+        TC_LOG_INFO("misc", "Re-Loading Waypoints data from 'waypoints_data'");
         sWaypointMgr->Load();
-
-            handler->SendGlobalGMSysMessage("DB Table 'waypoint_data' reloaded.");
+        handler->SendGlobalGMSysMessage("DB Table 'waypoint_data' reloaded.");
 
         return true;
     }
@@ -1021,9 +1015,7 @@ public:
     static bool HandleReloadGameGraveyardZoneCommand(ChatHandler* handler)
     {
         TC_LOG_INFO("misc", "Re-Loading Graveyard-zone links...");
-
         sObjectMgr->LoadGraveyardZones();
-
         handler->SendGlobalGMSysMessage("DB table `game_graveyard_zone` reloaded.");
 
         return true;
@@ -1032,9 +1024,7 @@ public:
     static bool HandleReloadGameTeleCommand(ChatHandler* handler)
     {
         TC_LOG_INFO("misc", "Re-Loading Game Tele coordinates...");
-
         sObjectMgr->LoadGameTele();
-
         handler->SendGlobalGMSysMessage("DB table `game_tele` reloaded.");
 
         return true;
