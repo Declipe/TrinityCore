@@ -3064,7 +3064,7 @@ void Creature::SetDisplayId(uint32 modelId)
     }
 }
 
-void Creature::SetTarget(ObjectGuid guid)
+void Creature::SetTarget(ObjectGuid const& guid)
 {
     if (HasSpellFocus())
         _spellFocusInfo.Target = guid;
