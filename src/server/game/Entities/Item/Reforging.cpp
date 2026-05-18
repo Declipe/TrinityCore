@@ -113,8 +113,8 @@ void SendReforgePacket(Player* player, uint32 entry, uint32 lowguid, const Refor
     data << uint8(0x00);                                //pProto->Name4; // blizz not send name there, just uint8(0x00);
     data << pProto->DisplayInfoID;
     data << pProto->Quality;
-    data << pProto->Flags;
-    data << pProto->Flags2;
+    data << pProto->Flags[0];
+    data << pProto->Flags[1];
     data << pProto->BuyPrice;
     data << pProto->SellPrice;
     data << pProto->InventoryType;

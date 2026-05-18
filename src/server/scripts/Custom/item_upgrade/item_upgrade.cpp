@@ -2152,8 +2152,8 @@ void ItemUpgrade::SendItemPacket(Player* player, Item* item) const
     queryData << uint8(0x00);                                //pProto->Name4; // blizz not send name there, just uint8(0x00);
     queryData << pProto->DisplayInfoID;
     queryData << pProto->Quality;
-    queryData << pProto->Flags;
-    queryData << pProto->Flags2;
+    queryData << pProto->Flags[0];
+    queryData << pProto->Flags[1];
     queryData << pProto->BuyPrice;
     queryData << pProto->SellPrice;
     queryData << pProto->InventoryType;
