@@ -306,6 +306,7 @@ namespace WorldPackets
         class CancelCast;
         class CastSpell;
         class PetCastSpell;
+        class SetActionButton;
     }
 
     namespace Talent
@@ -804,7 +805,7 @@ class TC_GAME_API WorldSession
 
         void HandleUpdateAccountData(WorldPackets::ClientConfig::UserClientUpdateAccountData& packet);
         void HandleRequestAccountData(WorldPackets::ClientConfig::RequestAccountData& request);
-        void HandleSetActionButtonOpcode(WorldPacket& recvPacket);
+        void HandleSetActionButtonOpcode(WorldPackets::Spells::SetActionButton& packet);
 
         void HandleGameObjectUseOpcode(WorldPacket& recPacket);
         void HandleGameobjectReportUse(WorldPacket& recvPacket);
