@@ -205,7 +205,7 @@ void Battleground::Update(uint32 diff)
             // after 47 minutes without one team losing, the arena closes with no winner and no rating change
             if (isArena())
             {
-                if (GetStartTime() >= 47 * MINUTE*IN_MILLISECONDS)
+                if (GetElapsedTime() >= 47 * MINUTE*IN_MILLISECONDS)
                 {
                     EndBattleground(0);
                     return;
@@ -228,7 +228,7 @@ void Battleground::Update(uint32 diff)
     }
 
     // Update start time and reset stats timer
-    m_StartTime += diff;
+    SetElapsedTime(GetElapsedTime() + diff);
     m_ResetStatTimer += diff;
 
     PostUpdateImpl(diff);
@@ -485,7 +485,7 @@ inline void Battleground::_ProcessJoin(uint32 diff)
                     WorldPacket status;
                     BattlegroundQueueTypeId bgQueueTypeId = sBattlegroundMgr->BGQueueTypeId(m_TypeID, GetArenaType());
                     uint32 queueSlot = player->GetBattlegroundQueueIndex(bgQueueTypeId);
-                    sBattlegroundMgr->BuildBattlegroundStatusPacket(&status, this, queueSlot, STATUS_IN_PROGRESS, 0, GetStartTime(), GetArenaType(), player->GetTeam());
+                    sBattlegroundMgr->BuildBattlegroundStatusPacket(&status, this, queueSlot, STATUS_IN_PROGRESS, 0, GetElapsedTime(), GetArenaType(), player->GetTeam());
                     player->SendDirectMessage(&status);
 
                     player->RemoveAurasDueToSpell(SPELL_ARENA_PREPARATION);
@@ -532,10 +532,10 @@ inline void Battleground::_ProcessLeave(uint32 diff)
     // ***           BATTLEGROUND ENDING SYSTEM              ***
     // *********************************************************
     // remove all players from battleground after 2 minutes
-    m_EndTime -= diff;
-    if (m_EndTime <= 0)
+    SetRemainingTime(GetRemainingTime() - diff);
+    if (GetRemainingTime() <= 0)
     {
-        m_EndTime = 0;
+        SetRemainingTime(0);
         BattlegroundPlayerMap::iterator itr, next;
         for (itr = m_Players.begin(); itr != m_Players.end(); itr = next)
         {
@@ -752,7 +752,7 @@ void Battleground::EndBattleground(uint32 winner)
 
     SetStatus(STATUS_WAIT_LEAVE);
     //we must set it this way, because end time is sent in packet!
-    m_EndTime = TIME_TO_AUTOREMOVE;
+    SetRemainingTime(TIME_AUTOCLOSE_BATTLEGROUND);
 
     WorldPacket pvpLogData;
     BuildPvPLogDataPacket(pvpLogData);
@@ -839,7 +839,7 @@ void Battleground::EndBattleground(uint32 winner)
         player->SendDirectMessage(&pvpLogData);
 
         WorldPacket data;
-        sBattlegroundMgr->BuildBattlegroundStatusPacket(&data, this, player->GetBattlegroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, TIME_TO_AUTOREMOVE, GetStartTime(), GetArenaType(), player->GetTeam());
+        sBattlegroundMgr->BuildBattlegroundStatusPacket(&data, this, player->GetBattlegroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, TIME_AUTOCLOSE_BATTLEGROUND, GetElapsedTime(), GetArenaType(), player->GetTeam());
         player->SendDirectMessage(&data);
         player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_BATTLEGROUND, player->GetMapId());
     }
@@ -989,8 +989,8 @@ void Battleground::Reset()
 {
     SetWinner(PVP_TEAM_NEUTRAL);
     SetStatus(STATUS_WAIT_QUEUE);
-    SetStartTime(0);
-    SetEndTime(0);
+    SetElapsedTime(0);
+    SetRemainingTime(0);
     SetLastResurrectTime(0);
     m_Events = 0;
 
@@ -1016,7 +1016,7 @@ void Battleground::Reset()
 
 void Battleground::StartBattleground()
 {
-    SetStartTime(0);
+    SetElapsedTime(0);
     SetLastResurrectTime(0);
     // add BG to free slot queue
     AddToBGFreeSlotQueue();
@@ -1672,7 +1672,7 @@ void Battleground::EndNow()
 {
     RemoveFromBGFreeSlotQueue();
     SetStatus(STATUS_WAIT_LEAVE);
-    SetEndTime(0);
+    SetRemainingTime(0);
 }
 
 // IMPORTANT NOTICE:
@@ -1791,7 +1791,7 @@ void Battleground::PlayerAddedToBGCheckIfBGIsRunning(Player* player)
     BuildPvPLogDataPacket(data);
     player->SendDirectMessage(&data);
 
-     sBattlegroundMgr->BuildBattlegroundStatusPacket(&data, this, player->GetBattlegroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, GetEndTime(), GetStartTime(), GetArenaType(), player->GetTeam());
+     sBattlegroundMgr->BuildBattlegroundStatusPacket(&data, this, player->GetBattlegroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, GetRemainingTime(), GetElapsedTime(), GetArenaType(), player->GetTeam());
      player->SendDirectMessage(&data);
 }
 
