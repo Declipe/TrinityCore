@@ -389,6 +389,13 @@ WorldPacket const* LearnedSpell::Write()
     return &_worldPacket;
 }
 
+WorldPacket const* UnlearnedSpell::Write()
+{
+    _worldPacket << uint32(SpellID);
+    
+    return &_worldPacket;
+}
+
 WorldPacket const* PlaySpellVisualKit::Write()
 {
     _worldPacket << Unit;

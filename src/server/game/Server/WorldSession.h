@@ -311,6 +311,8 @@ namespace WorldPackets
 
     namespace Talent
     {
+        class LearnTalent;
+        class LearnPreviewTalents;
         class ConfirmRespecWipe;
     }
 
@@ -980,8 +982,8 @@ class TC_GAME_API WorldSession
         void HandleCancelAutoRepeatSpellOpcode(WorldPackets::Spells::CancelAutoRepeatSpell& cancelAutoRepeatSpell);
         void HandleCancelChanneling(WorldPackets::Spells::CancelChannelling& cancelChanneling);
 
-        void HandleLearnTalentOpcode(WorldPacket& recvPacket);
-        void HandleLearnPreviewTalents(WorldPacket& recvPacket);
+        void HandleLearnTalentOpcode(WorldPackets::Talent::LearnTalent& packet);
+        void HandleLearnPreviewTalents(WorldPackets::Talent::LearnPreviewTalents & learnPreviewTalents);
         void HandleTalentWipeConfirmOpcode(WorldPackets::Talent::ConfirmRespecWipe& confirmRespecWipe);
         void HandleUnlearnSkillOpcode(WorldPacket& recvPacket);
 

@@ -331,6 +331,16 @@ namespace WorldPackets
             uint16 ActionBarSlot = 0; // unused on client
         };
 
+        class UnlearnedSpell final : public ServerPacket
+        {
+        public:
+            UnlearnedSpell() : ServerPacket(SMSG_REMOVED_SPELL, 4) {}
+            
+            WorldPacket const* Write() override;
+            
+            uint32 SpellID = 0;
+        };
+
         class PlaySpellVisualKit final : public ServerPacket
         {
         public:
