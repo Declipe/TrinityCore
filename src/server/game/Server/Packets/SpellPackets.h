@@ -331,13 +331,84 @@ namespace WorldPackets
             uint16 ActionBarSlot = 0; // unused on client
         };
 
+        class SpellFailure final : public ServerPacket
+        {
+        public:
+            explicit SpellFailure() : ServerPacket(SMSG_SPELL_FAILURE, 8 + 1 + 4 + 1) { }
+
+            WorldPacket const* Write() override;
+
+            ObjectGuid CasterUnit;
+            uint32 SpellID  = 0;
+            uint8 Reason    = 0;
+            uint8 CastID    = 0;
+        };
+
+        class SpellFailedOther final : public ServerPacket
+        {
+        public:
+            explicit SpellFailedOther() : ServerPacket(SMSG_SPELL_FAILED_OTHER, 8 + 1 + 4 + 1) { }
+
+            WorldPacket const* Write() override;
+
+            ObjectGuid CasterUnit;
+            uint32 SpellID  = 0;
+            uint8 Reason    = 0;
+            uint8 CastID    = 0;
+        };
+
+        class TC_GAME_API CastFailed final : public ServerPacket
+        {
+        public:
+            explicit CastFailed() : ServerPacket(SMSG_CAST_FAILED, 1 + 4 + 1 + 4 + 4) { }
+
+            WorldPacket const* Write() override;
+
+            uint8 CastID = 0;
+            int32 SpellID = 0;
+            uint8 Reason = 0;
+            Optional<int32> FailedArg1;
+            Optional<int32> FailedArg2;
+        };
+
+        class TC_GAME_API PetCastFailed final : public ServerPacket
+        {
+        public:
+            explicit PetCastFailed() : ServerPacket(SMSG_PET_CAST_FAILED, 1 + 4 + 1 + 4 + 4) { }
+
+            WorldPacket const* Write() override;
+
+            uint8 CastID = 0;
+            int32 SpellID = 0;
+            uint8 Reason = 0;
+            Optional<int32> FailedArg1;
+            Optional<int32> FailedArg2;
+        };
+
+        struct SpellModifier
+        {
+            uint8 ClassIndex = 0;
+            uint8 ModIndex = 0;
+            int32 ModifierValue = 0;
+        };
+
+        class TC_GAME_API SetSpellModifier final : public ServerPacket
+        {
+        public:
+            explicit SetSpellModifier(OpcodeServer opcode) : ServerPacket(opcode, 1 + 1 + 4) { }
+
+            WorldPacket const* Write() override;
+
+            SpellModifier Modifier;
+        };
+
         class UnlearnedSpell final : public ServerPacket
         {
         public:
-            UnlearnedSpell() : ServerPacket(SMSG_REMOVED_SPELL, 4) {}
-            
+            UnlearnedSpell() : ServerPacket(SMSG_REMOVED_SPELL, 4) { }
+
             WorldPacket const* Write() override;
-            
+
             uint32 SpellID = 0;
         };
 

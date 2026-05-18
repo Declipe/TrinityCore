@@ -389,10 +389,76 @@ WorldPacket const* LearnedSpell::Write()
     return &_worldPacket;
 }
 
+WorldPacket const* SpellFailure::Write()
+{
+    _worldPacket << CasterUnit.WriteAsPacked();
+    _worldPacket << uint8(CastID);
+    _worldPacket << uint32(SpellID);
+    _worldPacket << uint8(Reason);
+
+    return &_worldPacket;
+}
+
+WorldPacket const* SpellFailedOther::Write()
+{
+    _worldPacket << CasterUnit.WriteAsPacked();
+    _worldPacket << uint8(CastID);
+    _worldPacket << uint32(SpellID);
+    _worldPacket << uint8(Reason);
+
+    return &_worldPacket;
+}
+
+WorldPacket const* CastFailed::Write()
+{
+    _worldPacket << uint8(CastID);
+    _worldPacket << uint32(SpellID);
+    _worldPacket << uint8(Reason);
+
+    if (FailedArg1 || FailedArg2)
+        _worldPacket << int32(FailedArg1.value_or(0));
+
+    if (FailedArg2)
+        _worldPacket << int32(*FailedArg2);
+
+    return &_worldPacket;
+}
+
+WorldPacket const* PetCastFailed::Write()
+{
+    _worldPacket << uint8(CastID);
+    _worldPacket << uint32(SpellID);
+    _worldPacket << uint8(Reason);
+
+    if (FailedArg1 || FailedArg2)
+        _worldPacket << int32(FailedArg1.value_or(0));
+
+    if (FailedArg2)
+        _worldPacket << int32(*FailedArg2);
+
+    return &_worldPacket;
+}
+
+ByteBuffer& operator<<(ByteBuffer& data, SpellModifier const& spellModifier)
+{
+    data << uint8(spellModifier.ClassIndex);
+    data << uint8(spellModifier.ModIndex);
+    data << int32(spellModifier.ModifierValue);
+
+    return data;
+}
+
+WorldPacket const* SetSpellModifier::Write()
+{
+    _worldPacket << Modifier;
+
+    return &_worldPacket;
+}
+
 WorldPacket const* UnlearnedSpell::Write()
 {
     _worldPacket << uint32(SpellID);
-    
+
     return &_worldPacket;
 }
 
