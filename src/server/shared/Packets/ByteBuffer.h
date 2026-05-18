@@ -390,8 +390,6 @@ class TC_SHARED_API ByteBuffer
             }
         }
 
-        uint32 ReadPackedTime();
-
         std::string ReadCString(bool requireValidUtf8 = true);
 
         uint8* contents()
