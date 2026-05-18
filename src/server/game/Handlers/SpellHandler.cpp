@@ -56,7 +56,7 @@ void WorldSession::HandleClientCastFlags(WorldPacket& recvPacket, uint8 castFlag
         recvPacket >> elevation;
         recvPacket >> speed;
 
-        targets.SetElevation(elevation);
+        targets.SetPitch(elevation);
         targets.SetSpeed(speed);
 
         uint8 hasMovementData;
@@ -380,34 +380,19 @@ void WorldSession::HandleGameobjectReportUse(WorldPacket& recvPacket)
     }
 }
 
-void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
+void WorldSession::HandleCastSpellOpcode(WorldPackets::Spells::CastSpell& castRequest)
 {
-    uint32 spellId;
-    uint8  castCount, castFlags;
-
-    if (recvPacket.empty())
-        return;
-
-    WorldPacket const copyPacket = recvPacket;
-
-    recvPacket >> castCount >> spellId >> castFlags;
-    TriggerCastFlags triggerFlag = TRIGGERED_NONE;
-
-    TC_LOG_DEBUG("network", "WORLD: got cast spell packet, castCount: {}, spellId: {}, castFlags: {}, data length = {}", castCount, spellId, castFlags, (uint32)recvPacket.size());
-
-    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellId);
+    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(castRequest.Cast.SpellID);
     if (!spellInfo)
     {
-        TC_LOG_ERROR("network", "WORLD: unknown spell id {}", spellId);
-        recvPacket.rfinish(); // prevent spam at ignore packet
+        TC_LOG_ERROR("network", "WorldSession::HandleCastSpellOpcode: attempted to cast a non-existing spell (Id: {})", castRequest.Cast.SpellID);
         return;
     }
 
     if (spellInfo->IsPassive())
-    {
-        recvPacket.rfinish(); // prevent spam at ignore packet
         return;
-    }
+
+    TriggerCastFlags triggerFlag = TRIGGERED_NONE;
 
     // fail if we are cancelling pending request
     if (_player->m_pendingCasts.size())
@@ -444,12 +429,10 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
     }
 
     // client provided targets
-    SpellCastTargets targets;
-    targets.Read(recvPacket, _player);
-    HandleClientCastFlags(recvPacket, castFlags, targets);
+    SpellCastTargets targets(_player, castRequest.Cast);
 
     // not have spell in spellbook
-    if (!_player->HasActiveSpell(spellId))
+    if (!_player->HasActiveSpell(spellInfo->Id))
     {
         bool allow = false;
 
@@ -459,7 +442,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
                 allow = true;
 
         // allow casting of spells triggered by clientside periodic trigger auras
-        if (_player->HasAuraTypeWithTriggerSpell(SPELL_AURA_PERIODIC_TRIGGER_SPELL_FROM_CLIENT, spellId))
+        if (_player->HasAuraTypeWithTriggerSpell(SPELL_AURA_PERIODIC_TRIGGER_SPELL_FROM_CLIENT, spellInfo->Id))
         {
             allow = true;
             triggerFlag = TRIGGERED_FULL_MASK;
@@ -473,16 +456,9 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
     // Skip it to prevent "interrupt" message
     // Also check targets! target may have changed and we need to interrupt current spell
     if (spellInfo->IsAutoRepeatRangedSpell())
-    {
         if (Spell* spell = _player->GetCurrentSpell(CURRENT_AUTOREPEAT_SPELL))
-        {
             if (spell->m_spellInfo == spellInfo && spell->m_targets.GetUnitTargetGUID() == targets.GetUnitTargetGUID())
-            {
-                recvPacket.rfinish();
                 return;
-            }
-        }
-    }
 
     // auto-selection buff level base at target level (in spellInfo)
     // TODO: is this even necessary? client already seems to send correct rank for "standard" buffs
@@ -496,9 +472,12 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
                 spellInfo = actualSpellInfo;
         }
 
+    if (castRequest.Cast.MissileTrajectory && castRequest.Cast.MissileTrajectory->MoveUpdate)
+         HandleMovementOpcode(MSG_MOVE_STOP, *castRequest.Cast.MissileTrajectory->MoveUpdate);
+
     Spell* spell = new Spell(_player, spellInfo, triggerFlag);
     spell->m_fromClient = true;
-    spell->m_cast_count = castCount;                       // set count of casts
+    spell->m_cast_count = castRequest.Cast.CastID;
     spell->prepare(targets);
 }
 
