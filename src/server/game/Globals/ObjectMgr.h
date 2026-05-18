@@ -1608,7 +1608,7 @@ public:
     GraveyardContainer GraveyardStore;
 
     static void AddLocaleString(std::string&& value, LocaleConstant localeConstant, std::vector<std::string>& data);
-    static std::string_view GetLocaleString(std::vector<std::string> const& data, size_t locale)
+    static std::string_view GetLocaleString(std::vector<std::string> const& data, LocaleConstant locale)
     {
         if (locale < data.size())
             return data[locale];
@@ -1617,7 +1617,7 @@ public:
     }
     static void GetLocaleString(std::vector<std::string> const& data, LocaleConstant localeConstant, std::string& value)
     {
-        if (std::string_view str = GetLocaleString(data, static_cast<size_t>(localeConstant)); !str.empty())
+        if (std::string_view str = GetLocaleString(data, localeConstant); !str.empty())
             value.assign(str);
     }
 
@@ -1625,6 +1625,12 @@ public:
     {
         if (data.size() > std::size_t(loc_idx) && !data[loc_idx].empty())
             value = data[loc_idx];
+    }
+
+    static void GetLocaleString(std::vector<std::string> const& data, LocaleConstant localeConstant, std::string_view& value)
+    {
+        if (std::string_view str = GetLocaleString(data, localeConstant); !str.empty())
+            value = str;
     }
 
     CharacterConversionMap FactionChangeAchievements;
