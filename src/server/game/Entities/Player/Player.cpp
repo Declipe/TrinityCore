@@ -1125,9 +1125,9 @@ void Player::Update(uint32 p_time)
                         if (getAttackTimer(OFF_ATTACK) < ATTACK_DISPLAY_DELAY)
                             setAttackTimer(OFF_ATTACK, ATTACK_DISPLAY_DELAY);
 
-                        // do attack
-                        AttackerStateUpdate(victim, BASE_ATTACK);
-                        resetAttackTimer(BASE_ATTACK);
+                    // do attack
+                    AttackerStateUpdate(victim, BASE_ATTACK);
+                    resetAttackTimer(BASE_ATTACK);
                 }
             }
 
@@ -1143,9 +1143,9 @@ void Player::Update(uint32 p_time)
                     if (getAttackTimer(BASE_ATTACK) < ATTACK_DISPLAY_DELAY)
                         setAttackTimer(BASE_ATTACK, ATTACK_DISPLAY_DELAY);
 
-                        // do attack
-                        AttackerStateUpdate(victim, OFF_ATTACK);
-                        resetAttackTimer(OFF_ATTACK);
+                    // do attack
+                    AttackerStateUpdate(victim, OFF_ATTACK);
+                    resetAttackTimer(OFF_ATTACK);
                 }
             }
 
@@ -6175,12 +6175,12 @@ void Player::SendActionButtons(uint32 state) const
     WorldPackets::Spells::UpdateActionButtons packet;
 
     for (auto const& [i, button] : m_actionButtons)
-         if (button.uState != ACTIONBUTTON_DELETED && i < packet.ActionButtons.size())
-         packet.ActionButtons[i] = button.packedData;
-    
-        packet.Reason = state;
-    
-        SendDirectMessage(packet.Write());
+        if (button.uState != ACTIONBUTTON_DELETED && i < packet.ActionButtons.size())
+            packet.ActionButtons[i] = button.packedData;
+
+    packet.Reason = state;
+
+    SendDirectMessage(packet.Write());
 }
 
 bool Player::IsActionButtonDataValid(uint8 button, uint32 action, uint8 type) const
@@ -11773,7 +11773,7 @@ InventoryResult Player::CanUseItem(ItemTemplate const* proto) const
         return EQUIP_ERR_ITEM_NOT_FOUND;
 
     if (proto->HasFlag(ITEM_FLAG2_FACTION_HORDE) && GetCFSTeam() != HORDE)
-           return EQUIP_ERR_CANT_EQUIP_EVER;
+        return EQUIP_ERR_CANT_EQUIP_EVER;
 
     if (proto->HasFlag(ITEM_FLAG2_FACTION_ALLIANCE) && GetCFSTeam() != ALLIANCE)
         return EQUIP_ERR_CANT_EQUIP_EVER;
@@ -13898,7 +13898,7 @@ void Player::ApplyEnchantment(Item* item, EnchantmentSlot slot, bool apply, bool
         // Check if the requirements for the prismatic socket are met before applying the gem stats
         SpellItemEnchantmentEntry const* pPrismaticEnchant = sDBCMgr->GetSpellItemEnchantmentEntry(item->GetEnchantmentId(PRISMATIC_ENCHANTMENT_SLOT));
         if (!pPrismaticEnchant || (pPrismaticEnchant->RequiredSkillID > 0 && pPrismaticEnchant->RequiredSkillRank > GetSkillValue(pPrismaticEnchant->RequiredSkillID)))
-             return;
+            return;
     }
 
     if (!item->IsBroken())
@@ -20972,7 +20972,7 @@ void Player::TextEmote(std::string_view text, WorldObject const* /*= nullptr*/, 
     WorldPackets::Chat::Chat packet;
     packet.Initialize(CHAT_MSG_EMOTE, LANG_UNIVERSAL, this, this, _text);
     SendMessageToSetInRange(packet.Write(), sWorld->getFloatConfig(CONFIG_LISTEN_RANGE_TEXTEMOTE), true, !GetSession()->HasPermission(rbac::RBAC_PERM_TWO_SIDE_INTERACTION_CHAT), true);
-    }
+}
 
 void Player::WhisperAddon(std::string const& text, Player* receiver)
 {
@@ -22923,7 +22923,7 @@ void Player::SendInitialPacketsBeforeAddToMap()
 
     /// @todo: SMSG_SEND_SPELL_HISTORY
     /// @todo: SMSG_SEND_SPELL_CHARGES
-    
+
     /// SMSG_ACTION_BUTTONS
     SendInitialActionButtons();
 
@@ -23392,17 +23392,15 @@ void Player::SendAurasForTarget(Unit* target, bool force /*= false*/) const
     if (!target || (!force && target->GetVisibleAuras().empty()))                  // speedup things
         return;
 
-    WorldPacket data(SMSG_AURA_UPDATE_ALL);
-    data << target->GetPackGUID();
-
     Unit::VisibleAuraMap const& visibleAuras = target->GetVisibleAuras();
-    for (Unit::VisibleAuraMap::const_iterator itr = visibleAuras.begin(); itr != visibleAuras.end(); ++itr)
-    {
-        AuraApplication* auraApp = itr->second;
-        auraApp->BuildUpdatePacket(data, false);
-    }
+    WorldPackets::Spells::AuraUpdateAll update;
+    update.UnitGUID = target->GetGUID();
+    update.Auras.reserve(visibleAuras.size());
 
-    SendDirectMessage(&data);
+    for (auto [_, auraApp] : visibleAuras)
+        auraApp->BuildUpdatePacket(update.Auras.emplace_back(), false);
+
+    SendDirectMessage(update.Write());
 }
 
 void Player::SetDailyQuestStatus(uint32 quest_id)
@@ -25901,7 +25899,7 @@ void Player::SendTalentsInfoData(bool pet)
 }
 
 ObjectGuid const EquipmentSetInfo::IgnoredSlot = []
-{
+    {
         ObjectGuid guid;
         guid.SetRawValue(1);
         return guid;
@@ -26090,8 +26088,7 @@ void Player::_LoadGlyphs(PreparedQueryResult result)
 
         for (uint8 i = 0; i < MAX_GLYPH_SLOT_INDEX; ++i)
             _talentMgr->GroupInfo[group].Glyphs[i] = fields[i + 1].GetUInt16();
-    }
-    while (result->NextRow());
+    } while (result->NextRow());
 }
 
 void Player::_SaveGlyphs(CharacterDatabaseTransaction trans) const
