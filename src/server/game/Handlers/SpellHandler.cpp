@@ -114,7 +114,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
     }
 
     // some item classes can be used only in equipped state
-    if (proto->InventoryType != INVTYPE_NON_EQUIP && !pItem->IsEquipped())
+    if (proto->GetInventoryType() != INVTYPE_NON_EQUIP && !pItem->IsEquipped())
     {
         pUser->SendEquipError(EQUIP_ERR_ITEM_NOT_FOUND, pItem, nullptr);
         return;
@@ -128,7 +128,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
     }
 
     // only allow conjured consumable, bandage, poisons (all should have the 2^21 item flag set in DB)
-    if (proto->Class == ITEM_CLASS_CONSUMABLE && !proto->HasFlag(ITEM_FLAG_IGNORE_DEFAULT_ARENA_RESTRICTIONS) && pUser->InArena())
+    if (proto->GetClass() == ITEM_CLASS_CONSUMABLE && !proto->HasFlag(ITEM_FLAG_IGNORE_DEFAULT_ARENA_RESTRICTIONS) && pUser->InArena())
     {
         pUser->SendEquipError(EQUIP_ERR_NOT_DURING_ARENA_MATCH, pItem, nullptr);
         return;
@@ -157,7 +157,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
     }
 
     // check also  BIND_WHEN_PICKED_UP and BIND_QUEST_ITEM for .additem or .additemset case by GM (not binded at adding to inventory)
-    if (pItem->GetTemplate()->Bonding == BIND_WHEN_USE || pItem->GetTemplate()->Bonding == BIND_WHEN_PICKED_UP || pItem->GetTemplate()->Bonding == BIND_QUEST_ITEM)
+    if (pItem->GetTemplate()->GetBonding() == BIND_WHEN_USE || pItem->GetTemplate()->GetBonding() == BIND_WHEN_PICKED_UP || pItem->GetTemplate()->GetBonding() == BIND_QUEST_ITEM)
     {
         if (!pItem->IsSoulBound())
         {
@@ -219,12 +219,12 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket& recvPacket)
     {
         player->SendEquipError(EQUIP_ERR_CLIENT_LOCKED_OUT, item, nullptr);
         TC_LOG_ERROR("entities.player.cheat", "Possible hacking attempt: Player {} {} tried to open item [{}, entry: {}] which is not openable!",
-            player->GetName(), player->GetGUID().ToString(), item->GetGUID().ToString(), proto->ItemId);
+            player->GetName(), player->GetGUID().ToString(), item->GetGUID().ToString(), proto->GetId());
         return;
     }
 
     // locked item
-    uint32 lockId = proto->LockID;
+    uint32 lockId = proto->GetLockID();
     if (lockId)
     {
         LockEntry const* lockInfo = sLockStore.LookupEntry(lockId);
@@ -659,7 +659,7 @@ void WorldSession::HandleMirrorImageDataRequest(WorldPacket& recvData)
                 else if (uint32 entry = TransmogDisplayVendorMgr::GetFakeEntry(item))
                      data << uint32(sObjectMgr->GetItemTemplate(entry)->DisplayInfoID);
                 else
-                    data << uint32(item->GetTemplate()->DisplayInfoID);
+                    data << uint32(item->GetDisplayId());
             }
             else
                 data << uint32(0);
