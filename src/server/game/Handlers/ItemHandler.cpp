@@ -952,7 +952,7 @@ void WorldSession::HandleSocketOpcode(WorldPacket& recvData)
 
     GemPropertiesEntry const* GemProps[MAX_GEM_SOCKETS];
     for (int i = 0; i < MAX_GEM_SOCKETS; ++i)                //get geminfo from dbc storage
-        GemProps[i] = (Gems[i]) ? sDBCMgr->GetGemPropertiesEntry(Gems[i]->GetTemplate()->GetGemProperties) : nullptr;
+        GemProps[i] = (Gems[i]) ? sDBCMgr->GetGemPropertiesEntry(Gems[i]->GetTemplate()->GetGemProperties()) : nullptr;
 
     // Find first prismatic socket
     int32 firstPrismatic = 0;

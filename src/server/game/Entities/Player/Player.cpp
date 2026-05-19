@@ -11780,7 +11780,7 @@ InventoryResult Player::CanUseItem(ItemTemplate const* proto) const
     if (proto->HasFlag(ITEM_FLAG2_FACTION_ALLIANCE) && GetCFSTeam() != ALLIANCE)
         return EQUIP_ERR_CANT_EQUIP_EVER;
 
-    if ((proto->GetAllowableClass() & GetClassMask()) == 0 || (proto->GetAllowableRace & getCFSRaceMask()) == 0)
+    if ((proto->GetAllowableClass() & GetClassMask()) == 0 || (proto->GetAllowableRace() & getCFSRaceMask()) == 0)
         return EQUIP_ERR_CANT_EQUIP_EVER;
 
     if (proto->GetRequiredSkill() != 0)
@@ -22272,7 +22272,7 @@ bool Player::EnchantmentFitsRequirements(uint32 enchantmentcondition, int8 slot)
                 if (!gemProto)
                     continue;
 
-                GemPropertiesEntry const* gemProperty = sDBCMgr->GetGemPropertiesEntry(gemProto->GetGemProperties);
+                GemPropertiesEntry const* gemProperty = sDBCMgr->GetGemPropertiesEntry(gemProto->GetGemProperties());
                 if (!gemProperty)
                     continue;
 

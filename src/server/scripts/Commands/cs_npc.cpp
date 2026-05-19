@@ -343,7 +343,7 @@ public:
             return false;
         }
 
-        uint32 itemId = item->GetId;
+        uint32 itemId = item->GetId();
         if (!sObjectMgr->RemoveVendorItem(addMulti.value_or(false) ? handler->GetSession()->GetCurrentVendor() : vendor->GetEntry(), itemId))
         {
             handler->PSendSysMessage(LANG_ITEM_NOT_IN_LIST, itemId);

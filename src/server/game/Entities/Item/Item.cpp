@@ -964,7 +964,7 @@ bool Item::GemsFitSockets() const
             ItemTemplate const* gemProto = sObjectMgr->GetItemTemplate(gemid);
             if (gemProto)
             {
-                GemPropertiesEntry const* gemProperty = sDBCMgr->GetGemPropertiesEntry(gemProto->GetGemProperties);
+                GemPropertiesEntry const* gemProperty = sDBCMgr->GetGemPropertiesEntry(gemProto->GetGemProperties());
 
                 if (gemProperty)
                     GemColor = gemProperty->Type;
