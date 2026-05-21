@@ -82,8 +82,7 @@ std::string DBUpdater<ZynDatabaseConnection>::GetTableName()
 template<>
 std::string DBUpdater<ZynDatabaseConnection>::GetBaseFile()
 {
-    return BuiltInConfig::GetSourceDirectory() +
-        "/sql/base/Zyn_database.sql";
+    return "Zyndb";
 }
 
 template<>
@@ -310,10 +309,43 @@ bool DBUpdater<T>::Populate(DatabaseWorkerPool<T>& pool)
         return true;
     }
 
+    if (p == "Zyndb" && std::is_same<T, ZynDatabaseConnection>::value)
+    {
+        Path baseDir(BuiltInConfig::GetSourceDirectory() + "/sql/base/zyndb");
+        //Path baseDir(BuiltInConfig::GetSourceDirectory() + sConfigMgr->GetStringDefault("Database.zyndb", ""));//"/sql/base/zyndb");
+
+        if (!is_directory(baseDir))
+        {
+            TC_LOG_ERROR("sql.updates", ">> Base directory \"{}\" does not exist.", baseDir.generic_string());
+            return false;
+        }
+
+        for (boost::filesystem::directory_iterator it(baseDir); it != boost::filesystem::directory_iterator(); ++it)
+        {
+            if (is_regular_file(it->path()) && it->path().extension() == ".sql")
+            {
+                Path const filePath = it->path();
+                TC_LOG_INFO("sql.updates", ">> Applying \'{}\'...", filePath.generic_string());
+
+                try
+                {
+                    ApplyFile(pool, filePath);
+                }
+                catch (UpdateException&)
+                {
+                    return false;
+                }
+            }
+        }
+
+        TC_LOG_INFO("sql.updates", ">> Done applying all base files!");
+        return true;
+    }
+
     if (p == "ALL_BASE_FILES" && std::is_same<T, WorldDatabaseConnection>::value)
     {
         Path baseDir(BuiltInConfig::GetSourceDirectory() + "/sql/base/worlddb");
-        //Path baseDir(BuiltInConfig::GetSourceDirectory() + sConfigMgr->GetStringDefault("Database.updaterUP", ""));//"/sql/base/worlddb");
+        //Path baseDir(BuiltInConfig::GetSourceDirectory() + sConfigMgr->GetStringDefault("Database.worlddb", ""));//"/sql/base/worlddb");
 
         if (!is_directory(baseDir))
         {
