@@ -5,3 +5,7 @@
 	path = sql/base/worlddb
 	url = https://github.com/Declipe/worlddb.git
 	branch = main
+[submodule "sql/base/zyndb"]
+	path = sql/base/zyndb
+	url = https://github.com/Declipe/zyndb.git
+	branch = main
