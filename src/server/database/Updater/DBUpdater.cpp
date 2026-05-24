@@ -180,8 +180,7 @@ std::string DBUpdater<CharacterDatabaseConnection>::GetTableName()
 template<>
 std::string DBUpdater<CharacterDatabaseConnection>::GetBaseFile()
 {
-    return BuiltInConfig::GetSourceDirectory() +
-        "/sql/base/characters_database.sql";
+    return "Chardb";
 }
 
 template<>
@@ -306,6 +305,39 @@ bool DBUpdater<T>::Populate(DatabaseWorkerPool<T>& pool)
     if (p.empty())
     {
         TC_LOG_INFO("sql.updates", ">> No base file provided, skipped!");
+        return true;
+    }
+
+    if (p == "Chardb" && std::is_same<T, CharacterDatabaseConnection>::value)
+    {
+        Path baseDir(BuiltInConfig::GetSourceDirectory() + "/sql/base/chardb");
+        //Path baseDir(BuiltInConfig::GetSourceDirectory() + sConfigMgr->GetStringDefault("Database.chardb", ""));//"/sql/base/chardb");
+
+        if (!is_directory(baseDir))
+        {
+            TC_LOG_ERROR("sql.updates", ">> Base directory \"{}\" does not exist.", baseDir.generic_string());
+            return false;
+        }
+
+        for (boost::filesystem::directory_iterator it(baseDir); it != boost::filesystem::directory_iterator(); ++it)
+        {
+            if (is_regular_file(it->path()) && it->path().extension() == ".sql")
+            {
+                Path const filePath = it->path();
+                TC_LOG_INFO("sql.updates", ">> Applying \'{}\'...", filePath.generic_string());
+
+                try
+                {
+                    ApplyFile(pool, filePath);
+                }
+                catch (UpdateException&)
+                {
+                    return false;
+                }
+            }
+        }
+
+        TC_LOG_INFO("sql.updates", ">> Done applying all base files!");
         return true;
     }
 

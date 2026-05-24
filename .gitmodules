@@ -9,3 +9,7 @@
 	path = sql/base/zyndb
 	url = https://github.com/Declipe/zyndb.git
 	branch = main
+[submodule "sql/base/chardb"]
+	path = sql/base/chardb
+	url = https://github.com/Declipe/chardb.git
+	branch = main
