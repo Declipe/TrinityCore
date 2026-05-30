@@ -7036,7 +7036,7 @@ SpellCastResult Spell::CheckItems(uint32* param1 /*= nullptr*/, uint32* param2 /
                 // Apply item level restriction
                 if (!m_spellInfo->HasAttribute(SPELL_ATTR2_ALLOW_LOW_LEVEL_BUFF))
                 {
-                    int32 requiredLevel = item->GetTemplate()->GetRequiredLevel();
+                    uint32 requiredLevel = item->GetTemplate()->GetRequiredLevel();
                     if (!requiredLevel)
                         requiredLevel = item->GetTemplate()->GetBaseItemLevel();
 

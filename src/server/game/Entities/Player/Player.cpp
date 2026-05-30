@@ -3881,7 +3881,7 @@ bool Player::ResetTalents(bool involuntarily /*= false*/)
     SetFreeTalentPoints(talentPointsForLevel);
 
     if (involuntarily)
-        SendDirectMessage(WorldPackets::Talent::InvoluntarilyReset(false).Write());
+        SendDirectMessage(WorldPackets::Talent::TalentsInvoluntarilyReset(false).Write());
 
     return true;
 }
