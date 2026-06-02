@@ -43,18 +43,11 @@
 #include "WorldSession.h"
 #include "Custom/ServerMenu/ServerMenuMgr.h"
 
-//test
-#define CONST_ARENA_RENAME 100
-#define CONST_ARENA_CUSTOMIZE 100
-#define CONST_ARENA_CHANGE_FACTION 500
-#define CONST_ARENA_CHANGE_RACE 250
-#define CONST_ARENA_POINT 100
-#define CONST_ARENA_POINT2 1000
-#define CONST_HONOR_POINT 2000
-#define CONST_HONOR_POINT2 20000
-#define CONST_HONOR_POINT3 10000
-#define CONST_HONOR_POINT4 100000
-#define CONST_HONOR_POINT5 200000
+constexpr auto CONST_ARENA_RENAME = 100;
+constexpr auto CONST_ARENA_CUSTOMIZE = 100;
+constexpr auto CONST_ARENA_CHANGE_FACTION = 500;
+constexpr auto CONST_ARENA_CHANGE_RACE = 250;
+constexpr auto CONST_ARENA_POINT = 100;
 
 #define GTS session->GetTrinityString
 #define GTS2 session->GetTrinityString2

@@ -28,22 +28,13 @@
 #include "WorldSession.h"
 
 //test
-#define CONST_ARENA_RENAME 100
-#define CONST_ARENA_CUSTOMIZE 100
-#define CONST_ARENA_CHANGE_FACTION 500
-#define CONST_ARENA_CHANGE_RACE 250
-#define CONST_ARENA_POINT 100
-#define CONST_ARENA_POINT2 1000
-#define CONST_HONOR_POINT 2000
-#define CONST_HONOR_POINT2 20000
-#define CONST_HONOR_POINT3 10000
-#define CONST_HONOR_POINT4 100000
-#define CONST_HONOR_POINT5 200000
+constexpr auto CONST_ARENA_RENAME = 100;
+constexpr auto CONST_ARENA_CUSTOMIZE = 100;
+constexpr auto CONST_ARENA_CHANGE_FACTION = 500;
+constexpr auto CONST_ARENA_CHANGE_RACE = 250;
 
-#define GTS session->GetTrinityString
-#define GTS2 session->GetTrinityString2
 #define GTS1 session->GetTrinityString
-#define GTS22 session->GetTrinityString2
+#define GTS2 session->GetTrinityString2
 
 enum SpellsAndItemIDsAndCost
 {
@@ -217,8 +208,8 @@ void sServerMenu::GossipHelloMenu(Player* player)
     AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, GetVipStatusString2(player, session).c_str(), GOSSIP_SENDER_MAIN, 3);
     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ENTER_PROMO_CODE), GOSSIP_SENDER_MAIN, 0, GTS1(LANG_ENTERED_PROMO_CODE_CORRECT), 0, true);
     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_MENU_TRADE), GOSSIP_SENDER_MAIN, 2);
-    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS22(NOT_USED_7), GOSSIP_SENDER_MAIN, 192);
-    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS22(NOT_USED_11), GOSSIP_SENDER_MAIN, 199, GTS22(NOT_USED_12), 0, false);
+    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_7), GOSSIP_SENDER_MAIN, 192);
+    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_11), GOSSIP_SENDER_MAIN, 199, GTS2(NOT_USED_12), 0, false);
     if (player->IsGameMaster())
     {
         if (player->GetSession()->HasPermission(rbac::RBAC_PERM_COMMAND_SERVER_RESTART))
@@ -329,11 +320,11 @@ public:
 
         WorldSession* session = player->GetSession();
 
-        std::string XP = GTS(LANG_ITEM_RATES_XP_KILL);
-        std::string XP_quest = GTS(LANG_ITEM_RATES_XP_QUEST);
-        std::string rep = GTS(LANG_ITEM_RATES_REP);
-        std::string gold = GTS(LANG_ITEM_RATES_GOLD);
-        std::string honor = GTS(LANG_ITEM_RATES_HONOR);
+        std::string XP = GTS1(LANG_ITEM_RATES_XP_KILL);
+        std::string XP_quest = GTS1(LANG_ITEM_RATES_XP_QUEST);
+        std::string rep = GTS1(LANG_ITEM_RATES_REP);
+        std::string gold = GTS1(LANG_ITEM_RATES_GOLD);
+        std::string honor = GTS1(LANG_ITEM_RATES_HONOR);
         player->PlayerTalkClass->ClearMenus();
         ItemShopContainer const& itemshopMap = sItemShopMgr->GetItemShopContainer();
 
@@ -353,12 +344,12 @@ public:
                 {
                 case 1:
                 {
-                    AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, getString2(GTS(LANG_ITEM_CURRENT_COINS), player->GetCoins()).c_str(), GOSSIP_SENDER_MAIN, 3);
+                    AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, getString2(GTS1(LANG_ITEM_CURRENT_COINS), player->GetCoins()).c_str(), GOSSIP_SENDER_MAIN, 3);
                     if (!player->IsPlayer())
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_VIP_BUY), GOSSIP_SENDER_MAIN, 78);
+                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_VIP_BUY), GOSSIP_SENDER_MAIN, 78);
                     else
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_VIP_INCREASE), GOSSIP_SENDER_MAIN, 79);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_VIP_INCREASE), GOSSIP_SENDER_MAIN, 79);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
@@ -369,28 +360,28 @@ public:
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/ability_mount_spectraltiger:25:25:-15:0|tBuy Mounts", GOSSIP_SENDER_MAIN, 32);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/Inv_staff_13:25:25:-15:0|tbaka - 200-2000 coins", GOSSIP_SENDER_MAIN, 33);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_10), GOSSIP_SENDER_MAIN, 34);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
                 case 3:
                 {
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString2(GTS(LANG_ITEM_CURRENT_COINS), player->GetCoins()).c_str(), GOSSIP_SENDER_MAIN, 1);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ENTER_PROMO_CODE), GOSSIP_SENDER_MAIN, 0, GTS(LANG_ENTERED_PROMO_CODE_CORRECT), 0, true);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_MENU_TRADE), GOSSIP_SENDER_MAIN, 2);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString2(GTS1(LANG_ITEM_CURRENT_COINS), player->GetCoins()).c_str(), GOSSIP_SENDER_MAIN, 1);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ENTER_PROMO_CODE), GOSSIP_SENDER_MAIN, 0, GTS1(LANG_ENTERED_PROMO_CODE_CORRECT), 0, true);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_MENU_TRADE), GOSSIP_SENDER_MAIN, 2);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_7), GOSSIP_SENDER_MAIN, 192);
                     if (player->IsGameMaster())
                     {
                         if (player->GetSession()->HasPermission(rbac::RBAC_PERM_COMMAND_SERVER_RESTART))
-                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_MENU_CLASS_SKILLS_GM), GOSSIP_SENDER_MAIN, 7);
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_MENU_DELIVERY_OF_BAGS), GOSSIP_SENDER_MAIN, 8);
+                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_MENU_CLASS_SKILLS_GM), GOSSIP_SENDER_MAIN, 7);
+                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_MENU_DELIVERY_OF_BAGS), GOSSIP_SENDER_MAIN, 8);
 
                         if (player->GetLevel() < 80)
-                            AddGossipItemFor(player, GOSSIP_ICON_VENDOR, GTS(LANG_MENU_LVL_UP), GOSSIP_SENDER_MAIN, 9);
+                            AddGossipItemFor(player, GOSSIP_ICON_VENDOR, GTS1(LANG_MENU_LVL_UP), GOSSIP_SENDER_MAIN, 9);
                     }
 
                     if (player->IsPlayer())
-                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_VIP_MENU), GOSSIP_SENDER_MAIN, 10);
+                        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_VIP_MENU), GOSSIP_SENDER_MAIN, 10);
 
                     if (player->GetClass() && player->GetLevel() >= 80)
                     {
@@ -398,39 +389,39 @@ public:
                         switch (player->GetClass())
                         {
                         case CLASS_WARRIOR:
-                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 83);
+                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 83);
                             break;
                         case CLASS_PALADIN:
-                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 84);
+                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 84);
                             break;
                         case CLASS_HUNTER:
-                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 85);
+                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 85);
                             break;
                         case CLASS_ROGUE:
-                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 86);
+                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 86);
                             break;
                         case CLASS_PRIEST:
-                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 87);
+                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 87);
                             break;
                         case CLASS_DEATH_KNIGHT:
-                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 88);
+                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 88);
                             break;
                         case CLASS_SHAMAN:
-                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 89);
+                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 89);
                             break;
                         case CLASS_MAGE:
-                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 90);
+                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 90);
                             break;
                         case CLASS_WARLOCK:
-                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 91);
+                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 91);
                             break;
                         case CLASS_DRUID:
-                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 92);
+                            AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_START_PACK_ITEM), GOSSIP_SENDER_MAIN, 92);
                             break;
                         }
                     }
 
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_SERVER_MENU), GOSSIP_SENDER_MAIN, 11);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_SERVER_MENU), GOSSIP_SENDER_MAIN, 11);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
@@ -1154,30 +1145,30 @@ public:
                 }
                 case 10: // VIP character management
                 {
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_COMMAND_LIST), GOSSIP_SENDER_MAIN, 13);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CHARACTER_MANAGEMENT), GOSSIP_SENDER_MAIN, 14);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CHARACTER_CHANGEING), GOSSIP_SENDER_MAIN, 15);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_REPAIR_EQUIP), GOSSIP_SENDER_MAIN, 16);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_REMOVE_DESERTER), GOSSIP_SENDER_MAIN, 17);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_REMOVE_WEAKNESS), GOSSIP_SENDER_MAIN, 18);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_GIVE_BUFFS), GOSSIP_SENDER_MAIN, 19);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_VIP_BANK), GOSSIP_SENDER_MAIN, 20);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_COMMAND_LIST), GOSSIP_SENDER_MAIN, 13);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CHARACTER_MANAGEMENT), GOSSIP_SENDER_MAIN, 14);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CHARACTER_CHANGEING), GOSSIP_SENDER_MAIN, 15);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_REPAIR_EQUIP), GOSSIP_SENDER_MAIN, 16);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_REMOVE_DESERTER), GOSSIP_SENDER_MAIN, 17);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_REMOVE_WEAKNESS), GOSSIP_SENDER_MAIN, 18);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_GIVE_BUFFS), GOSSIP_SENDER_MAIN, 19);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_VIP_BANK), GOSSIP_SENDER_MAIN, 20);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_26), GOSSIP_SENDER_MAIN, 202);
                     //if (!player->IsInCombat() || !player->IsInFlight() || !player->GetMap()->IsBattlegroundOrArena() || !player->HasStealthAura() || !player->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH) || !player->isDead())
                     //	AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_REMOVE_COOLDOWN), GOSSIP_SENDER_MAIN, 22);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
                 case 11:  // VIP rates info
                 {
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_RATES), GOSSIP_SENDER_MAIN, 3);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_RATES), GOSSIP_SENDER_MAIN, 3);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString2(XP, uint32(sWorld->getRate(RATE_XP_KILL))).c_str(), GOSSIP_SENDER_MAIN, 3);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString2(XP_quest, uint32(sWorld->getRate(RATE_XP_QUEST))).c_str(), GOSSIP_SENDER_MAIN, 3);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString2(rep, uint32(sWorld->getRate(RATE_REPUTATION_GAIN))).c_str(), GOSSIP_SENDER_MAIN, 3);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString2(honor, uint32(sWorld->getRate(RATE_HONOR))).c_str(), GOSSIP_SENDER_MAIN, 3);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, getString2(gold, uint32(sWorld->getRate(RATE_DROP_MONEY))).c_str(), GOSSIP_SENDER_MAIN, 3);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
@@ -1219,22 +1210,22 @@ public:
                 }
                 case 14: //sub menu
                 {
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_DUAL_SPEC), GOSSIP_SENDER_MAIN, 12);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_RESET_TALENT), GOSSIP_SENDER_MAIN, 71, GTS(LANG_ITEM_RESET_TALENT_SURE), 0, false);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_SKILLS_WEAPON), GOSSIP_SENDER_MAIN, 72);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_MAXSKILL), GOSSIP_SENDER_MAIN, 73);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_DUAL_SPEC), GOSSIP_SENDER_MAIN, 12);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_RESET_TALENT), GOSSIP_SENDER_MAIN, 71, GTS1(LANG_ITEM_RESET_TALENT_SURE), 0, false);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_SKILLS_WEAPON), GOSSIP_SENDER_MAIN, 72);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_MAXSKILL), GOSSIP_SENDER_MAIN, 73);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_72), GOSSIP_SENDER_MAIN, 23);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
                 case 15: // sub menu
                 {
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CHANGE_NAME), GOSSIP_SENDER_MAIN, 74);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CHANGE_OF_APPEARANCE), GOSSIP_SENDER_MAIN, 75);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CHANGE_FACTION), GOSSIP_SENDER_MAIN, 76);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CHANGE_RACE), GOSSIP_SENDER_MAIN, 77);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CHANGE_NAME), GOSSIP_SENDER_MAIN, 74);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CHANGE_OF_APPEARANCE), GOSSIP_SENDER_MAIN, 75);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CHANGE_FACTION), GOSSIP_SENDER_MAIN, 76);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CHANGE_RACE), GOSSIP_SENDER_MAIN, 77);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
@@ -1271,7 +1262,7 @@ public:
                     if (player->HasAura(45523))
                     {
                         player->PlayerTalkClass->SendCloseGossip();
-                        player->GetSession()->SendAreaTriggerMessage("%s", GTS(LANG_ITEM_MSG_COOLDOWN));
+                        player->GetSession()->SendAreaTriggerMessage("%s", GTS1(LANG_ITEM_MSG_COOLDOWN));
                     }
                     else
                     {
@@ -1309,7 +1300,7 @@ public:
                     // honor token
                     // 44115
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/spell_frost_wizardmark:25:25:-15:0|tWintergrasp Commendation - 5 coins", GOSSIP_SENDER_MAIN, 70, "Are you sure you want to buy item?", 0, false);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
@@ -1358,7 +1349,7 @@ public:
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/Inv_staff_13:25:25:-15:0|tWeapons - 10-20 coins", GOSSIP_SENDER_MAIN, 30);
                     // others
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/Inv_gizmo_khoriumpowercore:25:25:-15:0|tOthers - 5 coins", GOSSIP_SENDER_MAIN, 31);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
@@ -1484,7 +1475,7 @@ public:
                             AddGossipItemFor(player, GOSSIP_ICON_VENDOR, text, GOSSIP_SENDER_MAIN, itr->second.gossipAction, "Are you sure you want to buy it?", 0, false);
                         }
                     }
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
@@ -1654,17 +1645,17 @@ public:
                 }
                 case 78:
                 {
-                    AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GTS(LANG_ITEM_BUY_7), GOSSIP_SENDER_MAIN, 80, GTS(LANG_ITEM_BUY_7_SURE), 0, false);
-                    AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GTS(LANG_ITEM_BUY_14), GOSSIP_SENDER_MAIN, 81, GTS(LANG_ITEM_BUY_14_SURE), 0, false);
-                    AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GTS(LANG_ITEM_BUY_31), GOSSIP_SENDER_MAIN, 82, GTS(LANG_ITEM_BUY_31_SURE), 0, false);
+                    AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GTS1(LANG_ITEM_BUY_7), GOSSIP_SENDER_MAIN, 80, GTS1(LANG_ITEM_BUY_7_SURE), 0, false);
+                    AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GTS1(LANG_ITEM_BUY_14), GOSSIP_SENDER_MAIN, 81, GTS1(LANG_ITEM_BUY_14_SURE), 0, false);
+                    AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GTS1(LANG_ITEM_BUY_31), GOSSIP_SENDER_MAIN, 82, GTS1(LANG_ITEM_BUY_31_SURE), 0, false);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
                 case 79:
                 {
-                    AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GTS(LANG_ITEM_INC_7), GOSSIP_SENDER_MAIN, 80, GTS(LANG_ITEM_INC_7_SURE), 0, false);
-                    AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GTS(LANG_ITEM_INC_14), GOSSIP_SENDER_MAIN, 81, GTS(LANG_ITEM_INC_14_SURE), 0, false);
-                    AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GTS(LANG_ITEM_INC_31), GOSSIP_SENDER_MAIN, 82, GTS(LANG_ITEM_INC_31_SURE), 0, false);
+                    AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GTS1(LANG_ITEM_INC_7), GOSSIP_SENDER_MAIN, 80, GTS1(LANG_ITEM_INC_7_SURE), 0, false);
+                    AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GTS1(LANG_ITEM_INC_14), GOSSIP_SENDER_MAIN, 81, GTS1(LANG_ITEM_INC_14_SURE), 0, false);
+                    AddGossipItemFor(player, GOSSIP_ICON_BATTLE, GTS1(LANG_ITEM_INC_31), GOSSIP_SENDER_MAIN, 82, GTS1(LANG_ITEM_INC_31_SURE), 0, false);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
@@ -1784,7 +1775,7 @@ public:
                 {
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Receive start-pack items For Retribution", GOSSIP_SENDER_MAIN, 93);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Receive start-pack items For Holy", GOSSIP_SENDER_MAIN, 94);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
@@ -1804,7 +1795,7 @@ public:
                 {
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Receive start-pack items For Shadow", GOSSIP_SENDER_MAIN, 95);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Receive start-pack items For Healer", GOSSIP_SENDER_MAIN, 96);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
@@ -1819,7 +1810,7 @@ public:
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Receive start-pack items For Elemental", GOSSIP_SENDER_MAIN, 97);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Receive start-pack items For Enhancement", GOSSIP_SENDER_MAIN, 98);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Receive start-pack items For Restoration", GOSSIP_SENDER_MAIN, 99);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
@@ -1840,7 +1831,7 @@ public:
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Receive start-pack items For Balance", GOSSIP_SENDER_MAIN, 100);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Receive start-pack items For Feral", GOSSIP_SENDER_MAIN, 101);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Receive start-pack items For Restoration", GOSSIP_SENDER_MAIN, 102);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
@@ -1916,7 +1907,7 @@ public:
                 }
                 case 103: // Guild Menu
                 {
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
@@ -1951,11 +1942,11 @@ public:
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_42/*, loc_idx*/), GOSSIP_SENDER_MAIN, 201);
 
                     if (player->GetCFSTeam() == ALLIANCE)
-                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, GTS(LANG_ITEM_STORMWIND), GOSSIP_SENDER_MAIN, 5, GTS(LANG_ITEM_STORMWIND_SURE), 0, false);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, GTS1(LANG_ITEM_STORMWIND), GOSSIP_SENDER_MAIN, 5, GTS1(LANG_ITEM_STORMWIND_SURE), 0, false);
                     else
-                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, GTS(LANG_ITEM_ORGRIMMAR), GOSSIP_SENDER_MAIN, 6, GTS(LANG_ITEM_ORGRIMMAR_SURE), 0, false);
+                        AddGossipItemFor(player, GOSSIP_ICON_TAXI, GTS1(LANG_ITEM_ORGRIMMAR), GOSSIP_SENDER_MAIN, 6, GTS1(LANG_ITEM_ORGRIMMAR_SURE), 0, false);
 
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
@@ -2110,7 +2101,7 @@ public:
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_64), GOSSIP_SENDER_MAIN, 208);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_65), GOSSIP_SENDER_MAIN, 209);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_66), GOSSIP_SENDER_MAIN, 210);
-                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
+                    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_CLOSE), GOSSIP_SENDER_MAIN, 3);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
@@ -2344,18 +2335,18 @@ public:
                 case 211:
                 {
                     player->PlayerTalkClass->ClearMenus();
-                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_58), GOSSIP_SENDER_MAIN, 213);
-                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_64), GOSSIP_SENDER_MAIN, 214);
-                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_57), GOSSIP_SENDER_MAIN, 215);
-                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_61), GOSSIP_SENDER_MAIN, 216);
-                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_65), GOSSIP_SENDER_MAIN, 217);
-                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_67), GOSSIP_SENDER_MAIN, 218);
-                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_60), GOSSIP_SENDER_MAIN, 219);
-                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_59), GOSSIP_SENDER_MAIN, 220);
-                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_66), GOSSIP_SENDER_MAIN, 221);
-                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_63), GOSSIP_SENDER_MAIN, 222);
-                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_62), GOSSIP_SENDER_MAIN, 223);
-                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_31), GOSSIP_SENDER_MAIN, 212);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS1(LANG_GOSSIP_OPTION_58), GOSSIP_SENDER_MAIN, 213);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS1(LANG_GOSSIP_OPTION_64), GOSSIP_SENDER_MAIN, 214);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS1(LANG_GOSSIP_OPTION_57), GOSSIP_SENDER_MAIN, 215);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS1(LANG_GOSSIP_OPTION_61), GOSSIP_SENDER_MAIN, 216);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS1(LANG_GOSSIP_OPTION_65), GOSSIP_SENDER_MAIN, 217);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS1(LANG_GOSSIP_OPTION_67), GOSSIP_SENDER_MAIN, 218);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS1(LANG_GOSSIP_OPTION_60), GOSSIP_SENDER_MAIN, 219);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS1(LANG_GOSSIP_OPTION_59), GOSSIP_SENDER_MAIN, 220);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS1(LANG_GOSSIP_OPTION_66), GOSSIP_SENDER_MAIN, 221);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS1(LANG_GOSSIP_OPTION_63), GOSSIP_SENDER_MAIN, 222);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS1(LANG_GOSSIP_OPTION_62), GOSSIP_SENDER_MAIN, 223);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS1(LANG_GOSSIP_OPTION_31), GOSSIP_SENDER_MAIN, 212);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
@@ -2363,9 +2354,9 @@ public:
                 case 212:
                 {
                     player->PlayerTalkClass->ClearMenus();
-                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_70), GOSSIP_SENDER_MAIN, 224);
-                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_69), GOSSIP_SENDER_MAIN, 225);
-                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS(LANG_GOSSIP_OPTION_71), GOSSIP_SENDER_MAIN, 226);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS1(LANG_GOSSIP_OPTION_70), GOSSIP_SENDER_MAIN, 224);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS1(LANG_GOSSIP_OPTION_69), GOSSIP_SENDER_MAIN, 225);
+                    AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GTS1(LANG_GOSSIP_OPTION_71), GOSSIP_SENDER_MAIN, 226);
                     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
                     break;
                 }
