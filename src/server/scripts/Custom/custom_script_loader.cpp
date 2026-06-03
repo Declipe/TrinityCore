@@ -16,6 +16,7 @@
  */
 
 // This is where scripts' loading functions should be declared:
+void AddSC_chat_filter_commandscript();
 void AddSC_ServerMenuPlayerGossip();
 void AddAutoReviveScripts();
 void AddSC_hardcore_mode();
@@ -88,6 +89,7 @@ void AddSC_AutoBalance();
 
 void AddCustomScripts()
 {
+    AddSC_chat_filter_commandscript();
     AddSC_skip_StarterArea();
     AddSC_Blocked_Zones();
     AddSC_ex_champions();
@@ -98,7 +100,6 @@ void AddCustomScripts()
     AddSC_guildmaster();
 // 1v1 Arena
     AddSC_npc_1v1arena();
-// VIP
     AddSC_premium_commandscript();
     AddSC_ZynPlayerScripts();
     AddSC_test();
