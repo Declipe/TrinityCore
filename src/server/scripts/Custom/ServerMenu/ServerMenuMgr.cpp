@@ -1,29 +1,24 @@
-#include "ServerMenuMgr.h"
-#include "Player.h"
-#include "Chat.h"
-#include <time.h>
-#include "Custom/Dcl.h"
-
 #include "AccountMgr.h"
 #include "AditionalData.h"
+#include "Chat.h"
+#include "Custom/Dcl.h"
 #include "CustomConfig.h"
 #include "DatabaseEnv.h"
 #include "DBCStores.h"
 #include "GameTime.h"
-#include "Guild.h"
-#include "GuildMgr.h"
 #include "InstanceSaveMgr.h"
 #include "Item.h"
 #include "ItemShopMgr.h"
 #include "Language.h"
 #include "Map.h"
-#include "ObjectMgr.h"
+#include "Player.h"
 #include "PromotionCodeMgr.h"
 #include "RBAC.h"
 #include "ScriptedGossip.h"
+#include "ScriptMgr.h"
+#include "ServerMenuMgr.h"
 #include "SpellInfo.h"
 #include "SpellMgr.h"
-#include "ScriptMgr.h"
 #include "World.h"
 #include "WorldSession.h"
 
@@ -119,13 +114,13 @@ std::string getString2(std::string string, uint32 number)
     return fmt::format("{}{}", string, number);
 }
 
-void sServerMenu::OpenBankSlot(Player* player) 
+void sServerMenu::OpenBankSlot(Player* player)
 {
     if (!player)
         return;
 
     //player->PlayerTalkClass->SendCloseGossip();
-	player->GetSession()->SendShowBank(player->GetGUID());
+    player->GetSession()->SendShowBank(player->GetGUID());
 }
 
 bool IsVipActive2(Player* player)

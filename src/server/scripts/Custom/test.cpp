@@ -1,7 +1,10 @@
 #include "Chat.h"
 #include "Config.h"
+#include "Containers.h"
+#include "CreatureAI.h"
 #include "DatabaseEnv.h"
 #include "DatabaseEnvFwd.h"
+#include "DBCStores.h"
 #include "GameObject.h"
 #include "GameObjectAI.h"
 #include "GameTime.h"
@@ -9,28 +12,25 @@
 #include "InstanceScript.h"
 #include "Language.h"
 #include "Log.h"
+#include "Map.h"
 #include "MotionMaster.h"
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
 #include "Player.h"
+#include "PlayerAI.h"
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
 #include "ScriptMgr.h"
-#include "SpellMgr.h"
-#include "World.h"
-#include "ZynDatabase.h"
-#include "Containers.h"
-#include "CreatureAI.h"
-#include "DBCStores.h"
-#include "Map.h"
-#include "PlayerAI.h"
 #include "Spell.h"
 #include "SpellAuraEffects.h"
 #include "SpellAuras.h"
 #include "SpellHistory.h"
+#include "SpellMgr.h"
 #include "SpellScript.h"
 #include "TemporarySummon.h"
 #include "Unit.h"
+#include "World.h"
+#include "ZynDatabase.h"
 
 enum Spells
 {
@@ -78,11 +78,11 @@ enum Texts
 class orrig1 : public CreatureScript
 {
 public:
-    orrig1() : CreatureScript("orrig1") { }
+    orrig1() : CreatureScript("orrig1") {}
 
     struct orrig1AI : public ScriptedAI
     {
-        orrig1AI(Creature* creature) : ScriptedAI(creature), Summons(me) { }
+        orrig1AI(Creature* creature) : ScriptedAI(creature), Summons(me) {}
 
         uint32 kills = 0;
         void Reset() override
@@ -294,7 +294,7 @@ class spell_gen_showlabel_off : public SpellScript
 {
     PrepareSpellScript(spell_gen_showlabel_off);
 
-        void HandleScriptEffect(SpellEffIndex /* effIndex */)
+    void HandleScriptEffect(SpellEffIndex /* effIndex */)
     {
         if (Player* player = GetCaster()->ToPlayer())
             player->SetGMChat(false);
@@ -311,7 +311,7 @@ class spell_gen_showlabel_on : public SpellScript
 {
     PrepareSpellScript(spell_gen_showlabel_on);
 
-        void HandleScriptEffect(SpellEffIndex /*effIndex*/)
+    void HandleScriptEffect(SpellEffIndex /*effIndex*/)
     {
         if (Player* player = GetCaster()->ToPlayer())
             player->SetGMChat(true);
@@ -328,7 +328,7 @@ class spell_gen_gm_off : public SpellScript
 {
     PrepareSpellScript(spell_gen_gm_off);
 
-        void HandleScriptEffect(SpellEffIndex /*effIndex*/)
+    void HandleScriptEffect(SpellEffIndex /*effIndex*/)
     {
         if (Player* player = GetCaster()->ToPlayer())
         {
@@ -348,7 +348,7 @@ class spell_gen_gm_on : public SpellScript
 {
     PrepareSpellScript(spell_gen_gm_on);
 
-        void HandleScriptEffect(SpellEffIndex /*effIndex*/)
+    void HandleScriptEffect(SpellEffIndex /*effIndex*/)
     {
         if (Player* player = GetCaster()->ToPlayer())
         {
@@ -368,7 +368,7 @@ class spell_gen_invis_off : public SpellScript
 {
     PrepareSpellScript(spell_gen_invis_off);
 
-        void HandleScriptEffect(SpellEffIndex /*effIndex*/)
+    void HandleScriptEffect(SpellEffIndex /*effIndex*/)
     {
         if (Player* player = GetCaster()->ToPlayer())
             player->SetGMVisible(true);
@@ -385,7 +385,7 @@ class spell_gen_invis_on : public SpellScript
 {
     PrepareSpellScript(spell_gen_invis_on);
 
-        void HandleScriptEffect(SpellEffIndex /*effIndex*/)
+    void HandleScriptEffect(SpellEffIndex /*effIndex*/)
     {
         if (Player* player = GetCaster()->ToPlayer())
             player->SetGMVisible(false);
@@ -402,7 +402,7 @@ class spell_gen_bm_off : public SpellScript
 {
     PrepareSpellScript(spell_gen_bm_off);
 
-        void HandleScriptEffect(SpellEffIndex /*effIndex*/)
+    void HandleScriptEffect(SpellEffIndex /*effIndex*/)
     {
         if (Player* player = GetCaster()->ToPlayer())
             player->SetBeastMaster(false);
