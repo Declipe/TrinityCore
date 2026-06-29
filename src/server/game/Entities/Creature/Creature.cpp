@@ -641,8 +641,8 @@ bool Creature::UpdateEntry(uint32 entry, CreatureData const* data /*= nullptr*/,
     SetIsCombatDisallowed((cInfo->flags_extra & CREATURE_FLAG_EXTRA_CANNOT_ENTER_COMBAT) != 0);
 
     LoadTemplateRoot();
-    LoadCreaturesAddon();
     InitializeMovementFlags();
+    LoadCreaturesAddon();
     LoadTemplateImmunities();
 
     GetThreatManager().EvaluateSuppressed();
