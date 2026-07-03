@@ -15309,6 +15309,21 @@ uint32 Player::GetQuestXPReward(Quest const* quest)
 
     uint32 XP = quest->GetXPReward(this) * sWorld->getRate(RATE_XP_QUEST);
 
+    if (GetSession()->IsPremium())
+        XP *= sWorld->getRate(RATE_XP_QUEST_PREMIUM);
+
+    if (Guild* guild = GetGuild())
+    {
+        //QuestXP for the Guild
+        guild->GiveXp(50000);
+
+        //GuildXP-Bonus
+        if (guild->HasLevelForBonus(GUILD_BONUS_XP_1))
+            XP += uint32(XP * 0.05f);
+        if (guild->HasLevelForBonus(GUILD_BONUS_XP_2))
+            XP += uint32(XP * 0.1f);
+    }
+
     // handle SPELL_AURA_MOD_XP_QUEST_PCT auras
     Unit::AuraEffectList const& ModXPPctAuras = GetAuraEffectsByType(SPELL_AURA_MOD_XP_QUEST_PCT);
     for (Unit::AuraEffectList::const_iterator i = ModXPPctAuras.begin(); i != ModXPPctAuras.end(); ++i)
@@ -15388,21 +15403,6 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
         SetQuestSlot(log_slot, 0);
 
     uint32 XP = GetQuestXPReward(quest);
-
-    if (GetSession()->IsPremium())
-        XP *= sWorld->getRate(RATE_XP_QUEST_PREMIUM);
-
-    if (Guild* guild = GetGuild())
-    {
-        //QuestXP for the Guild
-        guild->GiveXp(50000);
-
-        //GuildXP-Bonus
-        if (guild->HasLevelForBonus(GUILD_BONUS_XP_1))
-            XP += uint32(XP * 0.05f);
-        if (guild->HasLevelForBonus(GUILD_BONUS_XP_2))
-            XP += uint32(XP * 0.1f);
-    }
 
     if (!IsMaxLevel())
         GiveXP(XP, nullptr);
