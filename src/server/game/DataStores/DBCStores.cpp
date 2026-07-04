@@ -845,30 +845,23 @@ MapDifficulty const* GetDownscaledMapDifficultyData(uint32 mapId, Difficulty& di
 PvPDifficultyEntry const* GetBattlegroundBracketByLevel(uint32 mapid, uint32 level)
 {
     PvPDifficultyEntry const* maxEntry = nullptr;              // used for level > max listed level case
-    PvPDifficultyEntry const* minEntry = nullptr;
     for (uint32 i = 0; i < sDBCMgr->PvPDifficultyStore.size(); ++i)
     {
         if (PvPDifficultyEntry const* entry = sDBCMgr->GetPvPDifficultyEntry(i))
         {
             // skip unrelated and too-high brackets
-            if (entry->MapID != mapid)
+            if (entry->MapID != mapid || entry->MinLevel > level)
                 continue;
 
             // exactly fit
-            //if (entry->MaxLevel >= level)
-            if (entry->MinLevel <= level && entry->MaxLevel >= level)
+            if (entry->MaxLevel >= level)
                 return entry;
 
             // remember for possible out-of-range case (search higher from existed)
             if (!maxEntry || maxEntry->MaxLevel < entry->MaxLevel)
                 maxEntry = entry;
-            if (!minEntry || minEntry->MinLevel > entry->MinLevel)
-                minEntry = entry;
         }
     }
-
-    if (minEntry && level < minEntry->MinLevel)
-        return minEntry;
 
     return maxEntry;
 }
