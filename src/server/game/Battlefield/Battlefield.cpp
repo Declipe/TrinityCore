@@ -428,7 +428,6 @@ GameObject* Battlefield::SpawnGameObject(uint32 entry, Position const& pos, Quat
     if (!go->Create(m_Map->GenerateLowGuid<HighGuid::GameObject>(), entry, m_Map, PHASEMASK_NORMAL, pos, rot, 255, GO_STATE_READY))
     {
         TC_LOG_ERROR("bg.battlefield", "Battlefield::SpawnGameObject: Gameobject template {} could not be found in the database! Battlefield has not been created!", entry);
-        TC_LOG_ERROR("bg.battlefield", "Battlefield::SpawnGameObject: Could not create gameobject template {}! Battlefield has not been created!", entry);
         delete go;
         return nullptr;
     }
