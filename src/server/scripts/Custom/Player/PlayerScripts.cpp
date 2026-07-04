@@ -174,7 +174,7 @@ public:
         WorldSession* session = handler->GetSession();
         Player* player = handler->GetSession()->GetPlayer();
 
-        uint32 bgId = args && *args ? atoi(args) : 32;
+        uint32 bgId = args && *args ? atoi(args) : 2;
 
         switch (bgId)
         {
@@ -184,10 +184,9 @@ public:
         case 7:  // EotS
         case 9:  // SotA
         case 30: // IoC
-        case 32: //all
             break; //NOT_USED_73
         default:
-            handler->SendSysMessage("1=AV, 2=WSG, 3=AB, 7=EotS, 9=SotA, 30=IoC, 32=all");
+            handler->SendSysMessage("1=AV, 2=WSG, 3=AB, 7=EotS, 9=SotA, 30=IoC");
             return true;
         }
 
@@ -208,8 +207,8 @@ public:
         WorldSession* session = handler->GetSession();
         Player* player = handler->GetSession()->GetPlayer();
 
-        // ID ??: 1=AV, 2=WSG, 3=AB, 7=EotS, 9=SotA, 30=IoC, 32=all
-        uint32 bgId = args && *args ? atoi(args) : 32;
+        // ID ??: 1=AV, 2=WSG, 3=AB, 7=EotS, 9=SotA, 30=IoC
+        uint32 bgId = args && *args ? atoi(args) : 2;
         switch (bgId)
         {
         case 1:
@@ -218,10 +217,9 @@ public:
         case 7:
         case 9:
         case 30:
-        case 32:
             break;
         default:
-            handler->SendSysMessage("1=AV, 2=WSG, 3=AB, 7=EotS, 9=SotA, 30=IoC, 32=all");
+            handler->SendSysMessage("1=AV, 2=WSG, 3=AB, 7=EotS, 9=SotA, 30=IoC");
             return true;
         }
         BattlegroundTypeId bgTypeId = BattlegroundTypeId(bgId);
