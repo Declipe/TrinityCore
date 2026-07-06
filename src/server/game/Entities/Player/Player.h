@@ -1637,8 +1637,8 @@ public:
     uint32 GetMovie() const { return m_movie; }
     void SetMovie(uint32 movie) { m_movie = movie; }
 
-    ActionButton* addActionButton(uint8 button, uint32 action, uint8 type);
-    void removeActionButton(uint8 button);
+    ActionButton* AddActionButton(uint8 button, uint32 action, uint8 type);
+    void RemoveActionButton(uint8 button);
     ActionButton const* GetActionButton(uint8 button);
     void SendInitialActionButtons() const { SendActionButtons(1); }
     void SendActionButtons(uint32 state) const;
