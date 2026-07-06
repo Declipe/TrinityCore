@@ -26,6 +26,7 @@
 #include "Chat.h"
 #include "CinematicMgr.h"
 #include "ClientConfigPackets.h"
+#include "CustomConfig.h"
 #include "Common.h"
 #include "Corpse.h"
 #include "Creature.h"
@@ -59,11 +60,10 @@
 #include "SpellPackets.h"
 #include "WhoListStorage.h"
 #include "World.h"
-#include "WorldPacket.h"
 #include "WorldSession.h"
+#include "WorldPacket.h"
 #include <cstdarg>
 #include <zlib.h>
-#include "CustomConfig.h"
 
 void WorldSession::HandleRepopRequest(WorldPackets::Misc::RepopRequest& /*packet*/)
 {
@@ -185,7 +185,6 @@ void WorldSession::HandleGossipSelectOptionOpcode(WorldPacket& recvData)
     {
         if (unit)
         {
-
 #ifdef ELUNA
             if (Eluna* e = GetPlayer()->GetEluna())
                 if (e->OnGossipSelectCode(_player, unit, _player->PlayerTalkClass->GetGossipOptionSender(gossipListId), _player->PlayerTalkClass->GetGossipOptionAction(gossipListId), code.c_str()))
@@ -509,9 +508,9 @@ void WorldSession::HandleTogglePvP(WorldPackets::Misc::TogglePvP& togglePvP)
         GetPlayer()->ApplyModFlag(PLAYER_FLAGS, PLAYER_FLAGS_PVP_TIMER, !*togglePvP.Enable);
         if (sGameConfig->GetBoolConfig("CONFIG.Test"))
         {
-        GetPlayer()->CastSpell(GetPlayer(), 7267, true);
-        GetPlayer()->CastSpell(GetPlayer(), 72968, true);
-        GetPlayer()->RemoveAurasDueToSpell(54512);
+            GetPlayer()->CastSpell(GetPlayer(), 7267, true);
+            GetPlayer()->CastSpell(GetPlayer(), 72968, true);
+            GetPlayer()->RemoveAurasDueToSpell(54512);
         }
     }
     else
@@ -773,7 +772,7 @@ void WorldSession::HandleAreaTriggerOpcode(WorldPackets::AreaTrigger::AreaTrigge
                 case Map::CANNOT_ENTER_DIFFICULTY_UNAVAILABLE:
                     TC_LOG_DEBUG("maps", "MAP: Player '{}' attempted to enter instance map {} but the requested difficulty was not found", player->GetName(), at->target_mapId);
                     if (MapEntry const* entry = sMapStore.LookupEntry(at->target_mapId))
-                        player->SendTransferAborted(entry->ID, TRANSFER_ABORT_DIFFICULTY, player->GetDifficulty(entry->IsRaid()));
+                        player->SendTransferAborted(entry->ID, TRANSFER_ABORT_DIFFICULTY, player->GetGroup() ? player->GetGroup()->GetDifficultyID(entry) : player->GetDifficultyID(entry));
                     break;
                 case Map::CANNOT_ENTER_NOT_IN_RAID:
                 {
@@ -920,7 +919,7 @@ void WorldSession::HandleSetActionButtonOpcode(WorldPackets::Spells::SetActionBu
     uint8 type = ACTION_BUTTON_TYPE(packet.Action);
 
     TC_LOG_DEBUG("network", "CMSG_SET_ACTION_BUTTON Button: {} Action: {} Type: {}", packet.Index, action, uint32(type));
-    
+
     if (!packet.Action)
         GetPlayer()->RemoveActionButton(packet.Index);
     else
@@ -1235,21 +1234,16 @@ void WorldSession::HandleResetInstancesOpcode(WorldPacket& /*recvData*/)
         _player->ResetInstances(INSTANCE_RESET_ALL, false);
 }
 
-void WorldSession::HandleSetDungeonDifficultyOpcode(WorldPacket& recvData)
+void WorldSession::HandleSetDungeonDifficultyOpcode(WorldPackets::Misc::SetDungeonDifficulty& setDungeonDifficulty)
 {
     TC_LOG_DEBUG("network", "MSG_SET_DUNGEON_DIFFICULTY");
 
-    uint32 mode;
-    recvData >> mode;
-
-    if (mode >= MAX_DUNGEON_DIFFICULTY)
+    if (setDungeonDifficulty.DifficultyID >= MAX_DUNGEON_DIFFICULTY)
     {
-        TC_LOG_DEBUG("network", "WorldSession::HandleSetDungeonDifficultyOpcode: player {} sent an invalid instance mode {}!", _player->GetGUID().ToString(), mode);
+        TC_LOG_DEBUG("network", "WorldSession::HandleSetDungeonDifficultyOpcode: {} sent an invalid instance mode {}!",
+            _player->GetGUID().ToString(), setDungeonDifficulty.DifficultyID);
         return;
     }
-
-    if (Difficulty(mode) == _player->GetDungeonDifficulty())
-        return;
 
     // cannot reset while in an instance
     Map* map = _player->FindMap();
@@ -1260,50 +1254,59 @@ void WorldSession::HandleSetDungeonDifficultyOpcode(WorldPacket& recvData)
         return;
     }
 
+    Difficulty difficultyID = Difficulty(setDungeonDifficulty.DifficultyID);
+
     Group* group = _player->GetGroup();
     if (group)
     {
-        if (group->IsLeader(_player->GetGUID()))
+        if (difficultyID == group->GetDungeonDifficultyID())
+            return;
+
+        if (!group->IsLeader(_player->GetGUID()))
+            return;
+
+        if (group->isLFGGroup())
+            return;
+
+        for (GroupReference* itr = group->GetFirstMember(); itr != nullptr; itr = itr->next())
         {
-            for (GroupReference* itr = group->GetFirstMember(); itr != nullptr; itr = itr->next())
+            Player* groupGuy = itr->GetSource();
+            if (!groupGuy)
+                continue;
+
+            if (!groupGuy->IsInWorld())
+                return;
+
+            if (groupGuy->GetMap()->IsNonRaidDungeon())
             {
-                Player* groupGuy = itr->GetSource();
-                if (!groupGuy)
-                    continue;
-
-                if (!groupGuy->IsInWorld())
-                    return;
-
-                if (groupGuy->GetMap()->IsNonRaidDungeon())
-                {
-                    TC_LOG_DEBUG("network", "WorldSession::HandleSetDungeonDifficultyOpcode: player {} tried to reset the instance while group member (Name: {}, {}) is inside!",
-                        _player->GetGUID().ToString(), groupGuy->GetName(), groupGuy->GetGUID().ToString());
-                    return;
-                }
+                TC_LOG_DEBUG("network", "WorldSession::HandleSetDungeonDifficultyOpcode: {} tried to reset the instance while group member (Name: {}, {}) is inside!",
+                    _player->GetGUID().ToString(), groupGuy->GetName(), groupGuy->GetGUID().ToString());
+                return;
             }
-            // the difficulty is set even if the instances can't be reset
-            //_player->SendDungeonDifficulty(true);
-            group->ResetInstances(INSTANCE_RESET_CHANGE_DIFFICULTY, false, _player);
-            group->SetDungeonDifficulty(Difficulty(mode));
         }
+        // the difficulty is set even if the instances can't be reset
+        //_player->SendDungeonDifficulty(true);
+        group->ResetInstances(INSTANCE_RESET_CHANGE_DIFFICULTY, false, _player);
+        group->SetDungeonDifficultyID(Difficulty(setDungeonDifficulty.DifficultyID));
     }
-    else
-    {
+
+    if (difficultyID == _player->GetDungeonDifficultyID())
+        return;
+
+    if (!group)
         _player->ResetInstances(INSTANCE_RESET_CHANGE_DIFFICULTY, false);
-        _player->SetDungeonDifficulty(Difficulty(mode));
-    }
+
+    _player->SetDungeonDifficultyID(Difficulty(setDungeonDifficulty.DifficultyID));
 }
 
-void WorldSession::HandleSetRaidDifficultyOpcode(WorldPacket& recvData)
+void WorldSession::HandleSetRaidDifficultyOpcode(WorldPackets::Misc::SetRaidDifficulty& setRaidDifficulty)
 {
     TC_LOG_DEBUG("network", "MSG_SET_RAID_DIFFICULTY");
 
-    uint32 mode;
-    recvData >> mode;
-
-    if (mode >= MAX_RAID_DIFFICULTY)
+    if (setRaidDifficulty.DifficultyID >= MAX_RAID_DIFFICULTY)
     {
-        TC_LOG_ERROR("network", "WorldSession::HandleSetRaidDifficultyOpcode: player {} sent an invalid instance mode {}!", _player->GetGUID().ToString(), mode);
+        TC_LOG_DEBUG("network", "WorldSession::HandleSetDungeonDifficultyOpcode: {} sent an invalid instance mode {}!",
+            _player->GetGUID().ToString(), setRaidDifficulty.DifficultyID);
         return;
     }
 
@@ -1311,44 +1314,54 @@ void WorldSession::HandleSetRaidDifficultyOpcode(WorldPacket& recvData)
     Map* map = _player->FindMap();
     if (map && map->IsDungeon())
     {
-        TC_LOG_DEBUG("network", "WorldSession::HandleSetRaidDifficultyOpcode: player {} tried to reset the instance while inside!", _player->GetGUID().ToString());
+        TC_LOG_DEBUG("network", "WorldSession::HandleSetRaidDifficultyOpcode: player (Name: {}, {}) tried to reset the instance while player is inside!",
+            _player->GetName(), _player->GetGUID().ToString());
         return;
     }
 
-    if (Difficulty(mode) == _player->GetRaidDifficulty())
-        return;
+    Difficulty difficultyID = Difficulty(setRaidDifficulty.DifficultyID);
 
     Group* group = _player->GetGroup();
     if (group)
     {
-        if (group->IsLeader(_player->GetGUID()))
+        if (difficultyID == group->GetRaidDifficultyID())
+            return;
+
+        if (!group->IsLeader(_player->GetGUID()))
+            return;
+
+        if (group->isLFGGroup())
+            return;
+
+        for (GroupReference* itr = group->GetFirstMember(); itr != nullptr; itr = itr->next())
         {
-            for (GroupReference* itr = group->GetFirstMember(); itr != nullptr; itr = itr->next())
+            Player* groupGuy = itr->GetSource();
+            if (!groupGuy)
+                continue;
+
+            if (!groupGuy->IsInWorld())
+                return;
+
+            if (groupGuy->GetMap()->IsRaid())
             {
-                Player* groupGuy = itr->GetSource();
-                if (!groupGuy)
-                    continue;
-
-                if (!groupGuy->IsInWorld())
-                    return;
-
-                if (groupGuy->GetMap()->IsRaid())
-                {
-                    TC_LOG_DEBUG("network", "WorldSession::HandleSetRaidDifficultyOpcode: player {} tried to reset the instance while inside!", _player->GetGUID().ToString());
-                    return;
-                }
+                TC_LOG_DEBUG("network", "WorldSession::HandleSetRaidDifficultyOpcode: {} tried to reset the instance while group member (Name: {}, {}) is inside!",
+                    _player->GetGUID().ToString(), groupGuy->GetName(), groupGuy->GetGUID().ToString());
+                return;
             }
-            // the difficulty is set even if the instances can't be reset
-            //_player->SendDungeonDifficulty(true);
-            group->ResetInstances(INSTANCE_RESET_CHANGE_DIFFICULTY, true, _player);
-            group->SetRaidDifficulty(Difficulty(mode));
         }
+        // the difficulty is set even if the instances can't be reset
+        //_player->SendDungeonDifficulty(true);
+        group->ResetInstances(INSTANCE_RESET_CHANGE_DIFFICULTY, true, _player);
+        group->SetRaidDifficultyID(Difficulty(setRaidDifficulty.DifficultyID));
     }
-    else
-    {
+
+    if (difficultyID == _player->GetRaidDifficultyID())
+        return;
+
+    if (!group)
         _player->ResetInstances(INSTANCE_RESET_CHANGE_DIFFICULTY, true);
-        _player->SetRaidDifficulty(Difficulty(mode));
-    }
+
+    _player->SetRaidDifficultyID(Difficulty(setRaidDifficulty.DifficultyID));
 }
 
 void WorldSession::HandleSetTaxiBenchmarkOpcode(WorldPacket& recvData)
@@ -1406,6 +1419,7 @@ void WorldSession::SendSetPhaseShift(uint32 PhaseShift)
     data << uint32(PhaseShift);
     SendPacket(&data);
 }
+
 // Battlefield and Battleground
 void WorldSession::HandleAreaSpiritHealerQueryOpcode(WorldPacket& recvData)
 {
