@@ -187,7 +187,7 @@ public:
             return;
 
         uint32 mapId = map->GetId();
-        uint32 mapDiff = static_cast<uint32>(map->GetDifficulty());
+        uint32 mapDiff = static_cast<uint32>(map->GetDifficultyID());
 
         auto it = allowedMaps.find(mapId);
         if (it != allowedMaps.end())

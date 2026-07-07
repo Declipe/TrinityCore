@@ -2194,7 +2194,7 @@ public:
                             for (Player::BoundInstancesMap::iterator itr = binds.begin(); itr != binds.end();)
                             {
                                 InstanceSave* save = itr->second.save;
-                                if (itr->first != player->GetMapId() && (!MapId || MapId == itr->first) && (diff == -1 || diff == save->GetDifficulty()))
+                                if (itr->first != player->GetMapId() && (!MapId || MapId == itr->first) && (diff == -1 || diff == save->GetDifficultyID()))
                                 {
                                     std::string timeleft = secsToTimeString(save->GetResetTime() - GameTime::GetGameTime(), TimeFormat::ShortText);
                                     player->UnbindInstance(itr, Difficulty(i));
