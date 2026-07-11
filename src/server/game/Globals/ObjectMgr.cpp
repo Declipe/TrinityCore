@@ -4828,7 +4828,7 @@ void ObjectMgr::LoadPlayerInfo()
             }
         }
 
-        TC_LOG_INFO("server.loading", ">> Loaded {} xp for level definitions in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
+        TC_LOG_INFO("server.loading", ">> Loaded {} xp for level definition(s) from database in {} ms", count, GetMSTimeDiffToNow(oldMSTime));
     }
 }
 
