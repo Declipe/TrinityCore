@@ -37,7 +37,7 @@ class Item;
 class Player;
 class WorldPacket;
 
-enum AuctionError : uint8
+enum AuctionResult : uint8
 {
     ERR_AUCTION_OK                  = 0,
     ERR_AUCTION_INVENTORY           = 1,
@@ -50,7 +50,7 @@ enum AuctionError : uint8
     ERR_AUCTION_RESTRICTED_ACCOUNT  = 13
 };
 
-enum AuctionAction : uint8
+enum AuctionCommand : uint8
 {
     AUCTION_SELL_ITEM   = 0,
     AUCTION_CANCEL      = 1,

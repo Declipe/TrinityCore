@@ -58,8 +58,8 @@ struct ItemTemplate;
 struct MovementInfo;
 struct Petition;
 struct TradeStatusInfo;
-enum AuctionAction : uint8;
-enum AuctionError : uint8;
+enum AuctionCommand : uint8;
+enum AuctionResult : uint8;
 enum InventoryResult : uint8;
 
 namespace lfg
@@ -83,6 +83,10 @@ namespace WorldPackets
     namespace AreaTrigger
     {
         class AreaTrigger;
+    }
+    namespace AuctionHouse
+    {
+        class AuctionHelloRequest;
     }
 
     namespace Bank
@@ -674,8 +678,7 @@ class TC_GAME_API WorldSession
          * @param   errorCode       The resulting error code.
          * @param   bagResult       (Optional) InventoryResult.
          */
-        void SendAuctionCommandResult(uint32 auctionItemId, AuctionAction command, AuctionError errorCode, InventoryResult bagResult = InventoryResult(0));
-        //void SendAuctionCommandResult(AuctionEntry const* auction, AuctionAction command, AuctionError errorCode, InventoryResult bagResult = InventoryResult(0));
+        void SendAuctionCommandResult(AuctionEntry const* auction, AuctionCommand command, AuctionResult errorCode, InventoryResult bagResult = InventoryResult(0));
         void SendAuctionBidderNotification(uint32 location, uint32 auctionId, ObjectGuid bidder, uint32 bidSum, uint32 diff, uint32 item_template);
         void SendAuctionOwnerNotification(AuctionEntry* auction);
         void SendAuctionRemovedNotification(uint32 auctionId, uint32 itemEntry, int32 randomPropertyId);
@@ -968,7 +971,7 @@ class TC_GAME_API WorldSession
         void HandleSetTradeItemOpcode(WorldPacket& recvPacket);
         void HandleUnacceptTradeOpcode(WorldPacket& recvPacket);
 
-        void HandleAuctionHelloOpcode(WorldPacket& recvPacket);
+        void HandleAuctionHelloOpcode(WorldPackets::AuctionHouse::AuctionHelloRequest& packet);
         void HandleAuctionListItems(WorldPacket& recvData);
         void HandleAuctionListBidderItems(WorldPacket& recvData);
         void HandleAuctionSellItem(WorldPacket& recvData);
