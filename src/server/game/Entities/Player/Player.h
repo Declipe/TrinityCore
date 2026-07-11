@@ -1459,7 +1459,7 @@ public:
     bool m_mailsUpdated;
 
     void SetBindPoint(ObjectGuid guid) const;
-    void SendTalentWipeConfirm(ObjectGuid trainerGuid) const;
+    void SendRespecWipeConfirm(ObjectGuid const& guid, uint32 cost) const;
     void ResetPetTalents();
     void RegenerateAll();
     void Regenerate(Powers power);
@@ -1562,7 +1562,7 @@ public:
     void SetTalentGroupsCount(uint8 count) { _talentMgr->GroupsCount = count; }
 
     bool ResetTalents(bool involuntarily = false);
-    uint32 ResetTalentsCost() const;
+    uint32 GetNextResetTalentsCost() const;
     void IncreaseResetTalentsCostAndCounters(uint32 lastResetTalentsCost);
     void InitTalentForLevel();
     void BuildPlayerTalentsInfoData(WorldPackets::Talent::TalentInfoUpdate& talentInfo);

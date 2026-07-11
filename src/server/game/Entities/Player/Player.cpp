@@ -3768,7 +3768,7 @@ void Player::RemoveArenaSpellCooldowns(bool removeActivePetCooldowns)
             pet->GetSpellHistory()->ResetAllCooldowns();
 }
 
-uint32 Player::ResetTalentsCost() const
+uint32 Player::GetNextResetTalentsCost() const
 {
     if (sWorld->getBoolConfig(CONFIG_NO_RESET_TALENT_COST))
         return 0;
@@ -9477,9 +9477,12 @@ void Player::SetBindPoint(ObjectGuid guid) const
     SendDirectMessage(packet.Write());
 }
 
-void Player::SendTalentWipeConfirm(ObjectGuid trainerGuid) const
+void Player::SendRespecWipeConfirm(ObjectGuid const& guid, uint32 cost) const
 {
-    SendDirectMessage(WorldPackets::Talent::RespecWipeConfirm(trainerGuid, ResetTalentsCost()).Write());
+    WorldPackets::Talent::RespecWipeConfirm respecWipeConfirm;
+    respecWipeConfirm.RespecMaster = trainerGuid;
+    respecWipeConfirm.Cost = GetNextResetTalentsCost();
+    SendDirectMessage(respecWipeConfirm.Write());
 }
 
 void Player::ResetPetTalents()
@@ -14604,7 +14607,7 @@ void Player::OnGossipSelect(WorldObject* source, uint32 gossipListId, uint32 men
         break;
     case GOSSIP_OPTION_UNLEARNTALENTS:
         PlayerTalkClass->SendCloseGossip();
-        SendTalentWipeConfirm(guid);
+        SendRespecWipeConfirm(guid, GetNextResetTalentsCost());
         break;
     case GOSSIP_OPTION_UNLEARNPETTALENTS:
         PlayerTalkClass->SendCloseGossip();
