@@ -8801,8 +8801,8 @@ void Player::SendLootError(ObjectGuid const& owner, LootError error) const
 
 void Player::SendNotifyLootMoneyRemoved() const
 {
-    WorldPacket data(SMSG_LOOT_CLEAR_MONEY, 0);
-    SendDirectMessage(&data);
+    WorldPackets::Loot::CoinRemoved packet;
+    SendDirectMessage(packet.Write());
 }
 
 void Player::SendNotifyLootItemRemoved(uint8 lootListId) const
