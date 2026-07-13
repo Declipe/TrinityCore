@@ -84,7 +84,7 @@ AuctionHouseObject* AuctionHouseMgr::GetAuctionHouse(uint8 houseId)
 
 uint32 AuctionHouseMgr::GetAuctionDeposit(AuctionHouseEntry const* entry, uint32 time, Item* pItem, uint32 count)
 {
-    uint32 MSV = pItem->GetTemplate()->GetSellPrice();
+    uint32 MSV = pItem->GetSellPrice();
 
     if (MSV <= 0)
         return float(AH_MINIMUM_DEPOSIT) * sWorld->getRate(RATE_AUCTION_DEPOSIT);
