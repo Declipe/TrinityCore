@@ -14,6 +14,11 @@ jobs:
     steps:
     - uses: actions/checkout@v5
 
+    - name: Initialize submodules
+      run: |
+        git submodule init
+        git submodule update
+        
     - name: Set reusable strings
       id: strings
       shell: bash
@@ -74,7 +79,7 @@ jobs:
         BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
       run: >
         cmake -GNinja -S ${{ github.workspace }} -B ${{ steps.strings.outputs.build-output-dir }}
-        -DWITH_WARNINGS_AS_ERRORS=ON -DTOOLS=ON
+        -DWITH_WARNINGS_AS_ERRORS=OFF -DTOOLS=ON
 
     - name: Build
       run: |

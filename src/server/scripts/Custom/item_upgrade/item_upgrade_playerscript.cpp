@@ -37,7 +37,7 @@ public:
         val = sItemUpgrade->HandleStatModifier(player, slot, statType, val);
     }
 
-    void OnApplyEnchantmentItemModsBefore(Player* player, Item* item, EnchantmentSlot slot, bool /*apply*/, uint32 enchant_spell_id, uint32& enchant_amount) override
+    void OnApplyEnchantmentItemModsBefore(Player* player, Item* item, EnchantmentSlot slot, bool /*apply*/, uint32 enchant_spell_id, int32& enchant_amount) override
     {
         enchant_amount = sItemUpgrade->HandleStatModifier(player, item, enchant_spell_id, enchant_amount, slot);
     }
