@@ -147,7 +147,7 @@ std::string _SpellScript::EffectNameCheck::ToString()
         case SPELL_EFFECT_ANY:
             return "SPELL_EFFECT_ANY";
         default:
-            return Trinity::ToString(effName);
+            return Trinity::StringFormat("SPELL_EFFECT_{}", effName);
     }
 }
 
@@ -168,7 +168,7 @@ std::string _SpellScript::EffectAuraNameCheck::ToString()
         case SPELL_AURA_ANY:
             return "SPELL_AURA_ANY";
         default:
-            return Trinity::ToString(effAurName);
+            return Trinity::StringFormat("SPELL_AURA_{}", effAurName);
     }
 }
 
