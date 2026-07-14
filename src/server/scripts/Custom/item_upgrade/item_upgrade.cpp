@@ -1885,7 +1885,7 @@ std::vector<_ItemStat> ItemUpgrade::LoadItemStatInfo(const Item* item) const
         for (int s = 0; s < MAX_ITEM_ENCHANTMENT_EFFECTS; ++s)
         {
             uint32 enchant_display_type = pEnchant->Effect[s];
-            uint32 enchant_amount = pEnchant->EffectPointsMin[s];
+            int32 enchant_amount = pEnchant->EffectPointsMin[s];
             uint32 enchant_spell_id = pEnchant->EffectArg[s];
 
             if (enchant_display_type == ITEM_ENCHANTMENT_TYPE_STAT)
@@ -1899,7 +1899,7 @@ std::vector<_ItemStat> ItemUpgrade::LoadItemStatInfo(const Item* item) const
                         {
                             if (item_rand_suffix->Enchantment[k] == enchant_id)
                             {
-                                enchant_amount = uint32((item_rand_suffix->AllocationPct[k] * item->GetItemSuffixFactor()) / 10000);
+                                enchant_amount = int32((item_rand_suffix->AllocationPct[k] * item->GetItemSuffixFactor()) / 10000);
                                 break;
                             }
                         }
