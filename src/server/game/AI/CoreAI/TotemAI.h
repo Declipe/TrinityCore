@@ -40,7 +40,7 @@ class TC_GAME_API TotemAI : public NullCreatureAI
         ObjectGuid _victimGUID;
 };
 
-class TC_GAME_API KillMagnetEvent : public BasicEvent
+class KillMagnetEvent : public BasicEvent
 {
 public:
     KillMagnetEvent(Unit& self) : _self(self) {}
