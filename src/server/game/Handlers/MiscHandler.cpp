@@ -191,8 +191,10 @@ void WorldSession::HandleGossipSelectOptionOpcode(WorldPacket& recvData)
                     return;
 #endif
             if (!unit->AI()->OnGossipSelectCode(_player, menuId, gossipListId, code.c_str()))
+            {
                 sScriptMgr->AllCreatureCode(_player, unit, _player->PlayerTalkClass->GetGossipOptionSender(gossipListId), _player->PlayerTalkClass->GetGossipOptionAction(gossipListId), code.c_str());
                 _player->OnGossipSelect(unit, gossipListId, menuId);
+            }
         }
         else if (item)
         {

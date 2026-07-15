@@ -5228,9 +5228,8 @@ void AuraEffect::HandlePeriodicHealthLeechAuraTick(Unit* target, Unit* caster) c
         log.periodicLog = true;
         if (crit)
             log.HitInfo |= SPELL_HIT_TYPE_CRIT;
-        
-            caster->SendSpellNonMeleeDamageLog(&log);
-        
+
+        caster->SendSpellNonMeleeDamageLog(&log);
     }
     damage = damageInfo.GetDamage();
 
