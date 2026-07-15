@@ -131,7 +131,7 @@ public:
         QueryResult result = CharacterDatabase.PQuery("SELECT account FROM characters WHERE name = '{}'", characterName);
 
         if (!result)
-            return NULL;
+            return 0;
 
         return result->Fetch()[0].GetUInt32();
     }
@@ -141,7 +141,7 @@ public:
         QueryResult result = LoginDatabase.PQuery("SELECT username FROM account WHERE id = {}", accountId);
 
         if (!result)
-            return NULL;
+            return "";
 
         return result->Fetch()[0].GetString();
     }

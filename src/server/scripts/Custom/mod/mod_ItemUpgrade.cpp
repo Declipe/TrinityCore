@@ -134,7 +134,7 @@ class go_item_upgrade : public GameObjectScript
                 std::string Name = itemTemplate->Name1;
                 LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
 
-                if (loc_idx >= 0)
+                if (loc_idx < TOTAL_LOCALES)
                     if (ItemLocale const* il = sObjectMgr->GetItemLocale(itemTemplate->ItemId))
                         ObjectMgr::GetLocaleString(il->Name, loc_idx, Name);
 

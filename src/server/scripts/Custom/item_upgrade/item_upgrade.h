@@ -47,6 +47,8 @@ public:
         std::string name;
         std::string uiName;
 
+        virtual ~Identifier() = default;
+
         virtual IdentifierType GetType() const
         {
             return BASE_IDENTIFIER;

@@ -454,7 +454,7 @@ void BattleRoyale::infectPlayers() {
 }
 
 bool BattleRoyale::checkShouldStart() {
-    return royaleEnabled && !gameStarted && queue.size() >= requiredPlayers;
+    return royaleEnabled && !gameStarted && queue.size() >= static_cast<std::size_t>(requiredPlayers);
 }
 
 void BattleRoyale::RemoveExtraPlayers() {
@@ -473,7 +473,7 @@ void BattleRoyale::RemoveExtraPlayers() {
 
 void BattleRoyale::SelectQueuedPlayers() {
 
-    while(!queue.empty() || playersInRoyale.size() == playerLimit) {
+    while(!queue.empty() && playersInRoyale.size() < static_cast<std::size_t>(playerLimit)) {
         ObjectGuid playerGuid = queue.front();
 
         if(Player* player = ObjectAccessor::FindPlayer(playerGuid)) {

@@ -447,10 +447,12 @@ void TournamentManager::reset(uint32 entry)
             (*itr)->spawn = false;
 
     if (!tournament->creatures.empty())
+    {
         for (CreatureList::const_iterator itr = tournament->creatures.begin(); itr != tournament->creatures.end(); ++itr)
             (*itr)->DespawnOrUnsummon(Seconds(4));
-            //me->DespawnOrUnsummon();
-            tournament->creatures.clear();
+
+        tournament->creatures.clear();
+    }
 }
 
 void TournamentManager::start(uint32 entry, uint32 level, Player* player)

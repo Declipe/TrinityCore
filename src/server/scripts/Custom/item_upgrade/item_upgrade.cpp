@@ -479,6 +479,8 @@ bool ItemUpgrade::ValidateReq(uint32 id, UpgradeStatReqType reqType, float val1,
     }
     case ItemUpgrade::REQ_TYPE_NONE:
         return true;
+    case ItemUpgrade::MAX_REQ_TYPE:
+        break;
     }
     return false;
 }
@@ -623,8 +625,7 @@ void ItemUpgrade::BuildUpgradableItemCatalogue(const Player* player, PagedDataTy
     pagedData.type = type;
 
     std::vector<Item*> playerItems = GetPlayerItems(player, false);
-    std::vector<Item*>::iterator iter = playerItems.begin();
-    for (iter; iter != playerItems.end(); ++iter)
+    for (std::vector<Item*>::iterator iter = playerItems.begin(); iter != playerItems.end(); ++iter)
         AddItemToPagedData(*iter, player, pagedData);
 
     pagedData.SortAndCalculateTotals();
@@ -849,7 +850,7 @@ bool ItemUpgrade::_AddPagedData(Player* player, const PagedData& pagedData, uint
     else if (pagedData.type == PAGED_DATA_TYPE_REQS_BULK)
         pageZeroSender += 14;
 
-    AddGossipItemFor(player, GOSSIP_ICON_CHAT, "<- [Back]", page == 0 ? pageZeroSender : GOSSIP_SENDER_MAIN + 2, page == 0 ? GOSSIP_ACTION_INFO_DEF : GOSSIP_ACTION_INFO_DEF + page - 1);
+    AddGossipItemFor(player, GOSSIP_ICON_CHAT, "<- [Back]", page == 0 ? pageZeroSender : GOSSIP_SENDER_MAIN + 2, page == 0 ? static_cast<uint32>(GOSSIP_ACTION_INFO_DEF) : static_cast<uint32>(GOSSIP_ACTION_INFO_DEF) + page - 1);
 
     return true;
 }
@@ -1287,6 +1288,8 @@ void ItemUpgrade::BuildRequirementsPage(const Player* player, PagedData& pagedDa
                     oss << " - " << (uint32)req.reqVal2 << "x";
                 break;
             }
+            default:
+                break;
             }
 
             std::string missing;
@@ -1314,6 +1317,8 @@ void ItemUpgrade::BuildRequirementsPage(const Player* player, PagedData& pagedDa
                     missing = "missing " + Trinity::ToString<uint32>((uint32)req.reqVal2 - player->GetItemCount((uint32)req.reqVal1, true)) + " items";
                     break;
                 }
+                default:
+                    break;
                 }
             }
 
@@ -1466,6 +1471,8 @@ bool ItemUpgrade::MeetsRequirement(const Player* player, const UpgradeStatReq& r
     {
         return true;
     }
+    default:
+        break;
     }
 
     return false;
@@ -1522,6 +1529,8 @@ void ItemUpgrade::TakeRequirements(Player* player, const StatRequirementContaine
             player->DestroyItemCount((uint32)req.reqVal1, (uint32)req.reqVal2, true);
             break;
         }
+        default:
+            break;
         }
     }
 }
@@ -1770,6 +1779,8 @@ ItemUpgrade::StatRequirementContainer ItemUpgrade::BuildBulkRequirements(const s
                 itemMap[(uint32)statReq.reqVal1] += (uint32)statReq.reqVal2;
                 break;
             }
+            default:
+                break;
             }
         }
     }
@@ -2059,8 +2070,7 @@ void ItemUpgrade::HandleDataReload(bool apply)
 void ItemUpgrade::HandleDataReload(Player* player, bool apply)
 {
     std::vector<Item*> playerItems = GetPlayerItems(player, true);
-    std::vector<Item*>::iterator iter = playerItems.begin();
-    for (iter; iter != playerItems.end(); ++iter)
+    for (std::vector<Item*>::iterator iter = playerItems.begin(); iter != playerItems.end(); ++iter)
     {
         Item* item = *iter;
         if (apply)
@@ -2131,7 +2141,7 @@ void ItemUpgrade::SendItemPacket(Player* player, Item* item) const
     //LocaleConstant loc_idx = session->GetSessionDbLocaleIndex();
 
     LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
-    if (loc_idx >= 0)
+    if (loc_idx < TOTAL_LOCALES)
     {
 
         if (ItemLocale const* il = sObjectMgr->GetItemLocale(pProto->ItemId))
@@ -2277,8 +2287,7 @@ void ItemUpgrade::SendItemPacket(Player* player, Item* item) const
 void ItemUpgrade::UpdateVisualCache(Player* player)
 {
     std::vector<Item*> items = GetPlayerItems(player, true);
-    std::vector<Item*>::const_iterator citer = items.begin();
-    for (citer; citer != items.end(); ++citer)
+    for (std::vector<Item*>::const_iterator citer = items.begin(); citer != items.end(); ++citer)
         SendItemPacket(player, *citer);
 }
 
@@ -2408,6 +2417,8 @@ bool ItemUpgrade::RefundEverything(Player* player, Item* item, const std::vector
                 return false;
             break;
         }
+        default:
+            break;
         }
     }
 
@@ -2435,6 +2446,8 @@ bool ItemUpgrade::RefundEverything(Player* player, Item* item, const std::vector
             TryAddItem(player, (uint32)r.reqVal1, (uint32)r.reqVal2, true);
             break;
         }
+        default:
+            break;
         }
     }
 
