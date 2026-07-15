@@ -13,9 +13,8 @@ jobs:
       OPENSSL_ROOT_DIR: C:/libs/openssl
     steps:
     - uses: actions/checkout@v5
-
-      with:
-        submodules: 'recursive'
+    with:
+        submodules: recursive
 
     - name: Set reusable strings
       id: strings
