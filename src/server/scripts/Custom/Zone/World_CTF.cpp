@@ -162,8 +162,6 @@ void GCTF::AddFlag(GameObject* go)
 
 void GCTF::LoadPlayerData()
 {
-    uint32 player_count = 0;
-
     QueryResult WorldPlayerData_Query = ZynDatabase.PQuery("SELECT `acct_id`, `guid`, `name`, `captures` FROM grumboz_ctf;"); // id, guid, name, map_id, area_id, zone_id, x, y, z, o
 
     if (WorldPlayerData_Query)
@@ -182,8 +180,6 @@ void GCTF::LoadPlayerData()
             data.guid = guid;
             data.name = name;
             data.captures = captures;
-
-            player_count += 1;
 
         } while (WorldPlayerData_Query->NextRow());
     }

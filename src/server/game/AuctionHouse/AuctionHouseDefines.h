@@ -29,6 +29,9 @@
 #include <vector>
 #include "ItemDefines.h"
 #include "WorldPacket.h"
+#include "World.h"
+#include "ItemTemplate.h"
+#include "ObjectMgr.h"
 
 #define MIN_AUCTION_TIME (12*HOUR)
 #define MAX_AUCTION_ITEMS 160

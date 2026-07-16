@@ -17,6 +17,8 @@
 
 #include "AuctionHouseWorkerThread.h"
 #include "World.h"
+#include "ItemTemplate.h"
+#include "ObjectMgr.h"
 
 template<typename T>
 void SignalQueue<T>::send(T value, std::stop_token stop) {
