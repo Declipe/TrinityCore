@@ -47,7 +47,7 @@ constexpr auto CONST_ARENA_RENAME = 100;
 constexpr auto CONST_ARENA_CUSTOMIZE = 100;
 constexpr auto CONST_ARENA_CHANGE_FACTION = 500;
 constexpr auto CONST_ARENA_CHANGE_RACE = 250;
-constexpr auto CONST_ARENA_POINT = 100;
+//constexpr auto CONST_ARENA_POINT = 100;
 
 #define GTS session->GetTrinityString
 #define GTS2 session->GetTrinityString2
