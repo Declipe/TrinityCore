@@ -2,6 +2,7 @@
 #define AditionalData_h__
 
 #include "Define.h"
+#include <ctime>
 
 class Player;
 class Transport;
