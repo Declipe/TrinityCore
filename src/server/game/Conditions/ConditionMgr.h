@@ -96,7 +96,7 @@ enum ConditionTypes
     CONDITION_STRING_ID                = 58,
     CONDITION_LABEL                    = 59,                   //                                                          only for master branch
     CONDITION_GROUP_STATUS             = 60,                   // GroupStatus            0              0                  true if player group status is (0 = not in group, 1 = in group, 2 = in group but not in raid, 3 = in raid group, 4 = not in group or not in raid)
-    CONDITION_GUILD_LEVEL              = 61,                   // Guildlevel       Level          match_type
+    CONDITION_GUILD_LEVEL              = 61,                   // Guildlevel             Level          match_type
     CONDITION_MAX
 };
 

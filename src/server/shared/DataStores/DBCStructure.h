@@ -1722,21 +1722,21 @@ struct TalentTabEntry
 struct SpellItemEnchantmentEntry
 {
     uint32 ID;                                              // 0
-    uint32 Charges;                                       // 1
-    uint32 Effect[MAX_ITEM_ENCHANTMENT_EFFECTS];            // 2-4
-    uint32 EffectPointsMin[MAX_ITEM_ENCHANTMENT_EFFECTS];   // 5-7
-    uint32 EffectPointsMax[MAX_ITEM_ENCHANTMENT_EFFECTS]; // 8-10
-    uint32 EffectArg[MAX_ITEM_ENCHANTMENT_EFFECTS];         // 11-13
+    uint64 Charges;                                       // 1
+    uint64 Effect[MAX_ITEM_ENCHANTMENT_EFFECTS];            // 2-4
+    uint64 EffectPointsMin[MAX_ITEM_ENCHANTMENT_EFFECTS];   // 5-7
+    uint64 EffectPointsMax[MAX_ITEM_ENCHANTMENT_EFFECTS]; // 8-10
+    uint64 EffectArg[MAX_ITEM_ENCHANTMENT_EFFECTS];         // 11-13
     char const* Name[TOTAL_LOCALES];
     std::string Name_Lang_Unk[1];                                   // 14-28
     uint32 Name_Lang_Mask;                                // 30
-    uint32 ItemVisual;                                      // 31
-    uint32 Flags;                                           // 32
-    uint32 SrcItemID;                                       // 33
-    uint32 ConditionID;                                     // 34
-    uint32 RequiredSkillID;                                 // 35
-    uint32 RequiredSkillRank;                               // 36
-    uint32 MinLevel;                                        // 37
+    uint64 ItemVisual;                                      // 31
+    uint64 Flags;                                           // 32
+    uint64 SrcItemID;                                       // 33
+    uint64 ConditionID;                                     // 34
+    uint64 RequiredSkillID;                                 // 35
+    uint64 RequiredSkillRank;                               // 36
+    uint64 MinLevel;                                        // 37
 };
 
 struct TaxiNodesEntry
