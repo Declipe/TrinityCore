@@ -4,6 +4,7 @@
 #include "GameTime.h"
 #include "Group.h"
 #include "MiscPackets.h"
+#include "World.h"
 #include "WorldSession.h"
 #include "WorldPacket.h"
 #include "WorldStatePackets.h"

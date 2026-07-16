@@ -2,6 +2,7 @@
 #include "Battlefield.h"
 #include "GridNotifiers.h"
 #include "GridNotifiersImpl.h"
+#include "ObjectAccessor.h"
 #include <G3D/g3dmath.h>
 
 // *******************************************************
