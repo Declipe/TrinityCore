@@ -24,6 +24,8 @@ http://rochet2.github.io/Transmogrification
 #include <vector>
 #include <unordered_map>
 #include <mutex>
+#include "WorldSession.h"
+
 
 class Creature;
 class Item;

@@ -4,6 +4,8 @@
 #include <vector>
 #include "Define.h"
 #include "ObjectGuid.h"
+#include "WorldSession.h"
+
 
 #define PRESETS // comment this line to disable preset feature totally
 #define MAX_OPTIONS 25 // do not alter

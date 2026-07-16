@@ -6,6 +6,7 @@
 #include "Chat.h"
 #include "BattlegroundQueue.h"
 #include "World.h"
+#include "WorldSession.h"
 #include <cstdarg>
 
 uint8 Unit::GetRace(bool forceoriginal) const
