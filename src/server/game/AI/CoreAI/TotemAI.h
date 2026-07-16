@@ -18,7 +18,9 @@
 #ifndef TRINITY_TOTEMAI_H
 #define TRINITY_TOTEMAI_H
 
+#include "EventProcessor.h"
 #include "CreatureAI.h"
+#include "Unit.h"
 #include "PassiveAI.h"
 #include "Timer.h"
 
@@ -40,7 +42,7 @@ class TC_GAME_API TotemAI : public NullCreatureAI
         ObjectGuid _victimGUID;
 };
 
-class KillMagnetEvent : public BasicEvent
+class TC_GAME_API KillMagnetEvent : public BasicEvent
 {
 public:
     KillMagnetEvent(Unit& self) : _self(self) {}

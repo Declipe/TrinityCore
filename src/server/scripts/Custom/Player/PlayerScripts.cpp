@@ -152,9 +152,9 @@ class bg_queue_commandscript : public CommandScript
 public:
     bg_queue_commandscript() : CommandScript("bg_queue_commandscript") {}
 
-    std::vector<ChatCommand> GetCommands() const override
+    ChatCommandTable GetCommands() const override
     {
-        static std::vector<ChatCommand> bgqCommandTable =
+        static ChatCommandTable bgqCommandTable =
         {
             { "queue",    HandleBgQueueCommand,    rbac::RBAC_PERM_COMMAND_GM, Console::No },
             { "leave",    HandleBgLeaveCommand,    rbac::RBAC_PERM_COMMAND_GM, Console::No },
@@ -162,7 +162,7 @@ public:
             //{ "",  HandleBgWindowCommand,    rbac::RBAC_PERM_COMMAND_GM, Console::Yes },
         };
 
-        static std::vector<ChatCommand> commandTable =
+        static ChatCommandTable commandTable =
         {
             { "rgb", bgqCommandTable },
         };

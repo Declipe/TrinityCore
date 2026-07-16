@@ -1057,7 +1057,6 @@ void DBCMgr::LoadBattlemasterListStore()
         return;
     }
 
-    uint32 count = 0;
     do
     {
         Field* fields = result->Fetch();
@@ -1086,7 +1085,6 @@ void DBCMgr::LoadBattlemasterListStore()
 
         BattlemasterListStore[newBattlemasterList->ID] = newBattlemasterList;
 
-        ++count;
     } while (result->NextRow());
 
     TC_LOG_INFO("server.loading", ">> Loaded {} battlemaster list entries in {} ms", (unsigned long)BattlemasterListStore.size(), GetMSTimeDiffToNow(oldMSTime));
@@ -1170,7 +1168,6 @@ void DBCMgr::LoadPvPDifficultyStore()
         return;
     }
 
-    uint32 count = 0;
     do {
         Field* fields = result->Fetch(); // 0
         uint32 id = fields[0].GetUInt32();
@@ -1185,7 +1182,6 @@ void DBCMgr::LoadPvPDifficultyStore()
         newPvPDifficulty->Difficulty = fields[6].GetUInt32();
         PvPDifficultyStore[newPvPDifficulty->ID] = newPvPDifficulty;
 
-        ++count;
     } while (result->NextRow());
 
     TC_LOG_INFO("server.loading", ">> Loaded {} PvPDifficulty entries in {} ms", (unsigned long)PvPDifficultyStore.size(), GetMSTimeDiffToNow(oldMSTime));
@@ -1204,7 +1200,6 @@ if (!result)
         return;
     }
 
-    // uint32 count = 0;
     do {
         Field* fields = result->Fetch();
         SpellItemEnchantmentEntry* newSpellItemEnchantment = new SpellItemEnchantmentEntry;
