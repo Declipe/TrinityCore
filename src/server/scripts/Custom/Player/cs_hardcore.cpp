@@ -1,5 +1,6 @@
 #include "ScriptMgr.h"
 #include "Chat.h"
+#include "ChatCommand.h"
 #include "Player.h"
 #include "ObjectAccessor.h"
 #include "ObjectMgr.h"
@@ -8,26 +9,28 @@
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
 
+using namespace Trinity::ChatCommands;
+
 class hardcore_commandscript : public CommandScript
 {
 public:
     hardcore_commandscript() : CommandScript("hardcore_commandscript") {}
 
-        std::vector<ChatCommand> GetCommands() const override
+    ChatCommandTable GetCommands() const override
     {
-        static std::vector<ChatCommand> hardcoreCommandTable =
+        static ChatCommandTable hardcoreCommandTable =
         {
-            { "on",        rbac::RBAC_PERM_COMMAND_RTX108, false, &HandleHardcoreEnableCommand,   "" },
-            { "off",       rbac::RBAC_PERM_COMMAND_RTX109, false, &HandleHardcoreDisableCommand,   "" },
-            { "status",        rbac::RBAC_PERM_COMMAND_RTX110, false, &HandleHardcoreStatusCommand,   "" },
-            { "leaderboard",   rbac::RBAC_PERM_COMMAND_RTX111, false, &HandleHardcoreLeaderboardCommand,   "" },
-			{ "addlife",   rbac::RBAC_PERM_COMMAND_RTX113, false, &HandleHardcoreExtraLifeGiveCommand,   "" },
-			{ "checklife",   rbac::RBAC_PERM_COMMAND_RTX114, false, &HandleHardcoreExtraLifeCheckCommand,   "" },
+            { "on",          HandleHardcoreEnableCommand,          rbac::RBAC_PERM_COMMAND_RTX108, Console::No },
+            { "off",         HandleHardcoreDisableCommand,         rbac::RBAC_PERM_COMMAND_RTX109, Console::No },
+            { "status",      HandleHardcoreStatusCommand,          rbac::RBAC_PERM_COMMAND_RTX110, Console::No },
+            { "leaderboard", HandleHardcoreLeaderboardCommand,     rbac::RBAC_PERM_COMMAND_RTX111, Console::No },
+            { "addlife",     HandleHardcoreExtraLifeGiveCommand,   rbac::RBAC_PERM_COMMAND_RTX113, Console::No },
+            { "checklife",   HandleHardcoreExtraLifeCheckCommand,  rbac::RBAC_PERM_COMMAND_RTX114, Console::No },
         };
 
-        static std::vector<ChatCommand> commandTable =
+        static ChatCommandTable commandTable =
         {
-            { "hardcore", rbac::RBAC_PERM_COMMAND_RTX112, false, nullptr, "", hardcoreCommandTable },
+            { "hardcore", hardcoreCommandTable },
         };
         return commandTable;
     }

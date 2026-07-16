@@ -29,7 +29,6 @@ private:
     // VIP
     bool m_vip;                 // Used for VIP func
     uint32 m_premiumTimer;
-    uint32 m_coins;             // Coins for ingame store
     time_t m_unsetdate;         // time (unixtime) of unsetdate vip previlegies
 };
 
