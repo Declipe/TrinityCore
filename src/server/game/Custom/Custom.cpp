@@ -1,6 +1,7 @@
 #include "Custom.h"
 #include "Battleground.h"
 #include "BattlegroundMgr.h"
+#include "ObjectAccessor.h"
 #include "Player.h"
 #include "Chat.h"
 #include "BattlegroundQueue.h"
