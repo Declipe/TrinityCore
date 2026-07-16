@@ -1,5 +1,9 @@
 #include "Custom/Dcl.h"
 
+#if TRINITY_COMPILER == TRINITY_COMPILER_GNU
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 class ZynPlayerScripts : public PlayerScript
 {
 public:
@@ -158,7 +162,7 @@ public:
         {
             { "queue",    HandleBgQueueCommand,    rbac::RBAC_PERM_COMMAND_GM, Console::No },
             { "leave",    HandleBgLeaveCommand,    rbac::RBAC_PERM_COMMAND_GM, Console::No },
-            { "window",  HandleBgWindowCommand,    rbac::RBAC_PERM_COMMAND_GM, Console::No },
+            { "window",  HandleBgWindowCommand,    rbac::RBAC_PERM_COMMAND_GM, Console::No }
             //{ "",  HandleBgWindowCommand,    rbac::RBAC_PERM_COMMAND_GM, Console::Yes },
         };
 

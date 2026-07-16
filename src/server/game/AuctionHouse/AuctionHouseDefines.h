@@ -28,6 +28,7 @@
 #include <unordered_set>
 #include <vector>
 #include "ItemDefines.h"
+#include "WorldPacket.h"
 
 #define MIN_AUCTION_TIME (12*HOUR)
 #define MAX_AUCTION_ITEMS 160
