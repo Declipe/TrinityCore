@@ -19,12 +19,15 @@
 #define AUCTION_HOUSE_DEFINES_H
 
 #include "Common.h"
+#include "DatabaseEnv.h"
+#include "DatabaseEnvFwd.h"
 #include "ObjectGuid.h"
 #include <optional>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include "ItemDefines.h"
 
 #define MIN_AUCTION_TIME (12*HOUR)
 #define MAX_AUCTION_ITEMS 160
