@@ -14,13 +14,12 @@ jobs:
     steps:
     - uses: actions/checkout@v5
       with:
-        submodules: recursive # <--- ДОБАВЛЕНО ТУТ
-
+        submodules: recursive
     - name: Set reusable strings
       id: strings
       shell: bash
       run: |
-        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+        echo "build-output-dir=${{ github.workspace }}\build" >> "$GITHUB_OUTPUT"
 
     - name: Get current OpenSSL version
       id: openssl-info
