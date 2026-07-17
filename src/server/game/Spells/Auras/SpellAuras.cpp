@@ -33,6 +33,7 @@
 #include "SpellMgr.h"
 #include "SpellPackets.h"
 #include "SpellScript.h"
+#include "SpellInfo.h"
 #include "Unit.h"
 #include "Util.h"
 #include "Vehicle.h"
