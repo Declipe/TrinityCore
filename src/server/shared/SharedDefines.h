@@ -328,7 +328,6 @@ enum Powers : int8
     POWER_RUNE                          = 5,  // TITLE Runes
     POWER_RUNIC_POWER                   = 6,  // TITLE Runic Power
     MAX_POWERS                          = 7,  // SKIP
-    POWER_ALL                           = 127 // SKIP
 };
 
 #define MAX_RUNES 6
