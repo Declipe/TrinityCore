@@ -15,13 +15,13 @@ build_script:
     
     git submodule update
     
-    cmake -S . -B .\build -G"Visual Studio 17 2022" -A x64 -DSCRIPTS=dynamic -DWITH_WARNINGS_AS_ERRORS=OFF -DTOOLS=ON
+    cmake -S . -B .\build -G"Visual Studio 17 2022" -A x64 -DSCRIPTS=dynamic -DWITH_WARNINGS_AS_ERRORS=OFF -DTOOLS=OFF
 
     cd build
 
     "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" /nologo /m:2 /p:Configuration=Release /p:Platform="X64" /verbosity:minimal /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll" "Ctulhunet.ru.sln"
 
-    cd bin\RelWithDebInfo\
+    cd bin\Release\
 
     copy "%MYSQL_ROOT_DIR%\lib\libmysql.dll" libmysql.dll
 
@@ -33,11 +33,11 @@ build_script:
 
     cd ..
 
-    7z a TrinityCoreWin64VS2022.zip .\RelWithDebInfo\*
+    7z a TrinityCoreWin64VS2022.zip .\Release\*
 
-    del /F /Q /S "RelWithDebInfo\*.pdb" > NUL
+    del /F /Q /S "Release\*.pdb" > NUL
 
-    7z a TrinityCoreWin64VS2022NoSymbols.zip .\RelWithDebInfo\*
+    7z a TrinityCoreWin64VS2022NoSymbols.zip .\Release\*
 
 test: off
 artifacts:
