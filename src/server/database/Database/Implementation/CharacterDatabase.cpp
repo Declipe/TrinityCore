@@ -608,6 +608,7 @@ void CharacterDatabaseConnection::DoPrepareStatements()
     PrepareStatement(CHAR_GET_CHARACTERS_ONLINE_ON_ACCOUNT, "SELECT guid FROM characters WHERE online > 0 AND account = ?", CONNECTION_SYNCH);
    // PrepareStatement(CHAR_INS_HARDCORE_DEATH, "INSERT INTO hardcore_deaths(char_guid, char_name, level, playtime, killer_name, death_time) VALUES ('%u', '%s', '%u', '%u', '%s', '%u')", CONNECTION_SYNCH);
     PrepareStatement(CHAR_INS_HARDCORE_DEATH, "INSERT INTO hardcore_deaths(char_guid, char_name, level, playtime, killer_name, death_time) VALUES (?, ?, ?, ?, ?, ?)", CONNECTION_ASYNC);
+    PrepareStatement(CHAR_INS_ARENA_REPLAYS, "INSERT INTO character_arena_replays (arenaTypeId, typeId, contentSize, contents, mapId, winnerTeamName, winnerTeamRating, winnerTeamMMR, loserTeamName, loserTeamRating, loserTeamMMR, winnerPlayerGuids, loserPlayerGuids) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", CONNECTION_ASYNC);
 }
 
 CharacterDatabaseConnection::CharacterDatabaseConnection(MySQLConnectionInfo& connInfo) : MySQLConnection(connInfo)

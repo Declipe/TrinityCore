@@ -960,6 +960,7 @@ public:
     bool IsPlayingNative() const { return GetTeam() == m_team; }
     uint32 GetCFSTeam() const { return m_team; }
     uint32 GetTeam() const { return m_bgData.bgTeam && GetBattleground() ? m_bgData.bgTeam : m_team; }
+    uint32 GetBGTeam() const { return GetTeam(); }
     bool SendRealNameQuery();
     bool HasExtraLife() const;
     FakePlayers m_FakePlayers;
@@ -2235,6 +2236,12 @@ public:
     void SetPendingBind(uint32 instanceId, uint32 bindTimer);
     bool HasPendingBind() const { return _pendingBindId > 0; }
     void SendRaidInfo();
+
+    // Replay features
+    bool IsSpectator() const { return m_isSpectator; }
+    void SetIsSpectator(bool val) { m_isSpectator = val; }
+    uint32 GetPendingSpectatorForBG() const { return m_pendingSpectatorForBG; }
+    void SetPendingSpectatorForBG(uint32 bgId) { m_pendingSpectatorForBG = bgId; }
     void SendSavedInstances();
     bool Satisfy(AccessRequirement const* ar, uint32 target_map, bool report = false);
     bool CheckInstanceValidity(bool /*isLogin*/);
@@ -2666,6 +2673,9 @@ private:
 
     uint32 _pendingBindId;
     uint32 _pendingBindTimer;
+
+    bool m_isSpectator;
+    uint32 m_pendingSpectatorForBG;
 
     uint32 _activeCheats;
 
