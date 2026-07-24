@@ -360,9 +360,6 @@ Player::Player(WorldSession* session) : Unit(true)
 
     SetPendingBind(0, 0);
 
-    m_isSpectator = false;
-    m_pendingSpectatorForBG = 0;
-
     _activeCheats = CHEAT_NONE;
     healthBeforeDuel = 0;
     manaBeforeDuel = 0;

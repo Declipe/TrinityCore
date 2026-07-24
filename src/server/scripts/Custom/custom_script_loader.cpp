@@ -81,7 +81,6 @@ void AddSC_Transmogrification();
 void AddSC_mod_DefaultSpec();
 void AddSC_REFORGER_NPC();
 void AddSC_ItemUse_item_custom();
-void AddBGReplayScripts();
 
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
@@ -155,5 +154,4 @@ void AddCustomScripts()
     AddSC_hardcore_commandscript();
     AddAutoReviveScripts();
     AddSC_ServerMenuPlayerGossip();
-    AddBGReplayScripts();
 }

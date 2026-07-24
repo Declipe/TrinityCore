@@ -94,8 +94,6 @@ Battleground::Battleground()
     m_LevelMax          = 0;
     m_InBGFreeSlotQueue = false;
     m_SetDeleteThis     = false;
-    m_isReplay          = false;
-    m_replayId          = 0;
 
     m_MaxPlayersPerTeam = 0;
     m_MaxPlayers        = 0;
