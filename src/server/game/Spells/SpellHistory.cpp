@@ -479,7 +479,7 @@ bool SpellHistory::HasCooldown(uint32 spellId, uint32 itemId /*= 0*/, bool ignor
     return HasCooldown(sSpellMgr->AssertSpellInfo(spellId), itemId, ignoreCategoryCooldown);
 }
 
-bool SpellHistory::HasOnHoldCooldown(uint32 spellId) const
+bool SpellHistory::HasCooldownOnHold(uint32 spellId) const
 {
     auto itr = _spellCooldowns.find(spellId);
     return itr != _spellCooldowns.end() && itr->second.OnHold;
