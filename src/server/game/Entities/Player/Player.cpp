@@ -1407,6 +1407,8 @@ void Player::setDeathState(DeathState s)
         UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DEATH, 1);
         UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DEATH_IN_DUNGEON, 1);
 
+        FailQuestsOnDeath();
+
         // reset all death criterias
         ResetAchievementCriteria(ACHIEVEMENT_CRITERIA_CONDITION_NO_DEATH, 0);
     }
@@ -15588,6 +15590,21 @@ void Player::FailQuest(uint32 questId)
             if (ItemTemplate const* itemTemplate = sObjectMgr->GetItemTemplate(quest->ItemDrop[i]))
                 if (quest->ItemDropQuantity[i] > 0 && itemTemplate->GetBonding() == BIND_QUEST_ITEM)
                     DestroyItemCount(quest->ItemDrop[i], 9999, true);
+    }
+}
+
+void Player::FailQuestsOnDeath()
+{
+    for (auto& [id, statusData] : m_QuestStatus)
+    {
+        if (statusData.Status != QUEST_STATUS_INCOMPLETE)
+            continue;
+
+        Quest const* quest = sObjectMgr->GetQuestTemplate(id);
+        if (!quest || !quest->HasFlag(QUEST_FLAGS_STAY_ALIVE))
+            continue;
+
+        FailQuest(id);
     }
 }
 
