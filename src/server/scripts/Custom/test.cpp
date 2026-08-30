@@ -463,14 +463,30 @@ static EmblemInfo const Emblems[EMBLEM_COUNT] =
 // ExchangeRate[from][to] = how many 'from' emblems are needed for 1 'to' emblem.
 // Diagonal (same emblem) = 0 -> exchange not allowed.
 // Adjust these values to your liking.
-static uint32 const ExchangeRate[EMBLEM_COUNT][EMBLEM_COUNT] =
+//static uint32 const ExchangeRate[EMBLEM_COUNT][EMBLEM_COUNT] =
+//{
+//    //  to:  Heroism  Valor  Conquest  Triumph  Frost      from:
+//    {        0,       2,     3,        4,       5     },   // Heroism
+//    {        1,       0,     2,        3,       4     },   // Valor
+//    {        1,       1,     0,        2,       3     },   // Conquest
+//    {        1,       1,     1,        0,       2     },   // Triumph
+//    {        1,       1,     1,        1,       0     }    // Frost
+//};
+
+struct Ratio
 {
-    //  to:  Heroism  Valor  Conquest  Triumph  Frost      from:
-    {        0,       2,     3,        4,       5     },   // Heroism
-    {        1,       0,     2,        3,       4     },   // Valor
-    {        1,       1,     0,        2,       3     },   // Conquest
-    {        1,       1,     1,        0,       2     },   // Triumph
-    {        1,       1,     1,        1,       0     }    // Frost
+    uint32 cost;    // how many 'from' emblems you pay
+    uint32 reward;  // how many 'to' emblems you receive
+};
+
+static Ratio const ExchangeRatio[EMBLEM_COUNT][EMBLEM_COUNT] =
+{
+    //   to:   Heroism   Valor     Conquest  Triumph   Frost       from:
+    /*Heroism */ { {0,0},   {2,1},   {3,1},   {4,1},   {5,1} },
+    /*Valor   */ { {1,2},   {0,0},   {2,1},   {3,1},   {4,1} },   // downgrade: 1 Valor -> 2 Heroism
+    /*Conquest*/ { {1,3},   {1,2},   {0,0},   {2,1},   {3,1} },   // downgrade: 1 Conquest -> 3 Heroism, -> 2 Valor
+    /*Triumph */ { {1,4},   {1,3},   {1,2},   {0,0},   {2,1} },
+    /*Frost   */ { {1,3},   {1,4},   {1,3},   {1,2},   {0,0} }    // downgrade: 1 Frost -> 2 Triumph, etc.
 };
 
 struct npc_emblem_exchanger2 : public ScriptedAI
@@ -527,17 +543,18 @@ struct npc_emblem_exchanger2 : public ScriptedAI
 
         for (uint8 to = 0; to < EMBLEM_COUNT; ++to)
         {
-            if (to == from || ExchangeRate[from][to] == 0)
+            Ratio const& r = ExchangeRatio[from][to];
+            if (to == from || r.cost == 0 || r.reward == 0)
                 continue;
 
             std::ostringstream ss;
             ss << "Receive: " << Emblems[to].name
-                << " (rate: " << ExchangeRate[from][to] << " : 1)";
+                << " (rate: " << r.cost << " -> " << r.reward << ")";
 
             std::ostringstream box;
-            box << "Enter the amount of " << Emblems[to].name << " to receive:";
+            box << "Enter the amount of " << Emblems[to].name
+                << " to receive (multiple of " << r.reward << "):";
 
-            // code box: sender carries the 'from' index, action carries the 'to' index
             AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, ss.str(),
                 SENDER_FROM_BASE + from, ACTION_TO_BASE + to,
                 box.str(), 0, true);
@@ -570,8 +587,8 @@ struct npc_emblem_exchanger2 : public ScriptedAI
         CloseGossipMenuFor(player);
         ChatHandler handler(player->GetSession());
 
-        uint32 rate = ExchangeRate[from][to];
-        if (from == to || rate == 0)
+        Ratio const& r = ExchangeRatio[from][to];
+        if (from == to || r.cost == 0 || r.reward == 0)
             return true;
 
         // --- input validation ---
@@ -598,13 +615,22 @@ struct npc_emblem_exchanger2 : public ScriptedAI
             return true;
         }
 
+        // amount must be a whole number of "bundles"
+        if (amount % r.reward != 0)
+        {
+            handler.PSendSysMessage("|cffff0000The amount must be a multiple of %u (rate: %u -> %u).|r",
+                r.reward, r.cost, r.reward);
+            return true;
+        }
+
         if (amount > MAX_PER_EXCHANGE)
         {
             handler.PSendSysMessage("|cffff0000Maximum %u emblems per transaction.|r", MAX_PER_EXCHANGE);
             return true;
         }
 
-        uint32 cost = amount * rate;
+        uint32 bundles = amount / r.reward;
+        uint32 cost = bundles * r.cost;
 
         // --- currency check ---
         if (player->GetItemCount(Emblems[from].itemId) < cost)
