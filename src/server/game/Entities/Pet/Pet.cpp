@@ -35,6 +35,7 @@
 #include "TalentPackets.h"
 #include "Unit.h"
 #include "Util.h"
+#include "World.h"
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include "ZoneScript.h"
@@ -711,6 +712,13 @@ void Pet::Update(uint32 diff)
 
 void Pet::LoseHappiness()
 {
+    if (!sGameConfig->GetIntConfig("CONFIG_CLASSIC_PET_HAPPINESS_DECAY"))
+    {
+        if (int32 const maxHappiness = int32(GetMaxPower(POWER_HAPPINESS)))
+            SetPower(POWER_HAPPINESS, maxHappiness);
+        return;
+    }
+
     uint32 curValue = GetPower(POWER_HAPPINESS);
     if (curValue <= 0)
         return;

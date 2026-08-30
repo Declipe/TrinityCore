@@ -23,6 +23,7 @@
 #include "Common.h"
 #include "ConditionMgr.h"
 #include "Containers.h"
+#include "CustomConfig.h"
 #include "DatabaseEnv.h"
 #include "DBCStores.h"
 #include "DisableMgr.h"
@@ -4886,6 +4887,8 @@ void Spell::TakePower()
 
 void Spell::TakeAmmo()
 {
+    if (!sGameConfig->GetIntConfig("CONFIG_CLASSIC_CONSUME_AMMO"))
+        return;
     // Only players use ammo
     Player* player = m_caster->ToPlayer();
     if (!player)
