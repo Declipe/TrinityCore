@@ -515,10 +515,16 @@ struct npc_emblem_exchanger2 : public ScriptedAI
         return true;
     }
 
-    bool OnGossipSelect(Player* player, uint32 /*sender*/, uint32 gossipListId) override
+    // -------- second menu: choose what you receive --------
+    bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
     {
-        uint32 action = GetGossipActionFor(player, gossipListId);
+        uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+        uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+        return GossipSelect(player, sender, action);
+    }
 
+    bool GossipSelect(Player* player, uint32 /*sender*/, uint32 action)
+    {
         if (action == ACTION_CLOSE)
         {
             CloseGossipMenuFor(player);
@@ -561,13 +567,16 @@ struct npc_emblem_exchanger2 : public ScriptedAI
         return true;
     }
 
-    bool OnGossipSelectCode(Player* player, uint32 /*sender*/, uint32 gossipListId, char const* code) override
+    // -------- amount entered: perform the exchange --------
+    bool OnGossipSelectCode(Player* player, uint32 /*menu_id*/, uint32 gossipListId, const char* code) override
     {
-        uint32 sender = GetGossipSenderFor(player, gossipListId);
-        uint32 action = GetGossipActionFor(player, gossipListId);
+        uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+        uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+        return GossipSelectCode(player, me, sender, action, code);
+    }
 
-        CloseGossipMenuFor(player);
-
+    bool GossipSelectCode(Player* player, Creature* /*creature*/, uint32 sender, uint32 action, const char* code)
+    {
         if (sender < SENDER_FROM_BASE || sender >= SENDER_FROM_BASE + EMBLEM_COUNT ||
             action < ACTION_TO_BASE || action >= ACTION_TO_BASE + EMBLEM_COUNT)
             return false;
@@ -575,6 +584,7 @@ struct npc_emblem_exchanger2 : public ScriptedAI
         uint8 from = uint8(sender - SENDER_FROM_BASE);
         uint8 to = uint8(action - ACTION_TO_BASE);
 
+        CloseGossipMenuFor(player);
         ChatHandler handler(player->GetSession());
 
         Ratio const& r = ExchangeRatio[from][to];
@@ -599,12 +609,13 @@ struct npc_emblem_exchanger2 : public ScriptedAI
 
         uint32 amount = uint32(atoi(code));
 
-        if (amount == 0 || amount > MAX_PER_EXCHANGE)
+        if (amount == 0)
         {
-            handler.PSendSysMessage("|cffff0000Amount must be between 1 and %u.|r", uint32(MAX_PER_EXCHANGE));
+            handler.PSendSysMessage("|cffff0000The amount must be greater than zero.|r");
             return true;
         }
 
+        // amount must be a whole number of "bundles"
         if (amount % r.reward != 0)
         {
             handler.PSendSysMessage("|cffff0000The amount must be a multiple of %u (rate: %u -> %u).|r",
@@ -612,47 +623,38 @@ struct npc_emblem_exchanger2 : public ScriptedAI
             return true;
         }
 
+        if (amount > MAX_PER_EXCHANGE)
+        {
+            handler.PSendSysMessage("|cffff0000Maximum %u emblems per transaction.|r", MAX_PER_EXCHANGE);
+            return true;
+        }
+
         uint32 bundles = amount / r.reward;
         uint32 cost = bundles * r.cost;
 
-        // --- currency check (inventory only, no bank) ---
-        if (!player->HasItemCount(Emblems[from].itemId, cost))
+        // --- currency check ---
+        if (player->GetItemCount(Emblems[from].itemId) < cost)
         {
             handler.PSendSysMessage("|cffff0000Not enough %s. Required: %u|r",
                 Emblems[from].name, cost);
             return true;
         }
 
-        // --- precheck bag space BEFORE deducting ---
+        // --- bag space check ---
         ItemPosCountVec dest;
-        if (player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, Emblems[to].itemId, amount) != EQUIP_ERR_OK)
+        InventoryResult msg = player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, Emblems[to].itemId, amount);
+        if (msg != EQUIP_ERR_OK)
         {
-            handler.PSendSysMessage("|cffff0000Not enough bag space.|r");
+            player->SendEquipError(msg, nullptr, nullptr, Emblems[to].itemId);
             return true;
         }
 
-        // --- deduct ---
+        // --- exchange (deduct first, then grant) ---
         player->DestroyItemCount(Emblems[from].itemId, cost, true);
 
-        // --- RECOMPUTE dest AFTER deduction (bag layout changed) ---
-        dest.clear();
-        if (player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, Emblems[to].itemId, amount) != EQUIP_ERR_OK)
-        {
-            // should never happen, but refund just in case
-            player->AddItem(Emblems[from].itemId, cost);
-            handler.PSendSysMessage("|cffff0000Exchange failed, currency refunded.|r");
-            return true;
-        }
+        if (Item* item = player->StoreNewItem(dest, Emblems[to].itemId, true))
+            player->SendNewItem(item, amount, true, false);
 
-        Item* item = player->StoreNewItem(dest, Emblems[to].itemId, true);
-        if (!item)
-        {
-            player->AddItem(Emblems[from].itemId, cost);
-            handler.PSendSysMessage("|cffff0000Exchange failed, currency refunded.|r");
-            return true;
-        }
-
-        player->SendNewItem(item, amount, true, false);
         handler.PSendSysMessage("|cff00ff00Received %u x %s for %u x %s.|r",
             amount, Emblems[to].name, cost, Emblems[from].name);
         return true;
