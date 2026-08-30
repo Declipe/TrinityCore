@@ -431,8 +431,213 @@ class spell_gen_bm_on : public SpellScript
     }
 };
 
+enum ExchangerConstants
+{
+    MAX_PER_EXCHANGE = 1000,   // limit per single transaction
+
+    // action/sender encoding
+    ACTION_FROM_BASE = GOSSIP_ACTION_INFO_DEF + 100,   // first menu:  pick "pay with"
+    ACTION_TO_BASE = GOSSIP_ACTION_INFO_DEF + 200,   // second menu: pick "receive"
+    SENDER_FROM_BASE = GOSSIP_SENDER_MAIN + 100,       // carries "from" index
+    ACTION_BACK = GOSSIP_ACTION_INFO_DEF + 1,
+    ACTION_CLOSE = GOSSIP_ACTION_INFO_DEF + 2
+};
+
+struct EmblemInfo
+{
+    uint32 itemId;
+    char const* name;
+};
+
+static constexpr uint8 EMBLEM_COUNT = 5;
+
+static EmblemInfo const Emblems[EMBLEM_COUNT] =
+{
+    { 40752, "Emblem of Heroism"  },
+    { 40753, "Emblem of Valor"    },
+    { 45624, "Emblem of Conquest" },
+    { 47241, "Emblem of Triumph"  },
+    { 49426, "Emblem of Frost"    }
+};
+
+// ExchangeRate[from][to] = how many 'from' emblems are needed for 1 'to' emblem.
+// Diagonal (same emblem) = 0 -> exchange not allowed.
+// Adjust these values to your liking.
+static uint32 const ExchangeRate[EMBLEM_COUNT][EMBLEM_COUNT] =
+{
+    //  to:  Heroism  Valor  Conquest  Triumph  Frost      from:
+    {        0,       2,     3,        4,       5     },   // Heroism
+    {        1,       0,     2,        3,       4     },   // Valor
+    {        1,       1,     0,        2,       3     },   // Conquest
+    {        1,       1,     1,        0,       2     },   // Triumph
+    {        1,       1,     1,        1,       0     }    // Frost
+};
+
+struct npc_emblem_exchanger2 : public ScriptedAI
+{
+    npc_emblem_exchanger2(Creature* creature) : ScriptedAI(creature) {}
+
+    // -------- first menu: choose what you pay with --------
+    bool OnGossipHello(Player* player) override
+    {
+        ClearGossipMenuFor(player);
+
+        for (uint8 i = 0; i < EMBLEM_COUNT; ++i)
+        {
+            std::ostringstream ss;
+            ss << "Pay with: " << Emblems[i].name
+                << " (you have: " << player->GetItemCount(Emblems[i].itemId) << ")";
+
+            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, ss.str(),
+                GOSSIP_SENDER_MAIN, ACTION_FROM_BASE + i);
+        }
+
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Close",
+            GOSSIP_SENDER_MAIN, ACTION_CLOSE);
+
+        SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+        return true;
+    }
+
+    // -------- second menu: choose what you receive --------
+    bool OnGossipSelect(Player* player, uint32 /*menu_id*/, uint32 gossipListId) override
+    {
+        uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+        uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+        return GossipSelect(player, sender, action);
+    }
+
+    bool GossipSelect(Player* player, uint32 /*sender*/, uint32 action)
+    {
+        if (action == ACTION_CLOSE)
+        {
+            CloseGossipMenuFor(player);
+            return true;
+        }
+
+        if (action == ACTION_BACK)
+            return OnGossipHello(player);
+
+        if (action < ACTION_FROM_BASE || action >= ACTION_FROM_BASE + EMBLEM_COUNT)
+            return false;
+
+        uint8 from = uint8(action - ACTION_FROM_BASE);
+
+        ClearGossipMenuFor(player);
+
+        for (uint8 to = 0; to < EMBLEM_COUNT; ++to)
+        {
+            if (to == from || ExchangeRate[from][to] == 0)
+                continue;
+
+            std::ostringstream ss;
+            ss << "Receive: " << Emblems[to].name
+                << " (rate: " << ExchangeRate[from][to] << " : 1)";
+
+            std::ostringstream box;
+            box << "Enter the amount of " << Emblems[to].name << " to receive:";
+
+            // code box: sender carries the 'from' index, action carries the 'to' index
+            AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, ss.str(),
+                SENDER_FROM_BASE + from, ACTION_TO_BASE + to,
+                box.str(), 0, true);
+        }
+
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "<- Back",
+            GOSSIP_SENDER_MAIN, ACTION_BACK);
+
+        SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
+        return true;
+    }
+
+    // -------- amount entered: perform the exchange --------
+    bool OnGossipSelectCode(Player* player, uint32 /*menu_id*/, uint32 gossipListId, const char* code) override
+    {
+        uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(gossipListId);
+        uint32 action = player->PlayerTalkClass->GetGossipOptionAction(gossipListId);
+        return GossipSelectCode(player, me, sender, action, code);
+    }
+
+    bool GossipSelectCode(Player* player, Creature* /*creature*/, uint32 sender, uint32 action, const char* code)
+    {
+        if (sender < SENDER_FROM_BASE || sender >= SENDER_FROM_BASE + EMBLEM_COUNT ||
+            action < ACTION_TO_BASE || action >= ACTION_TO_BASE + EMBLEM_COUNT)
+            return false;
+
+        uint8 from = uint8(sender - SENDER_FROM_BASE);
+        uint8 to = uint8(action - ACTION_TO_BASE);
+
+        CloseGossipMenuFor(player);
+        ChatHandler handler(player->GetSession());
+
+        uint32 rate = ExchangeRate[from][to];
+        if (from == to || rate == 0)
+            return true;
+
+        // --- input validation ---
+        if (!code || !*code)
+        {
+            handler.PSendSysMessage("|cffff0000You didn't enter anything.|r");
+            return true;
+        }
+
+        for (char const* c = code; *c; ++c)
+        {
+            if (!isdigit(*c))
+            {
+                handler.PSendSysMessage("|cffff0000Please enter a positive whole number.|r");
+                return true;
+            }
+        }
+
+        uint32 amount = uint32(atoi(code));
+
+        if (amount == 0)
+        {
+            handler.PSendSysMessage("|cffff0000The amount must be greater than zero.|r");
+            return true;
+        }
+
+        if (amount > MAX_PER_EXCHANGE)
+        {
+            handler.PSendSysMessage("|cffff0000Maximum %u emblems per transaction.|r", MAX_PER_EXCHANGE);
+            return true;
+        }
+
+        uint32 cost = amount * rate;
+
+        // --- currency check ---
+        if (player->GetItemCount(Emblems[from].itemId) < cost)
+        {
+            handler.PSendSysMessage("|cffff0000Not enough %s. Required: %u|r",
+                Emblems[from].name, cost);
+            return true;
+        }
+
+        // --- bag space check ---
+        ItemPosCountVec dest;
+        InventoryResult msg = player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, Emblems[to].itemId, amount);
+        if (msg != EQUIP_ERR_OK)
+        {
+            player->SendEquipError(msg, nullptr, nullptr, Emblems[to].itemId);
+            return true;
+        }
+
+        // --- exchange (deduct first, then grant) ---
+        player->DestroyItemCount(Emblems[from].itemId, cost, true);
+
+        if (Item* item = player->StoreNewItem(dest, Emblems[to].itemId, true))
+            player->SendNewItem(item, amount, true, false);
+
+        handler.PSendSysMessage("|cff00ff00Received %u x %s for %u x %s.|r",
+            amount, Emblems[to].name, cost, Emblems[from].name);
+        return true;
+    }
+};
+
 void AddSC_test()
 {
+    RegisterCreatureAI(npc_emblem_exchanger2);
     new orrig1();
     new npcpeon();
     RegisterSpellScript(spell_gen_showlabel_off);
