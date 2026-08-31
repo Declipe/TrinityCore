@@ -481,12 +481,12 @@ struct Ratio
 
 static Ratio const ExchangeRatio[EMBLEM_COUNT][EMBLEM_COUNT] =
 {
-    //   to:   Heroism   Valor     Conquest  Triumph   Frost       from:
+    //   to:   Heroism   Valor     Conquest  Triumph   Frost from:
     /*Heroism */ { {0,0},   {2,1},   {3,1},   {4,1},   {5,1} },
-    /*Valor   */ { {1,2},   {0,0},   {2,1},   {3,1},   {4,1} },   // downgrade: 1 Valor -> 2 Heroism
-    /*Conquest*/ { {1,3},   {1,2},   {0,0},   {2,1},   {3,1} },   // downgrade: 1 Conquest -> 3 Heroism, -> 2 Valor
+    /*Valor   */ { {1,2},   {0,0},   {2,1},   {3,1},   {4,1} },
+    /*Conquest*/ { {1,3},   {1,2},   {0,0},   {2,1},   {3,1} },
     /*Triumph */ { {1,4},   {1,3},   {1,2},   {0,0},   {2,1} },
-    /*Frost   */ { {1,3},   {1,4},   {1,3},   {1,2},   {0,0} }    // downgrade: 1 Frost -> 2 Triumph, etc.
+    /*Frost   */ { {1,30},   {1,40},   {1,30},   {1,20},   {0,0} }    // downgrade: 1 Frost -> 2 Triumph, etc.
 };
 
 struct npc_emblem_exchanger2 : public ScriptedAI
