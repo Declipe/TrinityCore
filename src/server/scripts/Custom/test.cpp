@@ -578,104 +578,104 @@ struct npc_emblem_exchanger2 : public ScriptedAI
 
     bool GossipSelectCode(Player* player, Creature* /*creature*/, uint32 sender, uint32 action, const char* code)
     {
-            CloseGossipMenuFor(player);
+        CloseGossipMenuFor(player);
 
-            if (sender < SENDER_FROM_BASE || sender >= SENDER_FROM_BASE + EMBLEM_COUNT ||
-                action < ACTION_TO_BASE || action >= ACTION_TO_BASE + EMBLEM_COUNT)
-                return false;
+        if (sender < SENDER_FROM_BASE || sender >= SENDER_FROM_BASE + EMBLEM_COUNT ||
+            action < ACTION_TO_BASE || action >= ACTION_TO_BASE + EMBLEM_COUNT)
+            return false;
 
-            uint8 from = uint8(sender - SENDER_FROM_BASE);
-            uint8 to = uint8(action - ACTION_TO_BASE);
+        uint8 from = uint8(sender - SENDER_FROM_BASE);
+        uint8 to = uint8(action - ACTION_TO_BASE);
 
-            ChatHandler handler(player->GetSession());
+        ChatHandler handler(player->GetSession());
 
-            Ratio const& r = ExchangeRatio[from][to];
-            if (from == to || r.cost == 0 || r.reward == 0)
-                return true;
+        Ratio const& r = ExchangeRatio[from][to];
+        if (from == to || r.cost == 0 || r.reward == 0)
+            return true;
 
-            // --- input validation ---
-            if (!code || !*code)
-            {
-                handler.PSendSysMessage("|cffff0000You didn't enter anything.|r");
-                return true;
-            }
-
-            for (char const* c = code; *c; ++c)
-            {
-                if (!isdigit(*c))
-                {
-                    handler.PSendSysMessage("|cffff0000Please enter a positive whole number.|r");
-                    return true;
-                }
-            }
-
-            uint32 spend = uint32(atoi(code));   // amount of 'from' emblems the player wants to spend
-
-            if (spend == 0 || spend > MAX_PER_EXCHANGE)
-            {
-                handler.PSendSysMessage("|cffff0000Amount must be between 1 and %u.|r", uint32(MAX_PER_EXCHANGE));
-                return true;
-            }
-
-            // --- calculate reward, rounded DOWN; only charge for full bundles ---
-            uint32 bundles = spend / r.cost;             // how many full bundles the input covers
-            uint32 reward = bundles * r.reward;         // emblems the player receives
-            uint32 cost = bundles * r.cost;           // emblems actually deducted (<= spend)
-
-            if (reward == 0)
-            {
-                handler.PSendSysMessage("|cffff0000Too few. Minimum: %u x %s (for %u x %s).|r",
-                    r.cost, Emblems[from].name, r.reward, Emblems[to].name);
-                return true;
-            }
-
-            // inform the player if the leftover is not spent
-            if (cost < spend)
-                handler.PSendSysMessage("|cffffff00Note: only %u will be spent (%u is not enough for another exchange).|r",
-                    cost, spend - cost);
-
-            // --- currency check ---
-            if (!player->HasItemCount(Emblems[from].itemId, cost))
-            {
-                handler.PSendSysMessage("|cffff0000Not enough %s. Required: %u, you have: %u|r",
-                    Emblems[from].name, cost, player->GetItemCount(Emblems[from].itemId));
-                return true;
-            }
-
-            // --- precheck bag space BEFORE deducting ---
-            ItemPosCountVec dest;
-            if (player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, Emblems[to].itemId, reward) != EQUIP_ERR_OK)
-            {
-                handler.PSendSysMessage("|cffff0000Not enough bag space for %u x %s.|r",
-                    reward, Emblems[to].name);
-                return true;
-            }
-
-            // --- deduct ---
-            player->DestroyItemCount(Emblems[from].itemId, cost, true);
-
-            // --- recompute dest AFTER deduction ---
-            dest.clear();
-            if (player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, Emblems[to].itemId, reward) != EQUIP_ERR_OK)
-            {
-                player->AddItem(Emblems[from].itemId, cost);
-                handler.PSendSysMessage("|cffff0000Exchange failed, currency refunded.|r");
-                return true;
-            }
-
-            Item* item = player->StoreNewItem(dest, Emblems[to].itemId, true);
-            if (!item)
-            {
-                player->AddItem(Emblems[from].itemId, cost);
-                handler.PSendSysMessage("|cffff0000Exchange failed, currency refunded.|r");
-                return true;
-            }
-
-            player->SendNewItem(item, reward, true, false);
-            handler.PSendSysMessage("|cff00ff00Spent %u x %s -> received %u x %s.|r",
-                cost, Emblems[from].name, reward, Emblems[to].name);
+        // --- input validation ---
+        if (!code || !*code)
+        {
+            handler.PSendSysMessage("|cffff0000You didn't enter anything.|r");
             return true;
         }
+
+        for (char const* c = code; *c; ++c)
+        {
+            if (!isdigit(*c))
+            {
+                handler.PSendSysMessage("|cffff0000Please enter a positive whole number.|r");
+                return true;
+            }
+        }
+
+        uint32 spend = uint32(atoi(code));   // amount of 'from' emblems the player wants to spend
+
+        if (spend == 0 || spend > MAX_PER_EXCHANGE)
+        {
+            handler.PSendSysMessage("|cffff0000Amount must be between 1 and %u.|r", uint32(MAX_PER_EXCHANGE));
+            return true;
+        }
+
+        // --- calculate reward, rounded DOWN; only charge for full bundles ---
+        uint32 bundles = spend / r.cost;             // how many full bundles the input covers
+        uint32 reward = bundles * r.reward;         // emblems the player receives
+        uint32 cost = bundles * r.cost;           // emblems actually deducted (<= spend)
+
+        if (reward == 0)
+        {
+            handler.PSendSysMessage("|cffff0000Too few. Minimum: %u x %s (for %u x %s).|r",
+                r.cost, Emblems[from].name, r.reward, Emblems[to].name);
+            return true;
+        }
+
+        // inform the player if the leftover is not spent
+        if (cost < spend)
+            handler.PSendSysMessage("|cffffff00Note: only %u will be spent (%u is not enough for another exchange).|r",
+                cost, spend - cost);
+
+        // --- currency check ---
+        if (!player->HasItemCount(Emblems[from].itemId, cost))
+        {
+            handler.PSendSysMessage("|cffff0000Not enough %s. Required: %u, you have: %u|r",
+                Emblems[from].name, cost, player->GetItemCount(Emblems[from].itemId));
+            return true;
+        }
+
+        // --- precheck bag space BEFORE deducting ---
+        ItemPosCountVec dest;
+        if (player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, Emblems[to].itemId, reward) != EQUIP_ERR_OK)
+        {
+            handler.PSendSysMessage("|cffff0000Not enough bag space for %u x %s.|r",
+                reward, Emblems[to].name);
+            return true;
+        }
+
+        // --- deduct ---
+        player->DestroyItemCount(Emblems[from].itemId, cost, true);
+
+        // --- recompute dest AFTER deduction ---
+        dest.clear();
+        if (player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, Emblems[to].itemId, reward) != EQUIP_ERR_OK)
+        {
+            player->AddItem(Emblems[from].itemId, cost);
+            handler.PSendSysMessage("|cffff0000Exchange failed, currency refunded.|r");
+            return true;
+        }
+
+        Item* item = player->StoreNewItem(dest, Emblems[to].itemId, true);
+        if (!item)
+        {
+            player->AddItem(Emblems[from].itemId, cost);
+            handler.PSendSysMessage("|cffff0000Exchange failed, currency refunded.|r");
+            return true;
+        }
+
+        player->SendNewItem(item, reward, true, false);
+        handler.PSendSysMessage("|cff00ff00Spent %u x %s -> received %u x %s.|r",
+            cost, Emblems[from].name, reward, Emblems[to].name);
+        return true;
+    }
 };
 
 void AddSC_test()
