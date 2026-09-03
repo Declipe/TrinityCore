@@ -2745,13 +2745,9 @@ public:
     }
 };
 
-class SpServerMenuPlayerGossip : public SpellScriptLoader {
-public:
-    SpServerMenuPlayerGossip() : SpellScriptLoader("SpServerMenuPlayerGossip") {}
-
-    class SpServerMenuPlayerGossip_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(SpServerMenuPlayerGossip_SpellScript);
+class SpServerMenuPlayerGossip : public SpellScript
+{
+    PrepareSpellScript(SpServerMenuPlayerGossip);
 
         void HandleScript(SpellEffIndex /*effIndex*/)
         {
@@ -2763,15 +2759,9 @@ public:
 
         void Register() override
         {
-            OnEffectHitTarget += SpellEffectFn(SpServerMenuPlayerGossip_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+            OnEffectHitTarget += SpellEffectFn(SpServerMenuPlayerGossip::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
         }
     };
-
-    SpellScript* GetSpellScript() const override
-    {
-        return new SpServerMenuPlayerGossip_SpellScript();
-    }
-};
 
 enum {
     OLD_WORLD_FLYING_SPELL = 222222
@@ -2832,7 +2822,7 @@ enum {
 
 void AddSC_custom_item()
 {
-    new SpServerMenuPlayerGossip();
+    RegisterSpellScript(SpServerMenuPlayerGossip);
     new custom_item();
     //new FlyInOldWorld();
     /*new PlayerZoneScaling();*/
