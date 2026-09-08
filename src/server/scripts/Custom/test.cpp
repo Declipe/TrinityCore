@@ -32,6 +32,8 @@
 #include "World.h"
 #include "ZynDatabase.h"
 
+#define GTS2 session->GetTrinityString2
+
 enum Spells
 {
     SPELL_SHADOW_SPIKE = 46589,
@@ -496,19 +498,21 @@ struct npc_emblem_exchanger2 : public ScriptedAI
     // -------- first menu: choose what you pay with --------
     bool OnGossipHello(Player* player) override
     {
+        WorldSession* session = player->GetSession();
         ClearGossipMenuFor(player);
 
         for (uint8 i = 0; i < EMBLEM_COUNT; ++i)
         {
+            //GTS2(NOT_USED_1)
             std::ostringstream ss;
-            ss << "Pay with: " << Emblems[i].name
-                << " (you have: " << player->GetItemCount(Emblems[i].itemId) << ")";
+            ss << GTS2(NOT_USED_74) << Emblems[i].name
+                << GTS2(NOT_USED_75) << player->GetItemCount(Emblems[i].itemId) << ")";
 
             AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, ss.str(),
                 GOSSIP_SENDER_MAIN, ACTION_FROM_BASE + i);
         }
 
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Close",
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_76),
             GOSSIP_SENDER_MAIN, ACTION_CLOSE);
 
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
@@ -525,6 +529,8 @@ struct npc_emblem_exchanger2 : public ScriptedAI
 
     bool GossipSelect(Player* player, uint32 /*sender*/, uint32 action)
     {
+        WorldSession* session = player->GetSession();
+
         if (action == ACTION_CLOSE)
         {
             CloseGossipMenuFor(player);
@@ -548,20 +554,20 @@ struct npc_emblem_exchanger2 : public ScriptedAI
                 continue;
 
             std::ostringstream ss;
-            ss << "Receive: " << Emblems[to].name
-                << " (rate: " << r.cost << " " << Emblems[from].name
+            ss << GTS2(NOT_USED_77) << Emblems[to].name
+                << GTS2(NOT_USED_78) << r.cost << " " << Emblems[from].name
                 << " -> " << r.reward << ")";
 
             std::ostringstream box;
-            box << "Enter the amount of " << Emblems[from].name
-                << " you want to SPEND:";
+            box << GTS2(NOT_USED_79) << Emblems[from].name
+                << GTS2(NOT_USED_80);
 
             AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, ss.str(),
                 SENDER_FROM_BASE + from, ACTION_TO_BASE + to,
                 box.str(), 0, true);
         }
 
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "<- Back",
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_81),
             GOSSIP_SENDER_MAIN, ACTION_BACK);
 
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, me->GetGUID());
@@ -578,6 +584,8 @@ struct npc_emblem_exchanger2 : public ScriptedAI
 
     bool GossipSelectCode(Player* player, Creature* /*creature*/, uint32 sender, uint32 action, const char* code)
     {
+        WorldSession* session = player->GetSession();
+
         CloseGossipMenuFor(player);
 
         if (sender < SENDER_FROM_BASE || sender >= SENDER_FROM_BASE + EMBLEM_COUNT ||
@@ -596,7 +604,8 @@ struct npc_emblem_exchanger2 : public ScriptedAI
         // --- input validation ---
         if (!code || !*code)
         {
-            handler.PSendSysMessage("|cffff0000You didn't enter anything.|r");
+           // GTS2(NOT_USED_81)
+            handler.PSendSysMessage(GTS2(NOT_USED_82));
             return true;
         }
 
@@ -604,7 +613,7 @@ struct npc_emblem_exchanger2 : public ScriptedAI
         {
             if (!isdigit(*c))
             {
-                handler.PSendSysMessage("|cffff0000Please enter a positive whole number.|r");
+                handler.PSendSysMessage(GTS2(NOT_USED_83));
                 return true;
             }
         }
@@ -613,7 +622,7 @@ struct npc_emblem_exchanger2 : public ScriptedAI
 
         if (spend == 0 || spend > MAX_PER_EXCHANGE)
         {
-            handler.PSendSysMessage("|cffff0000Amount must be between 1 and %u.|r", uint32(MAX_PER_EXCHANGE));
+            handler.PSendSysMessage(GTS2(NOT_USED_84), uint32(MAX_PER_EXCHANGE));
             return true;
         }
 
@@ -624,20 +633,20 @@ struct npc_emblem_exchanger2 : public ScriptedAI
 
         if (reward == 0)
         {
-            handler.PSendSysMessage("|cffff0000Too few. Minimum: %u x %s (for %u x %s).|r",
+            handler.PSendSysMessage(GTS2(NOT_USED_85),
                 r.cost, Emblems[from].name, r.reward, Emblems[to].name);
             return true;
         }
 
         // inform the player if the leftover is not spent
         if (cost < spend)
-            handler.PSendSysMessage("|cffffff00Note: only %u will be spent (%u is not enough for another exchange).|r",
+            handler.PSendSysMessage(GTS2(NOT_USED_86),
                 cost, spend - cost);
 
         // --- currency check ---
         if (!player->HasItemCount(Emblems[from].itemId, cost))
         {
-            handler.PSendSysMessage("|cffff0000Not enough %s. Required: %u, you have: %u|r",
+            handler.PSendSysMessage(GTS2(NOT_USED_87),
                 Emblems[from].name, cost, player->GetItemCount(Emblems[from].itemId));
             return true;
         }
@@ -646,7 +655,7 @@ struct npc_emblem_exchanger2 : public ScriptedAI
         ItemPosCountVec dest;
         if (player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, Emblems[to].itemId, reward) != EQUIP_ERR_OK)
         {
-            handler.PSendSysMessage("|cffff0000Not enough bag space for %u x %s.|r",
+            handler.PSendSysMessage(GTS2(NOT_USED_88),
                 reward, Emblems[to].name);
             return true;
         }
@@ -659,7 +668,7 @@ struct npc_emblem_exchanger2 : public ScriptedAI
         if (player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, Emblems[to].itemId, reward) != EQUIP_ERR_OK)
         {
             player->AddItem(Emblems[from].itemId, cost);
-            handler.PSendSysMessage("|cffff0000Exchange failed, currency refunded.|r");
+            handler.PSendSysMessage(GTS2(NOT_USED_89));
             return true;
         }
 
@@ -667,12 +676,12 @@ struct npc_emblem_exchanger2 : public ScriptedAI
         if (!item)
         {
             player->AddItem(Emblems[from].itemId, cost);
-            handler.PSendSysMessage("|cffff0000Exchange failed, currency refunded.|r");
+            handler.PSendSysMessage(GTS2(NOT_USED_89));
             return true;
         }
 
         player->SendNewItem(item, reward, true, false);
-        handler.PSendSysMessage("|cff00ff00Spent %u x %s -> received %u x %s.|r",
+        handler.PSendSysMessage(GTS2(NOT_USED_90),
             cost, Emblems[from].name, reward, Emblems[to].name);
         return true;
     }
