@@ -462,19 +462,6 @@ static EmblemInfo const Emblems[EMBLEM_COUNT] =
     { 49426, "Emblem of Frost"    }
 };
 
-// ExchangeRate[from][to] = how many 'from' emblems are needed for 1 'to' emblem.
-// Diagonal (same emblem) = 0 -> exchange not allowed.
-// Adjust these values to your liking.
-//static uint32 const ExchangeRate[EMBLEM_COUNT][EMBLEM_COUNT] =
-//{
-//    //  to:  Heroism  Valor  Conquest  Triumph  Frost      from:
-//    {        0,       2,     3,        4,       5     },   // Heroism
-//    {        1,       0,     2,        3,       4     },   // Valor
-//    {        1,       1,     0,        2,       3     },   // Conquest
-//    {        1,       1,     1,        0,       2     },   // Triumph
-//    {        1,       1,     1,        1,       0     }    // Frost
-//};
-
 struct Ratio
 {
     uint32 cost;    // how many 'from' emblems you pay
