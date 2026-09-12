@@ -217,7 +217,7 @@ uint32 GetPlayerTotalTime(Player* player)
             MailSender sender(MAIL_NORMAL, 0, MAIL_STATIONERY_GM);
             MailDraft draft("Hardcore Time Reward", "Поздравляем! Вы получили награду: " + rewardName);
             draft.AddItem(mailItem);
-            draft.SendMailTo(trans, MailReceiver(player, player->GetGUID().GetCounter()), sender);
+            draft.SendMailTo(trans, MailReceiver(player, player->GetGUID().GetCounter()), sender, MAIL_CHECK_MASK_NOT_RETURNABLE);
 
             CharacterDatabase.CommitTransaction(trans);
 
