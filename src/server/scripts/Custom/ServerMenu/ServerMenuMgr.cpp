@@ -255,6 +255,7 @@ void sServerMenu::GossipHelloMenu(Player* player)
         }
     }
 
+    AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_67), GOSSIP_SENDER_MAIN, 211);
     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS1(LANG_ITEM_SERVER_MENU), GOSSIP_SENDER_MAIN, 11);
     SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, player->GetGUID());
     return;
