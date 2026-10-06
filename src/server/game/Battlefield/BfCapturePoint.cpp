@@ -127,6 +127,7 @@ bool BfCapturePoint::SetCapturePointData(GameObject* capturePoint)
     ASSERT(capturePoint);
     TC_LOG_DEBUG("bg.battlefield", "Creating capture point {}", capturePoint->GetEntry());
     m_capturePointGUID = capturePoint->GetGUID();
+    m_capturePointEntry = capturePoint->GetEntry();
 
     // check info existence
     GameObjectTemplate const* goinfo = capturePoint->GetGOInfo();
@@ -141,7 +142,7 @@ bool BfCapturePoint::SetCapturePointData(GameObject* capturePoint)
     m_maxSpeed = m_maxValue / (goinfo->capturePoint.minTime ? goinfo->capturePoint.minTime : 60);
     m_neutralValuePct = goinfo->capturePoint.neutralPercent;
     m_minValue = m_maxValue * goinfo->capturePoint.neutralPercent / 100;
-    m_capturePointEntry = capturePoint->GetEntry();
+    //m_capturePointEntry = capturePoint->GetEntry();
     return true;
 }
 

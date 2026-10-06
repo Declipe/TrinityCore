@@ -219,6 +219,26 @@ void Battlefield::EndBattle(bool endByTimer)
     SendInitWorldStatesToAll();
 }
 
+void Battlefield::AddCapturePoint(BfCapturePoint* cp)
+{
+    Battlefield::BfCapturePointMap::iterator i = m_capturePoints.find(cp->GetCapturePointEntry());
+    if (i != m_capturePoints.end())
+    {
+        TC_LOG_ERROR("bg.battlefield", "Battlefield::AddCapturePoint: CapturePoint {} already exists!", cp->GetCapturePointEntry());
+        delete i->second;
+    }
+    m_capturePoints[cp->GetCapturePointEntry()] = cp;
+}
+
+BfCapturePoint* Battlefield::GetCapturePoint(uint32 entry) const
+{
+    Battlefield::BfCapturePointMap::const_iterator itr = m_capturePoints.find(entry);
+    if (itr != m_capturePoints.end())
+        return itr->second;
+    return nullptr;
+}
+
+
 void Battlefield::RegisterZone(uint32 zoneId)
 {
     sBattlefieldMgr->AddZone(zoneId, this);

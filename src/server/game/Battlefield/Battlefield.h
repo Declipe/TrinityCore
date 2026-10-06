@@ -293,15 +293,8 @@ class TC_GAME_API Battlefield : public ZoneScript
         virtual void SendRemoveWorldStates(Player* /*player*/) { }
 
         // CapturePoint system
-        void AddCapturePoint(BfCapturePoint* cp) { m_capturePoints[cp->GetCapturePointEntry()] = cp; }
-
-        BfCapturePoint* GetCapturePoint(ObjectGuid::LowType lowguid) const
-        {
-            Battlefield::BfCapturePointMap::const_iterator itr = m_capturePoints.find(lowguid);
-            if (itr != m_capturePoints.end())
-                return itr->second;
-            return nullptr;
-        }
+        void AddCapturePoint(BfCapturePoint* cp);
+        BfCapturePoint* GetCapturePoint(uint32 entry) const;
 };
 
 #endif
