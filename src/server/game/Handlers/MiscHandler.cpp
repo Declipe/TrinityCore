@@ -18,15 +18,15 @@
 #include "WorldSession.h"
 #include "AccountMgr.h"
 #include "AreaTriggerPackets.h"
+#include "BattlegroundMgr.h"
 #include "Battlefield.h"
 #include "BattlefieldMgr.h"
 #include "Battleground.h"
-#include "BattlegroundMgr.h"
 #include "CharacterPackets.h"
 #include "Chat.h"
 #include "CinematicMgr.h"
-#include "ClientConfigPackets.h"
 #include "CustomConfig.h"
+#include "ClientConfigPackets.h"
 #include "Common.h"
 #include "Corpse.h"
 #include "Creature.h"
@@ -55,11 +55,11 @@
 #endif
 #include "SpellInfo.h"
 #include "SpellPackets.h"
-#include "WhoPackets.h"
 #include "WhoListStorage.h"
+#include "WhoPackets.h"
 #include "World.h"
-#include "WorldSession.h"
 #include "WorldPacket.h"
+#include "WorldSession.h"
 #include <cstdarg>
 #include <zlib.h>
 
@@ -183,6 +183,7 @@ void WorldSession::HandleGossipSelectOptionOpcode(WorldPacket& recvData)
     {
         if (unit)
         {
+
 #ifdef ELUNA
             if (Eluna* e = GetPlayer()->GetEluna())
                 if (e->OnGossipSelectCode(_player, unit, _player->PlayerTalkClass->GetGossipOptionSender(gossipListId), _player->PlayerTalkClass->GetGossipOptionAction(gossipListId), code.c_str()))
@@ -254,12 +255,10 @@ void WorldSession::HandleWhoOpcode(WorldPackets::Who::WhoRequestPkt& whoRequest)
         request.MinLevel, request.MaxLevel, request.Name, request.Guild,
         request.RaceFilter, request.ClassFilter, whoRequest.Request.Areas.size(), request.Words.size());
 
-
     std::vector<std::wstring> wWords;
     wWords.resize(request.Words.size());
     for (size_t i = 0; i < request.Words.size(); ++i)
     {
-
         TC_LOG_DEBUG("network", "WorldSession::HandleWhoOpcode: Word: {}", request.Words[i].Word);
 
         // user entered string, it used as universal search pattern(guild+player name)?
@@ -286,14 +285,13 @@ void WorldSession::HandleWhoOpcode(WorldPackets::Who::WhoRequestPkt& whoRequest)
     uint32 team = _player->GetTeam();
 
     uint32 gmLevelInWhoList  = sWorld->getIntConfig(CONFIG_GM_LEVEL_IN_WHO_LIST);
-    uint32 displayCount = 0;
 
     WorldPackets::Who::WhoResponsePkt response;
 
     WhoListInfoVector const& whoList = sWhoListStorageMgr->GetWhoList();
     for (WhoListPlayerInfo const& target : whoList)
     {
-        // player can see member of other team only if CONFIG_ALLOW_TWO_SIDE_WHO_LIST
+        // player can see member of other team only if has RBAC_PERM_TWO_SIDE_WHO_LIST
         if (target.GetTeam() != team && !HasPermission(rbac::RBAC_PERM_TWO_SIDE_WHO_LIST))
             continue;
 
@@ -328,7 +326,6 @@ void WorldSession::HandleWhoOpcode(WorldPackets::Who::WhoRequestPkt& whoRequest)
             continue;
 
         std::wstring const& wTargetGuildName = target.GetWideGuildName();
-            continue;
 
         if (!wGuildName.empty() && wTargetGuildName.find(wGuildName) == std::wstring::npos)
             continue;
@@ -353,11 +350,13 @@ void WorldSession::HandleWhoOpcode(WorldPackets::Who::WhoRequestPkt& whoRequest)
                     }
                 }
             }
+
             if (!show)
                 continue;
         }
 
         ++response.Response.TotalMatches;
+
         // 50 is maximum player count sent to client - can be overridden
         // through config, but is unstable
         if (response.Response.Entries.size() >= sWorld->getIntConfig(CONFIG_MAX_WHO))
@@ -463,9 +462,9 @@ void WorldSession::HandleTogglePvP(WorldPackets::Misc::TogglePvP& togglePvP)
         GetPlayer()->ApplyModFlag(PLAYER_FLAGS, PLAYER_FLAGS_PVP_TIMER, !*togglePvP.Enable);
         if (sGameConfig->GetBoolConfig("CONFIG.Test"))
         {
-            GetPlayer()->CastSpell(GetPlayer(), 7267, true);
-            GetPlayer()->CastSpell(GetPlayer(), 72968, true);
-            GetPlayer()->RemoveAurasDueToSpell(54512);
+        GetPlayer()->CastSpell(GetPlayer(), 7267, true);
+        GetPlayer()->CastSpell(GetPlayer(), 72968, true);
+        GetPlayer()->RemoveAurasDueToSpell(54512);
         }
     }
     else
@@ -484,7 +483,7 @@ void WorldSession::HandleTogglePvP(WorldPackets::Misc::TogglePvP& togglePvP)
         if (!GetPlayer()->pvpInfo.IsHostile && GetPlayer()->IsPvP())
             GetPlayer()->pvpInfo.EndTimer = GameTime::GetGameTime();     // start toggle-off
         if (sGameConfig->GetBoolConfig("CONFIG.Test"))
-        {
+        { 
             GetPlayer()->CastSpell(GetPlayer(), 54512, true);
             GetPlayer()->RemoveAurasDueToSpell(72968);
         }
@@ -958,7 +957,6 @@ void WorldSession::HandleWhoIsOpcode(WorldPackets::Who::WhoIsRequest& packet)
     }
 
     Player* player = ObjectAccessor::FindConnectedPlayerByName(packet.CharName);
-
     if (!player)
     {
         SendNotification(LANG_PLAYER_NOT_EXIST_OR_OFFLINE, packet.CharName.c_str());
@@ -969,7 +967,6 @@ void WorldSession::HandleWhoIsOpcode(WorldPackets::Who::WhoIsRequest& packet)
     stmt->setUInt32(0, player->GetSession()->GetAccountId());
 
     PreparedQueryResult result = LoginDatabase.Query(stmt);
-
     if (!result)
     {
         SendNotification(LANG_ACCOUNT_FOR_PLAYER_NOT_FOUND, packet.CharName.c_str());
@@ -980,9 +977,11 @@ void WorldSession::HandleWhoIsOpcode(WorldPackets::Who::WhoIsRequest& packet)
     std::string acc = fields[0].GetString();
     if (acc.empty())
         acc = "Unknown";
+
     std::string email = fields[1].GetString();
     if (email.empty())
         email = "Unknown";
+
     std::string lastip = fields[2].GetString();
     if (lastip.empty())
         lastip = "Unknown";
@@ -1253,8 +1252,6 @@ void WorldSession::HandleSetTaxiBenchmarkOpcode(WorldPacket& recvData)
 
 void WorldSession::HandleUITimeRequest(WorldPackets::Misc::UITimeRequest& /*request*/)
 {
-    TC_LOG_DEBUG("network", "WORLD: CMSG_UI_TIME_REQUEST");
-
     WorldPackets::Misc::UITime response;
     response.Time = GameTime::GetGameTime();
     SendPacket(response.Write());
