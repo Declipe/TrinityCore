@@ -41,6 +41,7 @@
 #include "Common.h"
 #include "ConditionMgr.h"
 #include "Config.h"
+#include "Corpse.h"
 #include "Containers.h"
 #include "CreatureAI.h"
 #include "CustomConfig.h"
