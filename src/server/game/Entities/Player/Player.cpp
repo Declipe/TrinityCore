@@ -13568,11 +13568,11 @@ void Player::SendEquipError(InventoryResult msg, Item const* item1 /*= nullptr*/
     SendDirectMessage(failure.Write());
 }
 
-void Player::SendBuyError(BuyResult msg, Creature const* creature, uint32 item) const
+void Player::SendBuyError(BuyResult msg, Creature const* creature, uint32 vendorslot) const
 {
     WorldPackets::Item::BuyFailed packet;
     packet.VendorGUID = creature ? creature->GetGUID() : ObjectGuid::Empty;
-    packet.Muid = item;
+    packet.Muid = vendorslot + 1;
     packet.Reason = msg;
     SendDirectMessage(packet.Write());
 }
@@ -21935,7 +21935,7 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorguid, uint32 vendorslot, uin
     ItemTemplate const* pProto = sObjectMgr->GetItemTemplate(item);
     if (!pProto)
     {
-        SendBuyError(BUY_ERR_CANT_FIND_ITEM, nullptr, item);
+        SendBuyError(BUY_ERR_CANT_FIND_ITEM, nullptr, vendorslot);
         return false;
     }
 
@@ -21944,7 +21944,7 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorguid, uint32 vendorslot, uin
     {
         TC_LOG_DEBUG("network", "Player::BuyItemFromVendorSlot: Vendor ({}) not found or player '{}' ({}) can't interact with him.",
             vendorguid.ToString(), GetName(), GetGUID().ToString());
-        SendBuyError(BUY_ERR_DISTANCE_TOO_FAR, nullptr, item);
+        SendBuyError(BUY_ERR_DISTANCE_TOO_FAR, nullptr, vendorslot);
         return false;
     }
 
@@ -21956,7 +21956,7 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorguid, uint32 vendorslot, uin
 
     if (!(pProto->GetAllowableClass() & GetClassMask()) && pProto->GetBonding() == BIND_WHEN_PICKED_UP && !IsGameMaster())
     {
-        SendBuyError(BUY_ERR_CANT_FIND_ITEM, nullptr, item);
+        SendBuyError(BUY_ERR_CANT_FIND_ITEM, nullptr, vendorslot);
         return false;
     }
 
@@ -21967,7 +21967,7 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorguid, uint32 vendorslot, uin
     {
         TC_LOG_DEBUG("condition", "Player::BuyItemFromVendorSlot: Player '{}' ({}) doesn't meed conditions for creature (Entry: {}, Item: {})",
             GetName(), GetGUID().ToString(), creature->GetEntry(), item);
-        SendBuyError(BUY_ERR_CANT_FIND_ITEM, creature, item);
+        SendBuyError(BUY_ERR_CANT_FIND_ITEM, creature, vendorslot);
         return false;
     }
 
@@ -21978,13 +21978,13 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorguid, uint32 vendorslot, uin
     VendorItemData const* vItems = currentVendor ? sObjectMgr->GetNpcVendorItemList(currentVendor) : creature->GetVendorItems();
     if (!vItems || vItems->Empty())
     {
-        SendBuyError(BUY_ERR_CANT_FIND_ITEM, creature, item);
+        SendBuyError(BUY_ERR_CANT_FIND_ITEM, creature, vendorslot);
         return false;
     }
 
     if (vendorslot >= vItems->GetItemCount())
     {
-        SendBuyError(BUY_ERR_CANT_FIND_ITEM, creature, item);
+        SendBuyError(BUY_ERR_CANT_FIND_ITEM, creature, vendorslot);
         return false;
     }
 
@@ -21992,7 +21992,7 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorguid, uint32 vendorslot, uin
     // store diff item (cheating)
     if (!crItem || crItem->item != item)
     {
-        SendBuyError(BUY_ERR_CANT_FIND_ITEM, creature, item);
+        SendBuyError(BUY_ERR_CANT_FIND_ITEM, creature, vendorslot);
         return false;
     }
 
@@ -22001,14 +22001,14 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorguid, uint32 vendorslot, uin
     {
         if (creature->GetVendorItemCurrentCount(crItem) < pProto->GetBuyCount() * count)
         {
-            SendBuyError(BUY_ERR_ITEM_ALREADY_SOLD, creature, item);
+            SendBuyError(BUY_ERR_ITEM_ALREADY_SOLD, creature, vendorslot);
             return false;
         }
     }
 
     if (pProto->GetRequiredReputationFaction() && (uint32(GetReputationRank(pProto->GetRequiredReputationFaction())) < pProto->GetRequiredReputationRank()))
     {
-        SendBuyError(BUY_ERR_REPUTATION_REQUIRE, creature, item);
+        SendBuyError(BUY_ERR_REPUTATION_REQUIRE, creature, vendorslot);
         return false;
     }
 
@@ -22072,7 +22072,7 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorguid, uint32 vendorslot, uin
 
         if (!HasEnoughMoney(price))
         {
-            SendBuyError(BUY_ERR_NOT_ENOUGHT_MONEY, creature, item);
+            SendBuyError(BUY_ERR_NOT_ENOUGHT_MONEY, creature, vendorslot);
             return false;
         }
     }
