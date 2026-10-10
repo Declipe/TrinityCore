@@ -248,7 +248,7 @@ class go_item_upgrade : public GameObjectScript
             golds = 100 * GOLD;
             if (!player->HasEnoughMoney(golds))
             {
-                player->SendBuyError(BUY_ERR_NOT_ENOUGHT_MONEY, 0, 0, 0);
+                player->SendBuyError(BUY_ERR_NOT_ENOUGHT_MONEY, 0, 0);
                 CloseGossipMenuFor(player);
                 return false;
             }
@@ -267,7 +267,7 @@ class go_item_upgrade : public GameObjectScript
 
                 if (!player->HasEnoughMoney(golds))
                 {
-                    player->SendBuyError(BUY_ERR_NOT_ENOUGHT_MONEY, 0, 0, 0);
+                    player->SendBuyError(BUY_ERR_NOT_ENOUGHT_MONEY, 0, 0);
                     CloseGossipMenuFor(player);
                     return false;
                 }
