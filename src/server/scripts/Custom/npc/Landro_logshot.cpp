@@ -27,6 +27,9 @@
 #include "ObjectMgr.h"
 #include "Language.h"
 #include "MotionMaster.h"
+#include "TemporarySummon.h"
+#include "CreatureTextMgr.h"
+#include "InstanceScript.h"
 
 #include <sstream>
 #include <string>
