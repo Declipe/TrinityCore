@@ -47,6 +47,7 @@
 #include "ScriptedGossip.h"
 #include "TemporarySummon.h"
 #include "Vehicle.h"
+#include "Map.h"
 
 enum Yells
 {
