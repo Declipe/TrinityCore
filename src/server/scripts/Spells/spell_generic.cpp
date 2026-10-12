@@ -24,6 +24,7 @@
 
 #include "ScriptMgr.h"
 #include "Battleground.h"
+#include "CreatureAIImpl.h"
 #include "CellImpl.h"
 #include "Containers.h"
 #include "DBCStores.h"
