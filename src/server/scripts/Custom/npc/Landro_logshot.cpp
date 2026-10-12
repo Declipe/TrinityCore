@@ -26,6 +26,7 @@
 #include "WorldSession.h"
 #include "ObjectMgr.h"
 #include "Language.h"
+#include "MotionMaster.h"
 
 #include <sstream>
 #include <string>
