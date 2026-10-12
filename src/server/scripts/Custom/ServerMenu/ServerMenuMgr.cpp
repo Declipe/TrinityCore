@@ -18,6 +18,7 @@
 #include "ScriptMgr.h"
 #include "ServerMenuMgr.h"
 #include "SpellInfo.h"
+#include "SpellScript.h"
 #include "SpellMgr.h"
 #include "World.h"
 #include "WorldSession.h"

@@ -8,6 +8,7 @@
 #include "Common.h"
 #include "Config.h"
 #include "Containers.h"
+#include "Creature.h"
 #include "CustomConfig.h"
 #include "DatabaseEnv.h"
 #include "DBCStores.h"

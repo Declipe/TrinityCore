@@ -37,6 +37,7 @@
 #include "RBAC.h"
 #include "ScriptedGossip.h"
 #include "SpellInfo.h"
+#include "SpellScript.h"
 #include "SpellMgr.h"
 #include "ScriptMgr.h"
 #include "World.h"
