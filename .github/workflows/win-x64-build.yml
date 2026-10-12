@@ -13,14 +13,14 @@ jobs:
       OPENSSL_ROOT_DIR: C:/libs/openssl
     steps:
     - uses: actions/checkout@v7
-      with:
+    with:
         submodules: recursive
-        
+
     - name: Set reusable strings
       id: strings
       shell: bash
       run: |
-        echo "build-output-dir=${{ github.workspace }}\build" >> "$GITHUB_OUTPUT"
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
     - name: Get current OpenSSL version
       id: openssl-info
@@ -101,3 +101,5 @@ jobs:
       with:
         path: ${{ steps.strings.outputs.build-output-dir }}/bin/${{ env.CMAKE_BUILD_TYPE }}
         name: TrinityCore335Win64VS2022
+        # Set a custom retention for artifacts
+        #retention-days: 7
