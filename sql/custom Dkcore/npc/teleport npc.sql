@@ -2,7 +2,7 @@ INSERT INTO `creature_template` (`entry`, `modelid1`, `name`, `minlevel`, `maxle
 (60769, 26502, 'TeleNPC2', 83, 83, 35, 1, 1, 1.14286, 2, 1, 1, 1, 1, 2, 2048, 3, 1, 1, 1, 1, 1, 1, 1, 2, 'npc_teleport');
 
 SET
-@ENTRY          := 60769;
+@ENTRY:= 60769;
 
 INSERT INTO creature (id, map, spawnMask, phaseMask, modelid, position_x, position_y, position_z, orientation, spawntimesecs, spawndist, curhealth, curmana) VALUES
 (@ENTRY, 0, 1, 1, 0, -13180.5, 342.503, 43.1936, 4.32977, 25, 0, 13700, 6540), 
