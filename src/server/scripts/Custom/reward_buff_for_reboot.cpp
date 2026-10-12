@@ -7,6 +7,7 @@
 #include "ScriptMgr.h"
 #include "SpellAuraEffects.h"
 #include "World.h"
+#include "Map.h"
 
 class RebootBuffOnPlayerLogin : public PlayerScript
 {
