@@ -309,12 +309,15 @@ bool LootStoreItem::AllowedForGroupOwner(Player const* owner) const
 
 bool LootStoreItem::AllowedForPlayer(Player const* player) const
 {
-    if (!player) {
+    if (!player)
         return false;
-    }
+
     // DB conditions check
     if (!sConditionMgr->IsObjectMeetToConditions(const_cast<Player*>(player), conditions))
         return false;
+
+    if (reference > 0)
+        return true;
 
     ItemTemplate const* pProto = sObjectMgr->GetItemTemplate(itemid);
     if (!pProto)
