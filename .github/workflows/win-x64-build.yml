@@ -79,20 +79,10 @@ jobs:
         cmake -GNinja -S ${{ github.workspace }} -B ${{ steps.strings.outputs.build-output-dir }}
         -DWITH_WARNINGS_AS_ERRORS=OFF -DTOOLS=ON
 
-- name: Build
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }}
-      continue-on-error: true
-
-    - name: Dump build.ninja around error (debug)
-      if: failure()
-      shell: pwsh
+    - name: Build
       run: |
-        Get-Content "${{ steps.strings.outputs.build-output-dir }}/build.ninja" | Select-Object -Index (8495..8525)
+        cmake --build ${{ steps.strings.outputs.build-output-dir }}
 
-    - name: Fail if build actually failed
-      if: failure()
-      run: exit 1
-      
     - name: Copy Dependencies
       run: |
         cd ${{ steps.strings.outputs.build-output-dir }}/bin/${{ env.CMAKE_BUILD_TYPE }}
