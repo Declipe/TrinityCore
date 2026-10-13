@@ -78,8 +78,7 @@ jobs:
       run: >
         cmake -GNinja -S ${{ github.workspace }} -B ${{ steps.strings.outputs.build-output-dir }}
         -DWITH_WARNINGS_AS_ERRORS=OFF -DTOOLS=ON
-
-- name: Build
+    - name: Build
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }}
       continue-on-error: true
 
