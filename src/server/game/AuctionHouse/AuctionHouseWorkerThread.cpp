@@ -19,6 +19,8 @@
 #include "World.h"
 #include "ItemTemplate.h"
 #include "ObjectMgr.h"
+#include <stop_token>
+#include <thread>
 
 template<typename T>
 void SignalQueue<T>::send(T value, std::stop_token stop) {
