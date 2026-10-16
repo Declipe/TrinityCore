@@ -233,7 +233,7 @@ public:
     static std::string ItemLink(const Player* player, const Item* item);
     static void SendMessage(const Player* player, const std::string& message);
 private:
-    static constexpr int VISUAL_FEEDBACK_SPELL_ID = 46331;
+    static constexpr int VISUAL_FEEDBACK_SPELL_ID = 2053;
 
     ItemUpgradeConfig cfg;
 
