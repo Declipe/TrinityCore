@@ -47,7 +47,7 @@ enum CharterItemIDs
 
 void WorldSession::HandlePetitionBuyOpcode(WorldPacket& recvData)
 {
-    TC_LOG_DEBUG("network", "Received opcode CMSG_PETITION_BUY");
+    TC_LOG_DEBUG("network", "Received opcode CMSG_PETITION_BUY");1
 
     ObjectGuid guidNPC;
     uint32 clientIndex;                                     // 1 for guild and arenaslot+1 for arenas in client
