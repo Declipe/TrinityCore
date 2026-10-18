@@ -3232,7 +3232,7 @@ void ObjectMgr::LoadItemTemplates()
         //                                              13              14           15          16             17               18                19              20
         "AllowableClass, AllowableRace, ItemLevel, RequiredLevel, RequiredSkill, RequiredSkillRank, requiredspell, requiredhonorrank, "
         //                                              21                      22                       23               24        25          26             27           28
-        "RequiredCityRank, RequiredReputationFaction, RequiredReputationRank, maxcount, stackable, ContainerSlots, stat_type1, "
+        "RequiredCityRank, RequiredReputationFaction, RequiredReputationRank, maxcount, stackable, ContainerSlots, StatsCount, stat_type1, "
         //                                            29           30          31           32          33           34          35           36          37           38
         "stat_value1, stat_type2, stat_value2, stat_type3, stat_value3, stat_type4, stat_value4, stat_type5, stat_value5, stat_type6, "
         //                                            39           40          41           42           43          44           45           46           47
@@ -3276,120 +3276,117 @@ void ObjectMgr::LoadItemTemplates()
         uint32 entry = fields[0].GetUInt32();
         ItemTemplate& itemTemplate = _itemTemplateStore[entry];
 
-        itemTemplate.ItemId = entry;
-        itemTemplate.Class = uint32(fields[1].GetUInt8());
-        itemTemplate.SubClass = uint32(fields[2].GetUInt8());
-        itemTemplate.SoundOverrideSubclass = int32(fields[3].GetInt8());
-        itemTemplate.Name1 = fields[4].GetString();
-        itemTemplate.DisplayInfoID = fields[5].GetUInt32();
-        itemTemplate.Quality = uint32(fields[6].GetUInt8());
-        itemTemplate.Flags[0] = fields[7].GetUInt32();
-        itemTemplate.Flags[1] = fields[8].GetUInt32();
-        itemTemplate.BuyCount = uint32(fields[9].GetUInt8());
-        itemTemplate.BuyPrice = int32(fields[10].GetInt64());
-        itemTemplate.SellPrice = fields[11].GetUInt32();
-        itemTemplate.InventoryType = uint32(fields[12].GetUInt8());
-        itemTemplate.AllowableClass = fields[13].GetInt32();
-        itemTemplate.AllowableRace = fields[14].GetInt32();
-        itemTemplate.ItemLevel = uint32(fields[15].GetUInt16());
-        itemTemplate.RequiredLevel = uint32(fields[16].GetUInt8());
-        itemTemplate.RequiredSkill = uint32(fields[17].GetUInt16());
-        itemTemplate.RequiredSkillRank = uint32(fields[18].GetUInt16());
-        itemTemplate.RequiredSpell = fields[19].GetUInt32();
-        itemTemplate.RequiredHonorRank = fields[20].GetUInt32();
-        itemTemplate.RequiredCityRank = fields[21].GetUInt32();
+        itemTemplate.ItemId                    = entry;
+        itemTemplate.Class                     = uint32(fields[1].GetUInt8());
+        itemTemplate.SubClass                  = uint32(fields[2].GetUInt8());
+        itemTemplate.SoundOverrideSubclass     = int32(fields[3].GetInt8());
+        itemTemplate.Name1                     = fields[4].GetString();
+        itemTemplate.DisplayInfoID             = fields[5].GetUInt32();
+        itemTemplate.Quality                   = uint32(fields[6].GetUInt8());
+        itemTemplate.Flags[0]                  = fields[7].GetUInt32();
+        itemTemplate.Flags[1]                  = fields[8].GetUInt32();
+        itemTemplate.BuyCount                  = uint32(fields[9].GetUInt8());
+        itemTemplate.BuyPrice                  = int32(fields[10].GetInt64());
+        itemTemplate.SellPrice                 = fields[11].GetUInt32();
+        itemTemplate.InventoryType             = uint32(fields[12].GetUInt8());
+        itemTemplate.AllowableClass            = fields[13].GetInt32();
+        itemTemplate.AllowableRace             = fields[14].GetInt32();
+        itemTemplate.ItemLevel                 = uint32(fields[15].GetUInt16());
+        itemTemplate.RequiredLevel             = uint32(fields[16].GetUInt8());
+        itemTemplate.RequiredSkill             = uint32(fields[17].GetUInt16());
+        itemTemplate.RequiredSkillRank         = uint32(fields[18].GetUInt16());
+        itemTemplate.RequiredSpell             = fields[19].GetUInt32();
+        itemTemplate.RequiredHonorRank         = fields[20].GetUInt32();
+        itemTemplate.RequiredCityRank          = fields[21].GetUInt32();
         itemTemplate.RequiredReputationFaction = uint32(fields[22].GetUInt16());
         itemTemplate.RequiredReputationRank = uint32(fields[23].GetUInt16());
         itemTemplate.MaxCount = fields[24].GetInt32();
         itemTemplate.Stackable = fields[25].GetInt32();
         itemTemplate.ContainerSlots = uint32(fields[26].GetUInt8());
+        itemTemplate.StatsCount = uint32(fields[27].GetUInt32());
 
-        uint8 statsCount = 0;
-        uint8 statsIterator = 0;
-        while (statsIterator < MAX_ITEM_PROTO_STATS)
+        if (itemTemplate.StatsCount > MAX_ITEM_PROTO_STATS)
         {
-            uint32 statType = uint32(fields[27 + statsIterator * 2].GetUInt32());
-            int32 statValue = fields[28 + statsIterator * 2].GetInt32();
-            statsIterator++;
-            if (statValue == 0)
-                continue;
-
-            itemTemplate.ItemStat[statsCount].ItemStatType = statType;
-            itemTemplate.ItemStat[statsCount].ItemStatValue = statValue;
-            statsCount++;
+            TC_LOG_ERROR("sql.sql", "Item (Entry: {}) has too large value in statscount ({}), replace by hardcoded limit ({}).", entry, itemTemplate.StatsCount, MAX_ITEM_PROTO_STATS);
+            itemTemplate.StatsCount = MAX_ITEM_PROTO_STATS;
         }
-        itemTemplate.StatsCount = statsCount;
 
-        itemTemplate.ScalingStatDistribution = uint32(fields[47].GetUInt16());
-        itemTemplate.ScalingStatValue = fields[48].GetInt32();
+        for (uint32 i = 0; i < itemTemplate.StatsCount; ++i)
+        {
+            itemTemplate.ItemStat[i].ItemStatType = uint32(fields[28 + i * 2].GetUInt32());
+            itemTemplate.ItemStat[i].ItemStatValue = int32(fields[29 + i * 2].GetInt32());
+        }
+
+        itemTemplate.ScalingStatDistribution = uint32(fields[48].GetUInt16());
+        itemTemplate.ScalingStatValue = fields[49].GetInt32();
 
         for (uint8 i = 0; i < MAX_ITEM_PROTO_DAMAGES; ++i)
         {
-            itemTemplate.Damage[i].DamageMin = fields[49 + i * 3].GetFloat();
-            itemTemplate.Damage[i].DamageMax = fields[50 + i * 3].GetFloat();
-            itemTemplate.Damage[i].DamageType = uint32(fields[51 + i * 3].GetUInt8());
+            itemTemplate.Damage[i].DamageMin = fields[50 + i * 3].GetFloat();
+            itemTemplate.Damage[i].DamageMax = fields[51 + i * 3].GetFloat();
+            itemTemplate.Damage[i].DamageType = uint32(fields[52 + i * 3].GetUInt8());
         }
 
-        itemTemplate.Armor = uint32(fields[55].GetUInt16());
-        itemTemplate.HolyRes = uint32(fields[56].GetUInt16());
-        itemTemplate.FireRes = uint32(fields[57].GetUInt16());
-        itemTemplate.NatureRes = uint32(fields[58].GetUInt16());
-        itemTemplate.FrostRes = uint32(fields[59].GetUInt16());
-        itemTemplate.ShadowRes = uint32(fields[60].GetUInt16());
-        itemTemplate.ArcaneRes = uint32(fields[61].GetUInt16());
-        itemTemplate.Delay = uint32(fields[62].GetUInt16());
-        itemTemplate.AmmoType = uint32(fields[63].GetUInt8());
-        itemTemplate.RangedModRange = fields[64].GetFloat();
+        itemTemplate.Armor = uint32(fields[56].GetUInt16());
+        itemTemplate.HolyRes = uint32(fields[57].GetUInt8());
+        itemTemplate.FireRes = uint32(fields[58].GetUInt8());
+        itemTemplate.NatureRes = uint32(fields[59].GetUInt8());
+        itemTemplate.FrostRes = uint32(fields[60].GetUInt8());
+        itemTemplate.ShadowRes = uint32(fields[61].GetUInt8());
+        itemTemplate.ArcaneRes = uint32(fields[62].GetUInt8());
+        itemTemplate.Delay = uint32(fields[63].GetUInt16());
+        itemTemplate.AmmoType = uint32(fields[64].GetUInt8());
+        itemTemplate.RangedModRange = fields[65].GetFloat();
 
         for (uint8 i = 0; i < MAX_ITEM_PROTO_SPELLS; ++i)
         {
-            itemTemplate.Effects[i].SpellID = fields[65 + i * 7].GetInt32();
-            itemTemplate.Effects[i].TriggerType = uint32(fields[66 + i * 7].GetUInt8());
-            itemTemplate.Effects[i].Charges = int32(fields[67 + i * 7].GetInt16());
-            itemTemplate.Effects[i].SpellPPMRate = fields[68 + i * 7].GetFloat();
-            itemTemplate.Effects[i].CoolDownMSec = fields[69 + i * 7].GetInt32();
-            itemTemplate.Effects[i].SpellCategoryID = uint32(fields[70 + i * 7].GetUInt16());
-            itemTemplate.Effects[i].CategoryCoolDownMSec = fields[71 + i * 7].GetInt32();
+            itemTemplate.Effects[i].SpellID              = fields[66 + i * 7].GetInt32();
+            itemTemplate.Effects[i].TriggerType          = uint32(fields[67 + i * 7].GetUInt8());
+            itemTemplate.Effects[i].Charges              = int32(fields[68 + i * 7].GetInt16());
+            itemTemplate.Effects[i].SpellPPMRate         = fields[69 + i * 7].GetFloat();
+            itemTemplate.Effects[i].CoolDownMSec         = fields[70 + i * 7].GetInt32();
+            itemTemplate.Effects[i].SpellCategoryID      = uint32(fields[71 + i * 7].GetUInt16());
+            itemTemplate.Effects[i].CategoryCoolDownMSec = fields[72 + i * 7].GetInt32();
         }
 
-        itemTemplate.Bonding = uint32(fields[100].GetUInt8());
-        itemTemplate.Description = fields[101].GetString();
-        itemTemplate.PageText = fields[102].GetUInt32();
-        itemTemplate.LanguageID = uint32(fields[103].GetUInt8());
-        itemTemplate.PageMaterial = uint32(fields[104].GetUInt32());
-        itemTemplate.StartQuest = fields[105].GetUInt32();
-        itemTemplate.LockID = fields[106].GetUInt32();
-        itemTemplate.Material = int32(fields[107].GetInt64());
-        itemTemplate.Sheath = uint32(fields[108].GetUInt8());
-        itemTemplate.RandomProperty = fields[109].GetUInt32();
-        itemTemplate.RandomSuffix = fields[110].GetInt32();
-        itemTemplate.Block = fields[111].GetUInt32();
-        itemTemplate.ItemSet = fields[112].GetUInt32();
-        itemTemplate.MaxDurability = uint32(fields[113].GetUInt16());
-        itemTemplate.Area = fields[114].GetUInt32();
-        itemTemplate.Map = uint32(fields[115].GetUInt16());
-        itemTemplate.BagFamily = fields[116].GetUInt32();
-        itemTemplate.TotemCategory = fields[117].GetUInt32();
+        itemTemplate.Bonding = uint32(fields[101].GetUInt8());
+        itemTemplate.Description = fields[102].GetString();
+        itemTemplate.PageText = fields[103].GetUInt32();
+        itemTemplate.LanguageID = uint32(fields[104].GetUInt8());
+        itemTemplate.PageMaterial = uint32(fields[105].GetUInt8());
+        itemTemplate.StartQuest = fields[106].GetUInt32();
+        itemTemplate.LockID = fields[107].GetUInt32();
+        itemTemplate.Material = int32(fields[108].GetInt8());
+        itemTemplate.Sheath = uint32(fields[109].GetUInt8());
+        itemTemplate.RandomProperty = fields[110].GetUInt32();
+        itemTemplate.RandomSuffix = fields[111].GetInt32();
+        itemTemplate.Block = fields[112].GetUInt32();
+        itemTemplate.ItemSet = fields[113].GetUInt32();
+        itemTemplate.MaxDurability = uint32(fields[114].GetUInt16());
+        itemTemplate.Area = fields[115].GetUInt32();
+        itemTemplate.Map = uint32(fields[116].GetUInt16());
+        itemTemplate.BagFamily = fields[117].GetUInt32();
+        itemTemplate.TotemCategory = fields[118].GetUInt32();
 
         for (uint8 i = 0; i < MAX_ITEM_PROTO_SOCKETS; ++i)
         {
-            itemTemplate.Socket[i].Color = uint32(fields[118 + i * 2].GetUInt8());
-            itemTemplate.Socket[i].Content = fields[119 + i * 2].GetUInt32();
+            itemTemplate.Socket[i].Color = uint32(fields[119 + i * 2].GetUInt8());
+            itemTemplate.Socket[i].Content = fields[120 + i * 2].GetUInt32();
         }
 
-        itemTemplate.socketBonus = fields[124].GetUInt32();
-        itemTemplate.GemProperties = fields[125].GetUInt32();
-        itemTemplate.RequiredDisenchantSkill = uint32(fields[126].GetInt16());
-        itemTemplate.ArmorDamageModifier = fields[127].GetFloat();
-        itemTemplate.Duration = fields[128].GetUInt32();
-        itemTemplate.ItemLimitCategory = uint32(fields[129].GetInt16());
-        itemTemplate.HolidayId = fields[130].GetUInt32();
-        itemTemplate.ScriptId = sObjectMgr->GetScriptId(fields[131].GetString());
-        itemTemplate.DisenchantID = fields[132].GetUInt32();
-        itemTemplate.FoodType = uint32(fields[133].GetUInt8());
-        itemTemplate.MinMoneyLoot = fields[134].GetUInt32();
-        itemTemplate.MaxMoneyLoot = fields[135].GetUInt32();
-        itemTemplate.FlagsCu = fields[136].GetUInt32();
+        itemTemplate.socketBonus = fields[125].GetUInt32();
+        itemTemplate.GemProperties = fields[126].GetUInt32();
+        itemTemplate.RequiredDisenchantSkill = uint32(fields[127].GetInt16());
+        itemTemplate.ArmorDamageModifier = fields[128].GetFloat();
+        itemTemplate.Duration = fields[129].GetUInt32();
+        itemTemplate.ItemLimitCategory = uint32(fields[130].GetInt16());
+        itemTemplate.HolidayId = fields[131].GetUInt32();
+        itemTemplate.ScriptId = sObjectMgr->GetScriptId(fields[132].GetString());
+        itemTemplate.DisenchantID = fields[133].GetUInt32();
+        itemTemplate.FoodType = uint32(fields[134].GetUInt8());
+        itemTemplate.MinMoneyLoot = fields[135].GetUInt32();
+        itemTemplate.MaxMoneyLoot = fields[136].GetUInt32();
+        itemTemplate.FlagsCu = fields[137].GetUInt32();
 
         // Checks
 
