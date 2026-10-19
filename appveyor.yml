@@ -15,7 +15,7 @@ build_script:
     
     git submodule update
     
-    cmake -S . -B .\build -G"Visual Studio 17 2022" -A x64 -DSCRIPTS=dynamic -DWITH_WARNINGS_AS_ERRORS=OFF -DTOOLS=OFF
+    cmake -S . -B .\build -G"Visual Studio 17 2022" -A x64 -DSCRIPTS=static -DWITH_WARNINGS_AS_ERRORS=OFF -DTOOLS=OFF
 
     cd build
 
