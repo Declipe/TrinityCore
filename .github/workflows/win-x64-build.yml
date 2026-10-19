@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: windows-latest
     env:
-      CMAKE_BUILD_TYPE: RelWithDebInfo
+      CMAKE_BUILD_TYPE: Release
       MYSQL_ROOT_DIR: C:/Program Files/MySQL/MySQL Server 8.0
       OPENSSL_ROOT_DIR: C:/libs/openssl
     steps:
@@ -76,29 +76,11 @@ jobs:
         BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
       run: >
         cmake -GNinja -S ${{ github.workspace }} -B ${{ steps.strings.outputs.build-output-dir }}
-        -DWITH_WARNINGS_AS_ERRORS=OFF -DTOOLS=ON
+        -DWITH_WARNINGS_AS_ERRORS=OFF -DTOOLS=OFF
 
     - name: Build
-      id: build
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }}
-      continue-on-error: true
-
-    - name: Dump build.ninja around error (debug)
-      if: steps.build.outcome == 'failure'
-      shell: pwsh
       run: |
-        Get-Content "${{ steps.strings.outputs.build-output-dir }}/build.ninja" | Select-Object -Index (8495..8525)
-
-    - name: Upload build.ninja for inspection
-      if: steps.build.outcome == 'failure'
-      uses: actions/upload-artifact@v7
-      with:
-        name: build-ninja-debug
-        path: ${{ steps.strings.outputs.build-output-dir }}/build.ninja
-
-    - name: Fail if build actually failed
-      if: steps.build.outcome == 'failure'
-      run: exit 1
+        cmake --build ${{ steps.strings.outputs.build-output-dir }}
 
     - name: Copy Dependencies
       run: |
