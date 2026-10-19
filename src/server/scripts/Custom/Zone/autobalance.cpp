@@ -438,7 +438,7 @@ class AutoBalance_AllCreatureScript : public AllCreatureScript {
 public:
     AutoBalance_AllCreatureScript() : AllCreatureScript("AutoBalance_AllCreatureScript") { }
 
-    void Creature_SelectLevel(const CreatureTemplate* /*creatureTemplate*/, Creature* creature) override
+    void OnCreatureSelectLevel(const CreatureTemplate* /*creatureTemplate*/, Creature* creature) override
     {
         if (!enabled)
         {

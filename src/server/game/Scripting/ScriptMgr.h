@@ -487,7 +487,7 @@ public:
     // Called from End of Creature Update.
     virtual void OnAllCreatureUpdate(Creature* /*creature*/, uint32 /*diff*/) { }
     // Called from End of Creature SelectLevel.
-    virtual void Creature_SelectLevel(const CreatureTemplate* /*cinfo*/, Creature* /*creature*/) { }
+    virtual void OnCreatureSelectLevel(const CreatureTemplate* /*cinfo*/, Creature* /*creature*/) { }
 };
 
 class TC_GAME_API GameObjectScript : public ScriptObject
@@ -1103,7 +1103,7 @@ public: /* AllCreatureScript */
     void AllCreatureJustDied(Creature* creature);
     void AllCreatureCode(Player* player, Creature* creature, uint32 sender, uint32 action, const char* code);
     void OnAllCreatureUpdate(Creature* creature, uint32 diff);
-    void Creature_SelectLevel(const CreatureTemplate* cinfo, Creature* creature);
+    void OnCreatureSelectLevel(const CreatureTemplate* cinfo, Creature* creature);
     void OnCreatureUpdate(Creature* creature, uint32 diff);
 
 public: /* GameObjectScript */

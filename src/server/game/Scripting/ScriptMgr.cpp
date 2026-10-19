@@ -2658,9 +2658,9 @@ void ScriptMgr::OnCreatureUpdate(Creature* creature, uint32 diff)
     FOREACH_SCRIPT(AllCreatureScript)->OnAllCreatureUpdate(creature, diff);
 }
 
-void ScriptMgr::Creature_SelectLevel(const CreatureTemplate* cinfo, Creature* creature)
+void ScriptMgr::OnCreatureSelectLevel(const CreatureTemplate* cinfo, Creature* creature)
 {
-    FOREACH_SCRIPT(AllCreatureScript)->Creature_SelectLevel(cinfo, creature);
+    FOREACH_SCRIPT(AllCreatureScript)->OnCreatureSelectLevel(cinfo, creature);
 }
 
 SpellScriptLoader::SpellScriptLoader(char const* name)
