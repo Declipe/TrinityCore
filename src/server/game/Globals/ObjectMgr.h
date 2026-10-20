@@ -39,6 +39,7 @@
 #include <iterator>
 #include <map>
 #include <unordered_map>
+#include <span>
 
 class Item;
 class Unit;
@@ -941,8 +942,8 @@ struct DungeonEncounter
     uint32 lastEncounterDungeon;
 };
 
-typedef std::vector<std::unique_ptr<DungeonEncounter const>> DungeonEncounterList;
-typedef std::unordered_map<uint64, DungeonEncounterList> DungeonEncounterContainer;
+typedef std::vector<DungeonEncounter> DungeonEncounterList;
+typedef std::unordered_map<std::pair<uint32, Difficulty>, DungeonEncounterList> DungeonEncounterContainer;
 
 typedef std::map<std::pair<SummonSlot /*TotemSlot*/, Races /*RaceId*/>, uint32 /*DisplayId*/> PlayerTotemModelMap;
 
@@ -983,7 +984,7 @@ public:
 
     typedef std::map<uint32, uint32> AreaTriggerScriptContainer;
 
-    typedef std::unordered_map<uint32, std::unique_ptr<AccessRequirement>> AccessRequirementContainer;
+    typedef std::unordered_map<std::pair<uint32, Difficulty>, AccessRequirement> AccessRequirementContainer;
 
     typedef std::unordered_map<uint32, RepRewardRate > RepRewardRateContainer;
     typedef std::unordered_map<uint32, ReputationOnKillEntry> RepOnKillContainer;
@@ -1158,7 +1159,7 @@ public:
     VehicleAccessoryList const* GetVehicleAccessoryList(Vehicle* veh) const;
     ItemPresentList const* GetItemPresentList(uint32 presentId) const;
 
-    DungeonEncounterList const* GetDungeonEncounterList(uint32 mapId, Difficulty difficulty) const;
+    std::span<DungeonEncounter const> GetDungeonEncounterList(uint32 mapId, Difficulty difficulty) const;
 
     void LoadQuests();
     void LoadQuestStartersAndEnders();
