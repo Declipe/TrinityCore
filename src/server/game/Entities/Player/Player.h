@@ -2219,7 +2219,7 @@ public:
     void SendCinematicStart(uint32 CinematicSequenceId) const;
     void SendMovieStart(uint32 movieId);
 
-    uint32 DoRandomRoll(uint32 minimum, uint32 maximum);
+    int32 DoRandomRoll(int32 minimum, int32 maximum);
 
     /*********************************************************/
     /***                 INSTANCE SYSTEM                   ***/
@@ -2325,6 +2325,7 @@ public:
     bool HasTitle(uint32 bitIndex) const;
     bool HasTitle(CharTitlesEntry const* title) const;
     void SetTitle(CharTitlesEntry const* title, bool lost = false);
+    void SetChosenTitle(int32 title) { SetUInt32Value(PLAYER_CHOSEN_TITLE, title); }
 
     //bool isActiveObject() const { return true; }
     bool CanSeeSpellClickOn(Creature const* creature) const;
