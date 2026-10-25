@@ -583,19 +583,6 @@ void SpellHistory::CancelGlobalCooldown(SpellInfo const* spellInfo)
     _globalCooldowns[spellInfo->StartRecoveryCategory] = Clock::time_point(Clock::duration(0));
 }
 
-uint32 SpellHistory::GetRemainingGlobalCooldown(SpellInfo const* spellInfo) const
-{
-    auto itr = _globalCooldowns.find(spellInfo->StartRecoveryCategory);
-    if (itr == _globalCooldowns.end())
-        return 0;
-
-    Clock::time_point now = GameTime::GetSystemTime();
-    if (itr->second <= now)
-        return 0;
-
-    return uint32(std::chrono::duration_cast<std::chrono::milliseconds>(itr->second - now).count());
-}
-
 Player* SpellHistory::GetPlayerOwner() const
 {
     return _owner->GetCharmerOrOwnerPlayerOrPlayerItself();

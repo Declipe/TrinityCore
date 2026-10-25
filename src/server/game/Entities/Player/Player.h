@@ -21,7 +21,6 @@
 #include "Transmogrification.h"
 #include "GridObject.h"
 #include "Unit.h"
-#include "WorldPacket.h"
 #include "DatabaseEnvFwd.h"
 #include "DBCEnums.h"
 #include "EquipmentSet.h"
@@ -32,7 +31,6 @@
 #include "PetDefines.h"
 #include "PlayerTaxi.h"
 #include "QuestDef.h"
-#include <map>
 #include <memory>
 #include <queue>
 #include <unordered_set>
@@ -2039,13 +2037,6 @@ public:
     void CastItemCombatSpell(DamageInfo const& damageInfo, Item* item, ItemTemplate const* proto);
     void CastItemUseSpell(Item* item, uint32 spellId, SpellCastTargets const& targets, uint8 cast_count, uint32 misc);
 
-    static constexpr uint32 SPELL_QUEUE_TIME_WINDOW = 400;
-    bool CanExecutePendingSpellCastRequest(SpellInfo const* spellInfo) const;
-    bool CanRequestSpellCast(SpellInfo const* spellInfo) const;
-    void RequestSpellCast(SpellInfo const* spellInfo, WorldPacket const& requestPacket, bool isItem);
-    void CancelPendingSpellCast(SpellInfo const* spellInfo, uint32 spellId);
-    void ExecutePendingSpellCastRequests();
-
     void SendEquipmentSetList();
     void SetEquipmentSet(EquipmentSetInfo::EquipmentSetData const& eqset);
     void DeleteEquipmentSet(uint64 id);
@@ -2618,17 +2609,6 @@ protected:
     bool m_needsZoneUpdate;
 
 private:
-    struct PendingSpellCastRequest
-    {
-        uint32 SpellId = 0;
-        uint64 Order = 0;
-        bool IsItem = false;
-        WorldPacket Packet;
-    };
-
-    std::map<uint32, PendingSpellCastRequest> _pendingSpellCasts;
-    uint64 _nextPendingSpellCastOrder = 0;
-
     // internal common parts for CanStore/StoreItem functions
     InventoryResult CanStoreItem_InSpecificSlot(uint8 bag, uint8 slot, ItemPosCountVec& dest, ItemTemplate const* pProto, uint32& count, bool swap, Item* pSrcItem) const;
     InventoryResult CanStoreItem_InBag(uint8 bag, ItemPosCountVec& dest, ItemTemplate const* pProto, uint32& count, bool merge, bool non_specialized, Item* pSrcItem, uint8 skip_bag, uint8 skip_slot) const;

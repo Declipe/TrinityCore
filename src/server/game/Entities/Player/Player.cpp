@@ -991,7 +991,6 @@ void Player::Update(uint32 p_time)
     //used to implement delayed far teleports
     SetCanDelayTeleport(true);
     Unit::Update(p_time);
-    ExecutePendingSpellCastRequests();
     SetCanDelayTeleport(false);
 
     time_t now = GameTime::GetGameTime();
@@ -8175,97 +8174,6 @@ void Player::CastItemCombatSpell(DamageInfo const& damageInfo, Item* item, ItemT
                             args.AddSpellMod(static_cast<SpellValueMod>(SPELLVALUE_BASE_POINT0 + AsUnderlyingType(spellEffectInfo.EffectIndex)), CalculatePct(spellEffectInfo.CalcValue(this), effectPct));
                 }
                 CastSpell(target, spellInfo->Id, args);
-            }
-        }
-    }
-}
-
-bool Player::CanExecutePendingSpellCastRequest(SpellInfo const* spellInfo) const
-{
-    if (!spellInfo || GetSpellHistory()->HasGlobalCooldown(spellInfo) || GetSpellHistory()->GetRemainingCooldown(spellInfo) > 0)
-        return false;
-
-    return !IsNonMeleeSpellCast(false, true, true);
-}
-
-bool Player::CanRequestSpellCast(SpellInfo const* spellInfo) const
-{
-    if (!spellInfo || _pendingSpellCasts.find(spellInfo->StartRecoveryCategory) != _pendingSpellCasts.end())
-        return false;
-
-    if (GetSpellHistory()->GetRemainingGlobalCooldown(spellInfo) > SPELL_QUEUE_TIME_WINDOW ||
-        GetSpellHistory()->GetRemainingCooldown(spellInfo) > SPELL_QUEUE_TIME_WINDOW)
-        return false;
-
-    for (CurrentSpellTypes spellSlot : { CURRENT_MELEE_SPELL, CURRENT_GENERIC_SPELL })
-        if (Spell* spell = GetCurrentSpell(spellSlot))
-            if (spell->GetCastTimeRemaining() > int32(SPELL_QUEUE_TIME_WINDOW))
-                return false;
-
-    return true;
-}
-
-void Player::RequestSpellCast(SpellInfo const* spellInfo, WorldPacket const& requestPacket, bool isItem)
-{
-    if (!spellInfo)
-        return;
-
-    WorldPacket packet = requestPacket;
-    packet.rpos(0);
-    _pendingSpellCasts[spellInfo->StartRecoveryCategory] = { spellInfo->Id, _nextPendingSpellCastOrder++, isItem, std::move(packet) };
-}
-
-void Player::CancelPendingSpellCast(SpellInfo const* spellInfo, uint32 spellId)
-{
-    if (!spellInfo)
-        return;
-
-    auto itr = _pendingSpellCasts.find(spellInfo->StartRecoveryCategory);
-    if (itr != _pendingSpellCasts.end() && itr->second.SpellId == spellId)
-        _pendingSpellCasts.erase(itr);
-}
-
-void Player::ExecutePendingSpellCastRequests()
-{
-    std::vector<std::pair<uint64, uint32>> orderedCasts;
-    orderedCasts.reserve(_pendingSpellCasts.size());
-    for (auto const& [category, request] : _pendingSpellCasts)
-        orderedCasts.emplace_back(request.Order, category);
-
-    std::sort(orderedCasts.begin(), orderedCasts.end());
-    for (auto const& [order, category] : orderedCasts)
-    {
-        auto itr = _pendingSpellCasts.find(category);
-        if (itr == _pendingSpellCasts.end() || itr->second.Order != order)
-            continue;
-
-        SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(itr->second.SpellId);
-        if (!spellInfo)
-        {
-            TC_LOG_ERROR("spells", "Pending spell cast refers to unknown spell {} for player {}", itr->second.SpellId, GetGUID().ToString());
-            _pendingSpellCasts.erase(itr);
-            continue;
-        }
-
-        if (!CanExecutePendingSpellCastRequest(spellInfo))
-            continue;
-
-        PendingSpellCastRequest request = std::move(itr->second);
-        _pendingSpellCasts.erase(itr);
-
-        if (WorldSession* session = GetSession())
-        {
-            if (request.IsItem)
-            {
-                WorldPackets::Spells::UseItem packet(std::move(request.Packet));
-                packet.Read();
-                session->HandleUseItemOpcode(packet);
-            }
-            else
-            {
-                WorldPackets::Spells::CastSpell packet(std::move(request.Packet));
-                packet.Read();
-                session->HandleCastSpellOpcode(packet);
             }
         }
     }

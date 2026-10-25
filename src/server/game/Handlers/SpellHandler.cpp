@@ -114,13 +114,6 @@ void WorldSession::HandleUseItemOpcode(WorldPackets::Spells::UseItem& packet)
         }
     }
 
-    if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(packet.Cast.SpellID))
-        if (!user->CanExecutePendingSpellCastRequest(spellInfo) && user->CanRequestSpellCast(spellInfo))
-        {
-            user->RequestSpellCast(spellInfo, *packet.GetRawPacket(), true);
-            return;
-        }
-
     // check also  BIND_WHEN_PICKED_UP and BIND_QUEST_ITEM for .additem or .additemset case by GM (not binded at adding to inventory)
     if (item->GetTemplate()->GetBonding() == BIND_WHEN_USE || item->GetTemplate()->GetBonding() == BIND_WHEN_PICKED_UP || item->GetTemplate()->GetBonding() == BIND_QUEST_ITEM)
     {
@@ -347,12 +340,6 @@ void WorldSession::HandleCastSpellOpcode(WorldPackets::Spells::CastSpell& castRe
                 spellInfo = actualSpellInfo;
         }
 
-    if (triggerFlag == TRIGGERED_NONE && !_player->CanExecutePendingSpellCastRequest(spellInfo) && _player->CanRequestSpellCast(spellInfo))
-    {
-        _player->RequestSpellCast(spellInfo, *castRequest.GetRawPacket(), false);
-        return;
-    }
-
     if (castRequest.Cast.MissileTrajectory && castRequest.Cast.MissileTrajectory->MoveUpdate)
          HandleMovementOpcode(MSG_MOVE_STOP, *castRequest.Cast.MissileTrajectory->MoveUpdate);
 
@@ -366,9 +353,6 @@ void WorldSession::HandleCancelCastOpcode(WorldPackets::Spells::CancelCast& canc
 {
     if (_player->IsCharmed())
         return;
-
-    if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(cancelCast.SpellID))
-        _player->CancelPendingSpellCast(spellInfo, cancelCast.SpellID);
 
     if (_player->IsNonMeleeSpellCast(false))
         _player->InterruptNonMeleeSpells(false, cancelCast.SpellID, false);
