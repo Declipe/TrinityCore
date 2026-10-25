@@ -336,3 +336,13 @@ static UnitTestDataLoader::DBC<TalentEntry, &TalentEntry::ID> talents(sTalentSto
     // this needs to be after the loader destructors
     sSpellMgr->LoadSpellInfoStore();
 }
+
+bool IsFakeReplayPlayerGuid(ObjectGuid /*guid*/, std::string& /*name*/, uint8& /*race*/, uint8& /*gender*/, uint8& /*classId*/)
+{
+    return false;
+}
+
+class Battlefield;
+void SaveBattlefieldReplay(Battlefield* /*bf*/)
+{
+}

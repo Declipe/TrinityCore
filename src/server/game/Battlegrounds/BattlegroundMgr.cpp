@@ -883,6 +883,9 @@ bool BattlegroundMgr::IsBGWeekend(BattlegroundTypeId bgTypeId)
 
 BattlegroundTypeId BattlegroundMgr::GetRandomBG(BattlegroundTypeId bgTypeId)
 {
+    if (bgTypeId != BATTLEGROUND_RB && bgTypeId != BATTLEGROUND_AA)
+        return bgTypeId;
+
     if (BattlegroundTemplate const* bgTemplate = GetBattlegroundTemplateByTypeId(bgTypeId))
     {
         std::vector<BattlegroundTemplate const*> ids;

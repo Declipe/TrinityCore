@@ -270,7 +270,7 @@ void WorldSession::HandleMoveWorldportAck()
         // join to bg case
         else if (Battleground* bg = player->GetBattleground())
         {
-            if (player->IsInvitedForBattlegroundInstance(player->GetBattlegroundId()))
+            if (player->IsInvitedForBattlegroundInstance(player->GetBattlegroundId()) || player->IsSpectator())
                 bg->AddPlayer(player);
         }
     }
