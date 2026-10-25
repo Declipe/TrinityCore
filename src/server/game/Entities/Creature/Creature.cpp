@@ -643,6 +643,7 @@ bool Creature::UpdateEntry(uint32 entry, CreatureData const* data /*= nullptr*/,
     LoadTemplateRoot();
     InitializeMovementFlags();
     LoadCreaturesAddon();
+    InitializeMovementFlags();
     LoadTemplateImmunities();
 
     GetThreatManager().EvaluateSuppressed();
@@ -762,6 +763,7 @@ void Creature::Update(uint32 diff)
                 {
                     if (Group* group = sGroupMgr->GetGroupByGUID(lootingGroupLowGUID))
                         group->EndRoll(&loot, GetMap());
+
                     m_groupLootTimer = 0;
                     lootingGroupLowGUID.Clear();
                 }
@@ -1262,6 +1264,7 @@ Player* Creature::GetLootRecipient() const
 {
     if (!m_lootRecipient)
         return nullptr;
+
     return ObjectAccessor::FindConnectedPlayer(m_lootRecipient);
 }
 

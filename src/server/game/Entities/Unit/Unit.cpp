@@ -26,6 +26,7 @@
 #include "CharacterCache.h"
 #include "ChatPackets.h"
 #include "ChatTextBuilder.h"
+#include "CombatLogPackets.h"
 #include "CombatPackets.h"
 #include "CombatLogPackets.h"
 #include "Common.h"
@@ -10364,9 +10365,8 @@ void Unit::SetStandState(UnitStandStateType state)
 
     if (GetTypeId() == TYPEID_PLAYER)
     {
-        WorldPacket data(SMSG_STANDSTATE_UPDATE, 1);
-        data << (uint8)state;
-        ToPlayer()->SendDirectMessage(&data);
+        WorldPackets::Misc::StandStateUpdate packet(state);
+        ToPlayer()->SendDirectMessage(packet.Write());
     }
 }
 

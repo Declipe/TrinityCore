@@ -106,7 +106,7 @@ Position const Locations[4] =
     {-10975.9f, -1885.81f, 81.73f, 2.253890f},
 };
 
-const uint32 Adds[6]=
+constexpr std::array<uint32, 6> Adds =
 {
     17007,
     19872,

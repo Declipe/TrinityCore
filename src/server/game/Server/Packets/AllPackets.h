@@ -26,6 +26,7 @@
 #include "BattlefieldPackets.h"
 #include "BattlegroundPackets.h"
 #include "CalendarPackets.h"
+#include "ChannelPackets.h"
 #include "CharacterPackets.h"
 #include "ChannelPackets.h"
 #include "ChatPackets.h"

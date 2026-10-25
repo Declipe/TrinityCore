@@ -180,6 +180,8 @@ namespace WorldPackets
 
     namespace Chat
     {
+        class ChatMessage;
+        class CTextEmote;
         class EmoteClient;
         class CTextEmote;
         class ChatMessage;
@@ -1452,5 +1454,6 @@ class TC_GAME_API WorldSession
         WorldSession(WorldSession const& right) = delete;
         WorldSession& operator=(WorldSession const& right) = delete;
 };
+
 #endif
 /// @}

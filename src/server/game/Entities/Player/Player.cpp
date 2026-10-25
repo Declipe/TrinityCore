@@ -487,6 +487,7 @@ bool Player::Create(ObjectGuid::LowType guidlow, WorldPackets::Character::Charac
         SetPvpFlag(UNIT_BYTE2_FLAG_PVP);
         SetUnitFlag(UNIT_FLAG_PLAYER_CONTROLLED);
     }
+
     SetUnitFlag2(UNIT_FLAG2_REGENERATE_POWER);
 
     SetInt32Value(PLAYER_FIELD_WATCHED_FACTION_INDEX, uint32(-1));  // -1 is default value
@@ -11451,7 +11452,6 @@ InventoryResult Player::CanEquipItem(uint8 slot, uint16& dest, Item* pItem, bool
                 // Do not allow polearm to be equipped in the offhand (rare case for the only 1h polearm 41750)
                 if (type == INVTYPE_WEAPON && pProto->GetSubClass() == ITEM_SUBCLASS_WEAPON_POLEARM)
                     return EQUIP_ERR_WRONG_SLOT;
-
                 else if (type == INVTYPE_WEAPON || type == INVTYPE_WEAPONOFFHAND)
                 {
                     if (!CanDualWield())
@@ -16710,6 +16710,7 @@ void Player::KilledMonsterCredit(uint32 entry, ObjectGuid guid /*= ObjectGuid::E
 
                             SendQuestUpdateAddCreatureOrGo(qInfo, guid, j, curKillCount, addKillCount);
                         }
+
                         if (CanCompleteQuest(questid))
                             CompleteQuest(questid);
 
@@ -18252,7 +18253,7 @@ void Player::_LoadAuras(PreparedQueryResult auraResult, uint32 timediff)
                 remainTime -= timediff * IN_MILLISECONDS;
             }
 
-            // prevent wrong values of remaincharges
+            // prevent wrong values of remainCharges
             if (spellInfo->ProcCharges)
             {
                 // we have no control over the order of applying auras and modifiers allow auras
@@ -18338,7 +18339,15 @@ void Player::LoadCorpse(PreparedQueryResult result)
 
 void Player::_LoadInventory(PreparedQueryResult result, uint32 timeDiff)
 {
-    //QueryResult* result = CharacterDatabase.PQuery("SELECT data, text, bag, slot, item, item_template FROM character_inventory JOIN item_instance ON character_inventory.item = item_instance.guid WHERE character_inventory.guid = '{}' ORDER BY bag, slot", GetGUID().GetCounter());
+    //           0          1            2                3      4         5        6      7             8                 9          10          11    12
+    // SELECT guid, itemEntry, creatorGuid, giftCreatorGuid, count, duration, charges, flags, enchantments, randomPropertyId, durability, playedTime, text,
+    //         13    14
+    //        bag, slot
+    // FROM character_inventory ci
+    // JOIN item_instance ii ON ci.item = ii.guid
+    // WHERE ci.guid = ?
+    // ORDER BY bag ASC, slot ASC
+
     //NOTE: the "order by `bag`" is important because it makes sure
     //the bagMap is filled before items in the bags are loaded
     //NOTE2: the "order by `slot`" is needed because mainhand weapons are (wrongly?)
@@ -21383,32 +21392,30 @@ template TC_GAME_API void Player::ApplySpellMod(uint32 spellId, SpellModOp op, f
 void Player::AddSpellMod(SpellModifier* mod, bool apply)
 {
     TC_LOG_DEBUG("spells", "Player::AddSpellMod: Player '{}' ({}), SpellID: {}", GetName(), GetGUID().ToString(), mod->spellId);
-    uint16 opcode = (mod->type == SPELLMOD_FLAT) ? SMSG_SET_FLAT_SPELL_MODIFIER : SMSG_SET_PCT_SPELL_MODIFIER;
 
-    flag96 modMask;
+    OpcodeServer opcode = (mod->type == SPELLMOD_FLAT) ? SMSG_SET_FLAT_SPELL_MODIFIER : SMSG_SET_PCT_SPELL_MODIFIER;
+
     for (uint8 i = 0; i < 3; ++i)
     {
         for (uint32 eff = 0; eff < 32; ++eff)
         {
-            modMask[i] = uint32(1) << eff;
-            if ((mod->mask & modMask))
+            uint32 modMask = uint32(1) << eff;
+            if ((mod->mask[i] & modMask))
             {
                 int32 val = 0;
                 for (SpellModifier* spellMod : m_spellMods[mod->op])
-                {
-                    if (spellMod->type == mod->type && (spellMod->mask & modMask))
+                    if (spellMod->type == mod->type && (spellMod->mask[i] & modMask))
                         val += spellMod->value;
-                }
+
                 val += apply ? mod->value : -(mod->value);
-                WorldPacket data(opcode, (1 + 1 + 4));
-                data << uint8(eff + 32 * i);
-                data << uint8(mod->op);
-                data << int32(val);
-                SendDirectMessage(&data);
+
+                WorldPackets::Spells::SetSpellModifier packet(opcode);
+                packet.Modifier.ClassIndex = eff + 32 * i;
+                packet.Modifier.ModIndex = AsUnderlyingType(mod->op);
+                packet.Modifier.ModifierValue = val;
+                SendDirectMessage(packet.Write());
             }
         }
-
-        modMask[i] = 0;
     }
 
     if (apply)
@@ -26283,12 +26290,10 @@ void Player::ActivateTalentGroup(uint8 group)
     for (uint32 talentId = 0; talentId < sTalentStore.GetNumRows(); ++talentId)
     {
         TalentEntry const* talentInfo = sTalentStore.LookupEntry(talentId);
-
         if (!talentInfo)
             continue;
 
         TalentTabEntry const* talentTabInfo = sTalentTabStore.LookupEntry(talentInfo->TabID);
-
         if (!talentTabInfo)
             continue;
 

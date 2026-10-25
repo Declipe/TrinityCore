@@ -38,6 +38,7 @@
 #include "UniqueTrackablePtr.h"
 #include <iterator>
 #include <map>
+#include <span>
 #include <unordered_map>
 #include <span>
 

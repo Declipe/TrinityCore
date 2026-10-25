@@ -19,7 +19,6 @@
 #include "DatabaseEnv.h"
 #include "Item.h"
 #include "ObjectMgr.h"
-#include "Opcodes.h"
 #include "Pet.h"
 #include "Player.h"
 #include "Spell.h"

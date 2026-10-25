@@ -3503,6 +3503,15 @@ void SpellMgr::LoadSpellInfoCorrections()
         spellInfo->RangeEntry = sSpellRangeStore.LookupEntry(5); // 40yd
     });
 
+    // Radius in DBC is not enough
+    ApplySpellFix({
+        36854, // Channel
+        36856  // Channel
+    }, [](SpellInfo* spellInfo)
+    {
+        spellInfo->RangeEntry = sSpellRangeStore.LookupEntry(5); // 40yd
+    });
+
     // Master Shapeshifter: missing stance data for forms other than bear - bear version has correct data
     // To prevent aura staying on target after talent unlearned
     ApplySpellFix({ 48420 }, [](SpellInfo* spellInfo)
@@ -3638,6 +3647,12 @@ void SpellMgr::LoadSpellInfoCorrections()
         {
             spellInfo->_GetEffect(EFFECT_0).MiscValue = POWER_MANA;
         });
+
+    // Dispersion
+    ApplySpellFix({ 60069 }, [](SpellInfo* spellInfo)
+    {
+        spellInfo->_GetEffect(EFFECT_0).MiscValue = POWER_MANA;
+    });
 
     // Improved Devouring Plague
     ApplySpellFix({ 63675 }, [](SpellInfo* spellInfo)
@@ -3991,6 +4006,15 @@ void SpellMgr::LoadSpellInfoCorrections()
         {
             spellInfo->RecoveryTime = 0;
         });
+
+    // Without this auras 35173 and 35174 triggers no spell and are removed after first tick
+    ApplySpellFix({
+        35158, // Reflective Magic Shield
+        35159  // Reflective Damage Shield
+    }, [](SpellInfo* spellInfo)
+    {
+        spellInfo->RecoveryTime = 0;
+    });
 
     ApplySpellFix({
         37851, // Tag Greater Felfire Diemetradon
@@ -4934,6 +4958,52 @@ void SpellMgr::LoadSpellInfoCorrections()
         {
             spellInfo->RangeEntry = sSpellRangeStore.LookupEntry(5); // 40yd
         });
+
+    // Pilgrim's Bounty - Candied Sweet Potato
+    ApplySpellFix({ 65418 }, [](SpellInfo* spellInfo)
+    {
+        spellInfo->_GetEffect(EFFECT_2).TriggerSpell = 65410;
+    });
+
+    // Pilgrim's Bounty - Spice Bread Stuffing
+    ApplySpellFix({ 65419 }, [](SpellInfo* spellInfo)
+    {
+        spellInfo->_GetEffect(EFFECT_2).TriggerSpell = 65416;
+    });
+
+    // Pilgrim's Bounty - Cranberry Chutney
+    ApplySpellFix({ 65420 }, [](SpellInfo* spellInfo)
+    {
+        spellInfo->_GetEffect(EFFECT_2).TriggerSpell = 65412;
+    });
+
+    // Pilgrim's Bounty - Pumpkin Pie
+    ApplySpellFix({ 65421 }, [](SpellInfo* spellInfo)
+    {
+        spellInfo->_GetEffect(EFFECT_2).TriggerSpell = 65415;
+    });
+
+    // Pilgrim's Bounty - Slow-Roasted Turkey
+    ApplySpellFix({ 65422 }, [](SpellInfo* spellInfo)
+    {
+        spellInfo->_GetEffect(EFFECT_2).TriggerSpell = 65414;
+    });
+
+    ApplySpellFix({
+        24869, // Bobbing Apple, Bread of the Dead, Winter Veil Cookie
+        61874, // Noblegarden Chocolate
+        71068, // Sweet Surprise
+        71071, // Very Berry Cream
+        71073, // Dark Desire
+        71074  // Buttermilk Delight
+    }, [](SpellInfo* spellInfo)
+    {
+        spellInfo->_GetEffect(EFFECT_1).Effect          = SPELL_EFFECT_APPLY_AURA;
+        spellInfo->_GetEffect(EFFECT_1).TargetA         = SpellImplicitTargetInfo(TARGET_UNIT_CASTER);
+        spellInfo->_GetEffect(EFFECT_1).ApplyAuraName   = SPELL_AURA_PERIODIC_TRIGGER_SPELL;
+        spellInfo->_GetEffect(EFFECT_1).ApplyAuraPeriod = 10 * IN_MILLISECONDS;
+        spellInfo->_GetEffect(EFFECT_1).TriggerSpell    = 24870;
+    });
 
     // Pilgrim's Bounty - Candied Sweet Potato
     ApplySpellFix({ 65418 }, [](SpellInfo* spellInfo)
