@@ -643,7 +643,6 @@ bool Creature::UpdateEntry(uint32 entry, CreatureData const* data /*= nullptr*/,
     LoadTemplateRoot();
     InitializeMovementFlags();
     LoadCreaturesAddon();
-    InitializeMovementFlags();
     LoadTemplateImmunities();
 
     GetThreatManager().EvaluateSuppressed();
