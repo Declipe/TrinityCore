@@ -66,6 +66,19 @@
     {
         npc_1v1arena(Creature* me) : ScriptedAI(me) { }
 
+        BattlegroundQueueTypeId GetArenaQueueTypeId(Player* player) const
+        {
+            Battleground* bg = sBattlegroundMgr->GetBattlegroundTemplate(BATTLEGROUND_AA);
+            if (!bg)
+                return BATTLEGROUND_QUEUE_NONE;
+
+            PvPDifficultyEntry const* bracketEntry = GetBattlegroundBracketByLevel(bg->GetMapId(), player->GetLevel());
+            if (!bracketEntry)
+                return BATTLEGROUND_QUEUE_NONE;
+
+            return BattlegroundMgr::BGQueueTypeId(BATTLEGROUND_AA, bracketEntry->GetBracketId(), ARENA_TYPE_5v5);
+        }
+
         bool JoinQueueArena(Player* player, Creature* me, bool isRated)
         {
             if (!player || !me)
@@ -99,11 +112,11 @@
             }
 
             BattlegroundTypeId bgTypeId = bg->GetTypeID();
-            BattlegroundQueueTypeId bgQueueTypeId = BattlegroundMgr::BGQueueTypeId(bgTypeId, arenatype);
             PvPDifficultyEntry const* bracketEntry = GetBattlegroundBracketByLevel(bg->GetMapId(), player->GetLevel());
             if (!bracketEntry)
                 return false;
 
+            BattlegroundQueueTypeId bgQueueTypeId = BattlegroundMgr::BGQueueTypeId(bgTypeId, bracketEntry->GetBracketId(), arenatype);
             [[maybe_unused]] GroupJoinBattlegroundResult err = ERR_GROUP_JOIN_BATTLEGROUND_FAIL;
 
             // check if already in queue
@@ -138,7 +151,7 @@
             BattlegroundQueue& bgQueue = sBattlegroundMgr->GetBattlegroundQueue(bgQueueTypeId);
             if (sGameConfig->GetBoolConfig("Ip.enabled")) // If "fatigue.enabled" is enabled
             {
-                if (bgQueue.IPExistsInQueue(player, nullptr, bracketEntry, isRated, false))
+                if (bgQueue.IPExistsInQueue(player, nullptr, isRated, false))
                 {
                     //ChatHandler(player->GetSession()).SendSysMessage("?? ?? ?????? ?????????????? 1?1 ??????, ?????? ??? ??? ???? ??? - ?? ? ??????? ? ??? ?? IP");
                     ChatHandler(player->GetSession()).SendSysMessage("You cannot join 1v1 Arena now because there is already someone queued with the same IP address.");
@@ -147,8 +160,8 @@
             }
             bg->SetRated(isRated);
 
-            GroupQueueInfo* ginfo = bgQueue.AddGroup(player, nullptr, bgTypeId, bracketEntry, arenatype, isRated, false, arenaRating, matchmakerRating, ateamId);
-            uint32 avgTime = bgQueue.GetAverageQueueWaitTime(ginfo, bracketEntry->GetBracketId());
+            GroupQueueInfo* ginfo = bgQueue.AddGroup(player, nullptr, bracketEntry, isRated, false, arenaRating, matchmakerRating, ateamId);
+            uint32 avgTime = bgQueue.GetAverageQueueWaitTime(ginfo);
             uint32 queueSlot = player->AddBattlegroundQueueId(bgQueueTypeId);
 
             WorldPacket data;
@@ -156,7 +169,7 @@
             sBattlegroundMgr->BuildBattlegroundStatusPacket(&data, bg, queueSlot, STATUS_WAIT_QUEUE, avgTime, 0, arenatype, 0);
             player->GetSession()->SendPacket(&data);
 
-            sBattlegroundMgr->ScheduleQueueUpdate(matchmakerRating, arenatype, bgQueueTypeId, bgTypeId, bracketEntry->GetBracketId());
+            sBattlegroundMgr->ScheduleQueueUpdate(matchmakerRating, bgQueueTypeId);
 
             return true;
         }
@@ -225,7 +238,9 @@
                 return true;
             }
 
-            if (player->InBattlegroundQueueForBattlegroundQueueType(BATTLEGROUND_QUEUE_5v5))
+            BattlegroundQueueTypeId arenaQueueTypeId = GetArenaQueueTypeId(player);
+            bool isQueued = arenaQueueTypeId != BATTLEGROUND_QUEUE_NONE && player->InBattlegroundQueueForBattlegroundQueueType(arenaQueueTypeId);
+            if (isQueued)
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_31), GOSSIP_SENDER_MAIN, 3, GTS2(NOT_USED_32), 0, false);
             else
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_33), GOSSIP_SENDER_MAIN, 20);
@@ -234,7 +249,7 @@
                 AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_34), GOSSIP_SENDER_MAIN, 1, GTS2(NOT_USED_35), sGameConfig->GetIntConfig("Arena.1v1.Costs"), false);
             else
             {
-                if (player->InBattlegroundQueueForBattlegroundQueueType(BATTLEGROUND_QUEUE_5v5) == false)
+                if (!isQueued)
                 {
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_36), GOSSIP_SENDER_MAIN, 2);
                     AddGossipItemFor(player, GOSSIP_ICON_CHAT, GTS2(NOT_USED_37), GOSSIP_SENDER_MAIN, 5, GTS2(NOT_USED_32), 0, false);

@@ -952,7 +952,7 @@ public:
     // Remove player at leave BG
     virtual void OnBattlegroundRemovePlayerAtLeave(Battleground* /*bg*/, ObjectGuid /*guid*/, bool /*transport*/, bool /*sendPacket*/) { }
 
-    virtual void OnQueueAddGroup(BattlegroundQueue* /*queue*/, GroupQueueInfo* /*ginfo*/, uint32& /*index*/, Player* /*leader*/, Group* /*grp*/, PvPDifficultyEntry const* /*bracketEntry*/, bool /*isPremade*/) { }
+    virtual void OnQueueAddGroup(BattlegroundQueue* /*queue*/, GroupQueueInfo* /*ginfo*/, uint32& /*index*/, Player* /*leader*/, Group const* /*group*/, PvPDifficultyEntry const* /*bracketEntry*/, bool /*isPremade*/) { }
 
     virtual bool CanFillPlayersToBG(BattlegroundQueue* /*queue*/, Battleground* /*bg*/, const int32 /*aliFree*/, const int32 /*hordeFree*/, BattlegroundBracketId /*bracket_id*/) { return true; }
 
@@ -1273,7 +1273,7 @@ public: /* BGScript */
     void OnBattlegroundAddPlayer(Battleground* bg, Player* player);
     void OnBattlegroundBeforeAddPlayer(Battleground* bg, Player* player);
     void OnBattlegroundRemovePlayerAtLeave(Battleground* bg, ObjectGuid guid, bool transport, bool sendPacket);
-    void OnQueueAddGroup(BattlegroundQueue* queue, GroupQueueInfo* ginfo, uint32& index, Player* leader, Group* grp, PvPDifficultyEntry const* bracketEntry, bool isPremade);
+    void OnQueueAddGroup(BattlegroundQueue* queue, GroupQueueInfo* ginfo, uint32& index, Player* leader, Group const* group, PvPDifficultyEntry const* bracketEntry, bool isPremade);
     bool CanFillPlayersToBG(BattlegroundQueue* queue, Battleground* bg, const int32 aliFree, const int32 hordeFree, BattlegroundBracketId bracket_id);
     bool CanFillPlayersToBGWithSpecific(BattlegroundQueue* queue, Battleground* bg, const int32 aliFree, const int32 hordeFree, BattlegroundBracketId thisBracketId, BattlegroundQueue* specificQueue, BattlegroundBracketId specificBracketId);
     void OnCheckNormalMatch(BattlegroundQueue* queue, uint32& Coef, Battleground* bgTemplate, BattlegroundBracketId bracket_id, uint32& minPlayers, uint32& maxPlayers);

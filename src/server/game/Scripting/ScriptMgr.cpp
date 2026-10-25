@@ -2609,9 +2609,9 @@ void ScriptMgr::OnBattlegroundRemovePlayerAtLeave(Battleground* bg, ObjectGuid g
     FOREACH_SCRIPT(BGScript)->OnBattlegroundRemovePlayerAtLeave(bg, guid, transport, sendPacket);
 }
 
-void ScriptMgr::OnQueueAddGroup(BattlegroundQueue* queue, GroupQueueInfo* ginfo, uint32& index, Player* leader, Group* grp, PvPDifficultyEntry const* bracketEntry, bool isPremade)
+void ScriptMgr::OnQueueAddGroup(BattlegroundQueue* queue, GroupQueueInfo* ginfo, uint32& index, Player* leader, Group const* group, PvPDifficultyEntry const* bracketEntry, bool isPremade)
 {
-    FOREACH_SCRIPT(BGScript)->OnQueueAddGroup(queue, ginfo, index, leader, grp, bracketEntry, isPremade);
+    FOREACH_SCRIPT(BGScript)->OnQueueAddGroup(queue, ginfo, index, leader, group, bracketEntry, isPremade);
 }
 
 bool ScriptMgr::CanFillPlayersToBG(BattlegroundQueue* queue, Battleground* bg, const int32 aliFree, const int32 hordeFree, BattlegroundBracketId bracket_id)

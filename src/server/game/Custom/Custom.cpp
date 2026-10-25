@@ -179,131 +179,113 @@ void Player::DoForgetPlayersInBG(Battleground* pBattleGround)
     }
 }
 
-bool BattlegroundQueue::CheckCrossFactionMatch(BattlegroundBracketId bracket_id, Battleground* bg)
+bool BattlegroundQueue::CheckCrossFactionMatch(Battleground* bg)
 {
     if (!sWorld->getBoolConfig(BATTLEGROUND_CROSSFACTION_ENABLED) || bg->isArena())
-        return false; // Only do this if crossbg's are enabled.
+        return false;
 
-    // Here we will add all players to selectionpool, later we check if there are enough and launch a bg.
-    FillXPlayersToBG(bracket_id, bg, true);
+    FillXPlayersToBG(bg, true);
 
     if (sBattlegroundMgr->isTesting() && (m_SelectionPools[TEAM_ALLIANCE].GetPlayerCount() || m_SelectionPools[TEAM_HORDE].GetPlayerCount()))
         return true;
 
-    uint8 MPT = bg->GetMinPlayersPerTeam();
-    if (m_SelectionPools[TEAM_ALLIANCE].GetPlayerCount() < MPT || m_SelectionPools[TEAM_HORDE].GetPlayerCount() < MPT)
+    uint32 minPlayersPerTeam = bg->GetMinPlayersPerTeam();
+    return m_SelectionPools[TEAM_ALLIANCE].GetPlayerCount() >= minPlayersPerTeam
+        && m_SelectionPools[TEAM_HORDE].GetPlayerCount() >= minPlayersPerTeam;
+}
+
+bool BattlegroundQueue::FillXPlayersToBG(Battleground* bg, bool start)
+{
+    uint32 queuedPeople = 0;
+    for (GroupQueueInfo const* group : m_QueuedGroups[BG_QUEUE_CROSSFACTION])
+        if (!group->IsInvitedToBGInstanceGUID)
+            queuedPeople += group->Players.size();
+
+    if (!sWorld->getBoolConfig(BATTLEGROUND_CROSSFACTION_ENABLED)
+        || (!sBattlegroundMgr->isTesting() && queuedPeople < bg->GetMinPlayersPerTeam() * 2 && start))
         return false;
+
+    int32 allianceFree = start ? bg->GetMaxPlayersPerTeam() : bg->GetFreeSlotsForTeam(ALLIANCE);
+    int32 hordeFree = start ? bg->GetMaxPlayersPerTeam() : bg->GetFreeSlotsForTeam(HORDE);
+    m_SelectionPools[TEAM_ALLIANCE].Init();
+    m_SelectionPools[TEAM_HORDE].Init();
+    int32 allianceAvailable = allianceFree;
+    int32 hordeAvailable = hordeFree;
+
+    if (start)
+    {
+        QueuedGroupMap allianceGroups;
+        QueuedGroupMap hordeGroups;
+        uint32 queuedAlliance = 0;
+        uint32 queuedHorde = 0;
+
+        for (GroupQueueInfo* group : m_QueuedGroups[BG_QUEUE_CROSSFACTION])
+        {
+            if (group->IsInvitedToBGInstanceGUID)
+                continue;
+
+            if (group->CFSTeam == ALLIANCE)
+            {
+                allianceGroups.emplace(group->Players.size(), group);
+                queuedAlliance += group->Players.size();
+            }
+            else
+            {
+                hordeGroups.emplace(group->Players.size(), group);
+                queuedHorde += group->Players.size();
+            }
+        }
+
+        uint32 smallestTeam = std::min(std::min(uint32(allianceFree), queuedAlliance), std::min(uint32(hordeFree), queuedHorde));
+        allianceAvailable -= PreAddPlayers(allianceGroups, smallestTeam, allianceFree);
+        hordeAvailable -= PreAddPlayers(hordeGroups, smallestTeam, hordeFree);
+    }
+
+    QueuedGroupMap queuedGroups;
+    for (GroupQueueInfo* group : m_QueuedGroups[BG_QUEUE_CROSSFACTION])
+        queuedGroups.emplace(group->Players.size(), group);
+
+    for (auto itr = queuedGroups.rbegin(); itr != queuedGroups.rend(); ++itr)
+    {
+        GroupQueueInfo* group = itr->second;
+        GroupsQueueType const& alliancePool = m_SelectionPools[TEAM_ALLIANCE].SelectedGroups;
+        GroupsQueueType const& hordePool = m_SelectionPools[TEAM_HORDE].SelectedGroups;
+
+        if (group->IsInvitedToBGInstanceGUID
+            || std::find(alliancePool.begin(), alliancePool.end(), group) != alliancePool.end()
+            || std::find(hordePool.begin(), hordePool.end(), group) != hordePool.end()
+            || (m_SelectionPools[TEAM_ALLIANCE].GetPlayerCount() >= bg->GetMinPlayersPerTeam()
+                && m_SelectionPools[TEAM_HORDE].GetPlayerCount() >= bg->GetMinPlayersPerTeam()))
+            continue;
+
+        bool moreAllianceSpace = allianceAvailable < hordeAvailable;
+        if (allianceAvailable != hordeAvailable)
+            group->Team = moreAllianceSpace ? HORDE : ALLIANCE;
+
+        bool alliance = group->Team == ALLIANCE;
+        if (m_SelectionPools[alliance ? TEAM_ALLIANCE : TEAM_HORDE].AddGroup(group, alliance ? allianceFree : hordeFree))
+            (alliance ? allianceAvailable : hordeAvailable) -= group->Players.size();
+    }
 
     return true;
 }
 
-// This function will invite players in the least populated faction, which makes battleground queues much faster.
-// This function will return true if cross faction battlegrounds are enabled, otherwise return false,
-// which is useful in FillPlayersToBG. Because then we can interrupt the regular invitation if cross faction bg's are enabled.
-bool BattlegroundQueue::FillXPlayersToBG(BattlegroundBracketId bracket_id, Battleground* bg, bool start)
+int32 BattlegroundQueue::PreAddPlayers(QueuedGroupMap const& preGroupMap, int32 maxAdd, uint32 maxInTeam)
 {
-    uint8 queuedPeople = 0;
-    for (GroupsQueueType::const_iterator itr = m_QueuedGroups[bracket_id][BG_QUEUE_CROSSFACTION].begin(); itr != m_QueuedGroups[bracket_id][BG_QUEUE_CROSSFACTION].end(); ++itr)
-        if (!(*itr)->IsInvitedToBGInstanceGUID)
-            queuedPeople += (*itr)->Players.size();
-
-    if (sWorld->getBoolConfig(BATTLEGROUND_CROSSFACTION_ENABLED) && (sBattlegroundMgr->isTesting() || queuedPeople >= bg->GetMinPlayersPerTeam()*2 || !start))
+    int32 leftToAdd = maxAdd;
+    int32 added = 0;
+    for (auto itr = preGroupMap.rbegin(); itr != preGroupMap.rend(); ++itr)
     {
-        int32 aliFree   = start ? bg->GetMaxPlayersPerTeam() : bg->GetFreeSlotsForTeam(ALLIANCE);
-        int32 hordeFree = start ? bg->GetMaxPlayersPerTeam() : bg->GetFreeSlotsForTeam(HORDE);
-        // Empty selection pools. They will be refilled from queued groups.
-        m_SelectionPools[TEAM_ALLIANCE].Init();
-        m_SelectionPools[TEAM_HORDE].Init();
-        int32 valiFree = aliFree;
-        int32 vhordeFree = hordeFree;
-        int32 diff = 0;
-
-
-        // Add teams to their own factions as far as possible.
-        if (start)
-        {
-            QueuedGroupMap m_PreGroupMap_a, m_PreGroupMap_h;
-            int32 m_SmallestOfTeams = 0;
-            int32 queuedAlliance = 0;
-            int32 queuedHorde = 0;
-
-            for (GroupsQueueType::const_iterator itr = m_QueuedGroups[bracket_id][BG_QUEUE_CROSSFACTION].begin(); itr != m_QueuedGroups[bracket_id][BG_QUEUE_CROSSFACTION].end(); ++itr)
-            {
-                if ((*itr)->IsInvitedToBGInstanceGUID)
-                    continue;
-
-                bool alliance = (*itr)->CFSTeam == ALLIANCE;
-
-                if (alliance)
-                {
-                    m_PreGroupMap_a.insert(std::make_pair((*itr)->Players.size(), *itr));
-                    queuedAlliance += (*itr)->Players.size();
-                }
-                else
-                {
-                    m_PreGroupMap_h.insert(std::make_pair((*itr)->Players.size(), *itr));
-                    queuedHorde += (*itr)->Players.size();
-                }
-            }
-
-            m_SmallestOfTeams = std::min(std::min(aliFree, queuedAlliance), std::min(hordeFree, queuedHorde));
-
-            valiFree -= PreAddPlayers(m_PreGroupMap_a, m_SmallestOfTeams, aliFree);
-            vhordeFree -= PreAddPlayers(m_PreGroupMap_h, m_SmallestOfTeams, hordeFree);
-        }
-
-        QueuedGroupMap m_QueuedGroupMap;
-
-        for (GroupsQueueType::const_iterator itr = m_QueuedGroups[bracket_id][BG_QUEUE_CROSSFACTION].begin(); itr != m_QueuedGroups[bracket_id][BG_QUEUE_CROSSFACTION].end(); ++itr)
-            m_QueuedGroupMap.insert(std::make_pair((*itr)->Players.size(), *itr));
-
-        for (QueuedGroupMap::reverse_iterator itr = m_QueuedGroupMap.rbegin(); itr != m_QueuedGroupMap.rend(); ++itr)
-        {
-            GroupsQueueType allypool = m_SelectionPools[TEAM_ALLIANCE].SelectedGroups;
-            GroupsQueueType hordepool = m_SelectionPools[TEAM_HORDE].SelectedGroups;
-
-            GroupQueueInfo* ginfo = itr->second;
-
-            // If player already was invited via pre adding (add to own team first) or he was already invited to a bg, skip.
-            if (ginfo->IsInvitedToBGInstanceGUID ||
-                std::find(allypool.begin(), allypool.end(), ginfo) != allypool.end() ||
-                std::find(hordepool.begin(), hordepool.end(), ginfo) != hordepool.end() ||
-                (m_SelectionPools[TEAM_ALLIANCE].GetPlayerCount() >= bg->GetMinPlayersPerTeam() &&
-                m_SelectionPools[TEAM_HORDE].GetPlayerCount() >= bg->GetMinPlayersPerTeam()))
-                continue;
-
-            diff = abs(valiFree - vhordeFree);
-            bool moreAli = valiFree < vhordeFree;
-
-            if (diff > 0)
-                ginfo->Team = moreAli ? HORDE : ALLIANCE;
-
-            bool alliance = ginfo->Team == ALLIANCE;
-
-            if (m_SelectionPools[alliance ? TEAM_ALLIANCE : TEAM_HORDE].AddGroup(ginfo, alliance ? aliFree : hordeFree))
-                alliance ? valiFree -= ginfo->Players.size() : vhordeFree -= ginfo->Players.size();
-        }
-
-        return true;
-    }
-    return false;
-}
-
-int32 BattlegroundQueue::PreAddPlayers(QueuedGroupMap m_PreGroupMap, int32 MaxAdd, uint32 MaxInTeam)
-{
-    int32 LeftToAdd = MaxAdd;
-    uint32 Added = 0;
-
-    for (QueuedGroupMap::reverse_iterator itr = m_PreGroupMap.rbegin(); itr != m_PreGroupMap.rend(); ++itr)
-    {
-        int32 PlayerSize = itr->first;
+        int32 playerSize = itr->first;
         bool alliance = itr->second->CFSTeam == ALLIANCE;
-
-        if (PlayerSize <= LeftToAdd && m_SelectionPools[alliance ? TEAM_ALLIANCE : TEAM_HORDE].AddGroup(itr->second, MaxInTeam))
-            LeftToAdd -= PlayerSize, Added -= PlayerSize;
+        if (playerSize <= leftToAdd && m_SelectionPools[alliance ? TEAM_ALLIANCE : TEAM_HORDE].AddGroup(itr->second, maxInTeam))
+        {
+            leftToAdd -= playerSize;
+            added += playerSize;
+        }
     }
 
-    return LeftToAdd;
+    return added;
 }
 
 void Player::SendChatMessage(const char *format, ...)
