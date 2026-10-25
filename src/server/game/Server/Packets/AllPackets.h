@@ -24,6 +24,7 @@
 #include "AuthenticationPackets.h"
 #include "BankPackets.h"
 #include "BattlefieldPackets.h"
+#include "BattlegroundPackets.h"
 #include "CalendarPackets.h"
 #include "CharacterPackets.h"
 #include "ChannelPackets.h"

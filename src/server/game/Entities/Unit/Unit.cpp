@@ -20,6 +20,7 @@
 #include "Battlefield.h"
 #include "BattlefieldMgr.h"
 #include "Battleground.h"
+#include "BattlegroundPackets.h"
 #include "BattlegroundScore.h"
 #include "CellImpl.h"
 #include "CharacterCache.h"
@@ -13831,6 +13832,21 @@ void Unit::PatchValuesUpdate(ByteBuffer& valuesUpdateBuf, BuildValuesCachePosPoi
             valuesUpdateBuf.put(posPointers.UnitFieldFactionTemplatePos, m_uint32Values[UNIT_FIELD_FACTIONTEMPLATE]);
         }
     }
+}
+
+void Unit::DestroyForPlayer(Player* target, bool onDeath) const
+{
+    if (Battleground* bg = target->GetBattleground())
+    {
+        if (bg->isArena())
+        {
+            WorldPackets::Battleground::DestroyArenaUnit destroyArenaUnit;
+            destroyArenaUnit.Guid = GetGUID();
+            target->GetSession()->SendPacket(destroyArenaUnit.Write());
+        }
+    }
+
+    WorldObject::DestroyForPlayer(target, onDeath);
 }
 
 int32 Unit::GetHighestExclusiveSameEffectSpellGroupValue(AuraEffect const* aurEff, AuraType auraType, bool checkMiscValue /*= false*/, int32 miscValue /*= 0*/) const

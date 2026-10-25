@@ -205,6 +205,11 @@ std::string WorldSession::GetPlayerInfo() const
     return Trinity::StringFormat("[Player: Account: {}]", GetAccountId());
 }
 
+void WorldSession::SendBattleGroundList(ObjectGuid guid, BattlegroundTypeId bgTypeId)
+{
+    sBattlegroundMgr->SendBattlegroundList(_player, guid, bgTypeId);
+}
+
 /// Send a packet to the client
 void WorldSession::SendPacket(WorldPacket const* packet)
 {

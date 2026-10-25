@@ -1908,6 +1908,7 @@ class TC_GAME_API Unit : public WorldObject
         explicit Unit (bool isWorldObject);
 
         void BuildValuesUpdate(uint8 updateType, ByteBuffer* data, Player* target) override;
+        void DestroyForPlayer(Player* target, bool onDeath) const override;
 
         void _UpdateSpells(uint32 time);
         void _DeleteRemovedAuras();

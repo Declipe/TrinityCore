@@ -18,6 +18,7 @@
 #include "Battleground.h"
 #include "ArenaScore.h"
 #include "BattlegroundMgr.h"
+#include "BattlegroundPackets.h"
 #include "BattlegroundScore.h"
 #include "ChatTextBuilder.h"
 #include "Creature.h"
@@ -46,17 +47,21 @@
 #include "LuaEngine.h"
 #endif
 
-void BattlegroundScore::AppendToPacket(WorldPacket& data)
+void BattlegroundScore::AppendToPacket(WorldPackets::Battleground::PVPLogData_Player& playerData)
 {
-    data << PlayerGuid;
-    data << uint32(KillingBlows);
-    data << uint32(HonorableKills);
-    data << uint32(Deaths);
-    data << uint32(BonusHonor);
-    data << uint32(DamageDone);
-    data << uint32(HealingDone);
+    playerData.PlayerGUID = PlayerGuid;
 
-    BuildObjectivesBlock(data);
+    playerData.Kills = KillingBlows;
+    playerData.HonorOrFaction = WorldPackets::Battleground::PVPLogData_Honor
+    {
+        .HonorKills = HonorableKills,
+        .Deaths = Deaths,
+        .ContributionPoints = BonusHonor
+    };
+    playerData.DamageDone = DamageDone;
+    playerData.HealingDone = HealingDone;
+
+    BuildObjectivesBlock(playerData);
 }
 
 template<class Do>
@@ -482,11 +487,10 @@ inline void Battleground::_ProcessJoin(uint32 diff)
                 if (Player* player = ObjectAccessor::FindPlayer(itr->first))
                 {
                     // BG Status packet
-                    WorldPacket status;
                     BattlegroundQueueTypeId bgQueueTypeId = BattlegroundMgr::BGQueueTypeId(m_TypeID, GetBracketId(), GetArenaType());
-                    uint32 queueSlot = player->GetBattlegroundQueueIndex(bgQueueTypeId);
-                    sBattlegroundMgr->BuildBattlegroundStatusPacket(&status, this, queueSlot, STATUS_IN_PROGRESS, 0, GetElapsedTime(), GetArenaType(), player->GetTeam());
-                    player->SendDirectMessage(&status);
+                    WorldPackets::Battleground::BattlefieldStatusActive battlefieldStatus;
+                    BattlegroundMgr::BuildBattlegroundStatusActive(&battlefieldStatus, this, player, player->GetBattlegroundQueueIndex(bgQueueTypeId), bgQueueTypeId);
+                    player->SendDirectMessage(battlefieldStatus.Write());
 
                     player->RemoveAurasDueToSpell(SPELL_ARENA_PREPARATION);
                     player->ResetAllPowers();
@@ -754,8 +758,9 @@ void Battleground::EndBattleground(uint32 winner)
     //we must set it this way, because end time is sent in packet!
     SetRemainingTime(TIME_AUTOCLOSE_BATTLEGROUND);
 
-    WorldPacket pvpLogData;
-    BuildPvPLogDataPacket(pvpLogData);
+    WorldPackets::Battleground::PVPMatchStatistics pvpMatchStatistics;
+    BuildPvPLogDataPacket(pvpMatchStatistics);
+    pvpMatchStatistics.Write();
 
     BattlegroundQueueTypeId bgQueueTypeId = BattlegroundMgr::BGQueueTypeId(GetTypeID(), GetBracketId(), GetArenaType());
 
@@ -836,11 +841,11 @@ void Battleground::EndBattleground(uint32 winner)
 
         BlockMovement(player);
 
-        player->SendDirectMessage(&pvpLogData);
+        player->SendDirectMessage(pvpMatchStatistics.GetRawPacket());
 
-        WorldPacket data;
-        sBattlegroundMgr->BuildBattlegroundStatusPacket(&data, this, player->GetBattlegroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, TIME_AUTOCLOSE_BATTLEGROUND, GetElapsedTime(), GetArenaType(), player->GetTeam());
-        player->SendDirectMessage(&data);
+        WorldPackets::Battleground::BattlefieldStatusActive battlefieldStatus;
+        BattlegroundMgr::BuildBattlegroundStatusActive(&battlefieldStatus, this, player, player->GetBattlegroundQueueIndex(bgQueueTypeId), bgQueueTypeId);
+        player->SendDirectMessage(battlefieldStatus.Write());
         player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_BATTLEGROUND, player->GetMapId());
     }
 
@@ -932,9 +937,9 @@ void Battleground::RemovePlayerAtLeave(ObjectGuid guid, bool Transport, bool Sen
 
             if (SendPacket)
             {
-                WorldPacket data;
-                sBattlegroundMgr->BuildBattlegroundStatusPacket(&data, this, player->GetBattlegroundQueueIndex(bgQueueTypeId), STATUS_NONE, 0, 0, 0, 0);
-                player->SendDirectMessage(&data);
+                WorldPackets::Battleground::BattlefieldStatusNone battlefieldStatus;
+                BattlegroundMgr::BuildBattlegroundStatusNone(&battlefieldStatus, player->GetBattlegroundQueueIndex(bgQueueTypeId));
+                player->SendDirectMessage(battlefieldStatus.Write());
             }
 
             // this call is important, because player, when joins to battleground, this method is not called, so it must be called when leaving bg
@@ -956,9 +961,9 @@ void Battleground::RemovePlayerAtLeave(ObjectGuid guid, bool Transport, bool Sen
             sBattlegroundMgr->ScheduleQueueUpdate(0, bgQueueTypeId);
         }
         // Let others know
-        WorldPacket data;
-        sBattlegroundMgr->BuildPlayerLeftBattlegroundPacket(&data, guid);
-        SendPacketToTeam(team, &data, player, false);
+        WorldPackets::Battleground::BattlegroundPlayerLeft playerLeft;
+        playerLeft.Guid = guid;
+        SendPacketToTeam(team, playerLeft.Write(), player, false);
     }
 
     if (player)
@@ -1052,9 +1057,9 @@ void Battleground::AddPlayer(Player* player)
     if (!isInBattleground)
         UpdatePlayersCountByTeam(team, false);                  // +1 player
 
-    WorldPacket data;
-    sBattlegroundMgr->BuildPlayerJoinedBattlegroundPacket(&data, player);
-    SendPacketToTeam(team, &data, player, false);
+    WorldPackets::Battleground::BattlegroundPlayerJoined playerJoined;
+    playerJoined.Guid = player->GetGUID();
+    SendPacketToTeam(team, playerJoined.Write(), player, false);
 
     player->RemoveAurasByType(SPELL_AURA_MOUNTED);
 
@@ -1254,33 +1259,33 @@ bool Battleground::HasFreeSlots() const
     return GetPlayersSize() < GetMaxPlayers();
 }
 
-void Battleground::BuildPvPLogDataPacket(WorldPacket& data)
+void Battleground::BuildPvPLogDataPacket(WorldPackets::Battleground::PVPMatchStatistics& pvpLogData)
 {
-    uint8 type = (isArena() ? 1 : 0);
-
-    data.Initialize(MSG_PVP_LOG_DATA, 1 + 1 + 4 + 40 * GetPlayerScoresSize());
-    data << uint8(type);                                // type (battleground = 0 / arena = 1)
-
-    if (type)                                           // arena
+    if (isArena())
     {
-        for (uint8 i = 0; i < PVP_TEAMS_COUNT; ++i)
-            _arenaTeamScores[i].BuildRatingInfoBlock(data);
+        WorldPackets::Battleground::PVPLogData_Arena& arena = pvpLogData.Arena.emplace();
 
         for (uint8 i = 0; i < PVP_TEAMS_COUNT; ++i)
-            _arenaTeamScores[i].BuildTeamInfoBlock(data);
+        {
+            ArenaTeamScore const& score = _arenaTeamScores[i];
+
+            uint32 ratingLost = std::abs(std::min(score.RatingChange, 0));
+            uint32 ratingWon = std::max(score.RatingChange, 0);
+
+            // should be old rating, new rating, and client will calculate rating change itself
+            arena.Ratings.Prematch[i] = ratingLost;
+            arena.Ratings.Postmatch[i] = ratingWon;
+            arena.Ratings.PrematchMMR[i] = score.MatchmakerRating;
+
+            arena.TeamName[i] = score.TeamName;
+        }
     }
 
     if (GetStatus() == STATUS_WAIT_LEAVE)
-    {
-        data << uint8(1);                      // bg ended
-        data << uint8(GetWinner());            // who win
-    }
-    else
-        data << uint8(0);                      // bg not ended
+        pvpLogData.Winner = GetWinner();
 
-    data << uint32(GetPlayerScoresSize());
-    for (auto const& score : PlayerScores)
-        score.second->AppendToPacket(data);
+    for (auto const& [_, score] : PlayerScores)
+        score->AppendToPacket(pvpLogData.Players.emplace_back());
 }
 
 bool Battleground::UpdatePlayerScore(Player* player, uint32 type, uint32 value, bool doAddHonor)
@@ -1782,16 +1787,17 @@ void Battleground::PlayerAddedToBGCheckIfBGIsRunning(Player* player)
     if (GetStatus() != STATUS_WAIT_LEAVE)
         return;
 
-    WorldPacket data;
     BattlegroundQueueTypeId bgQueueTypeId = BattlegroundMgr::BGQueueTypeId(GetTypeID(), GetBracketId(), GetArenaType());
 
     BlockMovement(player);
 
-    BuildPvPLogDataPacket(data);
-    player->SendDirectMessage(&data);
+    WorldPackets::Battleground::PVPMatchStatistics pvpMatchStatistics;
+    BuildPvPLogDataPacket(pvpMatchStatistics);
+    player->SendDirectMessage(pvpMatchStatistics.Write());
 
-     sBattlegroundMgr->BuildBattlegroundStatusPacket(&data, this, player->GetBattlegroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, GetRemainingTime(), GetElapsedTime(), GetArenaType(), player->GetTeam());
-     player->SendDirectMessage(&data);
+    WorldPackets::Battleground::BattlefieldStatusActive battlefieldStatus;
+    BattlegroundMgr::BuildBattlegroundStatusActive(&battlefieldStatus, this, player, player->GetBattlegroundQueueIndex(bgQueueTypeId), bgQueueTypeId);
+    player->SendDirectMessage(battlefieldStatus.Write());
 }
 
 uint32 Battleground::GetAlivePlayersCountByTeam(uint32 Team) const

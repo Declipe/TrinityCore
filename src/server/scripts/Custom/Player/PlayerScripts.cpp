@@ -1,4 +1,5 @@
 #include "Custom/Dcl.h"
+#include "BattlegroundPackets.h"
 
 #if TRINITY_COMPILER == TRINITY_COMPILER_GNU
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -272,9 +273,9 @@ public:
         uint32 avgTime = bgQueue.GetAverageQueueWaitTime(ginfo);
         uint32 queueSlot = player->AddBattlegroundQueueId(bgQueueTypeId);
 
-        WorldPacket data;
-        sBattlegroundMgr->BuildBattlegroundStatusPacket(&data, bg, queueSlot, STATUS_WAIT_QUEUE, avgTime, 0, 0, 0);
-        player->GetSession()->SendPacket(&data);
+        WorldPackets::Battleground::BattlefieldStatusQueued battlefieldStatus;
+        BattlegroundMgr::BuildBattlegroundStatusQueued(&battlefieldStatus, bg, queueSlot, ginfo->JoinTime, bgQueueTypeId, avgTime);
+        player->GetSession()->SendPacket(battlefieldStatus.Write());
 
         sBattlegroundMgr->ScheduleQueueUpdate(0, bgQueueTypeId);
 

@@ -9,6 +9,7 @@
 #include "ArenaTeamMgr.h"
 #include "Battleground.h"
 #include "BattlegroundMgr.h"
+#include "BattlegroundPackets.h"
 #include "Cell.h"
 #include "CellImpl.h"
 #include "Channel.h"
@@ -164,10 +165,9 @@
             uint32 avgTime = bgQueue.GetAverageQueueWaitTime(ginfo);
             uint32 queueSlot = player->AddBattlegroundQueueId(bgQueueTypeId);
 
-            WorldPacket data;
-            // send status packet (in queue)
-            sBattlegroundMgr->BuildBattlegroundStatusPacket(&data, bg, queueSlot, STATUS_WAIT_QUEUE, avgTime, 0, arenatype, 0);
-            player->GetSession()->SendPacket(&data);
+            WorldPackets::Battleground::BattlefieldStatusQueued battlefieldStatus;
+            BattlegroundMgr::BuildBattlegroundStatusQueued(&battlefieldStatus, bg, queueSlot, ginfo->JoinTime, bgQueueTypeId, avgTime);
+            player->GetSession()->SendPacket(battlefieldStatus.Write());
 
             sBattlegroundMgr->ScheduleQueueUpdate(matchmakerRating, bgQueueTypeId);
 
@@ -315,9 +315,13 @@
 
             case 3: // Leave Queue
             {
-                WorldPacket Data;
-                Data << (uint8)0x1 << (uint8)0x0 << (uint32)BATTLEGROUND_AA << (uint16)0x0 << (uint8)0x0;
-                player->GetSession()->HandleBattleFieldPortOpcode(Data);
+                BattlegroundQueueTypeId queueId = GetArenaQueueTypeId(player);
+                WorldPacket data(CMSG_BATTLEFIELD_PORT, sizeof(uint64) + sizeof(uint8));
+                data << queueId.GetPacked();
+                data << uint8(false);
+                WorldPackets::Battleground::BattlefieldPort battlefieldPort(std::move(data));
+                battlefieldPort.Read();
+                player->GetSession()->HandleBattleFieldPortOpcode(battlefieldPort);
                 CloseGossipMenuFor(player);
                 return true;
             }
