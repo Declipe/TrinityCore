@@ -427,6 +427,7 @@ class TC_GAME_API Spell
         UsedSpellMods m_appliedMods;
 
         int32 GetCastTime() const { return m_casttime; }
+        int32 GetCastTimeRemaining() const { return m_timer > 0 ? m_timer : 0; }
         bool IsAutoRepeat() const { return m_autoRepeat; }
         void SetAutoRepeat(bool rep) { m_autoRepeat = rep; }
         void ReSetTimer() { m_timer = m_casttime > 0 ? m_casttime : 0; }
