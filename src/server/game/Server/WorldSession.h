@@ -183,8 +183,6 @@ namespace WorldPackets
         class ChatMessage;
         class CTextEmote;
         class EmoteClient;
-        class CTextEmote;
-        class ChatMessage;
     }
 
     namespace Combat

@@ -40,7 +40,6 @@
 #include <map>
 #include <span>
 #include <unordered_map>
-#include <span>
 
 class Item;
 class Unit;
