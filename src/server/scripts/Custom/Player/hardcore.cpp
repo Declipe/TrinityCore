@@ -148,7 +148,8 @@ uint32 GetPlayerTotalTime(Player* player)
             else
             {
                 // Отправляем по почте если инвентарь заполнен
-                SendRewardByMail(player, itemId, itemCount, name);
+                if (!SendRewardByMail(player, itemId, itemCount, "Hardcore Time Reward", "Поздравляем! Вы получили награду: " + name))
+                    return;
             }
         }
 
@@ -205,25 +206,29 @@ uint32 GetPlayerTotalTime(Player* player)
         sWorld->SendServerMessage(SERVER_MSG_STRING, announcement.c_str());
     }
 
-    void SendRewardByMail(Player* player, uint32 itemId, uint32 itemCount, const std::string& rewardName)
+    static bool SendRewardByMail(Player* player, uint32 itemId, uint32 itemCount,
+        const std::string& subject, const std::string& body)
     {
         CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
         Item* mailItem = Item::CreateItem(itemId, itemCount, player);
-
-        if (mailItem)
+        if (!mailItem)
         {
-            mailItem->SaveToDB(trans);
-
-            MailSender sender(MAIL_NORMAL, 0, MAIL_STATIONERY_GM);
-            MailDraft draft("Hardcore Time Reward", "Поздравляем! Вы получили награду: " + rewardName);
-            draft.AddItem(mailItem);
-            draft.SendMailTo(trans, MailReceiver(player, player->GetGUID().GetCounter()), sender, MAIL_CHECK_MASK_NOT_RETURNABLE);
-
-            CharacterDatabase.CommitTransaction(trans);
-
-            ChatHandler(player->GetSession()).SendSysMessage(
-                "|cff00ff00[HARDCORE] Ваш инвентарь заполнен. Награда отправлена по почте.|r");
+            TC_LOG_ERROR("scripts", "Failed to create hardcore reward item %u x%u for player %s",
+                itemId, itemCount, player->GetName().c_str());
+            return false;
         }
+
+        mailItem->SaveToDB(trans);
+
+        MailDraft draft(subject, body);
+        draft.AddItem(mailItem);
+        draft.SendMailTo(trans, MailReceiver(player, player->GetGUID().GetCounter()),
+            MailSender(MAIL_NORMAL, 0, MAIL_STATIONERY_GM), MAIL_CHECK_MASK_NOT_RETURNABLE);
+        CharacterDatabase.CommitTransaction(trans);
+
+        ChatHandler(player->GetSession()).SendSysMessage(
+            "|cff00ff00[HARDCORE] Ваш инвентарь заполнен. Награда отправлена по почте.|r");
+        return true;
     }
 
 void CheckMissingLevelRewards(Player* player)
@@ -308,7 +313,7 @@ void GiveHardcoreLevelReward(Player* player, uint8 level)
         // Проверяем место в инвентаре
         ItemPosCountVec dest;
         InventoryResult msg = player->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, itemId, itemCount);
-        if (msg != EQUIP_ERR_OK)
+        if (msg == EQUIP_ERR_OK)
         {
             // Создаем предмет
             Item* item = player->StoreNewItem(dest, itemId, true, GenerateItemRandomPropertyId(itemId));
@@ -328,42 +333,10 @@ void GiveHardcoreLevelReward(Player* player, uint8 level)
                 }
             }
         }
-        else
+        else if (!SendRewardByMail(player, itemId, itemCount, "Hardcore Level Reward",
+            "Congratulations on reaching level " + std::to_string(level) + "!"))
         {
-            // Если инвентарь заполнен, создаем предмет и отправляем по почте
-            uint32 guid = player->GetGUID().GetCounter();
-            CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
-            Item* mailItem = Item::CreateItem(itemId, itemCount, player);
-            if (mailItem)
-            {
-                mailItem->SaveToDB(trans); // Сохраняем предмет в БД перед отправкой
-
-                MailSender sender(MAIL_NORMAL, player->GetGUID().GetCounter());
-                MailDraft draft("Hardcore Level Reward", "Congratulations on reaching level " + std::to_string(level) + "!");
-                draft.AddItem(mailItem); // Теперь передаем указатель на созданный предмет
-                draft.SendMailTo(trans, MailReceiver(player, guid), MailSender(MAIL_NORMAL, 0, MAIL_STATIONERY_GM));
-
-                ChatHandler(player->GetSession()).PSendSysMessage(
-                    "|cff00ff00[HARDCORE] Ваш инвентарь заполнен. Предмет награды отправлен вам по почте.|r");
-            }
-
-            //// Создаем предмет
-            //Item* item = player->StoreNewItem(dest, itemId, true, GenerateItemRandomPropertyId(itemId));
-            //if (item)
-            //{
-            //    player->SendNewItem(item, itemCount, true, false);
-
-            //    // Пытаемся экипировать предмет, если это возможно
-            //    if (itemTemplate->InventoryType != INVTYPE_NON_EQUIP)
-            //    {
-            //        uint16 dest;
-            //        InventoryResult msg = player->CanEquipItem(item->GetSlot(), dest, item, false);
-            //        if (msg == EQUIP_ERR_OK)
-            //        {
-            //            player->EquipItem(dest, item, true);
-            //        }
-            //    }
-            //}
+            return;
         }
     }
 
@@ -860,8 +833,8 @@ private:
 
             if (totalTime >= requiredTime && !HasClaimedReward(player, rewardId))
             {
-                GiveTimeReward(player, rewardId, fields);
-                rewardsClaimed++;
+                if (GiveTimeReward(player, rewardId, fields))
+                    rewardsClaimed++;
             }
         }
         while (rewards->NextRow());
@@ -926,7 +899,7 @@ private:
         return result != nullptr;
     }
 
-    void GiveTimeReward(Player* player, uint32 rewardId, Field* fields)
+    bool GiveTimeReward(Player* player, uint32 rewardId, Field* fields)
     {
         uint32 itemId = fields[2].GetUInt32();
         uint32 itemCount = fields[3].GetUInt32();
@@ -950,6 +923,11 @@ private:
                 {
                     player->SendNewItem(item, itemCount, true, false);
                 }
+            }
+            else if (!HardcoreModePlayerScript::SendRewardByMail(player, itemId, itemCount,
+                "Hardcore Time Reward", "Поздравляем! Вы получили награду: " + name))
+            {
+                return false;
             }
         }
 
@@ -996,6 +974,7 @@ private:
             "INSERT INTO hardcore_rewards_claimed (guid, reward_id, claimed_time, playtime_when_claimed) "
             "VALUES ({}, {}, {}, {})",
             player->GetGUID().GetCounter(), rewardId, GameTime::GetGameTime(), GetPlayerTotalTime(player));
+        return true;
     }
     };
 
