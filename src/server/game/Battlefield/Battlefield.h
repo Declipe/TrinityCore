@@ -109,8 +109,6 @@ class TC_GAME_API Battlefield : public ZoneScript
         void ShowNpc(Creature* creature, bool aggressive);
 
         /** Player section  BattlefieldPlayers.cpp **/
-        PlayerHolderContainer const& GetPlayerMap() const { return m_PlayerMap; }
-        uint32 GetMapId() const { return m_MapId; }
         void AddPlayer(Player* plr, bool InZone, bool IsWaitingQueue, bool IsWaitingWar, bool IsWaitingKick, time_t time = 0);
         bool HasPlayer(Player* player) const;
         bool NeedToRemove(Player* player) const;

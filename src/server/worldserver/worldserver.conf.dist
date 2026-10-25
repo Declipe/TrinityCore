@@ -2997,60 +2997,6 @@ ArenaLog.ExtendedInfo = 0
 ###################################################################################################
 
 ###################################################################################################
-# ARENA REPLAY CONFIG
-#
-#    ArenaReplay.Enable
-#        Description: Record arena, battleground, and battlefield matches for later viewing.
-#                     Requires sql/custom/characters/mod_arena_replay.sql in the characters database.
-#        Default:     1 - (Enabled)
-#                     0 - (Disabled)
-
-ArenaReplay.Enable = 1
-
-#    ArenaReplay.SaveUnratedArenas
-#        Description: Save unrated arena matches.
-#        Default:     1 - (Enabled)
-#                     0 - (Disabled)
-
-ArenaReplay.SaveUnratedArenas = 1
-
-#    ArenaReplay.SaveBattlegrounds
-#        Description: Save battleground matches.
-#        Default:     1 - (Enabled)
-#                     0 - (Disabled)
-
-ArenaReplay.SaveBattlegrounds = 1
-
-#    ArenaReplay.SaveBattlefields
-#        Description: Save battlefield matches (for example, Wintergrasp).
-#        Default:     1 - (Enabled)
-#                     0 - (Disabled)
-
-ArenaReplay.SaveBattlefields = 1
-
-#    ArenaReplay.ValidArenaDuration
-#        Description: Minimum match duration in seconds before a replay is saved. 0 disables the minimum.
-#        Default:     0
-
-ArenaReplay.ValidArenaDuration = 0
-
-#    ArenaReplay.DeleteReplaysAfterDays
-#        Description: Delete unsaved replays older than this many days. 0 disables cleanup.
-#        Default:     30
-
-ArenaReplay.DeleteReplaysAfterDays = 30
-
-#    ArenaReplay.DeleteSavedReplays
-#        Description: Also delete saved replays after the retention period.
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-ArenaReplay.DeleteSavedReplays = 0
-
-#
-###################################################################################################
-
-###################################################################################################
 # NETWORK CONFIG
 #
 #    Network.Threads

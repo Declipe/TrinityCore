@@ -17,8 +17,6 @@
 
 #include "Battlefield.h"
 #include "BattlefieldMgr.h"
-
-void (*SaveBattlefieldReplayPtr)(Battlefield*) = nullptr;
 #include "Battleground.h"
 #include "BattlegroundPackets.h"
 #include "CellImpl.h"
@@ -215,9 +213,6 @@ void Battlefield::EndBattle(bool endByTimer)
         m_freeslots[i] = m_MaxPlayer;
 
     OnBattleEnd(endByTimer);
-    extern void (*SaveBattlefieldReplayPtr)(Battlefield* bf);
-    if (SaveBattlefieldReplayPtr)
-        SaveBattlefieldReplayPtr(this);
     InvitePlayersInZoneToQueue();
 
     // Reset bat0tlefield timer
