@@ -71,12 +71,12 @@ enum Yells
     // OUTRO
     SAY_JAYNA_OUTRO_2     = 0,
     SAY_JAYNA_OUTRO_4     = 1,
-    SAY_JAYNA_OUTRO_10    = 2,
+    SAY_JAYNA_OUTRO_10    = 45,
     SAY_SYLVANAS_OUTRO_2  = 0,
     SAY_SYLVANAS_OUTRO_4  = 1,
     SAY_SYLVANAS_OUTRO_10 = 2,
-    SAY_TYRANNUS_OUTRO_7  = 1,
-    SAY_TYRANNUS_OUTRO_9  = 2
+    SAY_TYRANNUS_OUTRO_7  = 0,
+    SAY_TYRANNUS_OUTRO_9  = 1
 };
 
 enum Events
@@ -142,6 +142,11 @@ struct boss_ick : public BossAI
     boss_ick(Creature* creature) : BossAI(creature, DATA_ICK)
     {
         _oldTargetThreat = 0.0f;
+    }
+
+    bool CanAIAttack(Unit const* /*who*/) const override
+    {
+        return instance->GetData(DATA_INSTANCE_PROGRESS) >= INSTANCE_PROGRESS_FINISHED_INTRO;
     }
 
     void Reset() override
