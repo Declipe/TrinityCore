@@ -53,18 +53,6 @@ class instance_pit_of_saron : public InstanceMapScript
                 _teamInInstance = instance->ToInstanceMap()->GetTeamInInstance();
                 _cavernActive = 0;
                 _shardsHit = 0;
-                _instanceProgress = INSTANCE_PROGRESS_NONE;
-            }
-
-            void OnPlayerEnter(Player* player) override
-            {
-                InstanceScript::OnPlayerEnter(player);
-
-                if (_instanceProgress != INSTANCE_PROGRESS_NONE)
-                    return;
-
-                if (Creature* leader = instance->GetCreature(_jainaOrSylvanas1GUID))
-                    leader->AI()->SetData(DATA_START_INTRO, 0);
             }
 
             void OnCreatureCreate(Creature* creature) override
@@ -93,8 +81,6 @@ class instance_pit_of_saron : public InstanceMapScript
                         if (_teamInInstance == ALLIANCE)
                             creature->UpdateEntry(NPC_JAINA_PART1);
                         _jainaOrSylvanas1GUID = creature->GetGUID();
-                        if (_instanceProgress == INSTANCE_PROGRESS_NONE && instance->GetPlayers().getFirst())
-                            creature->AI()->SetData(DATA_START_INTRO, 0);
                         break;
                     case NPC_SYLVANAS_PART2:
                         if (_teamInInstance == ALLIANCE)
@@ -273,8 +259,6 @@ class instance_pit_of_saron : public InstanceMapScript
                         return _shardsHit;
                     case DATA_CAVERN_ACTIVE:
                         return _cavernActive;
-                    case DATA_INSTANCE_PROGRESS:
-                        return _instanceProgress;
                     default:
                         break;
                 }
@@ -297,14 +281,6 @@ class instance_pit_of_saron : public InstanceMapScript
                         }
                         else
                             HandleCavernEventTrigger(false);
-                        break;
-                    case DATA_INSTANCE_PROGRESS:
-                        _instanceProgress = data;
-                        break;
-                    case DATA_START_INTRO:
-                        if (_instanceProgress == INSTANCE_PROGRESS_NONE && !_jainaOrSylvanas1GUID.IsEmpty())
-                            if (Creature* leader = instance->GetCreature(_jainaOrSylvanas1GUID))
-                                leader->AI()->SetData(DATA_START_INTRO, data);
                         break;
                     default:
                         break;
@@ -363,7 +339,6 @@ class instance_pit_of_saron : public InstanceMapScript
             GuidVector _cavernstriggersVector;
 
             uint32 _teamInInstance;
-            uint32 _instanceProgress;
             uint8 _shardsHit;
             uint8 _cavernActive;
         };
