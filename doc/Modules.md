@@ -29,3 +29,20 @@ cmake -S . -B build -DMODULES=static -DMODULE_MOD_EXAMPLE=disabled
 ```
 
 Static modules are linked into the server's script library. Dynamic modules are built as script shared libraries and use TrinityCore's existing script-module loader and hot-reload support. Existing TrinityCore script modules and the `SCRIPTS` build option are independent of this setting.
+
+## Module database updates
+
+The database updater automatically discovers SQL updates in each module using this layout:
+
+```text
+modules/
+  mod-example/
+    sql/
+      updates/
+        world/
+          2026_10_28_00_mod_example.sql
+        characters/
+          2026_10_28_00_mod_example_characters.sql
+```
+
+Use `auth`, `characters`, `world`, or `zyn` for the database-specific directory. SQL files found there are processed by the existing updater when automatic updates are enabled for that database. They are tracked in the database's `updates` table and follow the same filename ordering, hash checking, and reapply behavior as core updates. Give every update file a unique filename across all update directories included for that database.

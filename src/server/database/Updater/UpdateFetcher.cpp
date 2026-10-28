@@ -37,12 +37,12 @@ struct UpdateFetcher::DirectoryEntry
     State const state;
 };
 
-UpdateFetcher::UpdateFetcher(Path const& sourceDirectory,
+UpdateFetcher::UpdateFetcher(Path const& sourceDirectory, std::string const& moduleUpdateDirectory,
     std::function<void(std::string const&)> const& apply,
     std::function<void(Path const& path)> const& applyFile,
     std::function<QueryResult(std::string const&)> const& retrieve) :
-        _sourceDirectory(std::make_unique<Path>(sourceDirectory)), _apply(apply), _applyFile(applyFile),
-        _retrieve(retrieve)
+        _sourceDirectory(std::make_unique<Path>(sourceDirectory)), _moduleUpdateDirectory(moduleUpdateDirectory),
+        _apply(apply), _applyFile(applyFile), _retrieve(retrieve)
 {
 }
 
@@ -54,6 +54,22 @@ UpdateFetcher::LocaleFileStorage UpdateFetcher::GetFileList() const
 {
     LocaleFileStorage files;
     DirectoryStorage directories = ReceiveIncludedDirectories();
+
+    Path const modulesDirectory = *_sourceDirectory / "modules";
+    if (is_directory(modulesDirectory))
+    {
+        static directory_iterator const end;
+        for (directory_iterator module = directory_iterator(modulesDirectory); module != end; ++module)
+        {
+            if (!is_directory(module->path()))
+                continue;
+
+            Path const moduleUpdateDirectory = module->path() / "sql" / "updates" / _moduleUpdateDirectory;
+            if (is_directory(moduleUpdateDirectory))
+                directories.emplace_back(moduleUpdateDirectory, RELEASED);
+        }
+    }
+
     for (auto const& entry : directories)
         FillFileListRecursively(entry.path, files, entry.state, 1);
 

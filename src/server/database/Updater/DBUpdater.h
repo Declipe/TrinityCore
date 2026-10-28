@@ -74,6 +74,8 @@ public:
 
     static std::string GetBaseFile();
 
+    static std::string GetModuleUpdateDirectory();
+
     static bool IsEnabled(uint32 const updateMask);
 
     static BaseLocation GetBaseLocationType();

@@ -86,6 +86,12 @@ std::string DBUpdater<ZynDatabaseConnection>::GetBaseFile()
 }
 
 template<>
+std::string DBUpdater<ZynDatabaseConnection>::GetModuleUpdateDirectory()
+{
+    return "zyn";
+}
+
+template<>
 bool DBUpdater<ZynDatabaseConnection>::IsEnabled(uint32 const updateMask)
 {
     // This way silences warnings under msvc
@@ -113,6 +119,12 @@ std::string DBUpdater<LoginDatabaseConnection>::GetBaseFile()
 }
 
 template<>
+std::string DBUpdater<LoginDatabaseConnection>::GetModuleUpdateDirectory()
+{
+    return "auth";
+}
+
+template<>
 bool DBUpdater<LoginDatabaseConnection>::IsEnabled(uint32 const updateMask)
 {
     // This way silences warnings under msvc
@@ -130,6 +142,12 @@ template<>
 std::string DBUpdater<WorldDatabaseConnection>::GetTableName()
 {
     return "World";
+}
+
+template<>
+std::string DBUpdater<WorldDatabaseConnection>::GetModuleUpdateDirectory()
+{
+    return "world";
 }
 
 //template<>
@@ -181,6 +199,12 @@ template<>
 std::string DBUpdater<CharacterDatabaseConnection>::GetBaseFile()
 {
     return "Chardb";
+}
+
+template<>
+std::string DBUpdater<CharacterDatabaseConnection>::GetModuleUpdateDirectory()
+{
+    return "characters";
 }
 
 template<>
@@ -258,7 +282,8 @@ bool DBUpdater<T>::Update(DatabaseWorkerPool<T>& pool)
         return false;
     }
 
-    UpdateFetcher updateFetcher(sourceDirectory, [&](std::string const& query) { DBUpdater<T>::Apply(pool, query); },
+    UpdateFetcher updateFetcher(sourceDirectory, DBUpdater<T>::GetModuleUpdateDirectory(),
+        [&](std::string const& query) { DBUpdater<T>::Apply(pool, query); },
         [&](Path const& file) { DBUpdater<T>::ApplyFile(pool, file); },
         [&](std::string const& query) -> QueryResult { return DBUpdater<T>::Retrieve(pool, query); });
 

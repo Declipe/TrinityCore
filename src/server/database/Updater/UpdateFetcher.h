@@ -51,7 +51,7 @@ class TC_DATABASE_API UpdateFetcher
     typedef boost::filesystem::path Path;
 
 public:
-    UpdateFetcher(Path const& updateDirectory,
+    UpdateFetcher(Path const& updateDirectory, std::string const& moduleUpdateDirectory,
         std::function<void(std::string const&)> const& apply,
         std::function<void(Path const& path)> const& applyFile,
         std::function<QueryResult(std::string const&)> const& retrieve);
@@ -134,6 +134,7 @@ private:
     void UpdateState(std::string const& name, State const state) const;
 
     std::unique_ptr<Path> const _sourceDirectory;
+    std::string const _moduleUpdateDirectory;
 
     std::function<void(std::string const&)> const _apply;
     std::function<void(Path const& path)> const _applyFile;
