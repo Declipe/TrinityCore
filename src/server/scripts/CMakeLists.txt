@@ -198,6 +198,108 @@ foreach(SCRIPT_MODULE ${SCRIPT_MODULE_LIST})
   endif()
 endforeach()
 
+# Configure external modules from modules/<name>/src.
+GetModuleSourceList(MODULE_SOURCE_LIST)
+foreach(SOURCE_MODULE ${MODULE_SOURCE_LIST})
+  GetModuleBuildType(${SOURCE_MODULE} MODULE_BUILD_TYPE)
+  GetPathToModuleSource(${SOURCE_MODULE} MODULE_SOURCE_PATH)
+  ModuleNameToVariable(${SOURCE_MODULE} MODULE_VARIABLE)
+  GetProjectNameOfScriptModule(${SOURCE_MODULE} MODULE_PROJECT_NAME)
+  GetNativeSharedLibraryName(${MODULE_PROJECT_NAME} MODULE_OUTPUT_NAME)
+  set(MODULE_INSTALL_PATH "${INSTALL_OFFSET}/${MODULE_OUTPUT_NAME}")
+
+  get_property(MODULE_REGISTERED_SOURCES GLOBAL PROPERTY "${MODULE_VARIABLE}_SOURCES")
+  get_property(MODULE_LOADER_NAMES GLOBAL PROPERTY "${MODULE_VARIABLE}_LOADERS")
+  if(NOT MODULE_LOADER_NAMES)
+    string(REPLACE "-" "_" MODULE_LOADER_NAME "${SOURCE_MODULE}")
+    set(MODULE_LOADER_NAMES ${MODULE_LOADER_NAME})
+  endif()
+
+  if(MODULE_BUILD_TYPE STREQUAL "disabled")
+    list(APPEND DISABLED_SCRIPT_MODULE_PROJECTS ${MODULE_INSTALL_PATH})
+  elseif(MODULE_BUILD_TYPE STREQUAL "static")
+    unset(MODULE_PRIVATE_SOURCES)
+    unset(MODULE_PUBLIC_INCLUDES)
+    CollectSourceFiles(${MODULE_SOURCE_PATH} MODULE_PRIVATE_SOURCES)
+    CollectIncludeDirectories(${MODULE_SOURCE_PATH} MODULE_PUBLIC_INCLUDES)
+    list(APPEND MODULE_PRIVATE_SOURCES ${MODULE_REGISTERED_SOURCES})
+    list(REMOVE_DUPLICATES MODULE_PRIVATE_SOURCES)
+    list(APPEND PRIVATE_SOURCES_MODULES ${MODULE_PRIVATE_SOURCES})
+    list(APPEND PUBLIC_MODULE_INCLUDES ${MODULE_PUBLIC_INCLUDES})
+    list(APPEND STATIC_MODULE_LOADER_NAMES ${MODULE_LOADER_NAMES})
+    list(APPEND DISABLED_SCRIPT_MODULE_PROJECTS ${MODULE_INSTALL_PATH})
+  elseif(MODULE_BUILD_TYPE STREQUAL "dynamic")
+    unset(MODULE_PRIVATE_SOURCES)
+    unset(MODULE_PUBLIC_INCLUDES)
+    CollectSourceFiles(${MODULE_SOURCE_PATH} MODULE_PRIVATE_SOURCES)
+    CollectIncludeDirectories(${MODULE_SOURCE_PATH} MODULE_PUBLIC_INCLUDES)
+    list(APPEND MODULE_PRIVATE_SOURCES ${MODULE_REGISTERED_SOURCES})
+    list(REMOVE_DUPLICATES MODULE_PRIVATE_SOURCES)
+    ConfigureScriptLoader(${SOURCE_MODULE} MODULE_PRIVATE_SCRIPTLOADER ON ${MODULE_LOADER_NAMES})
+    list(APPEND DYNAMIC_SCRIPT_MODULE_PROJECTS ${MODULE_PROJECT_NAME})
+
+    add_library(${MODULE_PROJECT_NAME} SHARED
+      ${MODULE_PRIVATE_SOURCES}
+      ${MODULE_PRIVATE_SCRIPTLOADER})
+    target_link_libraries(${MODULE_PROJECT_NAME}
+      PRIVATE
+        trinity-core-interface
+      PUBLIC
+        game)
+    target_include_directories(${MODULE_PROJECT_NAME}
+      PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${MODULE_PUBLIC_INCLUDES})
+    set_target_properties(${MODULE_PROJECT_NAME}
+      PROPERTIES
+        COMPILE_WARNING_AS_ERROR ${WITH_WARNINGS_AS_ERRORS}
+        FOLDER "modules")
+
+    if(UNIX)
+      install(TARGETS ${MODULE_PROJECT_NAME}
+        DESTINATION ${INSTALL_OFFSET}
+        COMPONENT ${MODULE_PROJECT_NAME})
+    elseif(WIN32)
+      install(TARGETS ${MODULE_PROJECT_NAME}
+        RUNTIME DESTINATION ${INSTALL_OFFSET}
+        COMPONENT ${MODULE_PROJECT_NAME})
+      if(MSVC)
+        set_target_properties(${MODULE_PROJECT_NAME} PROPERTIES
+          RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin/Debug/scripts
+          RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/Release/scripts
+          RUNTIME_OUTPUT_DIRECTORY_RELWITHDEBINFO ${CMAKE_BINARY_DIR}/bin/RelWithDebInfo/scripts
+          RUNTIME_OUTPUT_DIRECTORY_MINSIZEREL ${CMAKE_BINARY_DIR}/bin/MinSizeRel/scripts)
+      endif()
+    endif()
+  else()
+    message(FATAL_ERROR "Unknown value \"${MODULE_BUILD_TYPE}\" for module ${SOURCE_MODULE}.")
+  endif()
+endforeach()
+
+list(REMOVE_DUPLICATES STATIC_MODULE_LOADER_NAMES)
+list(APPEND STATIC_SCRIPT_MODULES ${STATIC_MODULE_LOADER_NAMES})
+list(REMOVE_DUPLICATES PRIVATE_SOURCES_MODULES)
+list(REMOVE_DUPLICATES PUBLIC_MODULE_INCLUDES)
+
+if(PRIVATE_SOURCES_MODULES)
+  add_library(modules STATIC ${PRIVATE_SOURCES_MODULES})
+  target_link_libraries(modules
+    PRIVATE
+      trinity-core-interface
+    PUBLIC
+      game-interface)
+  target_include_directories(modules
+    PUBLIC
+      ${PUBLIC_MODULE_INCLUDES})
+  set_target_properties(modules
+    PROPERTIES
+      COMPILE_WARNING_AS_ERROR ${WITH_WARNINGS_AS_ERRORS}
+      FOLDER "modules")
+else()
+  add_library(modules INTERFACE)
+  target_link_libraries(modules INTERFACE game-interface)
+endif()
+
 # Add the dynamic script modules to the worldserver as dependency
 set(WORLDSERVER_DYNAMIC_SCRIPT_MODULES_DEPENDENCIES ${DYNAMIC_SCRIPT_MODULE_PROJECTS} PARENT_SCOPE)
 
@@ -212,6 +314,7 @@ target_link_libraries(scripts
   PRIVATE
     trinity-core-interface
   PUBLIC
+    modules
     game-interface)
 
 target_include_directories(scripts

@@ -10,6 +10,14 @@
 
 option(SERVERS          "Build worldserver and authserver"                            1)
 
+set(MODULES_AVAILABLE_OPTIONS none static dynamic)
+set(MODULES "static" CACHE STRING "Build external script modules")
+set_property(CACHE MODULES PROPERTY STRINGS ${MODULES_AVAILABLE_OPTIONS})
+list(FIND MODULES_AVAILABLE_OPTIONS "${MODULES}" MODULES_INDEX)
+if(MODULES_INDEX EQUAL -1)
+  message(FATAL_ERROR "The value (${MODULES}) of MODULES is invalid! Allowed values are: ${MODULES_AVAILABLE_OPTIONS}.")
+endif()
+
 set(SCRIPTS_AVAILABLE_OPTIONS none static dynamic minimal-static minimal-dynamic)
 
 # Log a fatal error when the value of the SCRIPTS variable isn't a valid option.
@@ -33,6 +41,18 @@ foreach(SCRIPT_MODULE ${SCRIPT_MODULE_LIST})
   set_property(CACHE ${SCRIPT_MODULE_VARIABLE} PROPERTY STRINGS default disabled static dynamic)
 endforeach()
 
+GetModuleSourceList(MODULE_SOURCE_LIST)
+foreach(SOURCE_MODULE ${MODULE_SOURCE_LIST})
+  ModuleNameToVariable(${SOURCE_MODULE} MODULE_VARIABLE)
+  set(${MODULE_VARIABLE} "default" CACHE STRING "Build type of the ${SOURCE_MODULE} module.")
+  set_property(CACHE ${MODULE_VARIABLE} PROPERTY STRINGS default disabled static dynamic)
+  set(MODULE_BUILD_OPTIONS default disabled static dynamic)
+  list(FIND MODULE_BUILD_OPTIONS "${${MODULE_VARIABLE}}" MODULE_BUILD_INDEX)
+  if(MODULE_BUILD_INDEX EQUAL -1)
+    message(FATAL_ERROR "The value (${${MODULE_VARIABLE}}) of ${MODULE_VARIABLE} is invalid! Allowed values are: ${MODULE_BUILD_OPTIONS}.")
+  endif()
+endforeach()
+
 option(TOOLS            "Build map/vmap/mmap extraction/assembler tools"              1)
 option(ELUNA            "Build Eluna Lua Engine"                                      1)
 option(USE_SCRIPTPCH    "Use precompiled headers when compiling scripts"              1)
@@ -40,6 +60,10 @@ option(USE_COREPCH      "Use precompiled headers when compiling servers"        
 option(WITH_DYNAMIC_LINKING "Enable dynamic library linking."                         0)
 option(WITH_FILESYSTEM_WATCHER "Include filesystem watcher library"                   0)
 IsDynamicLinkingRequired(WITH_DYNAMIC_LINKING_FORCED)
+IsDynamicLinkingModulesRequired(WITH_DYNAMIC_MODULE_LINKING_FORCED)
+if(WITH_DYNAMIC_MODULE_LINKING_FORCED)
+  set(WITH_DYNAMIC_LINKING_FORCED ON)
+endif()
 if(WITH_DYNAMIC_LINKING AND WITH_DYNAMIC_LINKING_FORCED)
   set(WITH_DYNAMIC_LINKING_FORCED OFF)
 endif()

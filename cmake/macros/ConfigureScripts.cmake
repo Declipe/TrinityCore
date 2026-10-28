@@ -36,7 +36,8 @@ endfunction()
 
 # Stores the project name of the given module in the variable
 function(GetProjectNameOfScriptModule module variable)
-  string(TOLOWER "scripts_${SCRIPT_MODULE}" GENERATED_NAME)
+  string(REPLACE "-" "_" MODULE_NAME "${module}")
+  string(TOLOWER "scripts_${MODULE_NAME}" GENERATED_NAME)
   set(${variable} "${GENERATED_NAME}" PARENT_SCOPE)
 endfunction()
 

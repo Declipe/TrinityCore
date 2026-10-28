@@ -34,6 +34,12 @@ else()
   message("* Build with scripts     : No")
 endif()
 
+if(MODULES AND (NOT MODULES STREQUAL "none"))
+  message("* Build external modules : Yes (${MODULES})")
+else()
+  message("* Build external modules : No")
+endif()
+
 if(ELUNA)
   message("* Build Eluna LuaEngine  : Yes (default)")
   add_definitions(-DELUNA)
