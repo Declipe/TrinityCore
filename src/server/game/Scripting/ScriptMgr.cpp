@@ -2051,6 +2051,21 @@ void ScriptMgr::OnApplyEnchantmentItemModsBefore(Player* player, Item* item, Enc
     FOREACH_SCRIPT(PlayerScript)->OnApplyEnchantmentItemModsBefore(player, item, slot, apply, enchant_spell_id, enchant_amount);
 }
 
+void ScriptMgr::OnApplyWeaponDamage(Player* player, uint8 slot, ItemTemplate const* proto, float& minDamage, float& maxDamage, uint8 damageIndex)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnApplyWeaponDamage(player, slot, proto, minDamage, maxDamage, damageIndex);
+}
+
+void ScriptMgr::OnEquip(Player* player, Item* item, uint8 bag, uint8 slot)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnEquip(player, item, bag, slot);
+}
+
+void ScriptMgr::OnAfterUpdateAttackPowerAndDamage(Player* player)
+{
+    FOREACH_SCRIPT(PlayerScript)->OnAfterUpdateAttackPowerAndDamage(player);
+}
+
 void ScriptMgr::OnApplyItemModsBefore(Player* player, uint8 slot, bool apply, uint8 itemProtoStatNumber, uint32 statType, int32& val)
 {
     FOREACH_SCRIPT(PlayerScript)->OnApplyItemModsBefore(player, slot, apply, itemProtoStatNumber, statType, val);
