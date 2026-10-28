@@ -721,9 +721,6 @@ public:
     virtual void OnDeleteFromDB(CharacterDatabaseTransaction /*trans*/, uint32 /*guid*/) { }
     virtual void OnAfterMoveItemFromInventory(Player* /*player*/, Item* /*it*/, uint8 /*bag*/, uint8 /*slot*/, bool /*update*/) { }
     virtual void OnApplyEnchantmentItemModsBefore(Player* /*player*/, Item* /*item*/, EnchantmentSlot /*slot*/, bool /*apply*/, uint32 /*enchant_spell_id*/, int32& /*enchant_amount*/) { }
-    virtual void OnApplyWeaponDamage(Player* /*player*/, uint8 /*slot*/, ItemTemplate const* /*proto*/, float& /*minDamage*/, float& /*maxDamage*/, uint8 /*damageIndex*/) { }
-    virtual void OnEquip(Player* /*player*/, Item* /*item*/, uint8 /*bag*/, uint8 /*slot*/) { }
-    virtual void OnAfterUpdateAttackPowerAndDamage(Player* /*player*/) { }
 
     virtual void OnApplyItemModsBefore(Player* /*player*/, uint8 /*slot*/, bool /*apply*/, uint8 /*itemProtoStatNumber*/, uint32 /*statType*/, int32& /*val*/) { }
 
@@ -1186,9 +1183,6 @@ public: /* PlayerScript */
     void OnDeleteFromDB(CharacterDatabaseTransaction trans, uint32 guid);
     void OnAfterPlayerMoveItemFromInventory(Player* player, Item* it, uint8 bag, uint8 slot, bool update);
     void OnApplyEnchantmentItemModsBefore(Player* player, Item* item, EnchantmentSlot slot, bool apply, uint32 enchant_spell_id, int32& enchant_amount);
-    void OnApplyWeaponDamage(Player* player, uint8 slot, ItemTemplate const* proto, float& minDamage, float& maxDamage, uint8 damageIndex);
-    void OnEquip(Player* player, Item* item, uint8 bag, uint8 slot);
-    void OnAfterUpdateAttackPowerAndDamage(Player* player);
     void OnApplyItemModsBefore(Player* player, uint8 slot, bool apply, uint8 itemProtoStatNumber, uint32 statType, int32& val);
     void OnPVPKill(Player* killer, Player* killed);
     void OnCreatureKill(Player* killer, Creature* killed);

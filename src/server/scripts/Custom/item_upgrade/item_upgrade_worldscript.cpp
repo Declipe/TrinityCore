@@ -22,8 +22,8 @@ public:
             sItemUpgrade->HandleDataReload(false);
         }
 
-        sItemUpgrade->LoadConfig(reload);
-        sItemUpgrade->LoadFromDB(reload);
+        sItemUpgrade->LoadConfig();
+        sItemUpgrade->LoadFromDB();
 
         if (reload)
             sItemUpgrade->HandleDataReload(true);
