@@ -88,6 +88,30 @@ elseif(WIN32)
   endif()
 endif()
 
+if(COPY_CONF)
+  file(GLOB_RECURSE MODULE_CONFIG_DIST_FILES CONFIGURE_DEPENDS
+    "${CMAKE_SOURCE_DIR}/modules/*/conf/*.conf.dist")
+
+  foreach(MODULE_CONFIG_DIST_FILE ${MODULE_CONFIG_DIST_FILES})
+    get_filename_component(MODULE_CONFIG_DIST_NAME "${MODULE_CONFIG_DIST_FILE}" NAME)
+
+    if(UNIX)
+      set(MODULE_CONFIG_OUTPUT_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/../etc/modules")
+      set(MODULE_CONFIG_INSTALL_DIR "${CONF_DIR}/modules")
+    else()
+      set(MODULE_CONFIG_OUTPUT_DIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/modules")
+      set(MODULE_CONFIG_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/modules")
+    endif()
+
+    add_custom_command(TARGET worldserver
+      POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E make_directory "${MODULE_CONFIG_OUTPUT_DIR}"
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${MODULE_CONFIG_DIST_FILE}" "${MODULE_CONFIG_OUTPUT_DIR}/${MODULE_CONFIG_DIST_NAME}")
+    install(FILES "${MODULE_CONFIG_DIST_FILE}" DESTINATION "${MODULE_CONFIG_INSTALL_DIR}")
+  endforeach()
+endif()
+
 # Generate precompiled header
 if(USE_COREPCH)
   add_cxx_pch(worldserver ${PRIVATE_PCH_HEADER})

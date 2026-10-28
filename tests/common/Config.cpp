@@ -42,6 +42,45 @@ std::string CreateConfigWithMap(std::map<std::string, std::string> const& map)
     return mTempFileAbs.string();
 }
 
+TEST_CASE("Module config files", "[Config]")
+{
+    namespace fs = boost::filesystem;
+    fs::path tempDir = fs::temp_directory_path() / fs::unique_path("module-config-%%%%-%%%%");
+    fs::path moduleDir = tempDir / "modules" / "mod-test";
+    fs::create_directories(moduleDir);
+
+    fs::path mainConfig = tempDir / "worldserver.conf";
+    std::ofstream mainConfigStream(mainConfig.string());
+    mainConfigStream << "[worldserver]\nCoreOption = 1\n";
+    mainConfigStream.close();
+
+    std::ofstream moduleConfigDist((moduleDir / "defaults.conf.dist").string());
+    moduleConfigDist << "[worldserver]\nModuleOption = 42\n";
+    moduleConfigDist.close();
+
+    std::ofstream overrideConfigDist((moduleDir / "override.conf.dist").string());
+    overrideConfigDist << "[worldserver]\nOverrideOption = 1\n";
+    overrideConfigDist.close();
+
+    std::ofstream overrideConfig((moduleDir / "override.conf").string());
+    overrideConfig << "[worldserver]\nOverrideOption = 2\n";
+    overrideConfig.close();
+
+    std::string error;
+    REQUIRE(sConfigMgr->LoadInitial(mainConfig.string(), std::vector<std::string>(), error));
+    REQUIRE(error.empty());
+
+    std::vector<std::string> loadedFiles;
+    std::vector<std::string> errors;
+    REQUIRE(sConfigMgr->LoadModuleConfigDir((tempDir / "modules").string(), false, loadedFiles, errors));
+    REQUIRE(errors.empty());
+    REQUIRE(loadedFiles.size() == 2);
+    REQUIRE(sConfigMgr->GetIntDefault("ModuleOption", 0) == 42);
+    REQUIRE(sConfigMgr->GetIntDefault("OverrideOption", 0) == 2);
+
+    fs::remove_all(tempDir);
+}
+
 TEST_CASE("Environment variables", "[Config]")
 {
     std::map<std::string, std::string> config;

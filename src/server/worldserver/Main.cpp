@@ -213,6 +213,21 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    fs::path moduleConfigDir = configFile.parent_path() / "modules";
+    std::vector<std::string> loadedModuleConfigFiles;
+    std::vector<std::string> moduleConfigErrors;
+    bool moduleConfigLoadSuccess = sConfigMgr->LoadModuleConfigDir(moduleConfigDir.generic_string(), true, loadedModuleConfigFiles, moduleConfigErrors);
+    for (std::string const& loadedModuleConfigFile : loadedModuleConfigFiles)
+        printf("Loaded module config file %s\n", loadedModuleConfigFile.c_str());
+
+    if (!moduleConfigLoadSuccess)
+    {
+        for (std::string const& moduleConfigError : moduleConfigErrors)
+            printf("Error in module config files: %s\n", moduleConfigError.c_str());
+
+        return 1;
+    }
+
     std::vector<std::string> overriddenKeys = sConfigMgr->OverrideWithEnvVariablesIfAny();
 
     std::shared_ptr<Trinity::Asio::IoContext> ioContext = std::make_shared<Trinity::Asio::IoContext>();

@@ -198,6 +198,52 @@ bool ConfigMgr::LoadAdditionalDir(std::string const& dir, bool keepOnReload, std
     return errors.empty();
 }
 
+bool ConfigMgr::LoadModuleConfigDir(std::string const& dir, bool keepOnReload, std::vector<std::string>& loadedFiles, std::vector<std::string>& errors)
+{
+    fs::path dirPath = dir;
+    if (!fs::exists(dirPath) || !fs::is_directory(dirPath))
+        return true;
+
+    std::vector<fs::path> configFiles;
+    for (fs::directory_entry const& entry : fs::recursive_directory_iterator(dirPath))
+    {
+        if (!fs::is_regular_file(entry))
+            continue;
+
+        fs::path configFile = fs::absolute(entry);
+        std::string fileName = configFile.filename().string();
+        bool isConfig = configFile.extension() == ".conf";
+        bool isConfigDist = fileName.size() >= 10 && fileName.compare(fileName.size() - 10, 10, ".conf.dist") == 0;
+        if (isConfig || isConfigDist)
+            configFiles.push_back(std::move(configFile));
+    }
+
+    std::sort(configFiles.begin(), configFiles.end(), [](fs::path const& lhs, fs::path const& rhs)
+    {
+        return lhs.generic_string() < rhs.generic_string();
+    });
+
+    for (fs::path const& configFile : configFiles)
+    {
+        std::string fileName = configFile.generic_string();
+        if (fileName.size() >= 10 && fileName.compare(fileName.size() - 10, 10, ".conf.dist") == 0)
+        {
+            fs::path activeConfigFile = configFile;
+            activeConfigFile.replace_extension();
+            if (fs::exists(activeConfigFile))
+                continue;
+        }
+
+        std::string error;
+        if (LoadAdditionalFile(fileName, keepOnReload, error))
+            loadedFiles.push_back(std::move(fileName));
+        else
+            errors.push_back(std::move(error));
+    }
+
+    return errors.empty();
+}
+
 std::vector<std::string> ConfigMgr::OverrideWithEnvVariablesIfAny()
 {
     std::lock_guard<std::mutex> lock(_configLock);

@@ -80,7 +80,7 @@ option(WITH_WARNINGS_AS_ERRORS "Treat warnings as errors"                       
 option(WITH_COREDEBUG   "Include additional debug-code in core"                       0)
 option(WITHOUT_METRICS  "Disable metrics reporting (i.e. InfluxDB and Grafana)"       0)
 option(WITH_DETAILED_METRICS  "Enable detailed metrics reporting (i.e. time each session takes to update)" 0)
-option(COPY_CONF        "Copy authserver and worldserver .conf.dist files to the project dir"      1)
+option(COPY_CONF        "Copy core and module .conf.dist files to config directories"  1)
 set(WITH_SOURCE_TREE    "hierarchical" CACHE STRING "Build the source tree for IDE's.")
 set_property(CACHE WITH_SOURCE_TREE PROPERTY STRINGS no flat hierarchical hierarchical-folders)
 option(WITHOUT_GIT      "Disable the GIT testing routines"                            0)
