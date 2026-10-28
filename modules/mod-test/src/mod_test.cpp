@@ -1,3 +1,4 @@
+#include "Config.h"
 #include "Log.h"
 #include "ScriptMgr.h"
 
@@ -8,7 +9,8 @@ public:
 
 	void OnStartup() override
 	{
-		TC_LOG_INFO("server.loading", "Test module loaded successfully.");
+		if (sConfigMgr->GetBoolDefault("ModTest.Enable", true))
+			TC_LOG_INFO("server.loading", "{}", sConfigMgr->GetStringDefault("ModTest.Message", "Test module loaded successfully."));
 	}
 };
 

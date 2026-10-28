@@ -1,0 +1,7 @@
+[worldserver]
+
+# Enable the test module.
+ModTest.Enable = 1
+
+# Message written to the worldserver log when the module starts.
+ModTest.Message = "Test module loaded successfully."
