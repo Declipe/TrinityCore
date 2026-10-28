@@ -228,26 +228,27 @@ void WardenWin::RequestChecks()
 
     _serverTicks = GameTime::GetGameTimeMS();
     _currentChecks.clear();
+    _hasCurrentLuaPayload = false;
 
-    // Build check request
-    ByteBuffer buff;
-    buff << uint8(WARDEN_SMSG_CHEAT_CHECKS_REQUEST);
-
-    for (WardenCheckCategory category : EnumUtils::Iterate<WardenCheckCategory>())
+    bool const sendLuaPayload = !_queuedLuaPayloads.empty();
+    if (!sendLuaPayload)
     {
-        if (IsWardenCategoryInWorldOnly(category) && !_session->GetPlayer())
-            continue;
-
-        auto& [checks, checksIt] = _checks[category];
-        for (uint32 i = 0, n = sWorld->getIntConfig(GetWardenCategoryCountConfig(category)); i < n; ++i)
+        for (WardenCheckCategory category : EnumUtils::Iterate<WardenCheckCategory>())
         {
-            if (checksIt == checks.end()) // all checks were already sent, list will be re-filled on next Update() run
-                break;
-            _currentChecks.push_back(*(checksIt++));
-        }
-    }
+            if (IsWardenCategoryInWorldOnly(category) && !_session->GetPlayer())
+                continue;
 
-    Trinity::Containers::RandomShuffle(_currentChecks);
+            auto& [checks, checksIt] = _checks[category];
+            for (uint32 i = 0, n = sWorld->getIntConfig(GetWardenCategoryCountConfig(category)); i < n; ++i)
+            {
+                if (checksIt == checks.end()) // all checks were already sent, list will be re-filled on next Update() run
+                    break;
+                _currentChecks.push_back(*(checksIt++));
+            }
+        }
+
+        Trinity::Containers::RandomShuffle(_currentChecks);
+    }
 
     uint16 expectedSize = 4;
     Trinity::Containers::EraseIf(_currentChecks,
@@ -260,6 +261,19 @@ void WardenWin::RequestChecks()
             return false;
         }
     );
+
+    if (sendLuaPayload)
+    {
+        _currentLuaPayload = std::move(_queuedLuaPayloads.front());
+        _queuedLuaPayloads.pop_front();
+        _hasCurrentLuaPayload = true;
+
+        expectedSize += _currentLuaPayload.size() + 3;
+    }
+
+    // Build check request
+    ByteBuffer buff;
+    buff << uint8(WARDEN_SMSG_CHEAT_CHECKS_REQUEST);
 
     for (uint16 const id : _currentChecks)
     {
@@ -278,6 +292,12 @@ void WardenWin::RequestChecks()
             buff << uint8(check.Str.size());
             buff.append(check.Str.data(), check.Str.size());
         }
+    }
+
+    if (_hasCurrentLuaPayload)
+    {
+        buff << uint8(_currentLuaPayload.size());
+        buff.append(_currentLuaPayload.data(), _currentLuaPayload.size());
     }
 
     uint8 xorByte = _inputKey[0];
@@ -343,6 +363,13 @@ void WardenWin::RequestChecks()
                 break;                                      // Should never happen
         }
     }
+
+    if (_hasCurrentLuaPayload)
+    {
+        buff << uint8(LUA_EVAL_CHECK ^ xorByte);
+        buff << uint8(index++);
+    }
+
     buff << uint8(xorByte);
     buff.hexlike();
 
@@ -518,6 +545,16 @@ void WardenWin::HandleCheckResult(ByteBuffer &buff)
         }
     }
 
+    if (_hasCurrentLuaPayload)
+    {
+        uint8 const result = buff.read<uint8>();
+        if (result == 0)
+            buff.read_skip(buff.read<uint8>());
+
+        _hasCurrentLuaPayload = false;
+        _currentLuaPayload.clear();
+    }
+
     if (checkFailed > 0)
     {
         WardenCheck const& check = sWardenCheckMgr->GetCheckData(checkFailed);
@@ -525,9 +562,33 @@ void WardenWin::HandleCheckResult(ByteBuffer &buff)
         TC_LOG_WARN("warden", "{} failed Warden check {} ({}). Action: {}", _session->GetPlayerInfo(), checkFailed, EnumUtils::ToConstant(check.Type), penalty);
     }
 
-    // Set hold off timer, minimum timer should at least be 1 second
-    uint32 holdOff = sWorld->getIntConfig(CONFIG_WARDEN_CLIENT_CHECK_HOLDOFF);
-    _checkTimer = (holdOff < 1 ? 1 : holdOff) * IN_MILLISECONDS;
+    // Keep draining queued display payloads without applying the regular check holdoff.
+    if (!_queuedLuaPayloads.empty())
+        _checkTimer = 1;
+    else
+    {
+        uint32 holdOff = sWorld->getIntConfig(CONFIG_WARDEN_CLIENT_CHECK_HOLDOFF);
+        _checkTimer = (holdOff < 1 ? 1 : holdOff) * IN_MILLISECONDS;
+    }
+}
+
+bool WardenWin::QueueLuaPayload(std::string const& payload)
+{
+    if (payload.size() > WARDEN_MAX_LUA_CHECK_LENGTH)
+        return false;
+
+    _queuedLuaPayloads.push_back(payload);
+    return true;
+}
+
+void WardenWin::ClearQueuedLuaPayloads()
+{
+    _queuedLuaPayloads.clear();
+}
+
+void WardenWin::ForceChecks()
+{
+    _checkTimer = 0;
 }
 
 size_t WardenWin::DEBUG_ForceSpecificChecks(std::vector<uint16> const& checks)

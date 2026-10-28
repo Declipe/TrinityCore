@@ -23,6 +23,7 @@
 #include "ByteBuffer.h"
 #include "Warden.h"
 #include <array>
+#include <deque>
 #include <list>
 #include <utility>
 
@@ -77,12 +78,19 @@ class TC_GAME_API WardenWin : public Warden
         void RequestChecks() override;
         void HandleCheckResult(ByteBuffer &buff) override;
 
+        bool QueueLuaPayload(std::string const& payload);
+        void ClearQueuedLuaPayloads();
+        void ForceChecks();
+
         size_t DEBUG_ForceSpecificChecks(std::vector<uint16> const& checks) override;
 
     private:
         uint32 _serverTicks;
         std::array<std::pair<std::vector<uint16>, std::vector<uint16>::const_iterator>, NUM_CHECK_CATEGORIES> _checks;
         std::vector<uint16> _currentChecks;
+        std::deque<std::string> _queuedLuaPayloads;
+        std::string _currentLuaPayload;
+        bool _hasCurrentLuaPayload = false;
 };
 
 #endif

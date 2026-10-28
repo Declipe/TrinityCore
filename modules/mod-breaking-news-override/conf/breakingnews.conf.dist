@@ -1,0 +1,16 @@
+[worldserver]
+
+# Enable the Breaking News panel on the character selection screen.
+BreakingNews.Enable = 0
+
+# Title shown above the HTML content.
+BreakingNews.Title = "Breaking News"
+
+# HTML file path; relative paths are resolved from the worldserver working directory.
+BreakingNews.HtmlPath = "./breakingnews.html"
+
+# Cache the title and HTML content until the next configuration reload.
+BreakingNews.Cache = 1
+
+# Log a summary when content is queued for a client.
+BreakingNews.Verbose = 0
