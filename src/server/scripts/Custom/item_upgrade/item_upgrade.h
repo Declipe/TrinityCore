@@ -7,7 +7,12 @@
 
 #include <vector>
 #include "GossipDef.h"
+#include "Define.h"
 #include "Player.h"
+#include "Item.h"
+#include "Common.h"
+#include "SharedDefines.h"
+#include "WorldPacket.h"
 #include "item_upgrade_config.h"
 
 class ItemUpgrade

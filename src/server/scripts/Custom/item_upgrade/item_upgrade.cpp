@@ -5,6 +5,25 @@
 #include <numeric>
 #include <iomanip>
 #include <cmath>
+#include "AccountMgr.h"
+#include "Bag.h"
+#include "Common.h"
+#include "Creature.h"
+#include "CustomConfig.h"
+#include "DBCStores.h"
+#include "GameTime.h"
+#include "Guild.h"
+#include "GuildMgr.h"
+#include "InstanceSaveMgr.h"
+#include "Language.h"
+#include "Map.h"
+#include "ObjectMgr.h"
+#include "Player.h"
+#include "RBAC.h"
+#include "WorldSession.h"
+#include "ZynDatabase.h"
+#include "ScriptMgr.h"
+#include "SpellInfo.h"
 #include "Item.h"
 #include "Config.h"
 #include "Util.h"
@@ -16,7 +35,6 @@
 #include "Chat.h"
 #include "SpellMgr.h"
 #include "World.h"
-#include "DBCStores.h"
 #include "item_upgrade.h"
 
 ItemUpgrade::ItemUpgrade()

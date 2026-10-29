@@ -9,6 +9,17 @@
 #include "Item.h"
 #include "Player.h"
 #include "item_upgrade.h"
+#include "GossipDef.h"
+#include "GameObjectAI.h"
+#include "Log.h"
+#include "SpellInfo.h"
+#include "SpellMgr.h"
+#include "WorldSession.h"
+#include "ObjectMgr.h"
+#include "Language.h"
+#include <sstream>
+#include <string>
+#include <vector>
 
 class npc_item_upgrade : public CreatureScript
 {
