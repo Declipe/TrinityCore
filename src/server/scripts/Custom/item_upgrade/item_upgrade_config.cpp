@@ -62,7 +62,7 @@ void ItemUpgradeConfig::Initialize()
     if (intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_DAMAGE_TOKEN_COUNT] < 1)
         intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_DAMAGE_TOKEN_COUNT] = 1;
     intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_DAMAGE_MONEY] = sConfigMgr->GetIntDefault("ItemUpgrade.UpgradeWeaponDamageMoney", 0);
-    if (intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_DAMAGE_MONEY] < 0 || intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_DAMAGE_MONEY] > MAX_MONEY_AMOUNT)
+    if (intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_DAMAGE_MONEY] < 0 || intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_DAMAGE_MONEY] > static_cast<int32>(MAX_MONEY_AMOUNT))
         intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_DAMAGE_MONEY] = 0;
     intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_SPEED_TOKEN] = sConfigMgr->GetIntDefault("ItemUpgrade.UpgradeWeaponSpeedToken", 0);
     if (intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_SPEED_TOKEN] < 0)
@@ -71,7 +71,7 @@ void ItemUpgradeConfig::Initialize()
     if (intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_SPEED_TOKEN_COUNT] < 1)
         intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_SPEED_TOKEN_COUNT] = 1;
     intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_SPEED_MONEY] = sConfigMgr->GetIntDefault("ItemUpgrade.UpgradeWeaponSpeedMoney", 0);
-    if (intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_SPEED_MONEY] < 0 || intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_SPEED_MONEY] > MAX_MONEY_AMOUNT)
+    if (intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_SPEED_MONEY] < 0 || intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_SPEED_MONEY] > static_cast<int32>(MAX_MONEY_AMOUNT))
         intConfigs[CONFIG_ITEM_UPGRADE_WEAPON_SPEED_MONEY] = 0;
 }
 
