@@ -234,7 +234,7 @@ void ItemUpgrade::MergeStatRequirements(std::unordered_map<uint32, StatRequireme
         if (copperTotal > 0.0f)
         {
             int32 val = static_cast<int32>(copperTotal);
-            if (validate && (val < 1 || val > MAX_MONEY_AMOUNT))
+            if (validate && (val < 1 || static_cast<uint32>(val) > MAX_MONEY_AMOUNT))
                 TC_LOG_ERROR("sql.sql", "Stat requirement has invalid total copper amount for stat id {}, skip", statPair.first);
             else
                 newStatReq.push_back(UpgradeStatReq(statPair.first, REQ_TYPE_COPPER, copperTotal));
@@ -245,7 +245,7 @@ void ItemUpgrade::MergeStatRequirements(std::unordered_map<uint32, StatRequireme
         if (honorTotal > 0.0f)
         {
             int32 val = static_cast<int32>(honorTotal);
-            if (validate && (val < 1 || val > sWorld->getIntConfig(CONFIG_MAX_HONOR_POINTS)))
+            if (validate && (val < 1 || static_cast<uint32>(val) > sWorld->getIntConfig(CONFIG_MAX_HONOR_POINTS)))
                 TC_LOG_ERROR("sql.sql", "Stat requirement has invalid total honor points for stat id {}, skip", statPair.first);
             else
                 newStatReq.push_back(UpgradeStatReq(statPair.first, REQ_TYPE_HONOR, honorTotal));
@@ -256,7 +256,7 @@ void ItemUpgrade::MergeStatRequirements(std::unordered_map<uint32, StatRequireme
         if (arenaTotal > 0.0f)
         {
             int32 val = static_cast<int32>(arenaTotal);
-            if (validate && (val < 1 || val > sWorld->getIntConfig(CONFIG_MAX_ARENA_POINTS)))
+            if (validate && (val < 1 || static_cast<uint32>(val) > sWorld->getIntConfig(CONFIG_MAX_ARENA_POINTS)))
                 TC_LOG_ERROR("sql.sql", "Stat requirement has invalid total arena points for stat id {}, skip", statPair.first);
             else
                 newStatReq.push_back(UpgradeStatReq(statPair.first, REQ_TYPE_ARENA, arenaTotal));
@@ -533,17 +533,17 @@ bool ItemUpgrade::ValidateReq(uint32 id, UpgradeStatReqType reqType, float val1,
     switch (reqType)
     {
         case ItemUpgrade::REQ_TYPE_COPPER:
-            if (val1Int >= 1 && val1Int <= MAX_MONEY_AMOUNT)
+            if (val1Int >= 1 && static_cast<uint32>(val1Int) <= MAX_MONEY_AMOUNT)
                 return true;
             TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (copper amount) for `id` {}, skip", table, val1, id);
             return false;
         case ItemUpgrade::REQ_TYPE_HONOR:
-            if (val1Int >= 1 && val1Int <= sWorld->getIntConfig(CONFIG_MAX_HONOR_POINTS))
+            if (val1Int >= 1 && static_cast<uint32>(val1Int) <= sWorld->getIntConfig(CONFIG_MAX_HONOR_POINTS))
                 return true;
             TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (honor points) for `id` {}, skip", table, val1, id);
             return false;
         case ItemUpgrade::REQ_TYPE_ARENA:
-            if (val1Int >= 1 && val1Int <= sWorld->getIntConfig(CONFIG_MAX_ARENA_POINTS))
+            if (val1Int >= 1 && static_cast<uint32>(val1Int) <= sWorld->getIntConfig(CONFIG_MAX_ARENA_POINTS))
                 return true;
             TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (arena points) for `id` {}, skip", table, val1, id);
             return false;
@@ -2513,13 +2513,50 @@ void ItemUpgrade::BuildStatsUpgradeCatalogueBulk(const Player* player, const Ite
 
     if (IsAllowedItem(item) && !IsBlacklistedItem(item))
     {
+        std::vector<_ItemStat> itemStats = LoadItemStatInfo(item);
         for (const auto& upair : upgradesPctMap)
         {
+            bool hasApplicableStat = false;
+            bool canPurchase = false;
+            bool allPurchased = true;
+            for (const UpgradeStat* stat : upair.second)
+            {
+                if (GetStatByType(itemStats, stat->statType) == nullptr
+                    || !IsAllowedStatType(stat->statType)
+                    || !CanApplyUpgradeForItem(item, stat))
+                    continue;
+
+                hasApplicableStat = true;
+                const UpgradeStat* currentUpgrade = FindUpgradeForItem(player, item, stat->statType);
+                if (currentUpgrade != nullptr && currentUpgrade->statRank >= stat->statRank)
+                    continue;
+
+                allPurchased = false;
+                if ((currentUpgrade == nullptr && stat->statRank == 1)
+                    || (currentUpgrade != nullptr && currentUpgrade->statRank == stat->statRank - 1))
+                    canPurchase = true;
+            }
+
             FloatIdentifier* identifier = new FloatIdentifier();
             identifier->id = pagedData.data.size();
             identifier->name = "";
             identifier->modPct = upair.first;
-            identifier->uiName = "Upgrade ALL stats by " + FormatFloat(upair.first) + "%";
+
+            std::ostringstream oss;
+            if (canPurchase)
+                oss << "|cff056e3a";
+            else if (hasApplicableStat && allPurchased)
+                oss << "|cff5c5b57";
+            else
+                oss << "|cffb50505";
+            oss << "Upgrade ALL stats by " << FormatFloat(upair.first) << "%|r";
+            if (canPurchase)
+                oss << " [PURCHASE]";
+            else if (hasApplicableStat && allPurchased)
+                oss << " [DONE]";
+            else
+                oss << " [LOCKED]";
+            identifier->uiName = oss.str();
             pagedData.data.push_back(identifier);
         }
     }
@@ -3928,7 +3965,7 @@ ItemUpgrade::ItemVisualsPriority ItemUpgrade::GetItemVisualsPriority() const
     }
 }
 
-/*static*/ std::string ItemUpgrade::FormatItemLocation(const Player* player, const Item* item)
+/*static*/ std::string ItemUpgrade::FormatItemLocation(const Player* /*player*/, const Item* item)
 {
     uint8 bagSlot = item->GetBagSlot();
     uint8 itemSlot = item->GetSlot();
