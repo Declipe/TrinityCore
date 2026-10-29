@@ -5534,3 +5534,15 @@ ItemUpgrade.RandomUpgradeOnQuestReward = 1
 #
 
 ItemUpgrade.RandomUpgradeWhenCrafting = 1
+
+# Weapon upgrades are independent from stat upgrades. Percentages are comma-separated ranks.
+ItemUpgrade.UpgradeWeaponDamage = 1
+ItemUpgrade.UpgradeWeaponDamagePercents = 5,10,15
+ItemUpgrade.UpgradeWeaponDamageToken = 0
+ItemUpgrade.UpgradeWeaponDamageTokenCount = 1
+ItemUpgrade.UpgradeWeaponDamageMoney = 0
+ItemUpgrade.UpgradeWeaponSpeed = 1
+ItemUpgrade.UpgradeWeaponSpeedPercents = 5,10,15
+ItemUpgrade.UpgradeWeaponSpeedToken = 0
+ItemUpgrade.UpgradeWeaponSpeedTokenCount = 1
+ItemUpgrade.UpgradeWeaponSpeedMoney = 0

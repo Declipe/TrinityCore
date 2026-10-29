@@ -24,6 +24,7 @@
 #include "SpellAuras.h"
 #include "SpellAuraEffects.h"
 #include "SpellMgr.h"
+#include "ScriptMgr.h"
 #include "World.h"
 #include <numeric>
 
@@ -519,6 +520,8 @@ void Player::UpdateAttackPowerAndDamage(bool ranged)
         if (guardian && guardian->IsSpiritWolf()) // At melee attack power change for Shaman feral spirit
             guardian->UpdateAttackPowerAndDamage();
     }
+
+    sScriptMgr->OnAfterUpdateAttackPowerAndDamage(this);
 }
 
 void Player::UpdateShieldBlockValue()

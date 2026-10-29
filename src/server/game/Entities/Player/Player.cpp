@@ -101,6 +101,7 @@
 #include "SpellAuras.h"
 #include "SpellHistory.h"
 #include "SpellMgr.h"
+#include "ScriptMgr.h"
 #include "SpellPackets.h"
 #include "StringConvert.h"
 #include "TalentPackets.h"
@@ -7740,6 +7741,9 @@ void Player::_ApplyWeaponDamage(uint8 slot, ItemTemplate const* proto, bool appl
         }
 
         if (apply)
+            sScriptMgr->OnApplyWeaponDamage(this, slot, proto, minDamage, maxDamage, i);
+
+        if (apply)
         {
             if (minDamage > 0.f)
                 SetBaseWeaponDamage(attType, MINDAMAGE, minDamage, i);
@@ -12327,6 +12331,7 @@ Item* Player::EquipItem(uint16 pos, Item* pItem, bool update)
     // only for full equip instead adding to stack
     UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM, pItem->GetEntry());
     UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM, slot, pItem->GetEntry());
+    sScriptMgr->OnEquip(this, pItem, bag, slot);
 
 #ifdef ELUNA
     if (Eluna* e = GetEluna())
@@ -12359,6 +12364,7 @@ void Player::QuickEquipItem(uint16 pos, Item* pItem)
 
         UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EQUIP_ITEM, pItem->GetEntry());
         UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM, slot, pItem->GetEntry());
+        sScriptMgr->OnEquip(this, pItem, pos >> 8, slot);
 
 #ifdef ELUNA
         if (Eluna* e = GetEluna())

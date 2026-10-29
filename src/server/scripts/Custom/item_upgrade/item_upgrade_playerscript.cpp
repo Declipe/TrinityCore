@@ -21,6 +21,7 @@ private:
 
         bool Execute(uint64 /*e_time*/, uint32 /*p_time*/)
         {
+            sItemUpgrade->RefreshWeaponSpeed(player);
             sItemUpgrade->UpdateVisualCache(player);
             return true;
         }
@@ -42,14 +43,55 @@ public:
         enchant_amount = sItemUpgrade->HandleStatModifier(player, item, enchant_spell_id, enchant_amount, slot);
     }
 
+    void OnApplyWeaponDamage(Player* player, uint8 slot, ItemTemplate const* /*proto*/, float& minDamage, float& maxDamage, uint8 damageIndex) override
+    {
+        if (damageIndex == 0)
+        {
+            std::pair<float, float> upgradedDamage = sItemUpgrade->HandleWeaponModifier(player, slot, minDamage, maxDamage);
+            minDamage = upgradedDamage.first;
+            maxDamage = upgradedDamage.second;
+        }
+    }
+
+    void OnEquip(Player* player, Item* item, uint8 /*bag*/, uint8 slot) override
+    {
+        uint8 attackType = Player::GetAttackBySlot(slot);
+        if (!item || attackType == MAX_ATTACK || player->IsInFeralForm())
+            return;
+
+        ItemTemplate const* itemTemplate = item->GetTemplate();
+        if (!itemTemplate->Delay)
+            return;
+
+        uint32 delay = sItemUpgrade->HandleWeaponSpeedModifier(player, item);
+        if (slot == EQUIPMENT_SLOT_RANGED)
+            player->SetAttackTime(RANGED_ATTACK, delay);
+        else if (slot == EQUIPMENT_SLOT_MAINHAND)
+            player->SetAttackTime(BASE_ATTACK, delay);
+        else if (slot == EQUIPMENT_SLOT_OFFHAND)
+            player->SetAttackTime(OFF_ATTACK, delay);
+
+        if (player->CanModifyStats() && player->GetWeaponDamageRange(WeaponAttackType(attackType), MAXDAMAGE))
+            player->UpdateDamagePhysical(WeaponAttackType(attackType));
+    }
+
+    void OnAfterUpdateAttackPowerAndDamage(Player* player) override
+    {
+        sItemUpgrade->RefreshWeaponSpeed(player);
+    }
+
     void OnAfterMoveItemFromInventory(Player* player, Item* it, uint8 /*bag*/, uint8 /*slot*/, bool /*update*/) override
     {
         sItemUpgrade->HandleItemRemove(player, it);
     }
 
-    void OnDeleteFromDB(CharacterDatabaseTransaction trans, uint32 guid) override
+    void OnDeleteFromDB(CharacterDatabaseTransaction /*trans*/, uint32 guid) override
     {
+        ZynDatabaseTransaction trans = ZynDatabase.BeginTransaction();
         trans->PAppend("DELETE FROM character_item_upgrade WHERE guid = {}", guid);
+        trans->PAppend("DELETE FROM character_weapon_upgrade WHERE guid = {}", guid);
+        trans->PAppend("DELETE FROM character_weapon_speed_upgrade WHERE guid = {}", guid);
+        ZynDatabase.DirectCommitTransaction(trans);
         sItemUpgrade->HandleCharacterRemove(guid);
     }
 
