@@ -5,15 +5,15 @@
 #ifndef _ITEM_UPGRADE_H_
 #define _ITEM_UPGRADE_H_
 
-#include <vector>
-#include "GossipDef.h"
-#include "Define.h"
-#include "Player.h"
-#include "Item.h"
 #include "Common.h"
+#include "Define.h"
+#include "GossipDef.h"
+#include "Item.h"
+#include "item_upgrade_config.h"
+#include "Player.h"
 #include "SharedDefines.h"
 #include "WorldPacket.h"
-#include "item_upgrade_config.h"
+#include <vector>
 
 class ItemUpgrade
 {
@@ -107,7 +107,7 @@ public:
         PagedDataType type;
         const UpgradeStat* upgradeStat;
         ItemIdentifier item;
-        std::vector<Identifier *> data;
+        std::vector<Identifier*> data;
         float pct;
 
         PagedData() : totalPages(0), currentPage(0), reloaded(false), type(MAX_PAGED_DATA_TYPE), upgradeStat(nullptr), pct(0.0f) {}
@@ -269,7 +269,8 @@ public:
     void BuildWeaponUpgradeReqs();
     void BuildWeaponSpeedUpgradeReqs();
 
-    static std::string StatTypeToString(uint32 statType);
+    static std::string StatTypeToString(uint32 statType, const Player* player = nullptr);
+    static std::string Localize(const Player* player, const std::string& text);
     static std::string EquipmentSlotToString(EquipmentSlots slot);
     static std::vector<_ItemStat> LoadItemStatInfo(const Item* item);
     static const _ItemStat* GetStatByType(const std::vector<_ItemStat>& statInfo, uint32 statType);
@@ -380,7 +381,7 @@ private:
     bool PurchaseUpgrade(Player* player);
     bool PurchaseWeaponUpgrade(Player* player);
     bool PurchaseWeaponSpeedUpgrade(Player* player);
-    void AddUpgradedItemToPagedData(const Item* item, const Player* player, PagedData& pagedData, const std::string &from);
+    void AddUpgradedItemToPagedData(const Item* item, const Player* player, PagedData& pagedData, const std::string& from);
     void HandleDataReload(Player* player, bool apply);
     std::vector<Item*> GetPlayerItems(const Player* player, bool inBankAlso) const;
     bool IsAllowedItem(const Item* item) const;

@@ -2,11 +2,11 @@
  * Credits: silviu20092
  */
 
-#include "ScriptMgr.h"
 #include "Chat.h"
+#include "GameTime.h"
 #include "item_upgrade.h"
 #include "RBAC.h"
-#include "GameTime.h"
+#include "ScriptMgr.h"
 #include <unordered_map>
 
 using namespace Trinity::ChatCommands;
@@ -14,7 +14,7 @@ using namespace Trinity::ChatCommands;
 class item_upgrade_commandscript : public CommandScript
 {
 public:
-    item_upgrade_commandscript() : CommandScript("item_upgrade_commandscript") { }
+    item_upgrade_commandscript() : CommandScript("item_upgrade_commandscript") {}
 
     ChatCommandTable GetCommands() const override
     {
@@ -22,7 +22,7 @@ public:
         {
             { "reload", HandleReloadModItemUpgrade, rbac::RBAC_ROLE_GAMEMASTER, Console::Yes },
             { "lock",   HandleLockItemUpgrade,      rbac::RBAC_ROLE_GAMEMASTER, Console::Yes },
-            { "list",   HandleListUpgrades,         rbac::RBAC_ROLE_PLAYER,      Console::No  }
+            { "list",   HandleListUpgrades,         rbac::RBAC_ROLE_PLAYER,      Console::No }
         };
 
         static ChatCommandTable itemUpgradeCommandTable =
@@ -54,7 +54,7 @@ private:
     static bool HandleLockItemUpgrade(ChatHandler* handler)
     {
         sItemUpgrade->SetReloading(true);
-        handler->SendSysMessage("Item Upgrade NPC is now locked, it is now safe to edit database tables. Release the lock by using .item_upgrade reload command");
+        handler->SendSysMessage(ItemUpgrade::Localize(handler->GetSession() ? handler->GetSession()->GetPlayer() : nullptr, "Item Upgrade NPC is now locked, it is now safe to edit database tables. Release the lock by using .item_upgrade reload command"));
         return true;
     }
 
@@ -71,7 +71,7 @@ private:
         uint32 timeSinceLastRequest = getMSTimeDiff(lastTime, currentTime);
         if (lastTime != 0 && timeSinceLastRequest < LIST_UPGRADES_COOLDOWN_MS)
         {
-            handler->PSendSysMessage("Please try again in {} seconds.", (LIST_UPGRADES_COOLDOWN_MS - timeSinceLastRequest) / 1000);
+            handler->SendSysMessage(fmt::format("{}{}{}", ItemUpgrade::Localize(player, "Please try again in "), (LIST_UPGRADES_COOLDOWN_MS - timeSinceLastRequest) / 1000, ItemUpgrade::Localize(player, " seconds.")));
             return true;
         }
         lastTime = currentTime;
@@ -90,15 +90,15 @@ private:
 
             ++upgradedItemCount;
             upgradedStatCount += upgrades.size();
-            handler->PSendSysMessage("{} [equipment slot {}]", ItemUpgrade::ItemLink(player, item), slot);
+            handler->SendSysMessage(fmt::format("{}{}{}]", ItemUpgrade::ItemLink(player, item), ItemUpgrade::Localize(player, " [equipment slot "), slot));
             for (const ItemUpgrade::UpgradeStat* upgrade : upgrades)
-                handler->PSendSysMessage("{} upgraded by {}% [rank {}]", sItemUpgrade->StatTypeToString(upgrade->statType), upgrade->statModPct, upgrade->statRank);
+                handler->SendSysMessage(fmt::format("{}{}{}% [{} {}]", sItemUpgrade->StatTypeToString(upgrade->statType, player), ItemUpgrade::Localize(player, " upgraded by "), upgrade->statModPct, ItemUpgrade::Localize(player, "RANK"), upgrade->statRank));
         }
 
         if (!upgradedItemCount)
-            handler->PSendSysMessage("{} does not have any upgraded equipped items.", player->GetName());
+            handler->SendSysMessage(player->GetName() + ItemUpgrade::Localize(player, " does not have any upgraded equipped items."));
         else
-            handler->PSendSysMessage("{} has {} upgraded equipped item(s) and {} upgraded stat(s).", player->GetName(), upgradedItemCount, upgradedStatCount);
+            handler->SendSysMessage(player->GetName() + ItemUpgrade::Localize(player, " has ") + std::to_string(upgradedItemCount) + ItemUpgrade::Localize(player, " upgraded equipped item(s) and ") + std::to_string(upgradedStatCount) + ItemUpgrade::Localize(player, " upgraded stat(s)."));
 
         return true;
     }

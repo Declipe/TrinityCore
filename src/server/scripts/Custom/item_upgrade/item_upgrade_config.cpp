@@ -2,9 +2,9 @@
  * Credits: silviu20092
  */
 
-#include "ItemTemplate.h"
-#include "item_upgrade_config.h"
 #include "Config.h"
+#include "item_upgrade_config.h"
+#include "ItemTemplate.h"
 #include "Player.h"
 
 ItemUpgradeConfig::ItemUpgradeConfig()

@@ -2,8 +2,8 @@
  * Credits: silviu20092
  */
 
-#include "ScriptMgr.h"
 #include "item_upgrade.h"
+#include "ScriptMgr.h"
 
 class item_upgrade_itemscript : public ItemScript
 {

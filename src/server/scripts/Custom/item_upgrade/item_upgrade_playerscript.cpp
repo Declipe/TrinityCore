@@ -2,10 +2,11 @@
  * Credits: silviu20092
  */
 
-#include "ScriptMgr.h"
+#include "Chat.h"
 #include "DatabaseEnv.h"
-#include "Player.h"
 #include "item_upgrade.h"
+#include "Player.h"
+#include "ScriptMgr.h"
 #include "ZynDatabase.h"
 
 class item_upgrade_playerscript : public PlayerScript
@@ -103,7 +104,7 @@ public:
         {
             const std::string& loginMsg = sItemUpgrade->GetStringConfig(CONFIG_ITEM_UPGRADE_RANDOM_UPGRADES_LOGIN_MSG);
             if (!loginMsg.empty())
-                ItemUpgrade::SendMessage(player, loginMsg);
+                ChatHandler(player->GetSession()).SendSysMessage(loginMsg);
         }
     }
 

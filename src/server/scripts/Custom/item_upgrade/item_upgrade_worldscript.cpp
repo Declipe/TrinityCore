@@ -2,14 +2,14 @@
  * Credits: silviu20092
  */
 
-#include "ScriptMgr.h"
 #include "Config.h"
 #include "item_upgrade.h"
+#include "ScriptMgr.h"
 
 class item_upgrade_worldscript : public WorldScript
 {
 public:
-    item_upgrade_worldscript() : WorldScript("item_upgrade_worldscript") { }
+    item_upgrade_worldscript() : WorldScript("item_upgrade_worldscript") {}
 
     void OnConfigLoad(bool reload) override
     {
@@ -29,10 +29,10 @@ public:
             sItemUpgrade->HandleDataReload(true);
     }
 
-   // void OnBeforeWorldInitialized()
-   // {
-   // sItemUpgrade->LoadFromDB();
-   // }
+    // void OnBeforeWorldInitialized()
+    // {
+    // sItemUpgrade->LoadFromDB();
+    // }
 };
 
 void AddSC_item_upgrade_worldscript()

@@ -5,8 +5,8 @@
 #ifndef _ITEM_UPGRADE_CONFIG_H_
 #define _ITEM_UPGRADE_CONFIG_H_
 
-#include <string>
 #include "Define.h"
+#include <string>
 
 enum ItemUpgradeBoolConfigs
 {

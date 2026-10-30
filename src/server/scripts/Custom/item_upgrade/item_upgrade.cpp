@@ -2,40 +2,40 @@
  * Credits: silviu20092
  */
 
-#include <numeric>
-#include <iomanip>
-#include <cmath>
 #include "AccountMgr.h"
 #include "Bag.h"
+#include "Chat.h"
 #include "Common.h"
+#include "Config.h"
+#include "Containers.h"
 #include "Creature.h"
 #include "CustomConfig.h"
+#include "DatabaseEnv.h"
 #include "DBCStores.h"
 #include "GameTime.h"
 #include "Guild.h"
 #include "GuildMgr.h"
 #include "InstanceSaveMgr.h"
+#include "Item.h"
+#include "item_upgrade.h"
 #include "Language.h"
+#include "Log.h"
 #include "Map.h"
 #include "ObjectMgr.h"
 #include "Player.h"
 #include "RBAC.h"
-#include "WorldSession.h"
-#include "ZynDatabase.h"
+#include "ScriptedGossip.h"
 #include "ScriptMgr.h"
 #include "SpellInfo.h"
-#include "Item.h"
-#include "Config.h"
-#include "Util.h"
-#include "Containers.h"
-#include "StringConvert.h"
-#include "DatabaseEnv.h"
-#include "Log.h"
-#include "ScriptedGossip.h"
-#include "Chat.h"
 #include "SpellMgr.h"
+#include "StringConvert.h"
+#include "Util.h"
 #include "World.h"
-#include "item_upgrade.h"
+#include "WorldSession.h"
+#include "ZynDatabase.h"
+#include <cmath>
+#include <iomanip>
+#include <numeric>
 
 ItemUpgrade::ItemUpgrade()
 {
@@ -550,37 +550,37 @@ bool ItemUpgrade::ValidateReq(uint32 id, UpgradeStatReqType reqType, float val1,
     int32 val1Int = static_cast<int32>(val1);
     switch (reqType)
     {
-        case ItemUpgrade::REQ_TYPE_COPPER:
-            if (val1Int >= 1 && static_cast<uint32>(val1Int) <= MAX_MONEY_AMOUNT)
-                return true;
-            TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (copper amount) for `id` {}, skip", table, val1, id);
-            return false;
-        case ItemUpgrade::REQ_TYPE_HONOR:
-            if (val1Int >= 1 && static_cast<uint32>(val1Int) <= sWorld->getIntConfig(CONFIG_MAX_HONOR_POINTS))
-                return true;
-            TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (honor points) for `id` {}, skip", table, val1, id);
-            return false;
-        case ItemUpgrade::REQ_TYPE_ARENA:
-            if (val1Int >= 1 && static_cast<uint32>(val1Int) <= sWorld->getIntConfig(CONFIG_MAX_ARENA_POINTS))
-                return true;
-            TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (arena points) for `id` {}, skip", table, val1, id);
-            return false;
-        case ItemUpgrade::REQ_TYPE_ITEM:
+    case ItemUpgrade::REQ_TYPE_COPPER:
+        if (val1Int >= 1 && static_cast<uint32>(val1Int) <= MAX_MONEY_AMOUNT)
+            return true;
+        TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (copper amount) for `id` {}, skip", table, val1, id);
+        return false;
+    case ItemUpgrade::REQ_TYPE_HONOR:
+        if (val1Int >= 1 && static_cast<uint32>(val1Int) <= sWorld->getIntConfig(CONFIG_MAX_HONOR_POINTS))
+            return true;
+        TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (honor points) for `id` {}, skip", table, val1, id);
+        return false;
+    case ItemUpgrade::REQ_TYPE_ARENA:
+        if (val1Int >= 1 && static_cast<uint32>(val1Int) <= sWorld->getIntConfig(CONFIG_MAX_ARENA_POINTS))
+            return true;
+        TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (arena points) for `id` {}, skip", table, val1, id);
+        return false;
+    case ItemUpgrade::REQ_TYPE_ITEM:
+    {
+        const ItemTemplate* itemTemplate = sObjectMgr->GetItemTemplate(val1Int);
+        if (!itemTemplate)
         {
-            const ItemTemplate* itemTemplate = sObjectMgr->GetItemTemplate(val1Int);
-            if (!itemTemplate)
-            {
-                TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (item entry not found) for `id` {}, skip", table, val1, id);
-                return false;
-            }
-            int32 val2Int = static_cast<int32>(val2);
-            if (val2Int >= 1)
-                return true;
-            TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val2` {} (item count invalid) for `id` {}, skip", table, val2, id);
+            TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val1` {} (item entry not found) for `id` {}, skip", table, val1, id);
             return false;
         }
-        case ItemUpgrade::REQ_TYPE_NONE:
+        int32 val2Int = static_cast<int32>(val2);
+        if (val2Int >= 1)
             return true;
+        TC_LOG_ERROR("sql.sql", "Table `{}` has invalid `req_val2` {} (item count invalid) for `id` {}, skip", table, val2, id);
+        return false;
+    }
+    case ItemUpgrade::REQ_TYPE_NONE:
+        return true;
     }
     return false;
 }
@@ -674,9 +674,224 @@ bool ItemUpgrade::ValidateReq(uint32 id, UpgradeStatReqType reqType, float val1,
     return oss.str();
 }
 
+/*static*/ std::string ItemUpgrade::Localize(const Player* player, const std::string& text)
+{
+    if (!player || player->GetSession()->GetSessionDbLocaleIndex() != LOCALE_ruRU)
+        return text;
+
+    static const std::vector<std::pair<std::string_view, std::string_view>> translations =
+    {
+        { "Item level increased by ", "Уровень предмета повышен на " },
+        { "no upgrades to apply]", "нет улучшений для применения]" },
+        { "in bank bag ", "в сумке банка " },
+        { "in backpack - slot ", "в рюкзаке — слот " },
+        { "in bank - slot ", "в банке — слот " },
+        { "in bag ", "в сумке " },
+        { "bank bags", "сумки банка" },
+        { " to rank ", " до ранга " },
+        { " - slot ", " — слот " },
+        { "Won't", "Не будет" },
+        { "Item Upgrade NPC is now locked, it is now safe to edit database tables. Release the lock by using .item_upgrade reload command", "NPC улучшения предметов заблокирован. Теперь можно редактировать таблицы базы данных. Снимите блокировку командой .item_upgrade reload." },
+        { "The NPC will no longer be available to players until you release the lock with .item_upgrade reload command.", "NPC будет недоступен игрокам, пока вы не снимете блокировку командой .item_upgrade reload." },
+        { "Upgrade could not be processed. This should not happen, unless the weapon is no longer available.", "Не удалось выполнить улучшение. Возможно, оружие больше недоступно." },
+        { "Upgrade could not be processed. This should not happen, unless the item is no longer available.", "Не удалось выполнить улучшение. Возможно, предмет больше недоступен." },
+        { "Are you sure you want to remove this weapon speed upgrade? This cannot be undone!", "Вы уверены, что хотите удалить улучшение скорости оружия? Это действие нельзя отменить!" },
+        { "Are you sure you want to remove this weapon upgrade? This cannot be undone!", "Вы уверены, что хотите удалить улучшение оружия? Это действие нельзя отменить!" },
+        { "Item Upgrade data is being reloaded by an administrator, please retry.", "Данные улучшения предметов перезагружаются администратором. Попробуйте позже." },
+        { "Are you sure you want to remove all upgrades? This cannot be undone!", "Вы уверены, что хотите удалить все улучшения? Это действие нельзя отменить!" },
+        { "Are you sure you want to upgrade the speed of this weapon?", "Вы уверены, что хотите улучшить скорость этого оружия?" },
+        { "You do not meet the requirements to buy these upgrades.", "Вы не соответствуете требованиям для покупки этих улучшений." },
+        { "NOTHING ON THIS PAGE, ONLY EQUIPPED ITEMS WILL BE SHOWN", "На этой странице нет предметов; показаны только надетые предметы" },
+        { "You do not meet the requirements to buy this upgrade.", "Вы не соответствуете требованиям для покупки этого улучшения." },
+        { "Weapon is no longer available for speed upgrade.", "Скорость этого оружия больше нельзя улучшить." },
+        { "Item Upgrade module data successfully reloaded.", "Данные модуля улучшения предметов успешно перезагружены." },
+        { "Choose an item to upgrade (by stat, one-by-one)", "Улучшить характеристики предмета по одной" },
+        { " failed, check your inventory space and retry.", " — проверьте свободное место в сумках и попробуйте снова." },
+        { "You already bought this weapon speed upgrade!", "Вы уже приобрели улучшение скорости этого оружия!" },
+        { "Are you sure you want to upgrade this weapon?", "Вы уверены, что хотите улучшить это оружие?" },
+        { "Choose an item to upgrade (all stats at once)", "Улучшить все характеристики предмета сразу" },
+        { "Can't refund copper, would be at gold limit.", "Нельзя вернуть деньги: будет превышен лимит золота." },
+        { "Already at MAX rank for this stat and item.", "Для этой характеристики предмета уже достигнут максимальный ранг." },
+        { " does not have any upgraded equipped items.", " не имеет надетых улучшенных предметов." },
+        { "Weapon is no longer available for upgrade.", "Это оружие больше нельзя улучшить." },
+        { "Item is no longer available for upgrade.", "Предмет больше нельзя улучшить." },
+        { "You must buy the previous upgrade first!", "Сначала необходимо приобрести предыдущее улучшение!" },
+        { "You already bought this weapon upgrade!", "Вы уже приобрели улучшение этого оружия!" },
+        { "NO REQUIREMENTS, CAN BE FREELY BOUGHT", "Нет требований, можно приобрести бесплатно" },
+        { "Choose a weapon to upgrade its speed", "Выбрать оружие для улучшения скорости атаки" },
+        { " (will decrease weapon swing delay)", " (уменьшится время между ударами)" },
+        { "Weapon speed successfully upgraded!", "Скорость оружия успешно улучшена!" },
+        { "Choose an upgraded item to purge:", "Выберите улучшенный предмет для сброса улучшений:" },
+        { "Are you sure you want to upgrade?", "Вы уверены, что хотите выполнить улучшение?" },
+        { "|cffb50505REMOVE SPEED UPGRADE|r", "|cffb50505Удалить улучшение скорости|r" },
+        { "need to acquire previous rank(s)", "сначала необходимо приобрести предыдущие ранги" },
+        { "WILL REFUND EVERYTHING ON PURGE", "При сбросе все ресурсы будут возвращены" },
+        { "This rank is not available for ", "Этот ранг недоступен для " },
+        { " upgraded equipped item(s) and ", " улучшенных надетых предметов и " },
+        { "rank not allowed for this item", "ранг недоступен для этого предмета" },
+        { "[Weapon damage upgrade system]", "[Улучшение урона оружия]" },
+        { "Weapon is no longer available.", "Оружие больше недоступно." },
+        { "Weapon successfully upgraded!", "Оружие успешно улучшено!" },
+        { "[Weapon speed upgrade system]", "[Улучшение скорости оружия]" },
+        { "stat not allowed for upgrade", "характеристика запрещена для улучшения" },
+        { "Item is no longer available.", "Предмет больше недоступен." },
+        { "Upgrade no longer available.", "Улучшение больше недоступно." },
+        { "Item successfully upgraded!", "Предмет успешно улучшен!" },
+        { "|cffb50505REMOVE UPGRADE|r", "|cffb50505Удалить улучшение|r" },
+        { "WEAPON DAMAGE UPGRADED BY ", "Урон оружия увеличен на " },
+        { "Choose a weapon to upgrade", "Выбрать оружие для улучшения" },
+        { "Will receive after purge:", "Будет получено после сброса:" },
+        { "WEAPON SPEED UPGRADED BY ", "Скорость оружия увеличена на " },
+        { "Choose an item to upgrade", "Выбрать предмет для улучшения" },
+        { "Ranged Crit Taken Rating", "Устойчивость к критическим ударам дальнего боя" },
+        { "Melee Crit Taken Rating", "Устойчивость к критическим ударам ближнего боя" },
+        { "Spell Crit Taken Rating", "Устойчивость к критическим ударам заклинаний" },
+        { "Ranged Hit Taken Rating", "Устойчивость к попаданиям дальнего боя" },
+        { "ITEM CAN'T BE UPGRADED", "Предмет нельзя улучшить" },
+        { " equipped item(s) and ", " надетых предметов и " },
+        { "Lock for database edit", "Заблокировать для редактирования базы данных" },
+        { "Spell Hit Taken Rating", "Устойчивость к попаданиям заклинаний" },
+        { "Total items upgraded: ", "Улучшено предметов: " },
+        { "Melee Hit Taken Rating", "Устойчивость к попаданиям ближнего боя" },
+        { "Upgrade ALL stats by ", "Улучшить ВСЕ характеристики на " },
+        { "rank already acquired", "этот ранг уже приобретен" },
+        { "no upgrades to apply", "нет улучшений для применения" },
+        { "See upgraded weapons", "Посмотреть улучшенное оружие" },
+        { "Please try again in ", "Повторите попытку через " },
+        { "REMOVE SPEED UPGRADE", "Удалить улучшение скорости" },
+        { "NOTHING ON THIS PAGE", "На этой странице ничего нет" },
+        { "Upgrading damage by ", "Увеличение урона на " },
+        { "Upgrading speed by ", "Увеличение скорости на " },
+        { "Ranged Attack Power", "Сила атаки дальнего боя" },
+        { "Update visual cache", "Обновить визуальные эффекты" },
+        { "already at max rank", "уже достигнут максимальный ранг" },
+        { " [ALL REQUIREMENTS]", " [Все требования]" },
+        { "Ranged Haste Rating", "Скорость дальнего боя" },
+        { "Damage upgraded by ", "Урон увеличен на " },
+        { "Ranged Crit Rating", "Критический удар дальнего боя" },
+        { "See upgraded items", "Посмотреть улучшенные предметы" },
+        { " upgraded stat(s).", " улучшенных характеристик." },
+        { "[ALL REQUIREMENTS]", "[Все требования]" },
+        { "Speed upgraded by ", "Скорость увеличена на " },
+        { "Melee Haste Rating", "Скорость ближнего боя" },
+        { "Spell Haste Rating", "Скорость заклинаний" },
+        { "Armor Penetration", "Пробивание брони" },
+        { "UPGRADE FORBIDDEN", "Улучшение запрещено" },
+        { " [equipment slot ", " [слот экипировки " },
+        { "Crit Taken Rating", "Устойчивость к критическим ударам" },
+        { "Spell Crit Rating", "Критический удар заклинаний" },
+        { "Melee Crit Rating", "Критический удар ближнего боя" },
+        { "Resilience Rating", "Устойчивость" },
+        { " [ACQUIRE RANK 1]", " [Получить ранг 1]" },
+        { "Spell Penetration", "Проникаемость заклинаний" },
+        { "Ranged Hit Rating", "Меткость дальнего боя" },
+        { "Hit Taken Rating", "Устойчивость к попаданиям" },
+        { "NOTHING TO PURGE", "Нет улучшений для сброса" },
+        { "Total upgrades: ", "Всего улучшений: " },
+        { "WILL DECREASE TO", "Уменьшится до" },
+        { "Melee Hit Rating", "Меткость ближнего боя" },
+        { "Spell Hit Rating", "Меткость заклинаний" },
+        { "REMOVE UPGRADE", "Удалить улучшение" },
+        { "ORIGINAL SPEED", "Исходная скорость" },
+        { "Purge upgrades", "Сбросить улучшения" },
+        { "Defense Rating", "Защита" },
+        { "PURGE UPGRADES", "Сбросить улучшения" },
+        { "Trying to add ", "Не удалось добавить " },
+        { "CURRENT SPEED", "Текущая скорость" },
+        { " Increase by ", " Увеличение на " },
+        { " [ITEM LEVEL ", " [Уровень предмета " },
+        { " [EQUIP ITEM]", " [Надеть предмет]" },
+        { "NOT AVAILABLE", "Недоступно" },
+        { "increased by ", "увеличен на " },
+        { " upgraded by ", " улучшено на " },
+        { "Requirements:", "Требования:" },
+        { "PURCHASE ALL", "Купить все" },
+        { "[First Page]", "[Первая страница]" },
+        { "Haste Rating", "Скорость" },
+        { "Nevermind...", "Не важно..." },
+        { "Dodge Rating", "Уклонение" },
+        { "[EQUIP ITEM]", "[Надеть предмет]" },
+        { "Parry Rating", "Парирование" },
+        { "Block Rating", "Рейтинг блока" },
+        { "Attack Power", "Сила атаки" },
+        { " [New ILVL: ", " [Новый уровень предмета: " },
+        { "Spell Power", "Сила заклинаний" },
+        { "Crit Rating", "Критический удар" },
+        { " [PURCHASE]", " [Купить]" },
+        { " [CURRENT: ", " [Текущее: " },
+        { "IN PROGRESS", "В процессе" },
+        { "Block Value", "Блок" },
+        { "Upgrade by ", "Улучшение на " },
+        { "HAS STATS: ", "Характеристики: " },
+        { "ITEM LEVEL", "Уровень предмета" },
+        { "MAX DAMAGE", "Макс. урон" },
+        { "Hit Rating", "Меткость" },
+        { "MIN DAMAGE", "Мин. урон" },
+        { "Mana Regen", "Восстановление маны" },
+        { " to RANK ", " до РАНГА " },
+        { " [LOCKED]", " [Заблокировано]" },
+        { "Intellect", "Интеллект" },
+        { " seconds.", " сек." },
+        { "Expertise", "Мастерство" },
+        { "missing ", "не хватает " },
+        { "increase", "увеличение" },
+        { "HP Regen", "Восстановление здоровья" },
+        { "PURCHASE", "Купить" },
+        { "Strength", "Сила" },
+        { "UPGRADED", "Улучшено" },
+        { "INACTIVE", "Неактивно" },
+        { " [Back]", " [Назад]" },
+        { "UPGRADE", "Улучшение" },
+        { "CURRENT", "Текущее" },
+        { "Stamina", "Выносливость" },
+        { " [Next]", " [Далее]" },
+        { "Agility", "Ловкость" },
+        { " [DONE]", " [Выполнено]" },
+        { " [rank ", " [ранг " },
+        { "HONOR: ", "Честь: " },
+        { "MONEY: ", "Деньги: " },
+        { "ARENA: ", "Арена: " },
+        { "LOCKED", "Заблокировано" },
+        { "points", "очков" },
+        { "Spirit", "Дух" },
+        { "Health", "Здоровье" },
+        { "[Back]", "[Назад]" },
+        { "[Next]", "[Далее]" },
+        { " had ", " получил улучшение " },
+        { "won't", "не будет" },
+        { "WON'T", "Нельзя" },
+        { "items", "предметов" },
+        { " has ", " имеет " },
+        { "rank", "ранг" },
+        { "Mana", "Мана" },
+        { "RANK", "Ранг" },
+        { "Will", "Будет" },
+        { "DONE", "Выполнено" },
+        { "MAX", "Макс." },
+        { "backpack", "рюкзак" },
+        { "equipped", "надет" },
+        { "bank bags", "сумки банка" },
+        { "bank", "банк" },
+        { "bags", "сумки" },
+    };
+
+    std::string localized = text;
+    for (const auto& [english, russian] : translations)
+    {
+        size_t position = 0;
+        while ((position = localized.find(english, position)) != std::string::npos)
+        {
+            localized.replace(position, english.size(), russian);
+            position += russian.size();
+        }
+    }
+
+    return localized;
+}
+
 /*static*/ void ItemUpgrade::SendMessage(const Player* player, const std::string& message)
 {
-    ChatHandler(player->GetSession()).SendSysMessage(message);
+    ChatHandler(player->GetSession()).SendSysMessage(Localize(player, message));
 }
 
 void ItemUpgrade::PagedData::Reset()
@@ -895,13 +1110,13 @@ bool ItemUpgrade::_AddPagedData(Player* player, const PagedData& pagedData, uint
             for (uint32 i = 0; i < statTypes.size(); i++)
             {
                 if (IsAllowedStatType(statTypes[i].ItemStatType))
-                    ossStatTypes << StatTypeToString(statTypes[i].ItemStatType);
+                    ossStatTypes << StatTypeToString(statTypes[i].ItemStatType, player);
                 else
-                    ossStatTypes << "|cffb50505" << StatTypeToString(statTypes[i].ItemStatType) << "|r";
+                    ossStatTypes << "|cffb50505" << StatTypeToString(statTypes[i].ItemStatType, player) << "|r";
                 if (i < statTypes.size() - 1)
                     ossStatTypes << ", ";
             }
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, ossStatTypes.str(), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, ossStatTypes.str()), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
         }
         else if (pagedData.type == PAGED_DATA_TYPE_REQS)
         {
@@ -912,7 +1127,7 @@ bool ItemUpgrade::_AddPagedData(Player* player, const PagedData& pagedData, uint
                 return false;
 
             std::ostringstream oss;
-            oss << "UPGRADE " << StatTypeToString(upgradeStat->statType) << " [RANK " << upgradeStat->statRank << "]";
+            oss << Localize(player, "UPGRADE ") << StatTypeToString(upgradeStat->statType, player) << " [" << Localize(player, "RANK") << " " << upgradeStat->statRank << "]";
             oss << " " << "[" << upgradeStat->statModPct << "% increase - ";
             oss << "|cffb50505" << statInfo->ItemStatValue << "|r --> ";
             oss << "|cff056e3a" << CalculateModPct(statInfo->ItemStatValue, upgradeStat) << "|r]";
@@ -929,8 +1144,8 @@ bool ItemUpgrade::_AddPagedData(Player* player, const PagedData& pagedData, uint
             itemLevel = CalculateItemLevel(player, item);
             ilvloss << " [CURRENT: " << itemLevel.second << "]";
 
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, oss.str(), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, ilvloss.str(), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, oss.str()), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, ilvloss.str()), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
         }
         else if (pagedData.type == PAGED_DATA_TYPE_UPGRADED_ITEMS_STATS)
         {
@@ -942,14 +1157,14 @@ bool ItemUpgrade::_AddPagedData(Player* player, const PagedData& pagedData, uint
             oss << " [|cffb50505" << itemLevel.first << "|r --> ";
             oss << " |cff056e3a" << itemLevel.second << "|r]";
 
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, oss.str(), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, oss.str()), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
 
             const UpgradeStat* weaponUpgrade = FindUpgradeForWeapon(characterWeaponUpgradeData, player, item);
             if (weaponUpgrade != nullptr)
             {
                 std::ostringstream wuoss;
                 wuoss << "|cff056e3aWEAPON DAMAGE UPGRADED BY " << FormatFloat(weaponUpgrade->statModPct) << "%|r";
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, wuoss.str(), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, wuoss.str()), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
             }
 
             const UpgradeStat* weaponSpeedUpgrade = FindUpgradeForWeapon(characterWeaponSpeedUpgradeData, player, item);
@@ -957,11 +1172,11 @@ bool ItemUpgrade::_AddPagedData(Player* player, const PagedData& pagedData, uint
             {
                 std::ostringstream wuoss;
                 wuoss << "|cff056e3aWEAPON SPEED UPGRADED BY " << FormatFloat(weaponSpeedUpgrade->statModPct) << "%|r";
-                AddGossipItemFor(player, GOSSIP_ICON_CHAT, wuoss.str(), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, wuoss.str()), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
             }
 
             if (!item->IsEquipped())
-                AddGossipItemFor(player, GOSSIP_ICON_BATTLE, "[EQUIP ITEM]", GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + 1);
+                AddGossipItemFor(player, GOSSIP_ICON_BATTLE, Localize(player, "[EQUIP ITEM]"), GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + 1);
         }
         else if (pagedData.type == PAGED_DATA_TYPE_STAT_UPGRADE_BULK)
         {
@@ -977,12 +1192,12 @@ bool ItemUpgrade::_AddPagedData(Player* player, const PagedData& pagedData, uint
                 oss << " [CURRENT: " << currentIlvl.second << "]";
             }
 
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, oss.str(), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, oss.str()), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
         }
     }
     else if (pagedData.type == PAGED_DATA_TYPE_UPGRADED_ITEMS)
     {
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Total items upgraded: " + std::to_string(pagedData.data.size()), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, "Total items upgraded: ") + std::to_string(pagedData.data.size()), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
 
         uint32 totalUpgrades = 0;
         for (const Identifier* idnt : pagedData.data)
@@ -993,15 +1208,15 @@ bool ItemUpgrade::_AddPagedData(Player* player, const PagedData& pagedData, uint
                 totalUpgrades += FindUpgradesForItem(player, item).size();
         }
 
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Total upgrades: " + std::to_string(totalUpgrades), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, "Total upgrades: ") + std::to_string(totalUpgrades), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
     }
     else if (pagedData.type == PAGED_DATA_TYPE_ITEMS_FOR_PURGE)
     {
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|cffb50505PURGE UPGRADES|r", GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, "|cffb50505PURGE UPGRADES|r"), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
         const ItemTemplate* proto = sObjectMgr->GetItemTemplate((uint32)GetIntConfig(CONFIG_ITEM_UPGRADE_PURGE_TOKEN));
         if (proto != nullptr)
         {
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Will receive after purge:", GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, "Will receive after purge:"), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
 
             std::ostringstream oss;
             oss << ItemIcon(proto);
@@ -1010,43 +1225,43 @@ bool ItemUpgrade::_AddPagedData(Player* player, const PagedData& pagedData, uint
             AddGossipItemFor(player, GOSSIP_ICON_VENDOR, oss.str(), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
         }
         if (GetBoolConfig(CONFIG_ITEM_UPGRADE_REFUND_ALL_ON_PURGE))
-            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|cff056e3aWILL REFUND EVERYTHING ON PURGE|r", GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "Choose an upgraded item to purge:", GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, "|cff056e3aWILL REFUND EVERYTHING ON PURGE|r"), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, "Choose an upgraded item to purge:"), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page);
     }
 
     for (uint32 i = lowIndex; i <= highIndex; i++)
     {
         const Identifier* identifier = data[i];
         if (pagedData.type != PAGED_DATA_TYPE_ITEMS_FOR_PURGE)
-            AddGossipItemFor(player, identifier->optionIcon, identifier->uiName, GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + identifier->id);
+            AddGossipItemFor(player, identifier->optionIcon, Localize(player, identifier->uiName), GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + identifier->id);
         else
-            AddGossipItemFor(player, identifier->optionIcon, identifier->uiName, GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + identifier->id, "Are you sure you want to remove all upgrades? This cannot be undone!", 0, false);
+            AddGossipItemFor(player, identifier->optionIcon, Localize(player, identifier->uiName), GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + identifier->id, Localize(player, "Are you sure you want to remove all upgrades? This cannot be undone!"), 0, false);
     }
 
     if (pagedData.type == PAGED_DATA_TYPE_REQS)
-        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, (MeetsRequirement(player, pagedData.upgradeStat, item) ? "|cff056e3a[PURCHASE]|r" : "|cffb50505[PURCHASE]|r"), GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + 1, "Are you sure you want to upgrade?", 0, false);
+        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, Localize(player, (MeetsRequirement(player, pagedData.upgradeStat, item) ? "|cff056e3a[PURCHASE]|r" : "|cffb50505[PURCHASE]|r")), GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + 1, Localize(player, "Are you sure you want to upgrade?"), 0, false);
 
     if (pagedData.type == PAGED_DATA_TYPE_WEAPON_UPGRADE_PERC_INFO)
-        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, (MeetsWeaponUpgradeRequirement(player) ? "|cff056e3a[UPGRADE]|r" : "|cffb50505[UPGRADE]|r"), GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + 1, "Are you sure you want to upgrade this weapon?", 0, false);
+        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, Localize(player, (MeetsWeaponUpgradeRequirement(player) ? "|cff056e3a[UPGRADE]|r" : "|cffb50505[UPGRADE]|r")), GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + 1, Localize(player, "Are you sure you want to upgrade this weapon?"), 0, false);
 
     if (pagedData.type == PAGED_DATA_TYPE_WEAPON_SPEED_UPGRADE_PERC_INFO)
-        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, (MeetsWeaponSpeedUpgradeRequirement(player) ? "|cff056e3a[UPGRADE]|r" : "|cffb50505[UPGRADE]|r"), GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + 1, "Are you sure you want to upgrade the speed of this weapon?", 0, false);
+        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, Localize(player, (MeetsWeaponSpeedUpgradeRequirement(player) ? "|cff056e3a[UPGRADE]|r" : "|cffb50505[UPGRADE]|r")), GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + 1, Localize(player, "Are you sure you want to upgrade the speed of this weapon?"), 0, false);
 
     if (!upgrades.empty())
     {
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "[ALL REQUIREMENTS]", GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + 1);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, "[ALL REQUIREMENTS]"), GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + 1);
         StatRequirementContainer reqs = BuildBulkRequirements(upgrades, item);
-        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, (MeetsRequirement(player, &reqs) ? "|cff056e3a[PURCHASE ALL]|r" : "|cffb50505[PURCHASE ALL]|r"), GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + 2, "Are you sure you want to upgrade?", 0, false);
+        AddGossipItemFor(player, GOSSIP_ICON_TRAINER, Localize(player, (MeetsRequirement(player, &reqs) ? "|cff056e3a[PURCHASE ALL]|r" : "|cffb50505[PURCHASE ALL]|r")), GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + 2, Localize(player, "Are you sure you want to upgrade?"), 0, false);
     }
 
     if (pagedData.type == PAGED_DATA_TYPE_WEAPON_UPGRADE_ITEMS_CHECK_INFO)
-        AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, "|cffb50505REMOVE UPGRADE|r", GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + 1, "Are you sure you want to remove this weapon upgrade? This cannot be undone!", 0, false);
+        AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, Localize(player, "|cffb50505REMOVE UPGRADE|r"), GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + 1, Localize(player, "Are you sure you want to remove this weapon upgrade? This cannot be undone!"), 0, false);
 
     if (pagedData.type == PAGED_DATA_TYPE_WEAPON_SPEED_UPGRADE_ITEMS_CHECK_INFO)
-        AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, "|cffb50505REMOVE SPEED UPGRADE|r", GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + 1, "Are you sure you want to remove this weapon speed upgrade? This cannot be undone!", 0, false);
+        AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, Localize(player, "|cffb50505REMOVE SPEED UPGRADE|r"), GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF + 1, Localize(player, "Are you sure you want to remove this weapon speed upgrade? This cannot be undone!"), 0, false);
 
     if (page + 1 < pagedData.totalPages)
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "[Next] ->", GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page + 1);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, "[Next] ->"), GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF + page + 1);
 
     uint32 pageZeroSender = GOSSIP_SENDER_MAIN;
     if (pagedData.type == PAGED_DATA_TYPE_STATS)
@@ -1082,7 +1297,7 @@ bool ItemUpgrade::_AddPagedData(Player* player, const PagedData& pagedData, uint
     else if (pagedData.type == PAGED_DATA_TYPE_WEAPON_SPEED_UPGRADE_ITEMS_CHECK_INFO)
         pageZeroSender += 24;
 
-    AddGossipItemFor(player, GOSSIP_ICON_CHAT, "<- [Back]", page == 0 ? pageZeroSender : GOSSIP_SENDER_MAIN + 2, page == 0 ? GOSSIP_ACTION_INFO_DEF : GOSSIP_ACTION_INFO_DEF + page - 1);
+    AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, "<- [Back]"), page == 0 ? pageZeroSender : GOSSIP_SENDER_MAIN + 2, page == 0 ? GOSSIP_ACTION_INFO_DEF : GOSSIP_ACTION_INFO_DEF + page - 1);
 
     return true;
 }
@@ -1111,8 +1326,8 @@ bool ItemUpgrade::AddPagedData(Player* player, Creature* creature, uint32 page)
 void ItemUpgrade::NoPagedData(Player* player, const PagedData& pagedData) const
 {
     if (pagedData.type == PAGED_DATA_TYPE_ITEMS || pagedData.type == PAGED_DATA_TYPE_UPGRADED_ITEMS || pagedData.type == PAGED_DATA_TYPE_ITEMS_BULK || pagedData.type == PAGED_DATA_TYPE_WEAPON_UPGRADE_ITEMS
-        || pagedData.type == PAGED_DATA_TYPE_WEAPON_UPGRADE_ITEMS_CHECK || pagedData.type == PAGED_DATA_TYPE_WEAPON_UPGRADE_ITEMS_CHECK_INFO)
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|cffb50505NOTHING ON THIS PAGE|r", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+    || pagedData.type == PAGED_DATA_TYPE_WEAPON_UPGRADE_ITEMS_CHECK || pagedData.type == PAGED_DATA_TYPE_WEAPON_UPGRADE_ITEMS_CHECK_INFO)
+    AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, "|cffb50505NOTHING ON THIS PAGE|r"), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
     else if (pagedData.type == PAGED_DATA_TYPE_STATS || pagedData.type == PAGED_DATA_TYPE_STATS_BULK || pagedData.type == PAGED_DATA_TYPE_STAT_UPGRADE_BULK
         || pagedData.type == PAGED_DATA_TYPE_WEAPON_UPGRADE_PERCS || pagedData.type == PAGED_DATA_TYPE_WEAPON_UPGRADE_PERC_INFO)
     {
@@ -1120,13 +1335,13 @@ void ItemUpgrade::NoPagedData(Player* player, const PagedData& pagedData) const
         bool validItem = pagedData.type == PAGED_DATA_TYPE_WEAPON_UPGRADE_PERCS || pagedData.type == PAGED_DATA_TYPE_WEAPON_UPGRADE_PERC_INFO ? IsValidWeaponForUpgrade(item, player) : IsValidItemForUpgrade(item, player);
         if (validItem)
             AddGossipItemFor(player, GOSSIP_ICON_VENDOR, ItemLinkForUI(item, player), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|cffb50505ITEM CAN'T BE UPGRADED|r", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, "|cffb50505ITEM CAN'T BE UPGRADED|r"), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
     }
     else if (pagedData.type == PAGED_DATA_TYPE_ITEMS_FOR_PURGE)
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|cffb50505NOTHING TO PURGE|r", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, "|cffb50505NOTHING TO PURGE|r"), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
     else if (pagedData.type == PAGED_DATA_TYPE_WEAPON_SPEED_ITEMS)
-        AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|cffb50505NOTHING ON THIS PAGE, ONLY EQUIPPED ITEMS WILL BE SHOWN|r", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
-    AddGossipItemFor(player, GOSSIP_ICON_CHAT, "<- [First Page]", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+        AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, "|cffb50505NOTHING ON THIS PAGE, ONLY EQUIPPED ITEMS WILL BE SHOWN|r"), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+    AddGossipItemFor(player, GOSSIP_ICON_CHAT, Localize(player, "<- [First Page]"), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
 }
 
 bool ItemUpgrade::TakePagedDataAction(Player* player, Creature* creature, uint32 action)
@@ -1334,10 +1549,10 @@ bool ItemUpgrade::TakePagedDataAction(Player* player, Creature* creature, uint32
             else
             {
                 auto rebuildPage = [&]()
-                {
-                    BuildWeaponPercentUpgradesCatalogue(player, item);
-                    return AddPagedData(player, creature, pagedData.currentPage);
-                };
+                    {
+                        BuildWeaponPercentUpgradesCatalogue(player, item);
+                        return AddPagedData(player, creature, pagedData.currentPage);
+                    };
 
                 const FloatIdentifier* floatIdentifier = (FloatIdentifier*)identifier;
                 const UpgradeStat* weaponUpgrade = FindUpgradeForWeapon(characterWeaponUpgradeData, player, item);
@@ -1468,10 +1683,10 @@ bool ItemUpgrade::TakePagedDataAction(Player* player, Creature* creature, uint32
             else
             {
                 auto rebuildPage = [&]()
-                {
-                    BuildWeaponSpeedPercentUpgradesCatalogue(player, item);
-                    return AddPagedData(player, creature, pagedData.currentPage);
-                };
+                    {
+                        BuildWeaponSpeedPercentUpgradesCatalogue(player, item);
+                        return AddPagedData(player, creature, pagedData.currentPage);
+                    };
 
                 const FloatIdentifier* floatIdentifier = (FloatIdentifier*)identifier;
                 const UpgradeStat* weaponUpgrade = FindUpgradeForWeapon(characterWeaponSpeedUpgradeData, player, item);
@@ -1938,24 +2153,24 @@ void ItemUpgrade::BuildRequirementsPage(const Player* player, PagedData& pagedDa
             std::ostringstream oss;
             switch (req.reqType)
             {
-                case REQ_TYPE_COPPER:
-                    oss << "MONEY: " << CopperToMoneyStr((uint32)req.reqVal1, true);
-                    break;
-                case REQ_TYPE_HONOR:
-                    oss << "HONOR: " << (uint32)req.reqVal1 << " points";
-                    break;
-                case REQ_TYPE_ARENA:
-                    oss << "ARENA: " << (uint32)req.reqVal1 << " points";
-                    break;
-                case REQ_TYPE_ITEM:
-                {
-                    const ItemTemplate* proto = sObjectMgr->GetItemTemplate((uint32)req.reqVal1);
-                    oss << ItemIcon(proto);
-                    oss << ItemLink(player, proto, 0);
-                    if (req.reqVal2 > 1.0f)
-                        oss << " - " << (uint32)req.reqVal2 << "x";
-                    break;
-                }
+            case REQ_TYPE_COPPER:
+                oss << "MONEY: " << CopperToMoneyStr((uint32)req.reqVal1, true);
+                break;
+            case REQ_TYPE_HONOR:
+                oss << "HONOR: " << (uint32)req.reqVal1 << " points";
+                break;
+            case REQ_TYPE_ARENA:
+                oss << "ARENA: " << (uint32)req.reqVal1 << " points";
+                break;
+            case REQ_TYPE_ITEM:
+            {
+                const ItemTemplate* proto = sObjectMgr->GetItemTemplate((uint32)req.reqVal1);
+                oss << ItemIcon(proto);
+                oss << ItemLink(player, proto, 0);
+                if (req.reqVal2 > 1.0f)
+                    oss << " - " << (uint32)req.reqVal2 << "x";
+                break;
+            }
             }
 
             std::string missing;
@@ -1963,18 +2178,18 @@ void ItemUpgrade::BuildRequirementsPage(const Player* player, PagedData& pagedDa
             {
                 switch (req.reqType)
                 {
-                    case REQ_TYPE_COPPER:
-                        missing = "missing " + CopperToMoneyStr((uint32)req.reqVal1 - player->GetMoney(), true);
-                        break;
-                    case REQ_TYPE_HONOR:
-                        missing = "missing " + std::to_string((uint32)req.reqVal1 - player->GetHonorPoints()) + " points";
-                        break;
-                    case REQ_TYPE_ARENA:
-                        missing = "missing " + std::to_string((uint32)req.reqVal1 - player->GetArenaPoints()) + " points";
-                        break;
-                    case REQ_TYPE_ITEM:
-                        missing = "missing " + std::to_string((uint32)req.reqVal2 - player->GetItemCount((uint32)req.reqVal1, true)) + " items";
-                        break;
+                case REQ_TYPE_COPPER:
+                    missing = "missing " + CopperToMoneyStr((uint32)req.reqVal1 - player->GetMoney(), true);
+                    break;
+                case REQ_TYPE_HONOR:
+                    missing = "missing " + std::to_string((uint32)req.reqVal1 - player->GetHonorPoints()) + " points";
+                    break;
+                case REQ_TYPE_ARENA:
+                    missing = "missing " + std::to_string((uint32)req.reqVal1 - player->GetArenaPoints()) + " points";
+                    break;
+                case REQ_TYPE_ITEM:
+                    missing = "missing " + std::to_string((uint32)req.reqVal2 - player->GetItemCount((uint32)req.reqVal1, true)) + " items";
+                    break;
                 }
             }
 
@@ -2088,7 +2303,7 @@ void ItemUpgrade::BuildItemUpgradeStatsCatalogue(const Player* player, const Ite
             if (!foundStat)
                 continue;
 
-            std::string statTypeStr = StatTypeToString(upgradeStat->statType);
+            std::string statTypeStr = StatTypeToString(upgradeStat->statType, player);
 
             std::ostringstream oss;
             oss << "UPGRADED " << statTypeStr << " [RANK " << upgradeStat->statRank << "]";
@@ -2358,16 +2573,16 @@ bool ItemUpgrade::MeetsRequirement(const Player* player, const UpgradeStatReq& r
 {
     switch (req.reqType)
     {
-        case REQ_TYPE_COPPER:
-            return player->HasEnoughMoney((int32)req.reqVal1);
-        case REQ_TYPE_HONOR:
-            return player->GetHonorPoints() >= (uint32)req.reqVal1;
-        case REQ_TYPE_ARENA:
-            return player->GetArenaPoints() >= (uint32)req.reqVal1;
-        case REQ_TYPE_ITEM:
-            return player->HasItemCount((uint32)req.reqVal1, (uint32)req.reqVal2, true);
-        case REQ_TYPE_NONE:
-            return true;
+    case REQ_TYPE_COPPER:
+        return player->HasEnoughMoney((int32)req.reqVal1);
+    case REQ_TYPE_HONOR:
+        return player->GetHonorPoints() >= (uint32)req.reqVal1;
+    case REQ_TYPE_ARENA:
+        return player->GetArenaPoints() >= (uint32)req.reqVal1;
+    case REQ_TYPE_ITEM:
+        return player->HasItemCount((uint32)req.reqVal1, (uint32)req.reqVal2, true);
+    case REQ_TYPE_NONE:
+        return true;
     }
 
     return false;
@@ -2404,18 +2619,18 @@ void ItemUpgrade::TakeRequirements(Player* player, const StatRequirementContaine
     {
         switch (req.reqType)
         {
-            case REQ_TYPE_COPPER:
-                player->ModifyMoney(-(int32)req.reqVal1);
-                break;
-            case REQ_TYPE_HONOR:
-                player->ModifyHonorPoints(-(int32)req.reqVal1);
-                break;
-            case REQ_TYPE_ARENA:
-                player->ModifyArenaPoints(-(int32)req.reqVal1);
-                break;
-            case REQ_TYPE_ITEM:
-                player->DestroyItemCount((uint32)req.reqVal1, (uint32)req.reqVal2, true);
-                break;
+        case REQ_TYPE_COPPER:
+            player->ModifyMoney(-(int32)req.reqVal1);
+            break;
+        case REQ_TYPE_HONOR:
+            player->ModifyHonorPoints(-(int32)req.reqVal1);
+            break;
+        case REQ_TYPE_ARENA:
+            player->ModifyArenaPoints(-(int32)req.reqVal1);
+            break;
+        case REQ_TYPE_ITEM:
+            player->DestroyItemCount((uint32)req.reqVal1, (uint32)req.reqVal2, true);
+            break;
         }
     }
 }
@@ -2461,7 +2676,7 @@ void ItemUpgrade::BuildStatsUpgradeCatalogue(const Player* player, const Item* i
             bool atMaxRank = false;
             Identifier* identifier = new Identifier();
             std::ostringstream oss;
-            oss << "UPGRADE " << StatTypeToString(statInfo->ItemStatType) << " ";
+            oss << Localize(player, "UPGRADE ") << StatTypeToString(statInfo->ItemStatType, player) << " ";
             if (foundUpgrade != nullptr)
             {
                 currentUpgrade = foundUpgrade;
@@ -2602,7 +2817,7 @@ void ItemUpgrade::BuildStatsUpgradeByPctCatalogueBulk(const Player* player, cons
                 continue;
 
             std::ostringstream oss;
-            std::string statTypeStr = StatTypeToString(stat->statType);
+            std::string statTypeStr = StatTypeToString(stat->statType, player);
             if (!IsAllowedStatType(stat->statType))
                 oss << "|cffb50505Won't|r upgrade " << statTypeStr << ": stat not allowed for upgrade";
             else if (!CanApplyUpgradeForItem(item, stat))
@@ -2691,18 +2906,18 @@ ItemUpgrade::StatRequirementContainer ItemUpgrade::BuildBulkRequirements(const s
         {
             switch (statReq.reqType)
             {
-                case REQ_TYPE_COPPER:
-                    copper += (uint32)statReq.reqVal1;
-                    break;
-                case REQ_TYPE_HONOR:
-                    honor += (uint32)statReq.reqVal1;
-                    break;
-                case REQ_TYPE_ARENA:
-                    arena += (uint32)statReq.reqVal1;
-                    break;
-                case REQ_TYPE_ITEM:
-                    itemMap[(uint32)statReq.reqVal1] += (uint32)statReq.reqVal2;
-                    break;
+            case REQ_TYPE_COPPER:
+                copper += (uint32)statReq.reqVal1;
+                break;
+            case REQ_TYPE_HONOR:
+                honor += (uint32)statReq.reqVal1;
+                break;
+            case REQ_TYPE_ARENA:
+                arena += (uint32)statReq.reqVal1;
+                break;
+            case REQ_TYPE_ITEM:
+                itemMap[(uint32)statReq.reqVal1] += (uint32)statReq.reqVal2;
+                break;
             }
         }
     }
@@ -2864,56 +3079,62 @@ std::unordered_map<uint32, const ItemUpgrade::UpgradeStat*> ItemUpgrade::FindAll
     return statInfo;
 }
 
-/*static*/ std::string ItemUpgrade::StatTypeToString(uint32 statType)
+/*static*/ std::string ItemUpgrade::StatTypeToString(uint32 statType, const Player* player)
 {
     static std::unordered_map<uint32, std::string> statTypeToStrMap =
     {
-        {ITEM_MOD_MANA, "Mana"}, {ITEM_MOD_HEALTH, "Health"}, {ITEM_MOD_AGILITY, "Agility"},
-        {ITEM_MOD_STRENGTH, "Strength"}, {ITEM_MOD_INTELLECT, "Intellect"}, {ITEM_MOD_SPIRIT, "Spirit"},
-        {ITEM_MOD_STAMINA, "Stamina"}, {ITEM_MOD_DEFENSE_SKILL_RATING, "Defense Rating"}, {ITEM_MOD_DODGE_RATING, "Dodge Rating"},
-        {ITEM_MOD_PARRY_RATING, "Parry Rating"}, {ITEM_MOD_BLOCK_RATING, "Block Rating"}, {ITEM_MOD_HIT_MELEE_RATING, "Melee Hit Rating"},
-        {ITEM_MOD_HIT_RANGED_RATING, "Ranged Hit Rating"}, {ITEM_MOD_HIT_SPELL_RATING, "Spell Hit Rating"}, {ITEM_MOD_CRIT_MELEE_RATING, "Melee Crit Rating"},
-        {ITEM_MOD_CRIT_RANGED_RATING, "Ranged Crit Rating"}, {ITEM_MOD_CRIT_SPELL_RATING, "Spell Crit Rating"}, {ITEM_MOD_HIT_TAKEN_MELEE_RATING, "Melee Hit Taken Rating"},
-        {ITEM_MOD_HIT_TAKEN_RANGED_RATING, "Ranged Hit Taken Rating"}, {ITEM_MOD_HIT_TAKEN_SPELL_RATING, "Spell Hit Taken Rating"}, {ITEM_MOD_CRIT_TAKEN_MELEE_RATING, "Melee Crit Taken Rating"},
-        {ITEM_MOD_CRIT_TAKEN_RANGED_RATING, "Ranged Crit Taken Rating"}, {ITEM_MOD_CRIT_TAKEN_SPELL_RATING, "Spell Crit Taken Rating"}, {ITEM_MOD_HASTE_MELEE_RATING, "Melee Haste Rating"},
-        {ITEM_MOD_HASTE_RANGED_RATING, "Ranged Haste Rating"}, {ITEM_MOD_HASTE_SPELL_RATING, "Spell Haste Rating"}, {ITEM_MOD_HIT_RATING, "Hit Rating"},
-        {ITEM_MOD_CRIT_RATING, "Crit Rating"}, {ITEM_MOD_HIT_TAKEN_RATING, "Hit Taken Rating"}, {ITEM_MOD_CRIT_TAKEN_RATING, "Crit Taken Rating"},
-        {ITEM_MOD_RESILIENCE_RATING, "Resilience Rating"}, {ITEM_MOD_HASTE_RATING, "Haste Rating"}, {ITEM_MOD_EXPERTISE_RATING, "Expertise"},
-        {ITEM_MOD_ATTACK_POWER, "Attack Power"}, {ITEM_MOD_RANGED_ATTACK_POWER, "Ranged Attack Power"}, {ITEM_MOD_MANA_REGENERATION, "Mana Regen"},
-        {ITEM_MOD_ARMOR_PENETRATION_RATING, "Armor Penetration"}, {ITEM_MOD_SPELL_POWER, "Spell Power"}, {ITEM_MOD_HEALTH_REGEN, "HP Regen"},
-        {ITEM_MOD_SPELL_PENETRATION, "Spell Penetration"}, {ITEM_MOD_BLOCK_VALUE, "Block Value"}
+        { ITEM_MOD_MANA, "Mana" },
+        { ITEM_MOD_HEALTH, "Health" },{ ITEM_MOD_AGILITY, "Agility" },
+        { ITEM_MOD_STRENGTH, "Strength" },{ ITEM_MOD_INTELLECT, "Intellect" },{ ITEM_MOD_SPIRIT, "Spirit" },
+        { ITEM_MOD_STAMINA, "Stamina" },{ ITEM_MOD_DEFENSE_SKILL_RATING, "Defense Rating" },{ ITEM_MOD_DODGE_RATING, "Dodge Rating" },
+        { ITEM_MOD_PARRY_RATING, "Parry Rating" },{ ITEM_MOD_BLOCK_RATING, "Block Rating" },{ ITEM_MOD_HIT_MELEE_RATING, "Melee Hit Rating" },
+        { ITEM_MOD_HIT_RANGED_RATING, "Ranged Hit Rating" },{ ITEM_MOD_HIT_SPELL_RATING, "Spell Hit Rating" },{ ITEM_MOD_CRIT_MELEE_RATING, "Melee Crit Rating" },
+        { ITEM_MOD_CRIT_RANGED_RATING, "Ranged Crit Rating" },{ ITEM_MOD_CRIT_SPELL_RATING, "Spell Crit Rating" },{ ITEM_MOD_HIT_TAKEN_MELEE_RATING, "Melee Hit Taken Rating" },
+        { ITEM_MOD_HIT_TAKEN_RANGED_RATING, "Ranged Hit Taken Rating" },{ ITEM_MOD_HIT_TAKEN_SPELL_RATING, "Spell Hit Taken Rating" },{ ITEM_MOD_CRIT_TAKEN_MELEE_RATING, "Melee Crit Taken Rating" },
+        { ITEM_MOD_CRIT_TAKEN_RANGED_RATING, "Ranged Crit Taken Rating" },{ ITEM_MOD_CRIT_TAKEN_SPELL_RATING, "Spell Crit Taken Rating" },{ ITEM_MOD_HASTE_MELEE_RATING, "Melee Haste Rating" },
+        { ITEM_MOD_HASTE_RANGED_RATING, "Ranged Haste Rating" },{ ITEM_MOD_HASTE_SPELL_RATING, "Spell Haste Rating" },{ ITEM_MOD_HIT_RATING, "Hit Rating" },
+        { ITEM_MOD_CRIT_RATING, "Crit Rating" },{ ITEM_MOD_HIT_TAKEN_RATING, "Hit Taken Rating" },{ ITEM_MOD_CRIT_TAKEN_RATING, "Crit Taken Rating" },
+        { ITEM_MOD_RESILIENCE_RATING, "Resilience Rating" },{ ITEM_MOD_HASTE_RATING, "Haste Rating" },{ ITEM_MOD_EXPERTISE_RATING, "Expertise" },
+        { ITEM_MOD_ATTACK_POWER, "Attack Power" },{ ITEM_MOD_RANGED_ATTACK_POWER, "Ranged Attack Power" },{ ITEM_MOD_MANA_REGENERATION, "Mana Regen" },
+        { ITEM_MOD_ARMOR_PENETRATION_RATING, "Armor Penetration" },{ ITEM_MOD_SPELL_POWER, "Spell Power" },{ ITEM_MOD_HEALTH_REGEN, "HP Regen" },
+        { ITEM_MOD_SPELL_PENETRATION, "Spell Penetration" },{ ITEM_MOD_BLOCK_VALUE, "Block Value" }
     };
 
     if (statTypeToStrMap.find(statType) != statTypeToStrMap.end())
-        return statTypeToStrMap.at(statType);
+    {
+        if (player && player->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU)
+            return Localize(player, statTypeToStrMap.at(statType));
 
-    return "unknown";
+        return statTypeToStrMap.at(statType);
+    }
+
+    return Localize(player, "unknown");
 }
 
 /*static*/ std::string ItemUpgrade::EquipmentSlotToString(EquipmentSlots slot)
 {
     static std::unordered_map<EquipmentSlots, std::string> equipmentSlotToStrMap =
     {
-        {EQUIPMENT_SLOT_START, "Head"},
-        {EQUIPMENT_SLOT_HEAD, "Head"},
-        {EQUIPMENT_SLOT_NECK, "Neck"},
-        {EQUIPMENT_SLOT_SHOULDERS, "Shoulders"},
-        {EQUIPMENT_SLOT_BODY, "Shirt"},
-        {EQUIPMENT_SLOT_CHEST, "Chest"},
-        {EQUIPMENT_SLOT_WAIST, "Waist"},
-        {EQUIPMENT_SLOT_LEGS, "Legs"},
-        {EQUIPMENT_SLOT_FEET, "Feet"},
-        {EQUIPMENT_SLOT_WRISTS, "Wrist"},
-        {EQUIPMENT_SLOT_HANDS, "Gloves"},
-        {EQUIPMENT_SLOT_FINGER1, "Finger 1"},
-        {EQUIPMENT_SLOT_FINGER2, "Finger 2"},
-        {EQUIPMENT_SLOT_TRINKET1, "Trinket 1"},
-        {EQUIPMENT_SLOT_TRINKET2, "Trinket 2"},
-        {EQUIPMENT_SLOT_BACK, "Back"},
-        {EQUIPMENT_SLOT_MAINHAND, "Main Hand"},
-        {EQUIPMENT_SLOT_OFFHAND, "Offhand"},
-        {EQUIPMENT_SLOT_RANGED, "Ranged"},
-        {EQUIPMENT_SLOT_TABARD, "Tabard"}
+        { EQUIPMENT_SLOT_START, "Head" },
+        { EQUIPMENT_SLOT_HEAD, "Head" },
+        { EQUIPMENT_SLOT_NECK, "Neck" },
+        { EQUIPMENT_SLOT_SHOULDERS, "Shoulders" },
+        { EQUIPMENT_SLOT_BODY, "Shirt" },
+        { EQUIPMENT_SLOT_CHEST, "Chest" },
+        { EQUIPMENT_SLOT_WAIST, "Waist" },
+        { EQUIPMENT_SLOT_LEGS, "Legs" },
+        { EQUIPMENT_SLOT_FEET, "Feet" },
+        { EQUIPMENT_SLOT_WRISTS, "Wrist" },
+        { EQUIPMENT_SLOT_HANDS, "Gloves" },
+        { EQUIPMENT_SLOT_FINGER1, "Finger 1" },
+        { EQUIPMENT_SLOT_FINGER2, "Finger 2" },
+        { EQUIPMENT_SLOT_TRINKET1, "Trinket 1" },
+        { EQUIPMENT_SLOT_TRINKET2, "Trinket 2" },
+        { EQUIPMENT_SLOT_BACK, "Back" },
+        { EQUIPMENT_SLOT_MAINHAND, "Main Hand" },
+        { EQUIPMENT_SLOT_OFFHAND, "Offhand" },
+        { EQUIPMENT_SLOT_RANGED, "Ranged" },
+        { EQUIPMENT_SLOT_TABARD, "Tabard" }
     };
 
     if (equipmentSlotToStrMap.find(slot) != equipmentSlotToStrMap.end())
@@ -3356,11 +3577,11 @@ void ItemUpgrade::UpdateVisualCache(Player* player)
 
     auto chooseVisualItem = [&](const uint32 entry) -> const ItemUpgradeInfo* {
         auto emptyUpgrade = [](const ItemUpgradeInfo* itemUpgradeInfo)
-        {
-            return itemUpgradeInfo->upgrades.empty()
-                && itemUpgradeInfo->weaponUpgrade == nullptr
-                && itemUpgradeInfo->weaponSpeedUpgrade == nullptr;
-        };
+            {
+                return itemUpgradeInfo->upgrades.empty()
+                    && itemUpgradeInfo->weaponUpgrade == nullptr
+                    && itemUpgradeInfo->weaponSpeedUpgrade == nullptr;
+            };
 
         const std::vector<ItemUpgradeInfo>& upgradeInfo = entryUpgradeMap.at(entry);
         const ItemUpgradeInfo* highestStatUpgrade = &upgradeInfo[0];
@@ -3368,7 +3589,7 @@ void ItemUpgrade::UpdateVisualCache(Player* player)
         const ItemUpgradeInfo* highestWeaponSpeedUpgrade = &upgradeInfo[0];
         for (size_t i = 1; i < upgradeInfo.size(); i++)
         {
-            const ItemUpgradeInfo &itemUpgradeInfo = upgradeInfo[i];
+            const ItemUpgradeInfo& itemUpgradeInfo = upgradeInfo[i];
             if (itemUpgradeInfo.upgrades.size() > highestStatUpgrade->upgrades.size())
                 highestStatUpgrade = &itemUpgradeInfo;
             if (itemUpgradeInfo.weaponUpgrade != nullptr && (highestWeaponUpgrade->weaponUpgrade == nullptr || itemUpgradeInfo.weaponUpgrade->statModPct > highestWeaponUpgrade->weaponUpgrade->statModPct))
@@ -3405,7 +3626,7 @@ void ItemUpgrade::UpdateVisualCache(Player* player)
         }
 
         return &upgradeInfo[0];
-    };
+        };
 
     for (const auto& p : entryUpgradeMap)
     {
@@ -3581,17 +3802,17 @@ bool ItemUpgrade::TryRefundRequirements(Player* player, const StatRequirementCon
     {
         switch (r.reqType)
         {
-            case REQ_TYPE_COPPER:
-                if (player->GetMoney() + (uint32)r.reqVal1 > MAX_MONEY_AMOUNT)
-                {
-                    SendMessage(player, "Can't refund copper, would be at gold limit.");
-                    return false;
-                }
-                break;
-            case REQ_TYPE_ITEM:
-                if (!TryAddItem(player, (uint32)r.reqVal1, (uint32)r.reqVal2, false))
-                    return false;
-                break;
+        case REQ_TYPE_COPPER:
+            if (player->GetMoney() + (uint32)r.reqVal1 > MAX_MONEY_AMOUNT)
+            {
+                SendMessage(player, "Can't refund copper, would be at gold limit.");
+                return false;
+            }
+            break;
+        case REQ_TYPE_ITEM:
+            if (!TryAddItem(player, (uint32)r.reqVal1, (uint32)r.reqVal2, false))
+                return false;
+            break;
         }
     }
 
@@ -3599,18 +3820,18 @@ bool ItemUpgrade::TryRefundRequirements(Player* player, const StatRequirementCon
     {
         switch (r.reqType)
         {
-            case REQ_TYPE_COPPER:
-                player->ModifyMoney((int32)r.reqVal1);
-                break;
-            case REQ_TYPE_HONOR:
-                player->ModifyHonorPoints((int32)r.reqVal1);
-                break;
-            case REQ_TYPE_ARENA:
-                player->ModifyArenaPoints((int32)r.reqVal1);
-                break;
-            case REQ_TYPE_ITEM:
-                TryAddItem(player, (uint32)r.reqVal1, (uint32)r.reqVal2, true);
-                break;
+        case REQ_TYPE_COPPER:
+            player->ModifyMoney((int32)r.reqVal1);
+            break;
+        case REQ_TYPE_HONOR:
+            player->ModifyHonorPoints((int32)r.reqVal1);
+            break;
+        case REQ_TYPE_ARENA:
+            player->ModifyArenaPoints((int32)r.reqVal1);
+            break;
+        case REQ_TYPE_ITEM:
+            TryAddItem(player, (uint32)r.reqVal1, (uint32)r.reqVal2, true);
+            break;
         }
     }
 
@@ -3974,37 +4195,37 @@ ItemUpgrade::ItemVisualsPriority ItemUpgrade::GetItemVisualsPriority() const
     int32 priority = cfg.GetIntConfig(CONFIG_ITEM_UPGRADE_SEND_PACKETS_PRIORITY);
     switch (priority)
     {
-        case 0:
-            return PRIORITIZE_STATS;
-        case 1:
-            return PRIORITIZE_WEAPON_DAMAGE;
-        default:
-            return PRIORITIZE_STATS;
+    case 0:
+        return PRIORITIZE_STATS;
+    case 1:
+        return PRIORITIZE_WEAPON_DAMAGE;
+    default:
+        return PRIORITIZE_STATS;
     }
 }
 
-/*static*/ std::string ItemUpgrade::FormatItemLocation(const Player* /*player*/, const Item* item)
+/*static*/ std::string ItemUpgrade::FormatItemLocation(const Player* player, const Item* item)
 {
     uint8 bagSlot = item->GetBagSlot();
     uint8 itemSlot = item->GetSlot();
     if (bagSlot == INVENTORY_SLOT_BAG_0)
     {
         if (itemSlot < EQUIPMENT_SLOT_END)
-            return "equipped";
+            return Localize(player, "equipped");
         if (itemSlot >= INVENTORY_SLOT_ITEM_START && itemSlot < INVENTORY_SLOT_ITEM_END)
-            return "in backpack - slot " + std::to_string(itemSlot - INVENTORY_SLOT_ITEM_START + 1);
+            return Localize(player, "in backpack - slot ") + std::to_string(itemSlot - INVENTORY_SLOT_ITEM_START + 1);
         if (itemSlot >= BANK_SLOT_ITEM_START && itemSlot < BANK_SLOT_ITEM_END)
-            return "in bank - slot " + std::to_string(itemSlot - BANK_SLOT_ITEM_START + 1);
+            return Localize(player, "in bank - slot ") + std::to_string(itemSlot - BANK_SLOT_ITEM_START + 1);
     }
     else
     {
         if (bagSlot >= INVENTORY_SLOT_BAG_START && bagSlot < INVENTORY_SLOT_BAG_END)
-            return "in bag " + std::to_string(bagSlot - INVENTORY_SLOT_BAG_START + 1) + " - slot " + std::to_string(itemSlot + 1);
+            return Localize(player, "in bag ") + std::to_string(bagSlot - INVENTORY_SLOT_BAG_START + 1) + Localize(player, " - slot ") + std::to_string(itemSlot + 1);
         if (bagSlot >= BANK_SLOT_BAG_START && bagSlot < BANK_SLOT_BAG_END)
-            return "in bank bag " + std::to_string(bagSlot - BANK_SLOT_BAG_START + 1) + " - slot " + std::to_string(itemSlot + 1);
+            return Localize(player, "in bank bag ") + std::to_string(bagSlot - BANK_SLOT_BAG_START + 1) + Localize(player, " - slot ") + std::to_string(itemSlot + 1);
     }
 
-    return "unknown";
+    return Localize(player, "unknown");
 }
 
 bool ItemUpgrade::IsInactiveStatUpgrade(const Item* item, const UpgradeStat* upgradeStat) const
