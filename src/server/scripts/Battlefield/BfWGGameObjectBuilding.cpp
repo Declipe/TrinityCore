@@ -600,6 +600,8 @@ void BfWGGameObjectBuilding::Init(GameObject* go)
         break;
     }
 
+    go->SetFaction(WintergraspFaction[_teamControl]);
+
     int32 towerId = -1;
     switch (go->GetEntry())
     {
